@@ -18,14 +18,14 @@ import { i18n, translateTrigger } from 'Common/Translator';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-import { koComputable, addObservablesTo } from 'External/ko';
+import { /*koComputable,*/ addObservablesTo } from 'External/ko';
 
 //import { mailBox } from 'Common/Links';
 
 import Remote from 'Remote/User/Fetch';
 
 const
-	isPosNumeric = value => null != value && /^[0-9]*$/.test(value.toString()),
+//	isPosNumeric = value => null != value && /^[0-9]*$/.test(value.toString()),
 
 	normalizeFolder = sFolderFullName => ('' === sFolderFullName
 		|| UNUSED_OPTION_VALUE === sFolderFullName
@@ -322,8 +322,8 @@ export class FolderModel extends AbstractModel {
 			nameForEdit: '',
 			errorMsg: '',
 
-			totalEmailsValue: 0,
-			unreadEmailsValue: 0,
+			totalEmails: 0,
+			unreadEmails: 0,
 
 			kolabType: null,
 
@@ -337,12 +337,14 @@ export class FolderModel extends AbstractModel {
 
 		this.addSubscribables({
 			kolabType: sValue => this.metadata[FolderMetadataKeys.KolabFolderType] = sValue,
-			permanentFlags: aValue => this.tagsAllowed(aValue.includes('\\*'))
+			permanentFlags: aValue => this.tagsAllowed(aValue.includes('\\*')),
+			editing: value => value && this.nameForEdit(this.name()),
+			unreadEmails: unread => FolderType.Inbox === this.type() && fireEvent('mailbox.inbox-unread-count', unread)
 		});
 
 		this.subFolders = ko.observableArray(new FolderCollectionModel);
 		this.actionBlink = ko.observable(false).extend({ falseTimeout: 1000 });
-
+/*
 		this.totalEmails = koComputable({
 				read: this.totalEmailsValue,
 				write: iValue =>
@@ -356,6 +358,7 @@ export class FolderModel extends AbstractModel {
 					isPosNumeric(value) ? this.unreadEmailsValue(value) : this.unreadEmailsValue.valueHasMutated()
 			})
 			.extend({ notify: 'always' });
+*/
 /*
 		https://www.rfc-editor.org/rfc/rfc8621.html#section-2
 		"myRights": {
@@ -370,6 +373,98 @@ export class FolderModel extends AbstractModel {
 			"mayReadItems": true
 		},
 */
+
+		this.addComputables({
+
+			isInbox: () => FolderType.Inbox === this.type(),
+
+			isFlagged: () => FolderUserStore.currentFolder() === this
+				&& MessagelistUserStore.listSearch().includes('flagged'),
+
+			hasVisibleSubfolders: () => !!this.subFolders().find(folder => folder.visible()),
+
+			hasSubscriptions: () => this.isSubscribed() | !!this.subFolders().find(
+					oFolder => {
+						const subscribed = oFolder.hasSubscriptions();
+						return !oFolder.isSystemFolder() && subscribed;
+					}
+				),
+
+			canBeEdited: () => !this.type() && this.exists/* && this.selectable()*/,
+
+			isSystemFolder: () => this.type()
+				| (FolderUserStore.allowKolab() && !!this.kolabType() & !SettingsUserStore.unhideKolabFolders()),
+
+			canBeSelected: () => this.selectable() && !this.isSystemFolder(),
+
+			canBeDeleted: () => this.canBeSelected() && this.exists,
+
+			canBeSubscribed: () => this.selectable()
+				&& !(this.isSystemFolder() | !SettingsUserStore.hideUnsubscribed()),
+
+			/**
+			 * Folder is visible when:
+			 * - hasVisibleSubfolders()
+			 * Or when all below conditions are true:
+			 * - selectable()
+			 * - isSubscribed() OR hideUnsubscribed = false
+			 * - 0 == type()
+			 * - not kolabType()
+			 */
+			visible: () => {
+				const selectable = this.canBeSelected(),
+					name = this.name(),
+					filter = foldersFilter(),
+					visible = (this.isSubscribed() | !SettingsUserStore.hideUnsubscribed())
+						&& selectable
+						&& (!filter || name.toLowerCase().includes(filter.toLowerCase()));
+				return this.hasVisibleSubfolders() | visible;
+			},
+
+			unreadCount: () => this.unreadEmails() || null,
+/*
+			{
+				// TODO: make this optional in Settings
+				// https://github.com/the-djmaze/snappymail/issues/457
+				// https://github.com/the-djmaze/snappymail/issues/567
+				const
+					unread = this.unreadEmails(),
+					type = this.type();
+//				return ((!this.isSystemFolder() || type == FolderType.Inbox) && unread) ? unread : null;
+			},
+*/
+
+			localName: () => {
+				let name = this.name();
+				if (this.isSystemFolder()) {
+					translateTrigger();
+					name = getSystemFolderName(this.type(), name);
+				}
+				return name;
+			},
+
+			manageFolderSystemName: () => {
+				if (this.isSystemFolder()) {
+					translateTrigger();
+					let suffix = getSystemFolderName(this.type(), getKolabFolderName(this.kolabType()));
+					if (this.name() !== suffix && 'inbox' !== suffix.toLowerCase()) {
+						return '(' + suffix + ')';
+					}
+				}
+				return '';
+			},
+
+			hasSubscribedUnreadMessagesSubfolders: () =>
+				!!this.subFolders().find(
+					folder => folder.unreadCount() | folder.hasSubscribedUnreadMessagesSubfolders()
+				)
+/*
+				!!this.subFolders().filter(
+					folder => folder.unreadCount() | folder.hasSubscribedUnreadMessagesSubfolders()
+				).length
+*/
+//			,href: () => this.canBeSelected() && mailBox(this.fullNameHash)
+		});
 	}
 
 	/**
@@ -399,104 +494,6 @@ export class FolderModel extends AbstractModel {
 			folder.parentName = path.join(folder.delimiter);
 
 			type && 'mail' != type && folder.kolabType(type);
-
-			folder.addComputables({
-
-				isInbox: () => FolderType.Inbox === folder.type(),
-
-				isFlagged: () => FolderUserStore.currentFolder() === folder
-					&& MessagelistUserStore.listSearch().includes('flagged'),
-
-				hasVisibleSubfolders: () => !!folder.subFolders().find(folder => folder.visible()),
-
-				hasSubscriptions: () => folder.isSubscribed() | !!folder.subFolders().find(
-						oFolder => {
-							const subscribed = oFolder.hasSubscriptions();
-							return !oFolder.isSystemFolder() && subscribed;
-						}
-					),
-
-				canBeEdited: () => !folder.type() && folder.exists/* && folder.selectable()*/,
-
-				isSystemFolder: () => folder.type()
-					| (FolderUserStore.allowKolab() && !!folder.kolabType() & !SettingsUserStore.unhideKolabFolders()),
-
-				canBeSelected: () => folder.selectable() && !folder.isSystemFolder(),
-
-				canBeDeleted: () => folder.canBeSelected() && folder.exists,
-
-				canBeSubscribed: () => folder.selectable()
-					&& !(folder.isSystemFolder() | !SettingsUserStore.hideUnsubscribed()),
-
-				/**
-				 * Folder is visible when:
-				 * - hasVisibleSubfolders()
-				 * Or when all below conditions are true:
-				 * - selectable()
-				 * - isSubscribed() OR hideUnsubscribed = false
-				 * - 0 == type()
-				 * - not kolabType()
-				 */
-				visible: () => {
-					const selectable = folder.canBeSelected(),
-						name = folder.name(),
-						filter = foldersFilter(),
-						visible = (folder.isSubscribed() | !SettingsUserStore.hideUnsubscribed())
-							&& selectable
-							&& (!filter || name.toLowerCase().includes(filter.toLowerCase()));
-					return folder.hasVisibleSubfolders() | visible;
-				},
-
-				unreadCount: () => folder.unreadEmails() || null,
-/*
-				{
-					// TODO: make this optional in Settings
-					// https://github.com/the-djmaze/snappymail/issues/457
-					// https://github.com/the-djmaze/snappymail/issues/567
-					const
-						unread = folder.unreadEmails(),
-						type = folder.type();
-//					return ((!folder.isSystemFolder() || type == FolderType.Inbox) && unread) ? unread : null;
-				},
-*/
-
-				localName: () => {
-					let name = folder.name();
-					if (folder.isSystemFolder()) {
-						translateTrigger();
-						name = getSystemFolderName(folder.type(), name);
-					}
-					return name;
-				},
-
-				manageFolderSystemName: () => {
-					if (folder.isSystemFolder()) {
-						translateTrigger();
-						let suffix = getSystemFolderName(folder.type(), getKolabFolderName(folder.kolabType()));
-						if (folder.name() !== suffix && 'inbox' !== suffix.toLowerCase()) {
-							return '(' + suffix + ')';
-						}
-					}
-					return '';
-				},
-
-				hasSubscribedUnreadMessagesSubfolders: () =>
-					!!folder.subFolders().find(
-						folder => folder.unreadCount() | folder.hasSubscribedUnreadMessagesSubfolders()
-					)
-/*
-					!!folder.subFolders().filter(
-						folder => folder.unreadCount() | folder.hasSubscribedUnreadMessagesSubfolders()
-					).length
-*/
-//				,href: () => folder.canBeSelected() && mailBox(folder.fullNameHash)
-			});
-
-			folder.addSubscribables({
-				editing: value => value && folder.nameForEdit(folder.name()),
-
-				unreadEmails: unread => FolderType.Inbox === folder.type() && fireEvent('mailbox.inbox-unread-count', unread)
-			});
 		}
 		return folder;
 	}
