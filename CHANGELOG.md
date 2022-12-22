@@ -1,3 +1,59 @@
+## 2.24.0 – 2022-12-22
+
+### Added
+- Option to enable additional account unread messages count
+- Prevent godaddy click tracking
+- Dark theme use `color-scheme: dark;`
+- More imapsync.php CLI options and help
+
+### Changed
+- MessageList now grouped/split per day
+  [#737](https://github.com/the-djmaze/snappymail/pull/737)
+- Account switcher still shown when allow_additional_accounts is set to Off
+  [#280](https://github.com/the-djmaze/snappymail/pull/280)
+- PHP classes use typed properties
+- Speedup Contacts Suggestions handling
+- Check SMTP SIZE
+  [#779](https://github.com/the-djmaze/snappymail/pull/779)
+
+### Fixed
+- Handle multiple DKIM signatures authentication results
+- Reload admin extensions on update
+- SieveClient quoted string parsing failed
+- Invalid Attachments (PDF)
+  [#466](https://github.com/the-djmaze/snappymail/pull/466)
+- Email HTML images rendering issue
+  [#564](https://github.com/the-djmaze/snappymail/pull/564)
+- "Server message: No supported SASL mechanism found, remote server wants:" in hMailServer
+  [#780](https://github.com/the-djmaze/snappymail/pull/780)
+
+### Removed
+- Some unused plugin hooks to improve Action handling speed
+
+
+## 2.23.1 – 2022-12-15
+
+### Changed
+- More JMAP RFC matching including role
+- Speedup fetch all Folders/mailboxes
+- Disable unused folder_list_limit
+- Merge MailSo\Mail\Folder into MailSo\Imap\Folder and speedup process
+- SnappyMail\Imap\Sync now matches folders based on JMAP role
+- Added the new imapsync.php command line script for
+  [#744](https://github.com/the-djmaze/snappymail/pull/744)
+- Added manual setting for 12/24h clock
+  [#760](https://github.com/the-djmaze/snappymail/pull/760)
+- Add options to mark the message I'm viewing as unread and return to the inbox #766
+
+### Fixed
+- Extension menu shows only some available extensions #778
+- New solution for [#423](https://github.com/the-djmaze/snappymail/pull/423) due to [#774](https://github.com/the-djmaze/snappymail/pull/774)
+- Avatars extension error on smartphone
+  [#764](https://github.com/the-djmaze/snappymail/pull/764)
+- Don't fetch Unread count for main account
+- CSS .e-checkbox.material-design invisible on show/hide
+
+
 ## 2.23.0 – 2022-12-08
 
 ### Added

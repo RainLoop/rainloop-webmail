@@ -375,20 +375,6 @@ and called in JavaScript using rl.pluginRemoteRequest().
 		int &$iLimit
 		\RainLoop\Model\Account $oAccount
 
-### json.suggestions-post
-	params:
-		array &$aResult
-		string $sQuery
-		\RainLoop\Model\Account $oAccount
-		int $iLimit
-
-### json.suggestions-pre
-	params:
-		array &$aResult
-		string $sQuery
-		\RainLoop\Model\Account $oAccount
-		int $iLimit
-
 ### main.content-security-policy
 	params:
 		\SnappyMail\HTTP\CSP $oCSP
@@ -397,20 +383,13 @@ and called in JavaScript using rl.pluginRemoteRequest().
 	`$oCSP->script[] = "'strict-dynamic'";`
 
 ### main.default-response
-	params:
-		string $sActionName
-		array &$aResponse
+	Obsolete, use json.after-{actionname}
 
 ### main.default-response-data
-	params:
-		string $sActionName
-		mixed &$mResult
+	Obsolete, use json.after-{actionname}
 
 ### main.default-response-error-data
-	params:
-		string $sActionName
-		int &$iErrorCode
-		string &$sErrorMessage
+	Obsolete, use json.after-{actionname}
 
 ### main.fabrica
 	params:

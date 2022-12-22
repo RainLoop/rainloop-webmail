@@ -146,21 +146,22 @@ export class MailMessageList extends AbstractViewRight {
 
 			mobileCheckedStateHide: () => ThemeStore.isMobile() ? !MessagelistUserStore.hasChecked() : 1,
 
-			// Idea for https://github.com/the-djmaze/snappymail/issues/737
 			listByDay: () => {
-				let list = [], current, today = Ymd(new Date()), lang = doc.documentElement.lang;
+				let list = [], current, today = Ymd(new Date()),
+					rtf = new Intl.RelativeTimeFormat(doc.documentElement.lang, { numeric: "auto" });
 				MessagelistUserStore.forEach(msg => {
 					let date = (new Date(msg.dateTimeStampInUTC() * 1000)),
 						ymd = Ymd(date);
 					if (!current || ymd != current.ymd) {
 						if (today == ymd) {
-							date = new Intl.RelativeTimeFormat(lang, { numeric: "auto" }).format(0, 'day');
+							date = rtf.format(0, 'day');
 						} else if (today - 1 == ymd) {
-							date = new Intl.RelativeTimeFormat(lang, { numeric: "auto" }).format(-1, 'day');
+							date = rtf.format(-1, 'day');
 //						} else if (today - 7 < ymd) {
 //							date = date.format('l');
+//							date = date.format({dateStyle: 'full'},0,LanguageStore.hourCycle());
 						} else {
-//							date = date.format('LL',0,LanguageStore.hourCycle());
+//							date = date.format({dateStyle: 'medium'},0,LanguageStore.hourCycle());
 							date = date.format({dateStyle: 'full'},0,LanguageStore.hourCycle());
 						}
 						current = {
