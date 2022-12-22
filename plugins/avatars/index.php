@@ -268,10 +268,11 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 		// Only allow service icon when DKIM is valid. $bBimi is true when DKIM is valid.
 		if ($bBimi && !$aResult) {
+			$sDomain = \preg_replace('/^(.+\\.)?(paypal\\.[a-z][a-z])$/D', 'paypal.com', $sDomain);
+			$sDomain = \preg_replace('/^facebookmail.com$/D', '@facebook.com', $sDomain);
 			$aServices = [
 				"services/{$sDomain}",
-				'services/' . \preg_replace('/^.+\\.([^.]+\\.[^.]+)$/D', '$1', $sDomain),
-				'services/' . \preg_replace('/^(.+\\.)?(paypal\\.[a-z][a-z])$/D', 'paypal.com', $sDomain)
+				'services/' . \preg_replace('/^.+\\.([^.]+\\.[^.]+)$/D', '$1', $sDomain)
 			];
 			foreach ($aServices as $service) {
 				$file = __DIR__ . "/images/{$service}.png";
