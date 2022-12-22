@@ -86,8 +86,8 @@
 								<li role="presentation">
 									<a href="#" tabindex="-1" data-bind="command: deleteWithoutMoveCommand" data-icon="🗑" data-i18n="MESSAGE_LIST/BUTTON_DELETE_WITHOUT_MOVE"></a>
 								</li>
-								<li class="dividerbar" role="presentation" data-bind="visible: message().hasUnsubsribeLinks()">
-									<a target="_blank" href="#" tabindex="-1" data-bind="attr: { href: message().getFirstUnsubsribeLink() }" data-icon="✖" data-i18n="MESSAGE/BUTTON_UNSUBSCRIBE"></a>
+								<li class="dividerbar" role="presentation" data-bind="visible: firstUnsubsribeLink">
+									<a target="_blank" href="#" tabindex="-1" data-bind="attr: { href: firstUnsubsribeLink }" data-icon="✖" data-i18n="MESSAGE/BUTTON_UNSUBSCRIBE"></a>
 								</li>
 							</div>
 							<div data-bind="visible: allowMessageActions, with: message" class="dividerbar">
@@ -110,7 +110,7 @@
 									<a href="#" tabindex="-1" data-bind="click: viewPlain" data-icon="👁" data-i18n="MESSAGE/PLAIN_VIEW"></a>
 								</li>
 								<li class="dividerbar" role="presentation">
-									<a target="_blank" href="#" tabindex="-1" data-bind="attr: { href: viewLink() }">
+									<a target="_blank" href="#" tabindex="-1" data-bind="attr: { href: viewRaw() }">
 										<i class="icon-file-code"></i>
 										<span data-i18n="MESSAGE/MENU_VIEW_ORIGINAL"></span>
 									</a>
@@ -128,36 +128,36 @@
 				<div class="subjectParent">
 					<span class="infoParent g-ui-user-select-none fontastic" data-bind="click: toggleFullInfo">ℹ</span>
 					<span class="flagParent g-ui-user-select-none flagOff fontastic" data-bind="text: message().isFlagged() ? '★' : '☆', css: {'flagOn': message().isFlagged(), 'flagOff': !message().isFlagged()}"></span>
-					<span class="subject" data-bind="text: message().subject, title: message().subject"></span>
+					<span class="subject" data-bind="text: message().subject"></span>
 					<a href="#" class="close" data-bind="click: closeMessage" style="margin-top: -8px;">×</a>
 				</div>
 				<div class="informationShort" data-bind="hidden: showFullInfo">
-					<span class="from" data-bind="html: viewFromShort, title: message().fromToLine()"></span>
+					<span class="from" data-bind="html: viewFromShort, title: message().from"></span>
 					<i data-bind="visible: viewFromDkimVisibility, css: viewFromDkimStatusIconClass, title: viewFromDkimStatusTitle"></i>
 				</div>
 				<div class="informationFull" data-bind="visible: showFullInfo, with: message">
 					<table>
-						<tr data-bind="visible: fromToLine()">
+						<tr data-bind="visible: from.length">
 							<td data-i18n="GLOBAL/FROM"></td>
-							<td><span data-bind="text: fromToLine()"></span>
+							<td><span data-bind="text: from"></span>
 								<i data-bind="visible: $parent.viewFromDkimVisibility, css: $parent.viewFromDkimStatusIconClass, title: $parent.viewFromDkimStatusTitle"></i>
 							</td>
 						</tr>
-						<tr data-bind="visible: toToLine()">
+						<tr data-bind="visible: to.length">
 							<td data-i18n="GLOBAL/TO"></td>
-							<td data-bind="text: toToLine(), title: toToLine()"></td>
+							<td data-bind="text: to"></td>
 						</tr>
-						<tr data-bind="visible: ccToLine()">
+						<tr data-bind="visible: cc.length">
 							<td data-i18n="GLOBAL/CC"></td>
-							<td data-bind="text: ccToLine(), title: ccToLine()"></td>
+							<td data-bind="text: cc"></td>
 						</tr>
-						<tr data-bind="visible: bccToLine()">
+						<tr data-bind="visible: bcc.length">
 							<td data-i18n="GLOBAL/BCC"></td>
-							<td data-bind="text: bccToLine(), title: bccToLine()"></td>
+							<td data-bind="text: bcc"></td>
 						</tr>
-						<tr data-bind="visible: replyToToLine()">
+						<tr data-bind="visible: replyTo.length">
 							<td data-i18n="GLOBAL/REPLY_TO"></td>
-							<td data-bind="text: replyToToLine(), title: replyToToLine()"></td>
+							<td data-bind="text: replyTo"></td>
 						</tr>
 						<tr data-bind="visible: dateTimeStampInUTC">
 							<td data-i18n="MESSAGE/LABEL_DATE"></td>
@@ -183,13 +183,13 @@
 					<div data-bind="hidden: showFullInfo">
 						<time class="date" data-moment-format="FULL" data-bind="visible: 0 < message().dateTimeStampInUTC(), moment: message().dateTimeStampInUTC()"></time>
 						<div class="informationShortWrp">
-							<div class="informationShort" data-bind="visible: message().toToLine()">
+							<div class="informationShort" data-bind="visible: message().to.length">
 								<span data-i18n="GLOBAL/TO"></span>:
-								<span data-bind="text: message().toToLine()"></span>
+								<span data-bind="text: message().to"></span>
 							</div>
-							<div class="informationShort" data-bind="visible: message().ccToLine()">
+							<div class="informationShort" data-bind="visible: message().cc.length">
 								<span data-i18n="GLOBAL/CC"></span>:
-								<span data-bind="text: message().ccToLine()"></span>
+								<span data-bind="text: message().cc"></span>
 							</div>
 						</div>
 						<div class="informationShort" data-bind="visible: message().spamResult()">
@@ -201,7 +201,7 @@
 					<!-- ko if: tagsAllowed -->
 					<div class="messageTags">
 						<span data-i18n="MESSAGE/TAGS"></span>:
-						<span class="messageAssignedTags" data-bind="html: message().tagsToHTML()"></span>
+						<span class="messageAssignedTags" data-bind="html: tagsToHTML"></span>
 						<div class="btn-group" data-bind="registerBootstrapDropdown: true" style="display: inline-block">
 							<a class="btn btn-thin btn-transparent dropdown-toggle fontastic" id="tags-dropdown-id" href="#" tabindex="-1">🏷</a>
 							<menu class="dropdown-menu right-edge" role="menu" aria-labelledby="tags-dropdown-id">
@@ -227,12 +227,12 @@
 
 					<div data-bind="hidden: messageLoadingThrottle">
 						<div class="bodySubHeader">
-							<div class="readReceipt" data-bind="visible: !isDraftOrSentFolder() && message().readReceipt() && !message().isReadReceipt(), click: readReceipt"
+							<div class="readReceipt" data-bind="visible: askReadReceipt, click: readReceipt"
 								data-icon="✉" data-i18n="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></div>
-							<details class="attachmentsPlace" data-bind="visible: message().hasAttachments(), css: {'selection-mode' : showAttachmentControls}">
+							<details class="attachmentsPlace" data-bind="visible: hasAttachments, css: {'selection-mode' : showAttachmentControls}">
 								<summary data-i18n="MESSAGE/PRINT_LABEL_ATTACHMENTS"></summary>
 								<!-- ko ifnot: simpleAttachmentsList -->
-								<ul class="attachmentList" data-bind="foreach: message().listAttachments()">
+								<ul class="attachmentList" data-bind="foreach: listAttachments">
 									<li class="attachmentItem" draggable="true"
 											data-bind="event: { 'dragstart': eventDragStart }, attr: { 'title': fileName }, css: {'checked': checked}">
 										<div class="attachmentIconParent" data-bind="css: { 'hasPreview': hasPreview(), 'hasPreplay': hasPreplay(), 'isImage': isImage() }">
@@ -259,7 +259,7 @@
 								</ul>
 								<!-- /ko -->
 								<!-- ko if: simpleAttachmentsList -->
-								<ul class="attachmentListSimple" data-bind="foreach: message().listAttachments()">
+								<ul class="attachmentListSimple" data-bind="foreach: listAttachments">
 									<li class="attachmentItem" data-bind="attr: { 'title': fileName }, css: {'checked': checked}">
 										<span class="attachmentName" data-bind="text: fileName"></span>
 										<i class="checkboxAttachment fontastic"
@@ -271,7 +271,7 @@
 							</details>
 
 							<div class="attachmentsControls"
-								data-bind="visible: showAttachmentControls() && message().hasAttachments()">
+								data-bind="visible: showAttachmentControls() && hasAttachments()">
 
 								<span data-bind="visible: downloadAsZipAllowed">
 									<i class="fontastic iconcolor-red" data-bind="visible: downloadAsZipError">✖</i>

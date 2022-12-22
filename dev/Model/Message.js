@@ -25,7 +25,7 @@ import { LanguageStore } from 'Stores/Language';
 import Remote from 'Remote/User/Fetch';
 
 const
-	hcont = Element.fromHTML('<div area="hidden" style="position:absolute;left:-5000px"></div>'),
+	hcont = Element.fromHTML('<div area="hidden" style="position:absolute;left:-200vw;width:max(50vw,400px)"></div>'),
 	getRealHeight = el => {
 		hcont.innerHTML = el.outerHTML;
 		const result = hcont.clientHeight;
@@ -133,21 +133,11 @@ export class MessageModel extends AbstractModel {
 			attachmentIconClass: () =>
 				this.encrypted() ? 'icon-lock' : FileInfo.getAttachmentsIconClass(this.attachments()),
 			threadsLen: () => this.threads().length,
-			listAttachments: () => this.attachments()
-				.filter(item => SettingsUserStore.listInlineAttachments() || !item.isLinked()),
-			hasAttachments: () => this.listAttachments().length,
 
 			isUnseen: () => !this.flags().includes('\\seen'),
 			isFlagged: () => this.flags().includes('\\flagged'),
-			isReadReceipt: () => this.flags().includes('$mdnsent'),
 //			isJunk: () => this.flags().includes('$junk') && !this.flags().includes('$nonjunk'),
 //			isPhishing: () => this.flags().includes('$phishing'),
-
-			tagsToHTML: () => this.flags().map(value =>
-					isAllowedKeyword(value)
-					? '<span class="focused msgflag-'+value+'">' + i18n('MESSAGE_TAGS/'+value,0,value) + '</span>'
-					: ''
-				).join(' '),
 
 			tagOptions: () => {
 				const tagOptions = [];
@@ -210,61 +200,6 @@ export class MessageModel extends AbstractModel {
 	}
 
 	/**
-	 * @returns {boolean}
-	 */
-	hasUnsubsribeLinks() {
-		return this.unsubsribeLinks().length;
-	}
-
-	/**
-	 * @returns {string}
-	 */
-	getFirstUnsubsribeLink() {
-		return this.unsubsribeLinks()[0] || '';
-	}
-
-	/**
-	 * @param {boolean} friendlyView
-	 * @param {boolean=} wrapWithLink
-	 * @returns {string}
-	 */
-	fromToLine(friendlyView, wrapWithLink) {
-		return this.from.toString(friendlyView, wrapWithLink);
-	}
-
-	/**
-	 * @param {boolean} friendlyView
-	 * @param {boolean=} wrapWithLink
-	 * @returns {string}
-	 */
-	toToLine(friendlyView, wrapWithLink) {
-		return this.to.toString(friendlyView, wrapWithLink);
-	}
-
-	/**
-	 * @param {boolean} friendlyView
-	 * @param {boolean=} wrapWithLink
-	 * @returns {string}
-	 */
-	ccToLine(friendlyView, wrapWithLink) {
-		return this.cc.toString(friendlyView, wrapWithLink);
-	}
-
-	/**
-	 * @returns {string}
-	 */
-	bccToLine() {
-		return this.bcc.toString();
-	}
-
-	/**
-	 * @returns {string}
-	 */
-	replyToToLine() {
-		return this.replyTo.toString();
-	}
-
-	/**
 	 * @return string
 	 */
 	lineAsCss(flags=1) {
@@ -288,7 +223,7 @@ export class MessageModel extends AbstractModel {
 	/**
 	 * @returns {string}
 	 */
-	viewLink() {
+	viewRaw() {
 		return serverRequestRaw('ViewAsPlain', this.requestHash);
 	}
 
@@ -390,7 +325,7 @@ export class MessageModel extends AbstractModel {
 
 	viewPopupMessage(print) {
 		const timeStampInUTC = this.dateTimeStampInUTC() || 0,
-			ccLine = this.ccToLine(),
+			ccLine = this.cc.toString(),
 			m = 0 < timeStampInUTC ? new Date(timeStampInUTC * 1000) : null,
 			win = open(''),
 			sdoc = win.document;
@@ -402,7 +337,7 @@ export class MessageModel extends AbstractModel {
 		sdoc.write(PreviewHTML
 			.replace('<title>', '<title>'+subject)
 			// eslint-disable-next-line max-len
-			.replace('<body>', `<body style="background-color:${prop('background-color')};color:${prop('color')}"><header><h1>${subject}</h1><time>${encodeHtml(m ? m.format('LLL',0,LanguageStore.hourCycle()) : '')}</time><div>${encodeHtml(this.fromToLine())}</div><div>${encodeHtml(i18n('GLOBAL/TO'))}: ${encodeHtml(this.toToLine())}</div>${cc}</header><${mode}>${this.bodyAsHTML()}</${mode}>`)
+			.replace('<body>', `<body style="background-color:${prop('background-color')};color:${prop('color')}"><header><h1>${subject}</h1><time>${encodeHtml(m ? m.format('LLL',0,LanguageStore.hourCycle()) : '')}</time><div>${encodeHtml(this.from)}</div><div>${encodeHtml(i18n('GLOBAL/TO'))}: ${encodeHtml(this.to)}</div>${cc}</header><${mode}>${this.bodyAsHTML()}</${mode}>`)
 		);
 		sdoc.close();
 
@@ -435,7 +370,6 @@ export class MessageModel extends AbstractModel {
 	 */
 	static fromMessageListItem(message) {
 		let self = new MessageModel();
-
 		if (message) {
 			// Clone message values
 			forEachObjectEntry(message, (key, value) => {
@@ -445,10 +379,8 @@ export class MessageModel extends AbstractModel {
 					self[key] = value;
 				}
 			});
+			self.computeSenderEmail();
 		}
-
-		self.computeSenderEmail();
-
 		return self;
 	}
 

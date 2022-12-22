@@ -130,7 +130,7 @@ export class MailMessageView extends AbstractViewRight {
 		this.isDraftFolder = MessagelistUserStore.isDraftFolder;
 		this.isSpamFolder = MessagelistUserStore.isSpamFolder;
 
-		this.message = MessageUserStore.message;
+		this.message = currentMessage;
 		this.messageLoadingThrottle = MessageUserStore.loading;
 		this.messagesBodiesDom = MessageUserStore.bodiesDom;
 		this.messageError = MessageUserStore.error;
@@ -157,6 +157,21 @@ export class MailMessageView extends AbstractViewRight {
 
 			messageVisibility: () => !MessageUserStore.loading() && !!currentMessage(),
 
+			tagsToHTML: () => currentMessage()?.flags().map(value =>
+					isAllowedKeyword(value)
+					? '<span class="focused msgflag-'+value+'">' + i18n('MESSAGE_TAGS/'+value,0,value) + '</span>'
+					: ''
+				).join(' '),
+
+			askReadReceipt: () =>
+				(MessagelistUserStore.isDraftFolder() || MessagelistUserStore.isSentFolder())
+				&& currentMessage()?.readReceipt()
+				&& currentMessage()?.flags().includes('$mdnsent'),
+
+			listAttachments: () => currentMessage()?.attachments()
+				.filter(item => SettingsUserStore.listInlineAttachments() || !item.isLinked()),
+			hasAttachments: () => this.listAttachments().length,
+
 			canBeRepliedOrForwarded: () => !MessagelistUserStore.isDraftFolder() && this.messageVisibility(),
 
 			viewFromDkimVisibility: () => 'none' !== this.viewFromDkimData()[0],
@@ -181,6 +196,8 @@ export class MailMessageView extends AbstractViewRight {
 				return '';
 			},
 
+			firstUnsubsribeLink: () => currentMessage()?.unsubsribeLinks()[0] || '',
+
 			pgpSupported: () => currentMessage() && PgpUserStore.isSupported(),
 
 			messageListOrViewLoading:
@@ -195,11 +212,11 @@ export class MailMessageView extends AbstractViewRight {
 					}
 					this.viewHash = message.hash;
 					// TODO: make first param a user setting #683
-					this.viewFromShort(message.fromToLine(false, true));
+					this.viewFromShort(message.from.toString(false, true));
 					let dkim = 1 === arrayLength(message.from) && message.dkim
 						&& message.dkim.find(dkim => message.from[0].email.includes(dkim[1]));
 					this.viewFromDkimData(dkim ? [dkim[0], dkim[2]] : ['none', '']);
-					this.viewToShort(message.toToLine(true, true));
+					this.viewToShort(message.to.toString(true, true));
 				} else {
 					MessagelistUserStore.selectedMessage(null);
 
@@ -451,13 +468,6 @@ export class MailMessageView extends AbstractViewRight {
 			}
 			return false;
 		});
-	}
-
-	/**
-	 * @returns {boolean}
-	 */
-	isDraftOrSentFolder() {
-		return MessagelistUserStore.isDraftFolder() || MessagelistUserStore.isSentFolder();
 	}
 
 	scrollMessageToTop() {

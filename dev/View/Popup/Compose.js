@@ -900,7 +900,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			switch (msgComposeType) {
 				case ComposeType.Reply:
 				case ComposeType.ReplyAll:
-					sFrom = message.fromToLine(false, true);
+					sFrom = message.from.toString(false, true);
 					sText = '<br><br><p>' + i18n('COMPOSE/REPLY_MESSAGE_TITLE', { DATETIME: sDate, EMAIL: sFrom })
 						+ ':</p><blockquote>'
 						+ sText.trim()
@@ -908,9 +908,9 @@ export class ComposePopupView extends AbstractViewPopup {
 					break;
 
 				case ComposeType.Forward:
-					sFrom = message.fromToLine(false, true);
-					sTo = message.toToLine(false, true);
-					sCc = message.ccToLine(false, true);
+					sFrom = message.from.toString(false, true);
+					sTo = message.to.toString(false, true);
+					sCc = message.cc.toString(false, true);
 					sText = '<br><br><p>' + i18n('COMPOSE/FORWARD_MESSAGE_TOP_TITLE') + '</p><div>'
 						+ i18n('GLOBAL/FROM') + ': ' + sFrom
 						+ '<br>'
