@@ -11,7 +11,7 @@
 			<li>
 				<a data-bind="dropmessages: $data,
 					css: { 'selected': selected, 'selectable': selectable, 'anim-action-class': actionBlink, 'is-flagged': isFlagged },
-					attr: { 'data-unread': printableUnreadCount }">
+					attr: { 'data-unread': unreadCount }">
 					<!-- ko text: localName --><!-- /ko -->
 					<!-- ko if: isInbox -->
 					<span class="flag-icon fontastic"></span>

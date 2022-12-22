@@ -111,7 +111,7 @@ export class MailFolderList extends AbstractViewLeft {
 						let search = '';
 						if (event.target.matches('.flag-icon') && !folder.isFlagged()) {
 							search = 'flagged';
-						} else if (folder.printableUnreadCount() && event.clientX > el.getBoundingClientRect().right - 25) {
+						} else if (folder.unreadCount() && event.clientX > el.getBoundingClientRect().right - 25) {
 							search = 'unseen';
 						}
 						hasher.setHash(mailBox(folder.fullNameHash, 1, search));

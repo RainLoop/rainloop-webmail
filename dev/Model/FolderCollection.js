@@ -447,7 +447,7 @@ export class FolderModel extends AbstractModel {
 					return folder.hasVisibleSubfolders() | visible;
 				},
 
-				printableUnreadCount: () => folder.unreadEmails() || null,
+				unreadCount: () => folder.unreadEmails() || null,
 /*
 				{
 					// TODO: make this optional in Settings
@@ -482,11 +482,11 @@ export class FolderModel extends AbstractModel {
 
 				hasSubscribedUnreadMessagesSubfolders: () =>
 					!!folder.subFolders().find(
-						folder => folder.printableUnreadCount() | folder.hasSubscribedUnreadMessagesSubfolders()
+						folder => folder.unreadCount() | folder.hasSubscribedUnreadMessagesSubfolders()
 					)
 /*
 					!!folder.subFolders().filter(
-						folder => folder.printableUnreadCount() | folder.hasSubscribedUnreadMessagesSubfolders()
+						folder => folder.unreadCount() | folder.hasSubscribedUnreadMessagesSubfolders()
 					).length
 */
 //				,href: () => folder.canBeSelected() && mailBox(folder.fullNameHash)
