@@ -569,6 +569,7 @@ abstract class Utils
 				if ($path->isDir()) {
 					\rmdir($path);
 				} else {
+					\is_callable('opcache_invalidate') && \opcache_invalidate($path, true);
 					\unlink($path);
 				}
 			}
