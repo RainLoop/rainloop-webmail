@@ -1110,9 +1110,15 @@ class Actions
 		return $oAccount;
 	}
 
-	protected function getDecodedRawKeyValue(string $sRawKey): array
+	protected function encodeRawKey(?Model\Account $oAccount, array $aValues): string
 	{
-		return empty($sRawKey) ? array() : Utils::DecodeKeyValuesQ($sRawKey);
+		return \SnappyMail\Crypt::EncryptUrlSafe($aValues, \sha1(APP_SALT . ($oAccount ? $oAccount->Hash() : '')));
+	}
+
+	protected function decodeRawKey(?Model\Account $oAccount, string $sRawKey): array
+	{
+		return empty($sRawKey) ? []
+			: (\SnappyMail\Crypt::DecryptUrlSafe($sRawKey, \sha1(APP_SALT . ($oAccount ? $oAccount->Hash() : ''))) ?: []);
 	}
 
 	public function StaticCache(): string

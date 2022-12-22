@@ -130,8 +130,7 @@ trait Response
 
 			$sSubject = $mResult['subject'];
 			$mResult['Hash'] = \md5($mResult['Folder'].$mResult['Uid']);
-			$mResult['RequestHash'] = Utils::EncodeKeyValuesQ(array(
-				'Account' => $oAccount->Hash(),
+			$mResult['RequestHash'] = $this->encodeRawKey($oAccount, array(
 				'Folder' => $mResult['Folder'],
 				'Uid' => $mResult['Uid'],
 				'MimeType' => 'message/rfc822',
@@ -180,8 +179,7 @@ trait Response
 		if ($mResponse instanceof \MailSo\Mail\Attachment) {
 			$mResult = $mResponse->jsonSerialize();
 			$mResult['IsThumbnail'] = $this->GetCapa(Capa::ATTACHMENT_THUMBNAILS) && $this->isFileHasThumbnail($mResult['FileName']);
-			$mResult['Download'] = Utils::EncodeKeyValuesQ(array(
-				'Account' => $this->getAccountFromToken()->Hash(),
+			$mResult['Download'] = $this->encodeRawKey($this->getAccountFromToken(), array(
 				'Folder' => $mResult['Folder'],
 				'Uid' => $mResult['Uid'],
 				'MimeIndex' => $mResult['MimeIndex'],

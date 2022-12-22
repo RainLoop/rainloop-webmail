@@ -9,10 +9,12 @@ trait Raw
 	 */
 	public function RawViewAsPlain() : bool
 	{
-		$this->initMailClientConnection();
+		$oAccount = $this->initMailClientConnection();
 
-		$sRawKey = (string) $this->GetActionParam('RawKey', '');
-		$aValues = $this->getDecodedRawKeyValue($sRawKey);
+		$aValues = $this->decodeRawKey(
+			$oAccount,
+			(string) $this->GetActionParam('RawKey', '')
+		);
 
 		$sFolder = isset($aValues['Folder']) ? (string) $aValues['Folder'] : '';
 		$iUid = isset($aValues['Uid']) ? (int) $aValues['Uid'] : 0;
@@ -113,7 +115,8 @@ trait Raw
 	{
 		$sRawKey = (string) $this->GetActionParam('RawKey', '');
 
-		$aValues = $this->getDecodedRawKeyValue($sRawKey);
+		$oAccount = $this->getAccountFromToken();
+		$aValues = $this->decodeRawKey($oAccount, $sRawKey);
 
 		$sRange = \MailSo\Base\Http::GetHeader('Range');
 
@@ -140,8 +143,6 @@ trait Raw
 
 		if (!empty($sFileHashIn)) {
 			$this->verifyCacheByKey($sRawKey);
-
-			$oAccount = $this->getAccountFromToken();
 
 			// https://github.com/the-djmaze/snappymail/issues/144
 			if ('.pdf' === \substr($sFileNameIn,-4)) {
@@ -175,7 +176,7 @@ trait Raw
 			$this->verifyCacheByKey($sRawKey);
 		}
 
-		$oAccount = $this->initMailClientConnection();
+		$this->initMailClientConnection();
 
 		$self = $this;
 		return $this->MailClient()->MessageMimeStream(
