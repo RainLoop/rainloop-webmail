@@ -13,33 +13,6 @@
 		LT   : {timeStyle: 'short'},
 		LLL  : {dateStyle: 'long', timeStyle: 'short'}
 	},
-	phpFormats = {
-		// Day
-		d: {day: '2-digit'},
-		D: {weekday: 'short'},
-		j: {day: 'numeric'},
-		l: {weekday: 'long'},
-		z: {},
-		// Month
-		F: {month: 'long'},
-		m: {month: '2-digit'},
-		M: {month: 'short'},
-		n: {month: 'numeric'},
-		Y: {year: 'numeric'},
-		y: {year: '2-digit'},
-		// Time
-		A: {hour12: true},
-//		A: {hourCycle: 'h12'}, // h11, h12, h23, h24
-		g: {hour: 'numeric', hourCycle:'h11'},
-		G: {hour: 'numeric', hourCycle:'h23'},
-		h: {hour: '2-digit', hourCycle:'h11'},
-		H: {hour: '2-digit', hourCycle:'h23'},
-		i: {minute: '2-digit'},
-		s: {second: '2-digit'},
-		u: {fractionalSecondDigits: 6},
-		v: {fractionalSecondDigits: 3},
-		Z: {timeZone: 'UTC'}
-	},
 	pad2 = v => 10 > v ? '0' + v : v;
 
 	// Format momentjs/PHP date formats to Intl.DateTimeFormat
@@ -53,14 +26,8 @@
 			if (formats[options]) {
 				options = formats[options];
 			} else {
-				let o, s = options + (UTC?'Z':''), i = s.length;
-				console.log('Date.format('+s+')');
+				console.log('Date.format('+options+')');
 				options = {};
-				while (i--) {
-					o = phpFormats[s[i]];
-					o && Object.entries(o).forEach(([k,v])=>options[k]=v);
-				}
-				formats[s] = options;
 			}
 		}
 		if (hourCycle) {
