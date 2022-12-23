@@ -226,8 +226,8 @@
 
 		if ('MailMessageList' === e.detail.viewModelTemplateID) {
 			isMobile = e.detail.isMobile;
-			document.getElementById('MailMessageList').content.querySelector('.messageCheckbox')
-				.append(Element.fromHTML(`<img class="fromPic" data-bind="fromPic:$data" loading="lazy">`));
+			document.getElementById('MailMessageList').content.querySelectorAll('.messageCheckbox')
+				.forEach(el => el.append(Element.fromHTML(`<img class="fromPic" data-bind="fromPic:$data" loading="lazy">`)));
 		}
 	});
 
