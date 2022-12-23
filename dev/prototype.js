@@ -46,7 +46,7 @@
 	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat
 	Date.prototype.format = function (options, UTC, hourCycle) {
 		if (typeof options == 'string') {
-			if ('Y-m-d\\TH:i:s' == options) {
+			if ('ISO8601' == options) {
 				return this.getFullYear() + '-' + pad2(1 + this.getMonth()) + '-' + pad2(this.getDate())
 					+ 'T' + pad2(this.getHours()) + ':' + pad2(this.getMinutes()) + ':' + pad2(this.getSeconds());
 			}

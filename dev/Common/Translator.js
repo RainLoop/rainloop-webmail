@@ -134,7 +134,7 @@ export const
 	timeToNode = (element, time) => {
 		try {
 			if (time) {
-				element.dateTime = (new Date(time * 1000)).format('Y-m-d\\TH:i:s');
+				element.dateTime = (new Date(time * 1000)).format('ISO8601');
 			} else {
 				time = Date.parse(element.dateTime) / 1000;
 			}
