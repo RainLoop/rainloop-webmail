@@ -415,7 +415,8 @@
 		"CHROME_NOTIFICATION_DESC": "새 메시지 알림 팝업 사용",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(브라우저에 의해 차단됨)",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
-		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_PER_DAY": "List messages per day"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "수신인을 주소록에 자동으로 추가",

@@ -415,7 +415,8 @@
 		"CHROME_NOTIFICATION_DESC": "Показывать уведомления о новых сообщениях в всплывающих подсказках",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Блокировано браузером)",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
-		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_PER_DAY": "List messages per day"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Автоматически добавлять получателей писем в адресную книгу",

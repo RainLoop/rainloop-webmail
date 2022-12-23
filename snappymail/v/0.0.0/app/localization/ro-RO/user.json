@@ -415,7 +415,8 @@
 		"CHROME_NOTIFICATION_DESC": "Afișați notificări desktop pentru mesaje noi",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(browser-ul blocat)",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
-		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_PER_DAY": "List messages per day"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Adaugă automat destinatarii la agenda de scrisori",

@@ -415,7 +415,8 @@
 		"CHROME_NOTIFICATION_DESC": "Mostrar notificación de nuevos mensajes en Popup",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Bloqueado por el explorador)",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
-		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_PER_DAY": "List messages per day"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Agregar automáticamente destinatarios a la libreta de direcciones",

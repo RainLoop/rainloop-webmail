@@ -415,7 +415,8 @@
 		"CHROME_NOTIFICATION_DESC": "Hiện thị thông báo nẩy lên nhanh khi có thư mới",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Đang bị chặn bởi trình duyệt web)",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
-		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_PER_DAY": "List messages per day"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Tự động thêm người nhận thư vào sổ địa chỉ của bạn",

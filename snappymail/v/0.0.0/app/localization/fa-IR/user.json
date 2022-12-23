@@ -415,7 +415,8 @@
 		"CHROME_NOTIFICATION_DESC": "پنجره اعلان دریافت پیام جدید را نمایش بده",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(مسدود شده توسط مرورگر)",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
-		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_PER_DAY": "List messages per day"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "اطلاعات تماس گیرندگان را بصورت خودکار در آدرس‌بوک ذخیره کن",

@@ -94,6 +94,7 @@ export class MailMessageList extends AbstractViewRight {
 		this.popupVisibility = arePopupsVisible;
 
 		this.useCheckboxesInList = SettingsUserStore.useCheckboxesInList;
+		this.listPerDay = SettingsUserStore.listPerDay;
 
 		this.userUsageProc = FolderUserStore.quotaPercentage;
 

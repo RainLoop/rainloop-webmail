@@ -415,7 +415,8 @@
 		"CHROME_NOTIFICATION_DESC": "Vis ny meddelelses notifikations popup",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Blokeret af browseren)",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
-		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_PER_DAY": "List messages per day"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Tilføj automatisk modtager til adressebog",

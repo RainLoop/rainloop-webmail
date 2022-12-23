@@ -60,6 +60,13 @@
 					value: useCheckboxesInList
 				}
 			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_GENERAL/LIST_MESSAGES_PER_DAY',
+					value: listPerDay
+				}
+			}"></div>
 			<div data-bind="visible: threadsAllowed, component: {
 				name: 'Checkbox',
 				params: {

@@ -415,7 +415,8 @@
 		"CHROME_NOTIFICATION_DESC": "新しいメッセージを受信したらポップアップで知らせる",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(ブラウザでブロックされています)",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
-		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_PER_DAY": "List messages per day"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "返信したアドレスをアドレス帳へ自動的に追加する",

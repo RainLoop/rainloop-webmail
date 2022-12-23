@@ -415,7 +415,8 @@
 		"CHROME_NOTIFICATION_DESC": "Zobrazovat upozornění na nové zprávy",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Zablokované prohlížečem)",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
-		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_PER_DAY": "List messages per day"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Automaticky přidávat adresy příjemců do Adresáře",

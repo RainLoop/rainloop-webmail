@@ -44,7 +44,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		['layout', 'messageReadDelay', 'messagesPerPage',
 		 'editorDefaultType', 'requestReadReceipt', 'requestDsn', 'pgpSign', 'pgpEncrypt',
 		 'viewHTML', 'showImages', 'removeColors', 'hideDeleted', 'listInlineAttachments', 'simpleAttachmentsList',
-		 'useCheckboxesInList', 'useThreads', 'replySameFolder', 'msgDefaultAction', 'allowSpellcheck'
+		 'useCheckboxesInList', 'listPerDay', 'useThreads', 'replySameFolder', 'msgDefaultAction', 'allowSpellcheck'
 		].forEach(name => this[name] = SettingsUserStore[name]);
 
 		this.allowLanguagesOnSettings = !!SettingsGet('AllowLanguagesOnSettings');
@@ -99,7 +99,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.addSetting('Layout');
 
 		this.addSettings(['ViewHTML', 'ShowImages', 'HideDeleted', 'ListInlineAttachments', 'simpleAttachmentsList',
-			'UseCheckboxesInList', 'ReplySameFolder',
+			'UseCheckboxesInList', 'listPerDay', 'ReplySameFolder',
 			'requestReadReceipt', 'requestDsn', 'pgpSign', 'pgpEncrypt', 'allowSpellcheck',
 			'DesktopNotifications', 'SoundNotification']);
 

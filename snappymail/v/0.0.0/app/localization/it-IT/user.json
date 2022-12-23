@@ -415,7 +415,8 @@
 		"CHROME_NOTIFICATION_DESC": "Mostra le notifiche in caso di nuovi messaggi",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Bloccate dal browser)",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
-		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list"
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_PER_DAY": "List messages per day"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Aggiungi automaticamente le persone che ti inviano mail alla rubrica",
