@@ -696,7 +696,7 @@ export class ComposePopupView extends AbstractViewPopup {
 					.replace(/\r/g, '')
 					.replace(/\s{1,2}?{{FROM}}/g, '')
 					.replace(/\s{1,2}?{{FROM-FULL}}/g, '')
-					.replace(/{{DATE}}/g, new Date().format('LLLL'))
+					.replace(/{{DATE}}/g, new Date().format({dateStyle: 'full', timeStyle: 'short'}))
 					.replace(/{{TIME}}/g, new Date().format('LT'))
 					.replace(/{{MOMENT:[^}]+}}/g, '');
 				signature.length && editor.setSignature(signature, isHtml, !!identity.signatureInsertBefore());

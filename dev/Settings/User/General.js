@@ -111,7 +111,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		addSubscribablesTo(this, {
 			language: value => {
 				this.languageTrigger(SaveSettingStatus.Saving);
-				translatorReload(false, value)
+				translatorReload(value)
 					.then(fReloadLanguageHelper(SaveSettingStatus.Success), fReloadLanguageHelper(SaveSettingStatus.Failed))
 					.then(() => Remote.saveSetting('Language', value));
 			},

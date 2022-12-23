@@ -91,7 +91,7 @@ export class AdminSettingsGeneral extends AbstractViewSettings {
 		addSubscribablesTo(this, {
 			languageAdmin: value => {
 				this.languageAdminTrigger(SaveSettingStatus.Saving);
-				translatorReload(true, value)
+				translatorReload(value, 1)
 					.then(fReloadLanguageHelper(SaveSettingStatus.Success), fReloadLanguageHelper(SaveSettingStatus.Failed))
 					.then(() => Remote.saveSetting('LanguageAdmin', value));
 			},

@@ -12,7 +12,6 @@ const
 	init = () => {
 		if (rl.I18N) {
 			I18N_DATA = rl.I18N;
-			Date.defineRelativeTimeFormat(rl.relativeTime || {});
 			rl.I18N = null;
 			return 1;
 		}
@@ -23,6 +22,31 @@ const
 	getNotificationMessage = code => {
 		let key = getKeyByValue(Notification, code);
 		return key ? I18N_DATA.NOTIFICATIONS[i18nKey(key).replace('_NOTIFICATION', '_ERROR')] : '';
+	},
+
+	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
+	// see /snappymail/v/0.0.0/app/localization/relativetimeformat/
+	fromNow = date => {
+		let unit = 'second',
+			value = Math.round((date.getTime() - Date.now()) / 1000),
+			t = [[60,'minute'],[3600,'hour'],[86400,'day'],[2628000,'month'],[31536000,'year']],
+			i = 5,
+			abs = Math.abs(value);
+		while (i--) {
+			if (t[i][0] <= abs) {
+				value = Math.round(value / t[i][0]);
+				unit = t[i][1];
+				break;
+			}
+		}
+		if (Intl.RelativeTimeFormat) {
+			let rtf = new Intl.RelativeTimeFormat(doc.documentElement.lang);
+			return rtf.format(value, unit);
+		}
+		abs = Math.abs(value);
+		let rtf = rl.relativeTime.long[unit][0 > value ? 'past' : 'future'],
+			plural = rl.relativeTime.plural(abs);
+		return (rtf[plural] || rtf).replace('{0}', abs);
 	};
 
 export const
@@ -81,19 +105,21 @@ export const
 			const m = new Date(time), h = LanguageStore.hourCycle();
 			switch (formatStr) {
 				case 'FROMNOW':
-					return m.fromNow();
+					return fromNow(m);
 				case 'SHORT': {
-					if (4 >= (now - time) / 3600000)
-						return m.fromNow();
-					const mt = m.getTime(), date = new Date,
+					// 4 hours
+					if (14400000 >= now - time)
+						return fromNow(m);
+					const date = new Date,
 						dt = date.setHours(0,0,0,0);
-					if (mt > dt)
-						return i18n('MESSAGE_LIST/TODAY_AT', {TIME: m.format('LT',0,h)});
-					if (mt > dt - 86400000)
-						return i18n('MESSAGE_LIST/YESTERDAY_AT', {TIME: m.format('LT',0,h)});
-					if (date.getFullYear() === m.getFullYear())
-						return m.format('d M');
-					return m.format('LL',0,h);
+					return (time > dt - 86400000)
+						? i18n(
+							time > dt ? 'MESSAGE_LIST/TODAY_AT' : 'MESSAGE_LIST/YESTERDAY_AT',
+							{TIME: m.format('LT',0,h)}
+						)
+						: m.format(
+							date.getFullYear() === m.getFullYear() ? {day: '2-digit', month: 'short'} : {dateStyle: 'medium'}
+							, 0, h);
 				}
 				case 'FULL':
 					return m.format('LLL',0,h);
@@ -116,10 +142,9 @@ export const
 			let key = element.dataset.momentFormat;
 			if (key) {
 				element.textContent = timestampToString(time, key);
-			}
-
-			if ((key = element.dataset.momentFormatTitle)) {
-				element.title = timestampToString(time, key);
+				if ('FULL' !== key && 'FROMNOW' !== key) {
+					element.title = timestampToString(time, 'FULL');
+				}
 			}
 		} catch (e) {
 			// prevent knockout crashes
@@ -127,9 +152,7 @@ export const
 		}
 	},
 
-	reloadTime = () => setTimeout(() =>
-			doc.querySelectorAll('time').forEach(element => timeToNode(element))
-			, 1),
+	reloadTime = () => doc.querySelectorAll('time').forEach(element => timeToNode(element)),
 
 	/**
 	 * @param {Function} startCallback
@@ -171,15 +194,15 @@ export const
 	 * @param {boolean} admin
 	 * @param {string} language
 	 */
-	translatorReload = (admin, language) =>
+	translatorReload = (language, admin) =>
 		new Promise((resolve, reject) => {
 			const script = createElement('script');
 			script.onload = () => {
 				// reload the data
 				if (init()) {
 					i18nToNodes(doc);
-					admin || reloadTime();
 					translateTrigger(!translateTrigger());
+//					admin || reloadTime();
 				}
 				script.remove();
 				resolve();

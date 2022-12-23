@@ -149,17 +149,18 @@ export class MailMessageList extends AbstractViewRight {
 
 			listByDay: () => {
 				let list = [], current, today = Ymd(new Date()),
-					rtf = new Intl.RelativeTimeFormat(doc.documentElement.lang, { numeric: "auto" });
+					rtf = Intl.RelativeTimeFormat
+						? new Intl.RelativeTimeFormat(doc.documentElement.lang, { numeric: "auto" }) : 0;
 				MessagelistUserStore.forEach(msg => {
 					let date = (new Date(msg.dateTimeStampInUTC() * 1000)),
 						ymd = Ymd(date);
 					if (!current || ymd != current.ymd) {
-						if (today == ymd) {
+						if (rtf && today == ymd) {
 							date = rtf.format(0, 'day');
-						} else if (today - 1 == ymd) {
+						} else if (rtf && today - 1 == ymd) {
 							date = rtf.format(-1, 'day');
 //						} else if (today - 7 < ymd) {
-//							date = date.format('l');
+//							date = date.format({weekday: 'long'});
 //							date = date.format({dateStyle: 'full'},0,LanguageStore.hourCycle());
 						} else {
 //							date = date.format({dateStyle: 'medium'},0,LanguageStore.hourCycle());

@@ -69,7 +69,7 @@ export class LoginUserView extends AbstractViewLogin {
 
 			language: value => {
 				this.langRequest(true);
-				translatorReload(false, value).then(
+				translatorReload(value).then(
 					() => {
 						this.langRequest(false);
 						this.bSendLanguage = true;
