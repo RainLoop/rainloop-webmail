@@ -17,7 +17,7 @@
 		<menu class="dropdown-menu right-edge" tabindex="-1" role="menu" aria-labelledby="top-system-dropdown-id">
 
 			<!-- ko foreach: accounts -->
-			<li role="presentation" data-bind="css:{'show-mobile':1==$root.accounts.length}">
+			<li role="presentation" data-bind="css:{'show-mobile':1==$root.accounts().length}">
 				<a class="email-title" href="#" data-bind="click: $root.accountClick, text: name || email,
 					attr: {title: email, 'data-unread': unreadEmails, 'data-icon': $root.accountEmail() === email ? '✔' : '👤'}"></a>
 			</li>
