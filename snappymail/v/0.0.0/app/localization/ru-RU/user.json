@@ -357,14 +357,14 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Персональные",
-		"LABEL_GENERAL_NAME": "Основные",
-		"LABEL_CONTACTS_NAME": "Контакты",
-		"LABEL_FOLDERS_NAME": "Папки",
-		"LABEL_ACCOUNTS_NAME": "Аккаунты",
-		"LABEL_FILTERS_NAME": "Фильтры",
-		"LABEL_SECURITY_NAME": "Безопасность",
-		"LABEL_THEMES_NAME": "Темы"
+		"PERSONAL": "Personal",
+		"GENERAL": "General",
+		"CONTACTS": "Contacts",
+		"FOLDERS": "Folders",
+		"ACCOUNTS": "Accounts",
+		"FILTERS": "Filters",
+		"SECURITY": "Security",
+		"THEMES": "Themes"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Фильтры",
@@ -380,9 +380,7 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Безопасность",
 		"LABEL_AUTOLOGOUT": "Автоматический выход",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Никогда",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% минут(ы)",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% час(ы)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Никогда"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Основные Настройки",

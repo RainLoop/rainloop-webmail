@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Admin Panel"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Všeobecné",
-		"LABEL_LOGIN_NAME": "Používateľské meno",
-		"LABEL_BRANDING_NAME": "Branding",
-		"LABEL_CONTACTS_NAME": "Kontakty",
-		"LABEL_DOMAINS_NAME": "Domény",
-		"LABEL_SECURITY_NAME": "Zabezpečenie",
-		"LABEL_PACKAGES_NAME": "Balíčky",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "O programe"
+		"GENERAL": "Všeobecné",
+		"LOGIN": "Používateľské meno",
+		"BRANDING": "Branding",
+		"CONTACTS": "Kontakty",
+		"DOMAINS": "Domény",
+		"SECURITY": "Zabezpečenie",
+		"PACKAGES": "Balíčky",
+		"CONFIG": "Config",
+		"ABOUT": "O programe"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Rozhranie",

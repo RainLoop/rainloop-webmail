@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Adminisztrációs felület"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Általános",
-		"LABEL_LOGIN_NAME": "Belépés",
-		"LABEL_BRANDING_NAME": "Arculat",
-		"LABEL_CONTACTS_NAME": "Névjegyek",
-		"LABEL_DOMAINS_NAME": "Domainek",
-		"LABEL_SECURITY_NAME": "Biztonság",
-		"LABEL_PACKAGES_NAME": "Bővítmények",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "Névjegy"
+		"GENERAL": "Általános",
+		"LOGIN": "Belépés",
+		"BRANDING": "Arculat",
+		"CONTACTS": "Névjegyek",
+		"DOMAINS": "Domainek",
+		"SECURITY": "Biztonság",
+		"PACKAGES": "Bővítmények",
+		"CONFIG": "Config",
+		"ABOUT": "Névjegy"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Felület",

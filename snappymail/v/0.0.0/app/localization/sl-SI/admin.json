@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Administracijska plošča"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Splošno",
-		"LABEL_LOGIN_NAME": "Prijava",
-		"LABEL_BRANDING_NAME": "Prilagoditev",
-		"LABEL_CONTACTS_NAME": "Stiki",
-		"LABEL_DOMAINS_NAME": "Domene",
-		"LABEL_SECURITY_NAME": "Varnost",
-		"LABEL_PACKAGES_NAME": "Paketi",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "Več o"
+		"GENERAL": "Splošno",
+		"LOGIN": "Prijava",
+		"BRANDING": "Prilagoditev",
+		"CONTACTS": "Stiki",
+		"DOMAINS": "Domene",
+		"SECURITY": "Varnost",
+		"PACKAGES": "Paketi",
+		"CONFIG": "Config",
+		"ABOUT": "Več o"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Vmesnik",

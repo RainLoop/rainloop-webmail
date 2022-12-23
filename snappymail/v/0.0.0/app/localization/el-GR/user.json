@@ -357,14 +357,14 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Προσωπικό",
-		"LABEL_GENERAL_NAME": "Γενικό",
-		"LABEL_CONTACTS_NAME": "Επαφές",
-		"LABEL_FOLDERS_NAME": "Φάκελοι",
-		"LABEL_ACCOUNTS_NAME": "Λογαρισμοί",
-		"LABEL_FILTERS_NAME": "Φίλτρα",
-		"LABEL_SECURITY_NAME": "Ασφάλεια",
-		"LABEL_THEMES_NAME": "Θέματα"
+		"PERSONAL": "Personal",
+		"GENERAL": "General",
+		"CONTACTS": "Contacts",
+		"FOLDERS": "Folders",
+		"ACCOUNTS": "Accounts",
+		"FILTERS": "Filters",
+		"SECURITY": "Security",
+		"THEMES": "Themes"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Φίλτρα",
@@ -380,9 +380,7 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Ασφάλεια",
 		"LABEL_AUTOLOGOUT": "Αυτόματη αποσύνδεση",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Ποτέ",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% λεπτό(α)",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% hour(s)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Ποτέ"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Γενικό",

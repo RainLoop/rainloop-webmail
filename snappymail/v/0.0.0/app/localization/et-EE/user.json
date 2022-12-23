@@ -357,14 +357,14 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Isiklik",
-		"LABEL_GENERAL_NAME": "Üldine",
-		"LABEL_CONTACTS_NAME": "Kontaktid",
-		"LABEL_FOLDERS_NAME": "Kaustad",
-		"LABEL_ACCOUNTS_NAME": "Kontod",
-		"LABEL_FILTERS_NAME": "Filtrid",
-		"LABEL_SECURITY_NAME": "Turvalisus",
-		"LABEL_THEMES_NAME": "Teemad"
+		"PERSONAL": "Personal",
+		"GENERAL": "General",
+		"CONTACTS": "Contacts",
+		"FOLDERS": "Folders",
+		"ACCOUNTS": "Accounts",
+		"FILTERS": "Filters",
+		"SECURITY": "Security",
+		"THEMES": "Themes"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Filtrid",
@@ -380,9 +380,7 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Turvalisus",
 		"LABEL_AUTOLOGOUT": "Automaatne välja logimine",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Mitte kunagi",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minutit",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% tund(i)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Mitte kunagi"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Üldine",

@@ -357,14 +357,14 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Персональні",
-		"LABEL_GENERAL_NAME": "Основні",
-		"LABEL_CONTACTS_NAME": "Контакти",
-		"LABEL_FOLDERS_NAME": "Теки",
-		"LABEL_ACCOUNTS_NAME": "Акаунти",
-		"LABEL_FILTERS_NAME": "Фильтры",
-		"LABEL_SECURITY_NAME": "Безпека",
-		"LABEL_THEMES_NAME": "Теми"
+		"PERSONAL": "Personal",
+		"GENERAL": "General",
+		"CONTACTS": "Contacts",
+		"FOLDERS": "Folders",
+		"ACCOUNTS": "Accounts",
+		"FILTERS": "Filters",
+		"SECURITY": "Security",
+		"THEMES": "Themes"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Filters",
@@ -380,9 +380,7 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Безпека",
 		"LABEL_AUTOLOGOUT": "Автовихід",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Ніколи",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minute(s)",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% hour(s)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Ніколи"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Основні налаштування",

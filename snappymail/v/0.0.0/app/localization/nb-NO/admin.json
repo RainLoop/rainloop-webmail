@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Admin-panel"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Generelt",
-		"LABEL_LOGIN_NAME": "Brukernavn",
-		"LABEL_BRANDING_NAME": "Utforming",
-		"LABEL_CONTACTS_NAME": "Kontakter",
-		"LABEL_DOMAINS_NAME": "Domener",
-		"LABEL_SECURITY_NAME": "Sikkerhet",
-		"LABEL_PACKAGES_NAME": "Pakker",
-		"LABEL_CONFIG_NAME": "Oppsett",
-		"LABEL_ABOUT_NAME": "Om"
+		"GENERAL": "Generelt",
+		"LOGIN": "Brukernavn",
+		"BRANDING": "Utforming",
+		"CONTACTS": "Kontakter",
+		"DOMAINS": "Domener",
+		"SECURITY": "Sikkerhet",
+		"PACKAGES": "Pakker",
+		"CONFIG": "Oppsett",
+		"ABOUT": "Om"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Grensesnitt",

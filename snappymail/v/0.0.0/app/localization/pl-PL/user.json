@@ -357,14 +357,14 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Osobiste",
-		"LABEL_GENERAL_NAME": "Ogólne",
-		"LABEL_CONTACTS_NAME": "Kontakty",
-		"LABEL_FOLDERS_NAME": "Foldery",
-		"LABEL_ACCOUNTS_NAME": "Konta",
-		"LABEL_FILTERS_NAME": "Filtry",
-		"LABEL_SECURITY_NAME": "Bezpieczeństwo",
-		"LABEL_THEMES_NAME": "Motywy"
+		"PERSONAL": "Personal",
+		"GENERAL": "General",
+		"CONTACTS": "Contacts",
+		"FOLDERS": "Folders",
+		"ACCOUNTS": "Accounts",
+		"FILTERS": "Filters",
+		"SECURITY": "Security",
+		"THEMES": "Themes"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Filtry",
@@ -380,9 +380,7 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Bezpieczeństwo",
 		"LABEL_AUTOLOGOUT": "Automatyczne wylogowanie",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Nidgy",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minut(a)",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% godzina(-y)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Nidgy"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Ogólne",

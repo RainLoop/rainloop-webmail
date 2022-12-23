@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Panneau d'Administration"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Général",
-		"LABEL_LOGIN_NAME": "Identifiant",
-		"LABEL_BRANDING_NAME": "Logo & Marque",
-		"LABEL_CONTACTS_NAME": "Contacts",
-		"LABEL_DOMAINS_NAME": "Domaines",
-		"LABEL_SECURITY_NAME": "Sécurité",
-		"LABEL_PACKAGES_NAME": "Extensions",
-		"LABEL_CONFIG_NAME": "Configuration",
-		"LABEL_ABOUT_NAME": "À propos"
+		"GENERAL": "Général",
+		"LOGIN": "Identifiant",
+		"BRANDING": "Logo & Marque",
+		"CONTACTS": "Contacts",
+		"DOMAINS": "Domaines",
+		"SECURITY": "Sécurité",
+		"PACKAGES": "Extensions",
+		"CONFIG": "Configuration",
+		"ABOUT": "À propos"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Interface",

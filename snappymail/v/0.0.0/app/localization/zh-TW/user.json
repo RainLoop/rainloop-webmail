@@ -357,14 +357,14 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "個人",
-		"LABEL_GENERAL_NAME": "一般設置",
-		"LABEL_CONTACTS_NAME": "連絡人",
-		"LABEL_FOLDERS_NAME": "資料夾",
-		"LABEL_ACCOUNTS_NAME": "帳戶",
-		"LABEL_FILTERS_NAME": "Filters",
-		"LABEL_SECURITY_NAME": "安全",
-		"LABEL_THEMES_NAME": "主題"
+		"PERSONAL": "Personal",
+		"GENERAL": "General",
+		"CONTACTS": "Contacts",
+		"FOLDERS": "Folders",
+		"ACCOUNTS": "Accounts",
+		"FILTERS": "Filters",
+		"SECURITY": "Security",
+		"THEMES": "Themes"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Filters",
@@ -380,9 +380,7 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Security",
 		"LABEL_AUTOLOGOUT": "Auto Logout",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Never",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minute(s)",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% hour(s)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Never"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "一般設置",

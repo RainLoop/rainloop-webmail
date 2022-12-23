@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Panel administracyjny"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Ogólne",
-		"LABEL_LOGIN_NAME": "Login",
-		"LABEL_BRANDING_NAME": "Personalizacja",
-		"LABEL_CONTACTS_NAME": "Kontakty",
-		"LABEL_DOMAINS_NAME": "Domeny",
-		"LABEL_SECURITY_NAME": "Bezpieczeństwo",
-		"LABEL_PACKAGES_NAME": "Pakiety",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "O programie"
+		"GENERAL": "Ogólne",
+		"LOGIN": "Login",
+		"BRANDING": "Personalizacja",
+		"CONTACTS": "Kontakty",
+		"DOMAINS": "Domeny",
+		"SECURITY": "Bezpieczeństwo",
+		"PACKAGES": "Pakiety",
+		"CONFIG": "Config",
+		"ABOUT": "O programie"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Interfejs",

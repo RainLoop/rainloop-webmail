@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Administradore Panela"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Orokorra",
-		"LABEL_LOGIN_NAME": "Login",
-		"LABEL_BRANDING_NAME": "Marka",
-		"LABEL_CONTACTS_NAME": "Kontaktuak",
-		"LABEL_DOMAINS_NAME": "Domeinuak",
-		"LABEL_SECURITY_NAME": "Segurtasuna",
-		"LABEL_PACKAGES_NAME": "Gehigarriak",
-		"LABEL_CONFIG_NAME": "Ezarpenak",
-		"LABEL_ABOUT_NAME": "Honi buruz"
+		"GENERAL": "Orokorra",
+		"LOGIN": "Login",
+		"BRANDING": "Marka",
+		"CONTACTS": "Kontaktuak",
+		"DOMAINS": "Domeinuak",
+		"SECURITY": "Segurtasuna",
+		"PACKAGES": "Gehigarriak",
+		"CONFIG": "Ezarpenak",
+		"ABOUT": "Honi buruz"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Interfazea",

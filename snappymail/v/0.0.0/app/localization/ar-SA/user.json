@@ -357,14 +357,14 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "الشخصي",
-		"LABEL_GENERAL_NAME": "العام",
-		"LABEL_CONTACTS_NAME": "جهات الإتصال",
-		"LABEL_FOLDERS_NAME": "المجلدات",
-		"LABEL_ACCOUNTS_NAME": "الحسابات",
-		"LABEL_FILTERS_NAME": "عوامل التصفية",
-		"LABEL_SECURITY_NAME": "الأمان",
-		"LABEL_THEMES_NAME": "المظاهر العامة"
+		"PERSONAL": "Personal",
+		"GENERAL": "General",
+		"CONTACTS": "Contacts",
+		"FOLDERS": "Folders",
+		"ACCOUNTS": "Accounts",
+		"FILTERS": "Filters",
+		"SECURITY": "Security",
+		"THEMES": "Themes"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "عوامل التصفية",
@@ -380,9 +380,7 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "الأمان",
 		"LABEL_AUTOLOGOUT": "تسجيل الخروج التلقائي",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "أبداَ",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% دقيقة",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% hour(s)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "أبداَ"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "عام",

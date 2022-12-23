@@ -132,7 +132,7 @@ export class AbstractSettingsScreen extends AbstractScreen {
 export function settingsAddViewModel(SettingsViewModelClass, template, labelName, route, isDefault = false) {
 	let name = SettingsViewModelClass.name.replace(/(User|Admin)Settings/, '');
 	SettingsViewModelClass.__rlSettingsData = {
-		label: labelName || 'SETTINGS_LABELS/LABEL_' + name.toUpperCase() + '_NAME',
+		label: labelName || 'SETTINGS_LABELS/' + name.toUpperCase(),
 		route: route || name.toLowerCase(),
 		selected: ko.observable(false),
 		template: template || SettingsViewModelClass.name,

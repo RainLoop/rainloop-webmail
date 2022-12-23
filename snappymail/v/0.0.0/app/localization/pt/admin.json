@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Painel de Admin"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Geral",
-		"LABEL_LOGIN_NAME": "Entrada",
-		"LABEL_BRANDING_NAME": "Personalização",
-		"LABEL_CONTACTS_NAME": "Contactos",
-		"LABEL_DOMAINS_NAME": "Domínios",
-		"LABEL_SECURITY_NAME": "Segurança",
-		"LABEL_PACKAGES_NAME": "Extensões",
-		"LABEL_CONFIG_NAME": "Configuração",
-		"LABEL_ABOUT_NAME": "Acerca"
+		"GENERAL": "Geral",
+		"LOGIN": "Entrada",
+		"BRANDING": "Personalização",
+		"CONTACTS": "Contactos",
+		"DOMAINS": "Domínios",
+		"SECURITY": "Segurança",
+		"PACKAGES": "Extensões",
+		"CONFIG": "Configuração",
+		"ABOUT": "Acerca"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Interface",

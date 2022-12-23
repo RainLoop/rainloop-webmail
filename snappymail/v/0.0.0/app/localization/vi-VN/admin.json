@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Bảng quản trị"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Tổng quan",
-		"LABEL_LOGIN_NAME": "Đăng nhập",
-		"LABEL_BRANDING_NAME": "Thương hiệu",
-		"LABEL_CONTACTS_NAME": "Danh bạ",
-		"LABEL_DOMAINS_NAME": "Tên miền",
-		"LABEL_SECURITY_NAME": "An ninh",
-		"LABEL_PACKAGES_NAME": "Tiện ích mở rộng",
-		"LABEL_CONFIG_NAME": "Thiết lập",
-		"LABEL_ABOUT_NAME": "Giới thiệu"
+		"GENERAL": "Tổng quan",
+		"LOGIN": "Đăng nhập",
+		"BRANDING": "Thương hiệu",
+		"CONTACTS": "Danh bạ",
+		"DOMAINS": "Tên miền",
+		"SECURITY": "An ninh",
+		"PACKAGES": "Tiện ích mở rộng",
+		"CONFIG": "Thiết lập",
+		"ABOUT": "Giới thiệu"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Giao diện",

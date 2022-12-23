@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "管理画面"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "全般",
-		"LABEL_LOGIN_NAME": "ログイン",
-		"LABEL_BRANDING_NAME": "ブランド化",
-		"LABEL_CONTACTS_NAME": "連絡先",
-		"LABEL_DOMAINS_NAME": "ドメイン",
-		"LABEL_SECURITY_NAME": "セキュリティ",
-		"LABEL_PACKAGES_NAME": "パッケージ",
-		"LABEL_CONFIG_NAME": "詳細",
-		"LABEL_ABOUT_NAME": "SnappyMailについて"
+		"GENERAL": "全般",
+		"LOGIN": "ログイン",
+		"BRANDING": "ブランド化",
+		"CONTACTS": "連絡先",
+		"DOMAINS": "ドメイン",
+		"SECURITY": "セキュリティ",
+		"PACKAGES": "パッケージ",
+		"CONFIG": "詳細",
+		"ABOUT": "SnappyMailについて"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "インターフェース",

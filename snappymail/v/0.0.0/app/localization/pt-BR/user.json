@@ -357,14 +357,14 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Pessoal",
-		"LABEL_GENERAL_NAME": "Geral",
-		"LABEL_CONTACTS_NAME": "Contatos",
-		"LABEL_FOLDERS_NAME": "Pastas",
-		"LABEL_ACCOUNTS_NAME": "Contas",
-		"LABEL_FILTERS_NAME": "Filtros",
-		"LABEL_SECURITY_NAME": "Segurança",
-		"LABEL_THEMES_NAME": "Temas"
+		"PERSONAL": "Personal",
+		"GENERAL": "General",
+		"CONTACTS": "Contacts",
+		"FOLDERS": "Folders",
+		"ACCOUNTS": "Accounts",
+		"FILTERS": "Filters",
+		"SECURITY": "Security",
+		"THEMES": "Themes"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Filtros",
@@ -380,9 +380,7 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Segurança",
 		"LABEL_AUTOLOGOUT": "Deslogar Automaticamente",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Nunca",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minutos",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% hora(s)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Nunca"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Geral",

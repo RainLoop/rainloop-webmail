@@ -273,8 +273,8 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Ondertekenen",
 		"LABEL_ENCRYPT": "Versleutelen",
-		"BUTTON_DECRYPT": "Decrypt",
-		"BUTTON_VERIFY": "Verify",
+		"BUTTON_DECRYPT": "Ontsleutelen",
+		"BUTTON_VERIFY": "Verifiëren",
 		"SIGNED_MESSAGE": "OpenPGP ondertekend bericht",
 		"ENCRYPTED_MESSAGE": "OpenPGP versleuteld bericht",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
@@ -357,14 +357,14 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> BRONCODE"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Persoonlijk",
-		"LABEL_GENERAL_NAME": "Algemeen",
-		"LABEL_CONTACTS_NAME": "Contactpersonen",
-		"LABEL_FOLDERS_NAME": "Mappen",
-		"LABEL_ACCOUNTS_NAME": "Accounts",
-		"LABEL_FILTERS_NAME": "Filters",
-		"LABEL_SECURITY_NAME": "Beveiliging",
-		"LABEL_THEMES_NAME": "Thema's"
+		"PERSONAL": "Personal",
+		"GENERAL": "General",
+		"CONTACTS": "Contacts",
+		"FOLDERS": "Folders",
+		"ACCOUNTS": "Accounts",
+		"FILTERS": "Filters",
+		"SECURITY": "Security",
+		"THEMES": "Themes"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Filters",
@@ -380,14 +380,12 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Beveiliging",
 		"LABEL_AUTOLOGOUT": "Automatisch uitloggen",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Nooit",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minuten",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% uur"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Nooit"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Algemeen",
 		"LANGUAGE": "Taal",
-		"HOUR_FORMAT": "Hour format",
+		"HOUR_FORMAT": "Uur formaat",
 		"IDENTITY": "Identiteit",
 		"LAYOUT": "Indeling",
 		"LAYOUT_NO_SPLIT": "Geen splitsing",
@@ -415,8 +413,8 @@
 		"CHROME_NOTIFICATION_DESC": "Toon nieuwe berichten popup",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Geblokkeerd door de browser)",
 		"LIST_INLINE_ATTACHMENTS": "Toon inline bijlagen in lijst",
-		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
-		"LIST_MESSAGES_PER_DAY": "List messages per day"
+		"LIST_SIMPLE_ATTACHMENTS": "Simpele bijlagen lijst",
+		"LIST_MESSAGES_PER_DAY": "Toon berichten per dag"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Automatisch ontvangers toevoegen aan uw adresboek",
@@ -430,7 +428,7 @@
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Thema's",
 		"LABEL_BACKGROUND": "Achtergrond",
-		"LABEL_FONTS": "Fonts",
+		"LABEL_FONTS": "Lettertypes",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Upload achtergrond afbeelding (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Bestand is te groot",
 		"ERROR_FILE_TYPE_ERROR": "Onjuist bestandstype (alleen JPG and PNG)",

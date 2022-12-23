@@ -357,14 +357,14 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Asmeniniai",
-		"LABEL_GENERAL_NAME": "Pagrindiniai",
-		"LABEL_CONTACTS_NAME": "Kontaktai",
-		"LABEL_FOLDERS_NAME": "Katalogai",
-		"LABEL_ACCOUNTS_NAME": "Paskyros",
-		"LABEL_FILTERS_NAME": "Filtrai",
-		"LABEL_SECURITY_NAME": "Sauga",
-		"LABEL_THEMES_NAME": "Temos"
+		"PERSONAL": "Personal",
+		"GENERAL": "General",
+		"CONTACTS": "Contacts",
+		"FOLDERS": "Folders",
+		"ACCOUNTS": "Accounts",
+		"FILTERS": "Filters",
+		"SECURITY": "Security",
+		"THEMES": "Themes"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Filtrai",
@@ -380,9 +380,7 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Sauga",
 		"LABEL_AUTOLOGOUT": "Automatinis atsijungimas",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Niekada",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "po %MINUTES% minučių",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "po %HOURS% valandų"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Niekada"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Pagrindiniai",

@@ -357,14 +357,14 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> QUELLE"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Persönlich",
-		"LABEL_GENERAL_NAME": "Allgemein",
-		"LABEL_CONTACTS_NAME": "Kontakte",
-		"LABEL_FOLDERS_NAME": "Ordner",
-		"LABEL_ACCOUNTS_NAME": "Konten",
-		"LABEL_FILTERS_NAME": "Filter",
-		"LABEL_SECURITY_NAME": "Sicherheit",
-		"LABEL_THEMES_NAME": "Themen"
+		"PERSONAL": "Personal",
+		"GENERAL": "General",
+		"CONTACTS": "Contacts",
+		"FOLDERS": "Folders",
+		"ACCOUNTS": "Accounts",
+		"FILTERS": "Filters",
+		"SECURITY": "Security",
+		"THEMES": "Themes"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Filter",
@@ -380,9 +380,7 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Sicherheit",
 		"LABEL_AUTOLOGOUT": "Automatische Abmeldung",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Nie",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% Minute(n)",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% Stunde(n)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Nie"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Allgemein",

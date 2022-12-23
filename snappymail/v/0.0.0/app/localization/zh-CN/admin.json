@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "控制面板"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "常规",
-		"LABEL_LOGIN_NAME": "登录",
-		"LABEL_BRANDING_NAME": "Logo",
-		"LABEL_CONTACTS_NAME": "联系人",
-		"LABEL_DOMAINS_NAME": "域名",
-		"LABEL_SECURITY_NAME": "安全",
-		"LABEL_PACKAGES_NAME": "插件包",
-		"LABEL_CONFIG_NAME": "配置",
-		"LABEL_ABOUT_NAME": "关于"
+		"GENERAL": "常规",
+		"LOGIN": "登录",
+		"BRANDING": "Logo",
+		"CONTACTS": "联系人",
+		"DOMAINS": "域名",
+		"SECURITY": "安全",
+		"PACKAGES": "插件包",
+		"CONFIG": "配置",
+		"ABOUT": "关于"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "界面",

@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Administratoriaus valdymo skydas"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Pagrindiniai",
-		"LABEL_LOGIN_NAME": "Prisijungimo vardas",
-		"LABEL_BRANDING_NAME": "Įdaguoti",
-		"LABEL_CONTACTS_NAME": "Kontaktai",
-		"LABEL_DOMAINS_NAME": "Domenai",
-		"LABEL_SECURITY_NAME": "Sauga",
-		"LABEL_PACKAGES_NAME": "Paketai",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "Apie"
+		"GENERAL": "Pagrindiniai",
+		"LOGIN": "Prisijungimo vardas",
+		"BRANDING": "Įdaguoti",
+		"CONTACTS": "Kontaktai",
+		"DOMAINS": "Domenai",
+		"SECURITY": "Sauga",
+		"PACKAGES": "Paketai",
+		"CONFIG": "Config",
+		"ABOUT": "Apie"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Sąsaja",

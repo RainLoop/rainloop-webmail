@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Админка"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Основные",
-		"LABEL_LOGIN_NAME": "Логин",
-		"LABEL_BRANDING_NAME": "Брендинг",
-		"LABEL_CONTACTS_NAME": "Контакты",
-		"LABEL_DOMAINS_NAME": "Домены",
-		"LABEL_SECURITY_NAME": "Безопасность",
-		"LABEL_PACKAGES_NAME": "Пакеты",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "О Программе"
+		"GENERAL": "Основные",
+		"LOGIN": "Логин",
+		"BRANDING": "Брендинг",
+		"CONTACTS": "Контакты",
+		"DOMAINS": "Домены",
+		"SECURITY": "Безопасность",
+		"PACKAGES": "Пакеты",
+		"CONFIG": "Config",
+		"ABOUT": "О Программе"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Интерфейс",

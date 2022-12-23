@@ -357,14 +357,14 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Personligt",
-		"LABEL_GENERAL_NAME": "Allmänt",
-		"LABEL_CONTACTS_NAME": "Kontakter",
-		"LABEL_FOLDERS_NAME": "Mappar",
-		"LABEL_ACCOUNTS_NAME": "Konton",
-		"LABEL_FILTERS_NAME": "Filter",
-		"LABEL_SECURITY_NAME": "Säkerhet",
-		"LABEL_THEMES_NAME": "Teman"
+		"PERSONAL": "Personal",
+		"GENERAL": "General",
+		"CONTACTS": "Contacts",
+		"FOLDERS": "Folders",
+		"ACCOUNTS": "Accounts",
+		"FILTERS": "Filters",
+		"SECURITY": "Security",
+		"THEMES": "Themes"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Filter",
@@ -380,9 +380,7 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Säkerhet",
 		"LABEL_AUTOLOGOUT": "Automatisk utloggning",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Aldrig",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minut(er)",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% timme\/timmar"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Aldrig"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Allmänt",

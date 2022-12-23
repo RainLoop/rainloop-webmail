@@ -357,14 +357,14 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Лични",
-		"LABEL_GENERAL_NAME": "Общи",
-		"LABEL_CONTACTS_NAME": "Контакти",
-		"LABEL_FOLDERS_NAME": "Папки",
-		"LABEL_ACCOUNTS_NAME": "Акаунти",
-		"LABEL_FILTERS_NAME": "Филтри",
-		"LABEL_SECURITY_NAME": "Сигурност",
-		"LABEL_THEMES_NAME": "Теми"
+		"PERSONAL": "Personal",
+		"GENERAL": "General",
+		"CONTACTS": "Contacts",
+		"FOLDERS": "Folders",
+		"ACCOUNTS": "Accounts",
+		"FILTERS": "Filters",
+		"SECURITY": "Security",
+		"THEMES": "Themes"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Филтри",
@@ -380,9 +380,7 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Сигурност",
 		"LABEL_AUTOLOGOUT": "Автоматично излизане",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Никога",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% минута(и)",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% час(а)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Никога"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Общи",

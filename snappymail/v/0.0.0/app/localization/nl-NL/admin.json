@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Beheer paneel"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Algemeen",
-		"LABEL_LOGIN_NAME": "Inlogscherm",
-		"LABEL_BRANDING_NAME": "Huisstijl",
-		"LABEL_CONTACTS_NAME": "Contactpersonen",
-		"LABEL_DOMAINS_NAME": "Domeinen",
-		"LABEL_SECURITY_NAME": "Beveiliging",
-		"LABEL_PACKAGES_NAME": "Extensies",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "Over"
+		"GENERAL": "Algemeen",
+		"LOGIN": "Inlogscherm",
+		"BRANDING": "Huisstijl",
+		"CONTACTS": "Contactpersonen",
+		"DOMAINS": "Domeinen",
+		"SECURITY": "Beveiliging",
+		"PACKAGES": "Extensies",
+		"CONFIG": "Config",
+		"ABOUT": "Over"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Interface",

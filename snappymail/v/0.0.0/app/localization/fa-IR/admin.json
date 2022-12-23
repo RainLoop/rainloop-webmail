@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "صفحه مدیریت"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "عمومی",
-		"LABEL_LOGIN_NAME": "ورود",
-		"LABEL_BRANDING_NAME": "برندسازی",
-		"LABEL_CONTACTS_NAME": "تماس‌ها",
-		"LABEL_DOMAINS_NAME": "دامنه‌ها",
-		"LABEL_SECURITY_NAME": "امنیت",
-		"LABEL_PACKAGES_NAME": "بسته‌ها",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "درباره"
+		"GENERAL": "عمومی",
+		"LOGIN": "ورود",
+		"BRANDING": "برندسازی",
+		"CONTACTS": "تماس‌ها",
+		"DOMAINS": "دامنه‌ها",
+		"SECURITY": "امنیت",
+		"PACKAGES": "بسته‌ها",
+		"CONFIG": "Config",
+		"ABOUT": "درباره"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "رابط",

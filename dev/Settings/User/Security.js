@@ -1,7 +1,7 @@
 import { koComputable } from 'External/ko';
 
 import { SettingsCapa } from 'Common/Globals';
-import { i18n, translateTrigger } from 'Common/Translator';
+import { i18n, translateTrigger, relativeTime } from 'Common/Translator';
 
 import { AbstractViewSettings } from 'Knoin/AbstractViews';
 
@@ -21,19 +21,18 @@ export class UserSettingsSecurity extends AbstractViewSettings {
 	constructor() {
 		super();
 
-		let i18nLogout = (key, params) => i18n('SETTINGS_SECURITY/AUTOLOGIN_' + key, params);
 		this.autoLogout = SettingsUserStore.autoLogout;
 		this.autoLogoutOptions = koComputable(() => {
 			translateTrigger();
 			return [
-				{ id: 0, name: i18nLogout('NEVER_OPTION_NAME') },
-				{ id: 5, name: i18nLogout('MINUTES_OPTION_NAME', { MINUTES: 5 }) },
-				{ id: 10, name: i18nLogout('MINUTES_OPTION_NAME', { MINUTES: 10 }) },
-				{ id: 30, name: i18nLogout('MINUTES_OPTION_NAME', { MINUTES: 30 }) },
-				{ id: 60, name: i18nLogout('MINUTES_OPTION_NAME', { MINUTES: 60 }) },
-				{ id: 60 * 2, name: i18nLogout('HOURS_OPTION_NAME', { HOURS: 2 }) },
-				{ id: 60 * 5, name: i18nLogout('HOURS_OPTION_NAME', { HOURS: 5 }) },
-				{ id: 60 * 10, name: i18nLogout('HOURS_OPTION_NAME', { HOURS: 10 }) }
+				{ id: 0, name: i18n('SETTINGS_SECURITY/AUTOLOGIN_NEVER_OPTION_NAME') },
+				{ id: 5, name: relativeTime(300) },
+				{ id: 10, name: relativeTime(600) },
+				{ id: 30, name: relativeTime(1800) },
+				{ id: 60, name: relativeTime(3600) },
+				{ id: 120, name: relativeTime(7200) },
+				{ id: 300, name: relativeTime(18000) },
+				{ id: 600, name: relativeTime(36000) }
 			];
 		});
 		this.addSetting('AutoLogout');

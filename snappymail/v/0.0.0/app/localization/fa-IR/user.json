@@ -357,14 +357,14 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "شخصی",
-		"LABEL_GENERAL_NAME": "عمومی",
-		"LABEL_CONTACTS_NAME": "تماس‌ها",
-		"LABEL_FOLDERS_NAME": "پوشه‌ها",
-		"LABEL_ACCOUNTS_NAME": "حساب‌های کاربری",
-		"LABEL_FILTERS_NAME": "فیلترها",
-		"LABEL_SECURITY_NAME": "امنیت",
-		"LABEL_THEMES_NAME": "پوسته‌ها"
+		"PERSONAL": "Personal",
+		"GENERAL": "General",
+		"CONTACTS": "Contacts",
+		"FOLDERS": "Folders",
+		"ACCOUNTS": "Accounts",
+		"FILTERS": "Filters",
+		"SECURITY": "Security",
+		"THEMES": "Themes"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "فیلترها",
@@ -380,9 +380,7 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "امنیت",
 		"LABEL_AUTOLOGOUT": "خروج خودکار",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "هرگز",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% دقیقه(ها)",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% ساعت‌(ها)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "هرگز"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "عمومی",

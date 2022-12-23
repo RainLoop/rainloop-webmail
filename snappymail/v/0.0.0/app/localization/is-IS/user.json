@@ -357,14 +357,14 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Persónulegt",
-		"LABEL_GENERAL_NAME": "Almennt",
-		"LABEL_CONTACTS_NAME": "Tengiliðir",
-		"LABEL_FOLDERS_NAME": "Möppur",
-		"LABEL_ACCOUNTS_NAME": "Aðgangar",
-		"LABEL_FILTERS_NAME": "Síur",
-		"LABEL_SECURITY_NAME": "Öryggi",
-		"LABEL_THEMES_NAME": "Þemu"
+		"PERSONAL": "Personal",
+		"GENERAL": "General",
+		"CONTACTS": "Contacts",
+		"FOLDERS": "Folders",
+		"ACCOUNTS": "Accounts",
+		"FILTERS": "Filters",
+		"SECURITY": "Security",
+		"THEMES": "Themes"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Síur",
@@ -380,9 +380,7 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Öryggi",
 		"LABEL_AUTOLOGOUT": "Sjálfvirk útskráning",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Aldrei",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% mínútu(r)",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% klukkustund(ir)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Aldrei"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Almennt",

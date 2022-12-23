@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Admin Panel"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Generelt",
-		"LABEL_LOGIN_NAME": "Log ind",
-		"LABEL_BRANDING_NAME": "Branding",
-		"LABEL_CONTACTS_NAME": "Kontakter",
-		"LABEL_DOMAINS_NAME": "Domæner",
-		"LABEL_SECURITY_NAME": "Sikkerhed",
-		"LABEL_PACKAGES_NAME": "Pakker",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "Om"
+		"GENERAL": "Generelt",
+		"LOGIN": "Log ind",
+		"BRANDING": "Branding",
+		"CONTACTS": "Kontakter",
+		"DOMAINS": "Domæner",
+		"SECURITY": "Sikkerhed",
+		"PACKAGES": "Pakker",
+		"CONFIG": "Config",
+		"ABOUT": "Om"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Grænseflade",

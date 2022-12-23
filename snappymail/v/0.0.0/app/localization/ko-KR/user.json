@@ -357,14 +357,14 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "개인",
-		"LABEL_GENERAL_NAME": "일반",
-		"LABEL_CONTACTS_NAME": "연락처",
-		"LABEL_FOLDERS_NAME": "폴더",
-		"LABEL_ACCOUNTS_NAME": "계정",
-		"LABEL_FILTERS_NAME": "필터",
-		"LABEL_SECURITY_NAME": "보안",
-		"LABEL_THEMES_NAME": "테마"
+		"PERSONAL": "Personal",
+		"GENERAL": "General",
+		"CONTACTS": "Contacts",
+		"FOLDERS": "Folders",
+		"ACCOUNTS": "Accounts",
+		"FILTERS": "Filters",
+		"SECURITY": "Security",
+		"THEMES": "Themes"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "필터",
@@ -380,9 +380,7 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "보안",
 		"LABEL_AUTOLOGOUT": "자동 로그아웃",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "설정하지 않음",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES%분",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS%시간"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "설정하지 않음"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "일반",

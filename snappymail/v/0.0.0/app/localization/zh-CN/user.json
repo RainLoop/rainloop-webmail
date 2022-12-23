@@ -357,14 +357,14 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "个人",
-		"LABEL_GENERAL_NAME": "常规",
-		"LABEL_CONTACTS_NAME": "联系人",
-		"LABEL_FOLDERS_NAME": "文件夹",
-		"LABEL_ACCOUNTS_NAME": "账户",
-		"LABEL_FILTERS_NAME": "筛选器",
-		"LABEL_SECURITY_NAME": "安全",
-		"LABEL_THEMES_NAME": "主题"
+		"PERSONAL": "Personal",
+		"GENERAL": "General",
+		"CONTACTS": "Contacts",
+		"FOLDERS": "Folders",
+		"ACCOUNTS": "Accounts",
+		"FILTERS": "Filters",
+		"SECURITY": "Security",
+		"THEMES": "Themes"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "筛选器",
@@ -380,9 +380,7 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "安全",
 		"LABEL_AUTOLOGOUT": "自动登出",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "从不",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% 分钟",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% 小时"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "从不"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "常规",

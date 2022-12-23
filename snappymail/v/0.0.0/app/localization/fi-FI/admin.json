@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Halintapaneli"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Yleiset",
-		"LABEL_LOGIN_NAME": "Kirjautuminen",
-		"LABEL_BRANDING_NAME": "Brändäys",
-		"LABEL_CONTACTS_NAME": "Yhteystiedot",
-		"LABEL_DOMAINS_NAME": "Verkkotunnutkset",
-		"LABEL_SECURITY_NAME": "Turvallisuus",
-		"LABEL_PACKAGES_NAME": "Paketit",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "Tietoja"
+		"GENERAL": "Yleiset",
+		"LOGIN": "Kirjautuminen",
+		"BRANDING": "Brändäys",
+		"CONTACTS": "Yhteystiedot",
+		"DOMAINS": "Verkkotunnutkset",
+		"SECURITY": "Turvallisuus",
+		"PACKAGES": "Paketit",
+		"CONFIG": "Config",
+		"ABOUT": "Tietoja"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Käyttöliittymä",

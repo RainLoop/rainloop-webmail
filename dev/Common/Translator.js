@@ -24,33 +24,34 @@ const
 		return key ? I18N_DATA.NOTIFICATIONS[i18nKey(key).replace('_NOTIFICATION', '_ERROR')] : '';
 	},
 
+	fromNow = date => relativeTime(Math.round((date.getTime() - Date.now()) / 1000));
+
+export const
+	translateTrigger = ko.observable(false),
+
 	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
 	// see /snappymail/v/0.0.0/app/localization/relativetimeformat/
-	fromNow = date => {
+	relativeTime = seconds => {
 		let unit = 'second',
-			value = Math.round((date.getTime() - Date.now()) / 1000),
 			t = [[60,'minute'],[3600,'hour'],[86400,'day'],[2628000,'month'],[31536000,'year']],
 			i = 5,
-			abs = Math.abs(value);
+			abs = Math.abs(seconds);
 		while (i--) {
 			if (t[i][0] <= abs) {
-				value = Math.round(value / t[i][0]);
+				seconds = Math.round(seconds / t[i][0]);
 				unit = t[i][1];
 				break;
 			}
 		}
 		if (Intl.RelativeTimeFormat) {
 			let rtf = new Intl.RelativeTimeFormat(doc.documentElement.lang);
-			return rtf.format(value, unit);
+			return rtf.format(seconds, unit);
 		}
-		abs = Math.abs(value);
-		let rtf = rl.relativeTime.long[unit][0 > value ? 'past' : 'future'],
+		abs = Math.abs(seconds);
+		let rtf = rl.relativeTime.long[unit][0 > seconds ? 'past' : 'future'],
 			plural = rl.relativeTime.plural(abs);
 		return (rtf[plural] || rtf).replace('{0}', abs);
-	};
-
-export const
-	translateTrigger = ko.observable(false),
+	},
 
 	/**
 	 * @param {string} key

@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Painel Administrativo"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Geral",
-		"LABEL_LOGIN_NAME": "Login",
-		"LABEL_BRANDING_NAME": "Personalizar",
-		"LABEL_CONTACTS_NAME": "Contatos",
-		"LABEL_DOMAINS_NAME": "Domínios",
-		"LABEL_SECURITY_NAME": "Segurança",
-		"LABEL_PACKAGES_NAME": "Pacotes",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "Sobre"
+		"GENERAL": "Geral",
+		"LOGIN": "Login",
+		"BRANDING": "Personalizar",
+		"CONTACTS": "Contatos",
+		"DOMAINS": "Domínios",
+		"SECURITY": "Segurança",
+		"PACKAGES": "Pacotes",
+		"CONFIG": "Config",
+		"ABOUT": "Sobre"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Interface",

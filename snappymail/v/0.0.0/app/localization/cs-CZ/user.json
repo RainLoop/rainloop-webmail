@@ -357,14 +357,14 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Osobní",
-		"LABEL_GENERAL_NAME": "Všeobecné",
-		"LABEL_CONTACTS_NAME": "Kontakty",
-		"LABEL_FOLDERS_NAME": "Složky",
-		"LABEL_ACCOUNTS_NAME": "Účty",
-		"LABEL_FILTERS_NAME": "Filtry",
-		"LABEL_SECURITY_NAME": "Zabezpečení",
-		"LABEL_THEMES_NAME": "Motivy"
+		"PERSONAL": "Personal",
+		"GENERAL": "General",
+		"CONTACTS": "Contacts",
+		"FOLDERS": "Folders",
+		"ACCOUNTS": "Accounts",
+		"FILTERS": "Filters",
+		"SECURITY": "Security",
+		"THEMES": "Themes"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Filtry",
@@ -380,9 +380,7 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Zabezpečení",
 		"LABEL_AUTOLOGOUT": "Automatické odhlášení",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Nikdy",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minut",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% hodin"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Nikdy"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Všeobecné",
