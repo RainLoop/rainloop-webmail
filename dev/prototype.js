@@ -12,17 +12,12 @@
 	let formats = {
 		LT   : {timeStyle: 'short'},
 		LLL  : {dateStyle: 'long', timeStyle: 'short'}
-	},
-	pad2 = v => 10 > v ? '0' + v : v;
+	};
 
 	// Format momentjs/PHP date formats to Intl.DateTimeFormat
 	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat
 	Date.prototype.format = function (options, UTC, hourCycle) {
 		if (typeof options == 'string') {
-			if ('ISO8601' == options) {
-				return this.getFullYear() + '-' + pad2(1 + this.getMonth()) + '-' + pad2(this.getDate())
-					+ 'T' + pad2(this.getHours()) + ':' + pad2(this.getMinutes()) + ':' + pad2(this.getSeconds());
-			}
 			if (formats[options]) {
 				options = formats[options];
 			} else {
@@ -33,7 +28,7 @@
 		if (hourCycle) {
 			options.hourCycle = hourCycle;
 		}
-		return new Intl.DateTimeFormat(doc.documentElement.lang, options).format(this);
+		return this.toLocaleString(doc.documentElement.lang, options);
 	};
 
 	Element.prototype.closestWithin = function(selector, parent) {
