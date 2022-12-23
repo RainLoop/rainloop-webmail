@@ -502,8 +502,7 @@ class Message implements \JsonSerializable
 			'threadId' => $this->sThreadId,
 //			'mailboxIds' => ['mailboxid'=>true],
 //			'keywords' => $keywords,
-			'size' => $this->iSize,
-			'receivedAt' => \gmdate('Y-m-d\\TH:i:s\\Z', $this->iInternalTimeStampInUTC)
+			'size' => $this->iSize
 		);
 	}
 }
