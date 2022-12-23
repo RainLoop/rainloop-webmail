@@ -54,7 +54,7 @@ class Redis implements \MailSo\Cache\DriverInterface
 
 		$this->sKeyPrefix = empty($sKeyPrefix)
 			? $sKeyPrefix
-			: \preg_replace('/[^a-zA-Z0-9_]/', '_', rtrim(trim($this->sKeyPrefix), '\\/')) . '/';
+			: \preg_replace('/[^a-zA-Z0-9_]/', '_', rtrim(trim($sKeyPrefix), '\\/')) . '/';
 	}
 
 	public function Set(string $sKey, string $sValue) : bool
