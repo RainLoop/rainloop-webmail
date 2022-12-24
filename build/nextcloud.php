@@ -37,29 +37,45 @@ $nc_tar->addFile('data/README.md');
 $nc_tar->addFile('_include.php', 'snappymail/app/_include.php');
 */
 $nc_tar->addFile('.htaccess', 'snappymail/app/.htaccess');
-$hashes['.htaccess'] = hash_file('sha512', '.htaccess');
+$hashes['app/.htaccess'] = hash_file('sha512', '.htaccess');
 
 $index = file_get_contents('index.php');
 $index = str_replace('0.0.0', $package->version, $index);
 //$index = str_replace('snappymail/v/', '', $index);
 $nc_tar->addFromString('snappymail/app/index.php', $index);
-$hashes['snappymail/app/index.php'] = hash('sha512', $index);
+$hashes['app/index.php'] = hash('sha512', $index);
 
 $nc_tar->addFile('README.md', 'snappymail/app/README.md');
-$hashes['README.md'] = hash_file('sha512', 'README.md');
+$hashes['app/README.md'] = hash_file('sha512', 'README.md');
 
 $nc_tar->addFile('CHANGELOG.md', 'snappymail/CHANGELOG.md');
 $hashes['CHANGELOG.md'] = hash_file('sha512', 'CHANGELOG.md');
 
 $data = file_get_contents('dev/serviceworker.js');
 $nc_tar->addFromString('snappymail/app/serviceworker.js', $data);
-$hashes['snappymail/app/serviceworker.js'] = hash('sha512', $data);
+$hashes['app/serviceworker.js'] = hash('sha512', $data);
 
-openssl_sign(json_encode($hashes), $signature, file_get_contents($cert_dir.'/snappymail.key'), OPENSSL_ALGO_SHA512);
+spl_autoload_register(function($name){
+	$file = __DIR__ . '/' . str_replace('\\', '/', $name) . '.php';
+	echo "{$file}\n";
+	require $file;
+});
+
+ksort($hashes);
+$cert = file_get_contents($cert_dir.'/snappymail.crt');
+$rsa = new \phpseclib\Crypt\RSA();
+$rsa->loadKey(file_get_contents($cert_dir.'/snappymail.key'));
+$x509 = new \phpseclib\File\X509();
+$x509->loadX509($cert);
+$x509->setPrivateKey($rsa);
+$rsa->setSignatureMode(\phpseclib\Crypt\RSA::SIGNATURE_PSS);
+$rsa->setMGFHash('sha512');
+$rsa->setSaltLength(0);
+$signature = $rsa->sign(json_encode($hashes));
 $nc_tar->addFromString('snappymail/appinfo/signature.json', json_encode([
 	'hashes' => $hashes,
 	'signature' => base64_encode($signature),
-	'certificate' => file_get_contents($cert_dir.'/snappymail.crt')
+	'certificate' => $cert
 ], JSON_PRETTY_PRINT));
 
 $nc_tar->compress(Phar::GZ);
