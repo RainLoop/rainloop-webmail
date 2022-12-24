@@ -216,7 +216,7 @@ trait Messages
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function MessageMove(string $sFromFolder, string $sToFolder, SequenceSet $oRange) : ResponseCollection
+	public function MessageMove(string $sFromFolder, string $sToFolder, SequenceSet $oRange) : void
 	{
 		if (!$sFromFolder || !$sToFolder || !\count($oRange)) {
 			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
@@ -224,14 +224,14 @@ trait Messages
 
 		if ($this->hasCapability('MOVE')) {
 			$this->FolderSelect($sFromFolder);
-			return $this->SendRequestGetResponse(
+			$this->SendRequestGetResponse(
 				$oRange->UID ? 'UID MOVE' : 'MOVE',
 				array((string) $oRange, $this->EscapeFolderName($sToFolder))
 			);
+		} else {
+			$this->MessageCopy($sFromFolder, $sToFolder, $oRange);
+			$this->MessageDelete($sFromFolder, $oRange, true);
 		}
-
-		$this->MessageCopy($sFromFolder, $sToFolder, $oRange);
-		$this->MessageDelete($sFromFolder, $oRange, true);
 	}
 
 	/**
