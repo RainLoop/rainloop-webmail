@@ -357,14 +357,14 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"PERSONAL": "Personal",
-		"GENERAL": "General",
-		"CONTACTS": "Contacts",
-		"FOLDERS": "Folders",
-		"ACCOUNTS": "Accounts",
-		"FILTERS": "Filters",
-		"SECURITY": "Security",
-		"THEMES": "Themes"
+		"PERSONAL": "个人",
+		"GENERAL": "常规",
+		"CONTACTS": "联系人",
+		"FOLDERS": "文件夹",
+		"ACCOUNTS": "账户",
+		"FILTERS": "筛选器",
+		"SECURITY": "安全",
+		"THEMES": "主题"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "筛选器",
@@ -385,7 +385,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "常规",
 		"LANGUAGE": "语言",
-		"HOUR_FORMAT": "Hour format",
+		"HOUR_FORMAT": "小时格式",
 		"IDENTITY": "身份",
 		"LAYOUT": "布局",
 		"LAYOUT_NO_SPLIT": "不分隔",
@@ -414,7 +414,7 @@
 		"CHROME_NOTIFICATION_DESC_DENIED": "(被浏览器阻止)",
 		"LIST_INLINE_ATTACHMENTS": "在列表中显示内联附件",
 		"LIST_SIMPLE_ATTACHMENTS": "简洁附件列表",
-		"LIST_MESSAGES_PER_DAY": "List messages per day"
+		"LIST_MESSAGES_PER_DAY": "按日显示消息列表"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "自动添加到您的地址簿",
@@ -467,7 +467,7 @@
 		"BUTTON_ADD_IDENTITY": "添加一个身份",
 		"LOADING_PROCESS": "更新账户列表中",
 		"DEFAULT_IDENTITY_LABEL": "默认",
-		"SHOW_UNREAD": "Show unread messages count"
+		"SHOW_UNREAD": "显示未读消息数量"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "导入 密钥",
