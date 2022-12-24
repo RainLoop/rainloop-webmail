@@ -6,8 +6,8 @@ class LoginExternalPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Login External',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.0',
-		RELEASE  = '2022-11-11',
+		VERSION  = '1.1',
+		RELEASE  = '2022-12-24',
 		REQUIRED = '2.21.0',
 		CATEGORY = 'Login',
 		LICENSE  = 'MIT',
@@ -58,7 +58,7 @@ class LoginExternalPlugin extends \RainLoop\Plugins\AbstractPlugin
 					$aResult['ErrorCode'] = Notifications::AuthError;
 				}
 			}
-			echo Utils::jsonEncode($aResult);
+			echo \json_encode($aResult);
 		} else {
 			$oActions->Location('./');
 		}
