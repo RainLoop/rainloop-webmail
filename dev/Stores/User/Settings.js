@@ -21,7 +21,7 @@ export const SettingsUserStore = new class {
 			listInlineAttachments: 0,
 			simpleAttachmentsList: 0,
 			useCheckboxesInList: 1,
-			listPerDay: 1,
+			listPerDay: 0,
 			allowDraftAutosave: 1,
 			useThreads: 0,
 			replySameFolder: 0,

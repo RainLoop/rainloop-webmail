@@ -693,7 +693,7 @@ class Actions
 					'RemoveColors' => (bool) $oConfig->Get('defaults', 'remove_colors', false),
 					'ListInlineAttachments' => false,
 					'simpleAttachmentsList' => false,
-					'listPerDay' => true,
+					'listPerDay' => false,
 					'MessagesPerPage' => (int) $oConfig->Get('webmail', 'messages_per_page', 25),
 					'MessageReadDelay' => (int) $oConfig->Get('webmail', 'message_read_delay', 5),
 					'MsgDefaultAction' => 1,

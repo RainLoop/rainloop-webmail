@@ -94,7 +94,6 @@ export class MailMessageList extends AbstractViewRight {
 		this.popupVisibility = arePopupsVisible;
 
 		this.useCheckboxesInList = SettingsUserStore.useCheckboxesInList;
-		this.listPerDay = SettingsUserStore.listPerDay;
 
 		this.userUsageProc = FolderUserStore.quotaPercentage;
 
@@ -146,6 +145,8 @@ export class MailMessageList extends AbstractViewRight {
 			mobileCheckedStateShow: () => ThemeStore.isMobile() ? MessagelistUserStore.hasChecked() : 1,
 
 			mobileCheckedStateHide: () => ThemeStore.isMobile() ? !MessagelistUserStore.hasChecked() : 1,
+
+			listPerDay: () => SettingsUserStore.listPerDay() && 'DATE' == (FolderUserStore.sortMode() || 'DATE'),
 
 			listByDay: () => {
 				let list = [], current, today = Ymd(new Date()),
