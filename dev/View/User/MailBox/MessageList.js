@@ -146,7 +146,11 @@ export class MailMessageList extends AbstractViewRight {
 
 			mobileCheckedStateHide: () => ThemeStore.isMobile() ? !MessagelistUserStore.hasChecked() : 1,
 
-			listPerDay: () => SettingsUserStore.listPerDay() && 'DATE' == (FolderUserStore.sortMode() || 'DATE'),
+			listPerDay: () => {
+				let uid = MessagelistUserStore.threadUid(),
+					sort = FolderUserStore.sortMode() || 'DATE';
+				return SettingsUserStore.listPerDay() && 'DATE' == sort && !uid;
+			},
 
 			listByDay: () => {
 				let list = [], current, today = Ymd(new Date()),
