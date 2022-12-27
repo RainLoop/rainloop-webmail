@@ -114,7 +114,8 @@ export class MailMessageList extends AbstractViewRight {
 		addComputablesTo(this, {
 
 			sortSupported: () =>
-				FolderUserStore.hasCapability('SORT') | FolderUserStore.hasCapability('ESORT'),
+				(FolderUserStore.hasCapability('SORT') | FolderUserStore.hasCapability('ESORT'))
+				&& !MessagelistUserStore.threadUid(),
 
 			messageListSearchDesc: () => {
 				const value = MessagelistUserStore().Search;
