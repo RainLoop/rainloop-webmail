@@ -131,7 +131,7 @@ class Utils
 			: null;
 	}
 
-	private static function _SetCookie(string $sName, string $sValue, int $iExpire)
+	private static function _SetCookie(string $sName, string $sValue, int $iExpire, bool $httponly = true)
 	{
 		$sPath = static::$CookieDefaultPath;
 		$sPath = $sPath && \strlen($sPath) ? $sPath : '/';
@@ -176,7 +176,7 @@ class Utils
 			'path' => $sPath,
 //			'domain' => null,
 			'secure' => static::$CookieSecure,
-			'httponly' => true,
+			'httponly' => $httponly,
 			'samesite' => static::$CookieSameSite
 		));
 	}
@@ -185,7 +185,7 @@ class Utils
 	 * Firefox: Cookie "$sName" has been rejected because it is already expired.
 	 * \header_remove("set-cookie: {$sName}");
 	 */
-	public static function SetCookie(string $sName, string $sValue, int $iExpire = 0)
+	public static function SetCookie(string $sName, string $sValue, int $iExpire = 0, bool $httponly = true)
 	{
 		$sPath = static::$CookieDefaultPath;
 		$sPath = $sPath && \strlen($sPath) ? $sPath : '/';

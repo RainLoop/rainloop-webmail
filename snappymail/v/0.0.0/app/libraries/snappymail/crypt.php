@@ -46,9 +46,10 @@ abstract class Crypt
 	private static function Passphrase(?string $key) : string
 	{
 		if (!$key) {
-			$key = isset($_COOKIE['smctoken'])
-				 ? $_COOKIE['smctoken']
-				 : \preg_replace('/[^a-z]+/i', '', \explode(')', $_SERVER['HTTP_USER_AGENT'])[0]);
+			if (empty($_COOKIE['smctoken'])) {
+				throw new \RuntimeException('Missing smctoken');
+			}
+			$key = $_COOKIE['smctoken'];
 		}
 		return \sha1($key . APP_SALT, true);
 	}

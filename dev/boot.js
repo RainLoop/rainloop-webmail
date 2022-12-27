@@ -32,14 +32,15 @@ navigator.cookieEnabled || redirect('NoCookie');
 [].flat || redirect('BadBrowser');
 
 try {
-	let smctoken = localStorage.getItem('smctoken');
+	let smctoken = doc.cookie.match(/(^|;) ?smctoken=([^;]+)/);
+	smctoken = smctoken ? smctoken[2] : localStorage.getItem('smctoken');
 	if (!smctoken) {
 		let data = new Uint8Array(16);
 		crypto.getRandomValues(data);
 		smctoken = btoa(String.fromCharCode(...data));
-		localStorage.setItem('smctoken', smctoken);
 	}
-	document.cookie = 'smctoken='+encodeURIComponent(smctoken)+"; path=/; samesite=strict";
+	localStorage.setItem('smctoken', smctoken);
+	doc.cookie = 'smctoken='+encodeURIComponent(smctoken)+"; path=/; samesite=strict";
 } catch (e) {
 	console.error(e);
 }
