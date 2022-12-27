@@ -37,10 +37,10 @@ try {
 	if (!smctoken) {
 		let data = new Uint8Array(16);
 		crypto.getRandomValues(data);
-		smctoken = btoa(String.fromCharCode(...data));
+		smctoken = encodeURIComponent(btoa(String.fromCharCode(...data)));
 	}
 	localStorage.setItem('smctoken', smctoken);
-	doc.cookie = 'smctoken='+encodeURIComponent(smctoken)+"; path=/; samesite=strict";
+	doc.cookie = 'smctoken='+smctoken+"; path=/; samesite=strict";
 } catch (e) {
 	console.error(e);
 }
