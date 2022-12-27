@@ -1,3 +1,43 @@
+## 2.24.2 – 2022-12-27
+
+### Changed
+- Disable sorting when viewing message thread
+  [#445](https://github.com/the-djmaze/snappymail/pull/445)
+- Update Chinese translation by @mayswind
+  [#794](https://github.com/the-djmaze/snappymail/pull/794)
+- No need to call IMAP EXAMINE when current folder already SELECT
+- Thread view now has tree indentation
+
+### Fixed
+- Nextcloud failed on Integrity check
+  [#790](https://github.com/the-djmaze/snappymail/pull/790)
+- Deleting message fails with message "Cannot move message" on hMailServer
+  [#793](https://github.com/the-djmaze/snappymail/pull/793)
+- List messages per day feature is enabled by default and breaks sorting
+  [#796](https://github.com/the-djmaze/snappymail/pull/796)
+- Custom page login not working for first time due to smctoken security
+  [#798](https://github.com/the-djmaze/snappymail/pull/798)
+- Message list is always empty due to wrong implementation of RFC 8474
+  [#799](https://github.com/the-djmaze/snappymail/pull/799)
+
+
+## 2.24.1 – 2022-12-23
+
+### Changed
+- Intl.DateTimeFormat() into toLocaleString() for iOS < 14
+- Cleanup locale date/time handling
+- Make MessageList per day optional
+  [#737](https://github.com/the-djmaze/snappymail/pull/737)
+
+### Fixed
+- Typed property MailSo\Cache\Drivers\Redis::$sKeyPrefix must not be accessed before initialization #792
+  [#792](https://github.com/the-djmaze/snappymail/pull/792)
+- Attachments in mails in 2.24 not loading in reply/forward #789
+  [#789](https://github.com/the-djmaze/snappymail/pull/789)
+- Rollback #280 due to complications
+  [#280](https://github.com/the-djmaze/snappymail/pull/280)
+
+
 ## 2.24.0 – 2022-12-22
 
 ### Added
