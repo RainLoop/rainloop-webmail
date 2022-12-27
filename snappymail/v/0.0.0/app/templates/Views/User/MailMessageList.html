@@ -156,7 +156,7 @@
 			<div class="messageListItem" data-bind="css: lineAsCss()">
 				<div class="messageCheckbox">
 					<div class="checkboxMessage fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
-				</div><div>
+				</div><div data-bind="attr:{style:indent()}, css:{reply:indent}">
 					<div class="flagParent fontastic"></div>
 					<div class="senderParent actionHandle" data-bind="attr: {'title': senderClearEmailsString}, text: senderEmailsString"></div>
 					<div class="subjectParent actionHandle" data-bind="text: subject"></div>

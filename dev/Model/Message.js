@@ -220,6 +220,10 @@ export class MessageModel extends AbstractModel {
 		return classes.join(' ');
 	}
 
+	indent() {
+		return this.level ? 'margin-left:'+this.level+'em' : null;
+	}
+
 	/**
 	 * @returns {string}
 	 */

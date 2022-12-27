@@ -21,7 +21,7 @@ namespace MailSo\Imap\Requests;
 class THREAD extends Request
 {
 	// ORDEREDSUBJECT or REFERENCES or REFS
-	public string $sAlgorithm = '';
+	private string $sAlgorithm = '';
 
 	public string $sCriterias = 'ALL';
 
@@ -41,12 +41,17 @@ class THREAD extends Request
 		parent::__construct($oImapClient);
 	}
 
+	public function setAlgorithm(string $sAlgorithm) : void
+	{
+		$sAlgorithm = \strtoupper($sAlgorithm);
+		if (!$this->oImapClient->hasCapability("THREAD={$sAlgorithm}")) {
+			$this->oImapClient->writeLogException(new \MailSo\RuntimeException("THREAD={$sAlgorithm} is not supported"), \LOG_ERR);
+		}
+		$this->sAlgorithm = $sAlgorithm;
+	}
+
 	public function SendRequestIterateResponse() : iterable
 	{
-		if (!$this->oImapClient->hasCapability(\strtoupper("THREAD={$this->sAlgorithm}"))) {
-			$this->oImapClient->writeLogException(new \MailSo\RuntimeException("THREAD={$this->sAlgorithm} is not supported"), \LOG_ERR);
-		}
-
 		$this->oImapClient->SendRequest(
 			($this->bUid ? 'UID THREAD' : 'THREAD'),
 			array(

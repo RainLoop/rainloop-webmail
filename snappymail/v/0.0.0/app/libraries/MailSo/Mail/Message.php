@@ -497,6 +497,8 @@ class Message implements \JsonSerializable
 
 			'Flags' => $aFlags,
 
+			'InReplyTo' => $this->InReplyTo,
+
 			// https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.1
 			'id' => $this->sEmailId,
 //			'blobId' => $this->sEmailIdBlob,

@@ -264,6 +264,17 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 
 					disableAutoSelect(true);
 
+					if (collection.ThreadUid) {
+						let refs = {};
+						collection.forEach(msg => {
+							msg.level = 0;
+							if (msg.inReplyTo && refs[msg.inReplyTo]) {
+								msg.level = 1 + refs[msg.inReplyTo].level;
+							}
+							refs[msg.messageId] = msg;
+						});
+					}
+
 					MessagelistUserStore(collection);
 					MessagelistUserStore.isIncomplete(false);
 

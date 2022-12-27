@@ -141,7 +141,6 @@ trait Response
 
 			if (!$sParent) {
 				$mResult['DraftInfo'] = $mResponse->DraftInfo;
-				$mResult['InReplyTo'] = $mResponse->InReplyTo;
 				$mResult['UnsubsribeLinks'] = $mResponse->UnsubsribeLinks;
 				$mResult['References'] = $mResponse->References;
 
