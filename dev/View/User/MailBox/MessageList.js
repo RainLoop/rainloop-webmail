@@ -150,12 +150,25 @@ export class MailMessageList extends AbstractViewRight {
 			listGrouped: () => {
 				let uid = MessagelistUserStore.threadUid(),
 					sort = FolderUserStore.sortMode() || 'DATE';
-				return SettingsUserStore.listGrouped() && (sort.includes('DATE') || sort.includes('FROM')) && !uid;
+				return SettingsUserStore.listGrouped() && sort.includes('DATE') && !uid;
 			},
 
 			groupedList: () => {
 				let list = [], current, sort = FolderUserStore.sortMode() || 'DATE';
-				if (sort.includes('DATE')) {
+				if (sort.includes('FROM')) {
+					MessagelistUserStore.forEach(msg => {
+						let email = msg.from[0].email;
+						if (!current || email != current.id) {
+							current = {
+								id: email,
+								label: msg.from[0].toLine(),
+								messages: []
+							};
+							list.push(current);
+						}
+						current.messages.push(msg);
+					});
+				} else if (sort.includes('DATE')) {
 					let today = Ymd(new Date()),
 						rtf = Intl.RelativeTimeFormat
 							? new Intl.RelativeTimeFormat(doc.documentElement.lang, { numeric: "auto" }) : 0;
@@ -177,19 +190,6 @@ export class MailMessageList extends AbstractViewRight {
 							current = {
 								id: ymd,
 								label: date,
-								messages: []
-							};
-							list.push(current);
-						}
-						current.messages.push(msg);
-					});
-				} else if (sort.includes('FROM')) {
-					MessagelistUserStore.forEach(msg => {
-						let email = msg.from[0].email;
-						if (!current || email != current.id) {
-							current = {
-								id: email,
-								label: msg.from[0].toLine(),
 								messages: []
 							};
 							list.push(current);
