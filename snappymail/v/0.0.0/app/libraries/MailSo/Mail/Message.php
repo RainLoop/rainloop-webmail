@@ -131,11 +131,12 @@ class Message implements \JsonSerializable
 			$oFetchResponse->GetFetchValue(FetchType::INTERNALDATE)
 		);
 
-		$oMessage->sEmailId = $oFetchResponse->GetFetchValue(FetchType::EMAILID)
-//			?: $oFetchResponse->GetFetchValue('X-GUID')
-			?: $oFetchResponse->GetFetchValue('X-GM-MSGID');
-		$oMessage->sThreadId = $oFetchResponse->GetFetchValue(FetchType::THREADID)
-			?: $oFetchResponse->GetFetchValue('X-GM-THRID');
+		// https://www.rfc-editor.org/rfc/rfc8474
+		$aEmailId = $oFetchResponse->GetFetchValue(FetchType::EMAILID);
+		$oMessage->sEmailId = $aEmailId ? $aEmailId[0] : $oFetchResponse->GetFetchValue('X-GM-MSGID');
+//		$oMessage->sEmailId = $oMessage->sEmailId ?: $oFetchResponse->GetFetchValue('X-GUID');
+		$aThreadId = $oFetchResponse->GetFetchValue(FetchType::THREADID);
+		$oMessage->sThreadId = $aThreadId ? $aThreadId[0] : $oFetchResponse->GetFetchValue('X-GM-THRID');
 
 		$sCharset = $oBodyStructure ? Utils::NormalizeCharset($oBodyStructure->SearchCharset()) : '';
 
