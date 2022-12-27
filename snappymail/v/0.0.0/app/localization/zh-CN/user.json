@@ -414,7 +414,7 @@
 		"CHROME_NOTIFICATION_DESC_DENIED": "(被浏览器阻止)",
 		"LIST_INLINE_ATTACHMENTS": "在列表中显示内联附件",
 		"LIST_SIMPLE_ATTACHMENTS": "简洁附件列表",
-		"LIST_MESSAGES_PER_DAY": "按日显示消息列表"
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "自动添加到您的地址簿",

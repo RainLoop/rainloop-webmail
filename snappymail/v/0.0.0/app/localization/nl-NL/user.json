@@ -414,7 +414,7 @@
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Geblokkeerd door de browser)",
 		"LIST_INLINE_ATTACHMENTS": "Toon inline bijlagen in lijst",
 		"LIST_SIMPLE_ATTACHMENTS": "Simpele bijlagen lijst",
-		"LIST_MESSAGES_PER_DAY": "Toon berichten per dag"
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Automatisch ontvangers toevoegen aan uw adresboek",

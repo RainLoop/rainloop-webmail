@@ -146,40 +146,56 @@ export class MailMessageList extends AbstractViewRight {
 
 			mobileCheckedStateHide: () => ThemeStore.isMobile() ? !MessagelistUserStore.hasChecked() : 1,
 
-			listPerDay: () => {
+			listGrouped: () => {
 				let uid = MessagelistUserStore.threadUid(),
 					sort = FolderUserStore.sortMode() || 'DATE';
-				return SettingsUserStore.listPerDay() && 'DATE' == sort && !uid;
+				return SettingsUserStore.listGrouped() && (sort.includes('DATE') || sort.includes('FROM')) && !uid;
 			},
 
-			listByDay: () => {
-				let list = [], current, today = Ymd(new Date()),
-					rtf = Intl.RelativeTimeFormat
-						? new Intl.RelativeTimeFormat(doc.documentElement.lang, { numeric: "auto" }) : 0;
-				MessagelistUserStore.forEach(msg => {
-					let date = (new Date(msg.dateTimeStampInUTC() * 1000)),
-						ymd = Ymd(date);
-					if (!current || ymd != current.ymd) {
-						if (rtf && today == ymd) {
-							date = rtf.format(0, 'day');
-						} else if (rtf && today - 1 == ymd) {
-							date = rtf.format(-1, 'day');
-//						} else if (today - 7 < ymd) {
-//							date = date.format({weekday: 'long'});
-//							date = date.format({dateStyle: 'full'},0,LanguageStore.hourCycle());
-						} else {
-//							date = date.format({dateStyle: 'medium'},0,LanguageStore.hourCycle());
-							date = date.format({dateStyle: 'full'},0,LanguageStore.hourCycle());
+			groupedList: () => {
+				let list = [], current, sort = FolderUserStore.sortMode() || 'DATE';
+				if (sort.includes('DATE')) {
+					let today = Ymd(new Date()),
+						rtf = Intl.RelativeTimeFormat
+							? new Intl.RelativeTimeFormat(doc.documentElement.lang, { numeric: "auto" }) : 0;
+					MessagelistUserStore.forEach(msg => {
+						let date = (new Date(msg.dateTimeStampInUTC() * 1000)),
+							ymd = Ymd(date);
+						if (!current || ymd != current.id) {
+							if (rtf && today == ymd) {
+								date = rtf.format(0, 'day');
+							} else if (rtf && today - 1 == ymd) {
+								date = rtf.format(-1, 'day');
+//							} else if (today - 7 < ymd) {
+//								date = date.format({weekday: 'long'});
+//								date = date.format({dateStyle: 'full'},0,LanguageStore.hourCycle());
+							} else {
+//								date = date.format({dateStyle: 'medium'},0,LanguageStore.hourCycle());
+								date = date.format({dateStyle: 'full'},0,LanguageStore.hourCycle());
+							}
+							current = {
+								id: ymd,
+								label: date,
+								messages: []
+							};
+							list.push(current);
 						}
-						current = {
-							ymd: ymd,
-							day: date,
-							messages: []
-						};
-						list.push(current);
-					}
-					current.messages.push(msg);
-				});
+						current.messages.push(msg);
+					});
+				} else if (sort.includes('FROM')) {
+					MessagelistUserStore.forEach(msg => {
+						let email = msg.from[0].email;
+						if (!current || email != current.id) {
+							current = {
+								id: email,
+								label: msg.from[0].toLine(),
+								messages: []
+							};
+							list.push(current);
+						}
+						current.messages.push(msg);
+					});
+				}
 				return list;
 			},
 

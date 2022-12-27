@@ -21,7 +21,7 @@ export const SettingsUserStore = new class {
 			listInlineAttachments: 0,
 			simpleAttachmentsList: 0,
 			useCheckboxesInList: 1,
-			listPerDay: 0,
+			listGrouped: 0,
 			allowDraftAutosave: 1,
 			useThreads: 0,
 			replySameFolder: 0,
@@ -85,7 +85,7 @@ export const SettingsUserStore = new class {
 		self.listInlineAttachments(SettingsGet('ListInlineAttachments'));
 		self.simpleAttachmentsList(SettingsGet('simpleAttachmentsList'));
 		self.useCheckboxesInList(SettingsGet('UseCheckboxesInList'));
-		self.listPerDay(SettingsGet('listPerDay'));
+		self.listGrouped(SettingsGet('listGrouped'));
 		self.allowDraftAutosave(SettingsGet('AllowDraftAutosave'));
 		self.useThreads(SettingsGet('UseThreads'));
 		self.replySameFolder(SettingsGet('ReplySameFolder'));
