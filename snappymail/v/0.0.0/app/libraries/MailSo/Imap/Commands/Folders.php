@@ -350,13 +350,12 @@ trait Folders
 		if (!$bReSelectSameFolders
 		  && $this->oCurrentFolderInfo
 		  && $sFolderName === $this->oCurrentFolderInfo->FolderName
-		  && $bIsWritable === $this->oCurrentFolderInfo->IsWritable
+		  && ($bIsWritable === $this->oCurrentFolderInfo->IsWritable || $this->oCurrentFolderInfo->IsWritable)
 		) {
 			return $this->oCurrentFolderInfo;
 		}
 
-		if (!\strlen(\trim($sFolderName)))
-		{
+		if (!\strlen(\trim($sFolderName))) {
 			throw new \InvalidArgumentException;
 		}
 
