@@ -166,4 +166,16 @@ if (defined('APP_VERSION'))
 			file_put_contents($sFile, json_encode($config, JSON_PRETTY_PRINT));
 		}
 	}
+
+/*
+	// Update plugins
+	$asApi = !empty($_ENV['SNAPPYMAIL_INCLUDE_AS_API']);
+	$_ENV['SNAPPYMAIL_INCLUDE_AS_API'] = true;
+	$aList = \SnappyMail\Repository::getEnabledPackagesNames();
+	foreach ($aList as $sId) {
+		\SnappyMail\Repository::installPackage('plugin', $sId);
+	}
+	$_ENV['SNAPPYMAIL_INCLUDE_AS_API'] = $asApi;
+*/
+
 }
