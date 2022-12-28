@@ -2,7 +2,7 @@
 
 // cPanel https://github.com/the-djmaze/snappymail/issues/697
 if (defined('APP_PLUGINS_PATH') && !empty($_ENV['CPANEL']) && !is_dir(APP_PLUGINS_PATH.'login-remote')) {
-	$asApi = $_ENV['SNAPPYMAIL_INCLUDE_AS_API'];
+	$asApi = !empty($_ENV['SNAPPYMAIL_INCLUDE_AS_API']);
 	$_ENV['SNAPPYMAIL_INCLUDE_AS_API'] = true;
 
 	\SnappyMail\Repository::installPackage('plugin', 'login-remote');
