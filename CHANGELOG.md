@@ -1,3 +1,15 @@
+## 2.24.3 – 2022-12-28
+
+## Changed
+- When sorting on FROM also sort on REVERSE DATE
+
+## Bugfixes
+- F5 and Ctrl-F5 reload logs out of Snappymail in Chrome.
+  [#800](https://github.com/the-djmaze/snappymail/pull/800)
+- Switching accounts does not work anymore with 2.24.2
+  [#802](https://github.com/the-djmaze/snappymail/pull/802)
+
+
 ## 2.24.2 – 2022-12-27
 
 ### Changed

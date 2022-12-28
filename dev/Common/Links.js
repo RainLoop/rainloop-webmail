@@ -47,6 +47,7 @@ export const
 	proxy = url =>
 		SERVER_PREFIX + '/ProxyExternal/'
 			+ btoa(url.replace(/ /g, '%20')).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''),
+//			+ b64EncodeJSONSafe(url.replace(/ /g, '%20')),
 
 	/**
 	 * @param {string} type
