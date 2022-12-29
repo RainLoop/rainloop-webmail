@@ -42,3 +42,8 @@ if (class_exists('OC')) {
  * Additional configuration file name
  */
 //define('APP_CONFIGURATION_NAME', $_SERVER['HTTP_HOST'].'.ini');
+
+/**
+ * Also update extensions on upgrade
+ */
+define('SNAPPYMAIL_UPDATE_PLUGINS', 1);
