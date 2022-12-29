@@ -655,10 +655,6 @@ class MailClient
 			throw new \InvalidArgumentException('THREAD not supported');
 		}
 
-		if (!$oParams->oCacher || !($oParams->oCacher instanceof \MailSo\Cache\CacheClient)) {
-			$oParams->oCacher = null;
-		}
-
 		$oMessageCollection->FolderHash = $oInfo->getHash($this->oImapClient->Hash());
 
 		if (!$oParams->iThreadUid) {
