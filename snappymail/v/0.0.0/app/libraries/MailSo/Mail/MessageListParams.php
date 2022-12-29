@@ -16,14 +16,14 @@ class MessageListParams
 	public string
 		$sFolderName,
 		$sSearch,
-		$sSort;
+		$sSort = '';
 
 	public ?\MailSo\Cache\CacheClient
 		$oCacher = null;
 
 	public bool
 		$bUseSortIfSupported = false,
-		$bUseThreads,
+		$bUseThreads = false,
 		$bHideDeleted = true;
 
 	protected int
