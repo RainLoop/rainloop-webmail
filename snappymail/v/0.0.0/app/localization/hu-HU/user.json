@@ -33,7 +33,8 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Igen",
 		"NO": "Nem",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "default"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Bejelentkezés",
@@ -466,7 +467,6 @@
 		"BUTTON_ADD_ACCOUNT": "Fiók hozzáadás",
 		"BUTTON_ADD_IDENTITY": "Identitás hozzáadás",
 		"LOADING_PROCESS": "Fiók lista frissítés",
-		"DEFAULT_IDENTITY_LABEL": "default",
 		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {

@@ -33,7 +33,8 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Ya",
 		"NO": "Tidak",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "Bawaan"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
@@ -466,7 +467,6 @@
 		"BUTTON_ADD_ACCOUNT": "Tambahkan akun",
 		"BUTTON_ADD_IDENTITY": "Tambahkan identitas",
 		"LOADING_PROCESS": "Memperbarui...",
-		"DEFAULT_IDENTITY_LABEL": "Bawaan",
 		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {

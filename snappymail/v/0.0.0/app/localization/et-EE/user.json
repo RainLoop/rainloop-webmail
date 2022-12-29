@@ -33,7 +33,8 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Jah",
 		"NO": "Ei",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "vaikimisi"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logi sisse",
@@ -466,7 +467,6 @@
 		"BUTTON_ADD_ACCOUNT": "Lisa konto",
 		"BUTTON_ADD_IDENTITY": "Lisa identiteet",
 		"LOADING_PROCESS": "Värskendan...",
-		"DEFAULT_IDENTITY_LABEL": "vaikimisi",
 		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {

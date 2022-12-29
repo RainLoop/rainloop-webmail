@@ -33,7 +33,8 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Да",
 		"NO": "Не",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "по подразбиране"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Логин",
@@ -466,7 +467,6 @@
 		"BUTTON_ADD_ACCOUNT": "Добавяне на акаунт",
 		"BUTTON_ADD_IDENTITY": "Добавяне на идентичност",
 		"LOADING_PROCESS": "Обновяване на списъка с акаунти",
-		"DEFAULT_IDENTITY_LABEL": "по подразбиране",
 		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {

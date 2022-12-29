@@ -33,7 +33,8 @@
 		"SERVER_MESSAGE": "Server bericht",
 		"YES": "Ja",
 		"NO": "Nee",
-		"INACTIVE": "Inactief"
+		"INACTIVE": "Inactief",
+		"DEFAULT": "standaard"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Inlognaam",
@@ -466,7 +467,6 @@
 		"BUTTON_ADD_ACCOUNT": "Account toevoegen",
 		"BUTTON_ADD_IDENTITY": "Identiteit toevoegen",
 		"LOADING_PROCESS": "Account lijst aan het bijwerken",
-		"DEFAULT_IDENTITY_LABEL": "standaard",
 		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {

@@ -33,7 +33,8 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Áno",
 		"NO": "Nie",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "default"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Používateľské meno",
@@ -466,7 +467,6 @@
 		"BUTTON_ADD_ACCOUNT": "Pridať účet",
 		"BUTTON_ADD_IDENTITY": "Add an Identity",
 		"LOADING_PROCESS": "Aktualizácia zoznamu účtov",
-		"DEFAULT_IDENTITY_LABEL": "default",
 		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {

@@ -33,7 +33,8 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Taip",
 		"NO": "Ne",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "numatytasis"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prisijungimo vardas",
@@ -466,7 +467,6 @@
 		"BUTTON_ADD_ACCOUNT": "Pridėti paskyrą",
 		"BUTTON_ADD_IDENTITY": "Pridėti tapatybę",
 		"LOADING_PROCESS": "Atnaujinamas paskyrų sąrašas",
-		"DEFAULT_IDENTITY_LABEL": "numatytasis",
 		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {

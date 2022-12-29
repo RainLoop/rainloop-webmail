@@ -33,7 +33,8 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Kyllä",
 		"NO": "Ei",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "oletus"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Tunnus",
@@ -466,7 +467,6 @@
 		"BUTTON_ADD_ACCOUNT": "Lisää Tili",
 		"BUTTON_ADD_IDENTITY": "Lisää identiteetti",
 		"LOADING_PROCESS": "Päivitetään...",
-		"DEFAULT_IDENTITY_LABEL": "oletus",
 		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {

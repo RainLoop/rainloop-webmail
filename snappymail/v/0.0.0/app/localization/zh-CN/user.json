@@ -33,7 +33,8 @@
 		"SERVER_MESSAGE": "服务器信息",
 		"YES": "是",
 		"NO": "否",
-		"INACTIVE": "不生效"
+		"INACTIVE": "不生效",
+		"DEFAULT": "默认"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "登录",
@@ -466,7 +467,6 @@
 		"BUTTON_ADD_ACCOUNT": "添加一个账户",
 		"BUTTON_ADD_IDENTITY": "添加一个身份",
 		"LOADING_PROCESS": "更新账户列表中",
-		"DEFAULT_IDENTITY_LABEL": "默认",
 		"SHOW_UNREAD": "显示未读消息数量"
 	},
 	"SETTINGS_OPENPGP": {

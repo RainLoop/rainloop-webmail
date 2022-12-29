@@ -33,7 +33,8 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Já",
 		"NO": "Nei",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "sjálfgefið"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Innskráning",
@@ -466,7 +467,6 @@
 		"BUTTON_ADD_ACCOUNT": "Bæta við aðgangi",
 		"BUTTON_ADD_IDENTITY": "Bæta við auðkenni",
 		"LOADING_PROCESS": "Uppfæri aðgangslista",
-		"DEFAULT_IDENTITY_LABEL": "sjálfgefið",
 		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {

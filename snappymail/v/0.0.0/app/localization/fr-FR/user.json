@@ -33,7 +33,8 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Oui",
 		"NO": "Non",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "défaut"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Identifiant",
@@ -466,7 +467,6 @@
 		"BUTTON_ADD_ACCOUNT": "Ajouter un compte",
 		"BUTTON_ADD_IDENTITY": "Ajouter une identité",
 		"LOADING_PROCESS": "Mise à jour de la liste des comptes",
-		"DEFAULT_IDENTITY_LABEL": "défaut",
 		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {

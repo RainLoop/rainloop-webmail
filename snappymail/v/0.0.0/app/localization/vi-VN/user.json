@@ -33,7 +33,8 @@
 		"SERVER_MESSAGE": "Tin nhắn từ máy chủ",
 		"YES": "Ok",
 		"NO": "Không",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "mặc định"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Đăng nhập",
@@ -466,7 +467,6 @@
 		"BUTTON_ADD_ACCOUNT": "Thêm một tài khoản",
 		"BUTTON_ADD_IDENTITY": "Thêm một tên gọi",
 		"LOADING_PROCESS": "Đang cập nhật...",
-		"DEFAULT_IDENTITY_LABEL": "mặc định",
 		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {

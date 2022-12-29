@@ -33,7 +33,8 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "是",
 		"NO": "否",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "default"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "登錄",
@@ -466,7 +467,6 @@
 		"BUTTON_ADD_ACCOUNT": "添加一個帳戶",
 		"BUTTON_ADD_IDENTITY": "Add an Identity",
 		"LOADING_PROCESS": "更新帳戶列表中",
-		"DEFAULT_IDENTITY_LABEL": "default",
 		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {

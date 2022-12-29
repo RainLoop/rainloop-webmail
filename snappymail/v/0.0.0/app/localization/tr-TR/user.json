@@ -33,7 +33,8 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Evet",
 		"NO": "Hayır",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "default"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Giriş",
@@ -466,7 +467,6 @@
 		"BUTTON_ADD_ACCOUNT": "Hesap Ekle",
 		"BUTTON_ADD_IDENTITY": "Add an Identity",
 		"LOADING_PROCESS": "Hesap listesi güncelleniyor",
-		"DEFAULT_IDENTITY_LABEL": "default",
 		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {

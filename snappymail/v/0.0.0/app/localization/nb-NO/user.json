@@ -33,7 +33,8 @@
 		"SERVER_MESSAGE": "Tjenermelding",
 		"YES": "Ja",
 		"NO": "Nei",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "Standard"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logg inn",
@@ -466,7 +467,6 @@
 		"BUTTON_ADD_ACCOUNT": "Legg til konto",
 		"BUTTON_ADD_IDENTITY": "Legg til identitet",
 		"LOADING_PROCESS": "Oppdaterer …",
-		"DEFAULT_IDENTITY_LABEL": "Standard",
 		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {

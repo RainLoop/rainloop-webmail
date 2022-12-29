@@ -33,7 +33,8 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "نعم",
 		"NO": "لا",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "الافتراضي"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "تسيجيل الدخول",
@@ -466,7 +467,6 @@
 		"BUTTON_ADD_ACCOUNT": "قم باضافة حساب",
 		"BUTTON_ADD_IDENTITY": "قم باضافة هوية",
 		"LOADING_PROCESS": "..جاري التحميل",
-		"DEFAULT_IDENTITY_LABEL": "الافتراضي",
 		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {

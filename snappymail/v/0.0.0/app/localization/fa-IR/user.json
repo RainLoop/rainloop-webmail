@@ -33,7 +33,8 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "بلی",
 		"NO": "خیر",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "پیش‌فرض"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ورود",
@@ -466,7 +467,6 @@
 		"BUTTON_ADD_ACCOUNT": "اضافه کردن یک حساب کاربری",
 		"BUTTON_ADD_IDENTITY": "اضافه کردن یک شناسه",
 		"LOADING_PROCESS": "بروزرسانی...",
-		"DEFAULT_IDENTITY_LABEL": "پیش‌فرض",
 		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
