@@ -27,23 +27,23 @@ class RemoteUserFetch extends AbstractFetchRemote {
 			folderHash = folder?.hash || '';
 
 		params = Object.assign({
-			Offset: 0,
-			Limit: SettingsUserStore.messagesPerPage(),
-			Search: '',
-			UidNext: folder?.uidNext || 0, // Used to check for new messages
-			Sort: FolderUserStore.sortMode(),
+			offset: 0,
+			limit: SettingsUserStore.messagesPerPage(),
+			search: '',
+			uidNext: folder?.uidNext || 0, // Used to check for new messages
+			sort: FolderUserStore.sortMode(),
 			Hash: folderHash + SettingsGet('AccountHash')
 		}, params);
 		params.Folder = sFolderFullName;
 		if (AppUserStore.threadsAllowed() && SettingsUserStore.useThreads()) {
-			params.UseThreads = 1;
+			params.useThreads = 1;
 		} else {
-			params.ThreadUid = 0;
+			params.threadUid = 0;
 		}
 
 		let sGetAdd = '';
 
-		if (folderHash && (!params.Search || !params.Search.includes('is:'))) {
+		if (folderHash && (!params.search || !params.search.includes('is:'))) {
 			sGetAdd = 'MessageList/' +
 				SUB_QUERY_PREFIX +
 				'/' +

@@ -153,7 +153,7 @@ folderInformation = (folder, list) => {
 							MessagelistUserStore.reloadFlagsAndCachedMessage();
 						}
 
-						MessagelistUserStore.notifyNewMessages(folderFromCache.fullName, result.NewMessages);
+						MessagelistUserStore.notifyNewMessages(folderFromCache.fullName, result.newMessages);
 
 						if (!oldHash || unreadCountChange || result.Hash !== oldHash) {
 							if (folderFromCache.fullName === FolderUserStore.currentFolderFullName()) {

@@ -43,6 +43,8 @@ class MessageCollection extends \MailSo\Base\Collection
 
 //	public bool $Filtered = false;
 
+	public bool $Limited = false;
+
 	public function append($oMessage, bool $bToTop = false) : void
 	{
 		assert($oMessage instanceof Message);
@@ -61,14 +63,15 @@ class MessageCollection extends \MailSo\Base\Collection
 			'totalEmails' => $this->totalEmails,
 			'totalThreads' => $this->totalThreads,
 			'Folder' => $this->FolderName,
-			'FolderHash' => $this->FolderHash,
-			'FolderInfo' => $this->FolderInfo,
-			'ThreadUid' => $this->ThreadUid,
-			'NewMessages' => $this->NewMessages,
+			'folderHash' => $this->FolderHash,
+			'folderInfo' => $this->FolderInfo,
+			'threadUid' => $this->ThreadUid,
+			'newMessages' => $this->NewMessages,
 //			'Filtered' => $this->Filtered,
-			'Offset' => $this->Offset,
-			'Limit' => $this->Limit,
-			'Search' => $this->Search
+			'offset' => $this->Offset,
+			'limit' => $this->Limit,
+			'search' => $this->Search,
+			'limited' => $this->Limited
 		));
 	}
 }

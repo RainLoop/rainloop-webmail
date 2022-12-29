@@ -14,16 +14,15 @@ export class MessageCollectionModel extends AbstractCollectionModel
 		super();
 		this.Filtered
 		this.Folder
-		this.FolderHash
-		this.FolderInfo
+		this.folderHash
+		this.folderInfo
 		this.totalEmails
 		this.unreadEmails
-		this.UidNext
-		this.ThreadUid
-		this.NewMessages
-		this.Offset
-		this.Limit
-		this.Search
+		this.threadUid
+		this.newMessages
+		this.offset
+		this.limit
+		this.search
 	}
 */
 

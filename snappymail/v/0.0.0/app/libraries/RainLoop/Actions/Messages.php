@@ -30,27 +30,27 @@ trait Messages
 
 //			$oParams->sHash = (string) $aValues['Hash'];
 			$oParams->sFolderName = (string) $aValues['Folder'];
-			$oParams->iLimit = $aValues['Limit'];
-			$oParams->iOffset = $aValues['Offset'];
-			$oParams->sSearch = (string) $aValues['Search'];
-			$oParams->sSort = (string) $aValues['Sort'];
-			if (isset($aValues['UidNext'])) {
-				$oParams->iPrevUidNext = $aValues['UidNext'];
+			$oParams->iLimit = $aValues['limit'];
+			$oParams->iOffset = $aValues['offset'];
+			$oParams->sSearch = (string) $aValues['search'];
+			$oParams->sSort = (string) $aValues['sort'];
+			if (isset($aValues['uidNext'])) {
+				$oParams->iPrevUidNext = $aValues['uidNext'];
 			}
-			$oParams->bUseThreads = !empty($aValues['UseThreads']);
-			if ($oParams->bUseThreads && isset($aValues['ThreadUid'])) {
-				$oParams->iThreadUid = $aValues['ThreadUid'];
+			$oParams->bUseThreads = !empty($aValues['useThreads']);
+			if ($oParams->bUseThreads && isset($aValues['threadUid'])) {
+				$oParams->iThreadUid = $aValues['threadUid'];
 			}
 		} else {
 			$oParams->sFolderName = $this->GetActionParam('Folder', '');
-			$oParams->iOffset = $this->GetActionParam('Offset', 0);
-			$oParams->iLimit = $this->GetActionParam('Limit', 10);
-			$oParams->sSearch = $this->GetActionParam('Search', '');
-			$oParams->sSort = $this->GetActionParam('Sort', '');
-			$oParams->iPrevUidNext = $this->GetActionParam('UidNext', 0);
-			$oParams->bUseThreads = !empty($this->GetActionParam('UseThreads', '0'));
+			$oParams->iOffset = $this->GetActionParam('offset', 0);
+			$oParams->iLimit = $this->GetActionParam('limit', 10);
+			$oParams->sSearch = $this->GetActionParam('search', '');
+			$oParams->sSort = $this->GetActionParam('sort', '');
+			$oParams->iPrevUidNext = $this->GetActionParam('uidNext', 0);
+			$oParams->bUseThreads = !empty($this->GetActionParam('useThreads', '0'));
 			if ($oParams->bUseThreads) {
-				$oParams->iThreadUid = $this->GetActionParam('ThreadUid', '');
+				$oParams->iThreadUid = $this->GetActionParam('threadUid', '');
 			}
 		}
 

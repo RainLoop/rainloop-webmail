@@ -115,10 +115,10 @@ export class MailMessageList extends AbstractViewRight {
 
 			sortSupported: () =>
 				(FolderUserStore.hasCapability('SORT') | FolderUserStore.hasCapability('ESORT'))
-				&& !MessagelistUserStore.threadUid(),
+				&& !(MessagelistUserStore.listLimited() | MessagelistUserStore.threadUid()),
 
 			messageListSearchDesc: () => {
-				const value = MessagelistUserStore().Search;
+				const value = MessagelistUserStore().search;
 				return value ? i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', { SEARCH: value }) : ''
 			},
 
@@ -150,7 +150,7 @@ export class MailMessageList extends AbstractViewRight {
 			listGrouped: () => {
 				let uid = MessagelistUserStore.threadUid(),
 					sort = FolderUserStore.sortMode() || 'DATE';
-				return SettingsUserStore.listGrouped() && sort.includes('DATE') && !uid;
+				return SettingsUserStore.listGrouped() && (sort.includes('DATE') || sort.includes('FROM')) && !uid;
 			},
 
 			timeFormat: () => (FolderUserStore.sortMode() || '').includes('FROM') ? 'SHORT' : 'LT',
@@ -159,7 +159,7 @@ export class MailMessageList extends AbstractViewRight {
 				let list = [], current, sort = FolderUserStore.sortMode() || 'DATE';
 				if (sort.includes('FROM')) {
 					MessagelistUserStore.forEach(msg => {
-						let email = msg.from[0].email;
+						let email = msg.from?.[0].email;
 						if (!current || email != current.id) {
 							current = {
 								id: email,

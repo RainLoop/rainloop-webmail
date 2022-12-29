@@ -381,7 +381,7 @@ class MailClient
 //			'PermanentFlags' => $oInfo->PermanentFlags,
 			'Hash' => $oInfo->getHash($this->oImapClient->Hash()),
 			'MessagesFlags' => $aFlags,
-			'NewMessages' => $this->getFolderNextMessageInformation(
+			'newMessages' => $this->getFolderNextMessageInformation(
 				$sFolderName,
 				$iPrevUidNext,
 				\intval($oInfo->UIDNEXT)
@@ -505,10 +505,20 @@ class MailClient
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	private function GetUids(MessageListParams $oParams, string $sSearch,
-		string $sFolderName, string $sFolderHash,
-		bool $bUseSortIfSupported = false, string $sSort = '') : array
+		string $sFolderHash, bool $bUseSortIfSupported = false) : array
 	{
 		$oCacher = $oParams->oCacher;
+		$sFolderName = $oParams->sFolderName;
+
+		$aResultUids = false;
+		$bUidsFromCacher = false;
+		$bUseCacheAfterSearch = $oCacher && $oCacher->IsInited();
+
+		$sSerializedHash = '';
+		$sSerializedLog = '';
+
+		$bUseSortIfSupported = $bUseSortIfSupported && !\strlen($sSearch) && $this->oImapClient->hasCapability('SORT');
+		$sSort = $bUseSortIfSupported ? $oParams->sSort : '';
 		/* TODO: Validate $sSort
 			ARRIVAL
 				Internal date and time of the message.  This differs from the
@@ -550,15 +560,6 @@ class MailClient
 				DISPLAYFROM, DISPLAYTO
 		 */
 
-		$aResultUids = false;
-		$bUidsFromCacher = false;
-		$bUseCacheAfterSearch = $oCacher && $oCacher->IsInited();
-
-		$sSerializedHash = '';
-		$sSerializedLog = '';
-
-		$bUseSortIfSupported = $bUseSortIfSupported && !\strlen($sSearch) && $this->oImapClient->hasCapability('SORT');
-
 		$sSearchCriterias = \MailSo\Imap\SearchCriterias::fromString($this->oImapClient, $sFolderName, $sSearch, $oParams->bHideDeleted, $bUseCacheAfterSearch);
 		// Disabled for now as there are many cases that change the result
 		$bUseCacheAfterSearch = false;
@@ -588,9 +589,17 @@ class MailClient
 
 		if (!$bUidsFromCacher) {
 			if ($bUseSortIfSupported) {
+				$aSortTypes = [];
+				if ($sSort) {
+					$aSortTypes[] = $sSort;
+				}
+				if (false === \strpos($sSort, 'DATE')) {
+					// Always also sort DATE descending when DATE is not defined
+					$aSortTypes[] = 'REVERSE DATE';
+				}
 //				$this->oImapClient->hasCapability('ESORT')
-//				$aResultUids = $this->oImapClient->MessageSimpleESort(array($sSort ?: 'REVERSE DATE'), $sSearchCriterias)['ALL'];
-				$aResultUids = $this->oImapClient->MessageSimpleSort(array($sSort ?: 'REVERSE DATE'), $sSearchCriterias);
+//				$aResultUids = $this->oImapClient->MessageSimpleESort($aSortTypes, $sSearchCriterias)['ALL'];
+				$aResultUids = $this->oImapClient->MessageSimpleSort($aSortTypes, $sSearchCriterias);
 			} else {
 //				$this->oImapClient->hasCapability('ESEARCH')
 //				$aResultUids = $this->oImapClient->MessageSimpleESearch($sSearchCriterias, null, true, \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? '' : 'UTF-8')
@@ -660,14 +669,14 @@ class MailClient
 
 		if ($oInfo->MESSAGES) {
 			if (0 < $this->oImapClient->Settings->message_list_limit && $this->oImapClient->Settings->message_list_limit < $oInfo->MESSAGES) {
+				// Don't use SORT nor THREAD
+				$oMessageCollection->Limited = true;
 				if ($this->oLogger) {
 					$this->oLogger->Write('List optimization (count: '.$oInfo->MESSAGES.
 						', limit:'.$this->oImapClient->Settings->message_list_limit.')');
 				}
 				if (\strlen($sSearch)) {
-					$aUids = $this->GetUids($oParams, $sSearch,
-						$oMessageCollection->FolderName, $oMessageCollection->FolderHash);
-
+					$aUids = $this->GetUids($oParams, $sSearch, $oMessageCollection->FolderHash);
 					$oMessageCollection->totalEmails = \count($aUids);
 					if ($oMessageCollection->totalEmails) {
 						$this->MessageListByRequestIndexOrUids(
@@ -680,7 +689,8 @@ class MailClient
 					if (1 < $oInfo->MESSAGES) {
 						$end = \max(1, $oInfo->MESSAGES - $oParams->iOffset);
 						$start = \max(1, $end - $oParams->iLimit + 1);
-						$aRequestIndexes = \range($start, $end);
+						// Attempt to sort REVERSE DATE
+						$aRequestIndexes = \range($end, $start);
 					} else {
 						$aRequestIndexes = \array_slice([1], $oParams->iOffset, 1);
 					}
@@ -688,7 +698,6 @@ class MailClient
 				}
 			} else {
 				$aUids = [];
-				$bUseSortIfSupported = $oParams->bUseSortIfSupported && $this->oImapClient->hasCapability('SORT');
 				if ($bUseThreads) {
 					$aAllThreads = $this->MessageListThreadsMap($oMessageCollection->FolderName, $oMessageCollection->FolderHash, $oParams->oCacher);
 					$oMessageCollection->totalThreads = \count($aAllThreads);
@@ -703,8 +712,7 @@ class MailClient
 							}
 						}
 					} else {
-						$aUids = $this->GetUids($oParams, '',
-							$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $bUseSortIfSupported, $oParams->sSort);
+						$aUids = $this->GetUids($oParams, '', $oMessageCollection->FolderHash, $oParams->bUseSortIfSupported);
 						// Remove all threaded UID's except the most recent of each thread
 						$threadedUids = [];
 						foreach ($aAllThreads as $aMap) {
@@ -714,13 +722,11 @@ class MailClient
 						$aUids = \array_diff($aUids, $threadedUids);
 					}
 				} else {
-					$aUids = $this->GetUids($oParams, '',
-						$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $bUseSortIfSupported, $oParams->sSort);
+					$aUids = $this->GetUids($oParams, '', $oMessageCollection->FolderHash, $oParams->bUseSortIfSupported);
 				}
 
 				if ($aUids && \strlen($sSearch)) {
-					$aSearchedUids = $this->GetUids($oParams, $sSearch,
-						$oMessageCollection->FolderName, $oMessageCollection->FolderHash);
+					$aSearchedUids = $this->GetUids($oParams, $sSearch, $oMessageCollection->FolderHash);
 					if ($bUseThreads && !$oParams->iThreadUid) {
 						$matchingThreadUids = [];
 						foreach ($aAllThreads as $aMap) {

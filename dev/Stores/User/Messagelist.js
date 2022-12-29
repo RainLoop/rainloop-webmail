@@ -42,6 +42,7 @@ export const MessagelistUserStore = ko.observableArray().extend({ debounce: 0 })
 addObservablesTo(MessagelistUserStore, {
 	count: 0,
 	listSearch: '',
+	listLimited: 0,
 	threadUid: 0,
 	page: 1,
 	pageBeforeThread: 1,
@@ -208,12 +209,12 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 
 					const
 						folder = getFolderFromCacheList(collection.Folder),
-						folderInfo = collection.FolderInfo;
+						folderInfo = collection.folderInfo;
 					if (folder && !bCached) {
 //						folder.revivePropertiesFromJson(result);
 						folder.expires = Date.now();
 						folder.uidNext = folderInfo.UidNext;
-						folder.hash = collection.FolderHash;
+						folder.hash = collection.folderHash;
 
 						if (null != folderInfo.totalEmails) {
 							folder.totalEmails(folderInfo.totalEmails);
@@ -242,21 +243,22 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 						});
 						folder.permanentFlags(flags);
 
-						MessagelistUserStore.notifyNewMessages(folder.fullName, collection.NewMessages);
+						MessagelistUserStore.notifyNewMessages(folder.fullName, collection.newMessages);
 					}
 
 					MessagelistUserStore.count(collection.totalEmails);
-					MessagelistUserStore.listSearch(pString(collection.Search));
-					MessagelistUserStore.page(Math.ceil(collection.Offset / SettingsUserStore.messagesPerPage() + 1));
-					MessagelistUserStore.threadUid(collection.ThreadUid);
+					MessagelistUserStore.listSearch(pString(collection.search));
+					MessagelistUserStore.listLimited(!!collection.limited);
+					MessagelistUserStore.page(Math.ceil(collection.offset / SettingsUserStore.messagesPerPage() + 1));
+					MessagelistUserStore.threadUid(collection.threadUid);
 
 					MessagelistUserStore.endHash(
 						collection.Folder +
-						'|' + collection.Search +
+						'|' + collection.search +
 						'|' + MessagelistUserStore.threadUid() +
 						'|' + MessagelistUserStore.page()
 					);
-					MessagelistUserStore.endThreadUid(collection.ThreadUid);
+					MessagelistUserStore.endThreadUid(collection.threadUid);
 					const message = MessageUserStore.message();
 					if (message && collection.Folder !== message.folder) {
 						MessageUserStore.message(null);
@@ -264,7 +266,7 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 
 					disableAutoSelect(true);
 
-					if (collection.ThreadUid) {
+					if (collection.threadUid) {
 						let refs = {};
 						collection.forEach(msg => {
 							msg.level = 0;
@@ -292,10 +294,10 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 		},
 		{
 			Folder: FolderUserStore.currentFolderFullName(),
-			Offset: iOffset,
-			Limit: SettingsUserStore.messagesPerPage(),
-			Search: MessagelistUserStore.listSearch(),
-			ThreadUid: MessagelistUserStore.threadUid()
+			offset: iOffset,
+			limit: SettingsUserStore.messagesPerPage(),
+			search: MessagelistUserStore.listSearch(),
+			threadUid: MessagelistUserStore.threadUid()
 		}
 	);
 };
