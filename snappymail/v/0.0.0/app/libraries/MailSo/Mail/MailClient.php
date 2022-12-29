@@ -406,8 +406,9 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function MessageListThreadsMap(string $sFolderName, string $sFolderHash, ?\MailSo\Cache\CacheClient $oCacher) : array
+	protected function MessageListThreadsMap(MessageCollection $oMessageCollection, ?\MailSo\Cache\CacheClient $oCacher) : array
 	{
+		$sFolderName = $oMessageCollection->FolderName;
 //		$iThreadLimit = $this->oImapClient->Settings->thread_limit;
 
 		$sSearchHash = '';
@@ -416,10 +417,11 @@ class MailClient
 			$sSearchHash = 'ALL';
 		}
 
+		$sSerializedHashKey = null;
 		if ($oCacher && $oCacher->IsInited()) {
 			$sSerializedHashKey =
-				"ThreadsMapSorted/{$sSearchHash}/{$sFolderName}/{$sFolderHash}";
-//				"ThreadsMapSorted/{$sSearchHash}/{$iThreadLimit}/{$sFolderName}/{$sFolderHash}";
+				"ThreadsMapSorted/{$sSearchHash}/{$sFolderName}/{$oMessageCollection->FolderHash}";
+//				"ThreadsMapSorted/{$sSearchHash}/{$iThreadLimit}/{$sFolderName}/{$oMessageCollection->FolderHash}";
 
 			if ($this->oLogger) {
 				$this->oLogger->Write($sSerializedHashKey);
@@ -455,7 +457,7 @@ class MailClient
 			unset($oException);
 		}
 
-		if ($oCacher && $oCacher->IsInited() && !empty($sSerializedHashKey)) {
+		if (!empty($sSerializedHashKey)) {
 			$oCacher->Set($sSerializedHashKey, \json_encode(array(
 				'ThreadsUids' => $aResult
 			)));
@@ -695,7 +697,7 @@ class MailClient
 			} else {
 				$aUids = [];
 				if ($bUseThreads) {
-					$aAllThreads = $this->MessageListThreadsMap($oMessageCollection->FolderName, $oMessageCollection->FolderHash, $oParams->oCacher);
+					$aAllThreads = $this->MessageListThreadsMap($oMessageCollection, $oParams->oCacher);
 					$oMessageCollection->totalThreads = \count($aAllThreads);
 //					$iThreadLimit = $this->oImapClient->Settings->thread_limit;
 					if ($oParams->iThreadUid) {
