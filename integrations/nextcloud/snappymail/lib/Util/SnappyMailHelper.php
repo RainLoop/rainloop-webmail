@@ -27,7 +27,19 @@ class SnappyMailHelper
 //		include APP_INDEX_ROOT_PATH.'snappymail/v/'.APP_VERSION.'/include.php';
 //		define('APP_DATA_FOLDER_PATH', \rtrim(\trim(\OC::$server->getSystemConfig()->getValue('datadirectory', '')), '\\/').'/appdata_snappymail/');
 
-		require_once \dirname(\dirname(__DIR__)) . '/app/index.php';
+		$app_dir = \dirname(\dirname(__DIR__)) . '/app';
+		require_once $app_dir . '/index.php';
+
+		// https://github.com/the-djmaze/snappymail/issues/790#issuecomment-1366527884
+		if (!file_exists($app_dir . '/.htaccess') && file_exists($app_dir . '/_htaccess')) {
+			rename($app_dir . '/_htaccess', $app_dir . '/.htaccess');
+			if (!file_exists(APP_VERSION_ROOT_PATH . '/app/.htaccess') && file_exists(APP_VERSION_ROOT_PATH . '/app/_htaccess')) {
+				rename(APP_VERSION_ROOT_PATH . '/app/_htaccess', APP_VERSION_ROOT_PATH . '/app/.htaccess');
+			}
+			if (!file_exists(APP_VERSION_ROOT_PATH . '/static/.htaccess') && file_exists(APP_VERSION_ROOT_PATH . '/static/_htaccess')) {
+				rename(APP_VERSION_ROOT_PATH . '/static/_htaccess', APP_VERSION_ROOT_PATH . '/static/.htaccess');
+			}
+		}
 
 		$oConfig = \RainLoop\Api::Config();
 		$bSave = false;

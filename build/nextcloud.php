@@ -17,6 +17,7 @@ foreach ($files as $file) {
 	if (is_file($file)) {
 		$name = str_replace('\\', '/', $file);
 		$name = str_replace('integrations/nextcloud/snappymail/', '', $name);
+		$name = str_replace('.htaccess', '_htaccess', $name);
 		$hashes[$name] = hash_file('sha512', $file);
 	}
 }
@@ -36,7 +37,7 @@ $nc_tar->addFromString('data/VERSION', $package->version);
 $nc_tar->addFile('data/README.md');
 $nc_tar->addFile('_include.php', 'snappymail/app/_include.php');
 */
-$nc_tar->addFile('.htaccess', 'snappymail/app/.htaccess');
+$nc_tar->addFile('.htaccess', 'snappymail/app/_htaccess');
 $hashes['app/.htaccess'] = hash_file('sha512', '.htaccess');
 
 $index = file_get_contents('index.php');
