@@ -752,6 +752,7 @@ trait Messages
 
 		$this->Plugins()->RunHook('filter.message-rcpt', array($oAccount, $oRcpt));
 
+		$oSmtpClient = null;
 		try
 		{
 			$oFrom = $oMessage->GetFrom();
@@ -838,7 +839,7 @@ trait Messages
 		}
 		catch (\MailSo\Net\Exceptions\ConnectionException $oException)
 		{
-			if ($this->Config()->Get('labs', 'smtp_show_server_errors')) {
+			if ($oSmtpClient && $oSmtpClient->Settings->viewErrors) {
 				throw new ClientException(Notifications::ClientViewError, $oException);
 			}
 			throw new ClientException(Notifications::ConnectionError, $oException);
@@ -849,7 +850,7 @@ trait Messages
 		}
 		catch (\Throwable $oException)
 		{
-			if ($this->Config()->Get('labs', 'smtp_show_server_errors')) {
+			if ($oSmtpClient && $oSmtpClient->Settings->viewErrors) {
 				throw new ClientException(Notifications::ClientViewError, $oException);
 			}
 			throw $oException;

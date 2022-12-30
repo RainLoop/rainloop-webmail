@@ -37,6 +37,9 @@ if (!function_exists('str_ends_with')) {
 if (!defined('APP_VERSION')) {
 	define('APP_VERSION', basename(__DIR__));
 }
+if (!defined('SNAPPYMAIL_DEV')) {
+	define('SNAPPYMAIL_DEV', '0.0.0' === APP_VERSION);
+}
 
 if (!defined('APP_INDEX_ROOT_PATH')) {
 	define('APP_INDEX_ROOT_PATH', dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR);

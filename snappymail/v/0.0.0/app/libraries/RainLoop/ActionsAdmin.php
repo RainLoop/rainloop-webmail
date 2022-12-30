@@ -60,9 +60,6 @@ class ActionsAdmin extends Actions
 			return $self->ValidateTheme($sTheme);
 		});
 
-		$this->setConfigFromParams($oConfig, 'VerifySslCertificate', 'ssl', 'verify_certificate', 'bool');
-		$this->setConfigFromParams($oConfig, 'AllowSelfSigned', 'ssl', 'allow_self_signed', 'bool');
-
 		$this->setConfigFromParams($oConfig, 'UseLocalProxyForExternalImages', 'labs', 'use_local_proxy_for_external_images', 'bool');
 
 		$this->setConfigFromParams($oConfig, 'AllowLanguagesOnSettings', 'webmail', 'allow_languages_on_settings', 'bool');
@@ -95,7 +92,6 @@ class ActionsAdmin extends Actions
 		$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
 		$this->setConfigFromParams($oConfig, 'FaviconUrl', 'webmail', 'favicon_url', 'string');
 
-		$this->setConfigFromParams($oConfig, 'TokenProtection', 'security', 'csrf_protection', 'bool');
 		$this->setConfigFromParams($oConfig, 'EnabledPlugins', 'plugins', 'enable', 'bool');
 
 		return $this->DefaultResponse($oConfig->Save());
@@ -262,7 +258,7 @@ class ActionsAdmin extends Actions
 		$sVersion = empty($info->version) ? '' : $info->version;
 
 		$bShowWarning = false;
-		if (!empty($info->warnings) && APP_VERSION !== APP_DEV_VERSION) {
+		if (!empty($info->warnings) && !SNAPPYMAIL_DEV) {
 			foreach ($info->warnings as $sWarningVersion) {
 				$sWarningVersion = \trim($sWarningVersion);
 

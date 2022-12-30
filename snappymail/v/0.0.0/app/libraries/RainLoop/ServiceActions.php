@@ -93,7 +93,7 @@ class ServiceActions
 			}
 
 			if ($this->oHttp->IsPost() &&
-				$this->Config()->Get('security', 'csrf_protection', false) &&
+				$this->Config()->Get('security', 'csrf_protection', true) &&
 				($_POST['XToken'] ?? '') !== Utils::GetCsrfToken())
 			{
 				throw new Exceptions\ClientException(Notifications::InvalidToken, null, 'CSRF failed');

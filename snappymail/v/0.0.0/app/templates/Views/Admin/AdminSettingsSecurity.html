@@ -56,25 +56,3 @@
 			data-icon="🔑" data-i18n="GLOBAL/SAVE"></a>
 	</div>
 </form>
-<div class="form-horizontal">
-	<div class="legend">SSL/TLS</div>
-	<div class="control-group">
-		<div>
-			<div data-bind="component: {
-				name: 'Checkbox',
-				params: {
-					value: verifySslCertificate,
-					label: 'TAB_SECURITY/LABEL_REQUIRE_VERIFICATION'
-				}
-			}"></div>
-			<div data-bind="component: {
-				name: 'Checkbox',
-				params: {
-					enable: verifySslCertificate,
-					value: allowSelfSigned,
-					label: 'TAB_SECURITY/LABEL_ALLOW_SELF_SIGNED'
-				}
-			}"></div>
-		</div>
-	</div>
-</div>

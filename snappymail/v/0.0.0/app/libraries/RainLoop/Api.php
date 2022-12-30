@@ -49,7 +49,7 @@ abstract class Api
 		$oConfig = static::Config();
 		$CSP = new \SnappyMail\HTTP\CSP(\trim($oConfig->Get('security', 'content_security_policy', '')));
 		$CSP->report = $oConfig->Get('security', 'csp_report', false);
-		$CSP->report_only = $oConfig->Get('debug', 'enable', false); // '0.0.0' === APP_VERSION
+		$CSP->report_only = $oConfig->Get('debug', 'enable', false); // || SNAPPYMAIL_DEV
 //		$CSP->frame = \explode(' ', $oConfig->Get('security', 'csp_frame', ''));
 
 		// Allow https: due to remote images in e-mails or use proxy

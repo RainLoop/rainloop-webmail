@@ -112,7 +112,6 @@ abstract class Repository
 	{
 		$aResult = array();
 		try {
-			$isDev = '0.0.0' === APP_VERSION;
 			foreach (static::getRepositoryDataByUrl($bReal) as $oItem) {
 				if ($oItem
 				 && isset($oItem->type, $oItem->id, $oItem->name, $oItem->version, $oItem->release, $oItem->file, $oItem->description)
@@ -120,9 +119,9 @@ abstract class Repository
 				 // is this entry newer then an already defined one
 				 && (empty($aResult[$oItem->id]) || \version_compare($aResult[$oItem->id]['version'], $oItem->version, '<'))
 				 // does this entry require same or older app version
-				 && ($isDev || empty($oItem->required) || \version_compare(APP_VERSION, $oItem->required, '>='))
+				 && (SNAPPYMAIL_DEV || empty($oItem->required) || \version_compare(APP_VERSION, $oItem->required, '>='))
 				 // is this entry not deprecated for current app version?
-				 && ($isDev || empty($oItem->deprecated) || \version_compare(APP_VERSION, $oItem->deprecated, '<'))
+				 && (SNAPPYMAIL_DEV || empty($oItem->deprecated) || \version_compare(APP_VERSION, $oItem->deprecated, '<'))
 				) {
 					$aResult[$oItem->id] = array(
 						'type' => $oItem->type,

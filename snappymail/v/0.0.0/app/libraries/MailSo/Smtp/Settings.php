@@ -22,10 +22,18 @@ class Settings extends \MailSo\Net\ConnectSettings
 		$timeout = 60;
 
 	public bool
+		$setSender = false,
 		$usePhpMail = false,
-		$setSender = false;
+		$viewErrors = false;
 
 	public string $Ehlo;
+
+	public function __construct()
+	{
+		parent::__construct();
+		$oConfig = \RainLoop\API::Config();
+		$this->viewErrors = !!$oConfig->Get('labs', 'smtp_show_server_errors', false);
+	}
 
 	public static function fromArray(array $aSettings) : self
 	{
@@ -33,6 +41,7 @@ class Settings extends \MailSo\Net\ConnectSettings
 		$object->useAuth = !empty($aSettings['useAuth']);
 		$object->setSender = !empty($aSettings['setSender']);
 		$object->usePhpMail = !empty($aSettings['usePhpMail']);
+//		$object->viewErrors = !empty($aSettings['viewErrors']);
 		return $object;
 	}
 
@@ -46,6 +55,7 @@ class Settings extends \MailSo\Net\ConnectSettings
 				'useAuth' => $this->useAuth,
 				'setSender' => $this->setSender,
 				'usePhpMail' => $this->usePhpMail
+//				'viewErrors' => $this->viewErrors
 			]
 		);
 	}

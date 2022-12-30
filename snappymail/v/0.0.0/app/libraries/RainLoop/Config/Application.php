@@ -191,13 +191,14 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 				'openpgp'                    => array(false),
 
+				'allow_admin_panel'          => array(true, 'Access settings'),
 				'admin_login'                => array('admin', 'Login and password for web admin panel'),
 				'admin_password'             => array(''),
 				'admin_totp'                 => array(''),
-				'allow_admin_panel'          => array(true, 'Access settings'),
-				'hide_x_mailer_header'       => array(true),
 				'admin_panel_host'           => array(''),
 				'admin_panel_key'            => array('admin'),
+
+				'hide_x_mailer_header'       => array(true),
 				'content_security_policy'    => array('', 'For example to allow all images use "img-src https:". More info at https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy#directives'),
 				'csp_report'                 => array(false, 'Report CSP errors to PHP and/or SnappyMail Log'),
 				'encrypt_cipher'             => array('aes-256-cbc-hmac-sha1', 'A valid cipher method from https://php.net/openssl_get_cipher_methods'),
@@ -236,9 +237,8 @@ Default is "site=same-origin;site=none"')
 
 			'capa' => array(
 				'quota' => array(true),
-				'dangerous_actions' => array(true),
-				'message_actions' => array(true),
-				'attachments_actions' => array(true)
+				'dangerous_actions' => array(true, 'Allow clear folder and delete messages without moving to trash'),
+				'attachments_actions' => array(true, 'Allow download attachments as Zip (and optionally others)')
 			),
 
 			'login' => array(
@@ -253,8 +253,8 @@ When this value is gethostname, the gethostname() value is used.
 				'allow_languages_on_login' => array(true,
 					'Allow language selection on webmail login screen'),
 
-				'determine_user_language' => array(true),
-				'determine_user_domain' => array(false),
+				'determine_user_language' => array(true, 'Detect language from browser header `Accept-Language`'),
+				'determine_user_domain' => array(false, 'Like default_domain but then HTTP_HOST/SERVER_NAME without www.'),
 
 				'login_lowercase' => array(true),
 
@@ -380,13 +380,12 @@ Enables caching in the system'),
 
 			'labs' => array(
 				'cache_system_data' => array(true),
-				'date_from_headers' => array(true),
+				'date_from_headers' => array(true, 'Display message RFC 2822 date and time header, instead of the arrival internal date.'),
 				'allow_message_append' => array(false),
 				'login_fault_delay' => array(1),
 				'log_ajax_response_write_limit' => array(300),
 				'allow_html_editor_biti_buttons' => array(false),
 				'allow_ctrl_enter_on_compose' => array(true),
-				'try_to_detect_hidden_images' => array(false),
 				'smtp_show_server_errors' => array(false),
 				'sieve_auth_plain_initial' => array(true),
 				'sieve_allow_fileinto_inbox' => array(false),

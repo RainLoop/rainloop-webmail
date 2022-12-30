@@ -300,7 +300,7 @@ class MailClient
 	{
 		$aNewMessages = array();
 
-		if ($iPrevUidNext && $iPrevUidNext != $iCurrentUidNext && 'INBOX' === $sFolderName && $this->oImapClient->Settings->fetch_new_messages) {
+		if ($this->oImapClient->Settings->fetch_new_messages && $iPrevUidNext && $iPrevUidNext != $iCurrentUidNext && 'INBOX' === $sFolderName) {
 			$this->oImapClient->FolderExamine($sFolderName);
 
 			$aFetchResponse = $this->oImapClient->Fetch(array(

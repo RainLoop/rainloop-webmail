@@ -7,8 +7,6 @@ use RainLoop\KeyPathHelper;
 use RainLoop\Notifications;
 use RainLoop\Utils;
 
-//define('APP_DEV_VERSION', '0.0.0');
-
 trait Admin
 {
 	protected static string $AUTH_ADMIN_TOKEN_KEY = 'smadmin';

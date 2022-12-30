@@ -614,7 +614,7 @@ class Actions
 			'System' => \array_merge(
 				array(
 					'version' => APP_VERSION,
-					'token' => $oConfig->Get('security', 'csrf_protection', false) ? Utils::GetCsrfToken() : '',
+					'token' => $oConfig->Get('security', 'csrf_protection', true) ? Utils::GetCsrfToken() : '',
 					'languages' => \SnappyMail\L10n::getLanguages(false),
 					'webPath' => \RainLoop\Utils::WebPath(),
 					'webVersionPath' => \RainLoop\Utils::WebVersionPath()
@@ -635,15 +635,11 @@ class Actions
 			if ($aResult['Auth']) {
 				$aResult['AdminLogin'] = (string)$oConfig->Get('security', 'admin_login', '');
 				$aResult['AdminTOTP'] = (string)$oConfig->Get('security', 'admin_totp', '');
-				$aResult['UseTokenProtection'] = (bool)$oConfig->Get('security', 'csrf_protection', true);
 				$aResult['EnabledPlugins'] = (bool)$oConfig->Get('plugins', 'enable', false);
 
 				$aResult['LoginDefaultDomain'] = $oConfig->Get('login', 'default_domain', '');
 				$aResult['DetermineUserLanguage'] = (bool)$oConfig->Get('login', 'determine_user_language', true);
 				$aResult['DetermineUserDomain'] = (bool)$oConfig->Get('login', 'determine_user_domain', false);
-
-				$aResult['VerifySslCertificate'] = (bool)$oConfig->Get('ssl', 'verify_certificate', false);
-				$aResult['AllowSelfSigned'] = (bool)$oConfig->Get('ssl', 'allow_self_signed', true);
 
 				$aResult['supportedPdoDrivers'] = \RainLoop\Common\PdoAbstract::getAvailableDrivers();
 
@@ -835,7 +831,7 @@ class Actions
 					$sLanguage = $this->ValidateLanguage($UserLanguageRaw, $sLanguage, false);
 				}
 
-				if ('0.0.0' === APP_VERSION) {
+				if (SNAPPYMAIL_DEV) {
 					$aResult['DevEmail'] = $oConfig->Get('labs', 'dev_email', '');
 					$aResult['DevPassword'] = $oConfig->Get('labs', 'dev_password', '');
 				} else {
@@ -1048,7 +1044,6 @@ class Actions
 				'GnuPG'                => (bool) $oConfig->Get('security', 'openpgp', false) && \SnappyMail\PGP\GnuPG::isSupported(),
 				'Identities'           => (bool) $oConfig->Get('webmail', 'allow_additional_identities', false),
 				'Kolab'                => false, // See Kolab plugin
-				'MessageActions'       => (bool) $oConfig->Get('capa', 'message_actions', true),
 				'OpenPGP'              => (bool) $oConfig->Get('security', 'openpgp', false),
 				'Quota'                => (bool) $oConfig->Get('capa', 'quota', true),
 				'Sieve'                => false,

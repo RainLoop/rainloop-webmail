@@ -119,8 +119,6 @@ export class MailMessageView extends AbstractViewRight {
 
 		this.moveAction = moveAction;
 
-		this.allowMessageActions = SettingsCapa('MessageActions');
-
 		const attachmentsActions = Settings.app('attachmentsActions');
 		this.attachmentsActions = ko.observableArray(arrayLength(attachmentsActions) ? attachmentsActions : []);
 
