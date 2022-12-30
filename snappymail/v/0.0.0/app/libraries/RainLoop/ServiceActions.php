@@ -455,7 +455,7 @@ class ServiceActions
 		\header('Content-Type: application/javascript; charset=utf-8');
 
 		$bAppDebug = $this->Config()->Get('debug', 'enable', false);
-		$sMinify = ($bAppDebug || $this->Config()->Get('labs', 'use_app_debug_js', false)) ? '' : 'min';
+		$sMinify = ($bAppDebug || $this->Config()->Get('debug', 'javascript', false)) ? '' : 'min';
 
 		$bCacheEnabled = !$bAppDebug && $this->Config()->Get('labs', 'cache_system_data', true);
 		if ($bCacheEnabled) {
@@ -499,7 +499,7 @@ class ServiceActions
 			$sTheme = $this->oActions->ValidateTheme($this->aPaths[4]);
 
 			$bAppDebug = $this->Config()->Get('debug', 'enable', false);
-			$sMinify = ($bAppDebug || $this->Config()->Get('labs', 'use_app_debug_css', false)) ? '' : 'min';
+			$sMinify = ($bAppDebug || $this->Config()->Get('debug', 'css', false)) ? '' : 'min';
 
 			$bCacheEnabled = !$bAppDebug && $this->Config()->Get('labs', 'cache_system_data', true);
 			if ($bCacheEnabled) {

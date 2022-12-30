@@ -91,10 +91,17 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 	public function Set(string $sSectionKey, string $sParamKey, $mParamValue) : void
 	{
-		if ('labs' === $sSectionKey && \str_contains($sParamKey, 'imap_')) {
-			// This is a workaround for the changed application structure
-			$sSectionKey = 'imap';
-			$sParamKey = \str_replace('imap_', '', $sParamKey);
+		// Workarounds for the changed application structure
+		if ('labs' === $sSectionKey) {
+			if (\str_contains($sParamKey, 'imap_')) {
+				$sSectionKey = 'imap';
+				$sParamKey = \str_replace('imap_', '', $sParamKey);
+			}
+			if (\str_contains($sParamKey, 'use_app_debug_')) {
+				$sSectionKey = 'debug';
+				$sParamKey = \str_replace('use_app_debug_js', 'javascript', $sParamKey);
+				$sParamKey = \str_replace('use_app_debug_css', 'css', $sParamKey);
+			}
 		}
 		parent::Set($sSectionKey, $sParamKey, $mParamValue);
 	}
@@ -336,7 +343,11 @@ Examples:
 			),
 
 			'debug' => array(
-				'enable' => array(false, 'Special option required for development purposes')
+				'enable' => array(false, 'Special option required for development purposes'),
+				// use_app_debug_js
+				'javascript' => array(false),
+				// use_app_debug_css
+				'css' => array(false)
 			),
 
 			'cache' => array(
@@ -376,8 +387,6 @@ Enables caching in the system'),
 				'allow_html_editor_biti_buttons' => array(false),
 				'allow_ctrl_enter_on_compose' => array(true),
 				'try_to_detect_hidden_images' => array(false),
-				'use_app_debug_js' => array(false),
-				'use_app_debug_css' => array(false),
 				'smtp_show_server_errors' => array(false),
 				'sieve_auth_plain_initial' => array(true),
 				'sieve_allow_fileinto_inbox' => array(false),
