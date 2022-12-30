@@ -409,19 +409,20 @@ class MailClient
 	protected function MessageListThreadsMap(MessageCollection $oMessageCollection, ?\MailSo\Cache\CacheClient $oCacher) : array
 	{
 		$sFolderName = $oMessageCollection->FolderName;
-//		$iThreadLimit = $this->oImapClient->Settings->thread_limit;
 
-		$sSearchHash = '';
-
-		if ('' === \trim($sSearchHash)) {
-			$sSearchHash = 'ALL';
+		$sSearch = 'ALL';
+/*
+		$iThreadLimit = $this->oImapClient->Settings->thread_limit;
+		if ($iThreadLimit && $iThreadLimit < $oMessageCollection->FolderInfo->MESSAGES) {
+			$sSearch = ($oMessageCollection->FolderInfo->MESSAGES - $iThreadLimit) . ':*';
 		}
+*/
 
 		$sSerializedHashKey = null;
 		if ($oCacher && $oCacher->IsInited()) {
 			$sSerializedHashKey =
-				"ThreadsMapSorted/{$sSearchHash}/{$sFolderName}/{$oMessageCollection->FolderHash}";
-//				"ThreadsMapSorted/{$sSearchHash}/{$iThreadLimit}/{$sFolderName}/{$oMessageCollection->FolderHash}";
+				"ThreadsMapSorted/{$sSearch}/{$sFolderName}/{$oMessageCollection->FolderHash}";
+//				"ThreadsMapSorted/{$sSearch}/{$iThreadLimit}/{$sFolderName}/{$oMessageCollection->FolderHash}";
 
 			if ($this->oLogger) {
 				$this->oLogger->Write($sSerializedHashKey);
@@ -432,7 +433,7 @@ class MailClient
 				$aSerializedUids = \json_decode($sSerializedUids, true);
 				if (isset($aSerializedUids['ThreadsUids']) && \is_array($aSerializedUids['ThreadsUids'])) {
 					if ($this->oLogger) {
-						$this->oLogger->Write('Get Serialized Thread UIDS from cache ("'.$sFolderName.'" / '.$sSearchHash.') [count:'.\count($aSerializedUids['ThreadsUids']).']');
+						$this->oLogger->Write('Get Serialized Thread UIDS from cache ("'.$sFolderName.'" / '.$sSearch.') [count:'.\count($aSerializedUids['ThreadsUids']).']');
 					}
 					return $aSerializedUids['ThreadsUids'];
 				}
@@ -444,7 +445,7 @@ class MailClient
 		$aResult = array();
 		try
 		{
-			foreach ($this->oImapClient->MessageSimpleThread($sSearchHash) as $mItem) {
+			foreach ($this->oImapClient->MessageSimpleThread($sSearch) as $mItem) {
 				// Flatten to single level
 				$aMap = [];
 				\array_walk_recursive($mItem, function($a) use (&$aMap) { $aMap[] = $a; });
@@ -463,7 +464,7 @@ class MailClient
 			)));
 
 			if ($this->oLogger) {
-				$this->oLogger->Write('Save Serialized Thread UIDS to cache ("'.$sFolderName.'" / '.$sSearchHash.') [count:'.\count($aResult).']');
+				$this->oLogger->Write('Save Serialized Thread UIDS to cache ("'.$sFolderName.'" / '.$sSearch.') [count:'.\count($aResult).']');
 			}
 		}
 
@@ -563,6 +564,13 @@ class MailClient
 		 */
 
 		$sSearchCriterias = \MailSo\Imap\SearchCriterias::fromString($this->oImapClient, $sFolderName, $sSearch, $oParams->bHideDeleted, $bUseCacheAfterSearch);
+
+		$bReturnUid = true;
+		if ($oParams->oSequenceSet) {
+			$bReturnUid = $oParams->oSequenceSet->UID;
+			$sSearchCriterias = $oParams->oSequenceSet . ' ' . $sSearchCriterias;
+		}
+
 		// Disabled for now as there are many cases that change the result
 		$bUseCacheAfterSearch = false;
 		if ($bUseCacheAfterSearch) {
@@ -601,11 +609,11 @@ class MailClient
 				}
 //				$this->oImapClient->hasCapability('ESORT')
 //				$aResultUids = $this->oImapClient->MessageSimpleESort($aSortTypes, $sSearchCriterias)['ALL'];
-				$aResultUids = $this->oImapClient->MessageSimpleSort($aSortTypes, $sSearchCriterias);
+				$aResultUids = $this->oImapClient->MessageSimpleSort($aSortTypes, $sSearchCriterias, $bReturnUid);
 			} else {
 //				$this->oImapClient->hasCapability('ESEARCH')
-//				$aResultUids = $this->oImapClient->MessageSimpleESearch($sSearchCriterias, null, true, \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? '' : 'UTF-8')
-				$aResultUids = $this->oImapClient->MessageSimpleSearch($sSearchCriterias,        true, \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? '' : 'UTF-8');
+//				$aResultUids = $this->oImapClient->MessageSimpleESearch($sSearchCriterias, null, $bReturnUid, \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? '' : 'UTF-8')
+				$aResultUids = $this->oImapClient->MessageSimpleSearch($sSearchCriterias,        $bReturnUid, \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? '' : 'UTF-8');
 			}
 
 			if ($bUseCacheAfterSearch) {
@@ -666,12 +674,13 @@ class MailClient
 		}
 
 		if ($oInfo->MESSAGES) {
-			if (0 < $this->oImapClient->Settings->message_list_limit && $this->oImapClient->Settings->message_list_limit < $oInfo->MESSAGES) {
+			$message_list_limit = $this->oImapClient->Settings->message_list_limit;
+			if (0 < $message_list_limit && $message_list_limit < $oInfo->MESSAGES) {
 				// Don't use SORT nor THREAD
 				$oMessageCollection->Limited = true;
 				if ($this->oLogger) {
 					$this->oLogger->Write('List optimization (count: '.$oInfo->MESSAGES.
-						', limit:'.$this->oImapClient->Settings->message_list_limit.')');
+						', limit:'.$message_list_limit.')');
 				}
 				if (\strlen($sSearch)) {
 					$aUids = $this->GetUids($oParams, $sSearch, $oMessageCollection->FolderHash);
@@ -685,10 +694,19 @@ class MailClient
 				} else {
 					$oMessageCollection->totalEmails = $oInfo->MESSAGES;
 					if (1 < $oInfo->MESSAGES) {
+						// Attempt to sort REVERSE DATE with a bigger range then $oParams->iLimit
+						$end = \min($oInfo->MESSAGES, \max(1, $oInfo->MESSAGES - $oParams->iOffset + $oParams->iLimit));
+						$start = \max(1, $end - ($oParams->iLimit * 3) + 1);
+						$oParams->oSequenceSet = new SequenceSet(\range($end, $start), false);
+						$aRequestIndexes = $this->GetUids($oParams, '', $oMessageCollection->FolderHash, true);
+						// Attempt to get the correct $oParams->iLimit slice
+						$aRequestIndexes = \array_slice($aRequestIndexes, $oParams->iOffset ? $oParams->iLimit : 0, $oParams->iLimit);
+/*
 						$end = \max(1, $oInfo->MESSAGES - $oParams->iOffset);
 						$start = \max(1, $end - $oParams->iLimit + 1);
 						// Attempt to sort REVERSE DATE
 						$aRequestIndexes = \range($end, $start);
+*/
 					} else {
 						$aRequestIndexes = \array_slice([1], $oParams->iOffset, 1);
 					}

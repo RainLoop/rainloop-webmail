@@ -32,6 +32,11 @@ class MessageListParams
 		$iPrevUidNext = 0, // used to check for new messages
 		$iThreadUid = 0;
 
+	/**
+	 * Messages with message sequence numbers corresponding to the specified message sequence number set.
+	 */
+	public ?\MailSo\Imap\SequenceSet $oSequenceSet = null;
+
 	public function __get($k)
 	{
 		return \property_exists($this, $k) ? $this->$k : null;
