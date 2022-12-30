@@ -479,7 +479,7 @@ class MailClient
 	protected function MessageListByRequestIndexOrUids(MessageCollection $oMessageCollection, SequenceSet $oRange, array &$aAllThreads = []) : void
 	{
 		if (\count($oRange)) {
-			$aFetchResponse = $this->oImapClient->Fetch(array(
+			$aFetchIterator = $this->oImapClient->FetchIterate(array(
 				FetchType::UID,
 				FetchType::RFC822_SIZE,
 				FetchType::INTERNALDATE,
@@ -487,31 +487,29 @@ class MailClient
 				FetchType::BODYSTRUCTURE,
 				$this->getEnvelopeOrHeadersRequestString()
 			), (string) $oRange, $oRange->UID);
-
-			if (\count($aFetchResponse)) {
-				$aCollection = \array_fill_keys($oRange->getArrayCopy(), null);
-				foreach ($aFetchResponse as /* @var $oFetchResponseItem \MailSo\Imap\FetchResponse */ $oFetchResponseItem) {
-					$id = $oRange->UID
-						? $oFetchResponseItem->GetFetchValue(FetchType::UID)
-						: $oFetchResponseItem->oImapResponse->ResponseList[1];
-					$oMessage = Message::fromFetchResponse($oMessageCollection->FolderName, $oFetchResponseItem);
-					if ($oMessage) {
-						if ($aAllThreads) {
-							$iUid = $oMessage->Uid;
-							// Find thread and set it.
-							// Used by GUI to delete/move the whole thread or other features
-							foreach ($aAllThreads as $aMap) {
-								if (\in_array($iUid, $aMap)) {
-									$oMessage->SetThreads($aMap);
-									break;
-								}
+			// FETCH does not respond in the id order of the SequenceSet, so we prefill $aCollection for the right sort order.
+			$aCollection = \array_fill_keys($oRange->getArrayCopy(), null);
+			foreach ($aFetchIterator as /* @var $oFetchResponseItem \MailSo\Imap\FetchResponse */ $oFetchResponseItem) {
+				$id = $oRange->UID
+					? $oFetchResponseItem->GetFetchValue(FetchType::UID)
+					: $oFetchResponseItem->oImapResponse->ResponseList[1];
+				$oMessage = Message::fromFetchResponse($oMessageCollection->FolderName, $oFetchResponseItem);
+				if ($oMessage) {
+					if ($aAllThreads) {
+						$iUid = $oMessage->Uid;
+						// Find thread and set it.
+						// Used by GUI to delete/move the whole thread or other features
+						foreach ($aAllThreads as $aMap) {
+							if (\in_array($iUid, $aMap)) {
+								$oMessage->SetThreads($aMap);
+								break;
 							}
 						}
-						$aCollection[$id] = $oMessage;
 					}
+					$aCollection[$id] = $oMessage;
 				}
-				$oMessageCollection->exchangeArray(\array_values(\array_filter($aCollection)));
 			}
+			$oMessageCollection->exchangeArray(\array_values(\array_filter($aCollection)));
 		}
 	}
 

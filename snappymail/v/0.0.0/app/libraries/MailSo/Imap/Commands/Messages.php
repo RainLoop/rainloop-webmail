@@ -32,7 +32,7 @@ trait Messages
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function Fetch(array $aInputFetchItems, string $sIndexRange, bool $bIndexIsUid) : array
+	public function FetchIterate(array $aInputFetchItems, string $sIndexRange, bool $bIndexIsUid) : iterable
 	{
 		if (!\strlen(\trim($sIndexRange))) {
 			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
@@ -112,7 +112,7 @@ trait Messages
 			foreach ($this->yieldUntaggedResponses() as $oResponse) {
 				if (FetchResponse::isValidImapResponse($oResponse)) {
 					if (FetchResponse::hasUidAndSize($oResponse)) {
-						$aReturn[] = new FetchResponse($oResponse);
+						yield new FetchResponse($oResponse);
 					} else if ($this->oLogger) {
 						$this->oLogger->Write('Skipped Imap Response! ['.$oResponse.']', \LOG_NOTICE);
 					}
@@ -121,7 +121,14 @@ trait Messages
 		} finally {
 			$this->aFetchCallbacks = array();
 		}
+	}
 
+	public function Fetch(array $aInputFetchItems, string $sIndexRange, bool $bIndexIsUid) : array
+	{
+		$aReturn = array();
+		foreach ($this->FetchIterate($aInputFetchItems, $sIndexRange, $bIndexIsUid) as $oFetchResponse) {
+			$aReturn[] = $oFetchResponse;
+		}
 		return $aReturn;
 	}
 
