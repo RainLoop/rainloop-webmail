@@ -67,7 +67,7 @@ trait Messages
 			}
 
 			$oParams->oCacher = $this->cacherForUids();
-			$oParams->bUseSortIfSupported = true;
+			$oParams->bUseSort = true;
 
 			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 			if ($oSettingsLocal instanceof \RainLoop\Settings) {

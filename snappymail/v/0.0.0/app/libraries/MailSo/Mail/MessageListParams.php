@@ -22,7 +22,7 @@ class MessageListParams
 		$oCacher = null;
 
 	public bool
-		$bUseSortIfSupported = false,
+		$bUseSort = true,
 		$bUseThreads = false,
 		$bHideDeleted = true;
 
