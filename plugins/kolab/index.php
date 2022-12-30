@@ -8,7 +8,7 @@ class KolabPlugin extends \RainLoop\Plugins\AbstractPlugin
 		RELEASE  = '2022-12-30',
 		CATEGORY = 'Contacts',
 		DESCRIPTION = 'Use an Address Book of Kolab.',
-		REQUIRED = '2.23.0';
+		REQUIRED = '2.24.4';
 
 	public function Init() : void
 	{

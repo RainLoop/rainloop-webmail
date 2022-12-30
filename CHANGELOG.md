@@ -1,9 +1,28 @@
+## 2.24.4 – 2022-12-30
+
+## Added
+- Check PHP_INT_SIZE if SnappyMail runs on 64bit
+
+## Changed
+- A lot of MessageList sorting improvements
+  [#796](https://github.com/the-djmaze/snappymail/pull/796)
+- On upgrade also update plugins in Nextcloud due to many misunderstandings and prevent invalid open issues
+- Moved application.ini labs.use_app_debug_* to debug.*
+
+## Fixed
+- Dutch translation for confusing message (threads vs grouped)
+- Workaround Nextcloud disallowed .htaccess
+  [#790](https://github.com/the-djmaze/snappymail/pull/790)
+- Searching on Nextcloud search failed
+  [#787](https://github.com/the-djmaze/snappymail/pull/787)
+
+
 ## 2.24.3 – 2022-12-28
 
 ## Changed
 - When sorting on FROM also sort on REVERSE DATE
 
-## Bugfixes
+## Fixed
 - F5 and Ctrl-F5 reload logs out of Snappymail in Chrome.
   [#800](https://github.com/the-djmaze/snappymail/pull/800)
 - Switching accounts does not work anymore with 2.24.2
