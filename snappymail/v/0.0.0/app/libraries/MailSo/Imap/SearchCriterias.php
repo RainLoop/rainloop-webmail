@@ -19,8 +19,7 @@ namespace MailSo\Imap;
 abstract class SearchCriterias
 {
 	const
-		RegEx = 'in|e?mail|from|to|subject|has|is|date|since|before|text|body|size|larger|bigger|smaller|maxsize|minsize|keyword|older_than|newer_than';
-
+		RegEx = 'in|e?mail|from|to|subject|has|is|date|since|before|text|body|size|larger|bigger|smaller|maxsize|minsize|keyword|older_than|newer_than|on|senton|sentsince|sentbefore';
 	/**
 		https://datatracker.ietf.org/doc/html/rfc3501#section-6.4.4
 
@@ -66,22 +65,22 @@ abstract class SearchCriterias
 		☐ NOT <search-key>
 			Messages that do not match the specified search key.
 
-		☐ ON <date>
+		✔ ON <date>
 			Messages whose internal date (disregarding time and timezone)
 			is within the specified date.
 
 		✔ OR <search-key1> <search-key2>
 			Messages that match either search key.
 
-		☐ SENTBEFORE <date>
+		✔ SENTBEFORE <date>
 			Messages whose [RFC-2822] Date: header (disregarding time and
 			timezone) is earlier than the specified date.
 
-		☐ SENTON <date>
+		✔ SENTON <date>
 			Messages whose [RFC-2822] Date: header (disregarding time and
 			timezone) is within the specified date.
 
-		☐ SENTSINCE <date>
+		✔ SENTSINCE <date>
 			Messages whose [RFC-2822] Date: header (disregarding time and
 			timezone) is within or later than the specified date.
 
@@ -237,10 +236,14 @@ abstract class SearchCriterias
 								$iTimeFilter = \max($iTimeFilter, $sValue);
 							}
 							break;
+						case 'ON':
+						case 'SENTON':
+						case 'SENTSINCE':
+						case 'SENTBEFORE':
 						case 'BEFORE':
 							$sValue = static::parseSearchDate($sRawValue);
 							if ($sValue) {
-								$aCriteriasResult[] = 'BEFORE';
+								$aCriteriasResult[] = $sName;
 								$aCriteriasResult[] = \gmdate('j-M-Y', $sValue);
 							}
 							break;
@@ -374,6 +377,10 @@ abstract class SearchCriterias
 				case 'SMALLER':
 				case 'LARGER':
 				case 'SINCE':
+				case 'ON':
+				case 'SENTON':
+				case 'SENTSINCE':
+				case 'SENTBEFORE':
 				case 'BEFORE':
 					if (\strlen($mValue)) {
 						$aResult[$sName] = $mValue;
