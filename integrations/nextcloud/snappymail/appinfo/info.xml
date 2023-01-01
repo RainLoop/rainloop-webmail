@@ -25,6 +25,8 @@ There, click on the link to go to the SnappyMail admin panel.
 	<namespace>SnappyMail</namespace>
 	<documentation>
 		<user>https://github.com/the-djmaze/snappymail/blob/master/integrations/nextcloud/snappymail/README.md</user>
+		<admin>https://github.com/the-djmaze/snappymail/wiki/Admin-Manual</admin>
+		<developer>https://github.com/the-djmaze/snappymail/wiki/Developer-Documentation</developer>
 		<website>https://github.com/the-djmaze/snappymail/wiki</website>
 	</documentation>
 	<category>integration</category>
