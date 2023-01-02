@@ -92,6 +92,21 @@ class Message implements \JsonSerializable
 		return \property_exists($this, $k) ? $this->$k : null;
 	}
 
+	public function Subject() : string
+	{
+		return $this->sSubject;
+	}
+
+	public function From() : ?\MailSo\Mime\EmailCollection
+	{
+		return $this->oFrom;
+	}
+
+	public function Uid() : int
+	{
+		return $this->Uid;
+	}
+
 	public function Plain() : string
 	{
 		return $this->sPlain;
