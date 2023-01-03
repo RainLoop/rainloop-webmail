@@ -14,7 +14,6 @@ const
 	createElement = name => doc.createElement(name),
 
 	tpl = createElement('template'),
-	clr = createElement('input'),
 
 	trimLines = html => html.trim().replace(/^(<div>\s*<br\s*\/?>\s*<\/div>)+/, '').trim(),
 	htmlToPlain = html => rl.Utils.htmlToPlain(html).trim(),
@@ -61,18 +60,21 @@ const
 		}
 	};
 
-clr.type = "color";
-clr.style.display = 'none';
-doc.body.append(clr);
-
 class SquireUI
 {
 	constructor(container) {
 		const
-			doClr = name => () => {
+			clr = createElement('input'),
+			doClr = name => input => {
+				// https://github.com/the-djmaze/snappymail/issues/826
+				var rect = input.getBoundingClientRect();
+				clr.style.top = (rect.bottom - clr.offsetHeight) + 'px';
+				clr.style.left = rect.left + 'px';
+				clr.style.width = (rect.right - rect.left) + 'px';
+
 				clr.value = '';
 				clr.onchange = () => squire.setStyle({[name]:clr.value});
-				clr.click();
+				setTimeout(()=>clr.click(),1);
 			},
 
 			actions = {
@@ -257,6 +259,11 @@ class SquireUI
 			toolbar = createElement('div'),
 			browseImage = createElement('input'),
 			squire = new Squire(wysiwyg, SquireDefaultConfig);
+
+		clr.type = "color";
+		clr.style.opacity = 0;
+		clr.style.position = 'fixed';
+		container.append(clr);
 
 		browseImage.type = 'file';
 		browseImage.accept = 'image/*';
