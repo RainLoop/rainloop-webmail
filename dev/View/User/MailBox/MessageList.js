@@ -164,6 +164,7 @@ export class MailMessageList extends AbstractViewRight {
 							current = {
 								id: email,
 								label: msg.from[0].toLine(),
+								search: 'from=' + msg.from[0].email,
 								messages: []
 							};
 							list.push(current);
@@ -175,23 +176,25 @@ export class MailMessageList extends AbstractViewRight {
 						rtf = Intl.RelativeTimeFormat
 							? new Intl.RelativeTimeFormat(doc.documentElement.lang, { numeric: "auto" }) : 0;
 					MessagelistUserStore.forEach(msg => {
-						let date = (new Date(msg.dateTimeStampInUTC() * 1000)),
-							ymd = Ymd(date);
+						let dt = (new Date(msg.dateTimeStampInUTC() * 1000)),
+							date,
+							ymd = Ymd(dt);
 						if (!current || ymd != current.id) {
 							if (rtf && today == ymd) {
 								date = rtf.format(0, 'day');
 							} else if (rtf && today - 1 == ymd) {
 								date = rtf.format(-1, 'day');
 //							} else if (today - 7 < ymd) {
-//								date = date.format({weekday: 'long'});
-//								date = date.format({dateStyle: 'full'},0,LanguageStore.hourCycle());
+//								date = dt.format({weekday: 'long'});
+//								date = dt.format({dateStyle: 'full'},0,LanguageStore.hourCycle());
 							} else {
-//								date = date.format({dateStyle: 'medium'},0,LanguageStore.hourCycle());
-								date = date.format({dateStyle: 'full'},0,LanguageStore.hourCycle());
+//								date = dt.format({dateStyle: 'medium'},0,LanguageStore.hourCycle());
+								date = dt.format({dateStyle: 'full'},0,LanguageStore.hourCycle());
 							}
 							current = {
 								id: ymd,
 								label: date,
+								search: 'on=' + dt.getFullYear() + '-' + pad2(1 + dt.getMonth()) + '-' + pad2(dt.getDate()),
 								messages: []
 							};
 							list.push(current);
@@ -813,6 +816,10 @@ export class MailMessageList extends AbstractViewRight {
 
 	advancedSearchClick() {
 		showScreenPopup(AdvancedSearchPopupView, [MessagelistUserStore.mainSearch()]);
+	}
+
+	groupSearchClick(group) {
+		group.search && MessagelistUserStore.mainSearch(group.search);
 	}
 
 	quotaTooltip() {
