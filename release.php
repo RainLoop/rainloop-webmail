@@ -2,7 +2,7 @@
 <?php
 chdir(__DIR__);
 
-$options = getopt('', ['aur','docker','plugins','set-version','skip-gulp','debian','nextcloud','owncloud','sign','cpanel']);
+$options = getopt('', ['aur','docker','plugins','skip-gulp','debian','nextcloud','owncloud','sign','cpanel']);
 
 if (isset($options['plugins'])) {
 	require(__DIR__ . '/build/plugins.php');
@@ -26,16 +26,9 @@ file_put_contents($file, preg_replace('/<upstream>[^<]*</', "<upstream>{$package
 // docker
 $file = __DIR__ . '/.docker/release/files/usr/local/include/application.ini';
 file_put_contents($file, preg_replace('/current = "[0-9.]+"/', "current = \"{$package->version}\"", file_get_contents($file)));
-// nextcloud
-$file = __DIR__ . '/integrations/nextcloud/snappymail/appinfo/info.xml';
-file_put_contents($file, preg_replace('/<version>[^<]*</', "<version>{$package->version}<", file_get_contents($file)));
 // virtualmin
 $file = __DIR__ . '/integrations/virtualmin/snappymail.pl';
 file_put_contents($file, preg_replace('/return \\( "[0-9]+\\.[0-9]+\\.[0-9]+" \\)/', "return ( \"{$package->version}\" )", file_get_contents($file)));
-
-if (isset($options['set-version'])) {
-	exit;
-}
 
 // Arch User Repository
 // https://aur.archlinux.org/packages/snappymail/

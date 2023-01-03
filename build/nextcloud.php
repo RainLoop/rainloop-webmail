@@ -11,6 +11,10 @@ $nc_destination = "{$destPath}snappymail-{$package->version}-nextcloud.tar";
 $nc_tar = new PharData($nc_destination);
 $hashes = [];
 
+file_put_contents(ROOT_DIR . '/integrations/nextcloud/snappymail/VERSION', $package->version);
+$file = ROOT_DIR . '/integrations/nextcloud/snappymail/appinfo/info.xml';
+file_put_contents($file, preg_replace('/<version>[^<]*</', "<version>{$package->version}<", file_get_contents($file)));
+
 $nc_tar->buildFromDirectory('./integrations/nextcloud', "@integrations/nextcloud/snappymail/@");
 $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('integrations/nextcloud/snappymail'));
 foreach ($files as $file) {
