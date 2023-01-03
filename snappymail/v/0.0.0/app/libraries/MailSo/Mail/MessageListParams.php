@@ -15,7 +15,7 @@ class MessageListParams
 {
 	public string
 		$sFolderName,
-		$sSearch,
+		$sSearch = '',
 		$sSort = '';
 
 	public ?\MailSo\Cache\CacheClient
