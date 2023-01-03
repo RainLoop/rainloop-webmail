@@ -98,8 +98,7 @@ body > header ul {
 
 a.selectable {
 	margin: 2px;
-	height: 38px !important;
-	line-height: 38px !important;
+	line-height: inherit !important;
 	border-radius: var(--border-radius-pill);
 }
 
