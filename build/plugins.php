@@ -1,5 +1,4 @@
 <?php
-define('ROOT_DIR', dirname(__DIR__));
 define('PLUGINS_DEST_DIR', __DIR__ . '/dist/releases/plugins');
 
 is_dir(PLUGINS_DEST_DIR) || mkdir(PLUGINS_DEST_DIR, 0777, true);
