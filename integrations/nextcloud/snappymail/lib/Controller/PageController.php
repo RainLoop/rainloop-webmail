@@ -51,8 +51,8 @@ class PageController extends Controller
 		$oActions = $bAdmin ? new \RainLoop\ActionsAdmin() : \RainLoop\Api::Actions();
 		$oHttp = \MailSo\Base\Http::SingletonInstance();
 		$oServiceActions = new \RainLoop\ServiceActions($oHttp, $oActions);
-		$sAppJsMin = $oConfig->Get('labs', 'use_app_debug_js', false) ? '' : '.min';
-		$sAppCssMin = $oConfig->Get('labs', 'use_app_debug_css', false) ? '' : '.min';
+		$sAppJsMin = $oConfig->Get('debug', 'javascript', false) ? '' : '.min';
+		$sAppCssMin = $oConfig->Get('debug', 'css', false) ? '' : '.min';
 		$sLanguage = $oActions->GetLanguage(false);
 
 		$csp = new ContentSecurityPolicy();
