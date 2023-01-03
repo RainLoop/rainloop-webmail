@@ -465,13 +465,13 @@ class Actions
 		return $this->oDomainProvider;
 	}
 
-	public function AddressBookProvider(?Model\Account $oAccount = null, bool $bForceEnable = false): Providers\AddressBook
+	public function AddressBookProvider(?Model\Account $oAccount = null): Providers\AddressBook
 	{
 		if (null === $this->oAddressBookProvider) {
 			$oDriver = null;
 			try {
-//				if ($bForceEnable || $this->oConfig->Get('contacts', 'enable', false)) {
-				if ($bForceEnable || $this->GetCapa(Enumerations\Capa::CONTACTS)) {
+//				if ($this->oConfig->Get('contacts', 'enable', false)) {
+				if ($this->GetCapa(Enumerations\Capa::CONTACTS)) {
 					$oDriver = $this->fabrica('address-book', $oAccount);
 				}
 				if ($oAccount && $oDriver) {
@@ -479,8 +479,9 @@ class Actions
 					$oDriver->setDAVClientConfig($this->getContactsSyncData($oAccount));
 				}
 			} catch (\Throwable $e) {
+				\SnappyMail\LOG::error('AddressBook', $e->getMessage()."\n".$e->getTraceAsString());
 				$oDriver = null;
-				\SnappyMail\LOG::error('AddressBook', $e->getMessage());
+//				$oDriver = new Providers\AddressBook\PdoAddressBook();
 			}
 			$this->oAddressBookProvider = new Providers\AddressBook($oDriver);
 			$this->oAddressBookProvider->SetLogger($this->oLogger);

@@ -75,7 +75,7 @@ class ActionsAdmin extends Actions
 		$this->setConfigFromParams($oConfig, 'ContactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
 
 		$this->setConfigFromParams($oConfig, 'ContactsPdoType', 'contacts', 'type', 'string', function ($sType) use ($self) {
-			return \RainLoop\Providers\AddressBook\PdoAddressBook::validPdoType($sType);
+			return Providers\AddressBook\PdoAddressBook::validPdoType($sType);
 		});
 
 		$this->setConfigFromParams($oConfig, 'CapaAdditionalAccounts', 'webmail', 'allow_additional_accounts', 'bool');
@@ -141,17 +141,23 @@ class ActionsAdmin extends Actions
 		$this->IsAdminLoggined();
 
 		$oConfig = $this->Config();
-
 		$this->setConfigFromParams($oConfig, 'ContactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
 		$this->setConfigFromParams($oConfig, 'ContactsPdoUser', 'contacts', 'pdo_user', 'string');
 		$this->setConfigFromParams($oConfig, 'ContactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
-
-		$self = $this;
-		$this->setConfigFromParams($oConfig, 'ContactsPdoType', 'contacts', 'type', 'string', function ($sType) use ($self) {
-			return \RainLoop\Providers\AddressBook\PdoAddressBook::validPdoType($sType);
+		$this->setConfigFromParams($oConfig, 'ContactsPdoType', 'contacts', 'type', 'string', function ($sType) {
+			return Providers\AddressBook\PdoAddressBook::validPdoType($sType);
 		});
 
-		$sTestMessage = $this->AddressBookProvider(null, true)->Test();
+		$sTestMessage = '';
+		try {
+			$AddressBook = new Providers\AddressBook(new Providers\AddressBook\PdoAddressBook());
+			$AddressBook->SetLogger($this->oLogger);
+			$sTestMessage = $AddressBook->Test();
+		} catch (\Throwable $e) {
+			\SnappyMail\LOG::error('AddressBook', $e->getMessage()."\n".$e->getTraceAsString());
+			$sTestMessage = $e->getMessage();
+		}
+
 		return $this->DefaultResponse(array(
 			'Result' => '' === $sTestMessage,
 			'Message' => \MailSo\Base\Utils::Utf8Clear($sTestMessage)
@@ -300,7 +306,7 @@ class ActionsAdmin extends Actions
 	{
 		$user = (string) $this->GetActionParam('username', '');
 		$secret = (string) $this->GetActionParam('TOTP', '');
-		$issuer = \rawurlencode(\RainLoop\API::Config()->Get('webmail', 'title', 'SnappyMail'));
+		$issuer = \rawurlencode(API::Config()->Get('webmail', 'title', 'SnappyMail'));
 		$QR = \SnappyMail\QRCode::getMinimumQRCode(
 			"otpauth://totp/{$issuer}:{$user}?secret={$secret}&issuer={$issuer}",
 //			"otpauth://totp/{$user}?secret={$secret}",
@@ -323,7 +329,7 @@ class ActionsAdmin extends Actions
 		return $sToken;
 	}
 
-	private function setConfigFromParams(\RainLoop\Config\Application $oConfig, string $sParamName, string $sConfigSector, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null): void
+	private function setConfigFromParams(Config\Application $oConfig, string $sParamName, string $sConfigSector, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null): void
 	{
 		if ($this->HasActionParam($sParamName)) {
 			$sValue = $this->GetActionParam($sParamName, '');
