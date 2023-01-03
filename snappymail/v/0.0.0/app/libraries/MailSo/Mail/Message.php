@@ -107,6 +107,16 @@ class Message implements \JsonSerializable
 		return $this->Uid;
 	}
 
+	public function HeaderTimeStampInUTC() : int
+	{
+		return $this->HeaderTimeStampInUTC;
+	}
+
+	public function Attachments() : ?AttachmentCollection
+	{
+		return $this->Attachments;
+	}
+
 	public function Plain() : string
 	{
 		return $this->sPlain;

@@ -58,12 +58,12 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		$xCard = null;
 		try {
 			foreach ($oMessage->Attachments() ?: [] as $oAttachment)  {
-				if ('application/vcard+xml' === $oAttachment->MimeType()) {
+				if ('application/vcard+xml' === $oAttachment->ContentType()) {
 					$result = $this->MailClient()->MessageMimeStream(function ($rResource) use (&$xCard) {
 						if (\is_resource($rResource)) {
 							$xCard = \Sabre\VObject\Reader::readXML($rResource);
 						}
-					}, $this->sFolderName, $oMessage->Uid(), $oAttachment->MimeIndex());
+					}, $this->sFolderName, $oMessage->Uid(), $oAttachment->PartID());
 					break;
 				}
 			}
