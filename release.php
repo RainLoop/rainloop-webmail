@@ -2,7 +2,7 @@
 <?php
 chdir(__DIR__);
 
-$options = getopt('', ['aur','docker','plugins','set-version','skip-gulp','debian','nextcloud','sign','cpanel']);
+$options = getopt('', ['aur','docker','plugins','set-version','skip-gulp','debian','nextcloud','owncloud','sign','cpanel']);
 
 if (isset($options['plugins'])) {
 	require(__DIR__ . '/build/plugins.php');
@@ -183,6 +183,10 @@ if (isset($options['nextcloud'])) {
 	require(__DIR__ . '/build/nextcloud.php');
 }
 
+if (isset($options['owncloud'])) {
+	require(__DIR__ . '/build/owncloud.php');
+}
+
 if (isset($options['cpanel'])) {
 	require(__DIR__ . '/build/cpanel.php');
 }
@@ -267,6 +271,10 @@ if (isset($options['sign'])) {
 	if (isset($options['nextcloud'])) {
 		passthru('gpg --local-user 1016E47079145542F8BA133548208BA13290F3EB --armor --detach-sign '
 			.escapeshellarg("{$destPath}snappymail-{$package->version}-nextcloud.tar.gz"), $return_var);
+	}
+	if (isset($options['owncloud'])) {
+		passthru('gpg --local-user 1016E47079145542F8BA133548208BA13290F3EB --armor --detach-sign '
+			.escapeshellarg("{$destPath}snappymail-{$package->version}-owncloud.tar.gz"), $return_var);
 	}
 	if (isset($options['cpanel'])) {
 		passthru('gpg --local-user 1016E47079145542F8BA133548208BA13290F3EB --armor --detach-sign '
