@@ -797,6 +797,12 @@ html:not(rl-mobile) #rl-app .hideMessageListCheckbox .checkboxCheckAll {
     border-left-color: inherit;
 }
 
+#rl-app .messageList .groupLabel {
+    background-color: var(--color-background-dark);
+    border-radius: var(--border-radius);
+    margin: 2px 0;
+}
+
 /*
  * message view
  */
