@@ -310,7 +310,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		return $aResult;
 	}
 
-	public function GetContactByEmail(string $sEmail) : ?Contact;
+	public function GetContactByEmail(string $sEmail) : ?Contact
 	{
 		// TODO
 		return null;
