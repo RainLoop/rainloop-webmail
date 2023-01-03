@@ -665,8 +665,8 @@ class MailClient
 		$oMessageCollection->FolderInfo = $oInfo;
 		$oMessageCollection->totalEmails = $oInfo->MESSAGES;
 
-		$bUseThreads = $oParams->bUseThreads
-			&& ($this->oImapClient->hasCapability('THREAD=REFS') || $this->oImapClient->hasCapability('THREAD=REFERENCES') || $this->oImapClient->hasCapability('THREAD=ORDEREDSUBJECT'));
+		$bUseThreads = $oParams->bUseThreads && $this->oImapClient->CapabilityValue('THREAD');
+//			&& ($this->oImapClient->hasCapability('THREAD=REFS') || $this->oImapClient->hasCapability('THREAD=REFERENCES') || $this->oImapClient->hasCapability('THREAD=ORDEREDSUBJECT'));
 		if ($oParams->iThreadUid && !$bUseThreads) {
 			throw new \InvalidArgumentException('THREAD not supported');
 		}
@@ -686,6 +686,8 @@ class MailClient
 
 			$message_list_limit = $this->oImapClient->Settings->message_list_limit;
 			if (0 < $message_list_limit && $message_list_limit < $oInfo->MESSAGES) {
+//			if ((0 < $message_list_limit && $message_list_limit < $oInfo->MESSAGES)
+//			 || (!$this->oImapClient->hasCapability('SORT') && !$this->oImapClient->CapabilityValue('THREAD'))) {
 				// Don't use THREAD for speed
 				$oMessageCollection->Limited = true;
 				if ($this->oLogger) {
