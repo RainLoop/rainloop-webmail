@@ -283,7 +283,7 @@ export class MessageModel extends AbstractModel {
 			body.classList.toggle('html', 1);
 			body.classList.toggle('plain', 0);
 
-			if (SettingsUserStore.showImages()) {
+			if (SettingsUserStore.showImages() && !this.isSpam() && FolderUserStore.spamFolder() != this.folder) {
 				this.showExternalImages();
 			}
 
