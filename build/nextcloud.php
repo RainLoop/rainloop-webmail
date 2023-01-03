@@ -21,7 +21,6 @@ foreach ($files as $file) {
 	if (is_file($file)) {
 		$name = str_replace('\\', '/', $file);
 		$name = str_replace('integrations/nextcloud/snappymail/', '', $name);
-		$name = str_replace('.htaccess', '_htaccess', $name);
 		$hashes[$name] = hash_file('sha512', $file);
 	}
 }
@@ -35,6 +34,11 @@ foreach ($files as $file) {
 		$hashes["app/{$newFile}"] = hash_file('sha512', $file);
 	}
 }
+$nc_tar->delete("snappymail/app/snappymail/v/{$package->version}/app/.htaccess");
+$nc_tar->addFile("snappymail/v/{$package->version}/app/.htaccess", "snappymail/app/snappymail/v/{$package->version}/app/_htaccess");
+$nc_tar->delete("snappymail/app/snappymail/v/{$package->version}/static/.htaccess");
+$nc_tar->addFile("snappymail/v/{$package->version}/static/.htaccess", "snappymail/app/snappymail/v/{$package->version}/static/_htaccess");
+
 /*
 $nc_tar->addFile('data/.htaccess');
 $nc_tar->addFromString('data/VERSION', $package->version);
@@ -62,7 +66,6 @@ $hashes['app/serviceworker.js'] = hash('sha512', $data);
 
 spl_autoload_register(function($name){
 	$file = __DIR__ . '/' . str_replace('\\', '/', $name) . '.php';
-	echo "{$file}\n";
 	require $file;
 });
 
