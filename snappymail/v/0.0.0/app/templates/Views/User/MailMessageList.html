@@ -131,7 +131,7 @@
 
 		<!-- ko if: listGrouped -->
 		<div class="messageListPlace" data-bind="dragmessages: 1, i18nUpdate: groupedList, foreach: groupedList" draggable="true">
-			<div class="groupLabel" data-bind="text: label, click: $root.groupSearchClick" data-i18n="[title]GLOBAL/SEARCH"></div>
+			<div class="groupLabel" data-bind="text: label, click: $root.groupSearch" data-i18n="[title]GLOBAL/SEARCH"></div>
 			<!-- ko foreach: messages -->
 			<div class="messageListItem" data-bind="css: lineAsCss()">
 				<div class="messageCheckbox">
