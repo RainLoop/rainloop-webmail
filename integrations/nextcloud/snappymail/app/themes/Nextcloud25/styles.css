@@ -853,6 +853,11 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     margin: 5px;
 }
 
+#rl-app .messageView .messageItemHeader .subject {
+    line-height: 30px;
+    height: 30px;
+}
+
 #rl-app .messageView .openpgp-control.encrypted,
 #rl-app .messageView .openpgp-control.signed {
     border-radius: var(--border-radius);
