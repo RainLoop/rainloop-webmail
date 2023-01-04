@@ -149,31 +149,14 @@ const
 				items.forEach(item => {
 					if (item.isFile) {
 						let li = document.createElement('li'),
-							btn = document.createElement('button');
+							cb = document.createElement('input');
 
 						li.item = item;
 						li.textContent = item.name.replace(/^.*\/([^/]+)$/, '$1');
 						li.dataset.icon = '🗎';
 
-						btn.name = 'select';
-						btn.dataset.icon = '📎';
-						btn.textContent = 'attach';
-						btn.className = 'button-vue';
-						li.append(btn);
-
-						btn = document.createElement('button');
-						btn.name = 'share-internal';
-						btn.dataset.icon = '🔗';
-						btn.textContent = 'internal';
-						btn.className = 'button-vue';
-						li.append(btn);
-
-						btn = document.createElement('button');
-						btn.name = 'share-public';
-						btn.dataset.icon = '🔗';
-						btn.textContent = 'public';
-						btn.className = 'button-vue';
-						li.append(btn);
+						cb.type = 'checkbox';
+						li.append(cb);
 
 						parent.append(li);
 					}
@@ -203,28 +186,42 @@ class NextcloudFilesPopupView extends rl.pluginPopupView {
 		});
 	}
 
-	onBuild(dom) {
-		this.tree = dom.querySelector('#sm-nc-files-tree');
-		this.tree.addEventListener('click', event => {
-			let el = event.target;
-			if (el.matches('button')) {
-				let parent = el.parentNode,
-					item = parent.item;
-				if ('select' == el.name) {
-					this.select = this.files() ? [item] : parent.item_name;
+	attach() {
+		this.select = [];
+		this.tree.querySelectorAll('input').forEach(input =>
+			input.checked && this.select.push(input.parentNode.item)
+		);
+		this.close();
+	}
+
+	shareInternal() {
+		this.select = [];
+		this.tree.querySelectorAll('input').forEach(input =>
+			input.checked && this.select.push({url:generateRemoteUrl(`/f/${input.parentNode.item.id}`)})
+		);
+		this.close();
+	}
+
+	sharePublic() {
+		const inputs = [...this.tree.querySelectorAll('input')],
+			loop = () => {
+				if (!inputs.length) {
 					this.close();
-				} else if ('share-internal' == el.name) {
-					this.select = [{url:generateRemoteUrl(`/f/${item.id}`)}];
-					this.close();
-				} else if ('share-public' == el.name) {
+					return;
+				}
+				const input = inputs.pop();
+				if (!input.checked) {
+					loop();
+				} else {
+					const item = input.parentNode.item;
 					if (item.shared) {
 						ncFetch(
 							shareUrl() + `?format=json&path=${encodeURIComponent(item.name)}&reshares=true`
 						)
 						.then(response => (response.status < 400) ? response.json() : Promise.reject(new Error({ response })))
 						.then(json => {
-							this.select = [{url:json.ocs.data[0].url}];
-							this.close();
+							this.select.push({url:json.ocs.data[0].url});
+							loop();
 //							json.data[0].password
 						});
 					} else {
@@ -246,10 +243,26 @@ class NextcloudFilesPopupView extends rl.pluginPopupView {
 						.then(response => (response.status < 400) ? response.json() : Promise.reject(new Error({ response })))
 						.then(json => {
 //							PUT /ocs/v2.php/apps/files_sharing/api/v1/shares/2 {"password":"ABC09"}
-							this.select = [{url:json.ocs.data.url}];
-							this.close();
+							this.select.push({url:json.ocs.data.url});
+							loop();
 						});
 					}
+				}
+			};
+
+		this.select = [];
+		loop();
+	}
+
+	onBuild(dom) {
+		this.tree = dom.querySelector('#sm-nc-files-tree');
+		this.tree.addEventListener('click', event => {
+			let el = event.target;
+			if (el.matches('button')) {
+				let parent = el.parentNode;
+				if ('select' == el.name) {
+					this.select = parent.item_name;
+					this.close();
 				} else if ('create' == el.name) {
 					let name = el.input.value.replace(/[|\\?*<":>+[]\/&\s]/g, '');
 					if (name.length) {
