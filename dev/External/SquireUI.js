@@ -263,6 +263,7 @@ class SquireUI
 		clr.type = "color";
 		clr.style.opacity = 0;
 		clr.style.position = 'fixed';
+		clr.style.left = '-100em';
 		container.append(clr);
 
 		browseImage.type = 'file';
