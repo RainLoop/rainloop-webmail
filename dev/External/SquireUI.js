@@ -67,10 +67,8 @@ class SquireUI
 			clr = createElement('input'),
 			doClr = name => input => {
 				// https://github.com/the-djmaze/snappymail/issues/826
-				var rect = input.getBoundingClientRect();
-				clr.style.top = (rect.bottom - clr.offsetHeight) + 'px';
-				clr.style.left = rect.left + 'px';
-				clr.style.width = (rect.right - rect.left) + 'px';
+				clr.style.left = (input.offsetLeft + input.parentNode.offsetLeft) + 'px';
+				clr.style.width = input.offsetWidth + 'px';
 
 				clr.value = '';
 				clr.onchange = () => squire.setStyle({[name]:clr.value});
@@ -260,11 +258,8 @@ class SquireUI
 			browseImage = createElement('input'),
 			squire = new Squire(wysiwyg, SquireDefaultConfig);
 
-		clr.type = "color";
-		clr.style.opacity = 0;
-		clr.style.position = 'fixed';
-		clr.style.left = '-100em';
-		container.append(clr);
+		clr.type = 'color';
+		toolbar.append(clr);
 
 		browseImage.type = 'file';
 		browseImage.accept = 'image/*';
