@@ -1,4 +1,8 @@
 <?php
+/**
+ * You may store your own custom domain icons in `data/_data_/_default_/avatars/`
+ * Like: `data/_data_/_default_/avatars/snappymail.eu.svg`
+ */
 
 class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
@@ -6,8 +10,8 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Avatars',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.6',
-		RELEASE  = '2022-12-23',
+		VERSION  = '1.7',
+		RELEASE  = '2023-01-05',
 		REQUIRED = '2.23.0',
 		CATEGORY = 'Contacts',
 		LICENSE  = 'MIT',
@@ -169,8 +173,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$sDomain = \array_pop($sDomain);
 		$aServices = [
 			"services/{$sDomain}",
-			'services/' . \preg_replace('/^.+\\.([^.]+\\.[^.]+)$/D', '$1', $sDomain),
-			'services/' . \preg_replace('/^(.+\\.)?(paypal\\.[a-z][a-z])$/D', 'paypal.com', $sDomain)
+			'services/' . static::serviceDomain($sDomain)
 		];
 		foreach ($aServices as $service) {
 			$file = __DIR__ . "/images/{$service}.png";
@@ -178,6 +181,12 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				return 'data:image/png;base64,' . \base64_encode(\file_get_contents($file));
 			}
 		}
+
+		$aResult = static::getCachedImage($sEmail);
+		if ($aResult) {
+			return 'data:'.$aResult[0].';base64,' . \base64_encode($aResult[1]);
+		}
+
 		return null;
 	}
 
@@ -194,16 +203,8 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		\header('Cache-Control: private');
 //		\header('Expires: '.\gmdate('D, j M Y H:i:s', \time() + 86400).' UTC');
 
-		$aResult = null;
-
-		$sFile = \APP_PRIVATE_DATA . 'avatars/' . $sEmailId;
-		$aFiles = \glob("{$sFile}.*");
-		if ($aFiles) {
-			\MailSo\Base\Http::setLastModified(\filemtime($aFiles[0]));
-			$aResult = [
-				\mime_content_type($aFiles[0]),
-				\file_get_contents($aFiles[0])
-			];
+		$aResult = static::getCachedImage($sEmail);
+		if ($aResult) {
 			return $aResult;
 		}
 
@@ -256,23 +257,14 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 
 		if ($aResult) {
-			if (!\is_dir(\APP_PRIVATE_DATA . 'avatars')) {
-				\mkdir(\APP_PRIVATE_DATA . 'avatars', 0700);
-			}
-			\file_put_contents(
-				$sFile . \SnappyMail\File\MimeType::toExtension($aResult[0]),
-				$aResult[1]
-			);
-			\MailSo\Base\Http::setLastModified(\time());
+			static::cacheImage($sEmail, $aResult);
 		}
 
 		// Only allow service icon when DKIM is valid. $bBimi is true when DKIM is valid.
 		if ($bBimi && !$aResult) {
-			$sDomain = \preg_replace('/^(.+\\.)?(paypal\\.[a-z][a-z])$/D', 'paypal.com', $sDomain);
-			$sDomain = \preg_replace('/^facebookmail.com$/D', '@facebook.com', $sDomain);
 			$aServices = [
 				"services/{$sDomain}",
-				'services/' . \preg_replace('/^.+\\.([^.]+\\.[^.]+)$/D', '$1', $sDomain)
+				'services/' . static::serviceDomain($sDomain)
 			];
 			foreach ($aServices as $service) {
 				$file = __DIR__ . "/images/{$service}.png";
@@ -285,8 +277,70 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 					break;
 				}
 			}
+/*
+			if (!$aResult) {
+				$aResult = static::getFavicon($sEmail, $sDomain);
+			}
+*/
 		}
 
+		return $aResult;
+	}
+
+	private static function serviceDomain(string $sDomain) : string
+	{
+		$sDomain = \preg_replace('/^(.+\\.)?(paypal\\.[a-z][a-z])$/D', 'paypal.com', $sDomain);
+		$sDomain = \preg_replace('/^facebookmail.com$/D', 'facebook.com', $sDomain);
+		$sDomain = \preg_replace('/^dhlparcel.nl$/D', 'dhl.com', $sDomain);
+		$sDomain = \preg_replace('/^.+\\.([^.]+\\.[^.]+)$/D', '$1', $sDomain);
+		return $sDomain;
+	}
+
+	private static function cacheImage(string $sEmail, array $aResult) : void
+	{
+		$sEmailId = \sha1(\mb_strtolower(\MailSo\Base\Utils::IdnToAscii($sEmail, true)));
+		if (!\is_dir(\APP_PRIVATE_DATA . 'avatars')) {
+			\mkdir(\APP_PRIVATE_DATA . 'avatars', 0700);
+		}
+		\file_put_contents(
+			\APP_PRIVATE_DATA . 'avatars/' . $sEmailId . \SnappyMail\File\MimeType::toExtension($aResult[0]),
+			$aResult[1]
+		);
+		\MailSo\Base\Http::setLastModified(\time());
+	}
+
+	private static function getCachedImage(string $sEmail) : ?array
+	{
+		$sEmail = \mb_strtolower(\MailSo\Base\Utils::IdnToAscii($sEmail, true));
+		$aFiles = \glob(\APP_PRIVATE_DATA . "avatars/{$sEmail}.*");
+		if ($aFiles) {
+			\MailSo\Base\Http::setLastModified(\filemtime($aFiles[0]));
+			return [
+				\mime_content_type($aFiles[0]),
+				\file_get_contents($aFiles[0])
+			];
+		}
+		$sEmailId = \sha1($sEmail);
+		$aFiles = \glob(\APP_PRIVATE_DATA . "avatars/{$sEmailId}.*");
+		if ($aFiles) {
+			\MailSo\Base\Http::setLastModified(\filemtime($aFiles[0]));
+			return [
+				\mime_content_type($aFiles[0]),
+				\file_get_contents($aFiles[0])
+			];
+		}
+		return null;
+	}
+
+	private static function getFavicon(string $sEmail, string $sDomain) : ?array
+	{
+		$aResult = static::getUrl('https://' . $sDomain . '/favicon.ico')
+			?: static::getUrl('https://' . static::serviceDomain($sDomain) . '/favicon.ico')
+			?: static::getUrl('https://www.' . static::serviceDomain($sDomain) . '/favicon.ico');
+		// Also detect <link rel="shortcut icon" href="...">
+		if ($aResult) {
+			static::cacheImage($sEmail, $aResult);
+		}
 		return $aResult;
 	}
 
@@ -297,17 +351,21 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$oHTTP->proxy_auth = \RainLoop\Api::Config()->Get('labs', 'curl_proxy_auth', '');
 		$oHTTP->max_response_kb = 0;
 		$oHTTP->timeout = 15; // timeout in seconds.
-		$oResponse = $oHTTP->doRequest('GET', $sUrl);
-		if ($oResponse) {
-			if (200 === $oResponse->status && \str_starts_with($oResponse->getHeader('content-type'), 'image/')) {
-				return [
-					$oResponse->getHeader('content-type'),
-					$oResponse->body
-				];
+		try {
+			$oResponse = $oHTTP->doRequest('GET', $sUrl);
+			if ($oResponse) {
+				if (200 === $oResponse->status && \str_starts_with($oResponse->getHeader('content-type'), 'image/')) {
+					return [
+						$oResponse->getHeader('content-type'),
+						$oResponse->body
+					];
+				}
+				\SnappyMail\Log::notice('Avatar', "error {$oResponse->status} for {$sUrl}");
+			} else {
+				\SnappyMail\Log::warning('Avatar', "failed for {$sUrl}");
 			}
-			\SnappyMail\Log::notice('Avatar', "error {$oResponse->status} for {$sUrl}");
-		} else {
-			\SnappyMail\Log::warning('Avatar', "failed for {$sUrl}");
+		} catch (\Throwable $e) {
+			\SnappyMail\Log::notice('Avatar', "error {$e->getMessage()}");
 		}
 		return null;
 	}
