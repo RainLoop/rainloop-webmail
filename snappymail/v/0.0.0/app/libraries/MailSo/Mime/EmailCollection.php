@@ -66,6 +66,11 @@ class EmailCollection extends \MailSo\Base\Collection
 		return \implode(', ', $aReturn);
 	}
 
+	public function __toString() : string
+	{
+		return $this->ToString();
+	}
+
 	private function parseEmailAddresses(string $sRawEmails) : void
 	{
 //		$sRawEmails = \MailSo\Base\Utils::Trim($sRawEmails);

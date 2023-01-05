@@ -11,8 +11,8 @@
 
 namespace MailSo\Mail;
 
-use \MailSo\Base\Utils;
-use \MailSo\Imap\Enumerations\FetchType;
+use MailSo\Base\Utils;
+use MailSo\Imap\Enumerations\FetchType;
 
 /**
  * @category MailSo

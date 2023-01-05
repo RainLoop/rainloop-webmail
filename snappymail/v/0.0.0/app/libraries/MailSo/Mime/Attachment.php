@@ -151,15 +151,15 @@ class Attachment
 
 		$oAttachmentPart->Headers->append(
 			new Header(Enumerations\Header::CONTENT_TYPE,
-				$this->ContentType().';'.
-				(($oContentTypeParameters) ? ' '.$oContentTypeParameters->ToString() : '')
+				$this->ContentType().
+				($oContentTypeParameters ? '; '.$oContentTypeParameters : '')
 			)
 		);
 
 		$oAttachmentPart->Headers->append(
 			new Header(Enumerations\Header::CONTENT_DISPOSITION,
-				($this->IsInline() ? 'inline' : 'attachment').';'.
-				(($oContentDispositionParameters) ? ' '.$oContentDispositionParameters->ToString() : '')
+				($this->IsInline() ? 'inline' : 'attachment').
+				($oContentDispositionParameters ? '; '.$oContentDispositionParameters : '')
 			)
 		);
 

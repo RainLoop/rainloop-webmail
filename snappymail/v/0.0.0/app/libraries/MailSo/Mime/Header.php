@@ -126,13 +126,6 @@ class Header
 		$this->oParameters->setParameter($sName, $sValue);
 	}
 
-	private function wordWrapHelper(string $sValue, string $sGlue = "\r\n ") : string
-	{
-		return \trim(\substr(\wordwrap($this->NameWithDelimitrom().$sValue,
-			74, $sGlue
-		), \strlen($this->NameWithDelimitrom())));
-	}
-
 	public function __toString() : string
 	{
 		$sResult = $this->sFullValue;
@@ -159,11 +152,12 @@ class Header
 		{
 			$oEmailCollection = new EmailCollection($this->sFullValue);
 			if ($oEmailCollection && $oEmailCollection->count()) {
-				$sResult = $oEmailCollection->ToString(true, false);
+				$sResult = $oEmailCollection->ToString(true);
 			}
 		}
 
-		return $this->NameWithDelimitrom().$this->wordWrapHelper($sResult);
+		// https://www.rfc-editor.org/rfc/rfc2822#section-2.1.1
+		return \wordwrap($this->NameWithDelimitrom() . $sValue, 78, "\r\n ");
 	}
 
 	public function IsSubject() : bool

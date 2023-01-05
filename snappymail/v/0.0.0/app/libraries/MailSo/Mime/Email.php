@@ -200,6 +200,11 @@ class Email implements \JsonSerializable
 		return \trim($sReturn);
 	}
 
+	public function __toString() : string
+	{
+		return $this->ToString();
+	}
+
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{

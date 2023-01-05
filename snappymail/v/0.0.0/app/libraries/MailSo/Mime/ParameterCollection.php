@@ -81,9 +81,28 @@ class ParameterCollection extends \MailSo\Base\Collection
 				$aResult[] = $sLine;
 			}
 		}
-
 		return \count($aResult) ? \implode('; ', $aResult) : '';
 	}
+
+	public function __toString() : string
+	{
+		return $this->ToString();
+	}
+
+/*
+	#[\ReturnTypeWillChange]
+	public function jsonSerialize()
+	{
+		$aResult = array();
+		foreach ($this as $oParam) {
+			$aResult[$oParam->Name()] = $oParam->Value();
+		}
+		return array(
+			'@Object' => 'Collection/ParameterCollection',
+			'@Collection' => $aResult
+		);
+	}
+*/
 
 	private function reParseParameters() : void
 	{

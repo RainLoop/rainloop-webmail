@@ -342,7 +342,7 @@ class Message extends Part
 					}
 					$oPart->Headers->append(
 						new Header(Enumerations\Header::CONTENT_TYPE,
-							$aAttachments[0]->ContentType().'; '.$oParameters->ToString())
+							$aAttachments[0]->ContentType().'; '.$oParameters)
 					);
 
 					if ($resource = $aAttachments[0]->Resource()) {
@@ -427,11 +427,6 @@ class Message extends Part
 
 		foreach ($this->aHeadersValue as $sName => $mValue) {
 			if (!($bWithoutBcc && \strtolower(Enumerations\Header::BCC) === \strtolower($sName))) {
-				if (\is_object($mValue)) {
-					if ($mValue instanceof EmailCollection || $mValue instanceof Email || $mValue instanceof ParameterCollection) {
-						$mValue = $mValue->ToString();
-					}
-				}
 				$oRootPart->Headers->SetByName($sName, (string) $mValue);
 			}
 		}

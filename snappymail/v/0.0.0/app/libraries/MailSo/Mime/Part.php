@@ -51,7 +51,12 @@ class Part
 	{
 		return \trim(\strtolower($this->Headers->ValueByName(Enumerations\Header::CONTENT_TYPE)));
 	}
-
+/*
+	public function ContentTypeParameters() : ParameterCollection
+	{
+		return $this->Headers->ParametersByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE);
+	}
+*/
 	public function ContentID() : string
 	{
 		return \trim($this->Headers->ValueByName(Enumerations\Header::CONTENT_ID));

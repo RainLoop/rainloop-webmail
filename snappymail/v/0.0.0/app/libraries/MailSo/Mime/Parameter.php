@@ -15,7 +15,7 @@ namespace MailSo\Mime;
  * @category MailSo
  * @package Mime
  */
-class Parameter
+class Parameter implements \JsonSerializable
 {
 	private string $sName;
 
@@ -87,5 +87,19 @@ class Parameter
 		}
 
 		return $this->sName . '="' . $this->sValue . '"';
+	}
+
+	public function __toString() : string
+	{
+		return $this->ToString();
+	}
+
+	#[\ReturnTypeWillChange]
+	public function jsonSerialize()
+	{
+		return array(
+			'name' => $this->sName,
+			'value' => $this->sValue
+		);
 	}
 }
