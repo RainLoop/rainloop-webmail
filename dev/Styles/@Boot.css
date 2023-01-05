@@ -53,11 +53,11 @@ html, body {
 	-webkit-touch-callout: none;
 	font-size: var(--main-font-size, 14px);
 	line-height: 1.25; /* 1 */
-	position: fixed;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
+	position: relative;
+}
+body#rl-app {
+	height: 100vh;
+	width: 100vw;
 }
 
 #rl-loading, #rl-loading-error {
