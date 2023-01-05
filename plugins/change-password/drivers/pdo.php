@@ -38,7 +38,7 @@ class ChangePasswordDriverPDO
 			\RainLoop\Plugins\Property::NewInstance('pdo_sql')->SetLabel('Statement')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
 				->SetDescription('SQL statement (allowed wildcards :email, :oldpass, :newpass, :domain, :username, :login_name).')
-				->SetDefaultValue('UPDATE table SET password = :newpass WHERE domain = :domain AND username = :username'),
+				->SetDefaultValue('UPDATE table SET password = :newpass WHERE (domain = :domain AND username = :username) OR loginname = :login_name'),
 			\RainLoop\Plugins\Property::NewInstance('pdo_encrypt')->SetLabel('Encryption')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::SELECTION)
 				->SetDefaultValue(array('none', 'bcrypt', 'Argon2i', 'Argon2id', 'SHA256-CRYPT', 'SHA512-CRYPT'))
