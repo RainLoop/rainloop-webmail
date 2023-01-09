@@ -14,11 +14,6 @@ import { serverRequest } from 'Common/Links';
 
 import Remote from 'Remote/User/Fetch';
 
-import { b64EncodeJSONSafe } from 'Common/Utils';
-import { SettingsGet } from 'Common/Globals';
-import { SUB_QUERY_PREFIX } from 'Common/Links';
-import { AppUserStore } from 'Stores/User/App';
-
 export const
 
 sortFolders = folders => {
@@ -30,44 +25,6 @@ sortFolders = folders => {
 	} catch (e) {
 		console.error(e);
 	}
-},
-
-/**
- * @param {object} params
- */
-messageList = params => {
-	const
-//		folder = getFolderFromCacheList(params.folder.fullName),
-		folder = getFolderFromCacheList(params.folder),
-		folderHash = folder?.hash || '';
-
-	params = Object.assign({
-		offset: 0,
-		limit: SettingsUserStore.messagesPerPage(),
-		search: '',
-		uidNext: folder?.uidNext || 0, // Used to check for new messages
-		sort: FolderUserStore.sortMode()
-	}, params);
-	if (AppUserStore.threadsAllowed() && SettingsUserStore.useThreads()) {
-		params.useThreads = 1;
-	} else {
-		params.threadUid = 0;
-	}
-
-	let sGetAdd = '';
-	if (folderHash) {
-		params.hash = folderHash + '-' + SettingsGet('AccountHash');
-		sGetAdd = 'MessageList/' + SUB_QUERY_PREFIX + '/' + b64EncodeJSONSafe(params);
-		params = {};
-	}
-
-	Remote.abort('MessageList');
-	Remote.request('MessageList',
-		null,
-		params,
-		60000, // 60 seconds before aborting
-		sGetAdd
-	);
 },
 
 /**
@@ -185,8 +142,8 @@ folderInformation = (folder, list) => {
 							if (folderFromCache.fullName === FolderUserStore.currentFolderFullName()) {
 								MessagelistUserStore.reload();
 							} else if (getFolderInboxName() === folderFromCache.fullName) {
-//								messageList({folder: getFolderFromCacheList(getFolderInboxName())});
-								messageList({folder: getFolderInboxName()});
+//								Remote.messageList(null, {folder: getFolderFromCacheList(getFolderInboxName())}, true);
+								Remote.messageList(null, {folder: getFolderInboxName()}, true);
 							}
 						}
 					}
