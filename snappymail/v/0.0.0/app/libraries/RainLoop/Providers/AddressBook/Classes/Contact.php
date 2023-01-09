@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers\AddressBook\Classes;
 
-use \Sabre\VObject\Component\VCard;
+use Sabre\VObject\Component\VCard;
 
 class Contact implements \JsonSerializable
 {
