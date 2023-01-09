@@ -24,12 +24,12 @@ trait Messages
 		$oParams = new \MailSo\Mail\MessageListParams;
 
 		$sRawKey = $this->GetActionParam('RawKey', '');
-		$aValues = \json_decode(\MailSo\Base\Utils::UrlSafeBase64Decode($sRawKey), true);
+		$aValues = $sRawKey ? \json_decode(\MailSo\Base\Utils::UrlSafeBase64Decode($sRawKey), true) : null;
+		$sHash = '';
 		if ($aValues && 6 < \count($aValues)) {
-			$this->verifyCacheByKey($sRawKey);
-
-//			$oParams->sHash = (string) $aValues['Hash'];
-			$oParams->sFolderName = (string) $aValues['Folder'];
+			// GET
+			$sHash = (string) $aValues['hash'];
+			$oParams->sFolderName = (string) $aValues['folder'];
 			$oParams->iLimit = $aValues['limit'];
 			$oParams->iOffset = $aValues['offset'];
 			$oParams->sSearch = (string) $aValues['search'];
@@ -42,7 +42,8 @@ trait Messages
 				$oParams->iThreadUid = $aValues['threadUid'];
 			}
 		} else {
-			$oParams->sFolderName = $this->GetActionParam('Folder', '');
+			// POST
+			$oParams->sFolderName = $this->GetActionParam('folder', '');
 			$oParams->iOffset = $this->GetActionParam('offset', 0);
 			$oParams->iLimit = $this->GetActionParam('limit', 10);
 			$oParams->sSearch = $this->GetActionParam('search', '');
@@ -60,6 +61,16 @@ trait Messages
 
 		$oAccount = $this->initMailClientConnection();
 
+		if ($sHash) {
+			$oInfo = $this->ImapClient()->FolderStatusAndSelect($oParams->sFolderName);
+			$aRequestHash = \explode('-', $sHash);
+			$sFolderHash = $oInfo->getHash($this->ImapClient()->Hash());
+			$sHash = $oParams->hash() . '-' . $sFolderHash;
+			if ($aRequestHash[0] == $sFolderHash) {
+				$this->verifyCacheByKey($sHash);
+			}
+		}
+
 		try
 		{
 			if (!$this->Config()->Get('imap', 'use_thread', true)) {
@@ -75,17 +86,15 @@ trait Messages
 			}
 
 			$oMessageList = $this->MailClient()->MessageList($oParams);
+			if ($sHash) {
+				$this->cacheByKey($sHash);
+			}
+			return $this->DefaultResponse($oMessageList);
 		}
 		catch (\Throwable $oException)
 		{
 			throw new ClientException(Notifications::CantGetMessageList, $oException);
 		}
-
-		if ($oMessageList) {
-			$this->cacheByKey($sRawKey);
-		}
-
-		return $this->DefaultResponse($oMessageList);
 	}
 
 	public function DoSaveMessage() : array

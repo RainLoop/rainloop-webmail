@@ -9,56 +9,10 @@ import { SUB_QUERY_PREFIX } from 'Common/Links';
 
 import { AppUserStore } from 'Stores/User/App';
 import { SettingsUserStore } from 'Stores/User/Settings';
-import { FolderUserStore } from 'Stores/User/Folder';
 
 import { AbstractFetchRemote } from 'Remote/AbstractFetch';
 
 class RemoteUserFetch extends AbstractFetchRemote {
-
-	/**
-	 * @param {Function} fCallback
-	 * @param {object} params
-	 * @param {boolean=} bSilent = false
-	 */
-	messageList(fCallback, params, bSilent = false) {
-		const
-			sFolderFullName = pString(params.Folder),
-			folder = getFolderFromCacheList(sFolderFullName),
-			folderHash = folder?.hash || '';
-
-		params = Object.assign({
-			offset: 0,
-			limit: SettingsUserStore.messagesPerPage(),
-			search: '',
-			uidNext: folder?.uidNext || 0, // Used to check for new messages
-			sort: FolderUserStore.sortMode(),
-			Hash: folderHash + SettingsGet('AccountHash')
-		}, params);
-		params.Folder = sFolderFullName;
-		if (AppUserStore.threadsAllowed() && SettingsUserStore.useThreads()) {
-			params.useThreads = 1;
-		} else {
-			params.threadUid = 0;
-		}
-
-		let sGetAdd = '';
-
-		if (folderHash && (!params.search || !params.search.includes('is:'))) {
-			sGetAdd = 'MessageList/' +
-				SUB_QUERY_PREFIX +
-				'/' +
-				b64EncodeJSONSafe(params);
-			params = {};
-		}
-
-		bSilent || this.abort('MessageList');
-		this.request('MessageList',
-			fCallback,
-			params,
-			60000, // 60 seconds before aborting
-			sGetAdd
-		);
-	}
 
 	/**
 	 * @param {?Function} fCallback

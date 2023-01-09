@@ -55,13 +55,11 @@ window.Sieve = {
 	deleteScript: script => {
 		serverError(false);
 		Remote.request('FiltersScriptDelete',
-			(iError, data) => {
-				if (iError) {
-					setError(data?.ErrorMessageAdditional || getNotification(iError));
-				} else {
-					scripts.remove(script);
-				}
-			},
+			(iError, data) =>
+				iError
+					? setError(data?.ErrorMessageAdditional || getNotification(iError))
+					: scripts.remove(script)
+			,
 			{name:script.name()}
 		);
 	},
@@ -69,13 +67,11 @@ window.Sieve = {
 	setActiveScript(name) {
 		serverError(false);
 		Remote.request('FiltersScriptActivate',
-			(iError, data) => {
-				if (iError) {
-					setError(data?.ErrorMessageAdditional || iError)
-				} else {
-					scripts.forEach(script => script.active(script.name() === name));
-				}
-			},
+			(iError, data) =>
+				iError
+					? setError(data?.ErrorMessageAdditional || iError)
+					: scripts.forEach(script => script.active(script.name() === name))
+			,
 			{name:name}
 		);
 	}

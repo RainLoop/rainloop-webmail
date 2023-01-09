@@ -408,6 +408,12 @@ class Actions
 		return $this->oMailClient;
 	}
 
+	public function ImapClient(): \MailSo\Imap\ImapClient
+	{
+//		$this->initMailClientConnection();
+		return $this->MailClient()->ImapClient();
+	}
+
 	// Stores data in AdditionalAccount else MainAccount
 	public function LocalStorageProvider(): Providers\Storage
 	{
@@ -1066,9 +1072,9 @@ class Actions
 		return \md5($sKey . $this->oConfig->Get('cache', 'index', ''));
 	}
 
-	public function cacheByKey(string $sKey, bool $bForce = false): bool
+	public function cacheByKey(string $sKey): bool
 	{
-		if ($sKey && ($bForce || ($this->oConfig->Get('cache', 'enable', true) && $this->oConfig->Get('cache', 'http', true)))) {
+		if ($sKey && $this->oConfig->Get('cache', 'enable', true) && $this->oConfig->Get('cache', 'http', true)) {
 			\MailSo\Base\Http::ServerUseCache(
 				$this->etag($sKey),
 				1382478804,
@@ -1080,11 +1086,11 @@ class Actions
 		return false;
 	}
 
-	public function verifyCacheByKey(string $sKey, bool $bForce = false): void
+	public function verifyCacheByKey(string $sKey): void
 	{
-		if ($sKey && ($bForce || ($this->oConfig->Get('cache', 'enable', true) && $this->oConfig->Get('cache', 'http', true)))) {
+		if ($sKey && $this->oConfig->Get('cache', 'enable', true) && $this->oConfig->Get('cache', 'http', true)) {
 			\MailSo\Base\Http::checkETag($this->etag($sKey));
-//			$this->cacheByKey($sKey, $bForce);
+//			\MailSo\Base\Http::checkLastModified(1382478804);
 		}
 	}
 

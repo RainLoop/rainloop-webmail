@@ -62,7 +62,7 @@ export const
 	 * @returns {?FolderModel}
 	 */
 	getFolderFromCacheList = folderFullName =>
-		FOLDERS_CACHE[folderFullName] ? FOLDERS_CACHE[folderFullName] : null,
+		FOLDERS_CACHE[folderFullName] || null,
 
 	/**
 	 * @param {string} folderFullName

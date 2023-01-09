@@ -582,11 +582,11 @@ class MailClient
 		$sSerializedHash = '';
 		$sSerializedLog = '';
 		if ($bUseCacheAfterSearch) {
-			$sSerializedHash = 'GetUids/'.
-				($bUseSort ? 'S' . $sSort : 'N').'/'.
-				$this->oImapClient->Hash().'/'.
-				$sFolderName.'/'.$sSearchCriterias;
-			$sSerializedLog = '"'.$sFolderName.'" / '.$sSearchCriterias.'';
+			$sSerializedHash = 'Get'
+				. ($bReturnUid ? 'UIDS/' : 'IDS/')
+				. ($bUseSort ? 'S' . $sSort : 'N')
+				. "/{$this->oImapClient->Hash()}/{$sFolderName}/{$sSearchCriterias}";
+			$sSerializedLog = "\"{$sFolderName}\" / {$sSort} / {$sSearchCriterias}";
 
 			$sSerialized = $oCacher->Get($sSerializedHash);
 			if (!empty($sSerialized)) {
@@ -596,11 +596,9 @@ class MailClient
 					\is_array($aSerialized['Uids'])
 				) {
 					if ($this->oLogger) {
-						$this->oLogger->Write('Get Serialized UIDS from cache ('.$sSerializedLog.') [count:'.\count($aSerialized['Uids']).']');
+						$this->oLogger->Write('Get Serialized '.($bReturnUid?'UIDS':'IDS').' from cache ('.$sSerializedLog.') [count:'.\count($aSerialized['Uids']).']');
 					}
-					if (\is_array($aSerialized['Uids'])) {
-						return $aSerialized['Uids'];
-					}
+					return $aSerialized['Uids'];
 				}
 			}
 		}
@@ -631,7 +629,7 @@ class MailClient
 			)));
 
 			if ($this->oLogger) {
-				$this->oLogger->Write('Save Serialized UIDS to cache ('.$sSerializedLog.') [count:'.\count($aResultUids).']');
+				$this->oLogger->Write('Save Serialized '.($bReturnUid?'UIDS':'IDS').' to cache ('.$sSerializedLog.') [count:'.\count($aResultUids).']');
 			}
 		}
 

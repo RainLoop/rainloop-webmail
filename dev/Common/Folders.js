@@ -9,10 +9,15 @@ import { SettingsUserStore } from 'Stores/User/Settings';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { getNotification } from 'Common/Translator';
-import { Settings,  } from 'Common/Globals';
+import { Settings } from 'Common/Globals';
 import { serverRequest } from 'Common/Links';
 
 import Remote from 'Remote/User/Fetch';
+
+import { b64EncodeJSONSafe } from 'Common/Utils';
+import { SettingsGet } from 'Common/Globals';
+import { SUB_QUERY_PREFIX } from 'Common/Links';
+import { AppUserStore } from 'Stores/User/App';
 
 export const
 
@@ -28,34 +33,41 @@ sortFolders = folders => {
 },
 
 /**
- * @param {?Function} fCallback
- * @param {string} folder
- * @param {Array=} list = []
+ * @param {object} params
  */
-fetchFolderInformation = (fCallback, folder, list = []) => {
-	let fetch = !arrayLength(list);
-	const uids = [],
-		folderFromCache = getFolderFromCacheList(folder);
+messageList = params => {
+	const
+//		folder = getFolderFromCacheList(params.folder.fullName),
+		folder = getFolderFromCacheList(params.folder),
+		folderHash = folder?.hash || '';
 
-	if (!fetch) {
-		list.forEach(messageListItem => {
-			MessageFlagsCache.getFor(folder, messageListItem.uid) || uids.push(messageListItem.uid);
-			messageListItem.threads.forEach(uid => {
-				MessageFlagsCache.getFor(folder, uid) || uids.push(uid);
-			});
-		});
-		fetch = uids.length;
+	params = Object.assign({
+		offset: 0,
+		limit: SettingsUserStore.messagesPerPage(),
+		search: '',
+		uidNext: folder?.uidNext || 0, // Used to check for new messages
+		sort: FolderUserStore.sortMode()
+	}, params);
+	if (AppUserStore.threadsAllowed() && SettingsUserStore.useThreads()) {
+		params.useThreads = 1;
+	} else {
+		params.threadUid = 0;
 	}
 
-	if (fetch) {
-		Remote.request('FolderInformation', fCallback, {
-			Folder: folder,
-			FlagsUids: uids,
-			UidNext: folderFromCache?.uidNext || 0 // Used to check for new messages
-		});
-	} else if (SettingsUserStore.useThreads()) {
-		MessagelistUserStore.reloadFlagsAndCachedMessage();
+	let sGetAdd = '';
+	if (folderHash) {
+		params.hash = folderHash + '-' + SettingsGet('AccountHash');
+		sGetAdd = 'MessageList/' + SUB_QUERY_PREFIX + '/' + b64EncodeJSONSafe(params);
+		params = {};
 	}
+
+	Remote.abort('MessageList');
+	Remote.request('MessageList',
+		null,
+		params,
+		60000, // 60 seconds before aborting
+		sGetAdd
+	);
 },
 
 /**
@@ -127,8 +139,22 @@ refreshFoldersInterval = 300000,
  */
 folderInformation = (folder, list) => {
 	if (folder?.trim()) {
-		fetchFolderInformation(
-			(iError, data) => {
+		let fetch = !arrayLength(list);
+		const uids = [],
+			folderFromCache = getFolderFromCacheList(folder);
+
+		if (!fetch) {
+			list.forEach(messageListItem => {
+				MessageFlagsCache.getFor(folder, messageListItem.uid) || uids.push(messageListItem.uid);
+				messageListItem.threads.forEach(uid => {
+					MessageFlagsCache.getFor(folder, uid) || uids.push(uid);
+				});
+			});
+			fetch = uids.length;
+		}
+
+		if (fetch) {
+			Remote.request('FolderInformation', (iError, data) => {
 				if (!iError && data.Result) {
 					const result = data.Result,
 						folderFromCache = getFolderFromCacheList(result.Folder);
@@ -159,15 +185,20 @@ folderInformation = (folder, list) => {
 							if (folderFromCache.fullName === FolderUserStore.currentFolderFullName()) {
 								MessagelistUserStore.reload();
 							} else if (getFolderInboxName() === folderFromCache.fullName) {
-								Remote.messageList(null, {Folder: getFolderInboxName()}, true);
+//								messageList({folder: getFolderFromCacheList(getFolderInboxName())});
+								messageList({folder: getFolderInboxName()});
 							}
 						}
 					}
 				}
-			},
-			folder,
-			list
-		);
+			}, {
+				Folder: folder,
+				FlagsUids: uids,
+				UidNext: folderFromCache?.uidNext || 0 // Used to check for new messages
+			});
+		} else if (SettingsUserStore.useThreads()) {
+			MessagelistUserStore.reloadFlagsAndCachedMessage();
+		}
 	}
 },
 

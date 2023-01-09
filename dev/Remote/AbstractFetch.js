@@ -130,11 +130,6 @@ export class AbstractFetchRemote
 			sGetAdd ? null : (params || {}),
 			undefined === iTimeout ? 30000 : pInt(iTimeout),
 			data => {
-				let cached = false;
-				if (data?.Time) {
-					cached = pInt(data.Time) > Date.now() - start;
-				}
-
 				let iError = 0;
 				if (sAction && oRequests[sAction]) {
 					abort(sAction, 0, 1);
@@ -157,9 +152,12 @@ export class AbstractFetchRemote
 				fCallback && fCallback(
 					iError,
 					data,
-					cached,
-					sAction,
-					params
+					/**
+					 * Responses like "304 Not Modified" are returned as "200 OK"
+					 * This is an attempt to detect if the request comes from cache.
+					 * But when client has wrong date/time, it will fail.
+					 */
+					data?.epoch && data.epoch < Math.floor(start / 1000) - 60
 				);
 			}
 		)
@@ -203,8 +201,8 @@ export class AbstractFetchRemote
 				}
 /*
 				let isCached = false, type = '';
-				if (data?.Time) {
-					isCached = pInt(data.Time) > microtime() - start;
+				if (data?.epoch) {
+					isCached = data.epoch > microtime() - start;
 				}
 				// backward capability
 				switch (true) {
