@@ -6,8 +6,8 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'reCaptcha',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '2.13',
-		RELEASE  = '2022-12-08',
+		VERSION  = '2.14',
+		RELEASE  = '2023-01-11',
 		REQUIRED = '2.23',
 		CATEGORY = 'General',
 		LICENSE  = 'MIT',
@@ -141,10 +141,12 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	public function ContentSecurityPolicy(\SnappyMail\HTTP\CSP $CSP)
 	{
-		$CSP->script[] = 'https://www.google.com/recaptcha/';
+//		$CSP->script[] = 'https://www.google.com/recaptcha/';
 		$CSP->script[] = 'https://www.gstatic.com/recaptcha/';
-		$CSP->frame[] = 'https://www.google.com/recaptcha/';
-		$CSP->frame[] = 'https://recaptcha.google.com/recaptcha/';
+		$CSP->script[] = 'https://www.recaptcha.net/recaptcha/';
+//		$CSP->frame[] = 'https://www.google.com/recaptcha/';
+//		$CSP->frame[] = 'https://recaptcha.google.com/recaptcha/';
+		$CSP->frame[] = 'https://www.recaptcha.net/recaptcha/';
 	}
 
 }
