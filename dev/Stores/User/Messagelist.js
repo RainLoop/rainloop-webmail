@@ -293,7 +293,8 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 			MessagelistUserStore.loading(false);
 		},
 		{
-			Folder: FolderUserStore.currentFolderFullName(),
+//			folder: FolderUserStore.currentFolder() ? self.currentFolder().fullName : ''),
+			folder: FolderUserStore.currentFolderFullName(),
 			offset: iOffset,
 			limit: SettingsUserStore.messagesPerPage(),
 			search: MessagelistUserStore.listSearch(),

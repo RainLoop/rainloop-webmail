@@ -160,12 +160,15 @@ class ServiceActions
 
 		$aResponse['Action'] = $sAction ?: 'Unknown';
 
-		if (\is_array($aResponse)) {
-			$aResponse['Time'] = (int) ((\microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000);
-		}
-
 		if (!\headers_sent()) {
 			\header('Content-Type: application/json; charset=utf-8');
+		}
+
+		if (\is_array($aResponse)) {
+			$aResponse['epoch'] = \time();
+//			if ($this->Config()->Get('debug', 'enable', false)) {
+//				$aResponse['rtime'] = \round(\microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 3);
+//			}
 		}
 
 		$sResult = Utils::jsonEncode($aResponse);

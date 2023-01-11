@@ -2,7 +2,7 @@
 
 namespace RainLoop\Plugins;
 
-use \RainLoop\Enumerations\PluginPropertyType;
+use RainLoop\Enumerations\PluginPropertyType;
 
 class Property implements \JsonSerializable
 {

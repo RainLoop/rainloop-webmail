@@ -210,7 +210,15 @@ export class DomainPopupView extends AbstractViewPopup {
 	createOrAddCommand() {
 		this.saving(true);
 		Remote.request('AdminDomainSave',
-			this.onDomainCreateOrSaveResponse.bind(this),
+			iError => {
+				this.saving(false);
+				if (iError) {
+					this.savingError(getNotification(iError));
+				} else {
+					DomainAdminStore.fetch();
+					this.close();
+				}
+			},
 			Object.assign(domainToParams(this), {
 				Create: this.edit() ? 0 : 1
 			})
@@ -261,16 +269,6 @@ export class DomainPopupView extends AbstractViewPopup {
 				);
 			}
 		});
-	}
-
-	onDomainCreateOrSaveResponse(iError) {
-		this.saving(false);
-		if (iError) {
-			this.savingError(getNotification(iError));
-		} else {
-			DomainAdminStore.fetch();
-			this.close();
-		}
 	}
 
 	clearTesting() {

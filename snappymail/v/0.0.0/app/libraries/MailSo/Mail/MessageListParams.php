@@ -51,4 +51,18 @@ class MessageListParams
 //		0 > $oParams->iLimit
 //		999 < $oParams->iLimit
 	}
+
+	public function hash() : string
+	{
+		return \md5(\implode('-', [
+			$this->sFolderName,
+			$this->iOffset,
+			$this->iLimit,
+			$this->bHideDeleted ? '1' : '0',
+			$this->sSearch,
+			$this->bUseSort ? $this->sSort : '',
+			$this->bUseThreads ? $this->iThreadUid : '',
+			$this->iPrevUidNext
+		]));
+	}
 }

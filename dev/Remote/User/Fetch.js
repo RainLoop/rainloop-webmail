@@ -22,8 +22,8 @@ class RemoteUserFetch extends AbstractFetchRemote {
 	 */
 	messageList(fCallback, params, bSilent = false) {
 		const
-			sFolderFullName = pString(params.Folder),
-			folder = getFolderFromCacheList(sFolderFullName),
+	//		folder = getFolderFromCacheList(params.folder.fullName),
+			folder = getFolderFromCacheList(params.folder),
 			folderHash = folder?.hash || '';
 
 		params = Object.assign({
@@ -31,10 +31,8 @@ class RemoteUserFetch extends AbstractFetchRemote {
 			limit: SettingsUserStore.messagesPerPage(),
 			search: '',
 			uidNext: folder?.uidNext || 0, // Used to check for new messages
-			sort: FolderUserStore.sortMode(),
-			Hash: folderHash + SettingsGet('AccountHash')
+			sort: FolderUserStore.sortMode()
 		}, params);
-		params.Folder = sFolderFullName;
 		if (AppUserStore.threadsAllowed() && SettingsUserStore.useThreads()) {
 			params.useThreads = 1;
 		} else {
@@ -42,12 +40,9 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		}
 
 		let sGetAdd = '';
-
-		if (folderHash && (!params.search || !params.search.includes('is:'))) {
-			sGetAdd = 'MessageList/' +
-				SUB_QUERY_PREFIX +
-				'/' +
-				b64EncodeJSONSafe(params);
+		if (folderHash) {
+			params.hash = folderHash + '-' + SettingsGet('AccountHash');
+			sGetAdd = 'MessageList/' + SUB_QUERY_PREFIX + '/' + b64EncodeJSONSafe(params);
 			params = {};
 		}
 

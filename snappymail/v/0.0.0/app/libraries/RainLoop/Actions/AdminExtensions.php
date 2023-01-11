@@ -4,6 +4,7 @@ namespace RainLoop\Actions;
 
 use RainLoop\Enumerations\PluginPropertyType;
 use RainLoop\Exceptions\ClientException;
+use RainLoop\Notifications;
 
 trait AdminExtensions
 {

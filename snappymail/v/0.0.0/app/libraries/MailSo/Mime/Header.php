@@ -157,7 +157,7 @@ class Header
 		}
 
 		// https://www.rfc-editor.org/rfc/rfc2822#section-2.1.1
-		return \wordwrap($this->NameWithDelimitrom() . $sValue, 78, "\r\n ");
+		return \wordwrap($this->NameWithDelimitrom() . $sResult, 78, "\r\n ");
 	}
 
 	public function IsSubject() : bool
