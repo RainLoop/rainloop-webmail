@@ -33,7 +33,7 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Sì",
 		"NO": "No",
-		"INACTIVE": "Inactive",
+		"INACTIVE": "Inattivo",
 		"DEFAULT": "predefinito"
 	},
 	"LOGIN": {
@@ -99,7 +99,7 @@
 		"MENU_SELECT_SEEN": "Letti",
 		"MENU_SELECT_FLAGGED": "Preferiti",
 		"MENU_SELECT_UNFLAGGED": "Non preferiti",
-		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Scarica tutti allegati",
 		"EMPTY_LIST": "Lista vuota",
 		"EMPTY_SEARCH_LIST": "Nessun messaggio corrisponde alla tua ricerca",
 		"SEARCH_RESULT_FOR": "Risultati di ricerca per \"%SEARCH%\"",
@@ -226,7 +226,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Nessun allegato.",
 		"ATTACHMENTS_ERROR_DESC": "Attenzione! Non tutti gli allegati sono stati caricati.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Non tutti gli allegati sono stati caricati al momento.",
-		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_SPELLCHECK": "Abilita il controllo ortografico del browser",
 		"BUTTON_REQUEST_READ_RECEIPT": "Richiedi conferma di lettura",
 		"BUTTON_MARK_AS_IMPORTANT": "Marca come importante",
 		"BUTTON_REQUEST_DSN": "Richiedi conferma del ricevimento"
@@ -386,7 +386,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Generali",
 		"LANGUAGE": "Lingua",
-		"HOUR_FORMAT": "Hour format",
+		"HOUR_FORMAT": "Formato orario",
 		"IDENTITY": "Identità",
 		"LAYOUT": "Struttura",
 		"LAYOUT_NO_SPLIT": "A pagina intera",
@@ -467,7 +467,7 @@
 		"BUTTON_ADD_ACCOUNT": "Aggiungi account",
 		"BUTTON_ADD_IDENTITY": "Aggiungi identità",
 		"LOADING_PROCESS": "Aggiornamento della lista degli account...",
-		"SHOW_UNREAD": "Show unread messages count"
+		"SHOW_UNREAD": "Visualizza il numero di messaggi non letti dei account"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importa chiave",
@@ -516,7 +516,7 @@
 		"LABEL_CLOSE_COMPOSE": "Chiudi finestra di scrittura"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
+		"REQUEST_ERROR": "Richiesta fallita",
 		"REQUEST_ABORTED": "Request is aborted",
 		"REQUEST_TIMEOUT": "Request timed out",
 		"INVALID_TOKEN": "Token invalido",
