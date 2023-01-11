@@ -33,7 +33,7 @@
 		"SERVER_MESSAGE": "Server-Nachricht",
 		"YES": "Ja",
 		"NO": "Nein",
-		"INACTIVE": "Inactive",
+		"INACTIVE": "Inaktiv",
 		"DEFAULT": "Standard"
 	},
 	"LOGIN": {
@@ -99,7 +99,7 @@
 		"MENU_SELECT_SEEN": "Gelesen",
 		"MENU_SELECT_FLAGGED": "Markiert",
 		"MENU_SELECT_UNFLAGGED": "Nicht markiert",
-		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Alle Anhänge herunterladen",
 		"EMPTY_LIST": "Liste ist leer.",
 		"EMPTY_SEARCH_LIST": "Keine Treffer für Ihre Suche.",
 		"SEARCH_RESULT_FOR": "Suchergebnisse für \"%SEARCH%\"",
@@ -152,7 +152,7 @@
 		"SPAM_SCORE": "Spam-Score",
 		"HAS_VIRUS_WARNING": "WARNUNG: Virus erkannt",
 		"TAGS": "Stichworte",
-		"NEW_TAG": "New tag"
+		"NEW_TAG": "Neues Schlagwort"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Wichtig",
@@ -226,7 +226,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Keine Anhänge vorhanden.",
 		"ATTACHMENTS_ERROR_DESC": "Warnung! Nicht alle Anhänge wurden hochgeladen.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Es wurden noch nicht alle Anhänge hochgeladen.",
-		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_SPELLCHECK": "Rechtschreibprüfung durch den Browser zulassen",
 		"BUTTON_REQUEST_READ_RECEIPT": "Empfangsbestätigung anfordern",
 		"BUTTON_MARK_AS_IMPORTANT": "Als Wichtig markieren",
 		"BUTTON_REQUEST_DSN": "Übermittlungsstatus anfordern"
@@ -386,7 +386,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Allgemein",
 		"LANGUAGE": "Sprache",
-		"HOUR_FORMAT": "Hour format",
+		"HOUR_FORMAT": "Stundenformat",
 		"IDENTITY": "Identität",
 		"LAYOUT": "Layout",
 		"LAYOUT_NO_SPLIT": "Keine Aufteilung",
@@ -414,8 +414,8 @@
 		"CHROME_NOTIFICATION_DESC": "Popups einblenden, wenn neue Nachrichten vorhanden sind",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Vom Browser blockiert.)",
 		"LIST_INLINE_ATTACHMENTS": "Inline-Anhänge in der Liste anzeigen",
-		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
-		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)"
+		"LIST_SIMPLE_ATTACHMENTS": "Vereinfachte Liste der Anhänge",
+		"LIST_MESSAGES_GROUPED": "Nachrichten bei Sortierung nach Datum oder Absender gruppieren"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Empfänger automatisch zu Ihrem Adressbuch hinzuzufügen",
@@ -429,7 +429,7 @@
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Themen",
 		"LABEL_BACKGROUND": "Hintergrund",
-		"LABEL_FONTS": "Fonts",
+		"LABEL_FONTS": "Schriftarten",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Hintergrundbild hochladen (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Datei ist zu groß",
 		"ERROR_FILE_TYPE_ERROR": "Ungültiger Dateityp (nur JPG und PNG)",
@@ -451,7 +451,7 @@
 		"HELP_SHOW_HIDE_FOLDER": "Ordner ein-\/ausblenden",
 		"HELP_CHECK_FOR_NEW_MESSAGES": "Auf neue Nachrichten prüfen\/nicht prüfen",
 		"HIDE_UNSUBSCRIBED": "Nicht abonnierte Ordner ausblenden",
-		"UNHIDE_KOLAB_FOLDERS": "Dehide Kolab Ordner",
+		"UNHIDE_KOLAB_FOLDERS": "Kolab Ordner anzeigen",
 		"TYPE_CALENDAR": "Kalender",
 		"TYPE_CONFIGURATION": "Konfiguration",
 		"TYPE_CONTACTS": "Kontakte",
@@ -467,7 +467,7 @@
 		"BUTTON_ADD_ACCOUNT": "Konto hinzufügen",
 		"BUTTON_ADD_IDENTITY": "Identität hinzufügen",
 		"LOADING_PROCESS": "Aktualisiere Kontenliste",
-		"SHOW_UNREAD": "Show unread messages count"
+		"SHOW_UNREAD": "Zeige Zahl der ungelesenen Nachrichten aller Konten"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Schlüssel importieren",
