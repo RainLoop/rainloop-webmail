@@ -20,8 +20,10 @@
 			</li>
 		</ul>
 		<hr>
-		<input type="search" id="folderSearchInput" data-bind="textInput: foldersFilter, visible: foldersFilterVisible" data-i18n="[placeholder]GLOBAL/SEARCH">
-		<a data-bind="click: clearFolderSearchClick" class="btn buttonClearFolderSearchInput">✕</a>
+		<div class="search-input-wrp">
+			<input type="search" id="folderSearchInput" data-bind="textInput: foldersFilter, visible: foldersFilterVisible" data-i18n="[placeholder]GLOBAL/SEARCH">
+			<a data-bind="click: clearFolderSearchClick" class="btn buttonClearFolderSearchInput">✕</a>
+		</div>
 		<ul class="b-folders-user" data-bind="template: { name: 'MailFolderListItem', foreach: folderListVisible }"></ul>
 		<div class="move-action-content-wrapper" data-bind="visible: moveAction"></div>
 	</div>
