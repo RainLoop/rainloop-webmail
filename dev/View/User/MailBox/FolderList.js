@@ -206,6 +206,10 @@ export class MailFolderList extends AbstractViewLeft {
 		showMessageComposer();
 	}
 
+	clearFolderSearch() {
+		foldersFilter('');
+	}
+
 	createFolder() {
 		showScreenPopup(FolderCreatePopupView);
 	}

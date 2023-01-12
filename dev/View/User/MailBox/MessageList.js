@@ -818,10 +818,6 @@ export class MailMessageList extends AbstractViewRight {
 		showScreenPopup(AdvancedSearchPopupView, [MessagelistUserStore.mainSearch()]);
 	}
 
-	clearFolderSearchClick() {
-		document.getElementById("folderSearchInput").value = "";
-	}
-
 	groupSearch(group) {
 		group.search && MessagelistUserStore.mainSearch(group.search);
 	}

@@ -177,6 +177,23 @@ html.rl-side-preview-pane {
 	border-radius: var(--input-border-radius, 3px) !important;
 }
 
+.search-input-wrp {
+	position: relative;
+}
+.search-input-wrp a {
+	position: absolute;
+	right: 0;
+	top: 5px;
+	margin: 0 7px;
+	z-index: 100;
+	opacity: .4;
+	cursor: pointer;
+
+	&:hover {
+		opacity: .6;
+	}
+}
+
 /* desktop */
 @media screen and (min-width: 1000px) {
 }
