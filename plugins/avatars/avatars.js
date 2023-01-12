@@ -66,7 +66,7 @@
 			fn('data:image/svg+xml;base64,' + btoa(window.identiconSvg(hash, fromChars(from))))
 		),
 		addQueue = (msg, fn) => {
-			setIdenticon(msg.from[0], fn);
+			msg.from?.[0] && setIdenticon(msg.from[0], fn);
 			if (rl.pluginSettingsGet('avatars', 'delay')) {
 				queue.push([msg, fn]);
 				runQueue();
@@ -75,31 +75,33 @@
 		runQueue = (() => {
 			let item = queue.shift();
 			while (item) {
-				let url = getAvatar(item[0]),
-					uid = getAvatarUid(item[0]);
-				if (url) {
-					item[1](url);
-					item = queue.shift();
-				} else if (!avatars.has(uid)) {
-					let from = item[0].from[0];
-					rl.pluginRemoteRequest((iError, data) => {
-						if (!iError && data?.Result.type) {
-							url = `data:${data.Result.type};base64,${data.Result.data}`;
-							avatars.set(uid, url);
-							item[1](url);
-						} else {
-							avatars.set(uid, '');
-						}
-						runQueue();
-					}, 'Avatar', {
-						bimi: 'pass' == from.dkimStatus ? 1 : 0,
-						email: from.email
-					});
-					break;
-				} else {
-					runQueue();
-					break;
+				if (item[0].from) {
+					let url = getAvatar(item[0]),
+						uid = getAvatarUid(item[0]);
+					if (url) {
+						item[1](url);
+						item = queue.shift();
+						continue;
+					} else if (!avatars.has(uid)) {
+						let from = item[0].from[0];
+						rl.pluginRemoteRequest((iError, data) => {
+							if (!iError && data?.Result.type) {
+								url = `data:${data.Result.type};base64,${data.Result.data}`;
+								avatars.set(uid, url);
+								item[1](url);
+							} else {
+								avatars.set(uid, '');
+							}
+							runQueue();
+						}, 'Avatar', {
+							bimi: 'pass' == from.dkimStatus ? 1 : 0,
+							email: from.email
+						});
+						break;
+					}
 				}
+				runQueue();
+				break;
 			}
 		}).debounce(1000);
 
@@ -204,7 +206,7 @@
 			view.message.subscribe(msg => {
 				view.viewUserPicVisible(false);
 				if (msg) {
-					let url = getAvatar(msg),
+					let url = msg.from?.[0] ? getAvatar(msg) : 0,
 						fn = url => {
 							view.viewUserPic(url);
 							view.viewUserPicVisible(true);

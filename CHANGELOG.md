@@ -1,3 +1,48 @@
+## 2.24.5 – 2023-01-12
+
+## Added
+- Support for search criterias ON, SENTON, SENTSINCE and SENTBEFORE
+- New 'forward as attachment' glyph
+- NC integration app metadata: add links to admin and dev docs by @p-bo
+  [#820](https://github.com/the-djmaze/snappymail/pull/820)
+- Clicking on messagelist grouped date/from searches on that date/from
+  [#815](https://github.com/the-djmaze/snappymail/pull/815)
+- Nextcloud Improved file picker layout
+  [#825](https://github.com/the-djmaze/snappymail/pull/825)
+
+## Changed
+- Move release.php to cli/release.php
+- Moved sort options "FROM" direct below "DATE" for better understanding
+- Added DAV path error to log for
+  [#822](https://github.com/the-djmaze/snappymail/pull/822)
+- Resolve layout issues by changing from `fixed` to `relative`
+  [#686](https://github.com/the-djmaze/snappymail/pull/686)
+- Cache handling of messagelist changed due to etag issues
+- Improve german and italian translation by @cm-schl
+  [#846](https://github.com/the-djmaze/snappymail/pull/846)
+
+## Fixed
+- Searching on Nextcloud search #787
+  [#787](https://github.com/the-djmaze/snappymail/pull/787)
+- Workaround another Nextcloud disallowed .htaccess
+  [#790](https://github.com/the-djmaze/snappymail/pull/790)
+- Compact display of folders in nextcloud by @makoehr
+  [#824](https://github.com/the-djmaze/snappymail/pull/824)
+- Admin -> Contacts PDO test failed when using different AddressBookInterface
+- KolabAddressBook errors
+- Forgot debug js/css setting change in Nextcloud
+- Typed property MailSo\Mail\MessageListParams::$sSearch must not be accessed before initialization
+- Unable to change font/text colour when composing message using Safari
+  [#826](https://github.com/the-djmaze/snappymail/pull/826)
+- auth_logging failed
+  [#489](https://github.com/the-djmaze/snappymail/pull/489)
+- Class "RainLoop\Actions\Notifications" not found
+  [#839](https://github.com/the-djmaze/snappymail/pull/839)
+
+### Removed
+- 'set-version' argument for release.php
+
+
 ## 2.24.4 – 2022-12-30
 
 ## Added

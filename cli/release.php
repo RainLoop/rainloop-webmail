@@ -3,7 +3,7 @@
 define('ROOT_DIR', dirname(__DIR__));
 chdir(ROOT_DIR);
 
-$options = getopt('', ['aur','docker','plugins','skip-gulp','debian','nextcloud','owncloud','sign']);
+$options = getopt('', ['aur','docker','plugins','skip-gulp','debian','nextcloud','owncloud','cpanel','sign']);
 
 if (isset($options['plugins'])) {
 	require(ROOT_DIR . '/build/plugins.php');
