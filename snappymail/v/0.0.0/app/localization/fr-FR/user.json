@@ -152,7 +152,7 @@
 		"SPAM_SCORE": "Score de spam",
 		"HAS_VIRUS_WARNING": "ATTENTION : virus détecté",
 		"TAGS": "Étiquettes",
-		"NEW_TAG": "New tag"
+		"NEW_TAG": "Nouvelle étiquette"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Important",
@@ -172,16 +172,16 @@
 	},
 	"CONTACTS": {
 		"TAB_CONTACT": "Contact",
-		"TAB_LOCATIONS": "Locations",
-		"TAB_BUSINESS": "Business",
-		"LABEL_ORGANIZATION": "Organization",
+		"TAB_LOCATIONS": "Localisations",
+		"TAB_BUSINESS": "Métier",
+		"LABEL_ORGANIZATION": "Entreprise",
 		"LABEL_DEPARTMENT": "Department",
-		"LABEL_TITLE": "Title",
-		"TAB_CRYPTO": "Crypto",
-		"ASK": "Ask",
-		"NEVER": "Never",
-		"ALWAYS": "Always",
-		"ALWAYS_IF_POSSIBLE": "Always if possible",
+		"LABEL_TITLE": "Titre",
+		"TAB_CRYPTO": "Chiffre",
+		"ASK": "Demander",
+		"NEVER": "Jamais",
+		"ALWAYS": "Toujours",
+		"ALWAYS_IF_POSSIBLE": "Toujours si possible",
 		"BUTTON_ADD_CONTACT": "Ajouter un contact",
 		"BUTTON_CREATE_CONTACT": "Créer",
 		"BUTTON_UPDATE_CONTACT": "Modifier",
@@ -358,14 +358,14 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"PERSONAL": "Personal",
-		"GENERAL": "General",
+		"PERSONAL": "Personnel",
+		"GENERAL": "Général",
 		"CONTACTS": "Contacts",
-		"FOLDERS": "Folders",
-		"ACCOUNTS": "Accounts",
-		"FILTERS": "Filters",
-		"SECURITY": "Security",
-		"THEMES": "Themes"
+		"FOLDERS": "Dossiers",
+		"ACCOUNTS": "Comptes",
+		"FILTERS": "Filtres",
+		"SECURITY": "Securité",
+		"THEMES": "Thèmes"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Filtres",
@@ -386,7 +386,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Général",
 		"LANGUAGE": "Langue",
-		"HOUR_FORMAT": "Hour format",
+		"HOUR_FORMAT": "Format horaire",
 		"IDENTITY": "Identité",
 		"LAYOUT": "Disposition",
 		"LAYOUT_NO_SPLIT": "Pas de séparation",
@@ -402,12 +402,12 @@
 		"USE_THREADS": "Regrouper en conversations",
 		"REPLY_SAME_FOLDER": "Placer les réponses dans le dossier du message",
 		"SHOW_IMAGES": "Toujours afficher les images dans le mail",
-		"PREFER_HTML": "Prefer HTML to plain text",
+		"PREFER_HTML": "Préférer le HTML au texte pur",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"REMOVE_COLORS": "Supprimer les couleurs d'arrière-plan et de texte du message",
 		"MESSAGE_PER_PAGE": "Messages par page",
 		"MARK_MESSAGE_READ_AFTER": "Marquer le message comme lu après",
-		"MSG_DEFAULT_ACTION": "Default action",
+		"MSG_DEFAULT_ACTION": "Action par défaut",
 		"SECONDS": "secondes",
 		"NOTIFICATIONS": "Notifications",
 		"SOUND_NOTIFICATION": "Son de notification",
@@ -467,7 +467,7 @@
 		"BUTTON_ADD_ACCOUNT": "Ajouter un compte",
 		"BUTTON_ADD_IDENTITY": "Ajouter une identité",
 		"LOADING_PROCESS": "Mise à jour de la liste des comptes",
-		"SHOW_UNREAD": "Show unread messages count"
+		"SHOW_UNREAD": "Affiche le compteur de messages non lus"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importer la clé",
