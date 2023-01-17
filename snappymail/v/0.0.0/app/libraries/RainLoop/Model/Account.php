@@ -208,6 +208,11 @@ abstract class Account implements \JsonSerializable
 		return $oAccount;
 	}
 
+	// Deprecated
+	public function ImapConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Imap\ImapClient $oImapClient, \RainLoop\Config\Application $oConfig) : bool
+	{
+		return $this->ImapConnectAndLogin($oPlugins, $oImapClient, $oConfig);
+	}
 	public function ImapConnectAndLogin(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Imap\ImapClient $oImapClient, \RainLoop\Config\Application $oConfig) : bool
 	{
 		$oSettings = $this->Domain()->ImapSettings();
