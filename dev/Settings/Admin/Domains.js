@@ -16,7 +16,6 @@ export class AdminSettingsDomains /*extends AbstractViewSettings*/ {
 	}
 
 	testUsername() {
-		// TODO: find domain matching username
 		Remote.request('AdminDomainMatch',
 			(iError, oData) => {
 				if (oData?.Result?.domain) {
