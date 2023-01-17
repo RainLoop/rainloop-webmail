@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "User",
 		"LABEL_STORAGE_PASSWORD": "Password",
 		"ALERT_NOTICE": "Perhatian!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Jangan gunakan tipe database ini untuk jumlah user aktif yang besar.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Sistem anda tidak mendukung kontak\n<br>\nAnda harus memasang atau mengaktifkan <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> extension pada server anda.\n"
 	},

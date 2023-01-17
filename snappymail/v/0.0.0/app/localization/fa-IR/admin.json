@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "کاربر",
 		"LABEL_STORAGE_PASSWORD": "گذرواژه",
 		"ALERT_NOTICE": "توجه!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "از این پایگاه داده برای کاربران زیاد استفاده نکنید.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "سیستم از تماس‌ها پشتیبانی نمی‌کند\n<br>\nشما باید افزونه <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> را نصب کنید یا اینکه فعال کنید.\n"
 	},

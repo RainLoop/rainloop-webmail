@@ -36,8 +36,6 @@ export class AdminSettingsGeneral extends AbstractViewSettings {
 		this.addSettings(['AllowLanguagesOnSettings']);
 
 		addObservablesTo(this, {
-			attachmentLimitTrigger: SaveSettingStatus.Idle,
-			themeTrigger: SaveSettingStatus.Idle,
 			capaThemes: SettingsCapa('Themes'),
 			capaUserBackground: SettingsCapa('UserBackground'),
 			capaAdditionalAccounts: SettingsCapa('AdditionalAccounts'),

@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "Uporabnik",
 		"LABEL_STORAGE_PASSWORD": "Geslo",
 		"ALERT_NOTICE": "Obvestilo!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Ta tip podatkovne baze ni priporočljiv za večje število uporabnikov.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Sistem ne podpira stikov.\n<br>\nNamestite ali omogočite <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> razširitev na strežniku.\n"
 	},

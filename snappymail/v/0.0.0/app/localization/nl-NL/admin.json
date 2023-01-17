@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "Gebruikersnaam",
 		"LABEL_STORAGE_PASSWORD": "Wachtwoord",
 		"ALERT_NOTICE": "Aandacht!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Gegruik deze database soort niet met een groot aantal actieve gebrukers.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Uw systeem ondersteund geen contactpersonen.\n<br>\nU moet een <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> extentie op uw server installeren of activeren.\n"
 	},

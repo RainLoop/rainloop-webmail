@@ -657,6 +657,7 @@ class Actions
 				$aResult['ContactsPdoType'] = (string)$oConfig->Get('contacts', 'type', '');
 				$aResult['ContactsPdoUser'] = (string)$oConfig->Get('contacts', 'pdo_user', '');
 				$aResult['ContactsPdoPassword'] = static::APP_DUMMY;
+				$aResult['ContactsSuggestionsLimit'] = (int)$oConfig->Get('contacts', 'suggestions_limit', 20);
 
 				$aResult['FaviconUrl'] = $oConfig->Get('webmail', 'favicon_url', '');
 

@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "Käyttäjä",
 		"LABEL_STORAGE_PASSWORD": "Salasana",
 		"ALERT_NOTICE": "Huomio!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Älä käytä tätä tietokantatyyppiä suurella määrällä aktiivisia käyttäjiä.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Järjestelmäsi ei tue yhteystietoja.\n<br>\nAsenna tai aktivoi <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> lisäosa palvelimellasi.\n"
 	},

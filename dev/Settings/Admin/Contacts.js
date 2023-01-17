@@ -31,6 +31,8 @@ export class AdminSettingsContacts extends AbstractViewSettings {
 			testContactsErrorMessage: ''
 		});
 
+		this.addSetting('ContactsSuggestionsLimit');
+
 		const supportedTypes = SettingsGet('supportedPdoDrivers') || [],
 			types = [{
 				id:'sqlite',

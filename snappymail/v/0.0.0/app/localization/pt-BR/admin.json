@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "Usuário",
 		"LABEL_STORAGE_PASSWORD": "Senha",
 		"ALERT_NOTICE": "Aviso!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Não use este tipo de banco de dados com um grande número de usuários ativos.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "O seu sistema não suporta o uso dos contatos.\n<br>\nVocê precisa instalar ou habilitar a extensão <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> em seu servidor.\n"
 	},

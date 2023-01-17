@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "Người dùng",
 		"LABEL_STORAGE_PASSWORD": "Mật khẩu",
 		"ALERT_NOTICE": "Chú ý!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Đừng nên sử dụng loại cơ sở dữ liệu này với lượng lớn người dùng mail đang hoạt động.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Hệ thống của bạn không hỗ trợ chế độ danh bạ.\n<br>\nBạn cần cài đặt hoặc bật lên tiện ích mở rộng <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> trên máy chủ của bạn.\n"
 	},

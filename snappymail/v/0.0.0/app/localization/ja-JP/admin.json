@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "ユーザー",
 		"LABEL_STORAGE_PASSWORD": "パスワード",
 		"ALERT_NOTICE": "注意！",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "アクティブユーザーの数が多いとき、このデータベース・タイプを使用しないでください。",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "このシステムでは連絡先はサポートされていません。\n<br>\nサーバーへ<strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong>\n拡張モジュールのインストールが必要です。\n"
 	},

@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "Bruker",
 		"LABEL_STORAGE_PASSWORD": "Passord",
 		"ALERT_NOTICE": "Varsel!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Ikke bruk denne databasetypen hvis dette systemet har mange brukere.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Dette systemet støtter ikke kontakter.\n<br>\nDu må installere eller slå på utvidelsen <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> på tjeneren.\n"
 	},

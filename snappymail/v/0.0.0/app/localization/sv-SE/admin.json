@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "Användare",
 		"LABEL_STORAGE_PASSWORD": "Lösenord",
 		"ALERT_NOTICE": "Notis",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Använd inte denna typ av databas med ett stort antal aktiva användare.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Systemet stöder inte kontakter\n<br>\nDu behöver installera eller aktivera <strong>SUB (SQLite\/MySQL\/PostgreSQL)<\/strong> förlängning på server.\n"
 	},

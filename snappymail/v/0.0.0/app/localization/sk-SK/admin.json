@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "Užívateľ",
 		"LABEL_STORAGE_PASSWORD": "Heslo",
 		"ALERT_NOTICE": "Notice!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Nepoužívajte tento typ databázy, ak máte veľký počet aktívnych používateľov.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Your system doesn't support contacts.\n<br>\nYou need to install or enable <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> extension on your server.\n"
 	},

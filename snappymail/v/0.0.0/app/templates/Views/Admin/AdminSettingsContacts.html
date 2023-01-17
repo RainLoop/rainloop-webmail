@@ -18,6 +18,14 @@
 			}"></div>
 		</div>
 	</div>
+	<div class="control-group">
+		<label data-i18n="TAB_CONTACTS/SUGGESTIONS_LIMIT"></label>
+		<div>
+			<input type="number" min="10" max="50" step="1" class="span1" data-bind="textInput: contactsSuggestionsLimit">
+			&nbsp;
+			<span data-bind="saveTrigger: contactsSuggestionsLimitTrigger"></span>
+		</div>
+	</div>
 </form>
 <form class="form-horizontal" spellcheck="false" data-bind="visible: contactsSupported">
 	<div class="legend" data-i18n="TAB_CONTACTS/LEGEND_STORAGE"></div>

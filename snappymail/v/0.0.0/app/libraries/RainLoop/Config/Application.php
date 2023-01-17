@@ -179,7 +179,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'pdo_dsn'           => array('host=127.0.0.1;port=3306;dbname=snappymail'),
 				'pdo_user'          => array('root'),
 				'pdo_password'      => array(''),
-				'suggestions_limit' => array(30)
+				'suggestions_limit' => array(20)
 			),
 
 			'security' => array(

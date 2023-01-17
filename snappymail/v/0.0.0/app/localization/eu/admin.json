@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "Erabiltzailea",
 		"LABEL_STORAGE_PASSWORD": "Pasahitza",
 		"ALERT_NOTICE": "Adi!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Ez erabili datubase hau erabiltzaile aktibo koputu handiarekin.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Zure sistemak ez ditu kontaktuak onartzen.\n<br>\n<strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> gehigarria instalatu edo gaitu behar duzu zure zerbitzarian.\n"
 	},

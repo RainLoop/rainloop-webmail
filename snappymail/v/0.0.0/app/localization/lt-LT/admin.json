@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "Vartotojas",
 		"LABEL_STORAGE_PASSWORD": "Slaptažodis",
 		"ALERT_NOTICE": "Pastaba!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Nenaudokite šio duomenų bazės tipo, jei turite daug aktyvių vartotojų",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Jūsų sistema nepalaiko kontaktų sąrašo.\nReikia įdiegti ar įjungti <strong>PDO (SĄLite \/ MySQL \/ PostgreSQL)<\/strong> plėtinius jūsų serveryje.\n"
 	},

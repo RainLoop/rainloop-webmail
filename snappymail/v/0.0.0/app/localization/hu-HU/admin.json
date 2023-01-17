@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "Felhasználó",
 		"LABEL_STORAGE_PASSWORD": "Jelszó",
 		"ALERT_NOTICE": "Megjegyzés!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Ne használd ezt az adatbázis típust nagy számú aktív felhasználóval.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "A rendszer nem támogatja a címtárat.\n<br>\nTelepítened vagy engedélyezned kell egy <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> kiterjesztést a szervereden.\n"
 	},
