@@ -10,9 +10,11 @@ class CSP
 	public
 		$base = ["'self'"],
 		$default = ["'self'"],
-		// Knockout.js requires unsafe-inline?
 		// Knockout.js requires eval() for observable binding purposes
-		$script  = ["'strict-dynamic'", "'unsafe-eval'"],
+		// Safari < 15.4 does not support strict-dynamic
+//		$script  = ["'strict-dynamic'", "'unsafe-eval'"],
+		$script  = ["'self'", "'unsafe-eval'"],
+		// Knockout.js requires unsafe-inline?
 //		$script  = ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
 		$img     = ["'self'", 'data:'],
 		$style   = ["'self'", "'unsafe-inline'"],
@@ -28,7 +30,7 @@ class CSP
 			foreach (\explode(';', $default) as $directive) {
 				$values = \explode(' ', $directive);
 				$name = \preg_replace('/-.+/', '', \trim(\array_shift($values)));
-				$this->$name = $values;
+				$this->$name = \array_unique(\array_merge($this->$name, $values));
 			}
 		}
 	}
