@@ -143,6 +143,7 @@ abstract class SecFetch
 				}
 			}
 		}
+		return false;
 	}
 
 }
