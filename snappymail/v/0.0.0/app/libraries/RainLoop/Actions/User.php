@@ -236,44 +236,10 @@ trait User
 
 		$this->Plugins()->RunHook('json.suggestions-input-parameters', array(&$sQuery, &$iLimit, $oAccount));
 
-		$iLimit = \max(5, (int) $iLimit);
-
 		$aResult = array();
 
-		if (\strlen($sQuery)) {
-			try
-			{
-				// Address Book
-				$oAddressBookProvider = $this->AddressBookProvider($oAccount);
-				if ($oAddressBookProvider && $oAddressBookProvider->IsActive()) {
-					$aSuggestions = $oAddressBookProvider->GetSuggestions($sQuery, $iLimit);
-					foreach ($aSuggestions as $aItem) {
-						// Unique email address
-						$sLine = \mb_strtolower($aItem[0]);
-						if (!isset($aResult[$sLine])) {
-							$aResult[$sLine] = $aItem;
-						}
-					}
-				}
-			}
-			catch (\Throwable $oException)
-			{
-				$this->Logger()->WriteException($oException);
-			}
-
-			if ($iLimit > \count($aResult)) {
-				$oSuggestionsProvider = $this->SuggestionsProvider();
-				if ($oSuggestionsProvider && $oSuggestionsProvider->IsActive()) {
-					$aSuggestions = $oSuggestionsProvider->Process($oAccount, $sQuery, $iLimit);
-					foreach ($aSuggestions as $sLine => $aItem) {
-						if (!isset($aResult[$sLine])) {
-							$aResult[$sLine] = $aItem;
-						}
-					}
-				}
-			}
-
-			$aResult = \array_slice(\array_values($aResult), 0, $iLimit);
+		if ($oSuggestionsProvider = $this->SuggestionsProvider()) {
+			$aResult = $oSuggestionsProvider->Process($oAccount, $sQuery, $iLimit);
 		}
 
 		return $this->DefaultResponse($aResult);
