@@ -682,8 +682,6 @@ class Actions
 				$aResult = \array_merge($aResult, [
 					'Auth' => true,
 					'Email' => \MailSo\Base\Utils::IdnToUtf8($oAccount->Email()),
-					'IncLogin' => $oAccount->IncLogin(),
-					'OutLogin' => $oAccount->OutLogin(),
 					'AccountHash' => $oAccount->Hash(),
 					'AccountSignMe' => isset($_COOKIE[self::AUTH_SIGN_ME_TOKEN_KEY]),
 					'MainEmail' => \MailSo\Base\Utils::IdnToUtf8($this->getMainAccountFromToken()->Email()),
@@ -1103,7 +1101,7 @@ class Actions
 
 		if (!$this->MailClient()->IsLoggined()) {
 			try {
-				$oAccount->ImapConnectAndLoginHelper($this->oPlugins, $this->MailClient()->ImapClient(), $this->oConfig);
+				$oAccount->ImapConnectAndLogin($this->oPlugins, $this->MailClient()->ImapClient(), $this->oConfig);
 			} catch (\MailSo\Net\Exceptions\ConnectionException $oException) {
 				throw new Exceptions\ClientException(Notifications::ConnectionError, $oException);
 			} catch (\Throwable $oException) {

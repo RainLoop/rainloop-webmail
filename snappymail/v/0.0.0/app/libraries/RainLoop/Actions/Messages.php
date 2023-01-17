@@ -780,7 +780,7 @@ trait Messages
 			$oSmtpClient->SetLogger($this->Logger());
 
 			$bUsePhpMail = false;
-			$oAccount->SmtpConnectAndLoginHelper($this->Plugins(), $oSmtpClient, $this->Config(), $bUsePhpMail);
+			$oAccount->SmtpConnectAndLogin($this->Plugins(), $oSmtpClient, $this->Config(), $bUsePhpMail);
 
 			if ($bUsePhpMail) {
 				if (\MailSo\Base\Utils::FunctionCallable('mail')) {

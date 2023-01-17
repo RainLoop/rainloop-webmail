@@ -450,7 +450,7 @@ trait UserAuth
 			if (!$oImapClient) {
 				$oImapClient = $this->MailClient()->ImapClient();
 			}
-			$oAccount->ImapConnectAndLoginHelper($this->Plugins(), $oImapClient, $this->Config());
+			$oAccount->ImapConnectAndLogin($this->Plugins(), $oImapClient, $this->Config());
 		} catch (ClientException $oException) {
 			throw $oException;
 		} catch (\MailSo\Net\Exceptions\ConnectionException $oException) {

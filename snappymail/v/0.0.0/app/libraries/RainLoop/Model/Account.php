@@ -16,6 +16,10 @@ abstract class Account implements \JsonSerializable
 
 	private string $sPassword = '';
 
+	private string $sSmtpLogin = '';
+
+	private string $sSmtpPassword = '';
+
 	private string $sProxyAuthUser = '';
 
 	private string $sProxyAuthPassword = '';
@@ -32,16 +36,6 @@ abstract class Account implements \JsonSerializable
 		return $this->sName;
 	}
 
-	public function ProxyAuthUser() : string
-	{
-		return $this->sProxyAuthUser;
-	}
-
-	public function ProxyAuthPassword() : string
-	{
-		return $this->sProxyAuthPassword;
-	}
-
 	public function IncLogin() : string
 	{
 		return $this->oDomain->IncShortLogin()
@@ -56,23 +50,8 @@ abstract class Account implements \JsonSerializable
 
 	public function OutLogin() : string
 	{
-		return $this->oDomain->OutShortLogin()
-			? \MailSo\Base\Utils::GetAccountNameFromEmail($this->sLogin)
-			: $this->sLogin;
-	}
-
-	// Deprecated
-	public function Login() : string
-	{
-		\trigger_error('Use \RainLoop\Model\Account->IncLogin()', \E_USER_DEPRECATED);
-		return $this->IncLogin();
-	}
-
-	// Deprecated
-	public function Password() : string
-	{
-		\trigger_error('Use \RainLoop\Model\Account->IncPassword()', \E_USER_DEPRECATED);
-		return $this->IncPassword();
+		$sSmtpLogin = $this->sSmtpLogin ?: $this->sLogin;
+		return $this->oDomain->OutShortLogin() ? \MailSo\Base\Utils::GetAccountNameFromEmail($sSmtpLogin) : $sSmtpLogin;
 	}
 
 	public function Domain() : Domain
@@ -93,6 +72,11 @@ abstract class Account implements \JsonSerializable
 	public function SetPassword(string $sPassword) : void
 	{
 		$this->sPassword = $sPassword;
+	}
+
+	public function SetSmtpPassword(string $sPassword) : void
+	{
+		$this->sSmtpLogin = $sPassword;
 	}
 
 	public function SetProxyAuthUser(string $sProxyAuthUser) : void
@@ -116,6 +100,12 @@ abstract class Account implements \JsonSerializable
 //			'',                          // 4 sClientCert
 			'name' => $this->sName
 		];
+		if ($this->sSmtpLogin && $this->sSmtpPassword) {
+			$result['smtp'] = [
+				'user' => $this->sSmtpLogin,
+				'pass' => $this->sSmtpPassword
+			];
+		}
 		if ($this->sProxyAuthUser && $this->sProxyAuthPassword) {
 			$result['proxy'] = [
 				'user' => $this->sProxyAuthUser,    // 5
@@ -200,19 +190,25 @@ abstract class Account implements \JsonSerializable
 				if (isset($aAccountHash['name'])) {
 					$oAccount->sName = $aAccountHash['name'];
 				}
+				$oActions->Logger()->AddSecret($oAccount->sPassword);
+				// init smtp user/password
+				if (isset($aAccountHash['smtp'])) {
+					$oAccount->sSmtpLogin = $aAccountHash['smtp']['user'];
+					$oAccount->sSmtpPassword = $aAccountHash['smtp']['pass'];
+					$oActions->Logger()->AddSecret($oAccount->sSmtpPassword);
+				}
 				// init proxy user/password
 				if (isset($aAccountHash['proxy'])) {
 					$oAccount->sProxyAuthUser = $aAccountHash['proxy']['user'];
 					$oAccount->sProxyAuthPassword = $aAccountHash['proxy']['pass'];
+					$oActions->Logger()->AddSecret($oAccount->sProxyAuthPassword);
 				}
-				$oActions->Logger()->AddSecret($oAccount->IncPassword());
-				$oActions->Logger()->AddSecret($oAccount->ProxyAuthPassword());
 			}
 		}
 		return $oAccount;
 	}
 
-	public function ImapConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Imap\ImapClient $oImapClient, \RainLoop\Config\Application $oConfig) : bool
+	public function ImapConnectAndLogin(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Imap\ImapClient $oImapClient, \RainLoop\Config\Application $oConfig) : bool
 	{
 		$oSettings = $this->Domain()->ImapSettings();
 		$oSettings->timeout = \max($oSettings->timeout, (int) $oConfig->Get('imap', 'timeout', $oSettings->timeout));
@@ -231,10 +227,11 @@ abstract class Account implements \JsonSerializable
 		$oImapClient->Connect($oSettings);
 		$oPlugins->RunHook('imap.after-connect', array($this, $oImapClient, $oSettings));
 
+		$oSettings->Password = $this->IncPassword();
 		return $this->netClientLogin($oImapClient, $oPlugins, $oSettings);
 	}
 
-	public function SmtpConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Smtp\SmtpClient $oSmtpClient, \RainLoop\Config\Application $oConfig, bool &$bUsePhpMail = false) : bool
+	public function SmtpConnectAndLogin(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Smtp\SmtpClient $oSmtpClient, \RainLoop\Config\Application $oConfig, bool &$bUsePhpMail = false) : bool
 	{
 		$oSettings = $this->Domain()->SmtpSettings();
 		$oSettings->Login = $this->OutLogin();
@@ -249,11 +246,16 @@ abstract class Account implements \JsonSerializable
 			$oSmtpClient->Connect($oSettings, $oSettings->Ehlo);
 		}
 		$oPlugins->RunHook('smtp.after-connect', array($this, $oSmtpClient, $oSettings));
-
+/*
+		if ($this->oDomain->OutAskCredentials() && !($this->sSmtpPassword && $this->sSmtpLogin)) {
+			throw new RequireCredentialsException
+		}
+*/
+		$oSettings->Password = $this->sSmtpPassword ?: $this->sPassword;
 		return $this->netClientLogin($oSmtpClient, $oPlugins, $oSettings);
 	}
 
-	public function SieveConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Sieve\SieveClient $oSieveClient, \RainLoop\Config\Application $oConfig)
+	public function SieveConnectAndLogin(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Sieve\SieveClient $oSieveClient, \RainLoop\Config\Application $oConfig)
 	{
 		$oSettings = $this->Domain()->SieveSettings();
 		$oSettings->Login = $this->IncLogin();
@@ -262,6 +264,7 @@ abstract class Account implements \JsonSerializable
 		$oSieveClient->Connect($oSettings);
 		$oPlugins->RunHook('sieve.after-connect', array($this, $oSieveClient, $oSettings));
 
+		$oSettings->Password = $this->IncPassword();
 		return $this->netClientLogin($oSieveClient, $oPlugins, $oSettings);
 	}
 
@@ -276,9 +279,8 @@ abstract class Account implements \JsonSerializable
 			[cipher_version] => TLSv1.3
 		)
 */
-		$oSettings->Password = $this->IncPassword();
-		$oSettings->ProxyAuthUser = $this->ProxyAuthUser();
-		$oSettings->ProxyAuthPassword = $this->ProxyAuthPassword();
+		$oSettings->ProxyAuthUser = $this->sProxyAuthUser;
+		$oSettings->ProxyAuthPassword = $this->sProxyAuthPassword;
 
 		$client_name = \strtolower($oClient->getLogName());
 

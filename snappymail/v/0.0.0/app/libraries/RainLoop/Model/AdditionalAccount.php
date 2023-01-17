@@ -32,7 +32,10 @@ class AdditionalAccount extends Account
 		$sHash = $oMainAccount->CryptKey();
 		$aData = $this->jsonSerialize();
 		$aData['pass'] = \SnappyMail\Crypt::EncryptUrlSafe($aData['pass'], $sHash); // sPassword
-		if (isset($aAccountHash['proxy'])) {
+		if (!empty($aData['smtp']['pass'])) {
+			$aData['smtp']['pass'] = \SnappyMail\Crypt::EncryptUrlSafe($aData['smtp']['pass'], $sHash);
+		}
+		if (!empty($aData['proxy']['pass'])) {
 			$aData['proxy']['pass'] = \SnappyMail\Crypt::EncryptUrlSafe($aData['proxy']['pass'], $sHash); // sProxyAuthPassword
 		}
 		$aData['hmac'] = \hash_hmac('sha1', $aData['pass'], $sHash);
@@ -49,10 +52,23 @@ class AdditionalAccount extends Account
 			$sHash = $oActions->getMainAccountFromToken()->CryptKey();
 			// hmac only set when asTokenArray() was used
 			$sPasswordHMAC = $aAccountHash['hmac'] ?? null;
-			if ($sPasswordHMAC && $sPasswordHMAC === \hash_hmac('sha1', $aAccountHash['pass'], $sHash)) {
-				$aAccountHash['pass'] = \SnappyMail\Crypt::DecryptUrlSafe($aAccountHash['pass'], $sHash);
-				if (isset($aAccountHash['proxy'])) {
-					$aAccountHash['proxy']['pass'] = \SnappyMail\Crypt::DecryptUrlSafe($aAccountHash['proxy']['pass'], $sHash);
+			if ($sPasswordHMAC) {
+				if ($sPasswordHMAC === \hash_hmac('sha1', $aAccountHash['pass'], $sHash)) {
+					$aAccountHash['pass'] = \SnappyMail\Crypt::DecryptUrlSafe($aAccountHash['pass'], $sHash);
+					if (!empty($aData['smtp']['pass'])) {
+						$aAccountHash['smtp']['pass'] = \SnappyMail\Crypt::DecryptUrlSafe($aAccountHash['smtp']['pass'], $sHash);
+					}
+					if (!empty($aData['proxy']['pass'])) {
+						$aAccountHash['proxy']['pass'] = \SnappyMail\Crypt::DecryptUrlSafe($aAccountHash['proxy']['pass'], $sHash);
+					}
+				} else {
+					$aAccountHash['pass'] = '';
+					if (!empty($aData['smtp']['pass'])) {
+						$aAccountHash['smtp']['pass'] = '';
+					}
+					if (!empty($aData['proxy']['pass'])) {
+						$aAccountHash['proxy']['pass'] = '';
+					}
 				}
 			}
 			return parent::NewInstanceFromTokenArray($oActions, $aAccountHash, $bThrowExceptionOnFalse);

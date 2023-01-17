@@ -202,8 +202,6 @@ trait Accounts
 		if ($this->switchAccount(\trim($this->GetActionParam('Email', '')))) {
 			$oAccount = $this->getAccountFromToken();
 			$aResult['Email'] = $oAccount->Email();
-			$aResult['IncLogin'] = $oAccount->IncLogin();
-			$aResult['OutLogin'] = $oAccount->OutLogin();
 			$aResult['AccountHash'] = $oAccount->Hash();
 			$aResult['MainEmail'] = ($oAccount instanceof AdditionalAccount)
 				? $oAccount->ParentEmail() : '';

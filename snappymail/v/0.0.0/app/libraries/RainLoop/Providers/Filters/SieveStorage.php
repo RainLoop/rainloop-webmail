@@ -33,7 +33,7 @@ class SieveStorage implements FiltersInterface
 	{
 		$oSieveClient = new \MailSo\Sieve\SieveClient();
 		$oSieveClient->SetLogger($this->oLogger);
-		return $oAccount->SieveConnectAndLoginHelper($this->oPlugins, $oSieveClient, $this->oConfig)
+		return $oAccount->SieveConnectAndLogin($this->oPlugins, $oSieveClient, $this->oConfig)
 			 ? $oSieveClient
 			 : null;
 	}
