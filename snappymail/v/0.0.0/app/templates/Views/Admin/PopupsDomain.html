@@ -20,9 +20,10 @@
 
 			<input type="radio" name="tabs" id="tab-imap" checked>
 			<label for="tab-imap" role="tab" tabindex="0"
-				data-bind="css: { 'testing-done': testingDone, 'testing-error': testingImapError }, tooltipErrorTip: testingImapErrorDesc"
+				data-bind="css: { 'testing-done': testingDone, 'testing-error': testingImapError }"
 				>IMAP</label>
 			<div class="tab-content" role="tabpanel" aria-hidden="false">
+				<div class="alert alert-error" data-bind="visible: testingImapError, text: testingImapError"></div>
 				<div class="row">
 					<div class="span">
 						<span data-i18n="POPUPS_DOMAIN/LABEL_SERVER"></span>
@@ -135,9 +136,10 @@
 
 			<input type="radio" name="tabs" id="tab-smtp">
 			<label for="tab-smtp" role="tab" tabindex="0"
-				data-bind="css: { 'testing-done': testingDone, 'testing-error': testingSmtpError }, tooltipErrorTip: testingSmtpErrorDesc"
+				data-bind="css: { 'testing-done': testingDone, 'testing-error': testingSmtpError }"
 				>SMTP</label>
 			<div class="tab-content" role="tabpanel" aria-hidden="true">
+				<div class="alert alert-error" data-bind="visible: testingSmtpError, text: testingSmtpError"></div>
 				<div data-bind="visible: !smtpUsePhpMail()">
 					<div class="row">
 						<div class="span">
@@ -220,11 +222,12 @@
 
 			<input type="radio" name="tabs" id="tab-sieve">
 			<label for="tab-sieve" role="tab" tabindex="0"
-				data-bind="css: { 'testing-done': testingDone, 'testing-error': testingSieveError }, tooltipErrorTip: testingSieveErrorDesc">
+				data-bind="css: { 'testing-done': testingDone, 'testing-error': testingSieveError }">
 				<i class="icon-filter"></i>
 				SIEVE
 			</label>
 			<div class="tab-content" role="tabpanel" aria-hidden="true">
+				<div class="alert alert-error" data-bind="visible: testingSieveError, text: testingSieveError"></div>
 				<div class="row">
 					<div class="span5" data-bind="component: {
 						name: 'Checkbox',

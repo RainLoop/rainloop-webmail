@@ -89,9 +89,6 @@ export class DomainPopupView extends AbstractViewPopup {
 			testingImapError: false,
 			testingSieveError: false,
 			testingSmtpError: false,
-			testingImapErrorDesc: '',
-			testingSieveErrorDesc: '',
-			testingSmtpErrorDesc: '',
 
 			imapHostFocus: false,
 			sieveHostFocus: false,
@@ -142,10 +139,6 @@ export class DomainPopupView extends AbstractViewPopup {
 		});
 
 		addSubscribablesTo(this, {
-			testingImapError: value => value || this.testingImapErrorDesc(''),
-			testingSieveError: value => value || this.testingSieveErrorDesc(''),
-			testingSmtpError: value => value || this.testingSmtpErrorDesc(''),
-
 			// smart form improvements
 			imapHostFocus: value =>
 				value && this.name() && !this.imapHost() && this.imapHost(this.name().replace(/[.]?[*][.]?/g, '')),
@@ -226,7 +219,7 @@ export class DomainPopupView extends AbstractViewPopup {
 	}
 
 	testConnectionCommand() {
-		this.clearTesting(false);
+		this.clearTesting();
 		// https://github.com/the-djmaze/snappymail/issues/477
 		AskPopupView.credentials('IMAP', 'GLOBAL/TEST').then(credentials => {
 			if (credentials) {
@@ -240,29 +233,14 @@ export class DomainPopupView extends AbstractViewPopup {
 					(iError, oData) => {
 						this.testing(false);
 						if (iError) {
-							this.testingImapError(true);
-							this.testingSieveError(true);
-							this.testingSmtpError(true);
+							this.testingImapError(getNotification(iError));
+							this.testingSieveError(getNotification(iError));
+							this.testingSmtpError(getNotification(iError));
 						} else {
 							this.testingDone(true);
-							this.testingImapError(true !== oData.Result.Imap);
-							this.testingSieveError(true !== oData.Result.Sieve);
-							this.testingSmtpError(true !== oData.Result.Smtp);
-
-							if (this.testingImapError() && oData.Result.Imap) {
-								this.testingImapErrorDesc('');
-								this.testingImapErrorDesc(oData.Result.Imap);
-							}
-
-							if (this.testingSieveError() && oData.Result.Sieve) {
-								this.testingSieveErrorDesc('');
-								this.testingSieveErrorDesc(oData.Result.Sieve);
-							}
-
-							if (this.testingSmtpError() && oData.Result.Smtp) {
-								this.testingSmtpErrorDesc('');
-								this.testingSmtpErrorDesc(oData.Result.Smtp);
-							}
+							this.testingImapError(true !== oData.Result.Imap ? oData.Result.Imap : false);
+							this.testingSieveError(true !== oData.Result.Sieve ? oData.Result.Sieve : false);
+							this.testingSmtpError(true !== oData.Result.Smtp ? oData.Result.Smtp : false);
 						}
 					},
 					params
