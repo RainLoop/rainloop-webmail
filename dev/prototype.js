@@ -10,7 +10,8 @@
 	// medium = Dec 12, 2022, 12:16:21 PM
 	// short = 12/12/22, 12:16 PM
 	let formats = {
-		LT   : {timeStyle: 'short'},
+//		LT   : {timeStyle: 'short'}, // Issue in Safari
+		LT   : {hour: 'numeric', minute: 'numeric'},
 		LLL  : {dateStyle: 'long', timeStyle: 'short'}
 	};
 
