@@ -107,7 +107,7 @@ export const
 			switch (formatStr) {
 				case 'FROMNOW':
 					return fromNow(m);
-				case 'SHORT': {
+				case 'AUTO': {
 					// 4 hours
 					if (14400000 >= now - time)
 						return fromNow(m);
@@ -119,7 +119,9 @@ export const
 							{TIME: m.format('LT',0,h)}
 						)
 						: m.format(
-							date.getFullYear() === m.getFullYear() ? {day: '2-digit', month: 'short'} : {dateStyle: 'medium'}
+							date.getFullYear() === m.getFullYear()
+								? {day: '2-digit', month: 'short', hour: 'numeric', minute: 'numeric'}
+								: {dateStyle: 'medium', timeStyle: 'short'}
 							, 0, h);
 				}
 				case 'FULL':

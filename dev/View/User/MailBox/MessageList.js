@@ -153,7 +153,7 @@ export class MailMessageList extends AbstractViewRight {
 				return SettingsUserStore.listGrouped() && (sort.includes('DATE') || sort.includes('FROM')) && !uid;
 			},
 
-			timeFormat: () => (FolderUserStore.sortMode() || '').includes('FROM') ? 'SHORT' : 'LT',
+			timeFormat: () => (FolderUserStore.sortMode() || '').includes('FROM') ? 'AUTO' : 'LT',
 
 			groupedList: () => {
 				let list = [], current, sort = FolderUserStore.sortMode() || 'DATE';
