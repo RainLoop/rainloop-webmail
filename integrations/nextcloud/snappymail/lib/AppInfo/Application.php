@@ -83,7 +83,8 @@ class Application extends App implements IBootstrap
 		});
 
 		$dispatcher->addListener(BeforeUserLoggedOutEvent::class, function (BeforeUserLoggedOutEvent $Event) {
-			\OC::$server->getSession()['snappymail-password'] = '';
+			// https://github.com/nextcloud/server/issues/36083#issuecomment-1387370634
+//			\OC::$server->getSession()['snappymail-password'] = '';
 			SnappyMailHelper::loadApp();
 			\RainLoop\Api::Actions()->Logout(true);
 		});
