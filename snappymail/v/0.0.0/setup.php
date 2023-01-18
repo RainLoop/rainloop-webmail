@@ -7,12 +7,6 @@ if (defined('APP_VERSION')) {
 		echo '</p>';
 		exit(301);
 	}
-	if (PHP_INT_SIZE < 8) {
-		echo '<p style="color: red">';
-		echo '[301] Your PHP version is 32bit, 64bit is required!';
-		echo '</p>';
-		exit(301);
-	}
 
 	$aOptional = array(
 		'cURL'    => extension_loaded('curl'),

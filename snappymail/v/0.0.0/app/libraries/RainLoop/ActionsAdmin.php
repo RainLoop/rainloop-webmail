@@ -212,6 +212,11 @@ class ActionsAdmin extends Actions
 				'name' => 'PHP ' . PHP_VERSION,
 				'loaded' => true,
 				'version' => PHP_VERSION
+			],
+			[
+				'name' => 'PHP 64bit',
+				'loaded' => PHP_INT_SIZE == 8,
+				'version' => PHP_INT_SIZE
 			]
 		];
 		foreach (['APCu', 'cURL','GnuPG','GD','Gmagick','Imagick','iconv','intl','LDAP','OpenSSL','pdo_mysql','pdo_pgsql','pdo_sqlite','redis','Sodium','Tidy','uuid','XXTEA','Zip'] as $name) {
