@@ -358,14 +358,13 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"PERSONAL": "Personal",
-		"GENERAL": "General",
-		"CONTACTS": "Contacts",
-		"FOLDERS": "Folders",
-		"ACCOUNTS": "Accounts",
+		"GENERAL": "Generelt",
+		"CONTACTS": "Kontakter",
+		"FOLDERS": "Mapper",
+		"ACCOUNTS": "Kontoer",
 		"FILTERS": "Filters",
-		"SECURITY": "Security",
-		"THEMES": "Themes"
+		"SECURITY": "Sikkerhet",
+		"THEMES": "Tema"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Filtre",

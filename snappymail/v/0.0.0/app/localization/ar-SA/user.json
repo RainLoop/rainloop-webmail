@@ -358,14 +358,13 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"PERSONAL": "Personal",
-		"GENERAL": "General",
-		"CONTACTS": "Contacts",
-		"FOLDERS": "Folders",
-		"ACCOUNTS": "Accounts",
-		"FILTERS": "Filters",
-		"SECURITY": "Security",
-		"THEMES": "Themes"
+		"GENERAL": "العام",
+		"CONTACTS": "جهات الإتصال",
+		"FOLDERS": "المجلدات",
+		"ACCOUNTS": "الحسابات",
+		"FILTERS": "عوامل التصفية",
+		"SECURITY": "الأمان",
+		"THEMES": "المظاهر العامة"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "عوامل التصفية",

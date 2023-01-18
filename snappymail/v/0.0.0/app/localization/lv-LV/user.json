@@ -358,14 +358,13 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"PERSONAL": "Personal",
-		"GENERAL": "General",
+		"GENERAL": "Vispārējie",
 		"CONTACTS": "Contacts",
-		"FOLDERS": "Folders",
-		"ACCOUNTS": "Accounts",
+		"FOLDERS": "Mapes",
+		"ACCOUNTS": "Konti",
 		"FILTERS": "Filters",
 		"SECURITY": "Security",
-		"THEMES": "Themes"
+		"THEMES": "Tēmas"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Filters",

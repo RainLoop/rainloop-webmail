@@ -358,13 +358,12 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"PERSONAL": "Personnel",
 		"GENERAL": "Général",
 		"CONTACTS": "Contacts",
 		"FOLDERS": "Dossiers",
 		"ACCOUNTS": "Comptes",
 		"FILTERS": "Filtres",
-		"SECURITY": "Securité",
+		"SECURITY": "Sécurité",
 		"THEMES": "Thèmes"
 	},
 	"SETTINGS_FILTERS": {

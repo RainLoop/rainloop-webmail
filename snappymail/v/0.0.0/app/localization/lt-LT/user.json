@@ -358,14 +358,13 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"PERSONAL": "Personal",
-		"GENERAL": "General",
-		"CONTACTS": "Contacts",
-		"FOLDERS": "Folders",
-		"ACCOUNTS": "Accounts",
-		"FILTERS": "Filters",
-		"SECURITY": "Security",
-		"THEMES": "Themes"
+		"GENERAL": "Pagrindiniai",
+		"CONTACTS": "Kontaktai",
+		"FOLDERS": "Katalogai",
+		"ACCOUNTS": "Paskyros",
+		"FILTERS": "Filtrai",
+		"SECURITY": "Sauga",
+		"THEMES": "Temos"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Filtrai",

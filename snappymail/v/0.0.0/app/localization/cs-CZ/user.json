@@ -358,14 +358,13 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"PERSONAL": "Personal",
-		"GENERAL": "General",
-		"CONTACTS": "Contacts",
-		"FOLDERS": "Folders",
-		"ACCOUNTS": "Accounts",
-		"FILTERS": "Filters",
-		"SECURITY": "Security",
-		"THEMES": "Themes"
+		"GENERAL": "Všeobecné",
+		"CONTACTS": "Kontakty",
+		"FOLDERS": "Složky",
+		"ACCOUNTS": "Účty",
+		"FILTERS": "Filtry",
+		"SECURITY": "Zabezpečení",
+		"THEMES": "Motivy"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Filtry",

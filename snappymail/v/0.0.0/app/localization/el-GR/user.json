@@ -358,14 +358,13 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"PERSONAL": "Personal",
-		"GENERAL": "General",
-		"CONTACTS": "Contacts",
-		"FOLDERS": "Folders",
-		"ACCOUNTS": "Accounts",
-		"FILTERS": "Filters",
-		"SECURITY": "Security",
-		"THEMES": "Themes"
+		"GENERAL": "Γενικό",
+		"CONTACTS": "Επαφές",
+		"FOLDERS": "Φάκελοι",
+		"ACCOUNTS": "Λογαρισμοί",
+		"FILTERS": "Φίλτρα",
+		"SECURITY": "Ασφάλεια",
+		"THEMES": "Θέματα"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Φίλτρα",

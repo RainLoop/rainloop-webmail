@@ -358,14 +358,13 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> JATORRIA"
 	},
 	"SETTINGS_LABELS": {
-		"PERSONAL": "Personal",
-		"GENERAL": "General",
-		"CONTACTS": "Contacts",
-		"FOLDERS": "Folders",
-		"ACCOUNTS": "Accounts",
-		"FILTERS": "Filters",
-		"SECURITY": "Security",
-		"THEMES": "Themes"
+		"GENERAL": "Orokorra",
+		"CONTACTS": "Kontaktuak",
+		"FOLDERS": "Karpetak",
+		"ACCOUNTS": "Kontuak",
+		"FILTERS": "Iragazkiak",
+		"SECURITY": "Segurtasuna",
+		"THEMES": "Itxurak"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Iragazkiak",

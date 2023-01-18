@@ -358,14 +358,13 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"PERSONAL": "Personal",
-		"GENERAL": "General",
-		"CONTACTS": "Contacts",
-		"FOLDERS": "Folders",
-		"ACCOUNTS": "Accounts",
-		"FILTERS": "Filters",
-		"SECURITY": "Security",
-		"THEMES": "Themes"
+		"GENERAL": "عمومی",
+		"CONTACTS": "تماس‌ها",
+		"FOLDERS": "پوشه‌ها",
+		"ACCOUNTS": "حساب‌های کاربری",
+		"FILTERS": "فیلترها",
+		"SECURITY": "امنیت",
+		"THEMES": "پوسته‌ها"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "فیلترها",

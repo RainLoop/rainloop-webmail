@@ -358,14 +358,13 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"PERSONAL": "Personal",
-		"GENERAL": "General",
-		"CONTACTS": "Contacts",
-		"FOLDERS": "Folders",
-		"ACCOUNTS": "Accounts",
-		"FILTERS": "Filters",
-		"SECURITY": "Security",
-		"THEMES": "Themes"
+		"GENERAL": "Umum",
+		"CONTACTS": "Kontak",
+		"FOLDERS": "Folder",
+		"ACCOUNTS": "Akun",
+		"FILTERS": "Filter",
+		"SECURITY": "Keamanan",
+		"THEMES": "Tema"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Filter",

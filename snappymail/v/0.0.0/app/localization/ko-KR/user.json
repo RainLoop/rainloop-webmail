@@ -358,14 +358,13 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"PERSONAL": "Personal",
-		"GENERAL": "General",
-		"CONTACTS": "Contacts",
-		"FOLDERS": "Folders",
-		"ACCOUNTS": "Accounts",
-		"FILTERS": "Filters",
-		"SECURITY": "Security",
-		"THEMES": "Themes"
+		"GENERAL": "일반",
+		"CONTACTS": "연락처",
+		"FOLDERS": "폴더",
+		"ACCOUNTS": "계정",
+		"FILTERS": "필터",
+		"SECURITY": "보안",
+		"THEMES": "테마"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "필터",

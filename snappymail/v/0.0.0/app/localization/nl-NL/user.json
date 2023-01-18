@@ -226,7 +226,7 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Er zijn geen bijlagen",
 		"ATTACHMENTS_ERROR_DESC": "Waarschuwing! Nog niet alle bijlagen zijn klaar met uploaden",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Toevoegen van bijlage(n) is nog niet gereed",
-		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_SPELLCHECK": "De browser spellingcontrole toestaan",
 		"BUTTON_REQUEST_READ_RECEIPT": "Leesbevestiging vragen",
 		"BUTTON_MARK_AS_IMPORTANT": "Markeer als belangrijk",
 		"BUTTON_REQUEST_DSN": "Ontvangstbevestiging vragen"
@@ -358,14 +358,13 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> BRONCODE"
 	},
 	"SETTINGS_LABELS": {
-		"PERSONAL": "Personal",
-		"GENERAL": "General",
-		"CONTACTS": "Contacts",
-		"FOLDERS": "Folders",
+		"GENERAL": "Algemeen",
+		"CONTACTS": "Contactpersonen",
+		"FOLDERS": "Mappen",
 		"ACCOUNTS": "Accounts",
 		"FILTERS": "Filters",
-		"SECURITY": "Security",
-		"THEMES": "Themes"
+		"SECURITY": "Beveiliging",
+		"THEMES": "Thema's"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Filters",
@@ -402,8 +401,8 @@
 		"USE_THREADS": "Toon berichten in boomweergave",
 		"REPLY_SAME_FOLDER": "Plaats antwoorden in de map van het originele bericht",
 		"SHOW_IMAGES": "Afbeeldingen altijd weergeven in het bericht",
-		"PREFER_HTML": "Prefer HTML to plain text",
-		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
+		"PREFER_HTML": "Geef de voorkeur aan HTML boven platte tekst",
+		"PREFER_HTML_INFO": "Berichten komen soms in beide formaten. Deze optie bepaalt of u het HTML-gedeelte of het platte tekstgedeelte wilt weergeven.",
 		"REMOVE_COLORS": "Verwijder achtergrond- en tekstkleuren uit het bericht",
 		"MESSAGE_PER_PAGE": "Berichten op pagina",
 		"MARK_MESSAGE_READ_AFTER": "Bericht markeren als gelezen na",
@@ -467,7 +466,7 @@
 		"BUTTON_ADD_ACCOUNT": "Account toevoegen",
 		"BUTTON_ADD_IDENTITY": "Identiteit toevoegen",
 		"LOADING_PROCESS": "Account lijst aan het bijwerken",
-		"SHOW_UNREAD": "Show unread messages count"
+		"SHOW_UNREAD": "Toon het aantal ongelezen berichten"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importeer sleutel",

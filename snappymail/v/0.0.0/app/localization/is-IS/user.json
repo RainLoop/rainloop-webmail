@@ -358,14 +358,13 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"PERSONAL": "Personal",
-		"GENERAL": "General",
-		"CONTACTS": "Contacts",
-		"FOLDERS": "Folders",
-		"ACCOUNTS": "Accounts",
-		"FILTERS": "Filters",
-		"SECURITY": "Security",
-		"THEMES": "Themes"
+		"GENERAL": "Almennt",
+		"CONTACTS": "Tengiliðir",
+		"FOLDERS": "Möppur",
+		"ACCOUNTS": "Aðgangar",
+		"FILTERS": "Síur",
+		"SECURITY": "Öryggi",
+		"THEMES": "Þemu"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Síur",

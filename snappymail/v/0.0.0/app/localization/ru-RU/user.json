@@ -358,14 +358,13 @@
 		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
 	},
 	"SETTINGS_LABELS": {
-		"PERSONAL": "Personal",
-		"GENERAL": "General",
-		"CONTACTS": "Contacts",
-		"FOLDERS": "Folders",
-		"ACCOUNTS": "Accounts",
-		"FILTERS": "Filters",
-		"SECURITY": "Security",
-		"THEMES": "Themes"
+		"GENERAL": "Основные",
+		"CONTACTS": "Контакты",
+		"FOLDERS": "Папки",
+		"ACCOUNTS": "Аккаунты",
+		"FILTERS": "Фильтры",
+		"SECURITY": "Безопасность",
+		"THEMES": "Темы"
 	},
 	"SETTINGS_FILTERS": {
 		"LEGEND_FILTERS": "Фильтры",
