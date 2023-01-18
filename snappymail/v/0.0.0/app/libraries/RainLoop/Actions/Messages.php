@@ -73,11 +73,10 @@ trait Messages
 
 		try
 		{
-			if (!$this->Config()->Get('imap', 'use_thread', true)) {
-				$oParams->bUseThreads = false;
+			if ($this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'server_uids', false)) {
+				$oParams->oCacher = $this->Cacher($oAccount);
 			}
 
-			$oParams->oCacher = $this->cacherForUids();
 			$oParams->bUseSort = true;
 
 			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
@@ -424,7 +423,7 @@ trait Messages
 
 		try
 		{
-			$oMessage = $this->MailClient()->Message($sFolder, $iUid, true, $this->cacherForThreads());
+			$oMessage = $this->MailClient()->Message($sFolder, $iUid, true, $this->Cacher($oAccount));
 		}
 		catch (\Throwable $oException)
 		{
@@ -899,25 +898,6 @@ trait Messages
 				}
 			}
 		}
-	}
-
-	/**
-	 * @return MailSo\Cache\CacheClient|null
-	 */
-	private function cacherForUids()
-	{
-		$oAccount = $this->getAccountFromToken(false);
-		return ($this->Config()->Get('cache', 'enable', true) &&
-			$this->Config()->Get('cache', 'server_uids', false)) ? $this->Cacher($oAccount) : null;
-	}
-
-	/**
-	 * @return MailSo\Cache\CacheClient|null
-	 */
-	private function cacherForThreads()
-	{
-		$oAccount = $this->getAccountFromToken(false);
-		return !!$this->Config()->Get('imap', 'use_thread', true) ? $this->Cacher($oAccount) : null;
 	}
 
 	private function buildReadReceiptMessage(Account $oAccount) : \MailSo\Mime\Message

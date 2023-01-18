@@ -270,9 +270,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 		FolderUserStore.namespace = this.namespace;
 
 		// 'THREAD=REFS', 'THREAD=REFERENCES', 'THREAD=ORDEREDSUBJECT'
-		AppUserStore.threadsAllowed(!!(
-			Settings.app('useImapThread') && this.capabilities.some(capa => capa.startsWith('THREAD='))
-		));
+		AppUserStore.threadsAllowed(!!this.capabilities.some(capa => capa.startsWith('THREAD=')));
 
 //		FolderUserStore.folderListOptimized(!!this.optimized);
 		FolderUserStore.quotaUsage(this.quotaUsage);
