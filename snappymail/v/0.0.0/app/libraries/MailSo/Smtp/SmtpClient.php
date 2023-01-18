@@ -205,6 +205,11 @@ class SmtpClient extends \MailSo\Net\NetClient
 			$sCmd .= ' RET=HDRS';
 		}
 
+		// RFC 8689
+		if ($this->hasCapability('REQUIRETLS')) {
+//			$sCmd .= ' REQUIRETLS';
+		}
+
 		$this->sendRequestWithCheck('MAIL', 250, $sCmd);
 
 		$this->bMail = true;
