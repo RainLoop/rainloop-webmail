@@ -1,50 +1,52 @@
-<IfModule mod_headers.c>
-	<IfModule mod_rewrite.c>
-		RewriteEngine On
+<IfModule !LiteSpeed>
+	<IfModule mod_headers.c>
+		<IfModule mod_rewrite.c>
+			RewriteEngine On
 
-		RewriteCond %{HTTP:Accept-encoding} br
-		RewriteCond "%{REQUEST_FILENAME}\.br" -s
-		RewriteRule "^(.+\.js)$" "$1\.br" [L,T=application/javascript,QSA]
+			RewriteCond %{HTTP:Accept-encoding} br
+			RewriteCond "%{REQUEST_FILENAME}\.br" -s
+			RewriteRule "^(.+\.js)$" "$1\.br" [L,T=application/javascript,QSA]
 
-		RewriteCond %{HTTP:Accept-encoding} gzip
-		RewriteCond "%{REQUEST_FILENAME}\.gz" -s
-		RewriteRule "^(.+\.js)$" "$1\.gz" [L,T=application/javascript,QSA]
+			RewriteCond %{HTTP:Accept-encoding} gzip
+			RewriteCond "%{REQUEST_FILENAME}\.gz" -s
+			RewriteRule "^(.+\.js)$" "$1\.gz" [L,T=application/javascript,QSA]
 
-		RewriteCond %{HTTP:Accept-encoding} br
-		RewriteCond "%{REQUEST_FILENAME}\.br" -s
-		RewriteRule "^(.+\.css)$" "$1\.br" [L,T=text/css,QSA]
+			RewriteCond %{HTTP:Accept-encoding} br
+			RewriteCond "%{REQUEST_FILENAME}\.br" -s
+			RewriteRule "^(.+\.css)$" "$1\.br" [L,T=text/css,QSA]
 
-		RewriteCond %{HTTP:Accept-encoding} gzip
-		RewriteCond "%{REQUEST_FILENAME}\.gz" -s
-		RewriteRule "^(.+\.css)$" "$1\.gz" [L,T=text/css,QSA]
+			RewriteCond %{HTTP:Accept-encoding} gzip
+			RewriteCond "%{REQUEST_FILENAME}\.gz" -s
+			RewriteRule "^(.+\.css)$" "$1\.gz" [L,T=text/css,QSA]
 
-		<FilesMatch "\.(js|css)\.br$">
-			SetEnv no-gzip 1
-			SetEnv no-brotli 1
-			# Serve correct encoding type.
-			Header append Content-Encoding br
-			# Force proxies to cache brotli &
-			# non-brotli css/js files separately.
-			Header append Vary Accept-Encoding
-		</FilesMatch>
+			<FilesMatch "\.(js|css)\.br$">
+				SetEnv no-gzip 1
+				SetEnv no-brotli 1
+				# Serve correct encoding type.
+				Header append Content-Encoding br
+				# Force proxies to cache brotli &
+				# non-brotli css/js files separately.
+				Header append Vary Accept-Encoding
+			</FilesMatch>
 
-		<FilesMatch "\.(js|css)\.gz$">
-			SetEnv no-gzip 1
-			SetEnv no-brotli 1
-			# Serve correct encoding type.
-			Header append Content-Encoding gzip
-			# Force proxies to cache gzipped &
-			# non-gzipped css/js files separately.
-			Header append Vary Accept-Encoding
-		</FilesMatch>
+			<FilesMatch "\.(js|css)\.gz$">
+				SetEnv no-gzip 1
+				SetEnv no-brotli 1
+				# Serve correct encoding type.
+				Header append Content-Encoding gzip
+				# Force proxies to cache gzipped &
+				# non-gzipped css/js files separately.
+				Header append Vary Accept-Encoding
+			</FilesMatch>
 
-		<FilesMatch "\.js\.(br|gz)$">
-			Header set Content-Type "application/javascript; charset=utf-8"
-			ForceType application/javascript
-		</FilesMatch>
-		<FilesMatch "\.css\.(br|gz)$">
-			Header set Content-Type "text/css; charset=utf-8"
-			ForceType text/css
-		</FilesMatch>
+			<FilesMatch "\.js\.(br|gz)$">
+				Header set Content-Type "application/javascript; charset=utf-8"
+				ForceType application/javascript
+			</FilesMatch>
+			<FilesMatch "\.css\.(br|gz)$">
+				Header set Content-Type "text/css; charset=utf-8"
+				ForceType text/css
+			</FilesMatch>
+		</IfModule>
 	</IfModule>
 </IfModule>
