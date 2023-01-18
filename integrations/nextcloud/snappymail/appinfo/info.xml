@@ -77,4 +77,9 @@ There, click on the link to go to the SnappyMail admin panel.
 			<order>4</order>
 		</navigation>
 	</navigations>
+	<repair-steps>
+		<install>
+			<step>OCA\SnappyMail\Migration\InstallStep</step>
+		</install>
+	</repair-steps>
 </info>
