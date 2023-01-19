@@ -1,11 +1,12 @@
 (doc => {
 
 const
+	query = path => doc.location.pathname.replace(/\/+$/,'') + '/?/' + path,
 	eId = id => doc.getElementById('rl-'+id),
 	app = eId('app'),
 	admin = app && '1' == app.dataset.admin,
 	layout = doc.cookie.match(/(^|;) ?rllayout=([^;]+)/) || '',
-	redirect = path => doc.location.replace('./?/'+path),
+	redirect = path => doc.location.replace(query(path)),
 
 	showError = msg => {
 		let div = eId('loading-error');
@@ -86,7 +87,7 @@ window.rl = {
 	loadScript: loadScript
 };
 
-loadScript(`./?/${admin ? 'Admin' : ''}AppData/0/${Math.random().toString().slice(2)}/`)
+loadScript(query(`${admin ? 'Admin' : ''}AppData/0/${Math.random().toString().slice(2)}/`))
 	.catch(e => showError(e));
 
 })(document);
