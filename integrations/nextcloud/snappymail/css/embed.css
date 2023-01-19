@@ -9,6 +9,10 @@ This stylesheet is used when SnappyMail runs in embed mode.
 	min-height: 100%;
 }
 
+#content #rl-app #rl-left, #content #rl-app #rl-right {
+	position: absolute;
+}
+
 .squire-wysiwyg {
 	min-width: 100%;
 	min-height: 100%;

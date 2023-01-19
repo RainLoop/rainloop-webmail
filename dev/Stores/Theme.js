@@ -1,7 +1,7 @@
 import ko from 'ko';
 import { $htmlCL, elementById, leftPanelDisabled, Settings, SettingsGet } from 'Common/Globals';
 import { isArray, arrayLength } from 'Common/Utils';
-import { serverRequestRaw } from 'Common/Links';
+import { cssLink, serverRequestRaw } from 'Common/Links';
 import { SaveSettingStatus } from 'Common/Enums';
 
 let __themeTimer = 0;
@@ -41,7 +41,7 @@ export const
 			clearTimer = () => {
 				__themeTimer = setTimeout(() => themeTrigger(SaveSettingStatus.Idle), 1000);
 			},
-			url = themeStyle.dataset.href.replace(/(Admin|User)\/-\/[^/]+\//, '$1/-/' + value + '/') + 'Json/';
+			url = cssLink(value);
 
 		clearTimeout(__themeTimer);
 

@@ -82,11 +82,6 @@ trait Themes
 		return $aCache;
 	}
 
-	public function ThemeLink(bool $bAdmin): string
-	{
-		return './?/Css/0/' . ($bAdmin ? 'Admin' : 'User') . '/-/' . $this->GetTheme($bAdmin) . '/-/' . $this->StaticCache() . '/Hash/-/';
-	}
-
 	public function ValidateTheme(string $sTheme): string
 	{
 		return \in_array($sTheme, $this->GetThemes()) ? $sTheme : $this->Config()->Get('themes', 'default', 'Default');

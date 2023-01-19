@@ -66,7 +66,6 @@ class PageController extends Controller
 			'BaseAppBootScriptNonce' => $sNonce,
 			'BaseLanguage' => $oActions->compileLanguage($sLanguage, $bAdmin),
 			'BaseAppBootCss' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot'.$sAppCssMin.'.css'),
-			'BaseAppThemeCssLink' => $oActions->ThemeLink($bAdmin),
 			'BaseAppThemeCss' => \preg_replace(
 				'/\\s*([:;{},]+)\\s*/s',
 				'$1',

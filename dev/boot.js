@@ -1,12 +1,12 @@
 (doc => {
 
 const
-	query = path => doc.location.pathname.replace(/\/+$/,'') + '/?/' + path,
+	qUri = path => doc.location.pathname.replace(/\/+$/,'') + '/?/' + path,
 	eId = id => doc.getElementById('rl-'+id),
 	app = eId('app'),
 	admin = app && '1' == app.dataset.admin,
 	layout = doc.cookie.match(/(^|;) ?rllayout=([^;]+)/) || '',
-	redirect = path => doc.location.replace(query(path)),
+	redirect = path => doc.location.replace(qUri(path)),
 
 	showError = msg => {
 		let div = eId('loading-error');
@@ -68,7 +68,7 @@ window.rl = {
 			cb = () => rl.app.bootstart();
 		loadScript(url)
 			.then(() => loadScript(url.replace('/libs.', `/${admin?'admin':'app'}.`)))
-			.then(() => appData.PluginsLink ? loadScript(appData.PluginsLink) : Promise.resolve())
+			.then(() => appData.PluginsLink ? loadScript(qUri(appData.PluginsLink)) : Promise.resolve())
 			.then(() => rl.app
 					? cb()
 					: doc.addEventListener('readystatechange', () => 'complete' == doc.readyState && cb())
@@ -87,7 +87,7 @@ window.rl = {
 	loadScript: loadScript
 };
 
-loadScript(query(`${admin ? 'Admin' : ''}AppData/0/${Math.random().toString().slice(2)}/`))
+loadScript(qUri(`${admin ? 'Admin' : ''}AppData/0/${Math.random().toString().slice(2)}/`))
 	.catch(e => showError(e));
 
 })(document);

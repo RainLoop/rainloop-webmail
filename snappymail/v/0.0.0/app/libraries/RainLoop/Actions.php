@@ -869,15 +869,13 @@ class Actions
 			$aResult['System']['themes'] = $this->GetThemes();
 		}
 
-		$sStaticCache = $this->StaticCache();
-
 		$aResult['Theme'] = $this->GetTheme($bAdmin);
 
 		$aResult['Language'] = $this->ValidateLanguage($sLanguage, '', false);
 		$aResult['UserLanguage'] = $this->ValidateLanguage($UserLanguageRaw, '', false, true);
 
 		$aResult['PluginsLink'] = $this->oPlugins->HaveJs($bAdmin)
-			? './?/Plugins/0/' . ($bAdmin ? 'Admin' : 'User') . '/' . $sStaticCache . '/'
+			? 'Plugins/0/' . ($bAdmin ? 'Admin' : 'User') . '/' . $this->StaticCache() . '/'
 			: '';
 
 		$bAppJsDebug = $this->oConfig->Get('debug', 'javascript', false)
