@@ -27,7 +27,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		$oActions = \RainLoop\Api::Actions();
 		$oMailClient = $oActions->MailClient();
 		if (!$oMailClient->IsLoggined()) {
-			$oActions->getAccountFromToken()->ImapConnectAndLoginHelper($oActions->Plugins(), $oMailClient->ImapClient(), $oActions->Config());
+			$oActions->getAccountFromToken()->ImapConnectAndLogin($oActions->Plugins(), $oMailClient->ImapClient(), $oActions->Config());
 		}
 		return $oMailClient;
 	}
