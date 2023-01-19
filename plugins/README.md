@@ -439,3 +439,74 @@ and called in JavaScript using rl.pluginRemoteRequest().
 ### sm-show-screen
 	event.detail = 'screenname'
 	cancelable using preventDefault()
+
+
+# JavaScript `rl` object
+
+## rl.Enums.StorageResultType
+### rl.Enums.StorageResultType.Abort
+### rl.Enums.StorageResultType.Error
+### rl.Enums.StorageResultType.Success
+
+## rl.​Utils.htmlToPlain(html)
+Converts HTML to text
+
+## rl.Utils.plainToHtml(plain)
+Converts text to HTML
+
+## rl.addSettingsViewModel(SettingsViewModelClass, template, labelName, route)​
+
+## rl.addSettingsViewModelForAdmin(SettingsViewModelClass, template, labelName, route)​
+
+## rl.adminArea()​
+Returns true or false
+
+## rl.app.Remote.abort(action)​​​​​
+
+## rl.app.Remote.get(action, url)​​​​​
+
+## rl.app.Remote.getPublicKey(fCallback)​​​​​
+
+## rl.app.Remote.post(action, fTrigger, params, timeOut)​​​​​
+
+## rl.app.Remote.request(action, fCallback, params, iTimeout, sGetAdd)​​​​​
+
+## rl.app.Remote.setTrigger(trigger, value)​​​​​
+
+## rl.app.Remote.streamPerLine(fCallback, sGetAdd, postData)
+
+## rl.app.folderList
+A knockout observable array of all folders/mailboxes
+
+## rl.fetch(resource, init, postData)​
+
+## rl.fetchJSON(resource, init, postData)​
+
+## rl.i18n(key, valueList, defaulValue)​
+
+## rl.loadScript(src)​
+
+## rl.logoutReload(url)​
+
+## rl.pluginPopupView
+class AbstractViewPopup
+
+## rl.pluginRemoteRequest(callback, action, parameters, timeout)​
+
+## rl.pluginSettingsGet(pluginSection, name)​
+
+## rl.registerWYSIWYG(name, construct)​
+
+## rl.route.root()
+
+## rl.route.reload()
+
+## rl.route.off()
+
+## rl.setTitle(title)​
+
+## rl.settings.get(name)
+
+## rl.settings.set(name, value)
+
+## rl.settings.app(name)
