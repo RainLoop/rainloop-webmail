@@ -244,9 +244,6 @@ abstract class Account implements \JsonSerializable
 		$oSettings->Ehlo = \MailSo\Smtp\SmtpClient::EhloHelper();
 
 		$oPlugins->RunHook('smtp.before-connect', array($this, $oSmtpClient, $oSettings));
-		$bUsePhpMail = $oSettings->usePhpMail;
-		$oSettings->useAuth = $oSettings->useAuth && !$oSettings->usePhpMail;
-
 		if (!$oSettings->usePhpMail) {
 			$oSmtpClient->Connect($oSettings, $oSettings->Ehlo);
 		}
@@ -256,6 +253,7 @@ abstract class Account implements \JsonSerializable
 			throw new RequireCredentialsException
 		}
 */
+		$oSettings->useAuth = $oSettings->useAuth && !$oSettings->usePhpMail;
 		$oSettings->Password = $this->sSmtpPassword ?: $this->sPassword;
 		return $this->netClientLogin($oSmtpClient, $oPlugins, $oSettings);
 	}
