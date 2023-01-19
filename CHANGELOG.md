@@ -1,3 +1,47 @@
+## 2.24.6 – 2023-01-18
+
+## Added
+- Preparations for RFC 8689
+- Add admin setting for the contacts suggestions limit
+- A button to clear folder search input field by @codiflow
+  [#847](https://github.com/the-djmaze/snappymail/pull/847)
+- Preparations for custom SMTP credentials handling for
+  [#859](https://github.com/the-djmaze/snappymail/pull/859)
+  [#458](https://github.com/the-djmaze/snappymail/pull/458)
+  [#431](https://github.com/the-djmaze/snappymail/pull/431)
+  [#233](https://github.com/the-djmaze/snappymail/pull/233)
+
+## Changed
+- Display the time of emails, not just the size and date
+  [#843](https://github.com/the-djmaze/snappymail/pull/843)
+- Made thread number a bit wider
+  [#844](https://github.com/the-djmaze/snappymail/pull/844)
+- Improved contacts suggestions limit handling
+  [#849](https://github.com/the-djmaze/snappymail/pull/849)
+- 64-bit PHP was required
+  [#852](https://github.com/the-djmaze/snappymail/pull/852)
+- Update fr-FR translations by @dominiquefournier
+  [#854](https://github.com/the-djmaze/snappymail/pull/854)
+- Move createDomain & createDomainAlias buttons below table
+- Move some Nextcloud SnappyMailHelper code to new InstallStep
+- Cleanup messages cache handling
+- Improved visibility Admin Domain Test errors
+
+## Fixed
+- LiteSpeed does not disable compression although .htaccess says so
+  [#525](https://github.com/the-djmaze/snappymail/pull/525)
+  [#855](https://github.com/the-djmaze/snappymail/pull/855)
+- "Move to folder" functionality displays in desktop view when on mobile
+  [#858](https://github.com/the-djmaze/snappymail/pull/858)
+- matchAnyRule() Return value must be of type bool, none returned
+- Unknown CSP directive 'strict-dynamic' in Safari 13.1.2
+- Wrong timeStyle issue in Safari 13.1.2
+- Language SETTINGS_LABELS got lost
+- Nextcloud failed loading app data when path didn't end with /
+  [#864](https://github.com/the-djmaze/snappymail/pull/864)
+- Workaround Nextcloud session_start issue
+  [#813](https://github.com/the-djmaze/snappymail/pull/813)
+
 ## 2.24.5 – 2023-01-12
 
 ## Added
@@ -22,7 +66,7 @@
   [#846](https://github.com/the-djmaze/snappymail/pull/846)
 
 ## Fixed
-- Searching on Nextcloud search #787
+- Searching on Nextcloud search
   [#787](https://github.com/the-djmaze/snappymail/pull/787)
 - Workaround another Nextcloud disallowed .htaccess
   [#790](https://github.com/the-djmaze/snappymail/pull/790)
