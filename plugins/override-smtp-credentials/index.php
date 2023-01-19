@@ -4,16 +4,56 @@ class OverrideSmtpCredentialsPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Override SMTP Credentials',
-		VERSION = '2.3',
-		RELEASE = '2022-11-11',
-		REQUIRED = '2.21.0',
+		VERSION = '2.4',
+		RELEASE = '2023-01-19',
+		REQUIRED = '2.23.0',
 		CATEGORY = 'Filters',
 		DESCRIPTION = 'Override SMTP credentials for specific users.';
 
 	public function Init() : void
 	{
-		$this->addHook('smtp.before-connect', 'FilterSmtpCredentials');
+		$this->addHook('smtp.before-connect', 'FilterSmtpConnect');
 		$this->addHook('smtp.before-login', 'FilterSmtpCredentials');
+	}
+
+	/**
+	 * @param \RainLoop\Model\Account $oAccount
+	 * @param \MailSo\Smtp\SmtpClient $oSmtpClient
+	 * @param \MailSo\Smtp\Settings $oSettings
+	 */
+	public function FilterSmtpConnect(\RainLoop\Model\Account $oAccount, \MailSo\Smtp\SmtpClient $oSmtpClient, \MailSo\Smtp\Settings $oSettings)
+	{
+		$sEmail = $oAccount->Email();
+		$sWhiteList = \trim($this->Config()->Get('plugin', 'override_users', ''));
+		$sFoundValue = '';
+		if (\strlen($sWhiteList) && \RainLoop\Plugins\Helper::ValidateWildcardValues($sEmail, $sWhiteList, $sFoundValue)) {
+			\SnappyMail\LOG::debug('SMTP Override', "{$sEmail} matched {$sFoundValue}");
+			$oSettings->usePhpMail = false;
+			$sHost = \trim($this->Config()->Get('plugin', 'smtp_host', ''));
+			if (\strlen($sHost)) {
+				$oSettings->host = $sHost;
+				$oSettings->port = (int) $this->Config()->Get('plugin', 'smtp_port', 25);
+				$sSecure = \trim($this->Config()->Get('plugin', 'smtp_secure', 'None'));
+				switch ($sSecure)
+				{
+					case 'SSL':
+						$oSettings->type = MailSo\Net\Enumerations\ConnectionSecurityType::SSL;
+						break;
+					case 'TLS':
+					case 'STARTTLS':
+						$oSettings->type = MailSo\Net\Enumerations\ConnectionSecurityType::STARTTLS;
+						break;
+					case 'Detect':
+						$oSettings->type = MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT;
+						break;
+					default:
+						$oSettings->type = MailSo\Net\Enumerations\ConnectionSecurityType::NONE;
+						break;
+				}
+			}
+		} else {
+			\SnappyMail\LOG::debug('SMTP Override', "{$sEmail} no match");
+		}
 	}
 
 	/**
@@ -23,39 +63,12 @@ class OverrideSmtpCredentialsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	 */
 	public function FilterSmtpCredentials(\RainLoop\Model\Account $oAccount, \MailSo\Smtp\SmtpClient $oSmtpClient, \MailSo\Smtp\Settings $oSettings)
 	{
-		$sEmail = $oAccount->Email();
-
-		$sHost = \trim($this->Config()->Get('plugin', 'smtp_host', ''));
 		$sWhiteList = \trim($this->Config()->Get('plugin', 'override_users', ''));
-
 		$sFoundValue = '';
-		if (0 < strlen($sWhiteList) && 0 < \strlen($sHost) && \RainLoop\Plugins\Helper::ValidateWildcardValues($sEmail, $sWhiteList, $sFoundValue))
-		{
-			\SnappyMail\LOG::debug('SMTP Override', "{$sEmail} matched {$sFoundValue}");
-			$oSettings->host = $sHost;
-			$oSettings->port = (int) $this->Config()->Get('plugin', 'smtp_port', 25);
-
-			$sSecure = \trim($this->Config()->Get('plugin', 'smtp_secure', 'None'));
-			switch ($sSecure)
-			{
-				case 'SSL':
-					$oSettings->type = MailSo\Net\Enumerations\ConnectionSecurityType::SSL;
-					break;
-				case 'TLS':
-					$oSettings->type = MailSo\Net\Enumerations\ConnectionSecurityType::STARTTLS;
-					break;
-				default:
-					$oSettings->type = MailSo\Net\Enumerations\ConnectionSecurityType::NONE;
-					break;
-			}
-
+		if (\strlen($sWhiteList) && \RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $sWhiteList, $sFoundValue)) {
 			$oSettings->useAuth = (bool) $this->Config()->Get('plugin', 'smtp_auth', true);
 			$oSettings->Login = \trim($this->Config()->Get('plugin', 'smtp_user', ''));
 			$oSettings->Password = (string) $this->Config()->Get('plugin', 'smtp_password', '');
-		}
-		else
-		{
-			\SnappyMail\LOG::debug('SMTP Override', "{$sEmail} no match");
 		}
 	}
 
@@ -72,7 +85,7 @@ class OverrideSmtpCredentialsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetDefaultValue(25),
 			\RainLoop\Plugins\Property::NewInstance('smtp_secure')->SetLabel('SMTP Secure')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::SELECTION)
-				->SetDefaultValue(array('None', 'SSL', 'TLS')),
+				->SetDefaultValue(array('None', 'Detect', 'SSL', 'STARTTLS')),
 			\RainLoop\Plugins\Property::NewInstance('smtp_auth')->SetLabel('Use auth')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(true),
