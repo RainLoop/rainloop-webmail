@@ -9,7 +9,8 @@ This stylesheet is used when SnappyMail runs in embed mode.
 	min-height: 100%;
 }
 
-#content #rl-app #rl-left, #content #rl-app #rl-right {
+#content #rl-app:not([data-admin="1"]) #rl-left,
+#content #rl-app:not([data-admin="1"]) #rl-right {
 	position: absolute;
 }
 
