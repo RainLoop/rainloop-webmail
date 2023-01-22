@@ -133,15 +133,14 @@ class MailClient
 			$this->getEnvelopeOrHeadersRequestString()
 		);
 
-		$iBodyTextLimit = $this->oImapClient->Settings->body_text_limit;
-
 		$aFetchResponse = $this->oImapClient->Fetch(array(FetchType::BODYSTRUCTURE), $iIndex, $bIndexIsUid);
 		if (\count($aFetchResponse) && isset($aFetchResponse[0])) {
 			$oBodyStructure = $aFetchResponse[0]->GetFetchBodyStructure();
 			if ($oBodyStructure) {
+				$iBodyTextLimit = $this->oImapClient->Settings->body_text_limit;
 				foreach ($oBodyStructure->GetHtmlAndPlainParts() as $oPart) {
 					$sLine = FetchType::BODY_PEEK.'['.$oPart->PartID().']';
-					if (0 < $iBodyTextLimit && $iBodyTextLimit < $oPart->Size()) {
+					if (0 < $iBodyTextLimit && $iBodyTextLimit < $oPart->EstimatedSize()) {
 						$sLine .= "<0.{$iBodyTextLimit}>";
 					}
 					$aFetchItems[] = $sLine;

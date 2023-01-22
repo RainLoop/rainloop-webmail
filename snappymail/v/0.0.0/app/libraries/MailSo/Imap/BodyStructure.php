@@ -17,7 +17,7 @@ use MailSo\Mime\ParameterCollection;
  * @category MailSo
  * @package Imap
  */
-class BodyStructure
+class BodyStructure implements \JsonSerializable
 {
 	private string $sContentType;
 
@@ -43,6 +43,9 @@ class BodyStructure
 
 	private string $sPartID;
 
+	/**
+	 * \MailSo\Imap\BodyStructure[]
+	 */
 	private array $aSubParts;
 
 	public function MailEncodingName() : string
@@ -560,5 +563,20 @@ class BodyStructure
 		}
 
 		return $aDict;
+	}
+
+		#[\ReturnTypeWillChange]
+	public function jsonSerialize()
+	{
+		return array(
+			'MimeIndex' => $this->PartID(),
+			'MimeType' => $this->ContentType(),
+			'MimeTypeParams' => $this->ContentTypeParameters(),
+			'FileName' => \MailSo\Base\Utils::SecureFileName($this->FileName(true)),
+			'EstimatedSize' => $this->EstimatedSize(),
+			'Cid' => $this->ContentID(),
+			'ContentLocation' => $this->ContentLocation(),
+			'IsInline' => $this->IsInline()
+		);
 	}
 }

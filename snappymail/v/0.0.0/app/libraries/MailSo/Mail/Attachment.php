@@ -51,11 +51,6 @@ class Attachment implements \JsonSerializable
 		return $this->iUid;
 	}
 
-	public function FileName(bool $bCalculateOnEmpty = false) : string
-	{
-		return $this->oBodyStructure ? $this->oBodyStructure->FileName($bCalculateOnEmpty) : '';
-	}
-
 	public function __call(string $name, array $arguments) //: mixed
 	{
 		return $this->oBodyStructure->{$name}(...$arguments);
@@ -64,18 +59,10 @@ class Attachment implements \JsonSerializable
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
-		return array(
+		return \array_merge([
 			'@Object' => 'Object/Attachment',
 			'Folder' => $this->sFolder,
-			'Uid' => $this->iUid,
-			'MimeIndex' => $this->oBodyStructure->PartID(),
-			'MimeType' => $this->oBodyStructure->ContentType(),
-			'MimeTypeParams' => $this->oBodyStructure->ContentTypeParameters(),
-			'FileName' => \MailSo\Base\Utils::SecureFileName($this->FileName(true)),
-			'EstimatedSize' => $this->oBodyStructure->EstimatedSize(),
-			'Cid' => $this->oBodyStructure->ContentID(),
-			'ContentLocation' => $this->oBodyStructure->ContentLocation(),
-			'IsInline' => $this->oBodyStructure->IsInline()
-		);
+			'Uid' => $this->iUid
+		], $this->oBodyStructure->jsonSerialize());
 	}
 }
