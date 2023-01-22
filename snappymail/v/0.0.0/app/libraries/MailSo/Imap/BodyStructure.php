@@ -144,26 +144,6 @@ class BodyStructure implements \JsonSerializable
 		return 'inline' === $this->sDisposition || \strlen($this->sContentID);
 	}
 
-	public function IsImage() : bool
-	{
-		return 'image' === \MailSo\Base\Utils::ContentTypeType($this->sContentType, $this->sFileName);
-	}
-
-	public function IsArchive() : bool
-	{
-		return 'archive' === \MailSo\Base\Utils::ContentTypeType($this->sContentType, $this->sFileName);
-	}
-
-	public function IsPdf() : bool
-	{
-		return 'pdf' === \MailSo\Base\Utils::ContentTypeType($this->sContentType, $this->sFileName);
-	}
-
-	public function IsDoc() : bool
-	{
-		return 'doc' === \MailSo\Base\Utils::ContentTypeType($this->sContentType, $this->sFileName);
-	}
-
 	public function IsPgpEncrypted() : bool
 	{
 		// https://datatracker.ietf.org/doc/html/rfc3156#section-4
@@ -193,7 +173,7 @@ class BodyStructure implements \JsonSerializable
 		return \in_array($this->sContentType, ['application/pgp-signature', 'application/pkcs7-signature']);
 	}
 
-	public function IsAttachBodyPart() : bool
+	public function IsAttachment() : bool
 	{
 		return 'application/pgp-encrypted' !== $this->sContentType
 		 && (
@@ -218,7 +198,7 @@ class BodyStructure implements \JsonSerializable
 
 		$gParts = $this->SearchByCallback(function ($oItem) {
 			return ('text/html' === $oItem->sContentType || 'text/plain' === $oItem->sContentType)
-				&& !$oItem->IsAttachBodyPart();
+				&& !$oItem->IsAttachment();
 		});
 		foreach ($gParts as $oPart) {
 			$aParts[] = $oPart;
@@ -245,23 +225,19 @@ class BodyStructure implements \JsonSerializable
 		$gParts = $this->SearchByCallback(function ($oPart) {
 			return $oPart->Charset()
 				&& ('text/html' === $oPart->sContentType || 'text/plain' === $oPart->sContentType)
-				&& !$oPart->IsAttachBodyPart();
+				&& !$oPart->IsAttachment();
 		});
 
 		if (!$gParts->valid()) {
 			$gParts = $this->SearchByCallback(function ($oPart) {
-				return $oPart->Charset() && $oPart->IsAttachBodyPart();
+				return $oPart->Charset() && $oPart->IsAttachment();
 			});
 		}
 
 		return $gParts->valid() ? $gParts->current()->Charset() : '';
 	}
 
-	/**
-	 * @param mixed $fCallback
-	 */
-//	public function SearchByCallback($fCallback) : \Generator
-	public function SearchByCallback($fCallback, $parent = null) : iterable
+	public function SearchByCallback(callable $fCallback, /*BodyStructure*/ $parent = null) : iterable
 	{
 		if ($fCallback($this, $parent)) {
 			yield $this;
@@ -274,8 +250,8 @@ class BodyStructure implements \JsonSerializable
 	public function SearchAttachmentsParts() : iterable
 	{
 		return $this->SearchByCallback(function ($oItem, $oParent) {
-//			return $oItem->IsAttachBodyPart();
-			return $oItem->IsAttachBodyPart() && (!$oParent || !$oParent->IsPgpEncrypted());
+//			return $oItem->IsAttachment();
+			return $oItem->IsAttachment() && (!$oParent || !$oParent->IsPgpEncrypted());
 		});
 	}
 

@@ -102,26 +102,6 @@ class Attachment
 		return $this->bIsInline;
 	}
 
-	public function IsImage() : bool
-	{
-		return 'image' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->sFileName);
-	}
-
-	public function IsArchive() : bool
-	{
-		return 'archive' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->sFileName);
-	}
-
-	public function IsPdf() : bool
-	{
-		return 'pdf' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->sFileName);
-	}
-
-	public function IsDoc() : bool
-	{
-		return 'doc' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->sFileName);
-	}
-
 	public function IsLinked() : bool
 	{
 		return $this->bIsLinked && \strlen($this->sCID);
