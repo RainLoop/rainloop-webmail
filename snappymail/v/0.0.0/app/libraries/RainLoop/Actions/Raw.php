@@ -156,8 +156,7 @@ trait Raw
 			$sFileNameOut = $this->MainClearFileName($sFileNameIn, $sContentTypeIn, $sMimeIndex);
 
 			$rResource = $this->FilesProvider()->GetFile($oAccount, $sFileHashIn);
-			if (\is_resource($rResource))
-			{
+			if (\is_resource($rResource)) {
 				\header('Content-Type: '.$sContentTypeOut);
 				\header('Content-Disposition: attachment; '.
 					\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)));
@@ -181,13 +180,20 @@ trait Raw
 		$self = $this;
 		return $this->MailClient()->MessageMimeStream(
 			function($rResource, $sContentType, $sFileName, $sMimeIndex = '') use (
-				$self, $oAccount, $sRawKey, $sContentTypeIn, $sFileNameIn, $bDownload, $bThumbnail,
+				$self, $sRawKey, $sContentTypeIn, $sFileNameIn, $bDownload, $bThumbnail,
 				$bIsRangeRequest, $sRangeStart, $sRangeEnd
 			) {
-				if ($oAccount && \is_resource($rResource)) {
+				if (\is_resource($rResource)) {
 					\MailSo\Base\Utils::ResetTimeLimit();
 
 					$self->cacheByKey($sRawKey);
+
+					$self->Logger()->Write(\print_r([
+						$sFileName,
+						$sContentType,
+						$sFileNameIn,
+						$sContentTypeIn
+					],true), \LOG_DEBUG, 'RAW');
 
 					if ($sFileNameIn) {
 						$sFileName = $sFileNameIn;
