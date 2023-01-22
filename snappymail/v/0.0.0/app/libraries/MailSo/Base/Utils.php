@@ -457,62 +457,6 @@ abstract class Utils
 		return false === $iLast ? '' : \strtolower(\substr($sFileName, $iLast + 1));
 	}
 
-	public static function ContentTypeType(string $sContentType, string $sFileName) : string
-	{
-		$sContentType = \strtolower($sContentType);
-		if (\str_starts_with($sContentType, 'image/')) {
-			return 'image';
-		}
-
-		switch ($sContentType)
-		{
-			case 'application/zip':
-			case 'application/x-7z-compressed':
-			case 'application/x-rar-compressed':
-			case 'application/x-msdownload':
-			case 'application/vnd.ms-cab-compressed':
-			case 'application/gzip':
-			case 'application/x-gzip':
-			case 'application/x-bzip':
-			case 'application/x-bzip2':
-			case 'application/x-debian-package':
-			case 'application/x-tar':
-			case 'application/gtar':
-				return 'archive';
-
-			case 'application/msword':
-			case 'application/rtf':
-			case 'application/vnd.ms-excel':
-			case 'application/vnd.ms-powerpoint':
-			case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-			case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
-			case 'application/vnd.openxmlformats-officedocument.wordprocessingml.template':
-			case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
-			case 'application/vnd.oasis.opendocument.text':
-			case 'application/vnd.oasis.opendocument.spreadsheet':
-				return 'doc';
-
-			case 'application/pdf':
-			case 'application/x-pdf':
-				return 'pdf';
-		}
-
-		switch (\strtolower(static::GetFileExtension($sFileName)))
-		{
-			case 'zip':
-			case '7z':
-			case 'rar':
-			case 'tar':
-			case 'tgz':
-				return 'archive';
-
-			case 'pdf':
-				return 'pdf';
-		}
-
-		return '';
-	}
-
 	/**
 	 * @staticvar bool $bValidateAction
 	 */
