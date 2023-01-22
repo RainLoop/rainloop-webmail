@@ -104,22 +104,22 @@ class Attachment
 
 	public function IsImage() : bool
 	{
-		return 'image' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->FileName());
+		return 'image' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->sFileName);
 	}
 
 	public function IsArchive() : bool
 	{
-		return 'archive' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->FileName());
+		return 'archive' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->sFileName);
 	}
 
 	public function IsPdf() : bool
 	{
-		return 'pdf' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->FileName());
+		return 'pdf' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->sFileName);
 	}
 
 	public function IsDoc() : bool
 	{
-		return 'doc' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->FileName());
+		return 'doc' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->sFileName);
 	}
 
 	public function IsLinked() : bool
@@ -131,15 +131,14 @@ class Attachment
 	{
 		$oAttachmentPart = new Part;
 
-		$sFileName = $this->FileName();
+		$sFileName = \trim($this->sFileName);
 		$sCID = $this->CID();
 		$sContentLocation = $this->ContentLocation();
 
 		$oContentTypeParameters = null;
 		$oContentDispositionParameters = null;
 
-		if (\strlen(\trim($sFileName)))
-		{
+		if (\strlen($sFileName)) {
 			$oContentTypeParameters =
 				(new ParameterCollection)->Add(new Parameter(
 					Enumerations\Parameter::NAME, $sFileName));
@@ -163,15 +162,13 @@ class Attachment
 			)
 		);
 
-		if (\strlen($sCID))
-		{
+		if (\strlen($sCID)) {
 			$oAttachmentPart->Headers->append(
 				new Header(Enumerations\Header::CONTENT_ID, $sCID)
 			);
 		}
 
-		if (\strlen($sContentLocation))
-		{
+		if (\strlen($sContentLocation)) {
 			$oAttachmentPart->Headers->append(
 				new Header(Enumerations\Header::CONTENT_LOCATION, $sContentLocation)
 			);
@@ -179,8 +176,7 @@ class Attachment
 
 		$oAttachmentPart->Body = $this->Resource();
 
-		if ('message/rfc822' !== \strtolower($this->ContentType()))
-		{
+		if ('message/rfc822' !== \strtolower($this->ContentType())) {
 			$oAttachmentPart->Headers->append(
 				new Header(
 					Enumerations\Header::CONTENT_TRANSFER_ENCODING,
@@ -188,17 +184,13 @@ class Attachment
 				)
 			);
 
-			if (\is_resource($oAttachmentPart->Body))
-			{
-				if (!\MailSo\Base\StreamWrappers\Binary::IsStreamRemembed($oAttachmentPart->Body))
-				{
-					$oAttachmentPart->Body =
-						\MailSo\Base\StreamWrappers\Binary::CreateStream($oAttachmentPart->Body,
-							\MailSo\Base\StreamWrappers\Binary::GetInlineDecodeOrEncodeFunctionName(
-								\MailSo\Base\Enumerations\Encoding::BASE64, false));
+			if (\is_resource($oAttachmentPart->Body) && !\MailSo\Base\StreamWrappers\Binary::IsStreamRemembed($oAttachmentPart->Body)) {
+				$oAttachmentPart->Body =
+					\MailSo\Base\StreamWrappers\Binary::CreateStream($oAttachmentPart->Body,
+						\MailSo\Base\StreamWrappers\Binary::GetInlineDecodeOrEncodeFunctionName(
+							\MailSo\Base\Enumerations\Encoding::BASE64, false));
 
-					\MailSo\Base\StreamWrappers\Binary::RememberStream($oAttachmentPart->Body);
-				}
+				\MailSo\Base\StreamWrappers\Binary::RememberStream($oAttachmentPart->Body);
 			}
 		}
 

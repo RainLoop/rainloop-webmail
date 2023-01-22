@@ -55,9 +55,34 @@ class BodyStructure
 		return $this->sPartID;
 	}
 
-	public function FileName() : string
+	public function FileName(bool $bCalculateOnEmpty = false) : string
 	{
-		return $this->sFileName;
+		$sFileName = \trim($this->sFileName);
+		if (\strlen($sFileName) || !$bCalculateOnEmpty) {
+			return $sFileName;
+		}
+
+		$sIdx = '-' . $this->PartID();
+
+		$sMimeType = \strtolower(\trim($this->ContentType()));
+		if ('message/rfc822' === $sMimeType) {
+			return "message{$sIdx}.eml";
+		}
+		if ('text/calendar' === $sMimeType) {
+			return "calendar{$sIdx}.ics";
+		}
+		if ('text/plain' === $sMimeType) {
+			return "part{$sIdx}.txt";
+		}
+		if (\preg_match('@text/(vcard|html|csv|xml|css|asp)@', $sMimeType, $aMatch)
+		 || \preg_match('@image/(png|jpeg|gif|bmp|cgm|ief|tiff|webp)@', $sMimeType, $aMatch)) {
+			return "part{$sIdx}.{$aMatch[1]}";
+		}
+		if (\strlen($sMimeType)) {
+			return \str_replace('/', $sIdx.'.', $sMimeType);
+		}
+
+		return ($this->IsInline() ? 'inline' : 'part' ) . $sIdx;
 	}
 
 	public function ContentType() : string
