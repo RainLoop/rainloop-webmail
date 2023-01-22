@@ -100,7 +100,7 @@ class Attachment implements \JsonSerializable
 			'MimeIndex' => (string) $this->oBodyStructure->PartID(),
 			'MimeType' => $this->oBodyStructure->ContentType(),
 			'MimeTypeParams' => $this->oBodyStructure->ContentTypeParameters(),
-			'FileName' => \MailSo\Base\Utils::SecureFileName($this->oBodyStructure->FileName(true)),
+			'FileName' => \MailSo\Base\Utils::SecureFileName($this->FileName(true)),
 			'EstimatedSize' => $this->oBodyStructure->EstimatedSize(),
 			'Cid' => $this->oBodyStructure->ContentID(),
 			'ContentLocation' => $this->oBodyStructure->ContentLocation(),

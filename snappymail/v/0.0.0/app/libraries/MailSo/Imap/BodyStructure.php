@@ -473,7 +473,6 @@ class BodyStructure
 		++$iExtraItemPos;
 
 		$sDisposition = '';
-		$sFileName = '';
 
 		if ($iExtraItemPos < \count($aBodyStructure)) {
 			$aDispList = $aBodyStructure[$iExtraItemPos];
