@@ -37,12 +37,12 @@ class InstallStep implements IRepairStep
 		// https://github.com/the-djmaze/snappymail/issues/790#issuecomment-1366527884
 		if (!file_exists($app_dir . '/.htaccess') && file_exists($app_dir . '/_htaccess')) {
 			rename($app_dir . '/_htaccess', $app_dir . '/.htaccess');
-			if (!file_exists(APP_VERSION_ROOT_PATH . '/app/.htaccess') && file_exists(APP_VERSION_ROOT_PATH . '/app/_htaccess')) {
-				rename(APP_VERSION_ROOT_PATH . '/app/_htaccess', APP_VERSION_ROOT_PATH . '/app/.htaccess');
-			}
-			if (!file_exists(APP_VERSION_ROOT_PATH . '/static/.htaccess') && file_exists(APP_VERSION_ROOT_PATH . '/static/_htaccess')) {
-				rename(APP_VERSION_ROOT_PATH . '/static/_htaccess', APP_VERSION_ROOT_PATH . '/static/.htaccess');
-			}
+		}
+		if (!file_exists(APP_VERSION_ROOT_PATH . 'app/.htaccess') && file_exists(APP_VERSION_ROOT_PATH . 'app/_htaccess')) {
+			rename(APP_VERSION_ROOT_PATH . 'app/_htaccess', APP_VERSION_ROOT_PATH . 'app/.htaccess');
+		}
+		if (!file_exists(APP_VERSION_ROOT_PATH . 'static/.htaccess') && file_exists(APP_VERSION_ROOT_PATH . 'static/_htaccess')) {
+			rename(APP_VERSION_ROOT_PATH . 'static/_htaccess', APP_VERSION_ROOT_PATH . 'static/.htaccess');
 		}
 
 		$oConfig = \RainLoop\Api::Config();
