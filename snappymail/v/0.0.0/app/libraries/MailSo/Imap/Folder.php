@@ -171,8 +171,8 @@ class Folder implements \JsonSerializable
 			$aExtended = array(
 				'totalEmails' => (int) $this->MESSAGES,
 				'unreadEmails' => (int) $this->UNSEEN,
-				'UidNext' => (int) $this->UIDNEXT,
-//				'Hash' => $this->Hash($this->ImapClient()->Hash())
+				'uidNext' => (int) $this->UIDNEXT,
+//				'hash' => $this->Hash($this->ImapClient()->Hash())
 			);
 		}
 */
@@ -185,16 +185,16 @@ class Folder implements \JsonSerializable
 		return array(
 			'@Object' => 'Object/Folder',
 			'name' => $this->Name(),
-			'FullName' => $this->FolderName,
-			'Delimiter' => (string) $this->sDelimiter,
+			'fullName' => $this->FolderName,
+			'delimiter' => (string) $this->sDelimiter,
 			'isSubscribed' => $this->IsSubscribed(),
-			'Exists' => $this->Exists(),
-			'Selectable' => $this->Selectable(),
-			'Flags' => $this->aFlagsLowerCase,
-//			'Extended' => $aExtended,
-//			'PermanentFlags' => $this->PermanentFlags,
-			'Metadata' => $this->aMetadata,
-			'UidNext' => $this->UIDNEXT,
+			'exists' => $this->Exists(),
+			'selectable' => $this->Selectable(),
+			'flags' => $this->aFlagsLowerCase,
+//			'extended' => $aExtended,
+//			'permanentFlags' => $this->PermanentFlags,
+			'metadata' => $this->aMetadata,
+			'uidNext' => $this->UIDNEXT,
 			// https://datatracker.ietf.org/doc/html/rfc8621#section-2
 			'totalEmails' => $this->MESSAGES,
 			'unreadEmails' => $this->UNSEEN,

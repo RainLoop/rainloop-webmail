@@ -43,7 +43,7 @@ const
 //				MessageFlagsCache.setFor(message.folder, message.uid, flags());
 			}
 		}, {
-			Folder: message.folder,
+			folder: message.folder,
 			Uids: message.uid,
 			Keyword: keyword,
 			SetAction: isSet ? 0 : 1
@@ -188,12 +188,9 @@ export class MessageModel extends AbstractModel {
 	 * @returns {boolean}
 	 */
 	revivePropertiesFromJson(json) {
-		if ('Priority' in json && ![MessagePriority.High, MessagePriority.Low].includes(json.Priority)) {
-			json.Priority = MessagePriority.Normal;
-		}
 		if (super.revivePropertiesFromJson(json)) {
 //			this.foundCIDs = isArray(json.FoundCIDs) ? json.FoundCIDs : [];
-//			this.attachments(AttachmentCollectionModel.reviveFromJson(json.Attachments, this.foundCIDs));
+//			this.attachments(AttachmentCollectionModel.reviveFromJson(json.attachments, this.foundCIDs));
 
 			this.computeSenderEmail();
 		}

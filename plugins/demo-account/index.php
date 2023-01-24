@@ -5,7 +5,7 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 	const
 		NAME     = 'Demo Account Extension',
 		CATEGORY = 'Login',
-		REQUIRED = '2.23',
+		REQUIRED = '2.25',
 		DESCRIPTION = 'Extension to enable a demo account';
 
 	/**
@@ -59,9 +59,9 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 		else if ('DoFolderCreate' === $sMethodName || 'DoFolderRename' === $sMethodName) {
 			// Block spam https://github.com/the-djmaze/snappymail/issues/371
-			$latin = transliterator_transliterate('Any-Latin; Latin-ASCII; Lower()', $aActionParams['Folder']);
+			$latin = transliterator_transliterate('Any-Latin; Latin-ASCII; Lower()', $aActionParams['folder']);
 			if (false !== \strpos($latin, 'nigger')) {
-				\error_log("blocked {$sMethodName} {$aActionParams['Folder']}");
+				\error_log("blocked {$sMethodName} {$aActionParams['folder']}");
 				exit;
 			}
 		}

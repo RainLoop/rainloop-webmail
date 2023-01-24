@@ -304,7 +304,7 @@ export class ContactModel extends AbstractModel {
 //		jCard.set('rev', '2022-05-21T10:59:52Z')
 
 		return {
-			Uid: this.id,
+			uid: this.id,
 			jCard: JSON.stringify(jCard)
 		};
 	}

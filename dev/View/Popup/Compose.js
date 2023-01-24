@@ -514,7 +514,7 @@ export class ComposePopupView extends AbstractViewPopup {
 						this.saving(false);
 
 						if (!iError) {
-							if (oData.Result.NewFolder && oData.Result.NewUid) {
+							if (oData.Result.folder && oData.Result.uid) {
 								result = true;
 
 								if (this.bFromDraft) {
@@ -524,8 +524,8 @@ export class ComposePopupView extends AbstractViewPopup {
 									}
 								}
 
-								this.draftsFolder(oData.Result.NewFolder);
-								this.draftUid(oData.Result.NewUid);
+								this.draftsFolder(oData.Result.folder);
+								this.draftUid(oData.Result.uid);
 
 								this.savedTime(new Date);
 
@@ -968,7 +968,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			this.setFocusInPopup();
 		}
 
-		// item.CID item.isInline item.isLinked
+		// item.cId item.isInline item.isLinked
 		const downloads = this.attachments.filter(item => item && !item.tempName()).map(item => item.id);
 		if (arrayLength(downloads)) {
 			Remote.request('MessageUploadAttachments',
@@ -984,14 +984,14 @@ export class ComposePopupView extends AbstractViewPopup {
 							if (iError || !result?.[index]) {
 								attachment.error(getUploadErrorDescByCode(UploadErrorCode.NoFileUploaded));
 							} else {
-								attachment.tempName(result[index].TempName);
-								attachment.type(result[index].MimeType);
+								attachment.tempName(result[index].tempName);
+								attachment.type(result[index].mimeType);
 							}
 						}
 					});
 				},
 				{
-					Attachments: downloads
+					attachments: downloads
 				},
 				999000
 			);
@@ -1058,10 +1058,10 @@ export class ComposePopupView extends AbstractViewPopup {
 				this.dragAndDropOver(false);
 
 				const
-					size = pInt(oData.Size, null),
+					size = pInt(oData.size, null),
 					attachment = new ComposeAttachmentModel(
 						sId,
-						oData.FileName ? oData.FileName.toString() : '',
+						oData.fileName ? oData.fileName.toString() : '',
 						size
 					);
 
@@ -1113,11 +1113,11 @@ export class ComposePopupView extends AbstractViewPopup {
 							.waiting(false)
 							.uploading(false)
 							.complete(true);
-						attachment.fileName(attachmentJson.Name);
-						attachment.size(attachmentJson.Size ? pInt(attachmentJson.Size) : 0);
-						attachment.tempName(attachmentJson.TempName ? attachmentJson.TempName : '');
+						attachment.fileName(attachmentJson.name);
+						attachment.size(attachmentJson.size ? pInt(attachmentJson.size) : 0);
+						attachment.tempName(attachmentJson.tempName ? attachmentJson.tempName : '');
 						attachment.isInline = false;
-						attachment.type(attachmentJson.MimeType);
+						attachment.type(attachmentJson.mimeType);
 					}
 				}
 			});
@@ -1227,7 +1227,7 @@ export class ComposePopupView extends AbstractViewPopup {
 							item.estimatedSize,
 							item.isInline(),
 							item.isLinked(),
-							item.cid,
+							item.cId,
 							item.contentLocation
 						);
 						attachment.fromMessage = true;
@@ -1395,7 +1395,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				attachments[item.tempName()] = {
 					name: item.fileName(),
 					inline: item.isInline,
-					cid: item.CID,
+					cId: item.cId,
 					location: item.contentLocation,
 					type: item.mimeType()
 				};
@@ -1405,32 +1405,32 @@ export class ComposePopupView extends AbstractViewPopup {
 		const
 			identity = this.currentIdentity(),
 			params = {
-				IdentityID: identity.id(),
-				MessageFolder: this.draftsFolder(),
-				MessageUid: this.draftUid(),
-				SaveFolder: sSaveFolder,
-				From: this.from(),
-				To: this.to(),
-				Cc: this.cc(),
-				Bcc: this.bcc(),
-				ReplyTo: this.replyTo(),
+				identityID: identity.id(),
+				messageFolder: this.draftsFolder(),
+				messageUid: this.draftUid(),
+				saveFolder: sSaveFolder,
+				from: this.from(),
+				to: this.to(),
+				cc: this.cc(),
+				bcc: this.bcc(),
+				replyTo: this.replyTo(),
 				subject: this.subject(),
-				DraftInfo: this.aDraftInfo,
-				InReplyTo: this.sInReplyTo,
-				References: this.sReferences,
-				MarkAsImportant: this.markAsImportant() ? 1 : 0,
-				Attachments: attachments,
+				draftInfo: this.aDraftInfo,
+				inReplyTo: this.sInReplyTo,
+				references: this.sReferences,
+				markAsImportant: this.markAsImportant() ? 1 : 0,
+				attachments: attachments,
 				// Only used at send, not at save:
-				Dsn: this.requestDsn() ? 1 : 0,
-				ReadReceiptRequest: this.requestReadReceipt() ? 1 : 0
+				dsn: this.requestDsn() ? 1 : 0,
+				readReceiptRequest: this.requestReadReceipt() ? 1 : 0
 			},
 			recipients = draft ? [identity.email()] : this.allRecipients(),
 			sign = !draft && this.pgpSign() && this.canPgpSign(),
 			encrypt = this.pgpEncrypt() && this.canPgpEncrypt(),
-			TextIsHtml = this.oEditor.isHtml();
+			isHtml = this.oEditor.isHtml();
 
 		let Text = this.oEditor.getData();
-		if (TextIsHtml) {
+		if (isHtml) {
 			let l;
 			do {
 				l = Text.length;
@@ -1440,27 +1440,27 @@ export class ComposePopupView extends AbstractViewPopup {
 					// Remove hubspot data-hs- attributes
 					.replace(/(<[^>]+)\s+data-hs-[a-z-]+=("[^"]+"|'[^']+')/gi, '$1');
 			} while (l != Text.length)
-			params.Html = Text;
-			params.Text = htmlToPlain(Text);
+			params.html = Text;
+			params.plain = htmlToPlain(Text);
 		} else {
-			params.Text = Text;
+			params.plain = Text;
 		}
 
 		if (this.mailvelope && 'mailvelope' === this.viewArea()) {
-			params.Encrypted = draft
+			params.encrypted = draft
 				? await this.mailvelope.createDraft()
 				: await this.mailvelope.encrypt(recipients);
 		} else if (sign || encrypt) {
 			let data = new MimePart;
-			data.headers['Content-Type'] = 'text/'+(TextIsHtml?'html':'plain')+'; charset="utf-8"';
+			data.headers['Content-Type'] = 'text/'+(isHtml?'html':'plain')+'; charset="utf-8"';
 			data.headers['Content-Transfer-Encoding'] = 'base64';
 			data.body = base64_encode(Text);
-			if (TextIsHtml) {
+			if (isHtml) {
 				const alternative = new MimePart, plain = new MimePart;
 				alternative.headers['Content-Type'] = 'multipart/alternative';
 				plain.headers['Content-Type'] = 'text/plain; charset="utf-8"';
 				plain.headers['Content-Transfer-Encoding'] = 'base64';
-				plain.body = base64_encode(params.Text);
+				plain.body = base64_encode(params.plain);
 				// First add plain
 				alternative.children.push(plain);
 				// Now add HTML
@@ -1470,7 +1470,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			if (!draft && sign?.[1]) {
 				if ('openpgp' == sign[0]) {
 					// Doesn't sign attachments
-					params.Html = params.Text = '';
+					params.html = params.plain = '';
 					let signed = new MimePart;
 					signed.headers['Content-Type'] =
 						'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"';
@@ -1481,14 +1481,14 @@ export class ComposePopupView extends AbstractViewPopup {
 					signature.headers['Content-Transfer-Encoding'] = '7Bit';
 					signature.body = await OpenPGPUserStore.sign(data.toString(), sign[1], 1);
 					signed.children.push(signature);
-					params.Signed = signed.toString();
+					params.signed = signed.toString();
 					params.Boundary = signed.boundary;
 					data = signed;
 				} else if ('gnupg' == sign[0]) {
 					// TODO: sign in PHP fails
-//					params.SignData = data.toString();
-					params.SignFingerprint = sign[1].fingerprint;
-					params.SignPassphrase = await GnuPGUserStore.sign(sign[1]);
+//					params.signData = data.toString();
+					params.signFingerprint = sign[1].fingerprint;
+					params.signPassphrase = await GnuPGUserStore.sign(sign[1]);
 				} else {
 					throw 'Signing with ' + sign[0] + ' not yet implemented';
 				}
@@ -1496,11 +1496,11 @@ export class ComposePopupView extends AbstractViewPopup {
 			if (encrypt) {
 				if ('openpgp' == encrypt) {
 					// Doesn't encrypt attachments
-					params.Encrypted = await OpenPGPUserStore.encrypt(data.toString(), recipients);
-					params.Signed = '';
+					params.encrypted = await OpenPGPUserStore.encrypt(data.toString(), recipients);
+					params.signed = '';
 				} else if ('gnupg' == encrypt) {
 					// Does encrypt attachments
-					params.EncryptFingerprints = JSON.stringify(GnuPGUserStore.getPublicKeyFingerprints(recipients));
+					params.encryptFingerprints = JSON.stringify(GnuPGUserStore.getPublicKeyFingerprints(recipients));
 				} else {
 					throw 'Encryption with ' + encrypt + ' not yet implemented';
 				}

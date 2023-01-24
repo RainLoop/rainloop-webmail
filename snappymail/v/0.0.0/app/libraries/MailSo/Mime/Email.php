@@ -210,9 +210,9 @@ class Email implements \JsonSerializable
 	{
 		return array(
 			'@Object' => 'Object/Email',
-			'Name' => \MailSo\Base\Utils::Utf8Clear($this->GetDisplayName()),
-			'Email' => \MailSo\Base\Utils::Utf8Clear($this->GetEmail(true)),
-			'DkimStatus' => $this->sDkimStatus
+			'name' => \MailSo\Base\Utils::Utf8Clear($this->GetDisplayName()),
+			'email' => \MailSo\Base\Utils::Utf8Clear($this->GetEmail(true)),
+			'dkimStatus' => $this->sDkimStatus
 		);
 	}
 }

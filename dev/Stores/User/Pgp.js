@@ -198,7 +198,7 @@ export const
 					gnupg = GnuPGUserStore.hasPublicKeyForEmails([sender]),
 					openpgp = OpenPGPUserStore.hasPublicKeyForEmails([sender]);
 				// Detached signature use GnuPG first, else we must download whole message
-				if (gnupg && signed.SigPartId) {
+				if (gnupg && signed.sigPartId) {
 					return GnuPGUserStore.verify(message);
 				}
 				if (openpgp) {

@@ -16,9 +16,9 @@ trait Raw
 			(string) $this->GetActionParam('RawKey', '')
 		);
 
-		$sFolder = isset($aValues['Folder']) ? (string) $aValues['Folder'] : '';
-		$iUid = isset($aValues['Uid']) ? (int) $aValues['Uid'] : 0;
-		$sMimeIndex = isset($aValues['MimeIndex']) ? (string) $aValues['MimeIndex'] : '';
+		$sFolder = isset($aValues['folder']) ? (string) $aValues['folder'] : '';
+		$iUid = isset($aValues['uid']) ? (int) $aValues['uid'] : 0;
+		$sMimeIndex = isset($aValues['mimeIndex']) ? (string) $aValues['mimeIndex'] : '';
 
 		\header('Content-Type: text/plain');
 
@@ -51,24 +51,19 @@ trait Raw
 
 		$oAccount = $this->getAccountFromToken();
 
-		$sData = $this->StorageProvider()->Get($oAccount,
+		$mData = $this->StorageProvider()->Get($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 			'background'
 		);
 
-		if (!empty($sData))
-		{
-			$aData = \json_decode($sData, true);
-			unset($sData);
-
-			if (!empty($aData['ContentType']) && !empty($aData['Raw']) &&
-				\in_array($aData['ContentType'], array('image/png', 'image/jpg', 'image/jpeg')))
-			{
+		if (!empty($mData)) {
+			$mData = \json_decode($mData, true);
+			if (!empty($mData['ContentType']) && !empty($mData['Raw'])) {
 				$this->cacheByKey($sRawKey);
 
-				\header('Content-Type: '.$aData['ContentType']);
-				echo \base64_decode($aData['Raw']);
-				unset($aData);
+				\header('Content-Type: '.$mData['ContentType']);
+				echo \base64_decode($mData['Raw']);
+				unset($mData);
 
 				return true;
 			}
@@ -133,13 +128,13 @@ trait Raw
 			$bIsRangeRequest = true;
 		}
 
-		$sFolder = isset($aValues['Folder']) ? (string) $aValues['Folder'] : '';
-		$iUid = isset($aValues['Uid']) ? (int) $aValues['Uid'] : 0;
-		$sMimeIndex = isset($aValues['MimeIndex']) ? (string) $aValues['MimeIndex'] : '';
+		$sFolder = isset($aValues['folder']) ? (string) $aValues['folder'] : '';
+		$iUid = isset($aValues['uid']) ? (int) $aValues['uid'] : 0;
+		$sMimeIndex = isset($aValues['mimeIndex']) ? (string) $aValues['mimeIndex'] : '';
 
-		$sContentTypeIn = isset($aValues['MimeType']) ? (string) $aValues['MimeType'] : '';
-		$sFileNameIn = isset($aValues['FileName']) ? (string) $aValues['FileName'] : '';
-		$sFileHashIn = isset($aValues['FileHash']) ? (string) $aValues['FileHash'] : '';
+		$sContentTypeIn = isset($aValues['mimeType']) ? (string) $aValues['mimeType'] : '';
+		$sFileNameIn = isset($aValues['fileName']) ? (string) $aValues['fileName'] : '';
+		$sFileHashIn = isset($aValues['fileHash']) ? (string) $aValues['fileHash'] : '';
 
 		if (!empty($sFileHashIn)) {
 			$this->verifyCacheByKey($sRawKey);

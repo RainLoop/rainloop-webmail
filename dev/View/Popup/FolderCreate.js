@@ -46,11 +46,11 @@ export class FolderCreatePopupView extends AbstractViewPopup {
 	submitForm(form) {
 		if (form.reportValidity()) {
 			const data = new FormData(form);
-			data.set('Subscribe', this.folderSubscribe() ? 1 : 0);
+			data.set('subscribe', this.folderSubscribe() ? 1 : 0);
 
 			let parentFolderName = this.selectedParentValue();
 			if (!parentFolderName && 1 < FolderUserStore.namespace.length) {
-				data.set('Parent', FolderUserStore.namespace.slice(0, FolderUserStore.namespace.length - 1));
+				data.set('parent', FolderUserStore.namespace.slice(0, FolderUserStore.namespace.length - 1));
 			}
 
 			Remote.abort('Folders').post('FolderCreate', FolderUserStore.foldersCreating, data)

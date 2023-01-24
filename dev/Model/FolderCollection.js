@@ -124,11 +124,11 @@ export class FolderCollectionModel extends AbstractCollectionModel
 		);
 
 		const result = super.reviveFromJson(object, oFolder => {
-			let oCacheFolder = getFolderFromCacheList(oFolder.FullName);
+			let oCacheFolder = getFolderFromCacheList(oFolder.fullName);
 			if (oCacheFolder) {
 //				oCacheFolder.revivePropertiesFromJson(oFolder);
-				if (oFolder.Hash) {
-					oCacheFolder.hash = oFolder.Hash;
+				if (oFolder.hash) {
+					oCacheFolder.hash = oFolder.hash;
 				}
 				if (null != oFolder.totalEmails) {
 					oCacheFolder.totalEmails(oFolder.totalEmails);
@@ -167,32 +167,32 @@ export class FolderCollectionModel extends AbstractCollectionModel
 						break;
 				}
 				// Flags
-				if (oFolder.Flags.includes('\\sentmail')) {
+				if (oFolder.flags.includes('\\sentmail')) {
 					role = 'sent';
 				}
-				if (oFolder.Flags.includes('\\spam')) {
+				if (oFolder.flags.includes('\\spam')) {
 					role = 'junk';
 				}
-				if (oFolder.Flags.includes('\\bin')) {
+				if (oFolder.flags.includes('\\bin')) {
 					role = 'trash';
 				}
-				if (oFolder.Flags.includes('\\important')) {
+				if (oFolder.flags.includes('\\important')) {
 					role = 'important';
 				}
-				if (oFolder.Flags.includes('\\starred')) {
+				if (oFolder.flags.includes('\\starred')) {
 					role = 'flagged';
 				}
-				if (oFolder.Flags.includes('\\all') || oFolder.Flags.includes('\\allmail')) {
+				if (oFolder.flags.includes('\\all') || oFolder.flags.includes('\\allmail')) {
 					role = 'all';
 				}
 			}
 */
 			if (role) {
 				role = role[0].toUpperCase() + role.slice(1);
-				SystemFolders[role] || (SystemFolders[role] = oFolder.FullName);
+				SystemFolders[role] || (SystemFolders[role] = oFolder.fullName);
 			}
 
-			oCacheFolder.type(FolderType[getKeyByValue(SystemFolders, oFolder.FullName)] || 0);
+			oCacheFolder.type(FolderType[getKeyByValue(SystemFolders, oFolder.fullName)] || 0);
 
 			oCacheFolder.collapsed(!expandedFolders
 				|| !isArray(expandedFolders)
@@ -223,12 +223,12 @@ export class FolderCollectionModel extends AbstractCollectionModel
 								if (!pfolder) {
 									pfolder = FolderModel.reviveFromJson({
 										'@Object': 'Object/Folder',
-										Name: name,
-										FullName: parentName,
-										Delimiter: delimiter,
-										Exists: false,
+										name: name,
+										fullName: parentName,
+										delimiter: delimiter,
+										exists: false,
 										isSubscribed: false,
-										Flags: ['\\nonexistent']
+										flags: ['\\nonexistent']
 									});
 									setFolder(pfolder);
 									result.splice(i, 0, pfolder);

@@ -10,9 +10,9 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Avatars',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.7',
-		RELEASE  = '2023-01-05',
-		REQUIRED = '2.23.0',
+		VERSION  = '1.8',
+		RELEASE  = '2023-01-23',
+		REQUIRED = '2.25.0',
 		CATEGORY = 'Contacts',
 		LICENSE  = 'MIT',
 		DESCRIPTION = 'Show graphic of sender in message and messages list (supports BIMI, Gravatar and identicon, Contacts is still TODO)';
@@ -54,23 +54,23 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	private function JsonAvatar($message) : ?string
 	{
-		$mFrom = empty($message['From'][0]) ? null : $message['From'][0];
+		$mFrom = empty($message['from'][0]) ? null : $message['from'][0];
 		if ($mFrom instanceof \MailSo\Mime\Email) {
 			$mFrom = $mFrom->jsonSerialize();
 		}
 		if (\is_array($mFrom)) {
-			if ('pass' == $mFrom['DkimStatus'] && $this->Config()->Get('plugin', 'service', true)) {
+			if ('pass' == $mFrom['dkimStatus'] && $this->Config()->Get('plugin', 'service', true)) {
 				// 'data:image/png;base64,[a-zA-Z0-9+/=]'
-				return static::getServiceIcon($mFrom['Email']);
+				return static::getServiceIcon($mFrom['email']);
 			}
 			if (!$this->Config()->Get('plugin', 'delay', true)
 			 && ($this->Config()->Get('plugin', 'gravatar', false)
-				|| ($this->Config()->Get('plugin', 'bimi', false) && 'pass' == $mFrom['DkimStatus'])
+				|| ($this->Config()->Get('plugin', 'bimi', false) && 'pass' == $mFrom['dkimStatus'])
 				|| !$this->Config()->Get('plugin', 'service', true)
 			 )
 			) try {
 				// Base64Url
-				return \SnappyMail\Crypt::EncryptUrlSafe($mFrom['Email']);
+				return \SnappyMail\Crypt::EncryptUrlSafe($mFrom['email']);
 			} catch (\Throwable $e) {
 				\SnappyMail\Log::error('Crypt', $e->getMessage());
 			}

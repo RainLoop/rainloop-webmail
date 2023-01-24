@@ -30,9 +30,9 @@ export function MimeToMessage(data, message)
 
 		struct.forEach(part => {
 			let cd = part.header('content-disposition'),
-				cid = part.header('content-id'),
+				cId = part.header('content-id'),
 				type = part.header('content-type');
-			if (cid || cd) {
+			if (cId || cd) {
 				// if (cd && 'attachment' === cd.value) {
 				let attachment = new AttachmentModel;
 				attachment.mimeType = type.value;
@@ -49,8 +49,8 @@ export function MimeToMessage(data, message)
 				attachment.uid = '';
 				attachment.mimeIndex = part.id;
 */
-				attachment.cid = cid ? cid.value : '';
-				if (cid && html) {
+				attachment.cId = cId ? cId.value : '';
+				if (cId && html) {
 					let cid = 'cid:' + attachment.contentId(),
 						found = html.includes(cid);
 					attachment.isInline(found);
@@ -64,9 +64,9 @@ export function MimeToMessage(data, message)
 				}
 			} else if ('multipart/signed' === type.value && 'application/pgp-signature' === type.params.protocol) {
 				signed = {
-					MicAlg: type.micalg,
-					BodyPart: part.parts[0],
-					SigPart: part.parts[1]
+					micAlg: type.micalg,
+					bodyPart: part.parts[0],
+					sigPart: part.parts[1]
 				};
 			}
 		});

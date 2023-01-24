@@ -24,9 +24,9 @@ class Attachment
 
 	private string $sFileName;
 
-	private int $iFileSize;
+//	private int $iFileSize;
 
-	private string $sCID;
+	private string $sContentID;
 
 	private bool $bIsInline;
 
@@ -42,15 +42,15 @@ class Attachment
 	 * @param resource $rResource
 	 */
 	function __construct($rResource, string $sFileName, int $iFileSize, bool $bIsInline,
-		bool $bIsLinked, string $sCID, array $aCustomContentTypeParams = [],
+		bool $bIsLinked, string $sContentID, array $aCustomContentTypeParams = [],
 		string $sContentLocation = '', string $sContentType = '')
 	{
 		$this->rResource = $rResource;
 		$this->sFileName = $sFileName;
-		$this->iFileSize = $iFileSize;
+//		$this->iFileSize = $iFileSize;
 		$this->bIsInline = $bIsInline;
 		$this->bIsLinked = $bIsLinked;
-		$this->sCID = $sCID;
+		$this->sContentID = $sContentID;
 		$this->aCustomContentTypeParams = $aCustomContentTypeParams;
 		$this->sContentLocation = $sContentLocation;
 		$this->sContentType = $sContentType
@@ -77,34 +77,19 @@ class Attachment
 		return $this->aCustomContentTypeParams;
 	}
 
-	public function CID() : string
-	{
-		return $this->sCID;
-	}
-
-	public function ContentLocation() : string
-	{
-		return $this->sContentLocation;
-	}
-
 	public function FileName() : string
 	{
 		return $this->sFileName;
 	}
 
-	public function FileSize() : int
-	{
-		return $this->iFileSize;
-	}
-
-	public function IsInline() : bool
+	public function isInline() : bool
 	{
 		return $this->bIsInline;
 	}
 
-	public function IsLinked() : bool
+	public function isLinked() : bool
 	{
-		return $this->bIsLinked && \strlen($this->sCID);
+		return $this->bIsLinked && \strlen($this->sContentID);
 	}
 
 	public function ToPart() : Part
@@ -112,8 +97,8 @@ class Attachment
 		$oAttachmentPart = new Part;
 
 		$sFileName = \trim($this->sFileName);
-		$sCID = $this->CID();
-		$sContentLocation = $this->ContentLocation();
+		$sContentID = $this->sContentID;
+		$sContentLocation = $this->sContentLocation;
 
 		$oContentTypeParameters = null;
 		$oContentDispositionParameters = null;
@@ -137,14 +122,14 @@ class Attachment
 
 		$oAttachmentPart->Headers->append(
 			new Header(Enumerations\Header::CONTENT_DISPOSITION,
-				($this->IsInline() ? 'inline' : 'attachment').
+				($this->isInline() ? 'inline' : 'attachment').
 				($oContentDispositionParameters ? '; '.$oContentDispositionParameters : '')
 			)
 		);
 
-		if (\strlen($sCID)) {
+		if (\strlen($sContentID)) {
 			$oAttachmentPart->Headers->append(
-				new Header(Enumerations\Header::CONTENT_ID, $sCID)
+				new Header(Enumerations\Header::CONTENT_ID, $sContentID)
 			);
 		}
 

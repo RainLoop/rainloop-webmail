@@ -159,8 +159,8 @@ trait Themes
 							if ($this->StorageProvider()->Put($oAccount,
 								\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 								'background',
+								// Used by RawUserBackground()
 								\RainLoop\Utils::jsonEncode(array(
-									'Name' => $aFile['name'],
 									'ContentType' => $sMimeType,
 									'Raw' => \base64_encode($sData)
 								))
@@ -201,8 +201,8 @@ trait Themes
 		}
 
 		return $this->DefaultResponse(!empty($sName) && !empty($sHash) ? array(
-			'Name' => $sName,
-			'Hash' => $sHash
+			'name' => $sName,
+			'hash' => $sHash
 		) : false);
 	}
 }

@@ -353,7 +353,7 @@ class Message implements \JsonSerializable
 			foreach ($gEncryptedParts as $oPart) {
 				if ($oPart->IsPgpEncrypted()) {
 					$oMessage->pgpEncrypted = [
-						'PartId' => $oPart->SubParts()[1]->PartID()
+						'partId' => $oPart->SubParts()[1]->PartID()
 					];
 				}
 			}
@@ -367,22 +367,22 @@ class Message implements \JsonSerializable
 				$oMessage->pgpSigned = [
 					// /?/Raw/&q[]=/0/Download/&q[]=/...
 					// /?/Raw/&q[]=/0/View/&q[]=/...
-					'BodyPartId' => $oPart->SubParts()[0]->PartID(),
-					'SigPartId' => $oPgpSignaturePart->PartID(),
-					'MicAlg' => $oHeaders ? (string) $oHeaders->ParameterValue(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'micalg') : ''
+					'bodyPartId' => $oPart->SubParts()[0]->PartID(),
+					'sigPartId' => $oPgpSignaturePart->PartID(),
+					'micAlg' => $oHeaders ? (string) $oHeaders->ParameterValue(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'micalg') : ''
 				];
 /*
 				// An empty section specification refers to the entire message, including the header.
 				// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
 				$sPgpText = \trim(
-					\trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oMessage->pgpSigned['BodyPartId'].'.MIME]'))
+					\trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oMessage->pgpSigned['bodyPartId'].'.MIME]'))
 					. "\r\n\r\n"
-					. \trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oMessage->pgpSigned['BodyPartId'].']'))
+					. \trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oMessage->pgpSigned['bodyPartId'].']'))
 				);
 				if ($sPgpText) {
 					$oMessage->pgpSigned['Body'] = $sPgpText;
 				}
-				$sPgpSignatureText = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oMessage->pgpSigned['SigPartId'].']');
+				$sPgpSignatureText = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oMessage->pgpSigned['sigPartId'].']');
 				if ($sPgpSignatureText && 0 < \strpos($sPgpSignatureText, 'BEGIN PGP SIGNATURE')) {
 					$oMessage->pgpSigned['Signature'] = $oPart->SubParts()[0]->PartID();
 				}
@@ -416,7 +416,7 @@ class Message implements \JsonSerializable
 						// Cleartext Signature
 						if (!$oMessage->pgpSigned && \str_contains($sText, '-----BEGIN PGP SIGNED MESSAGE-----')) {
 							$oMessage->pgpSigned = [
-								'BodyPartId' => $oPart->PartID()
+								'bodyPartId' => $oPart->PartID()
 							];
 						}
 
@@ -427,8 +427,8 @@ class Message implements \JsonSerializable
 								$keyIds = $GPG->getEncryptedMessageKeys($sText);
 							}
 							$oMessage->pgpEncrypted = [
-								'PartId' => $oPart->PartID(),
-								'KeyIds' => $keyIds
+								'partId' => $oPart->PartID(),
+								'keyIds' => $keyIds
 							];
 						}
 
@@ -487,42 +487,42 @@ class Message implements \JsonSerializable
 
 		return array(
 			'@Object' => 'Object/Message',
-			'Folder' => $this->sFolder,
-			'Uid' => $this->Uid,
+			'folder' => $this->sFolder,
+			'uid' => $this->Uid,
 			'subject' => \trim(Utils::Utf8Clear($this->sSubject)),
 			'encrypted' => 'multipart/encrypted' == $this->sContentType || $this->pgpEncrypted,
-			'MessageId' => $this->sMessageId,
-			'SpamScore' => $this->bIsSpam ? 100 : $this->SpamScore,
-			'SpamResult' => $this->sSpamResult,
-			'IsSpam' => $this->bIsSpam,
-			'HasVirus' => $this->bHasVirus,
-//			'VirusScanned' => $this->sVirusScanned,
-			'DateTimeStampInUTC' => $this->iInternalTimeStampInUTC,
+			'messageId' => $this->sMessageId,
+			'spamScore' => $this->bIsSpam ? 100 : $this->SpamScore,
+			'spamResult' => $this->sSpamResult,
+			'isSpam' => $this->bIsSpam,
+			'hasVirus' => $this->bHasVirus,
+//			'virusScanned' => $this->sVirusScanned,
+			'dateTimeStampInUTC' => $this->iInternalTimeStampInUTC,
 
 			// \MailSo\Mime\EmailCollection
-			'From' => $this->oFrom,
-			'ReplyTo' => $this->oReplyTo,
-			'To' => $this->oTo,
-			'Cc' => $this->oCc,
-			'Bcc' => $this->oBcc,
-			'Sender' => $this->oSender,
-			'DeliveredTo' => $this->oDeliveredTo,
+			'from' => $this->oFrom,
+			'replyTo' => $this->oReplyTo,
+			'to' => $this->oTo,
+			'cc' => $this->oCc,
+			'bcc' => $this->oBcc,
+			'sender' => $this->oSender,
+			'deliveredTo' => $this->oDeliveredTo,
 
-			'Priority' => $this->iPriority,
-			'Threads' => $this->aThreads,
-			'UnsubsribeLinks' => $this->UnsubsribeLinks,
-			'ReadReceipt' => '',
-			'Autocrypt' => $this->sAutocrypt,
+			'priority' => $this->iPriority,
+			'threads' => $this->aThreads,
+			'unsubsribeLinks' => $this->UnsubsribeLinks,
+			'readReceipt' => '',
+			'autocrypt' => $this->sAutocrypt,
 
-			'Attachments' => $this->Attachments,
+			'attachments' => $this->Attachments,
 
 			'spf' => $this->SPF,
 			'dkim' => $this->DKIM,
 			'dmarc' => $this->DMARC,
 
-			'Flags' => $aFlags,
+			'flags' => $aFlags,
 
-			'InReplyTo' => $this->InReplyTo,
+			'inReplyTo' => $this->InReplyTo,
 
 			// https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.1
 			'id' => $this->sEmailId,

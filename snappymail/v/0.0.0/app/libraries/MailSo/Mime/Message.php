@@ -365,7 +365,7 @@ class Message extends Part
 		if (1 == \count($this->SubParts)) {
 			$oRootPart = $this->SubParts[0];
 			foreach ($this->oAttachmentCollection as $oAttachment) {
-				if ($oAttachment->IsLinked()) {
+				if ($oAttachment->isLinked()) {
 					$oRelatedPart = new Part;
 					$oRelatedPart->Headers->append(
 						new Header(Enumerations\Header::CONTENT_TYPE, 'multipart/related')
@@ -383,7 +383,7 @@ class Message extends Part
 
 		$oMixedPart = null;
 		foreach ($this->oAttachmentCollection as $oAttachment) {
-			if ($oRelatedPart && $oAttachment->IsLinked()) {
+			if ($oRelatedPart && $oAttachment->isLinked()) {
 				$oRelatedPart->SubParts->append($oAttachment->ToPart());
 			} else {
 				if (!$oMixedPart) {

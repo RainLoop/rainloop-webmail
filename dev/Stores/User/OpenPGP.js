@@ -214,14 +214,14 @@ export const OpenPGPUserStore = new class {
 	 * https://docs.openpgpjs.org/#sign-and-verify-cleartext-messages
 	 */
 	async verify(message) {
-		const data = message.pgpSigned(), // { BodyPartId: "1", SigPartId: "2", MicAlg: "pgp-sha256" }
+		const data = message.pgpSigned(), // { bodyPartId: "1", sigPartId: "2", micAlg: "pgp-sha256" }
 			publicKey = this.publicKeys().find(key => key.emails.includes(message.from[0].email));
 		if (data && publicKey) {
-			data.Folder = message.folder;
-			data.Uid = message.uid;
+			data.folder = message.folder;
+			data.uid = message.uid;
 			data.GnuPG = 0;
 			let response;
-			if (data.SigPartId) {
+			if (data.sigPartId) {
 				response = await Remote.post('MessagePgpVerify', null, data);
 			} else if (data.BodyPart) {
 				response = { Result: { text: data.BodyPart.raw, signature: data.SigPart.body } };

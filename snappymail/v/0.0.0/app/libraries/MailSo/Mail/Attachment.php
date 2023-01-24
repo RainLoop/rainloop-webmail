@@ -61,8 +61,8 @@ class Attachment implements \JsonSerializable
 	{
 		return \array_merge([
 			'@Object' => 'Object/Attachment',
-			'Folder' => $this->sFolder,
-			'Uid' => $this->iUid
+			'folder' => $this->sFolder,
+			'uid' => $this->iUid
 		], $this->oBodyStructure->jsonSerialize());
 	}
 }

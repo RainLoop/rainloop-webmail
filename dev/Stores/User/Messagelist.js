@@ -47,7 +47,7 @@ addObservablesTo(MessagelistUserStore, {
 	page: 1,
 	pageBeforeThread: 1,
 	error: '',
-//	Folder: '',
+//	folder: '',
 
 	endHash: '',
 	endThreadUid: 0,
@@ -69,17 +69,17 @@ addComputablesTo(MessagelistUserStore, {
 		return value;
 	},
 
-	isArchiveFolder: () => FolderUserStore.archiveFolder() === MessagelistUserStore().Folder,
+	isArchiveFolder: () => FolderUserStore.archiveFolder() === MessagelistUserStore().folder,
 
-	isDraftFolder: () => FolderUserStore.draftsFolder() === MessagelistUserStore().Folder,
+	isDraftFolder: () => FolderUserStore.draftsFolder() === MessagelistUserStore().folder,
 
-	isSentFolder: () => FolderUserStore.sentFolder() === MessagelistUserStore().Folder,
+	isSentFolder: () => FolderUserStore.sentFolder() === MessagelistUserStore().folder,
 
-	isSpamFolder: () => FolderUserStore.spamFolder() === MessagelistUserStore().Folder,
+	isSpamFolder: () => FolderUserStore.spamFolder() === MessagelistUserStore().folder,
 
-	isTrashFolder: () => FolderUserStore.trashFolder() === MessagelistUserStore().Folder,
+	isTrashFolder: () => FolderUserStore.trashFolder() === MessagelistUserStore().folder,
 
-	archiveAllowed: () => ![UNUSED_OPTION_VALUE, MessagelistUserStore().Folder].includes(FolderUserStore.archiveFolder())
+	archiveAllowed: () => ![UNUSED_OPTION_VALUE, MessagelistUserStore().folder].includes(FolderUserStore.archiveFolder())
 		&& !MessagelistUserStore.isDraftFolder(),
 
 	canMarkAsSpam: () => !(UNUSED_OPTION_VALUE === FolderUserStore.spamFolder()
@@ -147,14 +147,14 @@ MessagelistUserStore.notifyNewMessages = (folder, newMessages) => {
 				i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
 					COUNT: len
 				}),
-				{ Url: mailBox(newMessages[0].Folder) }
+				{ Url: mailBox(newMessages[0].folder) }
 			);
 		} else {
 			newMessages.forEach(item => {
 				NotificationUserStore.display(
-					EmailCollectionModel.reviveFromJson(item.From).toString(),
+					EmailCollectionModel.reviveFromJson(item.from).toString(),
 					item.subject,
-					{ Folder: item.Folder, Uid: item.Uid }
+					{ folder: item.folder, uid: item.uid }
 				);
 			});
 		}
@@ -208,12 +208,12 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 					let unreadCountChange = false;
 
 					const
-						folder = getFolderFromCacheList(collection.Folder),
+						folder = getFolderFromCacheList(collection.folder),
 						folderInfo = collection.folderInfo;
 					if (folder && !bCached) {
 //						folder.revivePropertiesFromJson(result);
 						folder.expires = Date.now();
-						folder.uidNext = folderInfo.UidNext;
+						folder.uidNext = folderInfo.uidNext;
 						folder.hash = collection.folderHash;
 
 						if (null != folderInfo.totalEmails) {
@@ -228,8 +228,8 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 							folder.unreadEmails(folderInfo.unreadEmails);
 						}
 
-						folder.flags(folderInfo.Flags);
-						let flags = folderInfo.PermanentFlags;
+						folder.flags(folderInfo.flags);
+						let flags = folderInfo.permanentFlags;
 						if (flags.includes('\\*')) {
 							let i = 6;
 							while (--i) {
@@ -253,14 +253,14 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 					MessagelistUserStore.threadUid(collection.threadUid);
 
 					MessagelistUserStore.endHash(
-						collection.Folder +
+						collection.folder +
 						'|' + collection.search +
 						'|' + MessagelistUserStore.threadUid() +
 						'|' + MessagelistUserStore.page()
 					);
 					MessagelistUserStore.endThreadUid(collection.threadUid);
 					const message = MessageUserStore.message();
-					if (message && collection.Folder !== message.folder) {
+					if (message && collection.folder !== message.folder) {
 						MessageUserStore.message(null);
 					}
 
@@ -330,7 +330,7 @@ MessagelistUserStore.setAction = (sFolderFullName, iSetAction, messages) => {
 					folder.unreadEmails(folder.unreadEmails() - alreadyUnread + length);
 				}
 				Remote.request('MessageSetSeen', null, {
-					Folder: sFolderFullName,
+					folder: sFolderFullName,
 					Uids: rootUids.join(','),
 					SetAction: iSetAction == MessageSetAction.SetSeen ? 1 : 0
 				});
@@ -339,7 +339,7 @@ MessagelistUserStore.setAction = (sFolderFullName, iSetAction, messages) => {
 			case MessageSetAction.SetFlag:
 			case MessageSetAction.UnsetFlag:
 				Remote.request('MessageSetFlagged', null, {
-					Folder: sFolderFullName,
+					folder: sFolderFullName,
 					Uids: rootUids.join(','),
 					SetAction: iSetAction == MessageSetAction.SetFlag ? 1 : 0
 				});

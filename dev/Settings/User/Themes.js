@@ -92,8 +92,8 @@ export class UserSettingsThemes /*extends AbstractViewSettings*/ {
 				})
 				.on('onComplete', (id, result, data) => {
 					themeBackground.loading(false);
-					themeBackground.name(data?.Result?.Name || '');
-					themeBackground.hash(data?.Result?.Hash || '');
+					themeBackground.name(data?.Result?.name || '');
+					themeBackground.hash(data?.Result?.hash || '');
 					if (!themeBackground.name() || !themeBackground.hash()) {
 						let errorMsg = '';
 						if (data.ErrorCode) {

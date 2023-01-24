@@ -62,9 +62,9 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 		const nameToEdit = folder?.nameForEdit().trim();
 		if (nameToEdit && folder.name() !== nameToEdit) {
 			Remote.abort('Folders').post('FolderRename', FolderUserStore.foldersRenaming, {
-					Folder: folder.fullName,
-					NewFolderName: nameToEdit,
-					Subscribe: folder.isSubscribed() ? 1 : 0
+					folder: folder.fullName,
+					newFolderName: nameToEdit,
+					subscribe: folder.isSubscribed() ? 1 : 0
 				})
 				.then(data => {
 					folder.name(nameToEdit/*data.name*/);
@@ -76,7 +76,7 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 						// TODO: rename all subfolders with folder.delimiter to prevent reload?
 					} else {
 						removeFolderFromCacheList(folder.fullName);
-						folder.fullName = data.Result.FullName;
+						folder.fullName = data.Result.fullName;
 						setFolder(folder);
 						const parent = getFolderFromCacheList(folder.parentName);
 						sortFolders(parent ? parent.subFolders : FolderUserStore.folderList);
@@ -126,7 +126,7 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 
 				if (folderToRemove) {
 					Remote.abort('Folders').post('FolderDelete', FolderUserStore.foldersDeleting, {
-							Folder: folderToRemove.fullName
+							folder: folderToRemove.fullName
 						}).then(
 							() => {
 //								folderToRemove.flags.push('\\nonexistent');
@@ -159,7 +159,7 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 		let type = event.target.value;
 		// TODO: append '.default' ?
 		Remote.request('FolderSetMetadata', null, {
-			Folder: folder.fullName,
+			folder: folder.fullName,
 			Key: FolderMetadataKeys.KolabFolderType,
 			Value: type
 		});
@@ -169,8 +169,8 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 	toggleFolderSubscription(folder) {
 		let subscribe = !folder.isSubscribed();
 		Remote.request('FolderSubscribe', null, {
-			Folder: folder.fullName,
-			Subscribe: subscribe ? 1 : 0
+			folder: folder.fullName,
+			subscribe: subscribe ? 1 : 0
 		});
 		folder.isSubscribed(subscribe);
 	}
@@ -178,8 +178,8 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 	toggleFolderCheckable(folder) {
 		let checkable = !folder.checkable();
 		Remote.request('FolderCheckable', null, {
-			Folder: folder.fullName,
-			Checkable: checkable ? 1 : 0
+			folder: folder.fullName,
+			checkable: checkable ? 1 : 0
 		});
 		folder.checkable(checkable);
 	}

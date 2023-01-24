@@ -67,7 +67,7 @@ class BodyStructure implements \JsonSerializable
 
 		$sIdx = '-' . $this->PartID();
 
-		$sMimeType = \strtolower(\trim($this->ContentType()));
+		$sMimeType = $this->sContentType;
 		if ('message/rfc822' === $sMimeType) {
 			return "message{$sIdx}.eml";
 		}
@@ -85,22 +85,12 @@ class BodyStructure implements \JsonSerializable
 			return \str_replace('/', $sIdx.'.', $sMimeType);
 		}
 
-		return ($this->IsInline() ? 'inline' : 'part' ) . $sIdx;
+		return ($this->isInline() ? 'inline' : 'part' ) . $sIdx;
 	}
 
 	public function ContentType() : string
 	{
 		return $this->sContentType;
-	}
-
-	public function ContentTypeParameters() : array
-	{
-		return $this->aContentTypeParams;
-	}
-
-	public function Size() : int
-	{
-		return $this->iSize;
 	}
 
 	public function EstimatedSize() : int
@@ -124,24 +114,19 @@ class BodyStructure implements \JsonSerializable
 		return $this->sCharset;
 	}
 
-	public function ContentID() : string
-	{
-		return $this->sContentID;
-	}
-
-	public function ContentLocation() : string
-	{
-		return $this->sLocation;
-	}
-
 	public function SubParts() : array
 	{
 		return $this->aSubParts;
 	}
 
-	public function IsInline() : bool
+	public function isInline() : bool
 	{
 		return 'inline' === $this->sDisposition || \strlen($this->sContentID);
+	}
+
+	public function isText() : bool
+	{
+		return 'text/html' === $this->sContentType || 'text/plain' === $this->sContentType;
 	}
 
 	public function IsPgpEncrypted() : bool
@@ -179,8 +164,7 @@ class BodyStructure implements \JsonSerializable
 		 && (
 			'attachment' === $this->sDisposition || (
 				!\str_starts_with($this->sContentType, 'multipart/')
-				&& 'text/html' !== $this->sContentType
-				&& 'text/plain' !== $this->sContentType
+				&& !$this->isText()
 			)
 		);
 	}
@@ -197,8 +181,7 @@ class BodyStructure implements \JsonSerializable
 		$aParts = [];
 
 		$gParts = $this->SearchByCallback(function ($oItem) {
-			return ('text/html' === $oItem->sContentType || 'text/plain' === $oItem->sContentType)
-				&& !$oItem->IsAttachment();
+			return $oItem->isText() && !$oItem->IsAttachment();
 		});
 		foreach ($gParts as $oPart) {
 			$aParts[] = $oPart;
@@ -211,7 +194,7 @@ class BodyStructure implements \JsonSerializable
 		if (!$aParts) {
 			$gEncryptedParts = $this->SearchByContentType('multipart/encrypted');
 			foreach ($gEncryptedParts as $oPart) {
-				if ($oPart->IsPgpEncrypted() && $oPart->SubParts()[1]->IsInline()) {
+				if ($oPart->IsPgpEncrypted() && $oPart->SubParts()[1]->isInline()) {
 					return array($oPart->SubParts()[1]);
 				}
 			}
@@ -223,9 +206,7 @@ class BodyStructure implements \JsonSerializable
 	public function SearchCharset() : string
 	{
 		$gParts = $this->SearchByCallback(function ($oPart) {
-			return $oPart->Charset()
-				&& ('text/html' === $oPart->sContentType || 'text/plain' === $oPart->sContentType)
-				&& !$oPart->IsAttachment();
+			return $oPart->Charset() && $oPart->isText() && !$oPart->IsAttachment();
 		});
 
 		if (!$gParts->valid()) {
@@ -494,7 +475,7 @@ class BodyStructure implements \JsonSerializable
 		}
 
 		$oStructure = new self;
-		$oStructure->sContentType = \strtolower($sContentTypeMain.'/'.$sContentTypeSub);
+		$oStructure->sContentType = \strtolower(\trim($sContentTypeMain.'/'.$sContentTypeSub));
 		$oStructure->aContentTypeParams = $aContentTypeParams;
 		$oStructure->sCharset = $sCharset;
 		$oStructure->sContentID = $sContentID;
@@ -541,18 +522,18 @@ class BodyStructure implements \JsonSerializable
 		return $aDict;
 	}
 
-		#[\ReturnTypeWillChange]
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
 		return array(
-			'MimeIndex' => $this->PartID(),
-			'MimeType' => $this->ContentType(),
-			'MimeTypeParams' => $this->ContentTypeParameters(),
-			'FileName' => \MailSo\Base\Utils::SecureFileName($this->FileName(true)),
-			'EstimatedSize' => $this->EstimatedSize(),
-			'Cid' => $this->ContentID(),
-			'ContentLocation' => $this->ContentLocation(),
-			'IsInline' => $this->IsInline()
+			'mimeIndex' => $this->sPartID,
+			'mimeType' => $this->sContentType,
+			'mimeTypeParams' => $this->aContentTypeParams,
+			'fileName' => \MailSo\Base\Utils::SecureFileName($this->FileName(true)),
+			'estimatedSize' => $this->EstimatedSize(),
+			'cId' => $this->sContentID,
+			'contentLocation' => $this->sLocation,
+			'isInline' => $this->isInline()
 		);
 	}
 }

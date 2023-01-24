@@ -297,7 +297,7 @@ export class MailMessageList extends AbstractViewRight {
 		);
 
 		addEventListener('mailbox.message.show', e => {
-			const sFolder = e.detail.Folder, iUid = e.detail.Uid;
+			const sFolder = e.detail.folder, iUid = e.detail.uid;
 
 			const message = MessagelistUserStore.find(
 				item => sFolder === item?.folder && iUid == item?.uid
@@ -370,12 +370,12 @@ export class MailMessageList extends AbstractViewRight {
 		if (hashes.length) {
 			Remote.post('AttachmentsActions', null, {
 				Do: 'Zip',
-				Folder: MessagelistUserStore().Folder,
+				folder: MessagelistUserStore().folder,
 //				Uids: uids,
 				Hashes: hashes
 			})
 			.then(result => {
-				let hash = result?.Result?.FileHash;
+				let hash = result?.Result?.fileHash;
 				if (hash) {
 					download(attachmentDownload(hash), hash+'.zip');
 				} else {
@@ -403,7 +403,7 @@ export class MailMessageList extends AbstractViewRight {
 				Hashes: hashes
 			})
 			.then(result => {
-				let hash = result?.Result?.FileHash;
+				let hash = result?.Result?.fileHash;
 				if (hash) {
 					download(attachmentDownload(hash), hash+'.zip');
 				} else {
@@ -504,7 +504,7 @@ export class MailMessageList extends AbstractViewRight {
 				MessageFlagsCache.clearFolder(sFolderFullName);
 
 				Remote.request('MessageSetSeenToAll', null, {
-					Folder: sFolderFullName,
+					folder: sFolderFullName,
 					SetAction: 1,
 					ThreadUids: uids.join(',')
 				});

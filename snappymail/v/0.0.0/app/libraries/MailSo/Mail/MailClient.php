@@ -327,10 +327,10 @@ class MailClient
 					}
 
 					$aNewMessages[] = array(
-						'Folder' => $sFolderName,
-						'Uid' => $iUid,
+						'folder' => $sFolderName,
+						'uid' => $iUid,
 						'subject' => $oHeaders->ValueByName(MimeHeader::SUBJECT, !$sContentTypeCharset),
-						'From' => $oHeaders->GetAsEmailCollection(MimeHeader::FROM_, !$sContentTypeCharset)
+						'from' => $oHeaders->GetAsEmailCollection(MimeHeader::FROM_, !$sContentTypeCharset)
 					);
 				}
 			}
@@ -359,8 +359,8 @@ class MailClient
 				$iUid = (int) $oFetchResponse->GetFetchValue(FetchType::UID);
 				$aLowerFlags = \array_map('mb_strtolower', \array_map('\\MailSo\\Base\\Utils::Utf7ModifiedToUtf8', $oFetchResponse->GetFetchValue(FetchType::FLAGS)));
 				$aFlags[] = array(
-					'Uid' => $iUid,
-					'Flags' => $aLowerFlags
+					'uid' => $iUid,
+					'flags' => $aLowerFlags
 				);
 			}
 		} else {
@@ -368,18 +368,18 @@ class MailClient
 		}
 
 		return array(
-			'Folder' => $sFolderName,
+			'folder' => $sFolderName,
 			'totalEmails' => $oInfo->MESSAGES,
 			'unreadEmails' => $oInfo->UNSEEN,
-			'UidNext' => $oInfo->UIDNEXT,
-			'UidValidity' => $oInfo->UIDVALIDITY,
-			'HighestModSeq' => $oInfo->HIGHESTMODSEQ,
-			'AppendLimit' => $oInfo->APPENDLIMIT ?: $this->oImapClient->AppendLimit(),
-			'MailboxId' => $oInfo->MAILBOXID ?: '',
-//			'Flags' => $oInfo->Flags,
-//			'PermanentFlags' => $oInfo->PermanentFlags,
-			'Hash' => $oInfo->getHash($this->oImapClient->Hash()),
-			'MessagesFlags' => $aFlags,
+			'uidNext' => $oInfo->UIDNEXT,
+			'uidValidity' => $oInfo->UIDVALIDITY,
+			'highestModSeq' => $oInfo->HIGHESTMODSEQ,
+			'appendLimit' => $oInfo->APPENDLIMIT ?: $this->oImapClient->AppendLimit(),
+			'mailboxId' => $oInfo->MAILBOXID ?: '',
+//			'flags' => $oInfo->Flags,
+//			'permanentFlags' => $oInfo->PermanentFlags,
+			'hash' => $oInfo->getHash($this->oImapClient->Hash()),
+			'messagesFlags' => $aFlags,
 			'newMessages' => $this->getFolderNextMessageInformation(
 				$sFolderName,
 				$iPrevUidNext,

@@ -4,11 +4,11 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Nextcloud',
-		VERSION = '2.15',
-		RELEASE  = '2023-01-17',
+		VERSION = '2.16',
+		RELEASE  = '2023-01-23',
 		CATEGORY = 'Integrations',
 		DESCRIPTION = 'Integrate with Nextcloud v20+',
-		REQUIRED = '2.24.6';
+		REQUIRED = '2.25.0';
 
 	public function Init() : void
 	{
@@ -89,7 +89,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 			'filename' => '',
 			'success' => false
 		];
-		if ($sSaveFolder && !empty($aValues['Folder']) && !empty($aValues['Uid'])) {
+		if ($sSaveFolder && !empty($aValues['folder']) && !empty($aValues['uid'])) {
 			$oActions = \RainLoop\Api::Actions();
 			$oMailClient = $oActions->MailClient();
 			if (!$oMailClient->IsLoggined()) {
@@ -113,9 +113,9 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 						$aResult['success'] = $oFiles->file_put_contents($sFilename, $rResource);
 					}
 				},
-				(string) $aValues['Folder'],
-				(int) $aValues['Uid'],
-				isset($aValues['MimeIndex']) ? (string) $aValues['MimeIndex'] : ''
+				(string) $aValues['folder'],
+				(int) $aValues['uid'],
+				isset($aValues['mimeIndex']) ? (string) $aValues['mimeIndex'] : ''
 			);
 		}
 
@@ -132,8 +132,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 				$oFiles->is_dir($sSaveFolder) || $oFiles->mkdir($sSaveFolder);
 				$data->result = true;
 				foreach ($data->items as $aItem) {
-					$sSavedFileName = isset($aItem['FileName']) ? $aItem['FileName'] : 'file.dat';
-					$sSavedFileHash = !empty($aItem['FileHash']) ? $aItem['FileHash'] : '';
+					$sSavedFileName = isset($aItem['fileName']) ? $aItem['fileName'] : 'file.dat';
+					$sSavedFileHash = !empty($aItem['fileHash']) ? $aItem['fileHash'] : '';
 					if (!empty($sSavedFileHash)) {
 						$fFile = $data->filesProvider->GetFile($data->account, $sSavedFileHash, 'rb');
 						if (\is_resource($fFile)) {
@@ -150,7 +150,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 			}
 
 			foreach ($data->items as $aItem) {
-				$sFileHash = (string) (isset($aItem['FileHash']) ? $aItem['FileHash'] : '');
+				$sFileHash = (string) (isset($aItem['fileHash']) ? $aItem['fileHash'] : '');
 				if (!empty($sFileHash)) {
 					$data->filesProvider->Clear($data->account, $sFileHash);
 				}

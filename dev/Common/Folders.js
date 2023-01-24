@@ -114,23 +114,23 @@ folderInformation = (folder, list) => {
 			Remote.request('FolderInformation', (iError, data) => {
 				if (!iError && data.Result) {
 					const result = data.Result,
-						folderFromCache = getFolderFromCacheList(result.Folder);
+						folderFromCache = getFolderFromCacheList(result.folder);
 					if (folderFromCache) {
 						const oldHash = folderFromCache.hash,
 							unreadCountChange = (folderFromCache.unreadEmails() !== result.unreadEmails);
 
 //							folderFromCache.revivePropertiesFromJson(result);
 						folderFromCache.expires = Date.now();
-						folderFromCache.uidNext = result.UidNext;
-						folderFromCache.hash = result.Hash;
+						folderFromCache.uidNext = result.uidNext;
+						folderFromCache.hash = result.hash;
 						folderFromCache.totalEmails(result.totalEmails);
 						folderFromCache.unreadEmails(result.unreadEmails);
 
 						unreadCountChange && MessageFlagsCache.clearFolder(folderFromCache.fullName);
 
-						if (result.MessagesFlags.length) {
-							result.MessagesFlags.forEach(message =>
-								MessageFlagsCache.setFor(folderFromCache.fullName, message.Uid.toString(), message.Flags)
+						if (result.messagesFlags.length) {
+							result.messagesFlags.forEach(message =>
+								MessageFlagsCache.setFor(folderFromCache.fullName, message.uid.toString(), message.flags)
 							);
 
 							MessagelistUserStore.reloadFlagsAndCachedMessage();
@@ -138,7 +138,7 @@ folderInformation = (folder, list) => {
 
 						MessagelistUserStore.notifyNewMessages(folderFromCache.fullName, result.newMessages);
 
-						if (!oldHash || unreadCountChange || result.Hash !== oldHash) {
+						if (!oldHash || unreadCountChange || result.hash !== oldHash) {
 							if (folderFromCache.fullName === FolderUserStore.currentFolderFullName()) {
 								MessagelistUserStore.reload();
 							} else if (getFolderInboxName() === folderFromCache.fullName) {
@@ -149,9 +149,9 @@ folderInformation = (folder, list) => {
 					}
 				}
 			}, {
-				Folder: folder,
-				FlagsUids: uids,
-				UidNext: folderFromCache?.uidNext || 0 // Used to check for new messages
+				folder: folder,
+				flagsUids: uids,
+				uidNext: folderFromCache?.uidNext || 0 // Used to check for new messages
 			});
 		} else if (SettingsUserStore.useThreads()) {
 			MessagelistUserStore.reloadFlagsAndCachedMessage();
@@ -169,7 +169,7 @@ folderInformationMultiply = (boot = false) => {
 			if (!iError && arrayLength(oData.Result)) {
 				const utc = Date.now();
 				oData.Result.forEach(item => {
-					const folder = getFolderFromCacheList(item.Folder);
+					const folder = getFolderFromCacheList(item.folder);
 
 					if (folder) {
 						const oldHash = folder.hash,
@@ -177,13 +177,13 @@ folderInformationMultiply = (boot = false) => {
 
 //						folder.revivePropertiesFromJson(item);
 						folder.expires = utc;
-						folder.hash = item.Hash;
+						folder.hash = item.hash;
 						folder.totalEmails(item.totalEmails);
 						folder.unreadEmails(item.unreadEmails);
 
 						unreadCountChange && MessageFlagsCache.clearFolder(folder.fullName);
 
-						if (!oldHash || item.Hash !== oldHash) {
+						if (!oldHash || item.hash !== oldHash) {
 							if (folder.fullName === FolderUserStore.currentFolderFullName()) {
 								MessagelistUserStore.reload();
 							}
@@ -239,7 +239,7 @@ messagesDeleteHelper = (sFromFolderFullName, aUidForRemove) => {
 	Remote.abort('MessageList').request('MessageDelete',
 		moveOrDeleteResponseHelper,
 		{
-			Folder: sFromFolderFullName,
+			folder: sFromFolderFullName,
 			Uids: [...aUidForRemove].join(',')
 		}
 	);
@@ -282,7 +282,7 @@ dropFilesInFolder = (sFolderFullName, files) => {
 		if ('message/rfc822' === file.type) {
 			++count;
 			let data = new FormData;
-			data.append('Folder', sFolderFullName);
+			data.append('folder', sFolderFullName);
 			data.append('AppendFile', file);
 			data.XToken = Settings.app('token');
 			fetch(serverRequest('Append'), {

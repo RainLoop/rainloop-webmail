@@ -116,59 +116,59 @@ trait Response
 
 			$oAccount = $this->getAccountFromToken();
 
-			if (!$mResult['DateTimeStampInUTC'] || $this->Config()->Get('labs', 'date_from_headers', true)) {
+			if (!$mResult['dateTimeStampInUTC'] || $this->Config()->Get('labs', 'date_from_headers', true)) {
 				$iDateTimeStampInUTC = $mResponse->HeaderTimeStampInUTC;
 				if ($iDateTimeStampInUTC) {
-					$mResult['DateTimeStampInUTC'] = $iDateTimeStampInUTC;
+					$mResult['dateTimeStampInUTC'] = $iDateTimeStampInUTC;
 				}
 			}
 
 			// \MailSo\Mime\EmailCollection
-			foreach (['ReplyTo','From','To','Cc','Bcc','Sender','DeliveredTo'] as $prop) {
+			foreach (['replyTo','from','to','cc','bcc','sender','deliveredTo'] as $prop) {
 				$mResult[$prop] = $this->responseObject($mResult[$prop], $prop);
 			}
 
 			$sSubject = $mResult['subject'];
-			$mResult['Hash'] = \md5($mResult['Folder'].$mResult['Uid']);
-			$mResult['RequestHash'] = $this->encodeRawKey($oAccount, array(
-				'Folder' => $mResult['Folder'],
-				'Uid' => $mResult['Uid'],
-				'MimeType' => 'message/rfc822',
-				'FileName' => (\strlen($sSubject) ? \MailSo\Base\Utils::SecureFileName($sSubject) : 'message-'.$mResult['Uid']) . '.eml'
+			$mResult['hash'] = \md5($mResult['folder'].$mResult['uid']);
+			$mResult['requestHash'] = $this->encodeRawKey($oAccount, array(
+				'folder' => $mResult['folder'],
+				'uid' => $mResult['uid'],
+				'mimeType' => 'message/rfc822',
+				'fileName' => (\strlen($sSubject) ? \MailSo\Base\Utils::SecureFileName($sSubject) : 'message-'.$mResult['uid']) . '.eml'
 			));
 
-			$mResult['Attachments'] = $this->responseObject($mResponse->Attachments, 'Attachments');
+			$mResult['attachments'] = $this->responseObject($mResponse->Attachments, 'attachments');
 
 			if (!$sParent) {
-				$mResult['DraftInfo'] = $mResponse->DraftInfo;
-				$mResult['UnsubsribeLinks'] = $mResponse->UnsubsribeLinks;
-				$mResult['References'] = $mResponse->References;
+				$mResult['draftInfo'] = $mResponse->DraftInfo;
+				$mResult['unsubsribeLinks'] = $mResponse->UnsubsribeLinks;
+				$mResult['references'] = $mResponse->References;
 
-				$mResult['Html'] = $mResponse->Html();
-				$mResult['Plain'] = $mResponse->Plain();
+				$mResult['html'] = $mResponse->Html();
+				$mResult['plain'] = $mResponse->Plain();
 
 //				$this->GetCapa(Capa::OPEN_PGP) || $this->GetCapa(Capa::GNUPG)
-				$mResult['PgpSigned'] = $mResponse->pgpSigned;
-				$mResult['PgpEncrypted'] = $mResponse->pgpEncrypted;
+				$mResult['pgpSigned'] = $mResponse->pgpSigned;
+				$mResult['pgpEncrypted'] = $mResponse->pgpEncrypted;
 
-				$mResult['ReadReceipt'] = $mResponse->ReadReceipt;
-				if (\strlen($mResult['ReadReceipt']) && !\in_array('$forwarded', $mResult['Flags'])) {
-					// \in_array('$mdnsent', $mResult['Flags'])
-					if (\strlen($mResult['ReadReceipt'])) {
+				$mResult['readReceipt'] = $mResponse->ReadReceipt;
+				if (\strlen($mResult['readReceipt']) && !\in_array('$forwarded', $mResult['flags'])) {
+					// \in_array('$mdnsent', $mResult['flags'])
+					if (\strlen($mResult['readReceipt'])) {
 						try
 						{
-							$oReadReceipt = \MailSo\Mime\Email::Parse($mResult['ReadReceipt']);
+							$oReadReceipt = \MailSo\Mime\Email::Parse($mResult['readReceipt']);
 							if (!$oReadReceipt) {
-								$mResult['ReadReceipt'] = '';
+								$mResult['readReceipt'] = '';
 							}
 						}
 						catch (\Throwable $oException) { unset($oException); }
 					}
 
-					if (\strlen($mResult['ReadReceipt']) && '1' === $this->Cacher($oAccount)->Get(
-						\RainLoop\KeyPathHelper::ReadReceiptCache($oAccount->Email(), $mResult['Folder'], $mResult['Uid']), '0'))
+					if (\strlen($mResult['readReceipt']) && '1' === $this->Cacher($oAccount)->Get(
+						\RainLoop\KeyPathHelper::ReadReceiptCache($oAccount->Email(), $mResult['folder'], $mResult['uid']), '0'))
 					{
-						$mResult['ReadReceipt'] = '';
+						$mResult['readReceipt'] = '';
 					}
 				}
 			}
@@ -177,13 +177,13 @@ trait Response
 
 		if ($mResponse instanceof \MailSo\Mail\Attachment) {
 			$mResult = $mResponse->jsonSerialize();
-			$mResult['IsThumbnail'] = $this->GetCapa(Capa::ATTACHMENT_THUMBNAILS) && $this->isFileHasThumbnail($mResult['FileName']);
-			$mResult['Download'] = $this->encodeRawKey($this->getAccountFromToken(), array(
-				'Folder' => $mResult['Folder'],
-				'Uid' => $mResult['Uid'],
-				'MimeIndex' => $mResult['MimeIndex'],
-				'MimeType' => $mResult['MimeType'],
-				'FileName' => $mResult['FileName']
+			$mResult['isThumbnail'] = $this->GetCapa(Capa::ATTACHMENT_THUMBNAILS) && $this->isFileHasThumbnail($mResult['fileName']);
+			$mResult['download'] = $this->encodeRawKey($this->getAccountFromToken(), array(
+				'folder' => $mResult['folder'],
+				'uid' => $mResult['uid'],
+				'mimeIndex' => $mResult['mimeIndex'],
+				'mimeType' => $mResult['mimeType'],
+				'fileName' => $mResult['fileName']
 			));
 			return $mResult;
 		}
@@ -193,7 +193,7 @@ trait Response
 
 			$sHash = $mResponse->Hash($this->MailClient()->ImapClient()->Hash());
 			if ($sHash) {
-				$aResult['Hash'] = $sHash;
+				$aResult['hash'] = $sHash;
 			}
 
 			if (null === $this->aCheckableFolder) {
@@ -204,7 +204,7 @@ trait Response
 				);
 				$this->aCheckableFolder = \is_array($aCheckable) ? $aCheckable : array();
 			}
-			$aResult['Checkable'] = \in_array($mResponse->FullName(), $this->aCheckableFolder);
+			$aResult['checkable'] = \in_array($mResponse->FullName(), $this->aCheckableFolder);
 
 			return $aResult;
 		}

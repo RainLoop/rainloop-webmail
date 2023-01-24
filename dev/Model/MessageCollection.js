@@ -13,7 +13,7 @@ export class MessageCollectionModel extends AbstractCollectionModel
 	constructor() {
 		super();
 		this.Filtered
-		this.Folder
+		this.folder
 		this.folderHash
 		this.folderInfo
 		this.totalEmails

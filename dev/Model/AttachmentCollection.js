@@ -21,11 +21,11 @@ export class AttachmentCollectionModel extends AbstractCollectionModel
 	}
 
 	/**
-	 * @param {string} cid
+	 * @param {string} cId
 	 * @returns {*}
 	 */
-	findByCid(cid) {
-		cid = cid.replace(/^<+|>+$/g, '');
-		return this.find(item => cid === item.contentId());
+	findByCid(cId) {
+		cId = cId.replace(/^<+|>+$/g, '');
+		return this.find(item => cId === item.contentId());
 	}
 }

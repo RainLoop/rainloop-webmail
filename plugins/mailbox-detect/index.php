@@ -9,9 +9,9 @@ class MailboxDetectPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'MailboxDetect',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '2.1',
-		RELEASE  = '2022-12-15',
-		REQUIRED = '2.23.1',
+		VERSION  = '2.2',
+		RELEASE  = '2023-01-23',
+		REQUIRED = '2.25.0',
 		CATEGORY = 'General',
 		LICENSE  = 'MIT',
 		DESCRIPTION = 'Autodetect system folders and/or create them when needed';
@@ -66,21 +66,21 @@ class MailboxDetectPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$aMap = $this->systemFoldersNames($oAccount);
 			$sDelimiter = '';
 			foreach ($aResponse['Result']['@Collection'] as $i => $folder) {
-				$sDelimiter || ($sDelimiter = $folder['Delimiter']);
+				$sDelimiter || ($sDelimiter = $folder['delimiter']);
 				if ($folder['role']) {
 					$roles[$folder['role']] = true;
-				} else if (\in_array('\\sentmail', $folder['Flags'])) {
+				} else if (\in_array('\\sentmail', $folder['flags'])) {
 					$found['sent'][] = $i;
-				} else if (\in_array('\\spam', $folder['Flags'])) {
+				} else if (\in_array('\\spam', $folder['flags'])) {
 					$found['junk'][] = $i;
-				} else if (\in_array('\\bin', $folder['Flags'])) {
+				} else if (\in_array('\\bin', $folder['flags'])) {
 					$found['trash'][] = $i;
-				} else if (\in_array('\\starred', $folder['Flags'])) {
+				} else if (\in_array('\\starred', $folder['flags'])) {
 					$found['flagged'][] = $i;
 				} else {
 					// Kolab
-					$kolab = $folder['Metadata'][MetadataKeys::KOLAB_CTYPE]
-						?? $folder['Metadata'][MetadataKeys::KOLAB_CTYPE_SHARED]
+					$kolab = $folder['metadata'][MetadataKeys::KOLAB_CTYPE]
+						?? $folder['metadata'][MetadataKeys::KOLAB_CTYPE_SHARED]
 						?? '';
 					if ('mail.inbox' === $kolab) {
 						$found['inbox'][] = $i;
@@ -94,9 +94,9 @@ class MailboxDetectPlugin extends \RainLoop\Plugins\AbstractPlugin
 						$found['trash'][] = $i;
 					} else {
 						$iFolderType = 0;
-						if (isset($aMap[$folder['FullName']])) {
-							$iFolderType = $aMap[$folder['FullName']];
-						} else if (isset($aMap[$folder['name']]) || isset($aMap["INBOX{$folder['Delimiter']}{$folder['name']}"])) {
+						if (isset($aMap[$folder['fullName']])) {
+							$iFolderType = $aMap[$folder['fullName']];
+						} else if (isset($aMap[$folder['name']]) || isset($aMap["INBOX{$folder['delimiter']}{$folder['name']}"])) {
 							$iFolderType = $aMap[$folder['name']];
 						}
 						if ($iFolderType && isset($types[$iFolderType])) {

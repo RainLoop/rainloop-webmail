@@ -18,7 +18,7 @@ trait Folders
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		$sFolderFullName = $this->GetActionParam('Folder', '');
+		$sFolderFullName = $this->GetActionParam('folder', '');
 
 		if ($oAccount
 		 && !empty($sFolderFullName)
@@ -89,9 +89,9 @@ trait Folders
 		try
 		{
 			$oFolder = $this->MailClient()->FolderCreate(
-				$this->GetActionParam('Folder', ''),
-				$this->GetActionParam('Parent', ''),
-				!!$this->GetActionParam('Subscribe', 1)
+				$this->GetActionParam('folder', ''),
+				$this->GetActionParam('parent', ''),
+				!!$this->GetActionParam('subscribe', 1)
 			);
 
 //			FolderInformation(string $sFolderName, int $iPrevUidNext = 0, array $aUids = array())
@@ -106,7 +106,7 @@ trait Folders
 	public function DoFolderSetMetadata() : array
 	{
 		$this->initMailClientConnection();
-		$sFolderFullName = $this->GetActionParam('Folder');
+		$sFolderFullName = $this->GetActionParam('folder');
 		$sMetadataKey = $this->GetActionParam('Key');
 		if ($sFolderFullName && $sMetadataKey) {
 			$this->MailClient()->FolderSetMetadata($sFolderFullName, [
@@ -120,8 +120,8 @@ trait Folders
 	{
 		$this->initMailClientConnection();
 
-		$sFolderFullName = $this->GetActionParam('Folder', '');
-		$bSubscribe = '1' === (string) $this->GetActionParam('Subscribe', '0');
+		$sFolderFullName = $this->GetActionParam('folder', '');
+		$bSubscribe = '1' === (string) $this->GetActionParam('subscribe', '0');
 
 		try
 		{
@@ -142,7 +142,7 @@ trait Folders
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		$sFolderFullName = $this->GetActionParam('Folder', '');
+		$sFolderFullName = $this->GetActionParam('folder', '');
 
 		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
@@ -152,7 +152,7 @@ trait Folders
 			$aCheckableFolder = array();
 		}
 
-		if (!empty($this->GetActionParam('Checkable', '0'))) {
+		if (!empty($this->GetActionParam('checkable', '0'))) {
 			$aCheckableFolder[] = $sFolderFullName;
 		} else {
 			$aCheckableFolderNew = array();
@@ -181,9 +181,9 @@ trait Folders
 		try
 		{
 			$this->MailClient()->FolderMove(
-				$this->GetActionParam('Folder', ''),
-				$this->GetActionParam('NewFolder', ''),
-				!!$this->GetActionParam('Subscribe', 1)
+				$this->GetActionParam('folder', ''),
+				$this->GetActionParam('newFolder', ''),
+				!!$this->GetActionParam('subscribe', 1)
 			);
 		}
 		catch (\Throwable $oException)
@@ -201,13 +201,13 @@ trait Folders
 	{
 		$this->initMailClientConnection();
 
-		$sName = $this->GetActionParam('NewFolderName', '');
+		$sName = $this->GetActionParam('newFolderName', '');
 		try
 		{
 			$sFullName = $this->MailClient()->FolderRename(
-				$this->GetActionParam('Folder', ''),
+				$this->GetActionParam('folder', ''),
 				$sName,
-				!!$this->GetActionParam('Subscribe', 1)
+				!!$this->GetActionParam('subscribe', 1)
 			);
 		}
 		catch (\Throwable $oException)
@@ -217,8 +217,8 @@ trait Folders
 
 //		FolderInformation(string $sFolderName, int $iPrevUidNext = 0, array $aUids = array())
 		return $this->DefaultResponse(array(
-			'Name' => $sName,
-			'FullName' => $sFullName,
+			'name' => $sName,
+			'fullName' => $sFullName,
 		));
 	}
 
@@ -231,7 +231,7 @@ trait Folders
 
 		try
 		{
-			$this->MailClient()->FolderDelete($this->GetActionParam('Folder', ''));
+			$this->MailClient()->FolderDelete($this->GetActionParam('folder', ''));
 		}
 		catch (\MailSo\Mail\Exceptions\NonEmptyFolder $oException)
 		{
@@ -254,7 +254,7 @@ trait Folders
 
 		try
 		{
-			$this->MailClient()->FolderClear($this->GetActionParam('Folder', ''));
+			$this->MailClient()->FolderClear($this->GetActionParam('folder', ''));
 		}
 		catch (\Throwable $oException)
 		{
@@ -274,9 +274,9 @@ trait Folders
 		try
 		{
 			return $this->DefaultResponse($this->MailClient()->FolderInformation(
-				$this->GetActionParam('Folder', ''),
-				(int) $this->GetActionParam('UidNext', 0),
-				new \MailSo\Imap\SequenceSet($this->GetActionParam('FlagsUids', []))
+				$this->GetActionParam('folder', ''),
+				(int) $this->GetActionParam('uidNext', 0),
+				new \MailSo\Imap\SequenceSet($this->GetActionParam('flagsUids', []))
 			));
 		}
 		catch (\Throwable $oException)
@@ -302,10 +302,10 @@ trait Folders
 					try
 					{
 						$aInboxInformation = $this->MailClient()->FolderInformation($sFolder);
-						if (isset($aInboxInformation['Folder'])) {
+						if (isset($aInboxInformation['folder'])) {
 							$aResult[] = [
-								'Folder' => $aInboxInformation['Folder'],
-								'Hash' => $aInboxInformation['Hash'],
+								'folder' => $aInboxInformation['folder'],
+								'hash' => $aInboxInformation['hash'],
 								'totalEmails' => $aInboxInformation['totalEmails'],
 								'unreadEmails' => $aInboxInformation['unreadEmails'],
 							];

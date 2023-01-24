@@ -266,10 +266,10 @@ populateMessageBody = (oMessage, popup) => {
 				if (
 					json &&
 					MessageModel.validJson(json) &&
-					oMessage.folder === json.Folder
+					oMessage.folder === json.folder
 				) {
 					const threads = oMessage.threads(),
-						isNew = !popup && oMessage.uid != json.Uid && threads.includes(json.Uid),
+						isNew = !popup && oMessage.uid != json.uid && threads.includes(json.uid),
 						messagesDom = MessageUserStore.bodiesDom();
 					if (isNew) {
 						oMessage = MessageModel.reviveFromJson(json);
@@ -283,11 +283,11 @@ populateMessageBody = (oMessage, popup) => {
 						MessageUserStore.message(oMessage);
 					}
 
-					if (oMessage && oMessage.uid == json.Uid) {
+					if (oMessage && oMessage.uid == json.uid) {
 						popup || MessageUserStore.error('');
 /*
 						if (bCached) {
-							delete json.Flags;
+							delete json.flags;
 						}
 */
 						isNew || oMessage.revivePropertiesFromJson(json);

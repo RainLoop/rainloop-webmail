@@ -11,7 +11,7 @@ const HTML5Notification = window.Notification,
 	NotificationsGranted = () => 'granted' === HTML5NotificationStatus(),
 	dispatchMessage = data => {
 		focus();
-		if (data.Folder && data.Uid) {
+		if (data.folder && data.uid) {
 			fireEvent('mailbox.message.show', data);
 		} else if (data.Url) {
 			hasher.setHash(data.Url);
@@ -60,8 +60,8 @@ export const NotificationUserStore = new class {
 				icon: imageSrc || Links.staticLink('css/images/icon-message-notification.png'),
 				data: messageData
 			};
-			if (messageData?.Uid) {
-				options.tag = messageData.Uid;
+			if (messageData?.uid) {
+				options.tag = messageData.uid;
 			}
 			if (WorkerNotifications) {
 				// Service-Worker-Allowed HTTP header to allow the scope.

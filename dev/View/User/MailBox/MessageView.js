@@ -492,7 +492,7 @@ export class MailMessageView extends AbstractViewRight {
 				Hashes: hashes
 			})
 			.then(result => {
-				let hash = result?.Result?.FileHash;
+				let hash = result?.Result?.fileHash;
 				if (hash) {
 					download(attachmentDownload(hash), hash+'.zip');
 				} else {
@@ -534,11 +534,11 @@ export class MailMessageView extends AbstractViewRight {
 					MessagelistUserStore.reloadFlagsAndCachedMessage();
 				}
 			}, {
-				MessageFolder: oMessage.folder,
-				MessageUid: oMessage.uid,
-				ReadReceipt: oMessage.readReceipt(),
+				messageFolder: oMessage.folder,
+				messageUid: oMessage.uid,
+				readReceipt: oMessage.readReceipt(),
 				subject: i18n('READ_RECEIPT/SUBJECT', { SUBJECT: oMessage.subject() }),
-				Text: i18n('READ_RECEIPT/BODY', { 'READ-RECEIPT': AccountUserStore.email() })
+				plain: i18n('READ_RECEIPT/BODY', { 'READ-RECEIPT': AccountUserStore.email() })
 			});
 		}
 	}

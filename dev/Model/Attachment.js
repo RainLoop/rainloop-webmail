@@ -22,7 +22,7 @@ export class AttachmentModel extends AbstractModel {
 		this.fileNameExt = '';
 		this.fileType = FileType.Unknown;
 		this.isThumbnail = false;
-		this.cid = '';
+		this.cId = '';
 		this.contentLocation = '';
 		this.download = '';
 		this.folder = '';
@@ -61,7 +61,7 @@ export class AttachmentModel extends AbstractModel {
 	}
 
 	contentId() {
-		return this.cid.replace(/^<+|>+$/g, '');
+		return this.cId.replace(/^<+|>+$/g, '');
 	}
 
 	/**

@@ -1012,10 +1012,10 @@ class Actions
 				$iError = Enumerations\UploadError::ON_SAVING;
 			} else {
 				$aResponse['Attachment'] = array(
-					'Name' => $aFile['name'],
-					'TempName' => $sSavedName,
-					'MimeType' => $aFile['type'],
-					'Size' => (int) $aFile['size']
+					'name' => $aFile['name'],
+					'tempName' => $sSavedName,
+					'mimeType' => $aFile['type'],
+					'size' => (int) $aFile['size']
 				);
 			}
 		}

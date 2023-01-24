@@ -78,7 +78,7 @@ trait Pgp
 		}
 
 		$GPG->addDecryptKey(
-			$this->GetActionParam('KeyId', ''),
+			$this->GetActionParam('keyId', ''),
 			$this->GetActionParam('Passphrase', '')
 		);
 
@@ -102,9 +102,9 @@ trait Pgp
 //						$oPart = \MailSo\Mime\Part::FromStream($rStreamHandle);
 					}
 				},
-				$this->GetActionParam('Folder', ''),
-				(int) $this->GetActionParam('Uid', ''),
-				$this->GetActionParam('PartId', '')
+				$this->GetActionParam('folder', ''),
+				(int) $this->GetActionParam('uid', ''),
+				$this->GetActionParam('partId', '')
 			);
 		}
 
@@ -126,7 +126,7 @@ trait Pgp
 	{
 		$GPG = $this->GnuPG();
 		return $this->DefaultResponse($GPG ? $GPG->export(
-			$this->GetActionParam('KeyId', ''),
+			$this->GetActionParam('keyId', ''),
 			$this->GetActionParam('Passphrase', '')
 		) : false);
 	}
@@ -149,7 +149,7 @@ trait Pgp
 	public function DoGnupgDeleteKey() : array
 	{
 		$GPG = $this->GnuPG();
-		$sKeyId = $this->GetActionParam('KeyId', '');
+		$sKeyId = $this->GetActionParam('keyId', '');
 		$bPrivate = !!$this->GetActionParam('isPrivate', 0);
 		return $this->DefaultResponse($GPG ? $GPG->deleteKey($sKeyId, $bPrivate) : false);
 	}
@@ -157,7 +157,7 @@ trait Pgp
 	public function DoGnupgImportKey() : array
 	{
 		$sKey = $this->GetActionParam('Key', '');
-		$sKeyId = $this->GetActionParam('KeyId', '');
+		$sKeyId = $this->GetActionParam('keyId', '');
 		$sEmail = $this->GetActionParam('Email', '');
 
 		if (!$sKey) {
@@ -266,7 +266,7 @@ trait Pgp
 	public function DoStorePGPKey() : array
 	{
 		$key = $this->GetActionParam('Key', '');
-		$keyId = $this->GetActionParam('KeyId', '');
+		$keyId = $this->GetActionParam('keyId', '');
 		return $this->DefaultResponse(($key && $keyId && $this->StorePGPKey($key, $keyId)));
 	}
 

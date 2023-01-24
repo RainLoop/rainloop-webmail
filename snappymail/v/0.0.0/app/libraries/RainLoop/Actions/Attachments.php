@@ -13,7 +13,7 @@ trait Attachments
 	public function DoAttachmentsActions() : array
 	{
 		$sAction = $this->GetActionParam('Do', '');
-		$sFolder = $this->GetActionParam('Folder', '');
+		$sFolder = $this->GetActionParam('folder', '');
 		$aHashes = $this->GetActionParam('Hashes', null);
 		$oFilesProvider = $this->FilesProvider();
 		if (empty($sAction) || !$this->GetCapa(Capa::ATTACHMENTS_ACTIONS) || !$oFilesProvider || !$oFilesProvider->IsActive()) {
@@ -29,13 +29,13 @@ trait Attachments
 		if (\is_array($aHashes) && \count($aHashes)) {
 			foreach ($aHashes as $sZipHash) {
 				$aResult = $this->getMimeFileByHash($oAccount, $sZipHash);
-				if (empty($aResult['FileHash'])) {
+				if (empty($aResult['fileHash'])) {
 					$bError = true;
 					break;
 				}
 				$aData[] = $aResult;
-				if (!empty($aResult['MimeIndex'])) {
-					$mUIDs[$aResult['Uid']] = $aResult['Uid'];
+				if (!empty($aResult['mimeIndex'])) {
+					$mUIDs[$aResult['uid']] = $aResult['uid'];
 				}
 			}
 		}
@@ -59,8 +59,8 @@ trait Attachments
 						$oZip->open($sZipFileName, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::OVERWRITE);
 						$oZip->setArchiveComment('SnappyMail/'.APP_VERSION);
 						foreach ($aData as $aItem) {
-							$sFullFileNameHash = $oFilesProvider->GetFileName($oAccount, $aItem['FileHash']);
-							$sFileName = ($mUIDs ? "{$aItem['Uid']}/" : ($sFolder ? "{$aItem['Uid']}-" : '')) . $aItem['FileName'];
+							$sFullFileNameHash = $oFilesProvider->GetFileName($oAccount, $aItem['fileHash']);
+							$sFileName = ($mUIDs ? "{$aItem['uid']}/" : ($sFolder ? "{$aItem['uid']}-" : '')) . $aItem['fileName'];
 							if (!$oZip->addFile($sFullFileNameHash, $sFileName)) {
 								$bError = true;
 							}
@@ -77,9 +77,9 @@ trait Attachments
 						$oZip = new \SnappyMail\Stream\ZIP($sZipFileName);
 //						$oZip->setArchiveComment('SnappyMail/'.APP_VERSION);
 						foreach ($aData as $aItem) {
-							if ($aItem['FileHash']) {
-								$sFullFileNameHash = $oFilesProvider->GetFileName($oAccount, $aItem['FileHash']);
-								if (!$oZip->addFile($sFullFileNameHash, $aItem['FileName'])) {
+							if ($aItem['fileHash']) {
+								$sFullFileNameHash = $oFilesProvider->GetFileName($oAccount, $aItem['fileHash']);
+								if (!$oZip->addFile($sFullFileNameHash, $aItem['fileName'])) {
 									$bError = true;
 								}
 							}
@@ -92,8 +92,8 @@ trait Attachments
 						$oZip->compressFiles(\Phar::GZ);
 						foreach ($aData as $aItem) {
 							$oZip->addFile(
-								$oFilesProvider->GetFileName($oAccount, $aItem['FileHash']),
-								($mUIDs ? "{$aItem['Uid']}/" : ($sFolder ? "{$aItem['Uid']}-" : '')) . $aItem['FileName']
+								$oFilesProvider->GetFileName($oAccount, $aItem['fileHash']),
+								($mUIDs ? "{$aItem['uid']}/" : ($sFolder ? "{$aItem['uid']}-" : '')) . $aItem['fileName']
 							);
 						}
 						$oZip->compressFiles(\Phar::GZ);
@@ -102,15 +102,15 @@ trait Attachments
 					}
 
 					foreach ($aData as $aItem) {
-						$oFilesProvider->Clear($oAccount, $aItem['FileHash']);
+						$oFilesProvider->Clear($oAccount, $aItem['fileHash']);
 					}
 
 					if (!$bError) {
 						$mResult = array(
-							'FileHash' => $this->encodeRawKey($oAccount, array(
-								'FileName' => ($sFolder ? 'messages' : 'attachments') . \date('-YmdHis') . '.zip',
-								'MimeType' => 'application/zip',
-								'FileHash' => $sZipHash
+							'fileHash' => $this->encodeRawKey($oAccount, array(
+								'fileName' => ($sFolder ? 'messages' : 'attachments') . \date('-YmdHis') . '.zip',
+								'mimeType' => 'application/zip',
+								'fileHash' => $sZipHash
 							))
 						);
 					}
@@ -136,12 +136,12 @@ trait Attachments
 	{
 		$aValues = $this->decodeRawKey($oAccount, $sHash);
 
-		$sFolder = isset($aValues['Folder']) ? (string) $aValues['Folder'] : '';
-		$iUid = isset($aValues['Uid']) ? (int) $aValues['Uid'] : 0;
-		$sMimeIndex = isset($aValues['MimeIndex']) ? (string) $aValues['MimeIndex'] : '';
+		$sFolder = isset($aValues['folder']) ? (string) $aValues['folder'] : '';
+		$iUid = isset($aValues['uid']) ? (int) $aValues['uid'] : 0;
+		$sMimeIndex = isset($aValues['mimeIndex']) ? (string) $aValues['mimeIndex'] : '';
 
-		$sContentTypeIn = isset($aValues['MimeType']) ? (string) $aValues['MimeType'] : '';
-		$sFileNameIn = isset($aValues['FileName']) ? (string) $aValues['FileName'] : 'file.dat';
+		$sContentTypeIn = isset($aValues['mimeType']) ? (string) $aValues['mimeType'] : '';
+		$sFileNameIn = isset($aValues['fileName']) ? (string) $aValues['fileName'] : 'file.dat';
 
 		$oFileProvider = $this->FilesProvider();
 
@@ -170,8 +170,8 @@ trait Attachments
 
 			}, $sFolder, $iUid, $sMimeIndex);
 
-		$aValues['FileName'] = $sFileNameIn;
-		$aValues['FileHash'] = $mResult ? $sResultHash : '';
+		$aValues['fileName'] = $sFileNameIn;
+		$aValues['fileHash'] = $mResult ? $sResultHash : '';
 
 		return $aValues;
 	}

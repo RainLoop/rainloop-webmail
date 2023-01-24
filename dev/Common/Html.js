@@ -98,9 +98,9 @@ export const
 				hasExternals: false
 			},
 
-			findAttachmentByCid = cid => oAttachments.findByCid(cid),
-			findLocationByCid = cid => {
-				const attachment = findAttachmentByCid(cid);
+			findAttachmentByCid = cId => oAttachments.findByCid(cId),
+			findLocationByCid = cId => {
+				const attachment = findAttachmentByCid(cId);
 				return attachment?.contentLocation ? attachment : 0;
 			},
 
