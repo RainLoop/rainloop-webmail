@@ -74,6 +74,7 @@ export class MessageModel extends AbstractModel {
 		this.to = new EmailCollectionModel;
 		this.cc = new EmailCollectionModel;
 		this.bcc = new EmailCollectionModel;
+		this.sender = new EmailCollectionModel;
 		this.replyTo = new EmailCollectionModel;
 		this.deliveredTo = new EmailCollectionModel;
 		this.body = null;
@@ -119,6 +120,11 @@ export class MessageModel extends AbstractModel {
 			pgpDecrypted: false,
 
 			readReceipt: '',
+
+			autocrypt: '',
+			// rfc8621
+			id: '',
+//			threadId: '',
 
 			hasUnseenSubMessage: false,
 			hasFlaggedSubMessage: false

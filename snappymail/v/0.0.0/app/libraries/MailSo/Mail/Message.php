@@ -380,11 +380,11 @@ class Message implements \JsonSerializable
 					. \trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oMessage->pgpSigned['bodyPartId'].']'))
 				);
 				if ($sPgpText) {
-					$oMessage->pgpSigned['Body'] = $sPgpText;
+					$oMessage->pgpSigned['body'] = $sPgpText;
 				}
 				$sPgpSignatureText = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oMessage->pgpSigned['sigPartId'].']');
 				if ($sPgpSignatureText && 0 < \strpos($sPgpSignatureText, 'BEGIN PGP SIGNATURE')) {
-					$oMessage->pgpSigned['Signature'] = $oPart->SubParts()[0]->PartID();
+					$oMessage->pgpSigned['signature'] = $oPart->SubParts()[0]->PartID();
 				}
 */
 				break;
@@ -527,7 +527,7 @@ class Message implements \JsonSerializable
 			// https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.1
 			'id' => $this->sEmailId,
 //			'blobId' => $this->sEmailIdBlob,
-			'threadId' => $this->sThreadId,
+//			'threadId' => $this->sThreadId,
 //			'mailboxIds' => ['mailboxid'=>true],
 //			'keywords' => $keywords,
 			'size' => $this->iSize

@@ -18,6 +18,7 @@ export class AttachmentModel extends AbstractModel {
 		this.checked = ko.observable(true);
 
 		this.mimeType = '';
+//		this.mimeTypeParams = '';
 		this.fileName = '';
 		this.fileNameExt = '';
 		this.fileType = FileType.Unknown;

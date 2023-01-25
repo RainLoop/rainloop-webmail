@@ -528,7 +528,7 @@ class BodyStructure implements \JsonSerializable
 		return array(
 			'mimeIndex' => $this->sPartID,
 			'mimeType' => $this->sContentType,
-			'mimeTypeParams' => $this->aContentTypeParams,
+//			'mimeTypeParams' => $this->aContentTypeParams,
 			'fileName' => \MailSo\Base\Utils::SecureFileName($this->FileName(true)),
 			'estimatedSize' => $this->EstimatedSize(),
 			'cId' => $this->sContentID,
