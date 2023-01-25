@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Merkja sem lesið",
 		"REPLY_INTERVAL_LABEL": "Bil milli svara (dagar)",
 		"KEEP_LABEL": "Halda",
-		"STOP_LABEL": "Ekki hætta að vinna með reglur",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Viðfangsefni (valkvætt)",
 		"VACATION_MESSAGE_LABEL": "Skilaboð",
 		"VACATION_RECIPIENTS_LABEL": "Viðtakendur (aðgreindir með kommu)",

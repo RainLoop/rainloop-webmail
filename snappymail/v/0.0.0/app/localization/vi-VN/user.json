@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Đánh dấu đã đọc",
 		"REPLY_INTERVAL_LABEL": "Khoảng cách phản hồi (ngày)",
 		"KEEP_LABEL": "Giữ lại",
-		"STOP_LABEL": "Không dừng những quy định xử lý thư này",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Tiêu đề thư (không bắt buộc)",
 		"VACATION_MESSAGE_LABEL": "Nội dung thư thông báo bạn đang nghỉ lễ",
 		"VACATION_RECIPIENTS_LABEL": "Người nhận (phân ra bởi dấu phẩy)",

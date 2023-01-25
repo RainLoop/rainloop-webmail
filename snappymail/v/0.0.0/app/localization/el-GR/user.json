@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Σήμανε σαν διαβασμένο",
 		"REPLY_INTERVAL_LABEL": "Μεσοδιάστημα απαντήσεων (σε ημέρες)",
 		"KEEP_LABEL": "Κράτησε",
-		"STOP_LABEL": "Μην σταματάς να επεξεργάζεσαι κανόνες",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Θέμα (προαιρετικό)",
 		"VACATION_MESSAGE_LABEL": "Μήνυμα",
 		"VACATION_RECIPIENTS_LABEL": "Παραλήπτες (χωρισμένοι με κόμμα)",

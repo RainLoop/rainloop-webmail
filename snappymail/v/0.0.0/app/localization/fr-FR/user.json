@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Marquer comme lu",
 		"REPLY_INTERVAL_LABEL": "Délai de réponse (jours)",
 		"KEEP_LABEL": "Garder",
-		"STOP_LABEL": "Ne pas arrêter le traitement des règles",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Sujet (optionnel)",
 		"VACATION_MESSAGE_LABEL": "Message",
 		"VACATION_RECIPIENTS_LABEL": "Destinataires (séparés par des virgules)",

@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Megjelölés olvasottként",
 		"REPLY_INTERVAL_LABEL": "Válasz időköz (nap)",
 		"KEEP_LABEL": "Megtart",
-		"STOP_LABEL": "Ne hagyja abba a szabályok feldolgozását",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Tárgy (nem kötelező)",
 		"VACATION_MESSAGE_LABEL": "Üzenet",
 		"VACATION_RECIPIENTS_LABEL": "Címzettek (vesszővel elválasztva)",

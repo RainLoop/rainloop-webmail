@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Als Gelesen markieren",
 		"REPLY_INTERVAL_LABEL": "Antwortintervall (Tage)",
 		"KEEP_LABEL": "Behalten",
-		"STOP_LABEL": "Weiterverarbeitung der Regeln nicht verhindern",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Betreff (optional)",
 		"VACATION_MESSAGE_LABEL": "Nachricht",
 		"VACATION_RECIPIENTS_LABEL": "Empfänger (durch Komma getrennt)",

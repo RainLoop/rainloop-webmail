@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Okundu olarak işaretle",
 		"REPLY_INTERVAL_LABEL": "Reply interval (days)",
 		"KEEP_LABEL": "Keep",
-		"STOP_LABEL": "Don't stop processing rules",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Konu (Opsiyonel)",
 		"VACATION_MESSAGE_LABEL": "Mesaj",
 		"VACATION_RECIPIENTS_LABEL": "Recipients (comma separated)",

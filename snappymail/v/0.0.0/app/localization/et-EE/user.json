@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Märgi loetuks",
 		"REPLY_INTERVAL_LABEL": "Vastuse intervall (päevades)",
 		"KEEP_LABEL": "Salvesta",
-		"STOP_LABEL": "Ära peata reeglite protsessimist",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Pealkiri (valikuline)",
 		"VACATION_MESSAGE_LABEL": "Sõnum",
 		"VACATION_RECIPIENTS_LABEL": "Saajad (eraldatud komaga)",

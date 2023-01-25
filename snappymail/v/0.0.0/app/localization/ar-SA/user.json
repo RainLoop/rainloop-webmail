@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "تعليمها بـ مقروءة",
 		"REPLY_INTERVAL_LABEL": "فترة الرد (بلأيام)",
 		"KEEP_LABEL": "الإحتفاظ بها",
-		"STOP_LABEL": "لاتتوقف عن المعالجة بالشروط",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "الموضوع (خياري)",
 		"VACATION_MESSAGE_LABEL": "الرسالة",
 		"VACATION_RECIPIENTS_LABEL": "Recipients (comma separated)",

@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Markatu irakurri bezala",
 		"REPLY_INTERVAL_LABEL": "Erantzuteko tartea (egunak)",
 		"KEEP_LABEL": "Mantenu",
-		"STOP_LABEL": "Ez geratu arazoak prozesatzeaz",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Gaia (hautazkoa)",
 		"VACATION_MESSAGE_LABEL": "Mezua",
 		"VACATION_RECIPIENTS_LABEL": "Hartzaileak (komaz bananduta)",

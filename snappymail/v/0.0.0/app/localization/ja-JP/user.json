@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "既読にする",
 		"REPLY_INTERVAL_LABEL": "返信間隔(日)",
 		"KEEP_LABEL": "保持",
-		"STOP_LABEL": "ルールの処理を止めない",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "件名(オプション)",
 		"VACATION_MESSAGE_LABEL": "メッセージ",
 		"VACATION_RECIPIENTS_LABEL": "受信者(カンマ区切り)",

@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Žymėti skaitytu",
 		"REPLY_INTERVAL_LABEL": "Atsakymų intervalai (dienomis)",
 		"KEEP_LABEL": "laikyti",
-		"STOP_LABEL": "Nesustoti vykdyti taisykles",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Tema (nebūtina)",
 		"VACATION_MESSAGE_LABEL": "Žinutė",
 		"VACATION_RECIPIENTS_LABEL": "Recipients (comma separated)",

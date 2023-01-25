@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Mark as read",
 		"REPLY_INTERVAL_LABEL": "Reply interval (days)",
 		"KEEP_LABEL": "Keep",
-		"STOP_LABEL": "Don't stop processing rules",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Тема (не обов'язково)",
 		"VACATION_MESSAGE_LABEL": "Повідомлення",
 		"VACATION_RECIPIENTS_LABEL": "Отримувачі (розділяти комами)",

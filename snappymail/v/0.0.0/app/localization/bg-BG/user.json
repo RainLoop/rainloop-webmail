@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Отбележи като прочетено",
 		"REPLY_INTERVAL_LABEL": "За колко време (дни)",
 		"KEEP_LABEL": "Запази",
-		"STOP_LABEL": "Да не спира да обработва правилата",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Тема (незадължително)",
 		"VACATION_MESSAGE_LABEL": "Съобщение",
 		"VACATION_RECIPIENTS_LABEL": "Получатели (разделени със запетая)",

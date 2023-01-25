@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "علامت بعنوان خوانده شده",
 		"REPLY_INTERVAL_LABEL": "دوره جواب (بر پایه روز)",
 		"KEEP_LABEL": "نگه‌داشتن",
-		"STOP_LABEL": "پردازش قوانین را متوقف نکن",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "موضوع (اختیاری)",
 		"VACATION_MESSAGE_LABEL": "پیام",
 		"VACATION_RECIPIENTS_LABEL": "گیرندگان (جداسازی با , )",

@@ -81,13 +81,13 @@ export class FilterConditionModel extends AbstractModel {
 
 //	static reviveFromJson(json) {}
 
-	toJson() {
+	toJSON() {
 		return {
 //			'@Object': 'Object/FilterCondition',
-			Field: this.field(),
-			Type: this.type(),
-			Value: this.value(),
-			ValueSecond: this.valueSecond()
+			Field: this.field,
+			Type: this.type,
+			Value: this.value,
+			ValueSecond: this.valueSecond
 		};
 	}
 

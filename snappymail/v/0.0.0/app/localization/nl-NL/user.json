@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Markeer als gelezen",
 		"REPLY_INTERVAL_LABEL": "Antwoord interval (dagen)",
 		"KEEP_LABEL": "Behoud",
-		"STOP_LABEL": "Stop niet met uitvoeren van volgende filters",
+		"STOP_LABEL": "Stop met het uitvoeren van de volgende filters",
 		"VACATION_SUBJECT_LABEL": "Onderwerp (optioneel)",
 		"VACATION_MESSAGE_LABEL": "Bericht",
 		"VACATION_RECIPIENTS_LABEL": "Ontvangers (comma gescheiden)",

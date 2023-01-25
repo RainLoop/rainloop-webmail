@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Merkitse luetuksi",
 		"REPLY_INTERVAL_LABEL": "Vastaus intervalli (päivissä)",
 		"KEEP_LABEL": "Säästä",
-		"STOP_LABEL": "Älä lopeta sääntöjen prosessointia",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Aihe (valinnainen)",
 		"VACATION_MESSAGE_LABEL": "Viesti",
 		"VACATION_RECIPIENTS_LABEL": "Vastaanottajat (erotettu pilkulla)",

@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Marca come letto",
 		"REPLY_INTERVAL_LABEL": "Intervallo di risposta (giorni)",
 		"KEEP_LABEL": "Mantieni",
-		"STOP_LABEL": "Non interrompere l'elaborazione delle regole",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Oggetto (opzionale)",
 		"VACATION_MESSAGE_LABEL": "Messaggio",
 		"VACATION_RECIPIENTS_LABEL": "Destinatari (separati da virgola)",

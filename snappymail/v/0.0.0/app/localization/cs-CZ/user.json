@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Odznačit jako přečtené",
 		"REPLY_INTERVAL_LABEL": "Interval odpovědi (dny)",
 		"KEEP_LABEL": "Zachovat",
-		"STOP_LABEL": "Neukončovat zpracování pravidel",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Předmět (volitelný)",
 		"VACATION_MESSAGE_LABEL": "Zpráva",
 		"VACATION_RECIPIENTS_LABEL": "Příjemci (odděleni čárkou)",

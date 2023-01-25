@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Отметить как прочитанное",
 		"REPLY_INTERVAL_LABEL": "Отвечать каждые (в днях)",
 		"KEEP_LABEL": "Сохранить копию",
-		"STOP_LABEL": "Не преращать обработку правил",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Тема (необязательно)",
 		"VACATION_MESSAGE_LABEL": "Сообщение",
 		"VACATION_RECIPIENTS_LABEL": "Получатели (через запятую)",

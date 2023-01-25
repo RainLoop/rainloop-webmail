@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Markera som läst",
 		"REPLY_INTERVAL_LABEL": "Svarsintervall (dagar)",
 		"KEEP_LABEL": "Behåll",
-		"STOP_LABEL": "Sluta inte bearbeta andra regler",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Ämne (valfritt)",
 		"VACATION_MESSAGE_LABEL": "Meddelande",
 		"VACATION_RECIPIENTS_LABEL": "Mottagare (kommaseparerade)",

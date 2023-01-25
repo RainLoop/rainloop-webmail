@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Oznacz jako przeczytane",
 		"REPLY_INTERVAL_LABEL": "Interwał odpowiedzi (dni)",
 		"KEEP_LABEL": "Zachowaj",
-		"STOP_LABEL": "Nie zatrzymuj przetwarzania reguł",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Temat (opcjonalnie)",
 		"VACATION_MESSAGE_LABEL": "Wiadomość",
 		"VACATION_RECIPIENTS_LABEL": "Odbiorcy (rodzielone przecinkami)",

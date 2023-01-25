@@ -66,8 +66,7 @@ class SieveStorage implements FiltersInterface
 					'@Object' => 'Object/SieveScript',
 					'name' => self::SIEVE_FILE_NAME,
 					'active' => false,
-					'body' => '',
-					'filters' => []
+					'body' => ''
 				);
 			}
 		}

@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Označi kot prebrano",
 		"REPLY_INTERVAL_LABEL": "Interval odgovorov (dnevi)",
 		"KEEP_LABEL": "Obdrži",
-		"STOP_LABEL": "Ne prenehaj z obdelovanjem pravil",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Zadeva (izbirno)",
 		"VACATION_MESSAGE_LABEL": "Sporočilo",
 		"VACATION_RECIPIENTS_LABEL": "Prejemniki (ločeni z vejico)",

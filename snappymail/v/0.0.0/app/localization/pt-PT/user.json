@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Marcar como lida",
 		"REPLY_INTERVAL_LABEL": "Intervalo de resposta (dias)",
 		"KEEP_LABEL": "Manter",
-		"STOP_LABEL": "Não parar de processar as regras",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Assunto (opcional)",
 		"VACATION_MESSAGE_LABEL": "Mensagem",
 		"VACATION_RECIPIENTS_LABEL": "Destinatários (separados por vírgula)",

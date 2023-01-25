@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "읽음 표시",
 		"REPLY_INTERVAL_LABEL": "회신 주기 (일)",
 		"KEEP_LABEL": "Keep",
-		"STOP_LABEL": "Don't stop processing rules",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "제목 (옵션)",
 		"VACATION_MESSAGE_LABEL": "메시지",
 		"VACATION_RECIPIENTS_LABEL": "수신인 (쉼표 분리)",

@@ -53,10 +53,10 @@ export class FilterModel extends AbstractModel {
 			actionValueFourth: '',
 			actionValueFourthError: false,
 
-			actionMarkAsRead: false,
+			markAsRead: false,
 
-			actionKeep: true,
-			actionNoStop: false,
+			keep: true,
+			stop: true,
 
 			actionType: FilterAction.MoveTo
 		});
@@ -181,24 +181,24 @@ export class FilterModel extends AbstractModel {
 		return true;
 	}
 
-	toJson() {
+	toJSON() {
 		return {
 //			'@Object': 'Object/Filter',
 			ID: this.id,
 			Enabled: this.enabled() ? 1 : 0,
-			Name: this.name(),
-			Conditions: this.conditions.map(item => item.toJson()),
-			ConditionsType: this.conditionsType(),
+			Name: this.name,
+			Conditions: this.conditions,
+			ConditionsType: this.conditionsType,
 
 			ActionType: this.actionType(),
-			ActionValue: this.actionValue(),
-			ActionValueSecond: this.actionValueSecond(),
-			ActionValueThird: this.actionValueThird(),
-			ActionValueFourth: this.actionValueFourth(),
+			ActionValue: this.actionValue,
+			ActionValueSecond: this.actionValueSecond,
+			ActionValueThird: this.actionValueThird,
+			ActionValueFourth: this.actionValueFourth,
 
-			Keep: this.actionKeep() ? 1 : 0,
-			Stop: this.actionNoStop() ? 0 : 1,
-			MarkAsRead: this.actionMarkAsRead() ? 1 : 0
+			Keep: this.keep() ? 1 : 0,
+			Stop: this.stop() ? 1 : 0,
+			MarkAsRead: this.markAsRead() ? 1 : 0
 		};
 	}
 
@@ -216,15 +216,14 @@ export class FilterModel extends AbstractModel {
 	 * @returns {?FilterModel}
 	 */
 	static reviveFromJson(json) {
+		json.id = json.ID;
+		delete json.ID;
 		const filter = super.reviveFromJson(json);
 		if (filter) {
 			filter.id = '' + (filter.id || '');
 			filter.conditions(
 				(json.Conditions || []).map(aData => FilterConditionModel.reviveFromJson(aData)).filter(v => v)
 			);
-			filter.actionKeep(0 != json.Keep);
-			filter.actionNoStop(0 == json.Stop);
-			filter.actionMarkAsRead(1 == json.MarkAsRead);
 		}
 		return filter;
 	}
@@ -241,7 +240,7 @@ export class FilterModel extends AbstractModel {
 
 		filter.conditionsType(this.conditionsType());
 
-		filter.actionMarkAsRead(this.actionMarkAsRead());
+		filter.markAsRead(this.markAsRead());
 
 		filter.actionType(this.actionType());
 
@@ -252,8 +251,8 @@ export class FilterModel extends AbstractModel {
 		filter.actionValueThird(this.actionValueThird());
 		filter.actionValueFourth(this.actionValueFourth());
 
-		filter.actionKeep(this.actionKeep());
-		filter.actionNoStop(this.actionNoStop());
+		filter.keep(this.keep());
+		filter.stop(this.stop());
 
 		filter.conditions(this.conditions.map(item => item.cloneSelf()));
 

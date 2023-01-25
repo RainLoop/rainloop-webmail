@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "Tandai sudah dibaca",
 		"REPLY_INTERVAL_LABEL": "Selang waktu balasan (hari)",
 		"KEEP_LABEL": "Tahan",
-		"STOP_LABEL": "Jangan hentikan peraturan proses",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Subjek (opsional)",
 		"VACATION_MESSAGE_LABEL": "Pesan",
 		"VACATION_RECIPIENTS_LABEL": "Penerima (dipisahkan koma)",

@@ -86,7 +86,7 @@ export class SieveScriptPopupView extends rl.pluginPopupView {
 //						this.close();
 					}
 				},
-				script.toJson()
+				script.toJSON()
 			);
 		}
 	}

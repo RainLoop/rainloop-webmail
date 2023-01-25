@@ -315,7 +315,7 @@
 		"MARK_AS_READ_LABEL": "标记为已读",
 		"REPLY_INTERVAL_LABEL": "答复间隔 (天) ",
 		"KEEP_LABEL": "保留邮件",
-		"STOP_LABEL": "继续匹配其他规则",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "主题 (可选)",
 		"VACATION_MESSAGE_LABEL": "内容",
 		"VACATION_RECIPIENTS_LABEL": "收件人 (半角逗号“,”分隔)",
