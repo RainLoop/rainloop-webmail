@@ -19,6 +19,7 @@ abstract class Stream
 		\ob_implicit_flush();
 		\ini_set('implicit_flush',1);
 		\ini_set('output_buffering', 0);
+		\ini_set('display_errors', 0);
 		if ($i = \ob_get_level()) {
 			# Clear buffers:
 			while ($i-- && \ob_end_clean());

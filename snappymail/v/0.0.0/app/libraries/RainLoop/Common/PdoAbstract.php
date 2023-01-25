@@ -63,80 +63,51 @@ abstract class PdoAbstract
 	 */
 	protected function getPDO() : \PDO
 	{
-		if ($this->oPDO)
-		{
+		if ($this->oPDO) {
 			return $this->oPDO;
 		}
 
-		if (!\class_exists('PDO'))
-		{
+		if (!\class_exists('PDO')) {
 			throw new \Exception('Class PDO does not exist');
 		}
 
 		$sType = $sDsn = $sDbLogin = $sDbPassword = '';
 		list($sType, $sDsn, $sDbLogin, $sDbPassword) = $this->getPdoAccessData();
 
-		if (!\in_array($sType, static::getAvailableDrivers()))
-		{
+		if (!\in_array($sType, static::getAvailableDrivers())) {
 			throw new \Exception('Unknown PDO SQL connection type');
 		}
 
-		if (empty($sDsn))
-		{
+		if (empty($sDsn)) {
 			throw new \Exception('Empty PDO DSN configuration');
 		}
 
 		$this->sDbType = $sType;
 
-		$oPdo = false;
-		try
-		{
-//			$bCaseFunc = false;
-			$oPdo = new \PDO($sDsn, $sDbLogin, $sDbPassword);
-			if ($oPdo)
-			{
-				$sPdoType = $oPdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
-				$oPdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+		$oPdo = new \PDO($sDsn, $sDbLogin, $sDbPassword);
+		$sPdoType = $oPdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
+		$oPdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
-				if ('mysql' === $sType && 'mysql' === $sPdoType)
-				{
-					$oPdo->exec('SET NAMES utf8mb4 COLLATE utf8mb4_general_ci');
-				}
-//				else if ('sqlite' === $sType && 'sqlite' === $sPdoType && $this->bSqliteCollate)
-//				{
-//					if (\method_exists($oPdo, 'sqliteCreateCollation'))
-//					{
-//						$oPdo->sqliteCreateCollation('SQLITE_NOCASE_UTF8', array($this, 'sqliteNoCaseCollationHelper'));
-//						$bCaseFunc = true;
-//					}
-//				}
-//
-//				$this->oLogger->Write('PDO:'.$sPdoType.($bCaseFunc ? '/SQLITE_NOCASE_UTF8' : ''));
-			}
+//		$bCaseFunc = false;
+		if ('mysql' === $sType && 'mysql' === $sPdoType) {
+			$oPdo->exec('SET NAMES utf8mb4 COLLATE utf8mb4_general_ci');
 		}
-		catch (\Throwable $oException)
-		{
-			throw $oException;
-		}
+//		else if ('sqlite' === $sType && 'sqlite' === $sPdoType && $this->bSqliteCollate) {
+//			if (\method_exists($oPdo, 'sqliteCreateCollation')) {
+//				$oPdo->sqliteCreateCollation('SQLITE_NOCASE_UTF8', array($this, 'sqliteNoCaseCollationHelper'));
+//				$bCaseFunc = true;
+//			}
+//		}
+//		$this->oLogger->Write('PDO:'.$sPdoType.($bCaseFunc ? '/SQLITE_NOCASE_UTF8' : ''));
 
-		if ($oPdo)
-		{
-			$this->oPDO = $oPdo;
-		}
-		else
-		{
-			throw new \Exception('PDO = false');
-		}
-
+		$this->oPDO = $oPdo;
 		return $oPdo;
 	}
 
 	protected function lastInsertId(?string $sTabelName = null, ?string $sColumnName = null) : string
 	{
 		$mName = null;
-		if ('pgsql' === $this->sDbType &&
-			null !== $sTabelName && $sColumnName !== null)
-		{
+		if ('pgsql' === $this->sDbType && null !== $sTabelName && $sColumnName !== null) {
 			$mName = \strtolower($sTabelName.'_'.$sColumnName.'_seq');
 		}
 
@@ -160,8 +131,7 @@ abstract class PdoAbstract
 
 	protected function prepareAndExecute(string $sSql, array $aParams = array(), bool $bMultiplyParams = false, bool $bLogParams = false) : ?\PDOStatement
 	{
-		if ($this->bExplain && !$bMultiplyParams)
-		{
+		if ($this->bExplain && !$bMultiplyParams) {
 			$this->prepareAndExplain($sSql, $aParams);
 		}
 
@@ -169,27 +139,19 @@ abstract class PdoAbstract
 
 		$this->writeLog($sSql);
 		$oStmt = $this->getPDO()->prepare($sSql);
-		if ($oStmt)
-		{
+		if ($oStmt) {
 			$aLogs = array();
 			$aRootParams = $bMultiplyParams ? $aParams : array($aParams);
-			foreach ($aRootParams as $aSubParams)
-			{
-				foreach ($aSubParams as $sName => $aValue)
-				{
-					if ($bLogParams)
-					{
+			foreach ($aRootParams as $aSubParams) {
+				foreach ($aSubParams as $sName => $aValue) {
+					if ($bLogParams) {
 						$aLogs[$sName] = $aValue[0];
 					}
-
 					$oStmt->bindValue($sName, $aValue[0], $aValue[1]);
 				}
-
 				$mResult = $oStmt->execute() && !$bMultiplyParams ? $oStmt : null;
 			}
-
-			if ($bLogParams && $aLogs)
-			{
+			if ($bLogParams && $aLogs) {
 				$this->writeLog('Params: '.\json_encode($aLogs, JSON_UNESCAPED_UNICODE));
 			}
 		}
@@ -200,15 +162,12 @@ abstract class PdoAbstract
 	protected function prepareAndExplain(string $sSql, array $aParams = array())
 	{
 		$mResult = null;
-		if (0 === strpos($sSql, 'SELECT '))
-		{
+		if (0 === \strpos($sSql, 'SELECT ')) {
 			$sSql = 'EXPLAIN '.$sSql;
 			$this->writeLog($sSql);
 			$oStmt = $this->getPDO()->prepare($sSql);
-			if ($oStmt)
-			{
-				foreach ($aParams as $sName => $aValue)
-				{
+			if ($oStmt) {
+				foreach ($aParams as $sName => $aValue) {
 					$oStmt->bindValue($sName, $aValue[0], $aValue[1]);
 				}
 
@@ -216,8 +175,7 @@ abstract class PdoAbstract
 			}
 		}
 
-		if ($mResult)
-		{
+		if ($mResult) {
 			$aFetch = $mResult->fetchAll(\PDO::FETCH_ASSOC);
 			$this->oLogger->WriteDump($aFetch);
 
@@ -231,18 +189,12 @@ abstract class PdoAbstract
 	 */
 	protected function writeLog($mData)
 	{
-		if ($this->oLogger)
-		{
-			if ($mData instanceof \Throwable)
-			{
+		if ($this->oLogger) {
+			if ($mData instanceof \Throwable) {
 				$this->oLogger->WriteException($mData, \LOG_ERR, 'SQL');
-			}
-			else if (\is_scalar($mData))
-			{
+			} else if (\is_scalar($mData)) {
 				$this->oLogger->Write((string) $mData, \LOG_INFO, 'SQL');
-			}
-			else
-			{
+			} else {
 				$this->oLogger->WriteDump($mData, \LOG_INFO, 'SQL');
 			}
 		}
@@ -257,18 +209,15 @@ abstract class PdoAbstract
 	protected function getVersion(string $sName) : ?int
 	{
 		$oPdo = $this->getPDO();
-		if ($oPdo)
-		{
+		if ($oPdo) {
 			$sQuery = 'SELECT MAX(value_int) FROM rainloop_system WHERE sys_name = ?';
 
 			$this->writeLog($sQuery);
 
 			$oStmt = $oPdo->prepare($sQuery);
-			if ($oStmt->execute(array($sName.'_version')))
-			{
+			if ($oStmt->execute(array($sName.'_version'))) {
 				$mRow = $oStmt->fetch(\PDO::FETCH_NUM);
-				if ($mRow && isset($mRow[0]))
-				{
+				if ($mRow && isset($mRow[0])) {
 					return (int) $mRow[0];
 				}
 
@@ -283,21 +232,18 @@ abstract class PdoAbstract
 	{
 		$bResult = false;
 		$oPdo = $this->getPDO();
-		if ($oPdo)
-		{
+		if ($oPdo) {
 			$sQuery = 'DELETE FROM rainloop_system WHERE sys_name = ? AND value_int <= ?;';
 			$this->writeLog($sQuery);
 
 			$oStmt = $oPdo->prepare($sQuery);
 			$bResult = !!$oStmt->execute(array($sName.'_version', $iVersion));
-			if ($bResult)
-			{
+			if ($bResult) {
 				$sQuery = 'INSERT INTO rainloop_system (sys_name, value_int) VALUES (?, ?);';
 				$this->writeLog($sQuery);
 
 				$oStmt = $oPdo->prepare($sQuery);
-				if ($oStmt)
-				{
+				if ($oStmt) {
 					$bResult = !!$oStmt->execute(array($sName.'_version', $iVersion));
 				}
 			}
@@ -314,8 +260,7 @@ abstract class PdoAbstract
 		$bResult = true;
 
 		$oPdo = $this->getPDO();
-		if ($oPdo)
-		{
+		if ($oPdo) {
 			$aQ = array();
 			switch ($this->sDbType)
 			{
@@ -361,24 +306,17 @@ rl_email text NOT NULL DEFAULT \'\'
 					break;
 			}
 
-			if (\count($aQ))
-			{
+			if (\count($aQ)) {
 				try
 				{
-					foreach ($aQ as $sQuery)
-					{
-						if ($bResult)
-						{
-							$this->writeLog($sQuery);
-							$bResult = false !== $oPdo->exec($sQuery);
-							if (!$bResult)
-							{
-								$this->writeLog('Result=false');
-							}
-							else
-							{
-								$this->writeLog('Result=true');
-							}
+					foreach ($aQ as $sQuery) {
+						$this->writeLog($sQuery);
+						$bResult = false !== $oPdo->exec($sQuery);
+						if (!$bResult) {
+							$this->writeLog('Result=false');
+							break;
+						} else {
+							$this->writeLog('Result=true');
 						}
 					}
 				}
@@ -402,12 +340,10 @@ rl_email text NOT NULL DEFAULT \'\'
 		}
 		catch (\PDOException $oException)
 		{
-			$this->writeLog($oException);
-
+//			$this->writeLog($oException);
 			try
 			{
 				$this->initSystemTables();
-
 				$iFromVersion = $this->getVersion($sName);
 			}
 			catch (\PDOException $oSubException)
@@ -418,33 +354,26 @@ rl_email text NOT NULL DEFAULT \'\'
 		}
 
 		$bResult = false;
-		if (\is_int($iFromVersion) && 0 <= $iFromVersion)
-		{
+		if (\is_int($iFromVersion) && 0 <= $iFromVersion) {
 			$oPdo = false;
 
-			foreach ($aData as $iVersion => $aQuery)
-			{
-				if (0 === \count($aQuery))
-				{
+			foreach ($aData as $iVersion => $aQuery) {
+				if (0 === \count($aQuery)) {
 					continue;
 				}
 
-				if (!$oPdo)
-				{
+				if (!$oPdo) {
 					$oPdo = $this->getPDO();
 					$bResult = true;
 				}
 
-				if ($iFromVersion < $iVersion && $oPdo)
-				{
+				if ($iFromVersion < $iVersion && $oPdo) {
 					try
 					{
-						foreach ($aQuery as $sQuery)
-						{
+						foreach ($aQuery as $sQuery) {
 							$this->writeLog($sQuery);
 							$bExec = $oPdo->exec($sQuery);
-							if (false === $bExec)
-							{
+							if (false === $bExec) {
 								$this->writeLog('Result: false');
 
 								$bResult = false;
@@ -458,8 +387,7 @@ rl_email text NOT NULL DEFAULT \'\'
 						throw $oException;
 					}
 
-					if (!$bResult)
-					{
+					if (!$bResult) {
 						break;
 					}
 

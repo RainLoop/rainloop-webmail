@@ -20,11 +20,9 @@ class Legacy
 			if (\strlen($sValue)) {
 				$oTypes = $oProp['TYPE'];
 				$aTypes = $oTypes ? $oTypes->getParts() : array();
-				$pref = 100;
-				if (0 < $oProp['PREF']) {
-					$pref = (int) $oProp['PREF'];
-				}
-				$aTmp[\substr(1000+$pref,-3) . $sValue] = new Property($iType, $sValue, \implode(',', $aTypes));
+				$pref = empty($oProp['PREF']) ? 100 : \min(100, \max(1, $oProp['PREF']->getValue()));
+				$pref = \str_pad($pref, 3, '0', \STR_PAD_LEFT);
+				$aTmp[$pref . $sValue] = new Property($iType, $sValue, \implode(',', $aTypes));
 			}
 		}
 		\ksort($aTmp);
