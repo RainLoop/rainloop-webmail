@@ -259,14 +259,7 @@ class ServiceActions
 			}
 
 			if (\method_exists($this->oActions, $sAction) && \is_callable(array($this->oActions, $sAction))) {
-				$aActionParams = isset($_GET) && \is_array($_GET) ? $_GET : null;
-
-				$aActionParams['File'] = $aFile;
-				$aActionParams['Error'] = $iError;
-
-				$this->oActions->SetActionParams($aActionParams, $sAction);
-
-				$aResponse = $this->oActions->{$sAction}();
+				$aResponse = $this->oActions->{$sAction}($aFile, $iError);
 			}
 
 			if (!is_array($aResponse)) {

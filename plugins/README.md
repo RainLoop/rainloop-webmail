@@ -455,11 +455,18 @@ Converts HTML to text
 Converts text to HTML
 
 ## rl.addSettingsViewModel(SettingsViewModelClass, template, labelName, route)​
+Examples in
+* ./change-password/js/ChangePasswordUserSettings.js
+* ./example/js/ExampleUserSettings.js
+* ./kolab/js/settings.js
+* ./two-factor-auth/js/TwoFactorAuthSettings.js
 
 ## rl.addSettingsViewModelForAdmin(SettingsViewModelClass, template, labelName, route)​
+Examples in
+* ./example/js/ExampleAdminSettings.js:34:	rl.addSettingsViewModelForAdmin(ExampleAdminSettings, 'ExampleAdminSettingsTab',
 
 ## rl.adminArea()​
-Returns true or false
+Returns true or false when in '?admin' area
 
 ## rl.app.Remote.abort(action)​​​​​
 

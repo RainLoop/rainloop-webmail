@@ -80,10 +80,10 @@ trait Accounts
 
 		$aAccounts = $this->GetAccounts($oMainAccount);
 
-		$sEmail = \trim($this->GetActionParam('Email', ''));
-		$sPassword = $this->GetActionParam('Password', '');
-		$sName = $this->GetActionParam('Name', '');
-		$bNew = '1' === (string)$this->GetActionParam('New', '1');
+		$sEmail = \trim($this->GetActionParam('email', ''));
+		$sPassword = $this->GetActionParam('password', '');
+		$sName = \trim($this->GetActionParam('name', ''));
+		$bNew = !empty($this->GetActionParam('new', 1));
 
 		$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
 		if ($bNew && ($oMainAccount->Email() === $sEmail || isset($aAccounts[$sEmail]))) {
@@ -172,7 +172,7 @@ trait Accounts
 			return $this->FalseResponse();
 		}
 
-		$sEmailToDelete = \trim($this->GetActionParam('EmailToDelete', ''));
+		$sEmailToDelete = \trim($this->GetActionParam('emailToDelete', ''));
 		$sEmailToDelete = \MailSo\Base\Utils::IdnToAscii($sEmailToDelete, true);
 
 		$aAccounts = $this->GetAccounts($oMainAccount);
@@ -255,7 +255,7 @@ trait Accounts
 			return $this->FalseResponse();
 		}
 
-		$sId = \trim($this->GetActionParam('IdToDelete', ''));
+		$sId = \trim($this->GetActionParam('idToDelete', ''));
 		if (empty($sId)) {
 			throw new ClientException(Notifications::UnknownError);
 		}

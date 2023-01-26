@@ -16,7 +16,7 @@ trait AdminExtensions
 
 	public function DoAdminPackageDelete() : array
 	{
-		$sId = $this->GetActionParam('Id', '');
+		$sId = $this->GetActionParam('id', '');
 		$bResult = \SnappyMail\Repository::deletePackage($sId);
 		static::pluginEnable($sId, false);
 		return $this->DefaultResponse($bResult);
@@ -24,11 +24,11 @@ trait AdminExtensions
 
 	public function DoAdminPackageInstall() : array
 	{
-		$sType = $this->GetActionParam('Type', '');
+		$sType = $this->GetActionParam('type', '');
 		$bResult = \SnappyMail\Repository::installPackage(
 			$sType,
-			$this->GetActionParam('Id', ''),
-			$this->GetActionParam('File', '')
+			$this->GetActionParam('id', ''),
+			$this->GetActionParam('file', '')
 		);
 		return $this->DefaultResponse($bResult ?
 			('plugin' !== $sType ? array('Reload' => true) : true) : false);
@@ -38,8 +38,8 @@ trait AdminExtensions
 	{
 		$this->IsAdminLoggined();
 
-		$sId = (string) $this->GetActionParam('Id', '');
-		$bDisable = '1' === (string) $this->GetActionParam('Disabled', '1');
+		$sId = (string) $this->GetActionParam('id', '');
+		$bDisable = '1' === (string) $this->GetActionParam('disabled', '1');
 
 		if (!$bDisable) {
 			$oPlugin = $this->Plugins()->CreatePluginByName($sId);
@@ -61,17 +61,17 @@ trait AdminExtensions
 		$this->IsAdminLoggined();
 
 		$mResult = false;
-		$sId = (string) $this->GetActionParam('Id', '');
+		$sId = (string) $this->GetActionParam('id', '');
 
 		if (!empty($sId)) {
 			$oPlugin = $this->Plugins()->CreatePluginByName($sId);
 			if ($oPlugin) {
 				$mResult = array(
 					'@Object' => 'Object/Plugin',
-					'Id' => $sId,
-					'Name' => $oPlugin->Name(),
-					'Readme' => $oPlugin->Description(),
-					'Config' => array()
+					'id' => $sId,
+					'name' => $oPlugin->Name(),
+					'readme' => $oPlugin->Description(),
+					'config' => array()
 				);
 
 				$aMap = $oPlugin->ConfigMap();
@@ -85,7 +85,7 @@ trait AdminExtensions
 								} else {
 									$oItem->SetValue($oConfig->Get('plugin', $oItem->Name(), ''));
 								}
-								$mResult['Config'][] = $oItem;
+								$mResult['config'][] = $oItem;
 							} else if ($oItem instanceof \RainLoop\Plugins\PropertyCollection) {
 								foreach ($oItem as $oSubItem) {
 									if ($oSubItem && $oSubItem instanceof \RainLoop\Plugins\Property) {
@@ -96,7 +96,7 @@ trait AdminExtensions
 										}
 									}
 								}
-								$mResult['Config'][] = $oItem;
+								$mResult['config'][] = $oItem;
 							}
 						}
 					}
@@ -111,7 +111,7 @@ trait AdminExtensions
 	{
 		$this->IsAdminLoggined();
 
-		$sId = (string) $this->GetActionParam('Id', '');
+		$sId = (string) $this->GetActionParam('id', '');
 
 		if (!empty($sId)) {
 			$oPlugin = $this->Plugins()->CreatePluginByName($sId);
@@ -119,7 +119,7 @@ trait AdminExtensions
 				$oConfig = $oPlugin->Config();
 				$aMap = $oPlugin->ConfigMap(true);
 				if (\is_array($aMap)) {
-					$aSettings = (array) $this->GetActionParam('Settings', []);
+					$aSettings = (array) $this->GetActionParam('settings', []);
 					foreach ($aMap as $oItem) {
 						$sKey = $oItem->Name();
 						$sValue = $aSettings[$sKey] ?? $oConfig->Get('plugin', $sKey);

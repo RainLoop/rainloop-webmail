@@ -57,12 +57,12 @@ class Domain extends AbstractProvider
 
 	public function LoadOrCreateNewFromAction(\RainLoop\Actions $oActions, string $sNameForTest = null) : ?\RainLoop\Model\Domain
 	{
-		$sName = \mb_strtolower((string) $oActions->GetActionParam('Name', ''));
+		$sName = \mb_strtolower((string) $oActions->GetActionParam('name', ''));
 		if (\strlen($sName) && $sNameForTest && !\str_contains($sName, '*')) {
 			$sNameForTest = null;
 		}
 		if (\strlen($sName) || $sNameForTest) {
-			if (!$sNameForTest && !empty($oActions->GetActionParam('Create', 0)) && $this->Load($sName)) {
+			if (!$sNameForTest && !empty($oActions->GetActionParam('create', 0)) && $this->Load($sName)) {
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DomainAlreadyExists);
 			}
 			return \RainLoop\Model\Domain::fromArray($sNameForTest ?: $sName, [

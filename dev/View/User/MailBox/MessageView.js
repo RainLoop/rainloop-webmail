@@ -23,13 +23,12 @@ import {
 } from 'Common/Globals';
 
 import { arrayLength } from 'Common/Utils';
-import { download, mailToHelper, showMessageComposer, moveAction } from 'Common/UtilsUser';
+import { download, downloadZip, mailToHelper, showMessageComposer, moveAction } from 'Common/UtilsUser';
 import { isFullscreen, exitFullscreen, toggleFullscreen } from 'Common/Fullscreen';
 
 import { SMAudio } from 'Common/Audio';
 
 import { i18n } from 'Common/Translator';
-import { attachmentDownload } from 'Common/Links';
 
 import { MessageFlagsCache } from 'Common/Cache';
 
@@ -486,21 +485,10 @@ export class MailMessageView extends AbstractViewRight {
 		const hashes = (currentMessage()?.attachments || [])
 			.map(item => item?.checked() /*&& !item?.isLinked()*/ ? item.download : '')
 			.filter(v => v);
-		if (hashes.length) {
-			Remote.post('AttachmentsActions', this.downloadAsZipLoading, {
-				Do: 'Zip',
-				Hashes: hashes
-			})
-			.then(result => {
-				let hash = result?.Result?.fileHash;
-				if (hash) {
-					download(attachmentDownload(hash), hash+'.zip');
-				} else {
-					this.downloadAsZipError(true);
-				}
-			})
-			.catch(() => this.downloadAsZipError(true));
-		}
+		downloadZip(hashes,
+			() => this.downloadAsZipError(true),
+			this.downloadAsZipLoading
+		);
 	}
 
 	/**

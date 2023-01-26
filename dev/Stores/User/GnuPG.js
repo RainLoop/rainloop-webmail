@@ -79,7 +79,7 @@ export const GnuPGUserStore = new class {
 									}, {
 										keyId: key.id,
 										isPrivate: isPrivate,
-										Passphrase: pass
+										passphrase: pass
 									}
 								);
 							if (isPrivate) {
@@ -115,7 +115,7 @@ export const GnuPGUserStore = new class {
 				}
 				callback?.(iError, oData);
 			}, {
-				Key: key
+				key: key
 			}
 		);
 	}
@@ -181,10 +181,10 @@ export const GnuPGUserStore = new class {
 					uid: message.uid,
 					partId: pgpInfo.PartId,
 					keyId: key.id,
-					Passphrase: await askPassphrase(key, 'BUTTON_DECRYPT'),
-					Data: '' // message.plain() optional
+					passphrase: await askPassphrase(key, 'BUTTON_DECRYPT'),
+					data: '' // message.plain() optional
 				}
-				if (null !== params.Passphrase) {
+				if (null !== params.passphrase) {
 					const result = await Remote.post('GnupgDecrypt', null, params);
 					if (result?.Result && false !== result.Result.data) {
 						return result.Result;
@@ -202,9 +202,9 @@ export const GnuPGUserStore = new class {
 //			let mode = await this.hasPublicKeyForEmails([sender]);
 			data.folder = message.folder;
 			data.uid = message.uid;
-			if (data.BodyPart) {
-				data.BodyPart = data.BodyPart.raw;
-				data.SigPart = data.SigPart.body;
+			if (data.bodyPart) {
+				data.bodyPart = data.bodyPart.raw;
+				data.sigPart = data.sigPart.body;
 			}
 			let response = await Remote.post('MessagePgpVerify', null, data);
 			if (response?.Result) {

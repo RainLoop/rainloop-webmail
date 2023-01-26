@@ -20,8 +20,8 @@ class PropertyCollection extends \ArrayObject implements \JsonSerializable
 	{
 		return array(
 			'@Object' => 'Object/PluginProperty',
-			'Type' => \RainLoop\Enumerations\PluginPropertyType::GROUP,
-			'Label' => $this->sLabel,
+			'type' => \RainLoop\Enumerations\PluginPropertyType::GROUP,
+			'label' => $this->sLabel,
 			'config' => $this->getArrayCopy()
 /*
 			'config' => [

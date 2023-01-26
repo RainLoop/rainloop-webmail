@@ -79,10 +79,10 @@ trait Pgp
 
 		$GPG->addDecryptKey(
 			$this->GetActionParam('keyId', ''),
-			$this->GetActionParam('Passphrase', '')
+			$this->GetActionParam('passphrase', '')
 		);
 
-		$sData = $this->GetActionParam('Data', '');
+		$sData = $this->GetActionParam('data', '');
 		$oPart = null;
 		$result = [
 			'data' => '',
@@ -127,7 +127,7 @@ trait Pgp
 		$GPG = $this->GnuPG();
 		return $this->DefaultResponse($GPG ? $GPG->export(
 			$this->GetActionParam('keyId', ''),
-			$this->GetActionParam('Passphrase', '')
+			$this->GetActionParam('passphrase', '')
 		) : false);
 	}
 
@@ -136,11 +136,11 @@ trait Pgp
 		$fingerprint = false;
 		$GPG = $this->GnuPG();
 		if ($GPG) {
-			$sName = $this->GetActionParam('Name', '');
-			$sEmail = $this->GetActionParam('Email', '');
+			$sName = $this->GetActionParam('name', '');
+			$sEmail = $this->GetActionParam('email', '');
 			$fingerprint = $GPG->generateKey(
 				$sName ? "{$sName} <{$sEmail}>" : $sEmail,
-				$this->GetActionParam('Passphrase', '')
+				$this->GetActionParam('passphrase', '')
 			);
 		}
 		return $this->DefaultResponse($fingerprint);
@@ -156,9 +156,9 @@ trait Pgp
 
 	public function DoGnupgImportKey() : array
 	{
-		$sKey = $this->GetActionParam('Key', '');
+		$sKey = $this->GetActionParam('key', '');
 		$sKeyId = $this->GetActionParam('keyId', '');
-		$sEmail = $this->GetActionParam('Email', '');
+		$sEmail = $this->GetActionParam('email', '');
 
 		if (!$sKey) {
 			try {
@@ -265,7 +265,7 @@ trait Pgp
 	 */
 	public function DoStorePGPKey() : array
 	{
-		$key = $this->GetActionParam('Key', '');
+		$key = $this->GetActionParam('key', '');
 		$keyId = $this->GetActionParam('keyId', '');
 		return $this->DefaultResponse(($key && $keyId && $this->StorePGPKey($key, $keyId)));
 	}

@@ -1482,7 +1482,7 @@ export class ComposePopupView extends AbstractViewPopup {
 					signature.body = await OpenPGPUserStore.sign(data.toString(), sign[1], 1);
 					signed.children.push(signature);
 					params.signed = signed.toString();
-					params.Boundary = signed.boundary;
+					params.boundary = signed.boundary;
 					data = signed;
 				} else if ('gnupg' == sign[0]) {
 					// TODO: sign in PHP fails

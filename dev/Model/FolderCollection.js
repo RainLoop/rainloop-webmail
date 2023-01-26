@@ -301,8 +301,8 @@ export class FolderModel extends AbstractModel {
 		this.exists = true;
 
 		this.hash = '';
-//		this.id = null;
-		this.uidNext = null;
+		this.id = 0;
+		this.uidNext = 0;
 
 		addObservablesTo(this, {
 			name: '',

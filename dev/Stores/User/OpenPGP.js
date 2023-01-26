@@ -219,12 +219,13 @@ export const OpenPGPUserStore = new class {
 		if (data && publicKey) {
 			data.folder = message.folder;
 			data.uid = message.uid;
-			data.GnuPG = 0;
+			data.tryGnuPG = 0;
 			let response;
 			if (data.sigPartId) {
 				response = await Remote.post('MessagePgpVerify', null, data);
-			} else if (data.BodyPart) {
-				response = { Result: { text: data.BodyPart.raw, signature: data.SigPart.body } };
+			} else if (data.bodyPart) {
+				// MimePart
+				response = { Result: { text: data.bodyPart.raw, signature: data.sigPart.body } };
 			} else {
 				response = { Result: { text: message.plain(), signature: null } };
 			}

@@ -198,7 +198,7 @@ folderInformationMultiply = (boot = false) => {
 				boot && setTimeout(() => folderInformationMultiply(true), 2000);
 			}
 		}, {
-			Folders: folders
+			folders: folders
 		});
 	}
 },
@@ -226,11 +226,11 @@ messagesMoveHelper = (fromFolderFullName, toFolderFullName, uidsForMove) => {
 	Remote.abort('MessageList').request('MessageMove',
 		moveOrDeleteResponseHelper,
 		{
-			FromFolder: fromFolderFullName,
-			ToFolder: toFolderFullName,
-			Uids: [...uidsForMove].join(','),
-			MarkAsRead: (isSpam || FolderUserStore.trashFolder() === toFolderFullName) ? 1 : 0,
-			Learning: isSpam ? 'SPAM' : isHam ? 'HAM' : ''
+			fromFolder: fromFolderFullName,
+			toFolder: toFolderFullName,
+			uids: [...uidsForMove].join(','),
+			markAsRead: (isSpam || FolderUserStore.trashFolder() === toFolderFullName) ? 1 : 0,
+			learning: isSpam ? 'SPAM' : isHam ? 'HAM' : ''
 		}
 	);
 },
@@ -240,7 +240,7 @@ messagesDeleteHelper = (sFromFolderFullName, aUidForRemove) => {
 		moveOrDeleteResponseHelper,
 		{
 			folder: sFromFolderFullName,
-			Uids: [...aUidForRemove].join(',')
+			uids: [...aUidForRemove].join(',')
 		}
 	);
 },
@@ -259,9 +259,9 @@ moveMessagesToFolder = (sFromFolderFullName, oUids, sToFolderFullName, bCopy) =>
 		if (oFromFolder && oToFolder) {
 			bCopy
 				? Remote.request('MessageCopy', null, {
-						FromFolder: oFromFolder.fullName,
-						ToFolder: oToFolder.fullName,
-						Uids: [...oUids].join(',')
+						fromFolder: oFromFolder.fullName,
+						toFolder: oToFolder.fullName,
+						uids: [...oUids].join(',')
 					})
 				: messagesMoveHelper(oFromFolder.fullName, oToFolder.fullName, oUids);
 
@@ -283,7 +283,7 @@ dropFilesInFolder = (sFolderFullName, files) => {
 			++count;
 			let data = new FormData;
 			data.append('folder', sFolderFullName);
-			data.append('AppendFile', file);
+			data.append('appendFile', file);
 			data.XToken = Settings.app('token');
 			fetch(serverRequest('Append'), {
 				method: 'POST',

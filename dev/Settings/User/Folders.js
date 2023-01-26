@@ -160,8 +160,8 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 		// TODO: append '.default' ?
 		Remote.request('FolderSetMetadata', null, {
 			folder: folder.fullName,
-			Key: FolderMetadataKeys.KolabFolderType,
-			Value: type
+			key: FolderMetadataKeys.KolabFolderType,
+			value: type
 		});
 		folder.kolabType(type);
 	}

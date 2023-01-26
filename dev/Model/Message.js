@@ -44,9 +44,9 @@ const
 			}
 		}, {
 			folder: message.folder,
-			Uids: message.uid,
-			Keyword: keyword,
-			SetAction: isSet ? 0 : 1
+			uids: message.uid,
+			keyword: keyword,
+			setAction: isSet ? 0 : 1
 		})
 	},
 

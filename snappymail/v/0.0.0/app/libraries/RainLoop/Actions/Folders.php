@@ -22,13 +22,13 @@ trait Folders
 
 		if ($oAccount
 		 && !empty($sFolderFullName)
-		 && !empty($_FILES['AppendFile'])
-		 && \is_uploaded_file($_FILES['AppendFile']['tmp_name'])
-		 && \UPLOAD_ERR_OK == $_FILES['AppendFile']['error']
+		 && !empty($_FILES['appendFile'])
+		 && \is_uploaded_file($_FILES['appendFile']['tmp_name'])
+		 && \UPLOAD_ERR_OK == $_FILES['appendFile']['error']
 		 && $this->oConfig->Get('labs', 'allow_message_append', false)
 		) {
-			$sSavedName = 'append-post-' . \md5($sFolderFullName . $_FILES['AppendFile']['name'] . $_FILES['AppendFile']['tmp_name']);
-			if ($this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $_FILES['AppendFile']['tmp_name'])) {
+			$sSavedName = 'append-post-' . \md5($sFolderFullName . $_FILES['appendFile']['name'] . $_FILES['appendFile']['tmp_name']);
+			if ($this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $_FILES['appendFile']['tmp_name'])) {
 				$iMessageStreamSize = $this->FilesProvider()->FileSize($oAccount, $sSavedName);
 				$rMessageStream = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
 
@@ -107,10 +107,10 @@ trait Folders
 	{
 		$this->initMailClientConnection();
 		$sFolderFullName = $this->GetActionParam('folder');
-		$sMetadataKey = $this->GetActionParam('Key');
+		$sMetadataKey = $this->GetActionParam('key');
 		if ($sFolderFullName && $sMetadataKey) {
 			$this->MailClient()->FolderSetMetadata($sFolderFullName, [
-				$sMetadataKey => $this->GetActionParam('Value') ?: null
+				$sMetadataKey => $this->GetActionParam('value') ?: null
 			]);
 		}
 		return $this->TrueResponse();
@@ -292,7 +292,7 @@ trait Folders
 	{
 		$aResult = array();
 
-		$aFolders = $this->GetActionParam('Folders', null);
+		$aFolders = $this->GetActionParam('folders', null);
 		if (\is_array($aFolders)) {
 			$this->initMailClientConnection();
 

@@ -12,6 +12,7 @@ import { SettingsUserStore } from 'Stores/User/Settings';
 import * as Local from 'Storage/Client';
 import { ThemeStore } from 'Stores/Theme';
 import Remote from 'Remote/User/Fetch';
+import { attachmentDownload } from 'Common/Links';
 
 export const
 
@@ -39,6 +40,28 @@ download = (link, name = "") => {
 		});
 		doc.body.appendChild(oLink).click();
 		oLink.remove();
+	}
+},
+
+downloadZip = (hashes, onError, fTrigger, folder) => {
+	if (hashes.length) {
+		let params = {
+			target: 'zip',
+			hashes: hashes
+		};
+		if (!onError) {
+			onError = () => alert('Download failed');
+		}
+		if (folder) {
+			params.folder = folder;
+//			params.uids = uids;
+		}
+		Remote.post('AttachmentsActions', fTrigger || null, params)
+		.then(result => {
+			let hash = result?.Result?.fileHash;
+			hash ? download(attachmentDownload(hash), hash+'.zip') : onError();
+		})
+		.catch(onError);
 	}
 },
 

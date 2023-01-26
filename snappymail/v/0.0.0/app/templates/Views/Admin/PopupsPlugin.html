@@ -14,15 +14,15 @@
 			<span data-bind="text: saveError"></span>
 		</div>
 		<div data-bind="foreach: config, visible: hasConfiguration">
-			<!-- ko if: 7 == Type -->
+			<!-- ko if: 7 == type -->
 			<details open="">
-				<summary class="legend" data-bind="text: Label"></summary>
+				<summary class="legend" data-bind="text: label"></summary>
 				<div data-bind="foreach: config">
 					<div class="control-group" data-bind="template: { name: 'AdminSettingsPluginProperty' }"></div>
 				</div>
 			</details>
 			<!-- /ko -->
-			<!-- ko if: 7 != Type -->
+			<!-- ko if: 7 != type -->
 			<div class="control-group" data-bind="template: { name: 'AdminSettingsPluginProperty' }"></div>
 			<!-- /ko -->
 		</div>

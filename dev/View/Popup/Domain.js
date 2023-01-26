@@ -14,13 +14,64 @@ import { AskPopupView } from 'View/Popup/Ask';
 
 const
 	capitalize = string => string.charAt(0).toUpperCase() + string.slice(1),
+	domainDefaults = {
+		enableSmartPorts: false,
+
+		savingError: '',
+
+		name: '',
+
+		imapHost: '',
+		imapPort: 143,
+		imapType: 0,
+		imapTimeout: 300,
+		imapShortLogin: false,
+		// SSL
+		imapSslVerify_peer: false,
+		imapSslAllow_self_signed: false,
+		// Options
+		imapDisable_list_status: false,
+		imapDisable_metadata: false,
+		imapDisable_move: false,
+		imapDisable_sort: false,
+		imapDisable_thread: false,
+		imapExpunge_all_on_delete: false,
+		imapFast_simple_search: true,
+		imapFetch_new_messages: true,
+		imapForce_select: false,
+		imapFolder_list_limit: 200,
+		imapMessage_all_headers: false,
+		imapMessage_list_limit: 0,
+		imapSearch_filter: '',
+
+		sieveEnabled: false,
+		sieveHost: '',
+		sievePort: 4190,
+		sieveType: 0,
+		sieveTimeout: 10,
+
+		smtpHost: '',
+		smtpPort: 25,
+		smtpType: 0,
+		smtpTimeout: 60,
+		smtpShortLogin: false,
+		smtpUseAuth: true,
+		smtpSetSender: false,
+		smtpUsePhpMail: false,
+		// SSL
+		smtpSslVerify_peer: false,
+		smtpSslAllow_self_signed: false,
+
+		whiteList: '',
+		aliasName: ''
+	},
 	domainToParams = oDomain => ({
-		Name: oDomain.name(),
+		name: oDomain.name,
 		IMAP: {
-			host: oDomain.imapHost(),
-			port: oDomain.imapPort(),
+			host: oDomain.imapHost,
+			port: oDomain.imapPort,
 			secure: pInt(oDomain.imapType()),
-			timeout: oDomain.imapTimeout(),
+			timeout: oDomain.imapTimeout,
 			shortLogin: !!oDomain.imapShortLogin(),
 			ssl: {
 				verify_peer: !!oDomain.imapSslVerify_peer(),
@@ -44,10 +95,10 @@ const
 */
 		},
 		SMTP: {
-			host: oDomain.smtpHost(),
-			port: oDomain.smtpPort(),
+			host: oDomain.smtpHost,
+			port: oDomain.smtpPort,
 			secure: pInt(oDomain.smtpType()),
-			timeout: oDomain.smtpTimeout(),
+			timeout: oDomain.smtpTimeout,
 			shortLogin: !!oDomain.smtpShortLogin(),
 			ssl: {
 				verify_peer: !!oDomain.smtpSslVerify_peer(),
@@ -60,10 +111,10 @@ const
 		},
 		Sieve: {
 			enabled: !!oDomain.sieveEnabled(),
-			host: oDomain.sieveHost(),
-			port: oDomain.sievePort(),
+			host: oDomain.sieveHost,
+			port: oDomain.sievePort,
 			secure: pInt(oDomain.sieveType()),
-			timeout: oDomain.sieveTimeout(),
+			timeout: oDomain.sieveTimeout,
 			shortLogin: !!oDomain.imapShortLogin(),
 			ssl: {
 				verify_peer: !!oDomain.imapSslVerify_peer(),
@@ -71,14 +122,14 @@ const
 				allow_self_signed: !!oDomain.imapSslAllow_self_signed()
 			}
 		},
-		whiteList: oDomain.whiteList()
+		whiteList: oDomain.whiteList
 	});
 
 export class DomainPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Domain');
 
-		addObservablesTo(this, this.getDefaults());
+		addObservablesTo(this, domainDefaults);
 		addObservablesTo(this, {
 			edit: false,
 
@@ -99,21 +150,11 @@ export class DomainPopupView extends AbstractViewPopup {
 			headerText: () => {
 				const name = this.name(),
 					aliasName = this.aliasName();
-
-				let result = '';
-
-				if (this.edit()) {
-					result = i18n('POPUPS_DOMAIN/TITLE_EDIT_DOMAIN', { NAME: name });
-					if (aliasName) {
-						result += ' ⫘ ' + aliasName;
-					}
-				} else {
-					result = name
-							? i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN_WITH_NAME', { NAME: name })
-							: i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN');
-				}
-
-				return result;
+				return this.edit()
+					? i18n('POPUPS_DOMAIN/TITLE_EDIT_DOMAIN', { NAME: name }) + (aliasName ? ' ⫘ ' + aliasName : '')
+					: (name
+						? i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN_WITH_NAME', { NAME: name })
+						: i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN'));
 			},
 
 			domainDesc: () => {
@@ -213,7 +254,7 @@ export class DomainPopupView extends AbstractViewPopup {
 				}
 			},
 			Object.assign(domainToParams(this), {
-				Create: this.edit() ? 0 : 1
+				create: this.edit() ? 0 : 1
 			})
 		);
 	}
@@ -260,7 +301,9 @@ export class DomainPopupView extends AbstractViewPopup {
 	onShow(oDomain) {
 		this.saving(false);
 		this.clearTesting();
-		this.clearForm();
+		this.edit(false);
+		forEachObjectEntry(domainDefaults, (key, value) => this[key](value));
+		this.enableSmartPorts(true);
 		if (oDomain) {
 			this.enableSmartPorts(false);
 			this.edit(true);
@@ -283,65 +326,5 @@ export class DomainPopupView extends AbstractViewPopup {
 			});
 			this.enableSmartPorts(true);
 		}
-	}
-
-	getDefaults() {
-		return {
-			enableSmartPorts: false,
-
-			savingError: '',
-
-			name: '',
-
-			imapHost: '',
-			imapPort: 143,
-			imapType: 0,
-			imapTimeout: 300,
-			imapShortLogin: false,
-			// SSL
-			imapSslVerify_peer: false,
-			imapSslAllow_self_signed: false,
-			// Options
-			imapDisable_list_status: false,
-			imapDisable_metadata: false,
-			imapDisable_move: false,
-			imapDisable_sort: false,
-			imapDisable_thread: false,
-			imapExpunge_all_on_delete: false,
-			imapFast_simple_search: true,
-			imapFetch_new_messages: true,
-			imapForce_select: false,
-			imapFolder_list_limit: 200,
-			imapMessage_all_headers: false,
-			imapMessage_list_limit: 0,
-			imapSearch_filter: '',
-
-			sieveEnabled: false,
-			sieveHost: '',
-			sievePort: 4190,
-			sieveType: 0,
-			sieveTimeout: 10,
-
-			smtpHost: '',
-			smtpPort: 25,
-			smtpType: 0,
-			smtpTimeout: 60,
-			smtpShortLogin: false,
-			smtpUseAuth: true,
-			smtpSetSender: false,
-			smtpUsePhpMail: false,
-			// SSL
-			smtpSslVerify_peer: false,
-			smtpSslAllow_self_signed: false,
-
-			whiteList: '',
-			aliasName: ''
-		};
-	}
-
-	clearForm() {
-		this.edit(false);
-		forEachObjectEntry(this.getDefaults(), (key, value) => this[key](value));
-		this.enableSmartPorts(true);
 	}
 }

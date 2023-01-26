@@ -63,8 +63,8 @@
 						if (folder) {
 							rl.fetchJSON('./?/Json/&q[]=/0/', {}, {
 								Action: 'AttachmentsActions',
-								Do: 'nextcloud',
-								Hashes: hashes,
+								target: 'nextcloud',
+								hashes: hashes,
 								NcFolder: folder
 							})
 							.then(result => {

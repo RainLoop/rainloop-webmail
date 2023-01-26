@@ -12,9 +12,9 @@ trait Attachments
 	 */
 	public function DoAttachmentsActions() : array
 	{
-		$sAction = $this->GetActionParam('Do', '');
+		$sAction = $this->GetActionParam('target', '');
 		$sFolder = $this->GetActionParam('folder', '');
-		$aHashes = $this->GetActionParam('Hashes', null);
+		$aHashes = $this->GetActionParam('hashes', null);
 		$oFilesProvider = $this->FilesProvider();
 		if (empty($sAction) || !$this->GetCapa(Capa::ATTACHMENTS_ACTIONS) || !$oFilesProvider || !$oFilesProvider->IsActive()) {
 			return $this->FalseResponse();

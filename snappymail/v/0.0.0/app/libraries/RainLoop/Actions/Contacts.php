@@ -77,7 +77,7 @@ trait Contacts
 	public function DoContactsDelete() : array
 	{
 		$oAccount = $this->getAccountFromToken();
-		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
+		$aUids = \explode(',', (string) $this->GetActionParam('uids', ''));
 
 		$aFilteredUids = \array_filter(\array_map('intval', $aUids));
 
@@ -119,14 +119,11 @@ trait Contacts
 		));
 	}
 
-	public function UploadContacts() : array
+	public function UploadContacts(?array $aFile, int $iError) : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
 		$mResponse = false;
-
-		$aFile = $this->GetActionParam('File', null);
-		$iError = $this->GetActionParam('Error', \RainLoop\Enumerations\UploadError::UNKNOWN);
 
 		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile)) {
 			$sSavedName = 'upload-post-'.\md5($aFile['name'].$aFile['tmp_name']);

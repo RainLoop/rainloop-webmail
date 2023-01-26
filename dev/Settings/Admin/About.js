@@ -59,10 +59,10 @@ export class AdminSettingsAbout /*extends AbstractViewSettings*/ {
 			this.coreChecking(false);
 			if (!iError && data?.Result) {
 				this.coreReal(true);
-				this.coreUpdatable(!!data.Result.Updatable);
-				this.coreWarning(!!data.Result.Warning);
-				this.coreVersion(data.Result.Version || '');
-				this.coreVersionCompare(data.Result.VersionCompare);
+				this.coreUpdatable(!!data.Result.updatable);
+				this.coreWarning(!!data.Result.warning);
+				this.coreVersion(data.Result.version || '');
+				this.coreVersionCompare(data.Result.versionCompare);
 			} else {
 				this.coreReal(false);
 				this.coreWarning(false);

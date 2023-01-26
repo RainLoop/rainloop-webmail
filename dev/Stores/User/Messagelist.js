@@ -331,8 +331,8 @@ MessagelistUserStore.setAction = (sFolderFullName, iSetAction, messages) => {
 				}
 				Remote.request('MessageSetSeen', null, {
 					folder: sFolderFullName,
-					Uids: rootUids.join(','),
-					SetAction: iSetAction == MessageSetAction.SetSeen ? 1 : 0
+					uids: rootUids.join(','),
+					setAction: iSetAction == MessageSetAction.SetSeen ? 1 : 0
 				});
 				break;
 
@@ -340,8 +340,8 @@ MessagelistUserStore.setAction = (sFolderFullName, iSetAction, messages) => {
 			case MessageSetAction.UnsetFlag:
 				Remote.request('MessageSetFlagged', null, {
 					folder: sFolderFullName,
-					Uids: rootUids.join(','),
-					SetAction: iSetAction == MessageSetAction.SetFlag ? 1 : 0
+					uids: rootUids.join(','),
+					setAction: iSetAction == MessageSetAction.SetFlag ? 1 : 0
 				});
 				break;
 			// no default

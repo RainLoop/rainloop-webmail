@@ -46,7 +46,7 @@ export class AdminSettingsPackages extends AbstractViewSettings {
 			data && Remote.request('AdminPluginLoad',
 				(iError, data) => iError || showScreenPopup(PluginPopupView, [data.Result]),
 				{
-					Id: data.id
+					id: data.id
 				}
 			);
 			// disablePlugin
@@ -84,7 +84,7 @@ export class AdminSettingsPackages extends AbstractViewSettings {
 			Remote.request('AdminPackageDelete',
 				this.requestHelper(packageToDelete, false),
 				{
-					Id: packageToDelete.id
+					id: packageToDelete.id
 				}
 			);
 		}
@@ -96,9 +96,9 @@ export class AdminSettingsPackages extends AbstractViewSettings {
 			Remote.request('AdminPackageInstall',
 				this.requestHelper(packageToInstall, true),
 				{
-					Id: packageToInstall.id,
-					Type: packageToInstall.type,
-					File: packageToInstall.file
+					id: packageToInstall.id,
+					type: packageToInstall.type,
+					file: packageToInstall.file
 				},
 				60000
 			);
@@ -120,8 +120,8 @@ export class AdminSettingsPackages extends AbstractViewSettings {
 				}
 //				PackageAdminStore.fetch();
 			}, {
-				Id: plugin.id,
-				Disabled: disable ? 1 : 0
+				id: plugin.id,
+				disabled: disable ? 1 : 0
 			}
 		);
 	}

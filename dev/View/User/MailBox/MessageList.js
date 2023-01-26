@@ -13,11 +13,11 @@ import { doc,
 } from 'Common/Globals';
 
 import { arrayLength } from 'Common/Utils';
-import { computedPaginatorHelper, showMessageComposer, populateMessageBody, download, moveAction } from 'Common/UtilsUser';
+import { computedPaginatorHelper, showMessageComposer, populateMessageBody, downloadZip, moveAction } from 'Common/UtilsUser';
 import { FileInfo } from 'Common/File';
 import { isFullscreen, toggleFullscreen } from 'Common/Fullscreen';
 
-import { mailBox, attachmentDownload } from 'Common/Links';
+import { mailBox } from 'Common/Links';
 import { Selector } from 'Common/Selector';
 
 import { i18n } from 'Common/Translator';
@@ -367,23 +367,7 @@ export class MailMessageList extends AbstractViewRight {
 		let hashes = []/*, uids = []*/;
 //		MessagelistUserStore.forEach(message => message.checked() && uids.push(message.uid));
 		MessagelistUserStore.forEach(message => message.checked() && hashes.push(message.requestHash));
-		if (hashes.length) {
-			Remote.post('AttachmentsActions', null, {
-				Do: 'Zip',
-				folder: MessagelistUserStore().folder,
-//				Uids: uids,
-				Hashes: hashes
-			})
-			.then(result => {
-				let hash = result?.Result?.fileHash;
-				if (hash) {
-					download(attachmentDownload(hash), hash+'.zip');
-				} else {
-					alert('Download failed');
-				}
-			})
-			.catch(() => alert('Download failed'));
-		}
+		downloadZip(hashes, null, null, MessagelistUserStore().folder);
 	}
 
 	downloadAttachCommand() {
@@ -397,21 +381,7 @@ export class MailMessageList extends AbstractViewRight {
 				});
 			}
 		});
-		if (hashes.length) {
-			Remote.post('AttachmentsActions', null, {
-				Do: 'Zip',
-				Hashes: hashes
-			})
-			.then(result => {
-				let hash = result?.Result?.fileHash;
-				if (hash) {
-					download(attachmentDownload(hash), hash+'.zip');
-				} else {
-					alert('Download failed');
-				}
-			})
-			.catch(() => alert('Download failed'));
-		}
+		downloadZip(hashes);
 	}
 
 	deleteWithoutMoveCommand() {
@@ -505,8 +475,8 @@ export class MailMessageList extends AbstractViewRight {
 
 				Remote.request('MessageSetSeenToAll', null, {
 					folder: sFolderFullName,
-					SetAction: 1,
-					ThreadUids: uids.join(',')
+					setAction: 1,
+					threadUids: uids.join(',')
 				});
 
 				MessagelistUserStore.reloadFlagsAndCachedMessage();

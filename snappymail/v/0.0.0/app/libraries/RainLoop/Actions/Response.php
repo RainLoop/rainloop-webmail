@@ -23,7 +23,7 @@ trait Response
 		}
 
 		return \array_merge(array(
-//			'Version' => APP_VERSION,
+//			'version' => APP_VERSION,
 			'Action' => $sActionName,
 			'Result' => $this->responseObject($mResult)
 		), $aAdditionalParams);

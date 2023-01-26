@@ -175,7 +175,7 @@ class ActionsAdmin extends Actions
 		$sPassword = $this->GetActionParam('Password', '');
 		$this->Logger()->AddSecret($sPassword);
 
-		$sNewPassword = $this->GetActionParam('NewPassword', '');
+		$sNewPassword = $this->GetActionParam('newPassword', '');
 		if (\strlen($sNewPassword)) {
 			$this->Logger()->AddSecret($sNewPassword);
 		}
@@ -295,11 +295,11 @@ class ActionsAdmin extends Actions
 		}
 
 		return $this->DefaultResponse(array(
-			 'Updatable' => \SnappyMail\Repository::canUpdateCore(),
-			 'Warning' => $bShowWarning,
-			 'Version' => $sVersion,
-			 'VersionCompare' => \version_compare(APP_VERSION, $sVersion),
-			 'Warnings' => $aWarnings
+			 'updatable' => \SnappyMail\Repository::canUpdateCore(),
+			 'warning' => $bShowWarning,
+			 'version' => $sVersion,
+			 'versionCompare' => \version_compare(APP_VERSION, $sVersion),
+			 'warnings' => $aWarnings
 		));
 	}
 

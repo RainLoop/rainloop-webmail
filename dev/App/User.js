@@ -79,7 +79,7 @@ export class AppUser extends AbstractApp {
 			(currentTime > (lastTime + interval + 1000))
 			&& Remote.request('Version',
 					iError => (100 < iError) && location.reload(),
-					{ Version: Settings.app('version') }
+					{ version: Settings.app('version') }
 				);
 			lastTime = currentTime;
 		}, interval);

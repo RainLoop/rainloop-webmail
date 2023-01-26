@@ -46,21 +46,15 @@ export class DomainAliasPopupView extends AbstractViewPopup {
 					this.close();
 				}
 			}, {
-				Name: this.name(),
-				Alias: this.alias()
+				name: this.name,
+				alias: this.alias
 			});
 	}
 
 	onShow() {
-		this.clearForm();
-	}
-
-	clearForm() {
 		this.saving(false);
 		this.savingError('');
-
 		this.name('');
-
 		this.alias('');
 	}
 }

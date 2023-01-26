@@ -123,7 +123,7 @@ trait Themes
 //			: \str_replace(';}', '}', \preg_replace('/\\s*([:;{},])\\s*/', '\1', \preg_replace('/\\s+/', ' ', \preg_replace('#/\\*.*?\\*/#s', '', $mResult))));
 	}
 
-	public function UploadBackground(): array
+	public function UploadBackground(?array $aFile, int $iError): array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -133,9 +133,6 @@ trait Themes
 
 		$sName = '';
 		$sHash = '';
-
-		$aFile = $this->GetActionParam('File', null);
-		$iError = $this->GetActionParam('Error', \RainLoop\Enumerations\UploadError::UNKNOWN);
 
 		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile)) {
 			$sMimeType = \SnappyMail\File\MimeType::fromFile($aFile['tmp_name'], $aFile['name'])

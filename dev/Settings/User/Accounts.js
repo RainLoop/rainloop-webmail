@@ -67,7 +67,7 @@ export class UserSettingsAccounts /*extends AbstractViewSettings*/ {
 					rl.app.accountsAndIdentities();
 				}
 			}, {
-				EmailToDelete: accountToRemove.email
+				emailToDelete: accountToRemove.email
 			});
 		}
 	}
@@ -81,7 +81,7 @@ export class UserSettingsAccounts /*extends AbstractViewSettings*/ {
 			this.identityForDeletion(null);
 			IdentityUserStore.remove(oIdentity => identityToRemove === oIdentity);
 			Remote.request('IdentityDelete', () => rl.app.accountsAndIdentities(), {
-				IdToDelete: identityToRemove.id()
+				idToDelete: identityToRemove.id()
 			});
 		}
 	}

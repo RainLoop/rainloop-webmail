@@ -926,7 +926,7 @@ class Actions
 
 	public function DoVersion(): array
 	{
-		return $this->DefaultResponse(APP_VERSION === (string)$this->GetActionParam('Version', ''));
+		return $this->DefaultResponse(APP_VERSION === (string)$this->GetActionParam('version', ''));
 	}
 
 	public function MainClearFileName(string $sFileName, string $sContentType, string $sMimeIndex, int $iMaxLength = 250): string
@@ -988,14 +988,11 @@ class Actions
 		return $sError;
 	}
 
-	public function Upload(): array
+	public function Upload(?array $aFile, int $iError): array
 	{
 		$oAccount = $this->getAccountFromToken();
 
 		$aResponse = array();
-
-		$aFile = $this->GetActionParam('File', null);
-		$iError = $this->GetActionParam('Error', Enumerations\UploadError::UNKNOWN);
 
 		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile)) {
 			$sSavedName = 'upload-post-' . \md5($aFile['name'] . $aFile['tmp_name']);

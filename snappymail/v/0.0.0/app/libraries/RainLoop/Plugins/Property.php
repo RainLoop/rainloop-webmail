@@ -190,12 +190,12 @@ class Property implements \JsonSerializable
 			'@Object' => 'Object/PluginProperty',
 			'value' => $this->mValue,
 			'placeholder' => $this->sPlaceholder,
-			'Name' => $this->sName,
-			'Type' => $this->iType,
-			'Label' => $this->sLabel,
-			'Default' => $this->mDefaultValue,
-			'Options' => $this->aOptions,
-			'Desc' => $this->sDesc
+			'name' => $this->sName,
+			'type' => $this->iType,
+			'label' => $this->sLabel,
+			'default' => $this->mDefaultValue,
+			'options' => $this->aOptions,
+			'desc' => $this->sDesc
 		);
 	}
 }

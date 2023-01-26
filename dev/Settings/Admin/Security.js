@@ -102,10 +102,10 @@ export class AdminSettingsSecurity extends AbstractViewSettings {
 				this.weakPassword(!!data.Result.Weak);
 			}
 		}, {
-			'Login': this.adminLogin(),
-			'Password': this.adminPassword(),
-			'NewPassword': this.adminPasswordNew(),
-			'TOTP': this.adminTOTP()
+			Login: this.adminLogin(),
+			Password: this.adminPassword(),
+			newPassword: this.adminPasswordNew(),
+			TOTP: this.adminTOTP()
 		});
 
 		return true;

@@ -369,7 +369,7 @@ trait Messages
 	{
 		$this->initMailClientConnection();
 
-		$sThreadUids = \trim($this->GetActionParam('ThreadUids', ''));
+		$sThreadUids = \trim($this->GetActionParam('threadUids', ''));
 
 		try
 		{
@@ -377,7 +377,7 @@ trait Messages
 				$this->GetActionParam('folder', ''),
 				empty($sThreadUids) ? new SequenceSet('1:*', false) : new SequenceSet(\explode(',', $sThreadUids)),
 				MessageFlag::SEEN,
-				!empty($this->GetActionParam('SetAction', '0'))
+				!empty($this->GetActionParam('setAction', '0'))
 			);
 		}
 		catch (\Throwable $oException)
@@ -395,7 +395,7 @@ trait Messages
 
 	public function DoMessageSetKeyword() : array
 	{
-		return $this->messageSetFlag($this->GetActionParam('Keyword', ''), true);
+		return $this->messageSetFlag($this->GetActionParam('keyword', ''), true);
 	}
 
 	/**
@@ -447,7 +447,7 @@ trait Messages
 		$this->initMailClientConnection();
 
 		$sFolder = $this->GetActionParam('folder', '');
-		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
+		$aUids = \explode(',', (string) $this->GetActionParam('uids', ''));
 
 		try
 		{
@@ -478,12 +478,12 @@ trait Messages
 	{
 		$this->initMailClientConnection();
 
-		$sFromFolder = $this->GetActionParam('FromFolder', '');
-		$sToFolder = $this->GetActionParam('ToFolder', '');
+		$sFromFolder = $this->GetActionParam('fromFolder', '');
+		$sToFolder = $this->GetActionParam('toFolder', '');
 
-		$oUids = new SequenceSet(\explode(',', (string) $this->GetActionParam('Uids', '')));
+		$oUids = new SequenceSet(\explode(',', (string) $this->GetActionParam('uids', '')));
 
-		if (!empty($this->GetActionParam('MarkAsRead', '0'))) {
+		if (!empty($this->GetActionParam('markAsRead', '0'))) {
 			try
 			{
 				$this->MailClient()->MessageSetFlag($sFromFolder, $oUids, MessageFlag::SEEN);
@@ -494,7 +494,7 @@ trait Messages
 			}
 		}
 
-		$sLearning = $this->GetActionParam('Learning', '');
+		$sLearning = $this->GetActionParam('learning', '');
 		if ($sLearning) {
 			try
 			{
@@ -544,9 +544,9 @@ trait Messages
 		try
 		{
 			$this->MailClient()->MessageCopy(
-				$this->GetActionParam('FromFolder', ''),
-				$this->GetActionParam('ToFolder', ''),
-				new SequenceSet(\explode(',', (string) $this->GetActionParam('Uids', '')))
+				$this->GetActionParam('fromFolder', ''),
+				$this->GetActionParam('toFolder', ''),
+				new SequenceSet(\explode(',', (string) $this->GetActionParam('uids', '')))
 			);
 		}
 		catch (\Throwable $oException)
@@ -688,8 +688,8 @@ trait Messages
 			}
 		}
 
-		// Try by default as OpenPGP.js sets GnuPG to 0
-		if ($this->GetActionParam('GnuPG', 1)) {
+		// Try by default as OpenPGP.js sets useGnuPG to 0
+		if ($this->GetActionParam('tryGnuPG', 1)) {
 			$GPG = $this->GnuPG();
 			if ($GPG) {
 				$info = $this->GnuPG()->verify($result['text'], $result['signature']);
@@ -873,9 +873,9 @@ trait Messages
 		{
 			$this->MailClient()->MessageSetFlag(
 				$this->GetActionParam('folder', ''),
-				new SequenceSet(\explode(',', (string) $this->GetActionParam('Uids', ''))),
+				new SequenceSet(\explode(',', (string) $this->GetActionParam('uids', ''))),
 				$sMessageFlag,
-				!empty($this->GetActionParam('SetAction', '0')),
+				!empty($this->GetActionParam('setAction', '0')),
 				$bSkipUnsupportedFlag
 			);
 		}
@@ -1041,7 +1041,7 @@ trait Messages
 		if ($sSigned = $this->GetActionParam('signed', '')) {
 			$aSigned = \explode("\r\n\r\n", $sSigned, 2);
 //			$sBoundary = \preg_replace('/^.+boundary="([^"]+)".+$/Dsi', '$1', $aSigned[0]);
-			$sBoundary = $this->GetActionParam('Boundary', '');
+			$sBoundary = $this->GetActionParam('boundary', '');
 
 			$oPart = new MimePart;
 			$oPart->Headers->AddByName(
@@ -1080,77 +1080,77 @@ trait Messages
 			unset($oAlternativePart);
 			unset($sEncrypted);
 
+		} else if ($sHtml = $this->GetActionParam('html', '')) {
+			$oPart = new MimePart;
+			$oPart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'multipart/alternative');
+			$oMessage->SubParts->append($oPart);
+
+			$sHtml = \MailSo\Base\HtmlUtils::BuildHtml($sHtml, $aFoundCids, $aFoundDataURL, $aFoundContentLocationUrls);
+			$this->Plugins()->RunHook('filter.message-html', array($oAccount, $oMessage, &$sHtml));
+
+			// First add plain
+			$sPlain = $this->GetActionParam('plain', '') ?: \MailSo\Base\HtmlUtils::ConvertHtmlToPlain($sHtml);
+			$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sPlain));
+			$oAlternativePart = new MimePart;
+			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'text/plain; charset=utf-8');
+			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
+			$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
+				\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sPlain))),
+				'convert.quoted-printable-encode'
+			);
+			$oPart->SubParts->append($oAlternativePart);
+			unset($sPlain);
+
+			// Now add HTML
+			$oAlternativePart = new MimePart;
+			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'text/html; charset=utf-8');
+			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
+			$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
+				\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sHtml))),
+				'convert.quoted-printable-encode'
+			);
+			$oPart->SubParts->append($oAlternativePart);
+
+			unset($oAlternativePart);
+			unset($sHtml);
+
 		} else {
-			if ($sHtml = $this->GetActionParam('html', '')) {
+			$sPlain = $this->GetActionParam('plain', '');
+/*
+			if ($sSignature = $this->GetActionParam('pgpSignature', null)) {
 				$oPart = new MimePart;
-				$oPart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'multipart/alternative');
+				$oPart->Headers->AddByName(
+					MimeEnumHeader::CONTENT_TYPE,
+					'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"'
+				);
 				$oMessage->SubParts->append($oPart);
 
-				$sHtml = \MailSo\Base\HtmlUtils::BuildHtml($sHtml, $aFoundCids, $aFoundDataURL, $aFoundContentLocationUrls);
-				$this->Plugins()->RunHook('filter.message-html', array($oAccount, $oMessage, &$sHtml));
-
-				// First add plain
-				$sPlain = $this->GetActionParam('plain', '') ?: \MailSo\Base\HtmlUtils::ConvertHtmlToPlain($sHtml);
-				$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sPlain));
 				$oAlternativePart = new MimePart;
-				$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'text/plain; charset=utf-8');
-				$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
-				$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
-					\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sPlain))),
-					'convert.quoted-printable-encode'
-				);
-				$oPart->SubParts->append($oAlternativePart);
-				unset($sPlain);
-
-				// Now add HTML
-				$oAlternativePart = new MimePart;
-				$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'text/html; charset=utf-8');
-				$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
-				$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
-					\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sHtml))),
-					'convert.quoted-printable-encode'
-				);
+				$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'text/plain; charset="utf-8"; protected-headers="v1"');
+				$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, 'base64');
+				$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sPlain)));
 				$oPart->SubParts->append($oAlternativePart);
 
-				unset($oAlternativePart);
-				unset($sHtml);
+				$oAlternativePart = new MimePart;
+				$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'application/pgp-signature; name="signature.asc"');
+				$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, '7Bit');
+				$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sSignature)));
+				$oPart->SubParts->append($oAlternativePart);
 
-			} else {
-				$sPlain = $this->GetActionParam('plain', '');
-				if ($sSignature = $this->GetActionParam('Signature', null)) {
-					$oPart = new MimePart;
-					$oPart->Headers->AddByName(
-						MimeEnumHeader::CONTENT_TYPE,
-						'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"'
-					);
-					$oMessage->SubParts->append($oPart);
-
-					$oAlternativePart = new MimePart;
-					$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'text/plain; charset="utf-8"; protected-headers="v1"');
-					$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, 'base64');
-					$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sPlain)));
-					$oPart->SubParts->append($oAlternativePart);
-
-					$oAlternativePart = new MimePart;
-					$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'application/pgp-signature; name="signature.asc"');
-					$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, '7Bit');
-					$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sSignature)));
-					$oPart->SubParts->append($oAlternativePart);
-				} else {
-					$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sPlain));
-					$oAlternativePart = new MimePart;
-					$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'text/plain; charset="utf-8"');
-					$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
-					$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
-						\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sPlain))),
-						'convert.quoted-printable-encode'
-					);
-					$oMessage->SubParts->append($oAlternativePart);
-				}
-				unset($oAlternativePart);
 				unset($sSignature);
-				unset($sPlain);
-			}
+			} else {
+*/
+			$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sPlain));
+			$oAlternativePart = new MimePart;
+			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'text/plain; charset="utf-8"');
+			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
+			$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
+				\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sPlain))),
+				'convert.quoted-printable-encode'
+			);
+			$oMessage->SubParts->append($oAlternativePart);
+			unset($oAlternativePart);
+			unset($sPlain);
 		}
 		unset($oPart);
 

@@ -29,7 +29,7 @@ export class AccountPopupView extends AbstractViewPopup {
 	submitForm(form) {
 		if (!this.submitRequest() && form.reportValidity()) {
 			const data = new FormData(form);
-			data.set('New', this.isNew() ? 1 : 0);
+			data.set('new', this.isNew() ? 1 : 0);
 			this.submitRequest(true);
 			Remote.request('AccountSetup', (iError, data) => {
 					this.submitRequest(false);

@@ -11,13 +11,13 @@ trait AdminDomains
 	{
 		$this->IsAdminLoggined();
 
-		return $this->DefaultResponse($this->DomainProvider()->Load($this->GetActionParam('Name', ''), false, false));
+		return $this->DefaultResponse($this->DomainProvider()->Load($this->GetActionParam('name', ''), false, false));
 	}
 
 	public function DoAdminDomainList() : array
 	{
 		$this->IsAdminLoggined();
-		$bIncludeAliases = !empty($this->GetActionParam('IncludeAliases', '1'));
+		$bIncludeAliases = !empty($this->GetActionParam('includeAliases', '1'));
 		return $this->DefaultResponse($this->DomainProvider()->GetList($bIncludeAliases));
 	}
 
@@ -25,7 +25,7 @@ trait AdminDomains
 	{
 		$this->IsAdminLoggined();
 
-		return $this->DefaultResponse($this->DomainProvider()->Delete((string) $this->GetActionParam('Name', '')));
+		return $this->DefaultResponse($this->DomainProvider()->Delete((string) $this->GetActionParam('name', '')));
 	}
 
 	public function DoAdminDomainDisable() : array
@@ -33,8 +33,8 @@ trait AdminDomains
 		$this->IsAdminLoggined();
 
 		return $this->DefaultResponse($this->DomainProvider()->Disable(
-			(string) $this->GetActionParam('Name', ''),
-			'1' === (string) $this->GetActionParam('Disabled', '0')
+			(string) $this->GetActionParam('name', ''),
+			!empty($this->GetActionParam('disabled', '0'))
 		));
 	}
 
@@ -52,8 +52,8 @@ trait AdminDomains
 		$this->IsAdminLoggined();
 
 		return $this->DefaultResponse($this->DomainProvider()->SaveAlias(
-			(string) $this->GetActionParam('Name', ''),
-			(string) $this->GetActionParam('Alias', '')
+			(string) $this->GetActionParam('name', ''),
+			(string) $this->GetActionParam('alias', '')
 		));
 	}
 
