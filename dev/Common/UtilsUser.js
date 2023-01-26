@@ -199,7 +199,7 @@ showMessageComposer = (params = []) =>
 setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
 {
 	if (source.layoutResizer && source.layoutResizer.mode != mode) {
-		target.removeAttribute('style');
+		target?.removeAttribute('style');
 		source.removeAttribute('style');
 	}
 	source.observer?.disconnect();
@@ -210,10 +210,10 @@ setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
 				let value;
 				if ('Width' == mode) {
 					value = source.offsetWidth;
-					target.style.left = value + 'px';
+					target && (target.style.left = value + 'px');
 				} else {
 					value = source.offsetHeight;
-					target.style.top = (4 + source.offsetTop + value) + 'px';
+					target && (target.style.top = value + 'px');
 				}
 				return value;
 			};
