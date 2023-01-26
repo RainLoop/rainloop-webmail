@@ -275,11 +275,17 @@ html.rl-no-preview-pane #rl-right .resizer {
 }
 
 html.rl-mobile {
+	#rl-left {
+		background: var(--main-bg-color);
+		position: fixed;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 50vw;
+		z-index: 2;
+	}
 	&.rl-left-panel-disabled #rl-left {
 		display: none;
-	}
-	#rl-right {
-		min-width: 100vw;
 	}
 }
 
