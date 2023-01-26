@@ -40,12 +40,14 @@ abstract class MimeType
 				\fclose($fp);
 			}
 			if ('application/zip' === \str_replace('/x-', '/', $mime)) {
-				$zip = new \ZipArchive($filename);
-				if (false !== $zip->locateName('word/_rels/document.xml.rels')) {
-					return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-				}
-				if (false !== $zip->locateName('xl/_rels/workbook.xml.rels')) {
-					return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+				$zip = new \ZipArchive();
+				if ($zip->open($filename, \ZIPARCHIVE::RDONLY)) {
+					if (false !== $zip->locateName('word/_rels/document.xml.rels')) {
+						return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+					}
+					if (false !== $zip->locateName('xl/_rels/workbook.xml.rels')) {
+						return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+					}
 				}
 			}
 		}
