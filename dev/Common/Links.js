@@ -79,6 +79,10 @@ export const
 	 * @returns {string}
 	 */
 	themePreviewLink = theme => {
+		if (theme.endsWith('@nextcloud')) {
+			theme = theme.slice(0, theme.length - 10).trim();
+			return OC().webroot + '/themes/' + encodeURI(theme) + '/snappymail.png';
+		}
 		let path = 'webVersionPath';
 		if (theme.endsWith('@custom')) {
 			theme = theme.slice(0, theme.length - 7).trim();

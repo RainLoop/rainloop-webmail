@@ -54,16 +54,25 @@ trait Themes
 		}
 
 		$sDir = APP_INDEX_ROOT_PATH . 'themes'; // custom user themes
-		if (\is_dir($sDir)) {
-			$rDirH = \opendir($sDir);
-			if ($rDirH) {
+		if (\is_dir($sDir) && ($rDirH = \opendir($sDir))) {
+			while (($sFile = \readdir($rDirH)) !== false) {
+				if ('.' !== $sFile[0] && \is_dir($sDir . '/' . $sFile)
+				 && (\file_exists("{$sDir}/{$sFile}/styles.css") || \file_exists("{$sDir}/{$sFile}/styles.less"))) {
+					$aCache[] = $sFile . '@custom';
+				}
+			}
+			\closedir($rDirH);
+		}
+
+		if (\class_exists('OC', false)) {
+			$sDir = \OC::$SERVERROOT . '/themes'; // custom user themes
+			if (\is_dir($sDir) && ($rDirH = \opendir($sDir))) {
 				while (($sFile = \readdir($rDirH)) !== false) {
 					if ('.' !== $sFile[0] && \is_dir($sDir . '/' . $sFile)
-					 && (\file_exists("{$sDir}/{$sFile}/styles.css") || \file_exists("{$sDir}/{$sFile}/styles.less"))) {
-						$aCache[] = $sFile . '@custom';
+					 && (\file_exists("{$sDir}/{$sFile}/snappymail.css") || \file_exists("{$sDir}/{$sFile}/snappymail.less"))) {
+						$aCache[] = $sFile . '@nextcloud';
 					}
 				}
-
 				\closedir($rDirH);
 			}
 		}
@@ -89,28 +98,33 @@ trait Themes
 
 	public function compileCss(string $sTheme, bool $bAdmin, bool $bMinified = false) : string
 	{
-		$bCustomTheme = '@custom' === \substr($sTheme, -7);
-		if ($bCustomTheme) {
-			$sTheme = \substr($sTheme, 0, -7);
-		}
-
 		$mResult = array();
-
-		$sBase = ($bCustomTheme ? \RainLoop\Utils::WebPath() : \RainLoop\Utils::WebVersionPath())
-				. "themes/{$sTheme}/";
-
 		$bLess = false;
 
-		$sThemeCSSFile = ($bCustomTheme ? APP_INDEX_ROOT_PATH : APP_VERSION_ROOT_PATH).'themes/'.$sTheme.'/styles.css';
+		if ('@nextcloud' === \substr($sTheme, -10)) {
+			$sBase = \OC::$WEBROOT . '/';
+			$sThemeCSSFile = \OC::$SERVERROOT . '/themes/' . \str_replace('@nextcloud', '/snappymail.css', $sTheme);
+		} else {
+			$bCustomTheme = '@custom' === \substr($sTheme, -7);
+			if ($bCustomTheme) {
+				$sTheme = \substr($sTheme, 0, -7);
+				$sBase = \RainLoop\Utils::WebPath();
+			} else {
+				$sBase = \RainLoop\Utils::WebVersionPath();
+			}
+			$sBase .= "themes/{$sTheme}/";
+			$sThemeCSSFile = ($bCustomTheme ? APP_INDEX_ROOT_PATH : APP_VERSION_ROOT_PATH).'themes/'.$sTheme.'/styles.css';
+			if (!\is_file($sThemeCSSFile)) {
+				$sThemeCSSFile = \str_replace('styles.css', 'styles.less', $sThemeCSSFile);
+				if (\is_file($sThemeCSSFile)) {
+					$bLess = true;
+					$mResult[] = "@base: \"{$sBase}\";";
+					$mResult[] = \file_get_contents($sThemeCSSFile);
+				}
+			}
+		}
 		if (\is_file($sThemeCSSFile)) {
 			$mResult[] = \file_get_contents($sThemeCSSFile);
-		} else {
-			$sThemeCSSFile = \str_replace('styles.css', 'styles.less', $sThemeCSSFile);
-			if (\is_file($sThemeCSSFile)) {
-				$bLess = true;
-				$mResult[] = "@base: \"{$sBase}\";";
-				$mResult[] = \file_get_contents($sThemeCSSFile);
-			}
 		}
 
 		$mResult[] = $this->Plugins()->CompileCss($bAdmin, $bLess, $bMinified);

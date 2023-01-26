@@ -59,6 +59,7 @@ export const
 
 	convertThemeName = theme => theme
 		.replace(/@custom$/, '')
+		.replace(/@nextcloud$/, '')
 		.replace(/([A-Z])/g, ' $1')
 		.replace(/[^a-zA-Z0-9]+/g, ' ')
 		.trim();
