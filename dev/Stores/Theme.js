@@ -57,12 +57,7 @@ export const
 			}, clearTimer);
 	},
 
-	convertThemeName = theme => theme
-		.replace(/@custom$/, '')
-		.replace(/@nextcloud$/, '')
-		.replace(/([A-Z])/g, ' $1')
-		.replace(/[^a-zA-Z0-9]+/g, ' ')
-		.trim();
+	convertThemeName = theme => theme.replace(/@[a-z]+$/, '').replace(/([A-Z])/g, ' $1').trim();
 
 ThemeStore.isMobile.subscribe(value => $htmlCL.toggle('rl-mobile', value));
 

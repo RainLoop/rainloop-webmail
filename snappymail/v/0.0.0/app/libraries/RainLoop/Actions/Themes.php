@@ -103,7 +103,7 @@ trait Themes
 
 		if ('@nextcloud' === \substr($sTheme, -10)) {
 			$sBase = \OC::$WEBROOT . '/';
-			$sThemeCSSFile = \OC::$SERVERROOT . '/themes/' . \str_replace('@nextcloud', '/snappymail.css', $sTheme);
+			$sThemeCSSFile = \OC::$SERVERROOT . '/themes/' . \str_replace('@nextcloud', '/snappymail/style.css', $sTheme);
 		} else {
 			$bCustomTheme = '@custom' === \substr($sTheme, -7);
 			if ($bCustomTheme) {
