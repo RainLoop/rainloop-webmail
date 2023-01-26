@@ -21,6 +21,12 @@ class NextcloudContactsSuggestions implements \RainLoop\Providers\Suggestions\IS
 				return [];
 			}
 
+			// Unregister system addressbook so as to return only contacts in user's addressbooks
+			foreach($cm->getUserAddressBooks() as $addressBook) {
+				if($addressBook->isSystemAddressBook()) {
+		   			 $cm->unregisterAddressBook($addressBook);
+				}
+			}
 			$aSearchResult = $cm->search($sQuery, array('FN', 'NICKNAME', 'TITLE', 'EMAIL'));
 
 			//$this->oLogger->WriteDump($aSearchResult);
