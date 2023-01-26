@@ -202,7 +202,9 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 					$mResult = array();
 				}
 				include_once __DIR__ . '/NextcloudContactsSuggestions.php';
-				$mResult[] = new NextcloudContactsSuggestions();
+				$mResult[] = new NextcloudContactsSuggestions(
+					$this->Config()->Get('plugin', 'ignoreSystemAddressbook', true)
+				);
 			}
 		}
 	}
@@ -211,6 +213,9 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		return array(
 			\RainLoop\Plugins\Property::NewInstance('suggestions')->SetLabel('Suggestions')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDefaultValue(true),
+			\RainLoop\Plugins\Property::NewInstance('ignoreSystemAddressbook')->SetLabel('Ignore system addressbook')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(true),
 			\RainLoop\Plugins\Property::NewInstance('calendar')->SetLabel('Enable "Put ICS in calendar"')
