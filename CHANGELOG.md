@@ -1,3 +1,31 @@
+## 2.25.0 – 2023-01-26
+
+## Changed
+- Right margin to folder search input wrapper by @codiflow
+  [#871](https://github.com/the-djmaze/snappymail/pull/871)
+- Almost all request params now use JavaScript camelCase instead of CamelCase
+- #rl-content to use flex for better layout control
+- Decode some Copernica link tracking
+- Cleanup some CSS and JS code
+- Better Sieve rainloop.user script handling
+- Improve MailSo\Imap\BodyStructure
+- Cleanup MIME part FileName handling
+
+## Fixed
+- CardDAV sync error - Request aborted
+  [#866](https://github.com/the-djmaze/snappymail/pull/866)
+- PDF not possible to be viewed in the browser
+  [#867](https://github.com/the-djmaze/snappymail/pull/867)
+- ZIP Files cannot be uploaded from Desktop to attachments (other files can be uploaded)
+  [#878](https://github.com/the-djmaze/snappymail/pull/878)
+- Mobile view issues with leftside menu
+- Default messageListItem border left color for dark mode
+- Nextcloud layout in ?admin
+- Nextcloud `_htaccess` to `.htaccess` failed
+
+### Removed
+- Some unused PHP functions
+
 ## 2.24.6 – 2023-01-18
 
 ## Added
