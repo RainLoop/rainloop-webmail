@@ -6,6 +6,11 @@ use OCP\Migration\IOutput;
 use OCP\Migration\IRepairStep;
 use OCP\ILogger;
 
+/**
+ * Note: this is not run at install, but when:
+ * - app is enabled in Admin -> Settings -> Apps
+ * - after upgrade
+ */
 class InstallStep implements IRepairStep
 {
 	public function getName() {
@@ -13,36 +18,23 @@ class InstallStep implements IRepairStep
 	}
 
 	public function run(IOutput $output) {
-		$_ENV['SNAPPYMAIL_NEXTCLOUD'] = true; // Obsolete
-		$_ENV['SNAPPYMAIL_INCLUDE_AS_API'] = true;
 
-//		define('APP_VERSION', '0.0.0');
-//		define('APP_INDEX_ROOT_PATH', __DIR__ . DIRECTORY_SEPARATOR);
-//		include APP_INDEX_ROOT_PATH.'snappymail/v/'.APP_VERSION.'/include.php';
-//		define('APP_DATA_FOLDER_PATH', \rtrim(\trim(\OC::$server->getSystemConfig()->getValue('datadirectory', '')), '\\/').'/appdata_snappymail/');
+		\clearstatcache();
+		\clearstatcache(true);
+
+		\OCA\SnappyMail\Util\SnappyMailHelper::loadApp();
 
 		$app_dir = \dirname(\dirname(__DIR__)) . '/app';
 
-		if (!\class_exists('RainLoop\\Api')) {
-			// Nextcloud the default spl_autoload_register() not working
-			\spl_autoload_register(function($sClassName){
-				$file = SNAPPYMAIL_LIBRARIES_PATH . \strtolower(\strtr($sClassName, '\\', DIRECTORY_SEPARATOR)) . '.php';
-				if (\is_file($file)) {
-					include_once $file;
-				}
-			});
-			require_once $app_dir . '/index.php';
-		}
-
 		// https://github.com/the-djmaze/snappymail/issues/790#issuecomment-1366527884
-		if (!file_exists($app_dir . '/.htaccess') && file_exists($app_dir . '/_htaccess')) {
-			rename($app_dir . '/_htaccess', $app_dir . '/.htaccess');
+		if (!\file_exists($app_dir . '/.htaccess') && \file_exists($app_dir . '/_htaccess')) {
+			\rename($app_dir . '/_htaccess', $app_dir . '/.htaccess');
 		}
-		if (!file_exists(APP_VERSION_ROOT_PATH . 'app/.htaccess') && file_exists(APP_VERSION_ROOT_PATH . 'app/_htaccess')) {
-			rename(APP_VERSION_ROOT_PATH . 'app/_htaccess', APP_VERSION_ROOT_PATH . 'app/.htaccess');
+		if (!\file_exists(APP_VERSION_ROOT_PATH . 'app/.htaccess') && \file_exists(APP_VERSION_ROOT_PATH . 'app/_htaccess')) {
+			\rename(APP_VERSION_ROOT_PATH . 'app/_htaccess', APP_VERSION_ROOT_PATH . 'app/.htaccess');
 		}
-		if (!file_exists(APP_VERSION_ROOT_PATH . 'static/.htaccess') && file_exists(APP_VERSION_ROOT_PATH . 'static/_htaccess')) {
-			rename(APP_VERSION_ROOT_PATH . 'static/_htaccess', APP_VERSION_ROOT_PATH . 'static/.htaccess');
+		if (!\file_exists(APP_VERSION_ROOT_PATH . 'static/.htaccess') && \file_exists(APP_VERSION_ROOT_PATH . 'static/_htaccess')) {
+			\rename(APP_VERSION_ROOT_PATH . 'static/_htaccess', APP_VERSION_ROOT_PATH . 'static/.htaccess');
 		}
 
 		$oConfig = \RainLoop\Api::Config();
@@ -72,26 +64,21 @@ class InstallStep implements IRepairStep
 		}
 
 		// Pre-configure domain
-		$ocConfig = \OC::$server->getConfig();
-		if ($ocConfig->getAppValue('snappymail', 'snappymail-autologin', false)
-		 || $ocConfig->getAppValue('snappymail', 'snappymail-autologin-with-email', false)
-		) {
-			$oProvider = \RainLoop\Api::Actions()->DomainProvider();
-			$oDomain = $oProvider->Load('nextcloud');
-			if (!$oDomain) {
-//				$oDomain = \RainLoop\Model\Domain::fromIniArray('nextcloud', []);
-				$oDomain = new \RainLoop\Model\Domain('nextcloud');
-				$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::NONE;
-				$oDomain->SetConfig(
-					'localhost', 143, $iSecurityType, true,
-					true, 'localhost', 4190, $iSecurityType,
-					'localhost', 25, $iSecurityType, true, true, false, false,
-					'');
-				$oProvider->Save($oDomain);
-				if (!$oConfig->Get('login', 'default_domain', '')) {
-					$oConfig->Set('login', 'default_domain', 'nextcloud');
-					$bSave = true;
-				}
+		$oProvider = \RainLoop\Api::Actions()->DomainProvider();
+		$oDomain = $oProvider->Load('nextcloud');
+		if (!$oDomain) {
+//			$oDomain = \RainLoop\Model\Domain::fromIniArray('nextcloud', []);
+			$oDomain = new \RainLoop\Model\Domain('nextcloud');
+			$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::NONE;
+			$oDomain->SetConfig(
+				'localhost', 143, $iSecurityType, true,
+				true, 'localhost', 4190, $iSecurityType,
+				'localhost', 25, $iSecurityType, true, true, false, false,
+				'');
+			$oProvider->Save($oDomain);
+			if (!$oConfig->Get('login', 'default_domain', '')) {
+				$oConfig->Set('login', 'default_domain', 'nextcloud');
+				$bSave = true;
 			}
 		}
 
