@@ -778,10 +778,9 @@ trait Messages
 			$oSmtpClient = new \MailSo\Smtp\SmtpClient();
 			$oSmtpClient->SetLogger($this->Logger());
 
-			$bUsePhpMail = false;
-			$oAccount->SmtpConnectAndLogin($this->Plugins(), $oSmtpClient, $this->Config(), $bUsePhpMail);
+			$oAccount->SmtpConnectAndLogin($this->Plugins(), $oSmtpClient);
 
-			if ($bUsePhpMail) {
+			if ($oSmtpClient->Settings->usePhpMail) {
 				if (\MailSo\Base\Utils::FunctionCallable('mail')) {
 					$aToCollection = $oMessage->GetTo();
 					if ($aToCollection && $oFrom) {
