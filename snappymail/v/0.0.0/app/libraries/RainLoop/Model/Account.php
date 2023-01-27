@@ -244,9 +244,11 @@ abstract class Account implements \JsonSerializable
 		$oSettings->Ehlo = \MailSo\Smtp\SmtpClient::EhloHelper();
 
 		$oPlugins->RunHook('smtp.before-connect', array($this, $oSmtpClient, $oSettings));
-		if (!$oSettings->usePhpMail) {
-			$oSmtpClient->Connect($oSettings, $oSettings->Ehlo);
+		if ($oSettings->usePhpMail) {
+			$bUsePhpMail = true;
+			return true;
 		}
+		$oSmtpClient->Connect($oSettings, $oSettings->Ehlo);
 		$oPlugins->RunHook('smtp.after-connect', array($this, $oSmtpClient, $oSettings));
 /*
 		if ($this->oDomain->OutAskCredentials() && !($this->sSmtpPassword && $this->sSmtpLogin)) {
