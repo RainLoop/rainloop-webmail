@@ -236,16 +236,15 @@ abstract class Account implements \JsonSerializable
 		return $this->netClientLogin($oImapClient, $oPlugins, $oSettings);
 	}
 
-	public function SmtpConnectAndLogin(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Smtp\SmtpClient $oSmtpClient, \RainLoop\Config\Application $oConfig, bool &$bUsePhpMail = false) : bool
+	public function SmtpConnectAndLogin(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Smtp\SmtpClient $oSmtpClient) : bool
 	{
 		$oSettings = $this->Domain()->SmtpSettings();
 		$oSettings->Login = $this->OutLogin();
-		$oSettings->usePhpMail = $bUsePhpMail;
 		$oSettings->Ehlo = \MailSo\Smtp\SmtpClient::EhloHelper();
 
 		$oPlugins->RunHook('smtp.before-connect', array($this, $oSmtpClient, $oSettings));
 		if ($oSettings->usePhpMail) {
-			$bUsePhpMail = true;
+			$oSmtpClient->Settings = $oSettings;
 			return true;
 		}
 		$oSmtpClient->Connect($oSettings, $oSettings->Ehlo);
