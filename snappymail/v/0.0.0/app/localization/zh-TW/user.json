@@ -34,7 +34,8 @@
 		"YES": "是",
 		"NO": "否",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "default"
+		"DEFAULT": "default",
+		"HELP": "Help"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "登錄",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "登入"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "添加帳戶",
-		"BUTTON_SETTINGS": "設置",
-		"BUTTON_HELP": "Help"
+		"BUTTON_ADD_ACCOUNT": "添加帳戶"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Mobile version",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "回復所有",
 		"LABEL_FORWARD": "Forward",
 		"LABEL_FORWARD_MULTIPLY": "Forward (multiply)",
-		"LABEL_HELP": "幫助",
 		"LABEL_CHECK_ALL": "檢查所有消息",
 		"LABEL_DELETE": "刪除",
 		"LABEL_OPEN_THREAD": "Open selected thread",

@@ -131,8 +131,6 @@
 		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "Hvitliste",
 		"SECURE_OPTION_NONE": "None",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Tillat sieve-skript",
 		"LABEL_USE_SHORT_LOGIN": "Bruk forkortet brukernavn",
 		"LABEL_USE_AUTH": "Bruk autentisering",

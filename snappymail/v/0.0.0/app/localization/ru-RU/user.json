@@ -34,7 +34,8 @@
 		"YES": "Да",
 		"NO": "Нет",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "основной"
+		"DEFAULT": "основной",
+		"HELP": "Помощь"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Логин",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Войти"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Добавить ещё аккаунт",
-		"BUTTON_SETTINGS": "Настройки",
-		"BUTTON_HELP": "Помощь"
+		"BUTTON_ADD_ACCOUNT": "Добавить ещё аккаунт"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Мобильная версия",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Ответить всем",
 		"LABEL_FORWARD": "Переслать",
 		"LABEL_FORWARD_MULTIPLY": "Переслать все выбранные сообщения",
-		"LABEL_HELP": "Помощь",
 		"LABEL_CHECK_ALL": "Выбрать все сообщения",
 		"LABEL_DELETE": "Удалить",
 		"LABEL_OPEN_THREAD": "Open selected thread",

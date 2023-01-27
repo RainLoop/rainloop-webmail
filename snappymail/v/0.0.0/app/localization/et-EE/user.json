@@ -34,7 +34,8 @@
 		"YES": "Jah",
 		"NO": "Ei",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "vaikimisi"
+		"DEFAULT": "vaikimisi",
+		"HELP": "Abi"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logi sisse",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Sisene"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Lisa konto",
-		"BUTTON_SETTINGS": "Sätted",
-		"BUTTON_HELP": "Abi"
+		"BUTTON_ADD_ACCOUNT": "Lisa konto"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Mobiiliversioon",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Vasta kõigile",
 		"LABEL_FORWARD": "Edasta",
 		"LABEL_FORWARD_MULTIPLY": "Edasta manusena",
-		"LABEL_HELP": "Abi",
 		"LABEL_CHECK_ALL": "Vali kõik kirjad",
 		"LABEL_DELETE": "Kustuta",
 		"LABEL_OPEN_THREAD": "Ava valitud lõim",

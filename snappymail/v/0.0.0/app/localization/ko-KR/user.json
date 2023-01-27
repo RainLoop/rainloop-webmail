@@ -34,7 +34,8 @@
 		"YES": "예",
 		"NO": "아니요",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "default"
+		"DEFAULT": "default",
+		"HELP": "도움말"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "아이디",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "로그인"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "계정 추가",
-		"BUTTON_SETTINGS": "설정",
-		"BUTTON_HELP": "도움말"
+		"BUTTON_ADD_ACCOUNT": "계정 추가"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "모바일 버전",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "전체 회신",
 		"LABEL_FORWARD": "전달",
 		"LABEL_FORWARD_MULTIPLY": "첨부파일로 전달",
-		"LABEL_HELP": "도움말",
 		"LABEL_CHECK_ALL": "전체 메시지  선택",
 		"LABEL_DELETE": "삭제",
 		"LABEL_OPEN_THREAD": "선택한 대화 열기",

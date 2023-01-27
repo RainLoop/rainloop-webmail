@@ -34,7 +34,8 @@
 		"YES": "Evet",
 		"NO": "Hayır",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "default"
+		"DEFAULT": "default",
+		"HELP": "Yardım"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Giriş",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Giriş Yap"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Hesap Ekle",
-		"BUTTON_SETTINGS": "Ayarlar",
-		"BUTTON_HELP": "Yardım"
+		"BUTTON_ADD_ACCOUNT": "Hesap Ekle"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Mobil versiyonu",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Tümünü Yanıtla",
 		"LABEL_FORWARD": "Yönlendir",
 		"LABEL_FORWARD_MULTIPLY": "Yönlendir (çoklu)",
-		"LABEL_HELP": "Yardım",
 		"LABEL_CHECK_ALL": "Tüm mesajları seç",
 		"LABEL_DELETE": "Sil",
 		"LABEL_OPEN_THREAD": "Open selected thread",

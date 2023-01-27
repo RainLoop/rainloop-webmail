@@ -34,7 +34,8 @@
 		"YES": "Ja",
 		"NO": "Nei",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "Standard"
+		"DEFAULT": "Standard",
+		"HELP": "Hjelp"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logg inn",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Logg inn"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Legg til konto",
-		"BUTTON_SETTINGS": "Innstillinger",
-		"BUTTON_HELP": "Hjelp"
+		"BUTTON_ADD_ACCOUNT": "Legg til konto"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Mobilversjon",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Svar alle",
 		"LABEL_FORWARD": "Videresend",
 		"LABEL_FORWARD_MULTIPLY": "Videresend som vedlegg",
-		"LABEL_HELP": "Hjelp",
 		"LABEL_CHECK_ALL": "Merk alle meldinger",
 		"LABEL_DELETE": "Slett",
 		"LABEL_OPEN_THREAD": "Åpne valgt tråd",

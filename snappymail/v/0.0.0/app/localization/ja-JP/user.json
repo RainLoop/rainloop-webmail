@@ -34,7 +34,8 @@
 		"YES": "はい",
 		"NO": "いいえ",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "デフォルト"
+		"DEFAULT": "デフォルト",
+		"HELP": "ヘルプ"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ログイン",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "サインイン"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "アカウントを追加",
-		"BUTTON_SETTINGS": "設定",
-		"BUTTON_HELP": "ヘルプ"
+		"BUTTON_ADD_ACCOUNT": "アカウントを追加"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "モバイル版",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "全員に返信",
 		"LABEL_FORWARD": "転送",
 		"LABEL_FORWARD_MULTIPLY": "転送(元のメッセージを添付)",
-		"LABEL_HELP": "ヘルプ",
 		"LABEL_CHECK_ALL": "すべてのメッセージを選択",
 		"LABEL_DELETE": "削除",
 		"LABEL_OPEN_THREAD": "選択したスレッドを開く",

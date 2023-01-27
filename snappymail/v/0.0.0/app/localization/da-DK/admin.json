@@ -131,8 +131,6 @@
 		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "Whitelist",
 		"SECURE_OPTION_NONE": "Ingen",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Tillad sieve skripts",
 		"LABEL_USE_SHORT_LOGIN": "Brug kort log ind",
 		"LABEL_USE_AUTH": "Brug godkendelse",

@@ -34,7 +34,8 @@
 		"YES": "是",
 		"NO": "否",
 		"INACTIVE": "不生效",
-		"DEFAULT": "默认"
+		"DEFAULT": "默认",
+		"HELP": "帮助"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "登录",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "登录"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "添加账户",
-		"BUTTON_SETTINGS": "设置",
-		"BUTTON_HELP": "帮助"
+		"BUTTON_ADD_ACCOUNT": "添加账户"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "移动端版本",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "回复所有",
 		"LABEL_FORWARD": "转发",
 		"LABEL_FORWARD_MULTIPLY": "作为附件转发",
-		"LABEL_HELP": "帮助",
 		"LABEL_CHECK_ALL": "选择所有消息",
 		"LABEL_DELETE": "删除",
 		"LABEL_OPEN_THREAD": "打开选定的邮件往来",

@@ -34,7 +34,8 @@
 		"YES": "Ja",
 		"NO": "Nej",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "standard"
+		"DEFAULT": "standard",
+		"HELP": "Hjælp"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Brugernavn",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Log ind"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Tilføj konto",
-		"BUTTON_SETTINGS": "Indstillinger",
-		"BUTTON_HELP": "Hjælp"
+		"BUTTON_ADD_ACCOUNT": "Tilføj konto"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Mobil udgave",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Svar alle",
 		"LABEL_FORWARD": "Videresend",
 		"LABEL_FORWARD_MULTIPLY": "Videresend som vedhæftning(er)",
-		"LABEL_HELP": "Hjælp",
 		"LABEL_CHECK_ALL": "Vælg alle meddelelser",
 		"LABEL_DELETE": "Slet",
 		"LABEL_OPEN_THREAD": "Åben valgte samtale",

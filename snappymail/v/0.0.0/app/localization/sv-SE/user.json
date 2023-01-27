@@ -34,7 +34,8 @@
 		"YES": "Ja",
 		"NO": "Nej",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "standard"
+		"DEFAULT": "standard",
+		"HELP": "Hjälp"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Användarnamn",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Logga in"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Lägg till konto",
-		"BUTTON_SETTINGS": "Inställningar",
-		"BUTTON_HELP": "Hjälp"
+		"BUTTON_ADD_ACCOUNT": "Lägg till konto"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Mobilversion",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Svara alla",
 		"LABEL_FORWARD": "Vidarebefordra",
 		"LABEL_FORWARD_MULTIPLY": "Vidarebefordra som bilaga(or)",
-		"LABEL_HELP": "Hjälp",
 		"LABEL_CHECK_ALL": "Kontrollera alla meddelanden",
 		"LABEL_DELETE": "Ta bort",
 		"LABEL_OPEN_THREAD": "Öppna valda trådar",

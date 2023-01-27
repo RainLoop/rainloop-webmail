@@ -34,7 +34,8 @@
 		"YES": "Yes",
 		"NO": "No",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "default"
+		"DEFAULT": "default",
+		"HELP": "Help"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Sign In"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Add Account",
-		"BUTTON_SETTINGS": "Settings",
-		"BUTTON_HELP": "Help"
+		"BUTTON_ADD_ACCOUNT": "Add Account"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Mobile version",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Reply All",
 		"LABEL_FORWARD": "Forward",
 		"LABEL_FORWARD_MULTIPLY": "Forward as attachment(s)",
-		"LABEL_HELP": "Help",
 		"LABEL_CHECK_ALL": "Select all messages",
 		"LABEL_DELETE": "Delete",
 		"LABEL_OPEN_THREAD": "Open selected thread",

@@ -34,7 +34,8 @@
 		"YES": "Ano",
 		"NO": "Ne",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "výchozí"
+		"DEFAULT": "výchozí",
+		"HELP": "Nápověda"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Uživatelské jméno",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Přihlásit"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Přidat účet",
-		"BUTTON_SETTINGS": "Nastavení",
-		"BUTTON_HELP": "Nápověda"
+		"BUTTON_ADD_ACCOUNT": "Přidat účet"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Mobilní verze",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Odpovědět všem",
 		"LABEL_FORWARD": "Přeposlat",
 		"LABEL_FORWARD_MULTIPLY": "Přeposlat jako přílohu",
-		"LABEL_HELP": "Nápověda",
 		"LABEL_CHECK_ALL": "Zjistit nové zprávy",
 		"LABEL_DELETE": "Smazat",
 		"LABEL_OPEN_THREAD": "Otevřít označenou konverzaci",

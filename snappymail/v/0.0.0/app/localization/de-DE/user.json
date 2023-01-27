@@ -34,7 +34,8 @@
 		"YES": "Ja",
 		"NO": "Nein",
 		"INACTIVE": "Inaktiv",
-		"DEFAULT": "Standard"
+		"DEFAULT": "Standard",
+		"HELP": "Hilfe"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Anmeldung",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Anmelden"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Konto hinzufügen",
-		"BUTTON_SETTINGS": "Einstellungen",
-		"BUTTON_HELP": "Hilfe"
+		"BUTTON_ADD_ACCOUNT": "Konto hinzufügen"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Mobile Version",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Allen Antworten",
 		"LABEL_FORWARD": "Weiterleiten",
 		"LABEL_FORWARD_MULTIPLY": "Als Anhang\/Anhänge weiterleiten",
-		"LABEL_HELP": "Hilfe",
 		"LABEL_CHECK_ALL": "Alle Nachrichten auswählen",
 		"LABEL_DELETE": "Löschen",
 		"LABEL_OPEN_THREAD": "Ausgewählte Unterhaltung öffnen",

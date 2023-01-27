@@ -34,7 +34,8 @@
 		"YES": "Ya",
 		"NO": "Tidak",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "Bawaan"
+		"DEFAULT": "Bawaan",
+		"HELP": "Bantuan"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Masuk"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Tambah Akun",
-		"BUTTON_SETTINGS": "Pengaturan",
-		"BUTTON_HELP": "Bantuan"
+		"BUTTON_ADD_ACCOUNT": "Tambah Akun"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Versi Mobile",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Balas semua",
 		"LABEL_FORWARD": "Teruskan",
 		"LABEL_FORWARD_MULTIPLY": "Teruskan sebagai berkas",
-		"LABEL_HELP": "Bantuan",
 		"LABEL_CHECK_ALL": "Pilih semua pesan",
 		"LABEL_DELETE": "Hapus",
 		"LABEL_OPEN_THREAD": "Buka pekerjaan terpilih",

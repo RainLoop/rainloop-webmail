@@ -34,7 +34,8 @@
 		"YES": "Kyllä",
 		"NO": "Ei",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "oletus"
+		"DEFAULT": "oletus",
+		"HELP": "Ohje"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Tunnus",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Kirjaudu"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Lisää tili",
-		"BUTTON_SETTINGS": "Asetukset",
-		"BUTTON_HELP": "Ohje"
+		"BUTTON_ADD_ACCOUNT": "Lisää tili"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Mobiiliversio",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Vastaa kaikille",
 		"LABEL_FORWARD": "Lähetä edelleen",
 		"LABEL_FORWARD_MULTIPLY": "Lähetä edelleen liitteenä",
-		"LABEL_HELP": "Ohje",
 		"LABEL_CHECK_ALL": "Valitse kaikki viestit",
 		"LABEL_DELETE": "Poista",
 		"LABEL_OPEN_THREAD": "Avaa valittu ketju",

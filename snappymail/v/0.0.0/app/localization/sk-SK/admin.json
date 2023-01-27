@@ -131,8 +131,6 @@
 		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "Zoznam povolených",
 		"SECURE_OPTION_NONE": "Žiadne",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Povoliť Sieve skripty",
 		"LABEL_USE_SHORT_LOGIN": "Použiť skrátené prihlásenie",
 		"LABEL_USE_AUTH": "Použiť overenie",

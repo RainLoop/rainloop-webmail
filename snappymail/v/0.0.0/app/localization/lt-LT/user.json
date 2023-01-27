@@ -34,7 +34,8 @@
 		"YES": "Taip",
 		"NO": "Ne",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "numatytasis"
+		"DEFAULT": "numatytasis",
+		"HELP": "Pagalba"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prisijungimo vardas",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Prisijungti"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Pridėti paskyrą",
-		"BUTTON_SETTINGS": "Nustatymai",
-		"BUTTON_HELP": "Pagalba"
+		"BUTTON_ADD_ACCOUNT": "Pridėti paskyrą"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Mobili versija",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Atsakyti visiems",
 		"LABEL_FORWARD": "Persiųsti",
 		"LABEL_FORWARD_MULTIPLY": "Persiųsti kaip prisegtuką",
-		"LABEL_HELP": "Pagalba",
 		"LABEL_CHECK_ALL": "Žymėti visus laiškus",
 		"LABEL_DELETE": "Šalinti",
 		"LABEL_OPEN_THREAD": "Atidaryti pasirinktą giją",

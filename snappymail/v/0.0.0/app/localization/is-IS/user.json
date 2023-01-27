@@ -34,7 +34,8 @@
 		"YES": "Já",
 		"NO": "Nei",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "sjálfgefið"
+		"DEFAULT": "sjálfgefið",
+		"HELP": "Hjálp"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Innskráning",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Skrá inn"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Bæta við aðgangi",
-		"BUTTON_SETTINGS": "Stillingar",
-		"BUTTON_HELP": "Hjálp"
+		"BUTTON_ADD_ACCOUNT": "Bæta við aðgangi"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Farsímaútgáfa",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Svara öllum",
 		"LABEL_FORWARD": "Áframsenda",
 		"LABEL_FORWARD_MULTIPLY": "Áframsenda sem viðhengi",
-		"LABEL_HELP": "Hjálp",
 		"LABEL_CHECK_ALL": "Velja öll skilaboð",
 		"LABEL_DELETE": "Eyða",
 		"LABEL_OPEN_THREAD": "Opna valinn þráð",

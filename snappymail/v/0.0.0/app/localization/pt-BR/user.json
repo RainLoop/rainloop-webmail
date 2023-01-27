@@ -34,7 +34,8 @@
 		"YES": "Sim",
 		"NO": "Não",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "padrão"
+		"DEFAULT": "padrão",
+		"HELP": "Ajuda"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Usuário",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Entrar"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Adicionar Conta",
-		"BUTTON_SETTINGS": "Configurações",
-		"BUTTON_HELP": "Ajuda"
+		"BUTTON_ADD_ACCOUNT": "Adicionar Conta"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Versão Mobile",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Responder todos",
 		"LABEL_FORWARD": "Encaminhar",
 		"LABEL_FORWARD_MULTIPLY": "Encaminhar como anexo",
-		"LABEL_HELP": "Ajuda",
 		"LABEL_CHECK_ALL": "Selecionar todas as mensagens",
 		"LABEL_DELETE": "Excluir",
 		"LABEL_OPEN_THREAD": "Abrir conversa selecionada",

@@ -34,7 +34,8 @@
 		"YES": "Jā",
 		"NO": "Nē",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "default"
+		"DEFAULT": "default",
+		"HELP": "Palīdzība"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Ielogoties",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Ielogoties"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Pievienot kontu",
-		"BUTTON_SETTINGS": "Uzstādijumi",
-		"BUTTON_HELP": "Palīdzība"
+		"BUTTON_ADD_ACCOUNT": "Pievienot kontu"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Mobilā versija",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Reply All",
 		"LABEL_FORWARD": "Forward",
 		"LABEL_FORWARD_MULTIPLY": "Forward (multiply)",
-		"LABEL_HELP": "Help",
 		"LABEL_CHECK_ALL": "Select all messages",
 		"LABEL_DELETE": "Delete",
 		"LABEL_OPEN_THREAD": "Open selected thread",

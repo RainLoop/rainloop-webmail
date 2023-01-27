@@ -34,7 +34,8 @@
 		"YES": "Da",
 		"NO": "Ne",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "privzeto"
+		"DEFAULT": "privzeto",
+		"HELP": "Pomoč"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prijava",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Prijavi se"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Dodaj račun",
-		"BUTTON_SETTINGS": "Nastavitve",
-		"BUTTON_HELP": "Pomoč"
+		"BUTTON_ADD_ACCOUNT": "Dodaj račun"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Mobilna različica",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Odgovori vsem",
 		"LABEL_FORWARD": "Posreduj",
 		"LABEL_FORWARD_MULTIPLY": "Posreduj kot prilogo\/-e",
-		"LABEL_HELP": "Pomoč",
 		"LABEL_CHECK_ALL": "Izberi vsa sporočila",
 		"LABEL_DELETE": "Izbriši",
 		"LABEL_OPEN_THREAD": "Odpri izbrano nit",

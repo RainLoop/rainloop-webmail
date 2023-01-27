@@ -131,8 +131,6 @@
 		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "White List",
 		"SECURE_OPTION_NONE": "None",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Allow sieve scripts",
 		"LABEL_USE_SHORT_LOGIN": "Use short login",
 		"LABEL_USE_AUTH": "Use authentication",

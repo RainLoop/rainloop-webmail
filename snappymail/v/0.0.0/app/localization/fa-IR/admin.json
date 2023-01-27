@@ -131,8 +131,6 @@
 		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "لیست سفید",
 		"SECURE_OPTION_NONE": "هیچ‌کدام",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "اجازه به اجرا‌شونده‌های sieve",
 		"LABEL_USE_SHORT_LOGIN": "استفاده از ورود کوتاه بدون دامنه",
 		"LABEL_USE_AUTH": "استفاده از احراز هویت",

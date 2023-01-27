@@ -34,7 +34,8 @@
 		"YES": "Да",
 		"NO": "Не",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "по подразбиране"
+		"DEFAULT": "по подразбиране",
+		"HELP": "Помощ"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Логин",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Вход"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Добави акаунт",
-		"BUTTON_SETTINGS": "Настройки",
-		"BUTTON_HELP": "Помощ"
+		"BUTTON_ADD_ACCOUNT": "Добави акаунт"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Мобилна версия",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Отговори до всички",
 		"LABEL_FORWARD": "Препрати",
 		"LABEL_FORWARD_MULTIPLY": "Препрати като прикачен файл",
-		"LABEL_HELP": "Помощ",
 		"LABEL_CHECK_ALL": "Провери всички съобщения",
 		"LABEL_DELETE": "Изтрий",
 		"LABEL_OPEN_THREAD": "Отвори избраната нишка",

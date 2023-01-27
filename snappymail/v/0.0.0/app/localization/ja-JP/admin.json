@@ -131,8 +131,6 @@
 		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "ホワイトリスト",
 		"SECURE_OPTION_NONE": "なし",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "SIEVEスクリプトを使用する",
 		"LABEL_USE_SHORT_LOGIN": "短いログイン名を使う",
 		"LABEL_USE_AUTH": "認証を使用する",

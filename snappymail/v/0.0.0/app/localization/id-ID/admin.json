@@ -131,8 +131,6 @@
 		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "Daftar Putih",
 		"SECURE_OPTION_NONE": "Tidak satupun",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Izinkan script sieve",
 		"LABEL_USE_SHORT_LOGIN": "Gunakan login singkat",
 		"LABEL_USE_AUTH": "Gunakan otentikasi",

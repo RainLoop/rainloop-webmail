@@ -34,7 +34,8 @@
 		"YES": "Ναι",
 		"NO": "Όχι",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "default"
+		"DEFAULT": "default",
+		"HELP": "Βοήθεια"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Είσοδος",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Σύνδεση"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Προσθήκη λογαριασμού",
-		"BUTTON_SETTINGS": "Ρυθμίσεις",
-		"BUTTON_HELP": "Βοήθεια"
+		"BUTTON_ADD_ACCOUNT": "Προσθήκη λογαριασμού"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Mobile version",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Απάντηση σε όλους",
 		"LABEL_FORWARD": "Προώθηση",
 		"LABEL_FORWARD_MULTIPLY": "Προώθησε σαν συνημμένο(α)",
-		"LABEL_HELP": "Βοήθεια",
 		"LABEL_CHECK_ALL": "Select all messages",
 		"LABEL_DELETE": "Διέγραψε",
 		"LABEL_OPEN_THREAD": "Open selected thread",

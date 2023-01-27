@@ -34,7 +34,8 @@
 		"YES": "Ok",
 		"NO": "Không",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "mặc định"
+		"DEFAULT": "mặc định",
+		"HELP": "Hỗ trợ"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Đăng nhập",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Đăng nhập"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Thêm tài khoản",
-		"BUTTON_SETTINGS": "Cài đặt",
-		"BUTTON_HELP": "Hỗ trợ"
+		"BUTTON_ADD_ACCOUNT": "Thêm tài khoản"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Phiên bản điện thoại",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Phản hồi tất cả",
 		"LABEL_FORWARD": "Chuyển tiếp",
 		"LABEL_FORWARD_MULTIPLY": "Chuyển tiếp dưới dạng đính kèm",
-		"LABEL_HELP": "Hỗ trợ",
 		"LABEL_CHECK_ALL": "Chọn tất cả thư",
 		"LABEL_DELETE": "Xóa",
 		"LABEL_OPEN_THREAD": "Mở chuỗi hội thoại được chọn",

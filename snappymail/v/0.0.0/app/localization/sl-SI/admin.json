@@ -131,8 +131,6 @@
 		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "Bela lista",
 		"SECURE_OPTION_NONE": "Nobeno",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Dovoljene sieve skripte",
 		"LABEL_USE_SHORT_LOGIN": "Uporaba uporabniškega imena brez domene",
 		"LABEL_USE_AUTH": "Uporaba overjanja",

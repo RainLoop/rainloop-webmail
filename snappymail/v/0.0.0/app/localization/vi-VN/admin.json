@@ -131,8 +131,6 @@
 		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "Danh sách trắng",
 		"SECURE_OPTION_NONE": "Không có",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Cho phép script của sieve",
 		"LABEL_USE_SHORT_LOGIN": "Dùng đăng nhập ngắn",
 		"LABEL_USE_AUTH": "Dùng xác minh",

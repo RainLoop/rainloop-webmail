@@ -131,8 +131,6 @@
 		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "Vitlista",
 		"SECURE_OPTION_NONE": "Ingen",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "StartTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Tillåta sikt skript",
 		"LABEL_USE_SHORT_LOGIN": "Använda korta inloggning",
 		"LABEL_USE_AUTH": "Använd autentisering",

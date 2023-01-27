@@ -34,7 +34,8 @@
 		"YES": "Так",
 		"NO": "Ні",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "default"
+		"DEFAULT": "default",
+		"HELP": "Допомога"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Логін",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Увійти"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Додати ще акаунт",
-		"BUTTON_SETTINGS": "Налаштування",
-		"BUTTON_HELP": "Допомога"
+		"BUTTON_ADD_ACCOUNT": "Додати ще акаунт"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Мобільна версія",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Відповісти всім",
 		"LABEL_FORWARD": "Переслати",
 		"LABEL_FORWARD_MULTIPLY": "Переслати всі вибрані повідомлення",
-		"LABEL_HELP": "Допомога",
 		"LABEL_CHECK_ALL": "Вибрати всі повідомлення",
 		"LABEL_DELETE": "Видалити",
 		"LABEL_OPEN_THREAD": "Відкрити відмічене листування",

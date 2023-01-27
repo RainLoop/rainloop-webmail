@@ -34,7 +34,8 @@
 		"YES": "Tak",
 		"NO": "Nie",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "domyślna"
+		"DEFAULT": "domyślna",
+		"HELP": "Pomoc"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Zaloguj"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Dodaj konto",
-		"BUTTON_SETTINGS": "Ustawienia",
-		"BUTTON_HELP": "Pomoc"
+		"BUTTON_ADD_ACCOUNT": "Dodaj konto"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Wersja mobilna",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Odpowiedz wszystkim",
 		"LABEL_FORWARD": "Przekaż dalej",
 		"LABEL_FORWARD_MULTIPLY": "Przekaż dalej jako załącznik(i)",
-		"LABEL_HELP": "Pomoc",
 		"LABEL_CHECK_ALL": "Zaznacz wszystkie wiadomości",
 		"LABEL_DELETE": "Usuń",
 		"LABEL_OPEN_THREAD": "Otwórz wybrany wątek",

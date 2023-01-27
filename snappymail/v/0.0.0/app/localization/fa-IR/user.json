@@ -34,7 +34,8 @@
 		"YES": "بلی",
 		"NO": "خیر",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "پیش‌فرض"
+		"DEFAULT": "پیش‌فرض",
+		"HELP": "راهنما"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ورود",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "ورود"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "ساخت کاربر",
-		"BUTTON_SETTINGS": "تنظیمات",
-		"BUTTON_HELP": "راهنما"
+		"BUTTON_ADD_ACCOUNT": "ساخت کاربر"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "نسخه موبایل",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "پاسخ به همه",
 		"LABEL_FORWARD": "ارسال به دیگران",
 		"LABEL_FORWARD_MULTIPLY": "ارسال بصورت پیوست(ها)",
-		"LABEL_HELP": "راهنما",
 		"LABEL_CHECK_ALL": "انتخاب همه پیام‌ها",
 		"LABEL_DELETE": "حذف",
 		"LABEL_OPEN_THREAD": "باز کردن موضوع انتخاب شده",

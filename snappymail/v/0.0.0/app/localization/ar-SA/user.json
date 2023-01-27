@@ -34,7 +34,8 @@
 		"YES": "نعم",
 		"NO": "لا",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "الافتراضي"
+		"DEFAULT": "الافتراضي",
+		"HELP": "المساعدة"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "تسيجيل الدخول",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "الدخول"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "ضفّ حساب",
-		"BUTTON_SETTINGS": "الإعدادات",
-		"BUTTON_HELP": "المساعدة"
+		"BUTTON_ADD_ACCOUNT": "ضفّ حساب"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Mobile version",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "الرد للجميع",
 		"LABEL_FORWARD": "إعادة التوجيه",
 		"LABEL_FORWARD_MULTIPLY": "إعادة التوجيه كملف مرفق",
-		"LABEL_HELP": "المساعدة",
 		"LABEL_CHECK_ALL": "تحديد جميع الرسائل",
 		"LABEL_DELETE": "حذف",
 		"LABEL_OPEN_THREAD": "فتح المواضيع المحددة",

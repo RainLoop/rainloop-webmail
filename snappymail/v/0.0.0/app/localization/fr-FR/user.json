@@ -34,7 +34,8 @@
 		"YES": "Oui",
 		"NO": "Non",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "défaut"
+		"DEFAULT": "défaut",
+		"HELP": "Aide"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Identifiant",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Se connecter"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Ajouter un compte",
-		"BUTTON_SETTINGS": "Paramètres",
-		"BUTTON_HELP": "Aide"
+		"BUTTON_ADD_ACCOUNT": "Ajouter un compte"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Version mobile",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Répondre à tous",
 		"LABEL_FORWARD": "Transférer",
 		"LABEL_FORWARD_MULTIPLY": "Transférer comme pièce(s) jointe(s)",
-		"LABEL_HELP": "Aide",
 		"LABEL_CHECK_ALL": "Sélectionner tous les messages",
 		"LABEL_DELETE": "Supprimer",
 		"LABEL_OPEN_THREAD": "Ouvrir le message selectionné",

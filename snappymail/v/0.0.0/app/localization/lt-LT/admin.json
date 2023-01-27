@@ -131,8 +131,6 @@
 		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "Baltas Sąrašas",
 		"SECURE_OPTION_NONE": "Nėra",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Leisti sieve programavimą",
 		"LABEL_USE_SHORT_LOGIN": "Naudoti trumpą prisijungimo vardą",
 		"LABEL_USE_AUTH": "Naudoti autentifikavimą ",

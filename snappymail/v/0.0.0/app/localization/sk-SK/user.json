@@ -34,7 +34,8 @@
 		"YES": "Áno",
 		"NO": "Nie",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "default"
+		"DEFAULT": "default",
+		"HELP": "Pomoc"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Používateľské meno",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Prihlásiť sa"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Pridať účet",
-		"BUTTON_SETTINGS": "Nastavenia",
-		"BUTTON_HELP": "Pomoc"
+		"BUTTON_ADD_ACCOUNT": "Pridať účet"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Verzia pre mobil",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Reply All",
 		"LABEL_FORWARD": "Forward",
 		"LABEL_FORWARD_MULTIPLY": "Forward (multiply)",
-		"LABEL_HELP": "Help",
 		"LABEL_CHECK_ALL": "Select all messages",
 		"LABEL_DELETE": "Delete",
 		"LABEL_OPEN_THREAD": "Open selected thread",

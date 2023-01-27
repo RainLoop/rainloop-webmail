@@ -34,7 +34,8 @@
 		"YES": "Igen",
 		"NO": "Nem",
 		"INACTIVE": "Inactive",
-		"DEFAULT": "default"
+		"DEFAULT": "default",
+		"HELP": "Súgó"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Bejelentkezés",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Belépés"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Fiók hozzáadás",
-		"BUTTON_SETTINGS": "Beállítások",
-		"BUTTON_HELP": "Súgó"
+		"BUTTON_ADD_ACCOUNT": "Fiók hozzáadás"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Mobil verzió",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Válasz mindenkinek",
 		"LABEL_FORWARD": "Továbbítás",
 		"LABEL_FORWARD_MULTIPLY": "Továbbítás melléklet(en)ként",
-		"LABEL_HELP": "Súgó",
 		"LABEL_CHECK_ALL": "Minden üzenet kijelölése",
 		"LABEL_DELETE": "Törlés",
 		"LABEL_OPEN_THREAD": "Kijelölt szál megnyitása",

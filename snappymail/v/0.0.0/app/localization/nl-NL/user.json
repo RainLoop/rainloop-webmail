@@ -5,7 +5,7 @@
 		"BACK": "Terug",
 		"BCC": "BCC",
 		"CANCEL": "Annuleer",
-		"CC": "Cc",
+		"CC": "CC",
 		"CLEAR": "Wissen",
 		"CLOSE": "Sluiten",
 		"CONTACTS": "Contactpersonen",
@@ -34,7 +34,8 @@
 		"YES": "Ja",
 		"NO": "Nee",
 		"INACTIVE": "Inactief",
-		"DEFAULT": "standaard"
+		"DEFAULT": "standaard",
+		"HELP": "Help"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Inlognaam",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Aanmelden"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Account toevoegen",
-		"BUTTON_SETTINGS": "Instellingen",
-		"BUTTON_HELP": "Help"
+		"BUTTON_ADD_ACCOUNT": "Account toevoegen"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Mobiele versie",
@@ -64,12 +63,12 @@
 		"DATE_3_MONTHS": "Tot 3 maanden oud",
 		"DATE_6_MONTHS": "Tot 6 maanden oud",
 		"DATE_YEAR": "Tot 1 jaar oud",
-		"SUBFOLDERS": "Subfolders",
+		"SUBFOLDERS": "Submappen",
 		"SUBFOLDERS_NONE": "Geen",
 		"SUBFOLDERS_SUBTREE": "Alle",
 		"SUBFOLDERS_SUBTREE_ONE": "Één niveau",
 		"REPLIED": "Beantwoord",
-		"KEYWORD": "Tag"
+		"KEYWORD": "Label"
 	},
 	"FOLDER_LIST": {
 		"BUTTON_COMPOSE": "Nieuw bericht",
@@ -99,7 +98,7 @@
 		"MENU_SELECT_SEEN": "Gelezen",
 		"MENU_SELECT_FLAGGED": "Met Vlag",
 		"MENU_SELECT_UNFLAGGED": "Zonder Vlag",
-		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download alle bijlagen",
 		"EMPTY_LIST": "Geen berichten",
 		"EMPTY_SEARCH_LIST": "Geen items gevonden",
 		"SEARCH_RESULT_FOR": "Zoekresultaten voor \"%SEARCH%\"",
@@ -151,8 +150,8 @@
 		"LINK_DOWNLOAD_AS_ZIP": "Download als zip",
 		"SPAM_SCORE": "Spamscore",
 		"HAS_VIRUS_WARNING": "WAARSCHUWING: virus gedetecteerd",
-		"TAGS": "Tags",
-		"NEW_TAG": "New tag"
+		"TAGS": "Labels",
+		"NEW_TAG": "Nieuwe label"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Belangrijk",
@@ -165,7 +164,7 @@
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "Ontvangstbevestiging (weergegeven) - %SUBJECT%",
-		"BODY": "Dit is een bevestiging dat uw bericht aan %READ-RECEIPT% is ontvangen.\n\nLet op: Deze ontvangstbevestiging bevestigd slechts dat uw bericht was weergegeven op het scherm van de ontvanger.\nEr is geen enkele garantie dat uw bericht is gelezen of begrepen.\n"
+		"BODY": "Dit is een bevestiging dat uw bericht aan %READ-RECEIPT% is ontvangen.\n\nLet op: Deze ontvangstbevestiging bevestigd slechts dat uw bericht was weergegeven op het scherm van de ontvanger.\nEr is geen enkele garantie dat uw bericht is gelezen of begrepen."
 	},
 	"SUGGESTIONS": {
 		"SEARCHING_DESC": "Zoeken..."
@@ -249,7 +248,7 @@
 		"TITLE_UPDATE_IDENTITY": "Identiteit bijwerken?",
 		"BUTTON_ADD_IDENTITY": "Toevoegen",
 		"BUTTON_UPDATE_IDENTITY": "Bijwerken",
-		"LABEL_SIGNATURE_INSERT_BEFORE": "Insert this signature before quoted text in replies"
+		"LABEL_SIGNATURE_INSERT_BEFORE": "Plaats deze handtekening vóór geciteerde tekst in antwoorden"
 	},
 	"POPUPS_CREATE_FOLDER": {
 		"TITLE_CREATE_FOLDER": "Map aanmaken?",
@@ -278,8 +277,8 @@
 		"BUTTON_VERIFY": "Verifiëren",
 		"SIGNED_MESSAGE": "OpenPGP ondertekend bericht",
 		"ENCRYPTED_MESSAGE": "OpenPGP versleuteld bericht",
-		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"STORE_IN_GNUPG": "Bewaar op de server in GnuPG",
+		"BACKUP_ON_SERVER": "Bewaar (versleuteld) op de server",
 		"GOOD_SIGNATURE": "Juiste handtekening van %USER%",
 		"ERROR": "OpenPGP foutmelding: %ERROR%"
 	},
@@ -334,10 +333,10 @@
 		"TITLE_SYSTEM_FOLDERS": "Selecteer systeem mappen",
 		"SELECT_CHOOSE_ONE": "Kies één",
 		"SELECT_UNUSE_NAME": "Niet gebruiken",
-		"NOTIFICATION_SENT": "U heeft nog geen \"Verzonden items\" folder aangeduid waar de berichten geplaatst worden na het versturen.\nIndien u geen verzonden berichten wilt bewaren, kies de \"Niet gebruiken\" optie.\n",
+		"NOTIFICATION_SENT": "U heeft nog geen \"Verzonden items\" folder aangeduid waar de berichten geplaatst worden na het versturen.\nIndien u geen verzonden berichten wilt bewaren, kies de \"Niet gebruiken\" optie.",
 		"NOTIFICATION_DRAFTS": "U heeft nog geen \"Concepten\" folder aangeduid waar de berichten bewaard worden tijdens het opstellen.",
-		"NOTIFICATION_SPAM": "U heeft nog geen \"Ongewenste e-mail\" folder aangeduid waar de spam berichten geplaatst worden.\nIndien u berichten permanent wilt verwijderen, kies de \"Niet gebruiken\" optie.\n",
-		"NOTIFICATION_TRASH": "U heeft nog geen \"Verwijderde items\" folder aangeduid waar de verwijderde berichten geplaatst worden.\nIndien u berichten permanent wilt verwijderen, kies de \"Niet gebruiken\" optie.\n",
+		"NOTIFICATION_SPAM": "U heeft nog geen \"Ongewenste e-mail\" folder aangeduid waar de spam berichten geplaatst worden.\nIndien u berichten permanent wilt verwijderen, kies de \"Niet gebruiken\" optie.",
+		"NOTIFICATION_TRASH": "U heeft nog geen \"Verwijderde items\" folder aangeduid waar de verwijderde berichten geplaatst worden.\nIndien u berichten permanent wilt verwijderen, kies de \"Niet gebruiken\" optie.",
 		"NOTIFICATION_ARCHIVE": "U heeft nog geen \"Archief\" map aangeduid waar de gearchiveerde berichten geplaatst worden."
 	},
 	"TITLES": {
@@ -406,7 +405,7 @@
 		"REMOVE_COLORS": "Verwijder achtergrond- en tekstkleuren uit het bericht",
 		"MESSAGE_PER_PAGE": "Berichten op pagina",
 		"MARK_MESSAGE_READ_AFTER": "Bericht markeren als gelezen na",
-		"MSG_DEFAULT_ACTION": "Default action",
+		"MSG_DEFAULT_ACTION": "Standaard actie",
 		"SECONDS": "seconden",
 		"NOTIFICATIONS": "Notificaties",
 		"SOUND_NOTIFICATION": "Notificatie geluid",
@@ -423,7 +422,7 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Adresboek URL",
 		"LABEL_CONTACTS_SYNC_USER": "Gebruikersnaam",
-		"SYNC_READ": "Read only"
+		"SYNC_READ": "Alleen lezen"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Thema's",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Alle beantwoorden",
 		"LABEL_FORWARD": "Doorsturen",
 		"LABEL_FORWARD_MULTIPLY": "Doorsturen als bijlage(n)",
-		"LABEL_HELP": "Help",
 		"LABEL_CHECK_ALL": "Selecteer alle berichten",
 		"LABEL_DELETE": "Verwijderen",
 		"LABEL_OPEN_THREAD": "Open geselecteerde berichtenlijst",

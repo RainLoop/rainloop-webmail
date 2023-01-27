@@ -34,7 +34,8 @@
 		"YES": "Bai",
 		"NO": "Ez",
 		"INACTIVE": "Inaktibo",
-		"DEFAULT": "lehenetsia"
+		"DEFAULT": "lehenetsia",
+		"HELP": "Laguntza"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
@@ -42,9 +43,7 @@
 		"BUTTON_SIGN_IN": "Sartu"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Gehitu kontua",
-		"BUTTON_SETTINGS": "Ezarpenak",
-		"BUTTON_HELP": "Laguntza"
+		"BUTTON_ADD_ACCOUNT": "Gehitu kontua"
 	},
 	"MOBILE": {
 		"BUTTON_MOBILE_VERSION": "Mugikorreko bertsioa",
@@ -487,7 +486,6 @@
 		"LABEL_REPLY_ALL": "Erantzun Denei",
 		"LABEL_FORWARD": "Birbidali",
 		"LABEL_FORWARD_MULTIPLY": "Birbidali eranskin moduan",
-		"LABEL_HELP": "Laguntza",
 		"LABEL_CHECK_ALL": "Aukeratu mezu guztiak",
 		"LABEL_DELETE": "Ezabatu",
 		"LABEL_OPEN_THREAD": "Ireki aukeratutako haria",

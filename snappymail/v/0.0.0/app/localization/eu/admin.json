@@ -131,8 +131,6 @@
 		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "Zerrenda Zuria",
 		"SECURE_OPTION_NONE": "Bat ere ez",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Onartu sieve scriptak",
 		"LABEL_USE_SHORT_LOGIN": "Erabili login motza",
 		"LABEL_USE_AUTH": "Erabili autentikazioa",
