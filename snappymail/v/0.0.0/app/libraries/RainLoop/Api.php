@@ -34,11 +34,11 @@ abstract class Api
 				\usleep(10000);
 				$oConfig->Load();
 			}
-//			\ini_set('display_errors', 0);
+//			\ini_set('display_errors', '0');
 			if ($oConfig->Get('debug', 'enable', false)) {
 				\error_reporting(E_ALL);
-//				\ini_set('display_errors', 1);
-				\ini_set('log_errors', 1);
+//				\ini_set('display_errors', '1');
+				\ini_set('log_errors', '1');
 			}
 		}
 		return $oConfig;

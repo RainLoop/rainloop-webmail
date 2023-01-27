@@ -48,8 +48,8 @@ if (!defined('APP_INDEX_ROOT_PATH')) {
 // revoke permissions
 umask(0077);
 
-ini_set('register_globals', 0);
-ini_set('xdebug.max_nesting_level', 500);
+ini_set('register_globals', '0');
+ini_set('xdebug.max_nesting_level', '500');
 
 define('APP_VERSION_ROOT_PATH', __DIR__ . DIRECTORY_SEPARATOR);
 

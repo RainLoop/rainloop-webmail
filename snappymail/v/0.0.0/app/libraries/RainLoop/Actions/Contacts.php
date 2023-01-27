@@ -130,7 +130,7 @@ trait Contacts
 			if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $aFile['tmp_name'])) {
 				$iError = \RainLoop\Enumerations\UploadError::ON_SAVING;
 			} else {
-				\ini_set('auto_detect_line_endings', true);
+				\ini_set('auto_detect_line_endings', '1');
 				$mData = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
 				if ($mData) {
 					$sFileStart = \fread($mData, 20);
@@ -153,7 +153,7 @@ trait Contacts
 				unset($mData);
 				$this->FilesProvider()->Clear($oAccount, $sSavedName);
 
-				\ini_set('auto_detect_line_endings', false);
+				\ini_set('auto_detect_line_endings', '0');
 			}
 		}
 
