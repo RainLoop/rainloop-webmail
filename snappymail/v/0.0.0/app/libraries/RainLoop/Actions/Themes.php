@@ -68,8 +68,7 @@ trait Themes
 			$sDir = \OC::$SERVERROOT . '/themes'; // custom user themes
 			if (\is_dir($sDir) && ($rDirH = \opendir($sDir))) {
 				while (($sFile = \readdir($rDirH)) !== false) {
-					if ('.' !== $sFile[0] && \is_dir($sDir . '/' . $sFile)
-					 && (\file_exists("{$sDir}/{$sFile}/snappymail.css") || \file_exists("{$sDir}/{$sFile}/snappymail.less"))) {
+					if ('.' !== $sFile[0] && \is_dir("{$sDir}/{$sFile}") && \file_exists("{$sDir}/{$sFile}/snappymail/style.css")) {
 						$aCache[] = $sFile . '@nextcloud';
 					}
 				}
