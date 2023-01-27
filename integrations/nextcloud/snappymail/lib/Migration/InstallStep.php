@@ -21,6 +21,8 @@ class InstallStep implements IRepairStep
 
 		\clearstatcache();
 		\clearstatcache(true);
+		// opcache_reset is a terrible solution, but certain Nextcloud setups have issues
+		\is_callable('opcache_reset') && \opcache_reset();
 
 		\OCA\SnappyMail\Util\SnappyMailHelper::loadApp();
 
