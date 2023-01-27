@@ -276,7 +276,8 @@ html.rl-no-preview-pane #rl-right .resizer {
 
 html.rl-mobile {
 	#rl-left {
-		background: var(--main-bg-color);
+		background: var(--main-bg-color, #aaa);
+		border-right: 1px solid var(--border-color, #ddd);
 		position: fixed;
 		left: 0;
 		top: 0;
