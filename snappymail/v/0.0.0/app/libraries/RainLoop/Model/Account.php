@@ -228,6 +228,8 @@ abstract class Account implements \JsonSerializable
 //		$oSettings->body_text_limit = \min($oSettings->body_text_limit, (int) $oConfig->Get('imap', 'body_text_limit', 50));
 //		$oSettings->thread_limit = \min($oSettings->thread_limit, (int) $oConfig->Get('imap', 'large_thread_limit', 50));
 
+		$oImapClient->Settings = $oSettings;
+
 		$oPlugins->RunHook('imap.before-connect', array($this, $oImapClient, $oSettings));
 		$oImapClient->Connect($oSettings);
 		$oPlugins->RunHook('imap.after-connect', array($this, $oImapClient, $oSettings));
@@ -242,9 +244,11 @@ abstract class Account implements \JsonSerializable
 		$oSettings->Login = $this->OutLogin();
 		$oSettings->Ehlo = \MailSo\Smtp\SmtpClient::EhloHelper();
 
+		$oSmtpClient->Settings = $oSettings;
+
 		$oPlugins->RunHook('smtp.before-connect', array($this, $oSmtpClient, $oSettings));
 		if ($oSettings->usePhpMail) {
-			$oSmtpClient->Settings = $oSettings;
+			$oSettings->useAuth = false;
 			return true;
 		}
 		$oSmtpClient->Connect($oSettings, $oSettings->Ehlo);
@@ -254,7 +258,6 @@ abstract class Account implements \JsonSerializable
 			throw new RequireCredentialsException
 		}
 */
-		$oSettings->useAuth = $oSettings->useAuth && !$oSettings->usePhpMail;
 		$oSettings->Password = $this->sSmtpPassword ?: $this->sPassword;
 		return $this->netClientLogin($oSmtpClient, $oPlugins, $oSettings);
 	}
@@ -263,6 +266,8 @@ abstract class Account implements \JsonSerializable
 	{
 		$oSettings = $this->Domain()->SieveSettings();
 		$oSettings->Login = $this->IncLogin();
+
+		$oSieveClient->Settings = $oSettings;
 
 		$oPlugins->RunHook('sieve.before-connect', array($this, $oSieveClient, $oSettings));
 		$oSieveClient->Connect($oSettings);
