@@ -5,12 +5,12 @@
 <form id="createfolderform" class="modal-body form-horizontal" autocomplete="off" spellcheck="false" data-bind="submit: submitForm">
 	<div class="control-group">
 		<label data-i18n="POPUPS_CREATE_FOLDER/LABEL_PARENT"></label>
-		<select name="Parent" data-bind="options: parentFolderSelectList, value: selectedParentValue,
+		<select name="parent" data-bind="options: parentFolderSelectList, value: selectedParentValue,
 			optionsText: 'name', optionsValue: 'id', optionsAfterRender: defaultOptionsAfterRender"></select>
 	</div>
 	<div class="control-group">
 		<label data-i18n="GLOBAL/NAME"></label>
-		<input name="Folder" type="text"
+		<input name="folder" type="text"
 			autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off"
 			required="" pattern="^[^\\/]+$" data-bind="textInput: folderName">
 	</div>
