@@ -7,7 +7,7 @@ import { folderListOptionsBuilder, sortFolders } from 'Common/Folders';
 import { getNotification } from 'Common/Translator';
 
 import { FolderUserStore } from 'Stores/User/Folder';
-import { SettingsUserStore } from 'Stores/User/Settings';
+//import { SettingsUserStore } from 'Stores/User/Settings';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -22,7 +22,7 @@ export class FolderCreatePopupView extends AbstractViewPopup {
 
 		addObservablesTo(this, {
 			folderName: '',
-			folderSubscribe: SettingsUserStore.hideUnsubscribed(),
+			folderSubscribe: true,//SettingsUserStore.hideUnsubscribed(),
 
 			selectedParentValue: UNUSED_OPTION_VALUE
 		});
