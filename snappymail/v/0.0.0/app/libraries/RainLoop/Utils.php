@@ -74,12 +74,16 @@ class Utils
 
 	public static function GetConnectionToken() : string
 	{
+		$oActions = \RainLoop\Api::Actions();
+		$oAccount = $oActions->getAccountFromToken(false) ?: $oActions->getMainAccountFromToken(false);
+		if ($oAccount) {
+			return $oAccount->Hash();
+		}
 		$sToken = static::GetCookie(self::CONNECTION_TOKEN);
 		if (!$sToken) {
 			$sToken = \MailSo\Base\Utils::Sha1Rand(APP_SALT);
 			static::SetCookie(self::CONNECTION_TOKEN, $sToken, \time() + 3600 * 24 * 30);
 		}
-
 		return \sha1('Connection'.APP_SALT.$sToken.'Token'.APP_SALT);
 	}
 

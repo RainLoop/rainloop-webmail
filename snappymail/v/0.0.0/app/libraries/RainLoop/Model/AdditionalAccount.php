@@ -14,7 +14,7 @@ class AdditionalAccount extends Account
 
 	public function Hash() : string
 	{
-		return \md5(parent::Hash() . $this->ParentEmail());
+		return \sha1(parent::Hash() . $this->ParentEmail());
 	}
 
 	public static function convertArray(array $aAccount) : array
