@@ -5,7 +5,7 @@ ko.bindingHandlers['textInput'] = {
             timeoutHandle,
             elementValueBeforeEvent;
 
-        var updateModel = event => {
+        var updateModel = () => {
             clearTimeout(timeoutHandle);
             elementValueBeforeEvent = timeoutHandle = undefined;
 
