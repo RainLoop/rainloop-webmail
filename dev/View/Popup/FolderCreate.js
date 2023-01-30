@@ -1,13 +1,11 @@
 import { koComputable, addObservablesTo } from 'External/ko';
 
 import { Notification } from 'Common/Enums';
-import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { defaultOptionsAfterRender } from 'Common/Utils';
 import { folderListOptionsBuilder, sortFolders } from 'Common/Folders';
 import { getNotification } from 'Common/Translator';
 
 import { FolderUserStore } from 'Stores/User/Folder';
-//import { SettingsUserStore } from 'Stores/User/Settings';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -21,10 +19,9 @@ export class FolderCreatePopupView extends AbstractViewPopup {
 		super('FolderCreate');
 
 		addObservablesTo(this, {
-			folderName: '',
-			folderSubscribe: true,//SettingsUserStore.hideUnsubscribed(),
-
-			selectedParentValue: UNUSED_OPTION_VALUE
+			name: '',
+			subscribe: true,
+			parentFolder: ''
 		});
 
 		this.parentFolderSelectList = koComputable(() =>
@@ -46,9 +43,8 @@ export class FolderCreatePopupView extends AbstractViewPopup {
 	submitForm(form) {
 		if (form.reportValidity()) {
 			const data = new FormData(form);
-			data.set('subscribe', this.folderSubscribe() ? 1 : 0);
 
-			let parentFolderName = this.selectedParentValue();
+			let parentFolderName = this.parentFolder();
 			if (!parentFolderName && 1 < FolderUserStore.namespace.length) {
 				data.set('parent', FolderUserStore.namespace.slice(0, FolderUserStore.namespace.length - 1));
 			}
@@ -79,7 +75,8 @@ export class FolderCreatePopupView extends AbstractViewPopup {
 	}
 
 	onShow() {
-		this.folderName('');
-		this.selectedParentValue('');
+		this.name('');
+		this.subscribe(true);
+		this.parentFolder('');
 	}
 }

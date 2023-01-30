@@ -91,7 +91,7 @@ trait Folders
 			$oFolder = $this->MailClient()->FolderCreate(
 				$this->GetActionParam('folder', ''),
 				$this->GetActionParam('parent', ''),
-				!!$this->GetActionParam('subscribe', 1)
+				!empty($this->GetActionParam('subscribe', 0))
 			);
 
 //			FolderInformation(string $sFolderName, int $iPrevUidNext = 0, array $aUids = array())
@@ -121,7 +121,7 @@ trait Folders
 		$this->initMailClientConnection();
 
 		$sFolderFullName = $this->GetActionParam('folder', '');
-		$bSubscribe = '1' === (string) $this->GetActionParam('subscribe', '0');
+		$bSubscribe = !empty($this->GetActionParam('subscribe', 0));
 
 		try
 		{
@@ -183,7 +183,7 @@ trait Folders
 			$this->MailClient()->FolderMove(
 				$this->GetActionParam('folder', ''),
 				$this->GetActionParam('newFolder', ''),
-				!!$this->GetActionParam('subscribe', 1)
+				!empty($this->GetActionParam('subscribe', 1))
 			);
 		}
 		catch (\Throwable $oException)
@@ -207,7 +207,7 @@ trait Folders
 			$sFullName = $this->MailClient()->FolderRename(
 				$this->GetActionParam('folder', ''),
 				$sName,
-				!!$this->GetActionParam('subscribe', 1)
+				!empty($this->GetActionParam('subscribe', 1))
 			);
 		}
 		catch (\Throwable $oException)
