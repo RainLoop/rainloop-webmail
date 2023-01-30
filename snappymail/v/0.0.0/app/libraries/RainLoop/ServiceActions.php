@@ -540,29 +540,6 @@ class ServiceActions
 		return $this->localAppData(true);
 	}
 
-	public function ServiceNoScript() : string
-	{
-		return $this->localError($this->oActions->StaticI18N('NO_SCRIPT_TITLE'), $this->oActions->StaticI18N('NO_SCRIPT_DESC'));
-	}
-
-	public function ServiceNoCookie() : string
-	{
-		return $this->localError($this->oActions->StaticI18N('NO_COOKIE_TITLE'), $this->oActions->StaticI18N('NO_COOKIE_DESC'));
-	}
-
-	public function ServiceBadBrowser() : string
-	{
-		$sTitle = $this->oActions->StaticI18N('BAD_BROWSER_TITLE');
-		$sDesc = \nl2br($this->oActions->StaticI18N('BAD_BROWSER_DESC'));
-
-		\header('Content-Type: text/html; charset=utf-8');
-		return \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/BadBrowser.html'), array(
-			'{{ErrorTitle}}' => $sTitle,
-			'{{ErrorHeader}}' => $sTitle,
-			'{{ErrorDesc}}' => $sDesc
-		));
-	}
-
 	public function ServiceMailto() : string
 	{
 		$this->oHttp->ServerNoCache();

@@ -6,11 +6,10 @@ const
 	app = eId('app'),
 	admin = app && '1' == app.dataset.admin,
 	layout = doc.cookie.match(/(^|;) ?rllayout=([^;]+)/) || '',
-	redirect = path => doc.location.replace(qUri(path)),
 
 	showError = msg => {
 		let div = eId('loading-error');
-		div.append(' ' + msg);
+		div.append(msg);
 		eId('loading').hidden = true;
 		div.hidden = false;
 	},
@@ -28,9 +27,6 @@ const
 			doc.head.append(script);
 		});
 	};
-
-navigator.cookieEnabled || redirect('NoCookie');
-[].flat || redirect('BadBrowser');
 
 try {
 	let smctoken = doc.cookie.match(/(^|;) ?smctoken=([^;]+)/);
@@ -87,7 +83,15 @@ window.rl = {
 	loadScript: loadScript
 };
 
-loadScript(qUri(`${admin ? 'Admin' : ''}AppData/0/${Math.random().toString().slice(2)}/`))
+if (!navigator.cookieEnabled) {
+	eId('loading').hidden = true;
+	eId('NoCookie').hidden = false;
+} else if (![].flat) {
+	eId('loading').hidden = true;
+	eId('BadBrowser').hidden = false;
+} else {
+	loadScript(qUri(`${admin ? 'Admin' : ''}AppData/0/${Math.random().toString().slice(2)}/`))
 	.catch(e => showError(e));
+}
 
 })(document);

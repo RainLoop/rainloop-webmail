@@ -148,6 +148,8 @@ abstract class Service
 			$sFaviconPngLink = $sFaviconUrl ?: Utils::WebStaticPath('apple-touch-icon.png');
 			$sAppleTouchLink = $sFaviconUrl ? '' : Utils::WebStaticPath('apple-touch-icon.png');
 
+			$oActions = Api::Actions();
+
 			$aTemplateParameters = array(
 				'{{BaseAppFaviconPngLinkTag}}' => $sFaviconPngLink ? '<link type="image/png" rel="shortcut icon" href="'.$sFaviconPngLink.'">' : '',
 				'{{BaseAppFaviconTouchLinkTag}}' => $sAppleTouchLink ? '<link type="image/png" rel="apple-touch-icon" href="'.$sAppleTouchLink.'">' : '',
@@ -155,7 +157,13 @@ abstract class Service
 				'{{BaseAppManifestLink}}' => Utils::WebStaticPath('manifest.json'),
 				'{{BaseFavIconSvg}}' => $sFaviconUrl ? '' : Utils::WebStaticPath('favicon.svg'),
 				'{{LoadingDescriptionEsc}}' => \htmlspecialchars($oConfig->Get('webmail', 'loading_description', 'SnappyMail'), ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
-				'{{BaseAppAdmin}}' => $bAdmin ? 1 : 0
+				'{{BaseAppAdmin}}' => $bAdmin ? 1 : 0,
+
+				'{{NO_SCRIPT_DESC}}' => \nl2br($oActions->StaticI18N('NO_SCRIPT_TITLE') . "\n" . $oActions->StaticI18N('NO_SCRIPT_DESC')),
+				'{{NO_COOKIE_TITLE}}' => $oActions->StaticI18N('NO_COOKIE_TITLE'),
+				'{{NO_COOKIE_DESC}}' => $oActions->StaticI18N('NO_COOKIE_DESC'),
+				'{{BAD_BROWSER_TITLE}}' => $oActions->StaticI18N('BAD_BROWSER_TITLE'),
+				'{{BAD_BROWSER_DESC}}' => \nl2br($oActions->StaticI18N('BAD_BROWSER_DESC'))
 			);
 
 			$sCacheFileName = '';

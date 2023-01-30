@@ -60,7 +60,7 @@ body#rl-app {
 	width: 100vw;
 }
 
-#rl-loading, #rl-loading-error {
+#rl-loading, #rl-loading-error, #rl-BadBrowser, #rl-NoCookie {
 	color: var(--loading-color, #000);
 	text-shadow: var(--loading-text-shadow);
 	font-size: 30px;
