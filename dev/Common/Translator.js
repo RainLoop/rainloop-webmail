@@ -47,6 +47,7 @@ export const
 			let rtf = new Intl.RelativeTimeFormat(doc.documentElement.lang);
 			return rtf.format(seconds, unit);
 		}
+		// Safari < 14
 		abs = Math.abs(seconds);
 		let rtf = rl.relativeTime.long[unit][0 > seconds ? 'past' : 'future'],
 			plural = rl.relativeTime.plural(abs);

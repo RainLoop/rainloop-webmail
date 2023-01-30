@@ -17,6 +17,7 @@
 /data
 /MULTIPLY
 /include.php
+/issues
 .idea/
 .env
 /test

@@ -1,3 +1,31 @@
+## 2.25.1 – 2023-01-30
+
+## Added
+- Support RFC 8689
+- Nextcloud move themes outside of app folder
+  [#875](https://github.com/the-djmaze/snappymail/pull/875)
+- Add check to unregister system addressbook by @akhil1508
+  [#879](https://github.com/the-djmaze/snappymail/pull/879)
+
+## Changed
+- material-design checkbox use hidden input for accessibility
+- Always subscribe to new folder by default
+- Merge NoScript, NoCookie and BadBrowser pages in Index.html
+- Cleanup translations. Also see https://snappymail.eu/translate.php
+
+## Fixed
+- PHP < 8.1 ini_set() only accepts strings when `declare(strict_types=1);` is used
+- Nextcloud also fix settings on upgrade
+- Nextcloud workaround upgrade OPCache issue
+  [#880](https://github.com/the-djmaze/snappymail/pull/880)
+- SMTP error while using PHP mail()
+  [#884](https://github.com/the-djmaze/snappymail/pull/884)
+- Cannot create folder
+  [#885](https://github.com/the-djmaze/snappymail/pull/885)
+- Image stretching when image hasd max-width
+  [#869](https://github.com/the-djmaze/snappymail/pull/869)
+
+
 ## 2.25.0 – 2023-01-26
 
 ## Changed
