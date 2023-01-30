@@ -48,6 +48,12 @@
 						<span data-i18n="COMPOSE/BUTTON_REQUEST_DSN"></span>
 					</a>
 				</li>
+				<li data-bind="click: function () { requireTLS(!requireTLS()); }">
+					<a>
+						<i class="fontastic" data-bind="text: requireTLS() ? '☑' : '☐'"></i>
+						<span data-i18n="COMPOSE/BUTTON_REQUIRE_TLS"></span>
+					</a>
+				</li>
 				<li data-bind="click: function () { markAsImportant(!markAsImportant()); }">
 					<a>
 						<i class="fontastic" data-bind="text: markAsImportant() ? '☑' : '☐'"></i>

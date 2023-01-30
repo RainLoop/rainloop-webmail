@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Prašyti pranešti kada bus perskaitytas",
 		"BUTTON_MARK_AS_IMPORTANT": "Žymėti svarbiu",
-		"BUTTON_REQUEST_DSN": "Prašyti laiško gavimo pažymos"
+		"BUTTON_REQUEST_DSN": "Prašyti laiško gavimo pažymos",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Ar tikrai norite uždaryti šį langą??",

@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Be om en bekreftelse fra mottaker på at meldinga er lest",
 		"BUTTON_MARK_AS_IMPORTANT": "Marker som viktig",
-		"BUTTON_REQUEST_DSN": "Be om leveringsbekreftelse"
+		"BUTTON_REQUEST_DSN": "Be om leveringsbekreftelse",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Er du sikker på at du vil lukke dette vinduet?",

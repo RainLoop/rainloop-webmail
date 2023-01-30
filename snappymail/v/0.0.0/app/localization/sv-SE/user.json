@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Begär mottagningskvitto",
 		"BUTTON_MARK_AS_IMPORTANT": "Markera som viktigt",
-		"BUTTON_REQUEST_DSN": "Begär ett leveranskvitto"
+		"BUTTON_REQUEST_DSN": "Begär ett leveranskvitto",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Vill du stänga detta fönster?",

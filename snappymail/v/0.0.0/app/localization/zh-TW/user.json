@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Request a read receipt",
 		"BUTTON_MARK_AS_IMPORTANT": "Mark as important",
-		"BUTTON_REQUEST_DSN": "Request a delivery receipt"
+		"BUTTON_REQUEST_DSN": "Request a delivery receipt",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "你確定要關閉此窗口嗎?",

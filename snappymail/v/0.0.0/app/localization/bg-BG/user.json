@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Поискайте разписка за прочитане на съобщението",
 		"BUTTON_MARK_AS_IMPORTANT": "Отбележи като важно",
-		"BUTTON_REQUEST_DSN": "Уведомяване при доставка"
+		"BUTTON_REQUEST_DSN": "Уведомяване при доставка",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Сигурни ли сте, че желаете да затворите този прозорец?",

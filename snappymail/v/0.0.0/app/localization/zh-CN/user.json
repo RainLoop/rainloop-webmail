@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "启用浏览器拼写检查器",
 		"BUTTON_REQUEST_READ_RECEIPT": "要求已读回执",
 		"BUTTON_MARK_AS_IMPORTANT": "标记为“重要”",
-		"BUTTON_REQUEST_DSN": "要求送达回执"
+		"BUTTON_REQUEST_DSN": "要求送达回执",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "您确定要关闭此窗口吗？",

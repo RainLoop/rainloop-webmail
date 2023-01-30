@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Pyydä kuittaus",
 		"BUTTON_MARK_AS_IMPORTANT": "Merkitse tärkeäksi",
-		"BUTTON_REQUEST_DSN": "Pyydä toimituskuittaus"
+		"BUTTON_REQUEST_DSN": "Pyydä toimituskuittaus",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Haluatko varmasti sulkea tämän ikkunan?",

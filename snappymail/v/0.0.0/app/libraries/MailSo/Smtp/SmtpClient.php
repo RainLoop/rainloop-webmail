@@ -191,14 +191,14 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
-	public function MailFrom(string $sFrom, string $sSizeIfSupported = '', bool $bDsn = false) : self
+	public function MailFrom(string $sFrom, int $iSizeIfSupported = 0, bool $bDsn = false, bool $bRequireTLS = false) : self
 	{
 		$sFrom = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sFrom), true);
 
 		$sCmd = "FROM:<{$sFrom}>";
 
-		if (\strlen($sSizeIfSupported) && \is_numeric($sSizeIfSupported) && $this->hasCapability('SIZE')) {
-			$sCmd .= ' SIZE='.$sSizeIfSupported;
+		if (0 < $iSizeIfSupported && $this->hasCapability('SIZE')) {
+			$sCmd .= ' SIZE='.$iSizeIfSupported;
 		}
 
 		if ($bDsn && $this->hasCapability('DSN')) {
@@ -206,8 +206,8 @@ class SmtpClient extends \MailSo\Net\NetClient
 		}
 
 		// RFC 8689
-		if ($this->hasCapability('REQUIRETLS')) {
-//			$sCmd .= ' REQUIRETLS';
+		if ($bRequireTLS && $this->hasCapability('REQUIRETLS')) {
+			$sCmd .= ' REQUIRETLS';
 		}
 
 		$this->sendRequestWithCheck('MAIL', 250, $sCmd);

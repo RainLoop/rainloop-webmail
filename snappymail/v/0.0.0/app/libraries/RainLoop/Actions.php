@@ -791,6 +791,7 @@ class Actions
 					$aResult['EditorDefaultType'] = \str_replace('Forced', '', $oSettings->GetConf('EditorDefaultType', $aResult['EditorDefaultType']));
 					$aResult['requestReadReceipt'] = (bool) $oSettings->GetConf('requestReadReceipt', false);
 					$aResult['requestDsn'] = (bool) $oSettings->GetConf('requestDsn', false);
+					$aResult['requireTLS'] = (bool) $oSettings->GetConf('requireTLS', false);
 					$aResult['pgpSign'] = (bool) $oSettings->GetConf('pgpSign', false);
 					$aResult['pgpEncrypt'] = (bool) $oSettings->GetConf('pgpEncrypt', false);
 					$aResult['allowSpellcheck'] = (bool) $oSettings->GetConf('allowSpellcheck', false);

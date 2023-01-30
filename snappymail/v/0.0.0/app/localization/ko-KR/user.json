@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "수신 확인 요청",
 		"BUTTON_MARK_AS_IMPORTANT": "중요 표시",
-		"BUTTON_REQUEST_DSN": "수신 확인 요청"
+		"BUTTON_REQUEST_DSN": "수신 확인 요청",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "정말로 이 페이지를 닫으시겠습니까 ?",

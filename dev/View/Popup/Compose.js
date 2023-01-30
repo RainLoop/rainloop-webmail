@@ -231,6 +231,7 @@ export class ComposePopupView extends AbstractViewPopup {
 
 			requestDsn: false,
 			requestReadReceipt: false,
+			requireTLS: false,
 			markAsImportant: false,
 
 			sendError: false,
@@ -1270,6 +1271,7 @@ export class ComposePopupView extends AbstractViewPopup {
 
 		this.requestDsn(SettingsUserStore.requestDsn());
 		this.requestReadReceipt(SettingsUserStore.requestReadReceipt());
+		this.requireTLS(SettingsUserStore.requireTLS());
 		this.markAsImportant(false);
 
 		this.bodyArea();
@@ -1422,6 +1424,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				attachments: attachments,
 				// Only used at send, not at save:
 				dsn: this.requestDsn() ? 1 : 0,
+				requireTLS: this.requireTLS() ? 1 : 0,
 				readReceiptRequest: this.requestReadReceipt() ? 1 : 0
 			},
 			recipients = draft ? [identity.email()] : this.allRecipients(),

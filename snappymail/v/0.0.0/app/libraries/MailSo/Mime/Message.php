@@ -200,11 +200,6 @@ class Message extends Part
 		return $this;
 	}
 
-	public function SetReadConfirmation(string $sEmail) : self
-	{
-		return $this->SetReadReceipt($sEmail);
-	}
-
 	public function SetPriority(int $iValue) : self
 	{
 		$sResult = '';

@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Demander une confirmation de lecture",
 		"BUTTON_MARK_AS_IMPORTANT": "Marquer comme important",
-		"BUTTON_REQUEST_DSN": "Demander un accusé de réception"
+		"BUTTON_REQUEST_DSN": "Demander un accusé de réception",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Êtes-vous sûr de vouloir fermer cette fenêtre ?",

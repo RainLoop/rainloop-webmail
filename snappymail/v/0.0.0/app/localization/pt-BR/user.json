@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Pedir recibo de leitura",
 		"BUTTON_MARK_AS_IMPORTANT": "Marcar como importante",
-		"BUTTON_REQUEST_DSN": "Pedir recibo de entrega"
+		"BUTTON_REQUEST_DSN": "Pedir recibo de entrega",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Você tem certeza que deseja fechar esta janela?",

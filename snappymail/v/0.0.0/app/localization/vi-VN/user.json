@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Yêu cầu thông báo khi người nhận đã đọc thư",
 		"BUTTON_MARK_AS_IMPORTANT": "Đánh dấu thư quan trọng",
-		"BUTTON_REQUEST_DSN": "Yêu cầu thông báo thư đã gửi thành công"
+		"BUTTON_REQUEST_DSN": "Yêu cầu thông báo thư đã gửi thành công",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Bạn có chắc muốn đóng bảng này chứ?",

@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "De browser spellingcontrole toestaan",
 		"BUTTON_REQUEST_READ_RECEIPT": "Leesbevestiging vragen",
 		"BUTTON_MARK_AS_IMPORTANT": "Markeer als belangrijk",
-		"BUTTON_REQUEST_DSN": "Ontvangstbevestiging vragen"
+		"BUTTON_REQUEST_DSN": "Ontvangstbevestiging vragen",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Weet u zeker dat u dit venster wilt sluiten?",

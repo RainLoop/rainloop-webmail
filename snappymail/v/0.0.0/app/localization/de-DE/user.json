@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "Rechtschreibprüfung durch den Browser zulassen",
 		"BUTTON_REQUEST_READ_RECEIPT": "Empfangsbestätigung anfordern",
 		"BUTTON_MARK_AS_IMPORTANT": "Als Wichtig markieren",
-		"BUTTON_REQUEST_DSN": "Übermittlungsstatus anfordern"
+		"BUTTON_REQUEST_DSN": "Übermittlungsstatus anfordern",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Sind Sie sicher, dass Sie dieses Fenster schließen möchten?",

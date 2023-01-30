@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Olvasási visszaigazolás kérése",
 		"BUTTON_MARK_AS_IMPORTANT": "Megjelölés fontosként",
-		"BUTTON_REQUEST_DSN": "Továbbítási visszaigazolás kérés"
+		"BUTTON_REQUEST_DSN": "Továbbítási visszaigazolás kérés",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Biztos, hogy be akarod zárni ezt az ablakot?",

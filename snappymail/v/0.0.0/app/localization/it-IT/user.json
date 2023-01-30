@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "Abilita il controllo ortografico del browser",
 		"BUTTON_REQUEST_READ_RECEIPT": "Richiedi conferma di lettura",
 		"BUTTON_MARK_AS_IMPORTANT": "Marca come importante",
-		"BUTTON_REQUEST_DSN": "Richiedi conferma del ricevimento"
+		"BUTTON_REQUEST_DSN": "Richiedi conferma del ricevimento",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Sei sicuro di voler chiudere questa finestra?",

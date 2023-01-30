@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Żądaj potwierdzenia przeczytania wiadomości",
 		"BUTTON_MARK_AS_IMPORTANT": "Oznacz jako ważną",
-		"BUTTON_REQUEST_DSN": "Żądaj potwierdzenia dostarczenia wiadomości"
+		"BUTTON_REQUEST_DSN": "Żądaj potwierdzenia dostarczenia wiadomości",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Na pewno chcesz zamknąć to okno?",

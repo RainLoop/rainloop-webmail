@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "Gaitu nabigatzaileko hizkuntza-zuzentzailea",
 		"BUTTON_REQUEST_READ_RECEIPT": "Eskatu irakurketa-agiria",
 		"BUTTON_MARK_AS_IMPORTANT": "MArkatu garrantzitsu bezala",
-		"BUTTON_REQUEST_DSN": "Eskatu jasotze-agiria"
+		"BUTTON_REQUEST_DSN": "Eskatu jasotze-agiria",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Ziur zaude leiho hau itxi nahi duzula?",

@@ -42,7 +42,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.threadsAllowed = AppUserStore.threadsAllowed;
 
 		['layout', 'messageReadDelay', 'messagesPerPage',
-		 'editorDefaultType', 'requestReadReceipt', 'requestDsn', 'pgpSign', 'pgpEncrypt',
+		 'editorDefaultType', 'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt',
 		 'viewHTML', 'showImages', 'removeColors', 'hideDeleted', 'listInlineAttachments', 'simpleAttachmentsList',
 		 'useCheckboxesInList', 'listGrouped', 'useThreads', 'replySameFolder', 'msgDefaultAction', 'allowSpellcheck'
 		].forEach(name => this[name] = SettingsUserStore[name]);
@@ -100,7 +100,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 
 		this.addSettings(['ViewHTML', 'ShowImages', 'HideDeleted', 'ListInlineAttachments', 'simpleAttachmentsList',
 			'UseCheckboxesInList', 'listGrouped', 'ReplySameFolder',
-			'requestReadReceipt', 'requestDsn', 'pgpSign', 'pgpEncrypt', 'allowSpellcheck',
+			'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt', 'allowSpellcheck',
 			'DesktopNotifications', 'SoundNotification']);
 
 		const fReloadLanguageHelper = (saveSettingsStep) => () => {

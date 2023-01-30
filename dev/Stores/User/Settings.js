@@ -33,6 +33,7 @@ export const SettingsUserStore = new class {
 
 			requestReadReceipt: 0,
 			requestDsn: 0,
+			requireTLS: 0,
 			pgpSign: 0,
 			pgpEncrypt: 0,
 			allowSpellcheck: 0,
@@ -97,6 +98,7 @@ export const SettingsUserStore = new class {
 
 		self.requestReadReceipt(SettingsGet('requestReadReceipt'));
 		self.requestDsn(SettingsGet('requestDsn'));
+		self.requireTLS(SettingsGet('requireTLS'));
 		self.pgpSign(SettingsGet('pgpSign'));
 		self.pgpEncrypt(SettingsGet('pgpEncrypt'));
 		self.allowSpellcheck(SettingsGet('allowSpellcheck'));

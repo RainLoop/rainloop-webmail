@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Zahtevaj potrdilo o branju",
 		"BUTTON_MARK_AS_IMPORTANT": "Označi kot pomembno",
-		"BUTTON_REQUEST_DSN": "Zahtevaj potrdilo o dostavi"
+		"BUTTON_REQUEST_DSN": "Zahtevaj potrdilo o dostavi",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Želite zapreti to okno?",

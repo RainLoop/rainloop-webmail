@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Palu lugemise kohta kinnitust",
 		"BUTTON_MARK_AS_IMPORTANT": "Tähista olulisena",
-		"BUTTON_REQUEST_DSN": "Palu kättesaamise kohta kinnitust"
+		"BUTTON_REQUEST_DSN": "Palu kättesaamise kohta kinnitust",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Kas oled kindel, et soovid akna sulgeda?",

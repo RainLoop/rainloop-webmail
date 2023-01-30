@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Ζητήστε αποδεικτικό ανάγνωσης",
 		"BUTTON_MARK_AS_IMPORTANT": "Σημειώστε το σαν σημαντικό",
-		"BUTTON_REQUEST_DSN": "Ζητήστε αποδεικτικό παράδοσης"
+		"BUTTON_REQUEST_DSN": "Ζητήστε αποδεικτικό παράδοσης",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Είστε σίγουροι πως θέλετε να κλείσετε αυτό το παράθυρο;",

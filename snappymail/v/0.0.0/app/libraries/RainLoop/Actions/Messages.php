@@ -174,7 +174,8 @@ trait Messages
 
 				if (false !== $iMessageStreamSize) {
 					$bDsn = !empty($this->GetActionParam('dsn', 0));
-					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream, $iMessageStreamSize, $bDsn, true);
+					$bRequireTLS = !empty($this->GetActionParam('requireTLS', 0));
+					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream, $iMessageStreamSize, true, $bDsn, $bRequireTLS);
 
 					if (\is_array($aDraftInfo) && 3 === \count($aDraftInfo)) {
 						$sDraftInfoType = $aDraftInfo[0];
@@ -321,7 +322,7 @@ trait Messages
 					$oMessage->ToStream(true), array($rMessageStream), 8192, true, true, true);
 
 				if (false !== $iMessageStreamSize) {
-					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream, $iMessageStreamSize, false, false);
+					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream, $iMessageStreamSize, false);
 
 					if (\is_resource($rMessageStream)) {
 						\fclose($rMessageStream);
@@ -748,7 +749,8 @@ trait Messages
 	 * @throws \MailSo\Net\Exceptions\ConnectionException
 	 */
 	private function smtpSendMessage(Account $oAccount, \MailSo\Mime\Message $oMessage,
-		/*resource*/ &$rMessageStream, int &$iMessageStreamSize, bool $bDsn = false, bool $bAddHiddenRcpt = true)
+		/*resource*/ &$rMessageStream, int &$iMessageStreamSize, bool $bAddHiddenRcpt = true,
+		bool $bDsn = false, bool $bRequireTLS = false)
 	{
 		$oRcpt = $oMessage->GetRcpt();
 		if (!$oRcpt || !$oRcpt->count()) {
@@ -824,7 +826,7 @@ trait Messages
 				}
 
 				if (!empty($sFrom)) {
-					$oSmtpClient->MailFrom($sFrom, '', $bDsn);
+					$oSmtpClient->MailFrom($sFrom, 0, $bDsn, $bRequireTLS);
 				}
 
 				foreach ($oRcpt as /* @var $oEmail \MailSo\Mime\Email */ $oEmail) {
@@ -994,6 +996,10 @@ trait Messages
 			// Read Receipts Reference Main Account Email, Not Identities #147
 //			$oMessage->SetReadReceipt(($oFromIdentity ?: $oAccount)->Email());
 			$oMessage->SetReadReceipt($oFrom->GetEmail());
+		}
+
+		if (empty($this->GetActionParam('requireTLS', 0))) {
+			$oMessage->SetCustomHeader('TLS-Required', 'No');
 		}
 
 		if (!empty($this->GetActionParam('markAsImportant', 0))) {

@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "اطلب اعلاماً بالقراءة",
 		"BUTTON_MARK_AS_IMPORTANT": "تحديده كـ هام",
-		"BUTTON_REQUEST_DSN": "اطلب اعلاماً بايصال البريد"
+		"BUTTON_REQUEST_DSN": "اطلب اعلاماً بايصال البريد",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "هل أنت متأكد من رغبتك باغلاق هذه النافذة؟",

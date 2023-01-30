@@ -172,6 +172,7 @@ trait User
 		$this->setSettingsFromParams($oSettings, 'EditorDefaultType', 'string');
 		$this->setSettingsFromParams($oSettings, 'requestReadReceipt', 'bool');
 		$this->setSettingsFromParams($oSettings, 'requestDsn', 'bool');
+		$this->setSettingsFromParams($oSettings, 'requireTLS', 'bool');
 		$this->setSettingsFromParams($oSettings, 'pgpSign', 'bool');
 		$this->setSettingsFromParams($oSettings, 'pgpEncrypt', 'bool');
 		$this->setSettingsFromParams($oSettings, 'allowSpellcheck', 'bool');

@@ -228,7 +228,8 @@
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
 		"BUTTON_REQUEST_READ_RECEIPT": "Vyžádat si potvrzení o přečtení",
 		"BUTTON_MARK_AS_IMPORTANT": "Označit jako důležité",
-		"BUTTON_REQUEST_DSN": "Vyžádat si potvrzení o přijetí"
+		"BUTTON_REQUEST_DSN": "Vyžádat si potvrzení o přijetí",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Opravdu chcete zavřít toto okno?",
