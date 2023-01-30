@@ -1,5 +1,7 @@
 export class CheckboxComponent {
 	constructor(params = {}) {
+		this.name = params.name;
+
 		this.value = ko.isObservable(params.value) ? params.value
 			: ko.observable(!!params.value);
 
