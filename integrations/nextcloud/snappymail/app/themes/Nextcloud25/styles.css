@@ -63,6 +63,10 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
     flex-direction: column;
 }
 
+html.rl-left-panel-disabled #rl-app #rl-left {
+    width: 65px !important;
+}
+
 @media screen and (min-width: 1000px) {
     #rl-app .b-folders .btn.buttonContacts {
         transition: none;
@@ -316,7 +320,6 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
 #rl-app .btn.buttonCompose {
     font-weight: bold;
     max-width: 100%;
-    width: 100%;
     box-sizing: content-box !important;
 }
 
@@ -343,9 +346,9 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
     padding: 4px 14px;
     line-height: 36px;
     height: 44px;
-    min-width: -moz-fit-content;
-    min-width: -webkit-fill-available;
     min-width: fit-content;
+    width: -moz-fit-content;
+    width: -webkit-fill-available;
 
     font-size: var(--default-font-size);
     border-radius: var(--border-radius-pill);
