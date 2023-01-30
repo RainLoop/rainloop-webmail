@@ -178,7 +178,7 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
     margin: 2px;
     padding: 0 2em 0 15px;
     height: 38px;
-    line-height: 38px;
+    line-height: 38px !important;
     border-radius: var(--border-radius-pill);
     color: unset;
     border: none;
@@ -189,7 +189,7 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
 #rl-app #V-SettingsMenu nav a {
     height: 44px;
     min-height: 44px;
-    line-height: 44px;
+    line-height: 44px !important;
 }
 
 #rl-app #V-AdminMenu nav a.selected,
@@ -594,6 +594,10 @@ select option {
 /*
  * message list
  */
+
+#rl-app #V-MailMessageList {
+    overflow: unset;
+}
 
 #rl-app .thm-message-list-top-toolbar,
 #rl-app .thm-message-list-bottom-toolbar {
