@@ -96,21 +96,18 @@ refreshFoldersInterval = 300000,
  */
 folderInformation = (folder, list) => {
 	if (folder?.trim()) {
-		let fetch = !arrayLength(list);
-		const uids = [],
-			folderFromCache = getFolderFromCacheList(folder);
+		let count = 1;
+		const uids = [];
 
-		if (!fetch) {
+		if (arrayLength(list)) {
 			list.forEach(messageListItem => {
 				MessageFlagsCache.getFor(folder, messageListItem.uid) || uids.push(messageListItem.uid);
-				messageListItem.threads.forEach(uid => {
-					MessageFlagsCache.getFor(folder, uid) || uids.push(uid);
-				});
+				messageListItem.threads.forEach(uid => MessageFlagsCache.getFor(folder, uid) || uids.push(uid));
 			});
-			fetch = uids.length;
+			count = uids.length;
 		}
 
-		if (fetch) {
+		if (count) {
 			Remote.request('FolderInformation', (iError, data) => {
 				if (!iError && data.Result) {
 					const result = data.Result,
@@ -151,7 +148,7 @@ folderInformation = (folder, list) => {
 			}, {
 				folder: folder,
 				flagsUids: uids,
-				uidNext: folderFromCache?.uidNext || 0 // Used to check for new messages
+				uidNext: getFolderFromCacheList(folder)?.uidNext || 0 // Used to check for new messages
 			});
 		} else if (SettingsUserStore.useThreads()) {
 			MessagelistUserStore.reloadFlagsAndCachedMessage();
