@@ -263,18 +263,18 @@ abstract class Repository
 			}
 
 			if ($sTmp) {
-				if (\class_exists('PharData')) {
-					$oArchive = new \PharData($sTmp, 0, $sRealFile);
-				} else {
-//					throw new \Exception('PHP Phar is disabled, you must enable it');
-					$oArchive = new \SnappyMail\TAR($sTmp);
-				}
 				if (!static::deletePackageDir($sId)) {
 					throw new \Exception('Cannot remove previous plugin folder: '.$sId);
 				}
 				if ('.phar' === \substr($sRealFile, -5)) {
 					$bResult = \copy($sTmp, APP_PLUGINS_PATH . \basename($sRealFile));
 				} else {
+					if (\class_exists('PharData')) {
+						$oArchive = new \PharData($sTmp, 0, $sRealFile);
+					} else {
+//						throw new \Exception('PHP Phar is disabled, you must enable it');
+						$oArchive = new \SnappyMail\TAR($sTmp);
+					}
 					$bResult = $oArchive->extractTo(\rtrim(APP_PLUGINS_PATH, '\\/'));
 				}
 				if (!$bResult) {

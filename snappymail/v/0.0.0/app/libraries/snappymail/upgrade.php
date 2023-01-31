@@ -197,16 +197,19 @@ abstract class Upgrade
 					throw new \Exception('Failed to download latest SnappyMail');
 				}
 				$target = \rtrim(APP_INDEX_ROOT_PATH, '\\/');
-				$oArchive = new \PharData($sTmp, 0, null, \Phar::GZ);
+				if (\class_exists('PharData')) {
+					$oArchive = new \PharData($sTmp, 0, null, \Phar::GZ);
+				} else {
+					$oArchive = new \SnappyMail\TAR($sTmp);
+				}
 				\error_log('Extract to ' . $target);
 //				$bResult = $oArchive->extractTo($target, null, true);
 				$bResult = $oArchive->extractTo($target, 'snappymail/')
 					&& $oArchive->extractTo($target, 'index.php', true);
-				if ($bResult) {
-					\error_log('Update success');
-				} else {
+				if (!$bResult) {
 					throw new \Exception('Extract core files failed');
 				}
+				\error_log('Update success');
 				// opcache_reset is a terrible solution
 //				\is_callable('opcache_reset') && \opcache_reset();
 				\is_callable('opcache_invalidate') && \opcache_invalidate($target.'/index.php', true);
