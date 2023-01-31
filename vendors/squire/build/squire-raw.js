@@ -2009,8 +2009,30 @@ function onPaste ( event ) {
 			event.preventDefault();
 			if ( imageItem ) {
 				let reader = new FileReader();
-				reader.onload = event =>
-					self.insertHTML( '<img src="'+event.target.result+'">', true );
+				reader.onload = event => {
+					let img = createElement('img', {src: event.target.result}),
+						canvas = createElement('canvas'),
+						ctx = canvas.getContext('2d');
+					img.onload = ()=>{
+						ctx.drawImage(img, 0, 0);
+						let width = img.width, height = img.height;
+						if (width > height) {
+							// Landscape
+							if (width > 1024) {
+								height = height * 1024 / width;
+								width = 1024;
+							}
+						} else if (height > 1024) {
+							// Portrait
+							width = width * 1024 / height;
+							height = 1024;
+						}
+						canvas.width = width;
+						canvas.height = height;
+						ctx.drawImage(img, 0, 0, width, height);
+						self.insertHTML( '<img alt="" style="width:100%;max-width:'+width+'px" src="'+canvas.toDataURL()+'">', true );
+					};
+				}
 				reader.readAsDataURL(imageItem.getAsFile());
 			} else if ( htmlItem && ( !self.isShiftDown || !plainItem ) ) {
 				htmlItem.getAsString( html => self.insertHTML( html, true ) );
