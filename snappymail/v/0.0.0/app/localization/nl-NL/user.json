@@ -229,7 +229,7 @@
 		"BUTTON_REQUEST_READ_RECEIPT": "Leesbevestiging vragen",
 		"BUTTON_MARK_AS_IMPORTANT": "Markeer als belangrijk",
 		"BUTTON_REQUEST_DSN": "Ontvangstbevestiging vragen",
-		"BUTTON_REQUIRE_TLS": "Require secure delivery"
+		"BUTTON_REQUIRE_TLS": "Veilige bezorging vereisen"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Weet u zeker dat u dit venster wilt sluiten?",
@@ -367,7 +367,6 @@
 		"THEMES": "Thema's"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "Filters",
 		"SIMPLE": "Simpel",
 		"ADVANCED": "Geavanceerd",
 		"BUTTON_ADD_SCRIPT": "Script toevoegen",

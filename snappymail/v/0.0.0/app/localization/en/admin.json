@@ -65,7 +65,7 @@
 		"LABEL_ENABLE_CONTACTS": "Enable contacts",
 		"LABEL_ALLOW_SYNC": "Allow contacts sync (with external CardDAV server)",
 		"LABEL_STORAGE_TYPE": "Type",
-		"LABEL_STORAGE_DSN": "Dsn",
+		"LABEL_STORAGE_DSN": "Data Source Name (DSN)",
 		"LABEL_STORAGE_USER": "User",
 		"LABEL_STORAGE_PASSWORD": "Password",
 		"ALERT_NOTICE": "Notice!",

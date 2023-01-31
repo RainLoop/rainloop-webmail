@@ -367,7 +367,6 @@
 		"THEMES": "Themen"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "Filter",
 		"SIMPLE": "Einfach",
 		"ADVANCED": "Fortschrittlich",
 		"BUTTON_ADD_SCRIPT": "Skript hinzufügen",
