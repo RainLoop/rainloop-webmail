@@ -31,7 +31,7 @@ class DemoStorage extends \RainLoop\Providers\Storage\FileStorage
 			}
 		}
 
-		$sDataPath .= '/' . \RainLoop\Utils::fixName(\RainLoop\Utils::GetConnectionToken());
+		$sDataPath .= '/' . \MailSo\Base\Utils::SecureFileName(\RainLoop\Utils::GetConnectionToken());
 		if (!\is_dir($sDataPath) && \mkdir($sDataPath, 0700, true)) {
 			\file_put_contents("{$sDataPath}/settings",'{"RemoveColors":true,"ListInlineAttachments":true}');
 			if (\mkdir($sDataPath.'/.gnupg/private-keys-v1.d', 0700, true)) {

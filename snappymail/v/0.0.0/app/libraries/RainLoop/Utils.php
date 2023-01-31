@@ -275,15 +275,6 @@ class Utils
 		return true;
 	}
 
-	/**
-	 * Replace control characters, ampersand, spaces and reserved characters (based on Win95 VFAT)
-	 * en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
-	 */
-	public static function fixName(string $filename) : string
-	{
-		return \preg_replace('#[|\\\\?*<":>+\\[\\]/&\\s\\pC]#su', '-', $filename);
-	}
-
 	public static function saveFile(string $filename, string $data) : void
 	{
 		$dir = \dirname($filename);

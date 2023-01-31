@@ -137,9 +137,9 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 				$aEmail = \explode('@', $sEmail ?: 'nobody@unknown.tld');
 				$sDomain = \trim(1 < \count($aEmail) ? \array_pop($aEmail) : '');
 				$sFilePath = $this->sDataPath
-					.'/'.\RainLoop\Utils::fixName($sDomain ?: 'unknown.tld')
-					.'/'.\RainLoop\Utils::fixName(\implode('@', $aEmail) ?: '.unknown')
-					.'/'.($sSubFolder ? \RainLoop\Utils::fixName($sSubFolder).'/' : '');
+					.'/'.\MailSo\Base\Utils::SecureFileName($sDomain ?: 'unknown.tld')
+					.'/'.\MailSo\Base\Utils::SecureFileName(\implode('@', $aEmail) ?: '.unknown')
+					.'/'.($sSubFolder ? \MailSo\Base\Utils::SecureFileName($sSubFolder).'/' : '');
 				break;
 			default:
 				throw new \Exception("Invalid storage type {$iStorageType}");
@@ -163,7 +163,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 			if (StorageType::NOBODY === $iStorageType) {
 				$sFilePath .= \sha1($sKey ?: \time());
 			} else {
-				$sFilePath .= ($sKey ? \RainLoop\Utils::fixName($sKey) : '');
+				$sFilePath .= ($sKey ? \MailSo\Base\Utils::SecureFileName($sKey) : '');
 			}
 		}
 		return $sFilePath;

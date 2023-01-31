@@ -15,8 +15,8 @@ abstract class Upgrade
 				$aEmail = \explode('@', \basename($sDomainDir));
 				$sDomain = \trim(1 < \count($aEmail) ? \array_pop($aEmail) : '');
 				$sNewDir = $sDataPath
-					.'/'.\RainLoop\Utils::fixName($sDomain ?: 'unknown.tld')
-					.'/'.\RainLoop\Utils::fixName(\implode('@', $aEmail) ?: '.unknown');
+					.'/'.\MailSo\Base\Utils::SecureFileName($sDomain ?: 'unknown.tld')
+					.'/'.\MailSo\Base\Utils::SecureFileName(\implode('@', $aEmail) ?: '.unknown');
 				if (\is_dir($sNewDir) || \mkdir($sNewDir, 0700, true)) {
 					foreach (\glob("{$sDomainDir}/*") as $sItem) {
 						$sName = \basename($sItem);

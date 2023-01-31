@@ -144,9 +144,9 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 		$aEmail = \explode('@', $sEmail ?: 'nobody@unknown.tld');
 		$sDomain = \trim(1 < \count($aEmail) ? \array_pop($aEmail) : '');
 		$sFilePath = $this->sDataPath
-			.'/'.\RainLoop\Utils::fixName($sDomain ?: 'unknown.tld')
-			.'/'.\RainLoop\Utils::fixName(\implode('@', $aEmail) ?: '.unknown')
-			.($sSubEmail ? '/'.\RainLoop\Utils::fixName($sSubEmail) : '')
+			.'/'.\MailSo\Base\Utils::SecureFileName($sDomain ?: 'unknown.tld')
+			.'/'.\MailSo\Base\Utils::SecureFileName(\implode('@', $aEmail) ?: '.unknown')
+			.($sSubEmail ? '/'.\MailSo\Base\Utils::SecureFileName($sSubEmail) : '')
 			.'/.files/'.\sha1($sKey);
 
 		if ($bMkDir && !\is_dir(\dirname($sFilePath)) && !\mkdir(\dirname($sFilePath), 0700, true)) {

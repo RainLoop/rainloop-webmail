@@ -490,11 +490,13 @@ abstract class Utils
 		return false;
 	}
 
-	# Replace ampersand, spaces and reserved characters (based on Win95 VFAT)
-	# en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
+	/**
+	 * Replace control characters, ampersand and reserved characters (based on Win95 VFAT)
+	 * en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
+	 */
 	public static function SecureFileName(string $sFileName) : string
 	{
-		return \preg_replace('#[|\\\\?*<":>+\\[\\]/&\\s\\pC]#su', '-', $sFileName);
+		return \preg_replace('#[|\\\\?*<":>+\\[\\]/&\\pC]#su', '-', $sFileName);
 	}
 
 	public static function Trim(string $sValue) : string
