@@ -36,9 +36,6 @@ class Actions
 	 */
 	const AUTH_ADDITIONAL_TOKEN_KEY = 'smadditional';
 
-	const AUTH_SPEC_LOGOUT_TOKEN_KEY = 'smspeclogout';
-	const AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY = 'smspeclogoutcmk';
-
 	const APP_DUMMY = '********';
 
 	/**
@@ -846,8 +843,6 @@ class Actions
 				}
 
 				$aResult['SignMe'] = (string) $oConfig->Get('login', 'sign_me_auto', Enumerations\SignMeType::DEFAULT_OFF);
-
-				$aResult['AdditionalLoginError'] = $this->GetSpecLogoutCustomMgsWithDeletion();
 			}
 		}
 

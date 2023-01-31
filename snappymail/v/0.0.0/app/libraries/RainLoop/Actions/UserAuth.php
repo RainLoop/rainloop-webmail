@@ -234,13 +234,6 @@ trait UserAuth
 	{
 		if (false === $this->oMainAuthAccount) try {
 			$this->oMainAuthAccount = null;
-			if (isset($_COOKIE[self::AUTH_SPEC_LOGOUT_TOKEN_KEY])) {
-				Cookies::clear(self::AUTH_SPEC_LOGOUT_TOKEN_KEY);
-				Cookies::clear(self::AUTH_SIGN_ME_TOKEN_KEY);
-//				Cookies::clear(self::AUTH_SPEC_TOKEN_KEY);
-//				Cookies::clear(self::AUTH_ADDITIONAL_TOKEN_KEY);
-				Cookies::clear(Utils::SESSION_TOKEN);
-			}
 
 			$aData = Cookies::getSecure(self::AUTH_SPEC_TOKEN_KEY);
 			if ($aData) {
@@ -412,27 +405,6 @@ trait UserAuth
 	/**
 	 * Logout methods
 	 */
-
-	public function SetAuthLogoutToken(): void
-	{
-		\header('X-RainLoop-Action: Logout');
-		Cookies::set(self::AUTH_SPEC_LOGOUT_TOKEN_KEY, \md5($_SERVER['REQUEST_TIME_FLOAT']));
-	}
-
-	public function GetSpecLogoutCustomMgsWithDeletion(): string
-	{
-		$sResult = Cookies::get(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY) ?: '';
-		if (\strlen($sResult)) {
-			Cookies::clear(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY);
-		}
-
-		return $sResult;
-	}
-
-	public function SetSpecLogoutCustomMgsWithDeletion(string $sMessage): void
-	{
-		Cookies::set(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY, $sMessage);
-	}
 
 	public function Logout(bool $bMain) : void
 	{
