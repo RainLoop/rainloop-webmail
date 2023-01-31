@@ -47,7 +47,7 @@ class SnappyMailHelper
 					if ($oActions->Cacher(null, true)->Set(\RainLoop\KeyPathHelper::SessionAdminKey($sRand), \time())) {
 						$sToken = \RainLoop\Utils::EncodeKeyValuesQ(array('token', $sRand));
 //						$oActions->setAdminAuthToken($sToken);
-						\RainLoop\Utils::SetCookie('smadmin', $sToken);
+						\SnappyMail\Cookies::set('smadmin', $sToken);
 					}
 				}
 			} else {
