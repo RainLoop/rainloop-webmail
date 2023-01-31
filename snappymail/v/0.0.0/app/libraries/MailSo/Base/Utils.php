@@ -506,25 +506,7 @@ abstract class Utils
 
 	public static function RecRmDir(string $sDir) : bool
 	{
-		\clearstatcache();
-		if (\is_dir($sDir)) {
-			$iterator = new \RecursiveIteratorIterator(
-				new \RecursiveDirectoryIterator($sDir, \FilesystemIterator::SKIP_DOTS),
-				\RecursiveIteratorIterator::CHILD_FIRST);
-			foreach ($iterator as $path) {
-				if ($path->isDir()) {
-					\rmdir($path);
-				} else {
-					\is_callable('opcache_invalidate') && \opcache_invalidate($path, true);
-					\unlink($path);
-				}
-			}
-			\clearstatcache();
-//			\realpath_cache_size() && \clearstatcache(true);
-			return \rmdir($sDir);
-		}
-
-		return false;
+		return static::RecTimeDirRemove($sDir, 0);
 	}
 
 	public static function RecTimeDirRemove(string $sDir, int $iTime2Kill) : bool
@@ -536,9 +518,10 @@ abstract class Utils
 				new \RecursiveDirectoryIterator($sDir, \FilesystemIterator::SKIP_DOTS),
 				\RecursiveIteratorIterator::CHILD_FIRST);
 			foreach ($iterator as $path) {
-				if ($path->isFile() && $path->getMTime() < $iTime) {
+				if ($path->isFile() && (!$iTime2Kill || $path->getMTime() < $iTime)) {
+					\is_callable('opcache_invalidate') && \opcache_invalidate($path, true);
 					\unlink($path);
-				} else if ($path->isDir() && !(new \FilesystemIterator($path))->valid()) {
+				} else if ($path->isDir() && (!$iTime2Kill || !(new \FilesystemIterator($path))->valid())) {
 					\rmdir($path);
 				}
 			}
