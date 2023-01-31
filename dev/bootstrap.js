@@ -60,7 +60,8 @@ export default App => {
 			postData.XToken = Settings.app('token');
 			init.body = JSON.stringify(postData);
 		}
-
+		init.headers['X-SM-Token'] = Settings.app('token');
+//		init.headers = new Headers(init.headers);
 		return fetch(resource, init);
 	};
 

@@ -92,7 +92,13 @@ class ServiceActions
 				throw new Exceptions\ClientException(Notifications::InvalidInputArgument, null, 'Action unknown');
 			}
 
-			if ($this->oHttp->IsPost() && ($_POST['XToken'] ?? '') !== Utils::GetCsrfToken()) {
+			$xtoken = $token = Utils::GetCsrfToken();
+			if (isset($_SERVER['HTTP_X_SM_TOKEN'])) {
+				$xtoken = $_SERVER['HTTP_X_SM_TOKEN'];
+			} else if ($this->oHttp->IsPost()) {
+				$xtoken = $_POST['XToken'] ?? '';
+			}
+			if ($xtoken !== $token) {
 				throw new Exceptions\ClientException(Notifications::InvalidToken, null, 'Token mismatch');
 			}
 
