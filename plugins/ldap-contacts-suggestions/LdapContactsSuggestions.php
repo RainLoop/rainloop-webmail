@@ -6,9 +6,9 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 
 	private bool $bUseStartTLS = true;
 
-	private string $sBindDn = null;
+	private string $sBindDn = '';
 
-	private string $sBindPassword = null;
+	private string $sBindPassword = '';
 
 	private string $sBaseDn = 'ou=People,dc=example,dc=com';
 
@@ -85,7 +85,7 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 			}
 
 			if (!@\ldap_bind($oCon, $this->sBindDn, $this->sBindPassword)) {
-				if (is_null($this->sBindDn)) {
+				if (\is_null($this->sBindDn)) {
 					$this->logLdapError($oCon, 'ldap_bind (anonymous)');
 				} else {
 					$this->logLdapError($oCon, 'ldap_bind');
