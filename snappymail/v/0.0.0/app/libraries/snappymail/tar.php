@@ -23,14 +23,13 @@ class TAR
 	 */
 	public function extractTo(string $directory, $files = null, bool $overwrite = false) : bool
 	{
-		if ($files) {
-			\trigger_error('$files parameter not yet supported');
-			return false;
-		}
-
 		$fp = \gzopen($this->filename, 'rb');
 		if (!$fp) {
 			return false;
+		}
+
+		if ($files) {
+			$files = '/^(' . \implode('|', \array_map('preg_quote', \is_array($files) ? $files : [$files])) . ')/u';
 		}
 
 		\clearstatcache(false);
@@ -65,7 +64,13 @@ class TAR
 			if (\preg_match('#(^|/)PaxHeader/#', $header['filename'])) {
 			} else if (\substr($header['filename'], -1) !== '/') {
 				$filename = ($header['path'] ? $header['path'] . '/' : '') . $header['filename'];
+				if ($files && !\preg_match($files, $filename)) {
+					continue;
+				}
 				$filename = $directory . '/' . $filename;
+				if (\is_file($filename) && !$overwrite) {
+					continue;
+				}
 				$dir = \dirname($filename);
 				if (!\is_dir($dir) && !\mkdir($dir, 0777, true)) {
 					return false;
