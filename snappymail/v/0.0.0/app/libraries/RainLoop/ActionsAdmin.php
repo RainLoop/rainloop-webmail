@@ -133,7 +133,7 @@ class ActionsAdmin extends Actions
 		if ($sAdminKey) {
 			$this->Cacher(null, true)->Delete(KeyPathHelper::SessionAdminKey($sAdminKey));
 		}
-		Utils::ClearCookie(static::$AUTH_ADMIN_TOKEN_KEY);
+		\SnappyMail\Cookies::clear(static::$AUTH_ADMIN_TOKEN_KEY);
 		return $this->TrueResponse();
 	}
 
@@ -331,7 +331,7 @@ class ActionsAdmin extends Actions
 		if (!$sToken) {
 			throw new \RuntimeException('Failed to encode admin token');
 		}
-		Utils::SetCookie(static::$AUTH_ADMIN_TOKEN_KEY, $sToken);
+		\SnappyMail\Cookies::set(static::$AUTH_ADMIN_TOKEN_KEY, $sToken);
 		return $sToken;
 	}
 

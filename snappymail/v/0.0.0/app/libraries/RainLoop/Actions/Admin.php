@@ -29,13 +29,13 @@ trait Admin
 
 	protected function getAdminAuthKey() : string
 	{
-		$cookie = Utils::GetCookie(static::$AUTH_ADMIN_TOKEN_KEY);
+		$cookie = \SnappyMail\Cookies::get(static::$AUTH_ADMIN_TOKEN_KEY);
 		if ($cookie) {
 			$aAdminHash = Utils::DecodeKeyValuesQ($cookie);
 			if (!empty($aAdminHash[1]) && 'token' === $aAdminHash[0]) {
 				return $aAdminHash[1];
 			}
-			Utils::ClearCookie(static::$AUTH_ADMIN_TOKEN_KEY);
+			\SnappyMail\Cookies::clear(static::$AUTH_ADMIN_TOKEN_KEY);
 		}
 		return '';
 	}

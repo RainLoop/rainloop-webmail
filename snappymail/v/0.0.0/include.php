@@ -165,11 +165,7 @@ if (!empty($_ENV['CPANEL']) && !is_dir(APP_PLUGINS_PATH.'login-remote')) {
 	require __DIR__ . '/cpanel.php';
 }
 
-if (class_exists('RainLoop\\Api')) {
-	RainLoop\Api::Handle();
-	// NextCloud/OwnCloud?
-	if (empty($_ENV['SNAPPYMAIL_INCLUDE_AS_API'])) {
-		RainLoop\Service::Handle();
-		exit(0);
-	}
+if (class_exists('RainLoop\\Api') && empty($_ENV['SNAPPYMAIL_INCLUDE_AS_API'])) {
+	RainLoop\Service::Handle();
+	exit;
 }

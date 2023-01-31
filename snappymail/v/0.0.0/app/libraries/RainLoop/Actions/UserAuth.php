@@ -9,6 +9,7 @@ use RainLoop\Model\MainAccount;
 use RainLoop\Model\AdditionalAccount;
 use RainLoop\Providers\Storage\Enumerations\StorageType;
 use RainLoop\Exceptions\ClientException;
+use SnappyMail\Cookies;
 
 trait UserAuth
 {
@@ -156,12 +157,12 @@ trait UserAuth
 	private static function SetAccountCookie(string $sName, ?Account $oAccount)
 	{
 		if ($oAccount) {
-			Utils::SetCookie(
+			Cookies::set(
 				$sName,
 				\MailSo\Base\Utils::UrlSafeBase64Encode(\SnappyMail\Crypt::EncryptToJSON($oAccount))
 			);
 		} else {
-			Utils::ClearCookie($sName);
+			Cookies::clear($sName);
 		}
 	}
 
@@ -209,7 +210,7 @@ trait UserAuth
 		$this->getMainAccountFromToken($bThrowExceptionOnFalse);
 
 		if (false === $this->oAdditionalAuthAccount && isset($_COOKIE[self::AUTH_ADDITIONAL_TOKEN_KEY])) {
-			$aData = Utils::GetSecureCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
+			$aData = Cookies::getSecure(self::AUTH_ADDITIONAL_TOKEN_KEY);
 			if ($aData) {
 				$this->oAdditionalAuthAccount = AdditionalAccount::NewInstanceFromTokenArray(
 					$this,
@@ -219,7 +220,7 @@ trait UserAuth
 			}
 			if (!$this->oAdditionalAuthAccount) {
 				$this->oAdditionalAuthAccount = null;
-				Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
+				Cookies::clear(self::AUTH_ADDITIONAL_TOKEN_KEY);
 			}
 		}
 
@@ -234,14 +235,14 @@ trait UserAuth
 		if (false === $this->oMainAuthAccount) try {
 			$this->oMainAuthAccount = null;
 			if (isset($_COOKIE[self::AUTH_SPEC_LOGOUT_TOKEN_KEY])) {
-				Utils::ClearCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY);
-				Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
-//				Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
-//				Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
-				Utils::ClearCookie(Utils::SESSION_TOKEN);
+				Cookies::clear(self::AUTH_SPEC_LOGOUT_TOKEN_KEY);
+				Cookies::clear(self::AUTH_SIGN_ME_TOKEN_KEY);
+//				Cookies::clear(self::AUTH_SPEC_TOKEN_KEY);
+//				Cookies::clear(self::AUTH_ADDITIONAL_TOKEN_KEY);
+				Cookies::clear(Utils::SESSION_TOKEN);
 			}
 
-			$aData = Utils::GetSecureCookie(self::AUTH_SPEC_TOKEN_KEY);
+			$aData = Cookies::getSecure(self::AUTH_SPEC_TOKEN_KEY);
 			if ($aData) {
 				/**
 				 * Server side control/kickout of logged in sessions
@@ -274,7 +275,7 @@ trait UserAuth
 					}
 				}
 				if (!$this->oMainAuthAccount) {
-					Utils::ClearCookie(Utils::SESSION_TOKEN);
+					Cookies::clear(Utils::SESSION_TOKEN);
 //					\MailSo\Base\Http::StatusHeader(401);
 					$this->Logout(true);
 //					$sAdditionalMessage = $this->StaticI18N('SESSION_GONE');
@@ -310,7 +311,7 @@ trait UserAuth
 		$this->oAdditionalAuthAccount = false;
 		$this->oMainAuthAccount = $oAccount;
 		if (!isset($_COOKIE['smctoken'])) {
-			\RainLoop\Utils::SetCookie('smctoken', \base64_encode(\random_bytes(16)), 0, false);
+			Cookies::set('smctoken', \base64_encode(\random_bytes(16)), 0, false);
 		}
 		static::SetAccountCookie(self::AUTH_SPEC_TOKEN_KEY, $oAccount);
 	}
@@ -327,7 +328,7 @@ trait UserAuth
 
 	private static function GetSignMeToken(): ?array
 	{
-		$sSignMeToken = Utils::GetCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
+		$sSignMeToken = Cookies::get(self::AUTH_SIGN_ME_TOKEN_KEY);
 		if ($sSignMeToken) {
 			\SnappyMail\Log::notice(self::AUTH_SIGN_ME_TOKEN_KEY, 'decrypt');
 			$aResult = \SnappyMail\Crypt::DecryptUrlSafe($sSignMeToken);
@@ -336,7 +337,7 @@ trait UserAuth
 			}
 			\SnappyMail\Log::notice(self::AUTH_SIGN_ME_TOKEN_KEY, 'invalid');
 			// Don't clear due to smctoken cookie missing at initialization and login checkbox
-//			Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
+//			Cookies::clear(self::AUTH_SIGN_ME_TOKEN_KEY);
 		}
 		return null;
 	}
@@ -346,7 +347,7 @@ trait UserAuth
 		$this->ClearSignMeData();
 		$uuid = \SnappyMail\UUID::generate();
 		$data = \SnappyMail\Crypt::Encrypt($oAccount);
-		Utils::SetCookie(
+		Cookies::set(
 			self::AUTH_SIGN_ME_TOKEN_KEY,
 			\SnappyMail\Crypt::EncryptUrlSafe([
 				'e' => $oAccount->Email(),
@@ -405,7 +406,7 @@ trait UserAuth
 		if ($aTokenData) {
 			$this->StorageProvider()->Clear($aTokenData['e'], StorageType::SIGN_ME, $aTokenData['u']);
 		}
-		Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
+		Cookies::clear(self::AUTH_SIGN_ME_TOKEN_KEY);
 	}
 
 	/**
@@ -415,14 +416,14 @@ trait UserAuth
 	public function SetAuthLogoutToken(): void
 	{
 		\header('X-RainLoop-Action: Logout');
-		Utils::SetCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY, \md5($_SERVER['REQUEST_TIME_FLOAT']));
+		Cookies::set(self::AUTH_SPEC_LOGOUT_TOKEN_KEY, \md5($_SERVER['REQUEST_TIME_FLOAT']));
 	}
 
 	public function GetSpecLogoutCustomMgsWithDeletion(): string
 	{
-		$sResult = Utils::GetCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY) ?: '';
+		$sResult = Cookies::get(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY) ?: '';
 		if (\strlen($sResult)) {
-			Utils::ClearCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY);
+			Cookies::clear(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY);
 		}
 
 		return $sResult;
@@ -430,14 +431,14 @@ trait UserAuth
 
 	public function SetSpecLogoutCustomMgsWithDeletion(string $sMessage): void
 	{
-		Utils::SetCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY, $sMessage);
+		Cookies::set(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY, $sMessage);
 	}
 
 	public function Logout(bool $bMain) : void
 	{
-//		Utils::ClearCookie(Utils::SESSION_TOKEN);
-		Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
-		$bMain && Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
+//		Cookies::clear(Utils::SESSION_TOKEN);
+		Cookies::clear(self::AUTH_ADDITIONAL_TOKEN_KEY);
+		$bMain && Cookies::clear(self::AUTH_SPEC_TOKEN_KEY);
 		// TODO: kill SignMe data to prevent automatic login?
 	}
 

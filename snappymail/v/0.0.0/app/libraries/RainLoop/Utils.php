@@ -4,12 +4,6 @@ namespace RainLoop;
 
 class Utils
 {
-	static $CookieDefaultPath = '';
-
-	static $CookieSecure = null;
-
-	static $CookieSameSite = 'Strict';
-
 	const
 		/**
 		 * 30 days cookie
@@ -60,14 +54,14 @@ class Utils
 
 	public static function GetSessionToken(bool $generate = true) : ?string
 	{
-		$sToken = static::GetCookie(self::SESSION_TOKEN);
+		$sToken = \SnappyMail\Cookies::get(self::SESSION_TOKEN);
 		if (!$sToken) {
 			if (!$generate) {
 				return null;
 			}
 			\SnappyMail\Log::debug('TOKENS', 'New SESSION_TOKEN');
 			$sToken = \MailSo\Base\Utils::Sha1Rand(APP_SALT);
-			static::SetCookie(self::SESSION_TOKEN, $sToken);
+			\SnappyMail\Cookies::set(self::SESSION_TOKEN, $sToken);
 		}
 		return \sha1('Session'.APP_SALT.$sToken.'Token'.APP_SALT);
 	}
@@ -79,10 +73,10 @@ class Utils
 		if ($oAccount) {
 			return $oAccount->Hash();
 		}
-		$sToken = static::GetCookie(self::CONNECTION_TOKEN);
+		$sToken = \SnappyMail\Cookies::get(self::CONNECTION_TOKEN);
 		if (!$sToken) {
 			$sToken = \MailSo\Base\Utils::Sha1Rand(APP_SALT);
-			static::SetCookie(self::CONNECTION_TOKEN, $sToken, \time() + 3600 * 24 * 30);
+			\SnappyMail\Cookies::set(self::CONNECTION_TOKEN, $sToken, \time() + 3600 * 24 * 30);
 		}
 		return \sha1('Connection'.APP_SALT.$sToken.'Token'.APP_SALT);
 	}
@@ -94,9 +88,9 @@ class Utils
 
 	public static function UpdateConnectionToken() : void
 	{
-		$sToken = static::GetCookie(self::CONNECTION_TOKEN);
+		$sToken = \SnappyMail\Cookies::get(self::CONNECTION_TOKEN);
 		if ($sToken) {
-			static::SetCookie(self::CONNECTION_TOKEN, $sToken, \time() + 3600 * 24 * 30);
+			\SnappyMail\Cookies::set(self::CONNECTION_TOKEN, $sToken, \time() + 3600 * 24 * 30);
 		}
 	}
 
@@ -108,118 +102,6 @@ class Utils
 			['>', "\xC2\xA0", "\xC2\xA0", ' '],
 			\trim($sHtml)
 		));
-	}
-
-	/**
-	 * @param mixed $mDefault = null
-	 */
-	public static function GetCookie(string $sName) : ?string
-	{
-		if (isset($_COOKIE[$sName])) {
-			$aParts = [];
-			foreach (\array_keys($_COOKIE) as $sCookieName) {
-				if (\strtok($sCookieName, '~') === $sName) {
-					$aParts[$sCookieName] = $_COOKIE[$sCookieName];
-				}
-			}
-			\ksort($aParts);
-			return \implode('', $aParts);
-		}
-		return null;
-	}
-
-	public static function GetSecureCookie(string $sName)
-	{
-		return isset($_COOKIE[$sName])
-			? \SnappyMail\Crypt::DecryptFromJSON(\MailSo\Base\Utils::UrlSafeBase64Decode(static::GetCookie($sName)))
-			: null;
-	}
-
-	private static function _SetCookie(string $sName, string $sValue, int $iExpire, bool $httponly = true)
-	{
-		$sPath = static::$CookieDefaultPath;
-		$sPath = $sPath && \strlen($sPath) ? $sPath : '/';
-/*
-		if (\strlen($sValue) > 4000 - \strlen($sPath . $sName)) {
-			throw new \Exception("Cookie '{$sName}' value too long");
-		}
-*/
-		if (\strlen($sValue)) {
-			$_COOKIE[$sName] = $sValue;
-		} else {
-			if (!isset($_COOKIE[$sName])) {
-				return;
-			}
-			unset($_COOKIE[$sName]);
-			$iExpire = \time() - 3600 * 24 * 30;
-		}
-
-		// Cookie "$sName" has been rejected because it is already expired.
-		// Happens when \setcookie() sends multiple with the same name (and one is deleted)
-		// So when previously set, we must delete all 'Set-Cookie' headers and start over
-		$cookies = [];
-		$cookie_remove = false;
-		foreach (\headers_list() as $header) {
-			if (\preg_match("/Set-Cookie:([^=]+)=/i", $header, $match)) {
-				if (\trim($match[1]) == $sName) {
-					$cookie_remove = true;
-				} else {
-					$cookies[] = $header;
-				}
-			}
-		}
-		if ($cookie_remove) {
-			\header_remove('Set-Cookie');
-			foreach ($cookies as $cookie) {
-				\header($cookie);
-			}
-		}
-
-		\setcookie($sName, $sValue, array(
-			'expires' => $iExpire,
-			'path' => $sPath,
-//			'domain' => null,
-			'secure' => static::$CookieSecure,
-			'httponly' => $httponly,
-			'samesite' => static::$CookieSameSite
-		));
-	}
-
-	/**
-	 * Firefox: Cookie "$sName" has been rejected because it is already expired.
-	 * \header_remove("set-cookie: {$sName}");
-	 */
-	public static function SetCookie(string $sName, string $sValue, int $iExpire = 0, bool $httponly = true)
-	{
-		$sPath = static::$CookieDefaultPath;
-		$sPath = $sPath && \strlen($sPath) ? $sPath : '/';
-		// https://github.com/the-djmaze/snappymail/issues/451
-		// The 4K browser limit is for the entire cookie, including name, value, expiry date etc.
-		$iMaxSize = 4000 - \strlen($sPath . $sName);
-/*
-		if ($iMaxSize < \strlen($sValue)) {
-			throw new \Exception("Cookie '{$sName}' value too long");
-		}
-*/
-		// Set the new 4K split cookie
-		foreach (\str_split($sValue, $iMaxSize) as $i => $sPart) {
-			$sCookieName = $i ? "{$sName}~{$i}" : $sName;
-			\SnappyMail\Log::debug('COOKIE', "set {$sCookieName}");
-			static::_SetCookie($sCookieName, $sPart, $iExpire);
-		}
-		// Delete unused old 4K split cookie parts
-		foreach (\array_keys($_COOKIE) as $sCookieName) {
-			$aSplit = \explode('~', $sCookieName);
-			if (isset($aSplit[1]) && $aSplit[0] == $sName && $aSplit[1] > $i) {
-				\SnappyMail\Log::debug('COOKIE', "unset {$sCookieName}");
-				static::_SetCookie($sCookieName, '', 0);
-			}
-		}
-	}
-
-	public static function ClearCookie(string $sName)
-	{
-		static::_SetCookie($sName, '', 0);
 	}
 
 	public static function UrlEncode(string $sV, bool $bEncode = false) : string

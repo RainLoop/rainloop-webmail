@@ -181,7 +181,7 @@ trait Accounts
 			$bReload = false;
 			$oAccount = $this->getAccountFromToken();
 			if ($oAccount instanceof AdditionalAccount && $oAccount->Email() === $sEmailToDelete) {
-				Utils::ClearCookie(self::AUTH_ADDITIONAL_TOKEN_KEY);
+				\SnappyMail\Cookies::clear(self::AUTH_ADDITIONAL_TOKEN_KEY);
 				$bReload = true;
 			}
 

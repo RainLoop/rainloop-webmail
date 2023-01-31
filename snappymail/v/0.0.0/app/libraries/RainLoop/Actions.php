@@ -748,9 +748,9 @@ class Actions
 					$aResult['ContactsSync'] = $aData;
 				}
 
-				$sToken = Utils::GetCookie(self::AUTH_MAILTO_TOKEN_KEY);
+				$sToken = \SnappyMail\Cookies::get(self::AUTH_MAILTO_TOKEN_KEY);
 				if (null !== $sToken) {
-					Utils::ClearCookie(self::AUTH_MAILTO_TOKEN_KEY);
+					\SnappyMail\Cookies::clear(self::AUTH_MAILTO_TOKEN_KEY);
 
 					$mMailToData = Utils::DecodeKeyValuesQ($sToken);
 					if (!empty($mMailToData['MailTo']) && 'MailTo' === $mMailToData['MailTo'] && !empty($mMailToData['To'])) {

@@ -5,16 +5,6 @@ namespace RainLoop;
 abstract class Api
 {
 
-	public static function Handle() : bool
-	{
-		static $bOne = false;
-		if (!$bOne) {
-			static::SetupDefaultConfig();
-			$bOne = true;
-		}
-		return $bOne;
-	}
-
 	public static function Actions() : Actions
 	{
 		static $oActions = null;
@@ -40,6 +30,7 @@ abstract class Api
 //				\ini_set('display_errors', '1');
 				\ini_set('log_errors', '1');
 			}
+			\MailSo\Config::$BoundaryPrefix = \trim($oConfig->Get('labs', 'boundary_prefix', ''));
 		}
 		return $oConfig;
 	}
@@ -80,17 +71,6 @@ abstract class Api
 			}
 		}
 		return $oLogger;
-	}
-
-	protected static function SetupDefaultConfig() : void
-	{
-		\MailSo\Config::$BoundaryPrefix = \trim(static::Config()->Get('labs', 'boundary_prefix', ''));
-
-		Utils::$CookieDefaultPath = static::Config()->Get('labs', 'cookie_default_path', '');
-		Utils::$CookieSameSite = static::Config()->Get('security', 'cookie_samesite', 'Strict');
-		Utils::$CookieSecure = isset($_SERVER['HTTPS'])
-			|| 'None' == Utils::$CookieSameSite
-			|| !!static::Config()->Get('labs', 'cookie_default_secure', false);
 	}
 
 	public static function Version() : string
