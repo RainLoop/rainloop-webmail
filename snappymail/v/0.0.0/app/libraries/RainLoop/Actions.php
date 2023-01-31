@@ -621,7 +621,7 @@ class Actions
 			'System' => \array_merge(
 				array(
 					'version' => APP_VERSION,
-					'token' => $oConfig->Get('security', 'csrf_protection', true) ? Utils::GetCsrfToken() : '',
+					'token' => Utils::GetCsrfToken(),
 					'languages' => \SnappyMail\L10n::getLanguages(false),
 					'webPath' => \RainLoop\Utils::WebPath(),
 					'webVersionPath' => \RainLoop\Utils::WebVersionPath()

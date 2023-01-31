@@ -183,9 +183,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 			),
 
 			'security' => array(
-				'csrf_protection'    => array(true,
-				    'Enable CSRF protection (http://en.wikipedia.org/wiki/Cross-site_request_forgery)'),
-
 				'custom_server_signature'    => array('SnappyMail'),
 				'x_xss_protection_header'    => array('1; mode=block'),
 

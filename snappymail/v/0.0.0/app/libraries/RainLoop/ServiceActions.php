@@ -92,11 +92,8 @@ class ServiceActions
 				throw new Exceptions\ClientException(Notifications::InvalidInputArgument, null, 'Action unknown');
 			}
 
-			if ($this->oHttp->IsPost() &&
-				$this->Config()->Get('security', 'csrf_protection', true) &&
-				($_POST['XToken'] ?? '') !== Utils::GetCsrfToken())
-			{
-				throw new Exceptions\ClientException(Notifications::InvalidToken, null, 'CSRF failed');
+			if ($this->oHttp->IsPost() && ($_POST['XToken'] ?? '') !== Utils::GetCsrfToken()) {
+				throw new Exceptions\ClientException(Notifications::InvalidToken, null, 'Token mismatch');
 			}
 
 			if ($this->oActions instanceof ActionsAdmin && 0 === \stripos($sAction, 'Admin') && !\in_array($sAction, ['AdminLogin', 'AdminLogout'])) {
