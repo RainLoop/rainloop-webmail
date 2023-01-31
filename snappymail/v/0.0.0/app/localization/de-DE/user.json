@@ -400,7 +400,6 @@
 		"USE_CHECKBOXES_IN_LIST": "Kontrollkästchen in der Liste anzeigen",
 		"USE_THREADS": "Als Unterhaltungen anzeigen",
 		"REPLY_SAME_FOLDER": "Antworten im gleichen Ordner wie die Nachricht, auf die geantwortet wurde, abspeichern",
-		"SHOW_IMAGES": "In der Nachricht enthaltene Bilder immer anzeigen",
 		"PREFER_HTML": "HTML gegenüber Klartext bevorzugen",
 		"PREFER_HTML_INFO": "Nachrichten können manchmal in beiden Formaten empfangen werden. Diese Option setzt, ob die Nachricht standardmäßig in HTML oder als Klartext angezeigt wird.",
 		"REMOVE_COLORS": "Entferne Hintergrund- und Textfarben aus der Nachricht",
@@ -414,7 +413,12 @@
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Vom Browser blockiert.)",
 		"LIST_INLINE_ATTACHMENTS": "Inline-Anhänge in der Liste anzeigen",
 		"LIST_SIMPLE_ATTACHMENTS": "Vereinfachte Liste der Anhänge",
-		"LIST_MESSAGES_GROUPED": "Nachrichten bei Sortierung nach Datum oder Absender gruppieren"
+		"LIST_MESSAGES_GROUPED": "Nachrichten bei Sortierung nach Datum oder Absender gruppieren",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Empfänger automatisch zu Ihrem Adressbuch hinzuzufügen",

@@ -400,7 +400,6 @@
 		"USE_CHECKBOXES_IN_LIST": "Zobrazenie zaštkrtávacích políčok v zozname",
 		"USE_THREADS": "Zobraziť ako konverzácie",
 		"REPLY_SAME_FOLDER": "Umiestňovať odpovede do priečinka so správou ktorej sa týkajú",
-		"SHOW_IMAGES": "Vždy zobrazovať obrázky v tele správy",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"REMOVE_COLORS": "Remove background and text colors from message body",
@@ -414,7 +413,12 @@
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Zablokované prehliadačom)",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
 		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
-		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)"
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Automaticky pridávať príjemcov správ do Adresára",

@@ -688,7 +688,8 @@ class Actions
 					'ContactsIsAllowed' => $this->AddressBookProvider($oAccount)->IsActive(),
 
 					'ViewHTML' => (bool) $oConfig->Get('defaults', 'view_html', true),
-					'ShowImages' => (bool) $oConfig->Get('defaults', 'show_images', false),
+					'ViewImages' => 'ask',
+					'ViewImagesWhitelist' => '',
 					'RemoveColors' => (bool) $oConfig->Get('defaults', 'remove_colors', false),
 					'ListInlineAttachments' => false,
 					'simpleAttachmentsList' => false,
@@ -794,7 +795,9 @@ class Actions
 					$aResult['allowSpellcheck'] = (bool) $oSettings->GetConf('allowSpellcheck', false);
 
 					$aResult['ViewHTML'] = (bool)$oSettings->GetConf('ViewHTML', $aResult['ViewHTML']);
-					$aResult['ShowImages'] = (bool)$oSettings->GetConf('ShowImages', $aResult['ShowImages']);
+					$show_images = (bool) $oSettings->GetConf('ShowImages', $aResult['ShowImages']);
+					$aResult['ViewImages'] = $oSettings->GetConf('ViewImages', $show_images ? 'always' : 'ask');
+					$aResult['ViewImagesWhitelist'] = $oSettings->GetConf('ViewImagesWhitelist', '');
 					$aResult['RemoveColors'] = (bool)$oSettings->GetConf('RemoveColors', $aResult['RemoveColors']);
 					$aResult['ListInlineAttachments'] = (bool)$oSettings->GetConf('ListInlineAttachments', $aResult['ListInlineAttachments']);
 					$aResult['simpleAttachmentsList'] = (bool)$oSettings->GetConf('simpleAttachmentsList', $aResult['simpleAttachmentsList']);

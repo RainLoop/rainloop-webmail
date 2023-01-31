@@ -43,7 +43,8 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 
 		['layout', 'messageReadDelay', 'messagesPerPage',
 		 'editorDefaultType', 'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt',
-		 'viewHTML', 'showImages', 'removeColors', 'hideDeleted', 'listInlineAttachments', 'simpleAttachmentsList',
+		 'viewHTML', 'viewImages', 'viewImagesWhitelist', 'removeColors',
+		 'hideDeleted', 'listInlineAttachments', 'simpleAttachmentsList',
 		 'useCheckboxesInList', 'listGrouped', 'useThreads', 'replySameFolder', 'msgDefaultAction', 'allowSpellcheck'
 		].forEach(name => this[name] = SettingsUserStore[name]);
 
@@ -98,8 +99,8 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.addSetting('MessagesPerPage');
 		this.addSetting('Layout');
 
-		this.addSettings(['ViewHTML', 'ShowImages', 'HideDeleted', 'ListInlineAttachments', 'simpleAttachmentsList',
-			'UseCheckboxesInList', 'listGrouped', 'ReplySameFolder',
+		this.addSettings(['ViewHTML', 'ViewImages', 'ViewImagesWhitelist', 'HideDeleted',
+			'ListInlineAttachments', 'simpleAttachmentsList', 'UseCheckboxesInList', 'listGrouped', 'ReplySameFolder',
 			'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt', 'allowSpellcheck',
 			'DesktopNotifications', 'SoundNotification']);
 

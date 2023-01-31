@@ -400,7 +400,6 @@
 		"USE_CHECKBOXES_IN_LIST": "列表中显示多选框",
 		"USE_THREADS": "使用对话",
 		"REPLY_SAME_FOLDER": "将回复的邮件置于被回复的邮件所在的文件夹",
-		"SHOW_IMAGES": "总是显示外部图片信息",
 		"PREFER_HTML": "相比纯文本优先使用 HTML",
 		"PREFER_HTML_INFO": "消息有时以两种格式传送。该选项控制您希望显示 HTML 部分还是纯文本部分。",
 		"REMOVE_COLORS": "从消息中删除背景和文本颜色",
@@ -414,7 +413,12 @@
 		"CHROME_NOTIFICATION_DESC_DENIED": "(被浏览器阻止)",
 		"LIST_INLINE_ATTACHMENTS": "在列表中显示内联附件",
 		"LIST_SIMPLE_ATTACHMENTS": "简洁附件列表",
-		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)"
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "自动添加到您的地址簿",

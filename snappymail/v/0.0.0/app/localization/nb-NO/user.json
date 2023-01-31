@@ -400,7 +400,6 @@
 		"USE_CHECKBOXES_IN_LIST": "Vis avkrysningsbokser i liste",
 		"USE_THREADS": "Bruk tråder",
 		"REPLY_SAME_FOLDER": "Legg svar i samme mappe som opprinnelig melding",
-		"SHOW_IMAGES": "Vis alltid eksterne bilder i meldingstekst",
 		"PREFER_HTML": "Foretrekk HTML fremfor",
 		"PREFER_HTML_INFO": "Meldinger kan ankomme i både HTML og ren tekst. Dette valget styrer hvilken av dem du vil se.",
 		"REMOVE_COLORS": "Fjern bakgrunn og tekstfarger fra brødtekst",
@@ -414,7 +413,12 @@
 		"CHROME_NOTIFICATION_DESC_DENIED": "(blokkert av nettleser)",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
 		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
-		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)"
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Legg til mottakere i adresseboka automatisk",

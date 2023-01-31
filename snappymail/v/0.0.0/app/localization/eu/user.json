@@ -400,7 +400,6 @@
 		"USE_CHECKBOXES_IN_LIST": "Bistaratu kontrol laukiak zerrendan",
 		"USE_THREADS": "Erabili hariak",
 		"REPLY_SAME_FOLDER": "Kokatu erantzunak erantzundako mezuaren karpeta berean",
-		"SHOW_IMAGES": "Erakusti beti kanpoko irudiak mezuaren gorputzean",
 		"PREFER_HTML": "Lehenetsi HTMLa testu arruntari",
 		"PREFER_HTML_INFO": "Mezuak batzuetan bi formatuetan datoz. Aukera honekin HTML edo testu arrunt partea erakustea aukera dezakezu.",
 		"REMOVE_COLORS": "Kendu atzealdeko irudia eta testuaren kolorean mezuaren gorputzetik",
@@ -414,7 +413,12 @@
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Nabigatzaileak blokeatuta)",
 		"LIST_INLINE_ATTACHMENTS": "Erakutsi sareko eranskinak zerrendan",
 		"LIST_SIMPLE_ATTACHMENTS": "Eranskinen zerrenda arrunta",
-		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)"
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Automatikoki gehitu hartzaileak helbide-liburura",

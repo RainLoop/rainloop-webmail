@@ -400,7 +400,6 @@
 		"USE_CHECKBOXES_IN_LIST": "リストにチェックボックスを表示",
 		"USE_THREADS": "スレッドを使う",
 		"REPLY_SAME_FOLDER": "返信したメッセージのフォルダに送信メールを置く",
-		"SHOW_IMAGES": "外部画像を常に表示する",
 		"PREFER_HTML": "プレーンテキストよりHTMLを優先する",
 		"PREFER_HTML_INFO": "メッセージがHTMLとプレーンテキストの両方の形式を含むことがあります。このオプションはそのような場合にどちらの形式を表示するかを制御します。",
 		"REMOVE_COLORS": "本文の文字色及び背景色の設定を無視する",
@@ -414,7 +413,12 @@
 		"CHROME_NOTIFICATION_DESC_DENIED": "(ブラウザでブロックされています)",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
 		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
-		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)"
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "返信したアドレスをアドレス帳へ自動的に追加する",

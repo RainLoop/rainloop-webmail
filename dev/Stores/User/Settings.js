@@ -16,7 +16,8 @@ export const SettingsUserStore = new class {
 
 		addObservablesTo(self, {
 			viewHTML: 1,
-			showImages: 0,
+			viewImages: 0,
+			viewImagesWhitelist: '',
 			removeColors: 0,
 			listInlineAttachments: 0,
 			simpleAttachmentsList: 0,
@@ -81,7 +82,8 @@ export const SettingsUserStore = new class {
 		self.msgDefaultAction(SettingsGet('MsgDefaultAction'));
 
 		self.viewHTML(SettingsGet('ViewHTML'));
-		self.showImages(SettingsGet('ShowImages'));
+		self.viewImages(SettingsGet('ViewImages'));
+		self.viewImagesWhitelist(SettingsGet('ViewImagesWhitelist'));
 		self.removeColors(SettingsGet('RemoveColors'));
 		self.listInlineAttachments(SettingsGet('ListInlineAttachments'));
 		self.simpleAttachmentsList(SettingsGet('simpleAttachmentsList'));

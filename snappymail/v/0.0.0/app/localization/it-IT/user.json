@@ -400,7 +400,6 @@
 		"USE_CHECKBOXES_IN_LIST": "Mostra le caselle di spunta nella lista",
 		"USE_THREADS": "Usa le conversazioni",
 		"REPLY_SAME_FOLDER": "Posiziona le risposte nella cartella del messaggio a cui si è risposto",
-		"SHOW_IMAGES": "Visualizza sempre le immagini esterne nel messaggio",
 		"PREFER_HTML": "Usa HTML predefinito anziché formato testo",
 		"PREFER_HTML_INFO": "Il messaggio a volte contiene entrambi i formati. Questa opzione agisce sulla visualizzazione del messaggio in HTML o della versione in formato testo.",
 		"REMOVE_COLORS": "Rimuovi lo sfondo e i colori del testo dal messaggio",
@@ -414,7 +413,12 @@
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Bloccate dal browser)",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
 		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
-		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)"
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Aggiungi automaticamente le persone che ti inviano mail alla rubrica",

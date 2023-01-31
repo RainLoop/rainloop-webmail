@@ -400,7 +400,6 @@
 		"USE_CHECKBOXES_IN_LIST": "Hiển thị ô đánh dấu dưới dạng danh sách",
 		"USE_THREADS": "Nối thư qua lại cùng một tiêu đề thành một chuỗi hội thoại",
 		"REPLY_SAME_FOLDER": "Đặt thư phản hồi gửi đi vào chung thư mục của bức thư nhận được",
-		"SHOW_IMAGES": "Luôn hiển thị hình ảnh bên ngoài gửi vào trong phần thân của thư",
 		"PREFER_HTML": "Nghiêng về lựa chọn HTML hơn dạng chữ viết thường",
 		"PREFER_HTML_INFO": "Đôi lúc thư nhận được sẽ ở cả hai dạng. Lựa chọn này cho phép bạn chỉnh phần HTML hay phần chữ viết thường trong thư bạn muốn hiển thị lên.",
 		"REMOVE_COLORS": "Loại bỏ hình nền và màu chữ trong phần thân của thư",
@@ -414,7 +413,12 @@
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Đang bị chặn bởi trình duyệt web)",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
 		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
-		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)"
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Tự động thêm người nhận thư vào sổ địa chỉ của bạn",

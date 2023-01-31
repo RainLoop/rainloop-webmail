@@ -178,7 +178,8 @@ trait User
 		$this->setSettingsFromParams($oSettings, 'allowSpellcheck', 'bool');
 
 		$this->setSettingsFromParams($oSettings, 'ViewHTML', 'bool');
-		$this->setSettingsFromParams($oSettings, 'ShowImages', 'bool');
+		$this->setSettingsFromParams($oSettings, 'ViewImages', 'string');
+		$this->setSettingsFromParams($oSettings, 'ViewImagesWhitelist', 'string');
 		$this->setSettingsFromParams($oSettings, 'RemoveColors', 'bool');
 		$this->setSettingsFromParams($oSettings, 'ListInlineAttachments', 'bool');
 		$this->setSettingsFromParams($oSettings, 'simpleAttachmentsList', 'bool');

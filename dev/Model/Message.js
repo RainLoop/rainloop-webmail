@@ -286,8 +286,22 @@ export class MessageModel extends AbstractModel {
 			body.classList.toggle('html', 1);
 			body.classList.toggle('plain', 0);
 
-			if (SettingsUserStore.showImages() && !this.isSpam() && FolderUserStore.spamFolder() != this.folder) {
-				this.showExternalImages();
+			if (!this.isSpam() && FolderUserStore.spamFolder() != this.folder) {
+				if ('always' === SettingsUserStore.viewImages()) {
+					this.showExternalImages();
+				}
+				if ('match' === SettingsUserStore.viewImages()) {
+					let regex = SettingsUserStore.viewImagesWhitelist()
+						.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&')
+						.replace(/[\s\S,;:]+/g, '|')
+						.replace(/\|+/g, '|');
+					if (regex.length) {
+						regex = new RegExp(regex);
+						this.showExternalImages(
+							(this.from[0]?.email.match(regex)/* || this.sender[0]?.email.match(regex)*/) ? null : regex
+						);
+					}
+				}
 			}
 
 			this.isHtml(true);
@@ -391,7 +405,7 @@ export class MessageModel extends AbstractModel {
 		return self;
 	}
 
-	showExternalImages() {
+	showExternalImages(regex) {
 		const body = this.body;
 		if (body && this.hasImages()) {
 			this.hasImages(false);
@@ -401,7 +415,9 @@ export class MessageModel extends AbstractModel {
 				src, useProxy = !!SettingsGet('UseLocalProxyForExternalImages');
 			body.querySelectorAll('img[' + attr + ']').forEach(node => {
 				src = node.getAttribute(attr);
-				node.src = useProxy ? proxy(src) : src;
+				if (!regex || src.match(regex)) {
+					node.src = useProxy ? proxy(src) : src;
+				}
 			});
 
 			body.querySelectorAll('[data-x-style-url]').forEach(node => {

@@ -400,7 +400,6 @@
 		"USE_CHECKBOXES_IN_LIST": "Toon selectievakjes in de lijst",
 		"USE_THREADS": "Toon berichten in boomweergave",
 		"REPLY_SAME_FOLDER": "Plaats antwoorden in de map van het originele bericht",
-		"SHOW_IMAGES": "Afbeeldingen altijd weergeven in het bericht",
 		"PREFER_HTML": "Geef de voorkeur aan HTML boven platte tekst",
 		"PREFER_HTML_INFO": "Berichten komen soms in beide formaten. Deze optie bepaalt of u het HTML-gedeelte of het platte tekstgedeelte wilt weergeven.",
 		"REMOVE_COLORS": "Verwijder achtergrond- en tekstkleuren uit het bericht",
@@ -414,7 +413,12 @@
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Geblokkeerd door de browser)",
 		"LIST_INLINE_ATTACHMENTS": "Toon inline bijlagen in lijst",
 		"LIST_SIMPLE_ATTACHMENTS": "Simpele bijlagen lijst",
-		"LIST_MESSAGES_GROUPED": "Toon berichten gegroepeerd (bij sorteren op Datum of Van)"
+		"LIST_MESSAGES_GROUPED": "Toon berichten gegroepeerd (bij sorteren op Datum of Van)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Automatisch ontvangers toevoegen aan uw adresboek",
