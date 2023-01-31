@@ -320,21 +320,25 @@ class ServiceActions
 				$HTTP->max_redirects = 2;
 				$HTTP->streamBodyTo($tmp);
 				$oResponse = $HTTP->doRequest('GET', $sUrl);
-				if ($oResponse && 200 === $oResponse->status
-					&& \str_starts_with($oResponse->getHeader('content-type'), 'image/')
-				) try {
-					$this->oActions->cacheByKey($sData);
-					\header('Content-Type: ' . $oResponse->getHeader('content-type'));
-					\header('Cache-Control: public');
-					\header('Expires: '.\gmdate('D, j M Y H:i:s', 2592000 + \time()).' UTC');
-					\header('X-Content-Redirect-Location: '.$oResponse->final_uri);
-					\rewind($tmp);
-					\fpassthru($tmp);
-					exit;
-				} catch (\Throwable $e) {
-					$msg = \get_class($HTTP) . ': ' . $e->getMessage();
-					\SnappyMail\Log::error('Proxy', $msg);
-//					\error_log(\get_class($HTTP) . ': ' . $e->getMessage());
+				if ($oResponse) {
+					$sContentType = \SnappyMail\File\MimeType::fromStream($tmp) ?: $oResponse->getHeader('content-type');
+					if (200 === $oResponse->status && \str_starts_with($sContentType, 'image/')) {
+						try {
+							$this->oActions->cacheByKey($sData);
+							\header('Content-Type: ' . $sContentType);
+							\header('Cache-Control: public');
+							\header('Expires: '.\gmdate('D, j M Y H:i:s', 2592000 + \time()).' UTC');
+							\header('X-Content-Redirect-Location: '.$oResponse->final_uri);
+							\rewind($tmp);
+							\fpassthru($tmp);
+							exit;
+						} catch (\Throwable $e) {
+							\header("X-Content-Error: {$e->getMessage()}");
+							\SnappyMail\Log::error('Proxy', \get_class($HTTP) . ': ' . $e->getMessage());
+						}
+					} else {
+						\header("X-Content-Error: {$oResponse->status} {$sContentType}");
+					}
 				}
 			}
 		}
