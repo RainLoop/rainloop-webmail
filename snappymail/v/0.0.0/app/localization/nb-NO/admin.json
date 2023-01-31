@@ -44,7 +44,7 @@
 		"LABEL_ALLOW_IDENTITIES": "Tillat bruk av flere identiteter",
 		"ALERT_DATA_ACCESS": "SnappyMail-datamappa di er offentlig tiljgengelig. Sett opp webtjeneren slik at den ikke viser datamappa. Les mer her:",
 		"ALERT_WARNING": "Advarsel!",
-		"HTML_ALERT_WEAK_PASSWORD": "Du bruker forvalgt admin-passord.\n<br>\nAv sikkerhetshensyn bør du\n<strong><a href=\"#\/security\">endre<\/a><\/strong>\npassordet umiddelbart.\n"
+		"HTML_ALERT_WEAK_PASSWORD": "Du bruker forvalgt admin-passord.\n<br>\nAv sikkerhetshensyn bør du\n<strong><a href=\"#\/security\">endre<\/a><\/strong>\npassordet umiddelbart."
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Innloggingsskjerm",
@@ -69,16 +69,16 @@
 		"LABEL_STORAGE_USER": "Bruker",
 		"LABEL_STORAGE_PASSWORD": "Passord",
 		"ALERT_NOTICE": "Varsel!",
-		"SUGGESTIONS_LIMIT": "Suggestions limit",
+		"SUGGESTIONS_LIMIT": "Forslagsbegrensning",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Ikke bruk denne databasetypen hvis dette systemet har mange brukere.",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "Dette systemet støtter ikke kontakter.\n<br>\nDu må installere eller slå på utvidelsen <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> på tjeneren.\n"
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Dette systemet støtter ikke kontakter.\n<br>\nDu må installere eller slå på utvidelsen <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> på tjeneren."
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "Domener",
 		"BUTTON_ADD_DOMAIN": "Legg til domene",
 		"BUTTON_ADD_ALIAS": "Legg til alias",
 		"DELETE_ARE_YOU_SURE": "Er du sikker?",
-		"HTML_DOMAINS_HELPER": "Liste over domener som programmet kan få tilgang til.\n<br>\nTrykk på et navn for å sette opp domenet.\n"
+		"HTML_DOMAINS_HELPER": "Liste over domener som programmet kan få tilgang til.\n<br>\nTrykk på et navn for å sette opp domenet."
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Sikkerhet",
@@ -102,7 +102,7 @@
 	"TAB_ABOUT": {
 		"LEGEND_ABOUT": "Om",
 		"LABEL_TAG_HINT": "Rask, enkel, moderne og web-basert e-postklient",
-		"LABEL_ALL_RIGHTS_RESERVED": "All Rights Reserved.",
+		"LABEL_ALL_RIGHTS_RESERVED": "Alle rettigheter reservert.",
 		"HINT_READ_CHANGE_LOG": "Les endringslogg før du oppdaterer.",
 		"HINT_IS_UP_TO_DATE": "SnappyMail er oppdatert.",
 		"HTML_NEW_VERSION": "Versjon <b>%VERSION%<\/b> er nå tilgjengelig.",
@@ -125,16 +125,16 @@
 		"LABEL_PORT": "Port",
 		"LABEL_SECURE": "Sikker",
 		"TIMEOUT": "Timeout",
-		"DISABLE_CAPABILITIES": "Disable capabilities",
-		"LIMITS": "Limits",
-		"FOLDERS": "Folders",
-		"MESSAGES": "Messages",
+		"DISABLE_CAPABILITIES": "Deaktiver funksjoner",
+		"LIMITS": "Grenser",
+		"FOLDERS": "Mapper",
+		"MESSAGES": "Meldinger",
 		"LABEL_WHITE_LIST": "Hvitliste",
-		"SECURE_OPTION_NONE": "None",
+		"SECURE_OPTION_NONE": "Ingen",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Tillat sieve-skript",
 		"LABEL_USE_SHORT_LOGIN": "Bruk forkortet brukernavn",
 		"LABEL_USE_AUTH": "Bruk autentisering",
-		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_SET_SENDER": "Bruk pålogging som avsender",
 		"LABEL_USE_PHP_MAIL": "Bruk php-funksjonen «mail()»",
 		"BUTTON_WHITE_LIST": "Hvitliste",
 		"BUTTON_SIEVE_CONFIGURATION": "Sieve-oppsett",
@@ -142,15 +142,15 @@
 		"BUTTON_BACK": "Tilbake",
 		"BUTTON_UPDATE": "Oppdater",
 		"NEW_DOMAIN_DESC": "Dette domeneoppsettet lar deg jobbe <br> med e-postadresser ved <i>%NAME%<\/i>.",
-		"WHITE_LIST_ALERT": "Liste over domenebrukere som programmet skal ha tilgang til.\nHold verdier adskilt med mellomrom.\n"
+		"WHITE_LIST_ALERT": "Liste over domenebrukere som programmet skal ha tilgang til.\nHold verdier adskilt med mellomrom."
 	},
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Tillegg",
 		"DESC_NOTHING_TO_CONFIGURE": "Ingenting å sette opp"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Yes",
-		"BUTTON_NO": "No",
+		"BUTTON_YES": "Ja",
+		"BUTTON_NO": "Nei",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Er du sikker på at du vil lukke dette vinduet?"
 	},
 	"POPUPS_LANGUAGES": {
@@ -165,9 +165,9 @@
 		"UNKNOWN_ERROR": "Ukjent feil"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
+		"REQUEST_ERROR": "Forespørsel feilet",
+		"REQUEST_ABORTED": "Forespørselen er avbrutt",
+		"REQUEST_TIMEOUT": "Forespørselen ble tidsavbrutt",
 		"INVALID_TOKEN": "Ugyldig symbol",
 		"AUTH_ERROR": "Autentisering mislyktes",
 		"DOMAIN_ALREADY_EXISTS": "Domenet finnes allerede",
