@@ -276,7 +276,9 @@ export class AppUser extends AbstractApp {
 								location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
 								(SettingsGet('Title') || 'SnappyMail')
 							);
-						} catch (e) {} // eslint-disable-line no-empty
+						} catch (e) {
+							console.error(e);
+						}
 
 						setTimeout(() => mailToHelper(SettingsGet('MailToEmail')), 500);
 					} else {
