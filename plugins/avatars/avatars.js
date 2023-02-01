@@ -1,8 +1,6 @@
 (rl => {
 
-	const size = 50;
-
-	window.identiconSvg = (hash, txt) => {
+	window.identiconSvg = (hash, txt, font) => {
 		// color defaults to last 7 chars as hue at 70% saturation, 50% brightness
 		// hsl2rgb adapted from: https://gist.github.com/aemkei/1325937
 		let h = (parseInt(hash.substr(-7), 16) / 0xfffffff) * 6, s = 0.7, l = 0.5,
@@ -22,10 +20,10 @@
 			].map(Math.round).join(',') + ')';
 
 		if (txt) {
-			return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}px" height="${size}px" viewBox="0 0 ${size} ${size}" version="1.1">
+			return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" version="1.1">
 				<circle fill="${color}" width="${size}" height="${size}" cx="${size/2}" cy="${size/2}" r="${size/2}"/>
 				<text x="${size}%" y="${size}%" style="color:#FFF" alignment-baseline="middle" text-anchor="middle"
-					 font-weight="bold" font-size="${Math.round(size*0.5)}"
+					 font-weight="bold" font-size="${Math.round(size*0.5)}" font-family="${font.replace(/"/g, "'")}"
 					 dy=".1em" dominant-baseline="middle" fill="#FFF">${txt}</text>
 				</svg>`;
 		}
@@ -37,6 +35,8 @@
 	let isMobile;
 
 	const
+		size = 50,
+		getEl = id => document.getElementById(id),
 		queue = [],
 		avatars = new Map,
 		ncAvatars = new Map,
@@ -63,7 +63,11 @@
 			.slice(0,2)
 			.toUpperCase(),
 		setIdenticon = (from, fn) => hash(from.email).then(hash =>
-			fn('data:image/svg+xml;base64,' + btoa(window.identiconSvg(hash, fromChars(from))))
+			fn('data:image/svg+xml;base64,' + btoa(window.identiconSvg(
+				hash,
+				fromChars(from),
+				window.getComputedStyle(getEl('rl-app'), null).getPropertyValue('font-family')
+			)))
 		),
 		addQueue = (msg, fn) => {
 			msg.from?.[0] && setIdenticon(msg.from[0], fn);
@@ -190,7 +194,7 @@
 		if (templateId === e.detail.viewModelTemplateID) {
 
 			const
-				template = document.getElementById(templateId),
+				template = getEl(templateId),
 				messageItemHeader = template.content.querySelector('.messageItemHeader');
 
 			if (messageItemHeader) {
@@ -228,7 +232,7 @@
 
 		if ('MailMessageList' === e.detail.viewModelTemplateID) {
 			isMobile = e.detail.isMobile;
-			document.getElementById('MailMessageList').content.querySelectorAll('.messageCheckbox')
+			getEl('MailMessageList').content.querySelectorAll('.messageCheckbox')
 				.forEach(el => el.append(Element.fromHTML(`<img class="fromPic" data-bind="fromPic:$data" loading="lazy">`)));
 		}
 	});

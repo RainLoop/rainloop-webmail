@@ -4,7 +4,7 @@
 const size = 50,
 	margin = 0.08;
 
-window.identiconSvg = (hash, txt) => {
+window.identiconSvg = (hash, txt, font) => {
 	// color defaults to last 7 chars as hue at 70% saturation, 50% brightness
 	// hsl2rgb adapted from: https://gist.github.com/aemkei/1325937
 	let h = (parseInt(hash.substr(-7), 16) / 0xfffffff) * 6, s = 0.7, l = 0.5,
@@ -24,10 +24,10 @@ window.identiconSvg = (hash, txt) => {
 		].map(Math.round).join(',') + ')';
 
 	if (txt) {
-		txt = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}px" height="${size}px" viewBox="0 0 ${size} ${size}" version="1.1">
+		txt = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" version="1.1">
 			<circle fill="${color}" width="${size}" height="${size}" cx="${size/2}" cy="${size/2}" r="${size/2}"/>
 			<text x="${size}%" y="${size}%" style="color:#FFF" alignment-baseline="middle" text-anchor="middle"
-				 font-weight="bold" font-size="${Math.round(size*0.5)}"
+				 font-weight="bold" font-size="${Math.round(size*0.5)}" font-family="${font.replace(/"/g, "'")}"
 				 dy=".1em" dominant-baseline="middle" fill="#FFF">${txt}</text>
 			</svg>`;
 	} else {
