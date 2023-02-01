@@ -184,13 +184,11 @@ abstract class Service
 			if ($sResult) {
 				$sResult .= '<!--cached-->';
 			} else {
+				$sThemeName = $oActions->GetTheme($bAdmin);
 				$aTemplateParameters['{{BaseAppBootCss}}'] = \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot'.$sAppCssMin.'.css');
 				$aTemplateParameters['{{BaseAppBootScript}}'] = \file_get_contents(APP_VERSION_ROOT_PATH.'static/js'.($sAppJsMin ? '/min' : '').'/boot'.$sAppJsMin.'.js');
-				$aTemplateParameters['{{BaseAppThemeCss}}'] = \preg_replace(
-					'/\\s*([:;{},]+)\\s*/s',
-					'$1',
-					$oActions->compileCss($oActions->GetTheme($bAdmin), $bAdmin)
-				);
+				$aTemplateParameters['{{BaseAppThemeName}}'] = $sThemeName;
+				$aTemplateParameters['{{BaseAppThemeCss}}'] = \preg_replace('/\\s*([:;{},]+)\\s*/s', '$1', $oActions->compileCss($sThemeName, $bAdmin));
 				$aTemplateParameters['{{BaseLanguage}}'] = $oActions->compileLanguage($sLanguage, $bAdmin);
 				$aTemplateParameters['{{BaseTemplates}}'] = Utils::ClearHtmlOutput($oServiceActions->compileTemplates($bAdmin));
 				$sResult = Utils::ClearHtmlOutput(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'));

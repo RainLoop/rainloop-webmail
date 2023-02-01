@@ -43,18 +43,21 @@ export const
 			},
 			url = cssLink(value);
 
-		clearTimeout(__themeTimer);
+		if (themeStyle.dataset.name != value) {
+			clearTimeout(__themeTimer);
 
-		themeTrigger(SaveSettingStatus.Saving);
+			themeTrigger(SaveSettingStatus.Saving);
 
-		rl.app.Remote.abort('theme').get('theme', url)
-			.then(data => {
-				if (2 === arrayLength(data)) {
-					themeStyle.textContent = data[1];
-					themeTrigger(SaveSettingStatus.Success);
-				}
-				clearTimer();
-			}, clearTimer);
+			rl.app.Remote.abort('theme').get('theme', url)
+				.then(data => {
+					if (2 === arrayLength(data)) {
+						themeStyle.textContent = data[1];
+						themeStyle.dataset.name = value;
+						themeTrigger(SaveSettingStatus.Success);
+					}
+					clearTimer();
+				}, clearTimer);
+		}
 	},
 
 	convertThemeName = theme => theme.replace(/@[a-z]+$/, '').replace(/([A-Z])/g, ' $1').trim();
