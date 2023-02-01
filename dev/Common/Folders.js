@@ -14,7 +14,23 @@ import { serverRequest } from 'Common/Links';
 
 import Remote from 'Remote/User/Fetch';
 
+let refreshInterval,
+	// Default every 5 minutes
+	refreshFoldersInterval = 300000;
+
 export const
+
+setRefreshFoldersInterval = minutes => {
+	refreshFoldersInterval = Math.max(5, minutes) * 60000;
+	clearInterval(refreshInterval);
+	refreshInterval = setInterval(() => {
+		const cF = FolderUserStore.currentFolderFullName(),
+			iF = getFolderInboxName();
+		folderInformation(iF);
+		iF === cF || folderInformation(cF);
+		folderInformationMultiply();
+	}, refreshFoldersInterval);
+},
 
 sortFolders = folders => {
 	try {
@@ -86,9 +102,6 @@ folderListOptionsBuilder = (
 
 	return aResult;
 },
-
-// Every 5 minutes
-refreshFoldersInterval = 300000,
 
 /**
  * @param {string} folder

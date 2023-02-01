@@ -11,7 +11,7 @@ export const SettingsUserStore = new class {
 		const self = this;
 
 		self.messagesPerPage = ko.observable(25).extend({ debounce: 999 });
-
+		self.checkMailInterval = ko.observable(5).extend({ debounce: 999 });
 		self.messageReadDelay = ko.observable(5).extend({ debounce: 999 });
 
 		addObservablesTo(self, {
@@ -77,6 +77,7 @@ export const SettingsUserStore = new class {
 
 		self.layout(pInt(SettingsGet('Layout')));
 		self.messagesPerPage(pInt(SettingsGet('MessagesPerPage')));
+		self.checkMailInterval(pInt(SettingsGet('CheckMailInterval')));
 		self.messageReadDelay(pInt(SettingsGet('MessageReadDelay')));
 		self.autoLogout(pInt(SettingsGet('AutoLogout')));
 		self.msgDefaultAction(SettingsGet('MsgDefaultAction'));

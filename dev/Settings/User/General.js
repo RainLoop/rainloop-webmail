@@ -3,6 +3,7 @@ import ko from 'ko';
 import { SMAudio } from 'Common/Audio';
 import { SaveSettingStatus } from 'Common/Enums';
 import { EditorDefaultType, Layout } from 'Common/EnumsUser';
+import { setRefreshFoldersInterval } from 'Common/Folders';
 import { Settings, SettingsGet } from 'Common/Globals';
 import { isArray } from 'Common/Utils';
 import { addSubscribablesTo, addComputablesTo } from 'External/ko';
@@ -41,7 +42,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 
 		this.threadsAllowed = AppUserStore.threadsAllowed;
 
-		['layout', 'messageReadDelay', 'messagesPerPage',
+		['layout', 'messageReadDelay', 'messagesPerPage', 'checkMailInterval',
 		 'editorDefaultType', 'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt',
 		 'viewHTML', 'viewImages', 'viewImagesWhitelist', 'removeColors',
 		 'hideDeleted', 'listInlineAttachments', 'simpleAttachmentsList',
@@ -97,6 +98,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.addSetting('MsgDefaultAction');
 		this.addSetting('MessageReadDelay');
 		this.addSetting('MessagesPerPage');
+		this.addSetting('CheckMailInterval');
 		this.addSetting('Layout');
 
 		this.addSettings(['ViewHTML', 'ViewImages', 'ViewImagesWhitelist', 'HideDeleted',
@@ -136,6 +138,10 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 			useThreads: value => {
 				MessagelistUserStore([]);
 				Remote.saveSetting('UseThreads', value);
+			},
+
+			checkMailInterval: () => {
+				setRefreshFoldersInterval(SettingsUserStore.checkMailInterval());
 			}
 		});
 	}

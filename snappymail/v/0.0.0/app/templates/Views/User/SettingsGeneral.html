@@ -45,6 +45,14 @@
 		</div>
 	</div>
 	<div class="control-group">
+		<label data-i18n="SETTINGS_GENERAL/CHECK_MAIL_INTERVAL"></label>
+		<div>
+			<input type="number" min="5" max="60" step="1" class="span1" data-bind="textInput: checkMailInterval">
+			<span data-i18n="SETTINGS_GENERAL/MINUTES"></span>
+			<span data-bind="saveTrigger: checkMailIntervalTrigger"></span>
+		</div>
+	</div>
+	<div class="control-group">
 		<div>
 			<div data-bind="component: {
 				name: 'Checkbox',

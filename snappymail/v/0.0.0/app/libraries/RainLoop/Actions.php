@@ -712,6 +712,7 @@ class Actions
 					'HideDeleted' => true,
 					'ShowUnreadCount' => false,
 					'UnhideKolabFolders' => false,
+					'CheckMailInterval' => 5,
 					'UserBackgroundName' => '',
 					'UserBackgroundHash' => '',
 					'SieveAllowFileintoInbox' => (bool)$oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false)
@@ -769,6 +770,7 @@ class Actions
 					$aResult['HideDeleted'] = (bool)$oSettingsLocal->GetConf('HideDeleted', $aResult['HideDeleted']);
 					$aResult['ShowUnreadCount'] = (bool)$oSettingsLocal->GetConf('ShowUnreadCount', $aResult['ShowUnreadCount']);
 					$aResult['UnhideKolabFolders'] = (bool)$oSettingsLocal->GetConf('UnhideKolabFolders', $aResult['UnhideKolabFolders']);
+					$aResult['CheckMailInterval'] = (int)$oSettingsLocal->GetConf('CheckMailInterval', $aResult['CheckMailInterval']);
 				}
 
 				if ($oConfig->Get('login', 'determine_user_language', true)) {

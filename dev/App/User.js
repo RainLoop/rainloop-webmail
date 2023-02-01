@@ -1,7 +1,7 @@
 import 'External/User/ko';
 
 import { SMAudio } from 'Common/Audio';
-import { isArray, pString } from 'Common/Utils';
+import { isArray, pString, pInt } from 'Common/Utils';
 import { mailToHelper, setLayoutResizer, dropdownsDetectVisibility } from 'Common/UtilsUser';
 
 import {
@@ -61,7 +61,7 @@ import { AskPopupView } from 'View/Popup/Ask';
 import {
 	folderInformation,
 	folderInformationMultiply,
-	refreshFoldersInterval,
+	setRefreshFoldersInterval,
 	messagesMoveHelper,
 	messagesDeleteHelper
 } from 'Common/Folders';
@@ -229,13 +229,7 @@ export class AppUser extends AbstractApp {
 							SettingsUserScreen
 						]);
 
-						setInterval(() => {
-							const cF = FolderUserStore.currentFolderFullName(),
-								iF = getFolderInboxName();
-							folderInformation(iF);
-							iF === cF || folderInformation(cF);
-							folderInformationMultiply();
-						}, refreshFoldersInterval);
+						setRefreshFoldersInterval(pInt(SettingsGet('CheckMailInterval')));
 
 						ContactUserStore.init();
 
