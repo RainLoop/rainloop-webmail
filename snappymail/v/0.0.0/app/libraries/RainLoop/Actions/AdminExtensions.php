@@ -122,12 +122,16 @@ trait AdminExtensions
 					$aSettings = (array) $this->GetActionParam('settings', []);
 					foreach ($aMap as $oItem) {
 						$sKey = $oItem->Name();
-						$sValue = $aSettings[$sKey] ?? $oConfig->Get('plugin', $sKey);
-						if (PluginPropertyType::PASSWORD !== $oItem->Type() || static::APP_DUMMY !== $sValue) {
-							$oItem->SetValue($sValue);
-							$mResultValue = $oItem->Value();
-							if (null !== $mResultValue) {
-								$oConfig->Set('plugin', $sKey, $mResultValue);
+						$mValue = $aSettings[$sKey] ?? $oConfig->Get('plugin', $sKey);
+						if (PluginPropertyType::PASSWORD !== $oItem->Type() || static::APP_DUMMY !== $mValue) {
+							$oItem->SetValue($mValue);
+							$mValue = $oItem->Value();
+							if (null !== $mValue) {
+								if ($oItem->encrypted) {
+									$oConfig->setEncrypted('plugin', $sKey, $mValue);
+								} else {
+									$oConfig->Set('plugin', $sKey, $mValue);
+								}
 							}
 						}
 					}

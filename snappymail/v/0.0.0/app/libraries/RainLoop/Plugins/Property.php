@@ -30,6 +30,8 @@ class Property implements \JsonSerializable
 
 	private string $sPlaceholder = '';
 
+	public bool $encrypted = false;
+
 	function __construct(string $sName)
 	{
 		$this->sName = $sName;
@@ -43,7 +45,6 @@ class Property implements \JsonSerializable
 	public function SetType(int $iType) : self
 	{
 		$this->iType = (int) $iType;
-
 		return $this;
 	}
 
@@ -93,42 +94,42 @@ class Property implements \JsonSerializable
 		} else {
 			$this->mDefaultValue = $mDefaultValue;
 		}
-
 		return $this;
 	}
 
 	public function SetOptions(array $aOptions) : self
 	{
 		$this->aOptions = $aOptions;
-
 		return $this;
 	}
 
 	public function SetPlaceholder(string $sPlaceholder) : self
 	{
 		$this->sPlaceholder = $sPlaceholder;
-
 		return $this;
 	}
 
 	public function SetLabel(string $sLabel) : self
 	{
 		$this->sLabel = $sLabel;
-
 		return $this;
 	}
 
 	public function SetDescription(string $sDesc) : self
 	{
 		$this->sDesc = $sDesc;
-
 		return $this;
 	}
 
 	public function SetAllowedInJs(bool $bValue = true) : self
 	{
 		$this->bAllowedInJs = $bValue;
+		return $this;
+	}
 
+	public function SetEncrypted(bool $bValue = true) : self
+	{
+		$this->encrypted = $bValue;
 		return $this;
 	}
 
@@ -188,7 +189,7 @@ class Property implements \JsonSerializable
 	{
 		return array(
 			'@Object' => 'Object/PluginProperty',
-			'value' => $this->mValue,
+			'value' => $this->encrypted ? \SnappyMail\Crypt::DecryptFromJSON($this->mValue, \APP_SALT) : $this->mValue,
 			'placeholder' => $this->sPlaceholder,
 			'name' => $this->sName,
 			'type' => $this->iType,
