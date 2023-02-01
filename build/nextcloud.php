@@ -29,15 +29,11 @@ $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('snappymai
 foreach ($files as $file) {
 	if (is_file($file)) {
 		$newFile = str_replace('\\', '/', $file);
-//		$newFile = str_replace("'snappymail/v/'.", '', $newFile);
-		$nc_tar->addFile($file, "snappymail/app/{$newFile}");
+		$newName = str_replace('/.htaccess', '/_htaccess', $newFile);
+		$nc_tar->addFile($file, "snappymail/app/{$newName}");
 		$hashes["app/{$newFile}"] = hash_file('sha512', $file);
 	}
 }
-$nc_tar->delete("snappymail/app/snappymail/v/{$package->version}/app/.htaccess");
-$nc_tar->addFile("snappymail/v/{$package->version}/app/.htaccess", "snappymail/app/snappymail/v/{$package->version}/app/_htaccess");
-$nc_tar->delete("snappymail/app/snappymail/v/{$package->version}/static/.htaccess");
-$nc_tar->addFile("snappymail/v/{$package->version}/static/.htaccess", "snappymail/app/snappymail/v/{$package->version}/static/_htaccess");
 
 /*
 $nc_tar->addFile('data/.htaccess');

@@ -35,9 +35,9 @@ class InstallStep implements IRepairStep
 		if (!\file_exists(APP_VERSION_ROOT_PATH . 'app/.htaccess') && \file_exists(APP_VERSION_ROOT_PATH . 'app/_htaccess')) {
 			\rename(APP_VERSION_ROOT_PATH . 'app/_htaccess', APP_VERSION_ROOT_PATH . 'app/.htaccess');
 		}
-		if (!\file_exists(APP_VERSION_ROOT_PATH . 'static/.htaccess') && \file_exists(APP_VERSION_ROOT_PATH . 'static/_htaccess')) {
-			\rename(APP_VERSION_ROOT_PATH . 'static/_htaccess', APP_VERSION_ROOT_PATH . 'static/.htaccess');
-		}
+//		if (!\file_exists(APP_VERSION_ROOT_PATH . 'static/.htaccess') && \file_exists(APP_VERSION_ROOT_PATH . 'static/_htaccess')) {
+//			\rename(APP_VERSION_ROOT_PATH . 'static/_htaccess', APP_VERSION_ROOT_PATH . 'static/.htaccess');
+//		}
 
 		$oConfig = \RainLoop\Api::Config();
 		$bSave = false;
