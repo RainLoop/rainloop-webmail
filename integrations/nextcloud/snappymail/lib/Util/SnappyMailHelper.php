@@ -106,7 +106,7 @@ class SnappyMailHelper
 				$sEmail = $sUID;
 				$sPassword = $ocSession['snappymail-password'];
 			} else if ($config->getAppValue('snappymail', 'snappymail-autologin-with-email', false)) {
-				$sEmail = $config->getUserValue($sUID, 'settings', 'email', '');
+				$sEmail = $config->getUserValue($sUID, 'settings', 'email');
 				$sPassword = $ocSession['snappymail-password'];
 			}
 			if ($sPassword) {
@@ -116,12 +116,23 @@ class SnappyMailHelper
 
 		// If the user has set credentials for SnappyMail in their personal
 		// settings, override everything before and use those instead.
-		$sCustomEmail = $config->getUserValue($sUID, 'snappymail', 'snappymail-email', '');
+		$sCustomEmail = $config->getUserValue($sUID, 'snappymail', 'snappymail-email');
 		if ($sCustomEmail) {
 			$sEmail = $sCustomEmail;
-			$sPassword = $config->getUserValue($sUID, 'snappymail', 'snappymail-password', '');
+			$sPassword = $config->getUserValue($sUID, 'snappymail', 'snappymail-password');
 			if ($sPassword) {
 				$sPassword = static::decodePassword($sPassword, \md5($sEmail));
+			}
+		} else if ($sCustomEmail = $config->getUserValue($sUID, 'rainloop', 'rainloop-email')) {
+			$sEmail = $sCustomEmail;
+			$this->config->setUserValue($sUser, 'snappymail', 'snappymail-email', $sEmail);
+
+			$sPassword = $config->getUserValue($sUID, 'rainloop', 'rainloop-password', '');
+			if ($sPassword) {
+				$sPassword = static::decodeRainLoopPassword($sPassword, md5($sEmail));
+			}
+			if ($sPassword) {
+				$this->config->setUserValue($sUser, 'snappymail', 'snappymail-password', static::encodePassword($sPassword, \md5($sEmail)));
 			}
 		}
 		return [$sUID, $sEmail, $sPassword ?: ''];
@@ -212,4 +223,44 @@ class SnappyMailHelper
 		return $result;
 	}
 
+	/**
+	 * @param string $sPassword
+	 * @param string $sSalt
+	 *
+	 * @return string
+	 */
+	public static function decodeRainLoopPassword($sPassword, $sSalt)
+	{
+		$method = 'AES-256-CBC';
+		if (\function_exists('openssl_encrypt') &&
+			\function_exists('openssl_decrypt') &&
+			\function_exists('openssl_random_pseudo_bytes') &&
+			\function_exists('openssl_cipher_iv_length') &&
+			\function_exists('openssl_get_cipher_methods') &&
+			\defined('OPENSSL_RAW_DATA') && \defined('OPENSSL_ZERO_PADDING') &&
+			\in_array($method, openssl_get_cipher_methods())
+		) {
+			$sLine = base64_decode(trim($sPassword));
+			$aParts = explode('|', $sLine, 2);
+			if (is_array($aParts) && !empty($aParts[0]) && !empty($aParts[1])) {
+				$sData = @base64_decode($aParts[0]);
+				$iv = @base64_decode($aParts[1]);
+				return @base64_decode(trim(
+					@openssl_decrypt($sData, $method, md5($sSalt), OPENSSL_RAW_DATA, $iv)
+				));
+			}
+		}
+
+		if (\function_exists('mcrypt_encrypt') &&
+			\function_exists('mcrypt_decrypt') &&
+			\defined('MCRYPT_RIJNDAEL_256') &&
+			\defined('MCRYPT_MODE_ECB')
+		) {
+			return @base64_decode(trim(
+				@mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($sSalt), base64_decode(trim($sPassword)), MCRYPT_MODE_ECB)
+			));
+		}
+
+		return @base64_decode(trim($sPassword));
+	}
 }
