@@ -31,12 +31,13 @@ const
 					'OPENPGP/'+btnTxt
 				);
 		if (pass) {
-			pass.remember && passphrases.set(key, pass.password);
-			let passphrase = pass.password;
-			return await openpgp.decryptKey({
-				privateKey: privateKey.key,
-				passphrase
-			});
+			const passphrase = pass.password,
+				result = await openpgp.decryptKey({
+					privateKey: privateKey.key,
+					passphrase
+				});
+			result && pass.remember && passphrases.set(key, passphrase);
+			return result;
 		}
 	},
 
