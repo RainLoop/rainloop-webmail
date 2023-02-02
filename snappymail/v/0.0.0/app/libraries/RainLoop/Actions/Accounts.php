@@ -220,7 +220,7 @@ trait Accounts
 				$aResult['HideDeleted'] = (bool) $oSettingsLocal->GetConf('HideDeleted', true);
 				$aResult['ShowUnreadCount'] = (bool) $oSettingsLocal->GetConf('ShowUnreadCount', false);
 				$aResult['UnhideKolabFolders'] = (bool) $oSettingsLocal->GetConf('UnhideKolabFolders', false);
-				$aResult['CheckMailInterval'] = (int) $oSettingsLocal->GetConf('CheckMailInterval', 5);
+				$aResult['CheckMailInterval'] = (int) $oSettingsLocal->GetConf('CheckMailInterval', 15);
 			}
 //			$this->Plugins()->InitAppData($bAdmin, $aResult, $oAccount);
 

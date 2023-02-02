@@ -712,7 +712,7 @@ class Actions
 					'HideDeleted' => true,
 					'ShowUnreadCount' => false,
 					'UnhideKolabFolders' => false,
-					'CheckMailInterval' => 5,
+					'CheckMailInterval' => 15,
 					'UserBackgroundName' => '',
 					'UserBackgroundHash' => '',
 					'SieveAllowFileintoInbox' => (bool)$oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false)
