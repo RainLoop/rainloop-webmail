@@ -167,6 +167,8 @@ export const
 			.replace(/<\/?(html|head)[^>]*>/gi, '')
 			// Fix Reddit https://github.com/the-djmaze/snappymail/issues/540
 			.replace(/<span class="preview-text"[\s\S]+?<\/span>/, '')
+			// https://github.com/the-djmaze/snappymail/issues/900
+			.replace(/\u2028/g,' ')
 			.trim();
 		html = '';
 
@@ -543,7 +545,9 @@ export const
 	plainToHtml = plain => {
 		plain = plain.toString()
 			.replace(/\r/g, '')
-			.replace(/^>[> ]>+/gm, ([match]) => (match ? match.replace(/[ ]+/g, '') : match));
+			.replace(/^>[> ]>+/gm, ([match]) => (match ? match.replace(/[ ]+/g, '') : match))
+			// https://github.com/the-djmaze/snappymail/issues/900
+			.replace(/\u2028/g,' ');
 
 		let bIn = false,
 			bDo = true,
