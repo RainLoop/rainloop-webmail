@@ -1,3 +1,43 @@
+## 2.25.2 – 2023-02-02
+
+## Added
+- Refresh frequency of the mailboxes
+  [#486](https://github.com/the-djmaze/snappymail/pull/486)
+- Temporarily save password for private key during session
+  [#840](https://github.com/the-djmaze/snappymail/pull/840)
+- Upgrade from Rainloop, password not migrated
+  [#898](https://github.com/the-djmaze/snappymail/pull/898)
+- Whitelist to show images directly
+  [#201](https://github.com/the-djmaze/snappymail/pull/201)
+- HTML editor paste image makes it max 1024px width/height
+  [#262](https://github.com/the-djmaze/snappymail/pull/262)
+- SnappyMail\TAR::extractTo support the $files and $overwrite parameters
+
+## Changed
+- Issue with themes when Chrome crashes
+  [#188](https://github.com/the-djmaze/snappymail/pull/188)
+- /static/.htaccess as mentioned by @dbiczo in
+  [#895](https://github.com/the-djmaze/snappymail/pull/895)
+- Update nb-NO language by @master3395
+  [#896](https://github.com/the-djmaze/snappymail/pull/896)
+- \RainLoop\Utils::SetCookie() to \SnappyMail\Cookies::set()
+- Merge \MailSo\Base\Utils::RecRmDir() and \MailSo\Base\Utils::RecTimeDirRemove()
+
+## Fixed
+- Two issues with images being delivered via ProxyExternal
+  [#887](https://github.com/the-djmaze/snappymail/pull/887)
+- Multiple accounts conflicts when using multiple tabs
+  [#892](https://github.com/the-djmaze/snappymail/pull/892)
+- Spaces in attached file names are not preserved
+  [#893](https://github.com/the-djmaze/snappymail/pull/893)
+- Prevent empty area scroll on body
+
+### Removed
+- Floating HTML text formatting menu on mobile
+  [#828](https://github.com/the-djmaze/snappymail/pull/828)
+- Unused AUTH_SPEC_LOGOUT_TOKEN_KEY and AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY
+
+
 ## 2.25.1 – 2023-01-30
 
 ## Added
@@ -206,9 +246,9 @@
   [#737](https://github.com/the-djmaze/snappymail/pull/737)
 
 ### Fixed
-- Typed property MailSo\Cache\Drivers\Redis::$sKeyPrefix must not be accessed before initialization #792
+- Typed property MailSo\Cache\Drivers\Redis::$sKeyPrefix must not be accessed before initialization
   [#792](https://github.com/the-djmaze/snappymail/pull/792)
-- Attachments in mails in 2.24 not loading in reply/forward #789
+- Attachments in mails in 2.24 not loading in reply/forward
   [#789](https://github.com/the-djmaze/snappymail/pull/789)
 - Rollback #280 due to complications
   [#280](https://github.com/the-djmaze/snappymail/pull/280)
@@ -259,10 +299,12 @@
   [#744](https://github.com/the-djmaze/snappymail/pull/744)
 - Added manual setting for 12/24h clock
   [#760](https://github.com/the-djmaze/snappymail/pull/760)
-- Add options to mark the message I'm viewing as unread and return to the inbox #766
+- Add options to mark the message I'm viewing as unread and return to the inbox
+  [#766](https://github.com/the-djmaze/snappymail/pull/766)
 
 ### Fixed
-- Extension menu shows only some available extensions #778
+- Extension menu shows only some available extensions
+  [#778](https://github.com/the-djmaze/snappymail/pull/778)
 - New solution for [#423](https://github.com/the-djmaze/snappymail/pull/423) due to [#774](https://github.com/the-djmaze/snappymail/pull/774)
 - Avatars extension error on smartphone
   [#764](https://github.com/the-djmaze/snappymail/pull/764)
@@ -403,7 +445,8 @@
 ## 2.22.2 – 2022-11-24
 
 ### Added
-- Support cPanel #697
+- Support cPanel
+  [#697](https://github.com/the-djmaze/snappymail/pull/697)
 
 
 ## 2.22.1 – 2022-11-23
@@ -731,9 +774,12 @@
 
 ### Added
 - Put messagelist top bar buttons also in dropdown
-- Allow setting additional Sec-Fetch rules, as discussed by #585
-- Light/Dark favicon.svg #643
-- Allow an account name/label #571
+- Allow setting additional Sec-Fetch rules, as discussed by
+  [#585](https://github.com/the-djmaze/snappymail/issues/585)
+- Light/Dark favicon.svg
+  [#643](https://github.com/the-djmaze/snappymail/issues/643)
+- Allow an account name/label
+  [#571](https://github.com/the-djmaze/snappymail/issues/571)
 
 ### Changed
 - Moved ServiceRemoteAutoLogin to plugin/extension
@@ -743,12 +789,14 @@
 - New Net/Imap/Smtp/Sieve Settings object system which allows
   setting SSL options per domain and verify_certificate by default
 - Update plugins to use new Net/Imap/Smtp/Sieve Settings object
-- Removed message double-click to full screen #638
+- Removed message double-click to full screen
+  [#638](https://github.com/the-djmaze/snappymail/pull/638)
 
 ### Fixed
 - ldap-identities-plugin by @cm-schl
   [#647](https://github.com/the-djmaze/snappymail/pull/647)
-- OpenSSL v3 ciphers issue #641
+- OpenSSL v3 ciphers issue
+  [#641](https://github.com/the-djmaze/snappymail/pull/641)
 
 ### Nextcloud
 - Style PopupsNextcloudFiles view
