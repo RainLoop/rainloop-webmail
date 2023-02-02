@@ -201,8 +201,14 @@ class SmtpClient extends \MailSo\Net\NetClient
 			$sCmd .= ' SIZE='.$iSizeIfSupported;
 		}
 
+		// RFC 3461
 		if ($bDsn && $this->hasCapability('DSN')) {
 			$sCmd .= ' RET=HDRS';
+		}
+
+		// RFC 6152
+		if ($this->hasCapability('8BITMIME')) {
+//			$sCmd .= ' BODY=8BITMIME';
 		}
 
 		// RFC 8689

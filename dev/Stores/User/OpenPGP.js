@@ -18,15 +18,21 @@ const
 			key.emails.includes(query) || query == key.id || query == key.fingerprint
 		),
 
+	passphrases = new Map(),
 	decryptKey = async (privateKey, btnTxt = 'LABEL_SIGN') => {
 		if (privateKey.key.isDecrypted()) {
 			return privateKey.key;
 		}
-		const passphrase = await AskPopupView.password(
-			'OpenPGP.js key<br>' + privateKey.id + ' ' + privateKey.emails[0],
-			'OPENPGP/'+btnTxt
-		);
-		if (null !== passphrase) {
+		const key = privateKey.id,
+			pass = passphrases.has(key)
+				? {password:passphrases.get(key), remember:false}
+				: await AskPopupView.password(
+					'OpenPGP.js key<br>' + privateKey.id + ' ' + privateKey.emails[0],
+					'OPENPGP/'+btnTxt
+				);
+		if (pass) {
+			pass.remember && passphrases.set(key, pass.password);
+			let passphrase = pass.password;
 			return await openpgp.decryptKey({
 				privateKey: privateKey.key,
 				passphrase

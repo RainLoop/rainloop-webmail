@@ -14,7 +14,9 @@ export class AskPopupView extends AbstractViewPopup {
 			username: '',
 			askUsername: false,
 			passphrase: '',
-			askPass: false
+			askPass: false,
+			remember: true,
+			askRemeber: false
 		});
 
 		this.fYesAction = null;
@@ -46,8 +48,10 @@ export class AskPopupView extends AbstractViewPopup {
 		this.askDesc(sAskDesc || '');
 		this.askUsername(ask & 2);
 		this.askPass(ask & 1);
+		this.askRemeber(ask & 4);
 		this.username('');
 		this.passphrase('');
+		this.remember(true);
 		this.yesButton(i18n(btnText || 'GLOBAL/YES'));
 		this.noButton(i18n(ask ? 'GLOBAL/CANCEL' : 'GLOBAL/NO'));
 		this.fYesAction = fYesFunc;
@@ -86,10 +90,10 @@ AskPopupView.password = function(sAskDesc, btnText) {
 	return new Promise(resolve => {
 		this.showModal([
 			sAskDesc,
-			view => resolve(view.passphrase()),
+			view => resolve({password:view.passphrase(), remember:view.remember()}),
 			() => resolve(null),
 			true,
-			1,
+			5,
 			btnText
 		]);
 	});
@@ -99,7 +103,7 @@ AskPopupView.credentials = function(sAskDesc, btnText) {
 	return new Promise(resolve => {
 		this.showModal([
 			sAskDesc,
-			view => resolve({username:view.username(), password:view.passphrase()}),
+			view => resolve({username:view.username(), password:view.passphrase(), remember:view.remember()}),
 			() => resolve(null),
 			true,
 			3,

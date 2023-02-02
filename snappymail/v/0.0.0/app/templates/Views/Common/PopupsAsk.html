@@ -9,6 +9,13 @@
 		<label data-i18n="GLOBAL/PASSWORD"></label>
 		<input type="password" data-bind="value: passphrase">
 	</div>
+	<div data-bind="visible: askRemeber, component: {
+		name: 'Checkbox',
+		params: {
+			label: 'GLOBAL/REMEMBER',
+			value: remember
+		}
+	}"></div>
 	</form>
 </div>
 <footer>

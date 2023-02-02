@@ -12,8 +12,15 @@ import { OpenPgpKeyPopupView } from 'View/Popup/OpenPgpKey';
 import { AskPopupView } from 'View/Popup/Ask';
 
 const
-	askPassphrase = async (privateKey, btnTxt = 'LABEL_SIGN') =>
-		await AskPopupView.password('GnuPG key<br>' + privateKey.id + ' ' + privateKey.emails[0], 'OPENPGP/'+btnTxt),
+	passphrases = new Map(),
+	askPassphrase = async (privateKey, btnTxt = 'LABEL_SIGN') => {
+		const key = privateKey.id,
+			pass = passphrases.has(key)
+				? {password:passphrases.get(key), remember:false}
+				: await AskPopupView.password('GnuPG key<br>' + key + ' ' + privateKey.emails[0], 'OPENPGP/'+btnTxt);
+		pass && pass.remember && passphrases.set(key, pass.password);
+		return pass.password;
+	},
 
 	findGnuPGKey = (keys, query/*, sign*/) =>
 		keys.find(key =>
