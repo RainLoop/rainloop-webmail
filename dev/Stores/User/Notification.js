@@ -57,7 +57,7 @@ export const NotificationUserStore = new class {
 		if (DesktopNotifications && NotificationsGranted()) {
 			const options = {
 				body: text,
-				icon: imageSrc || Links.staticLink('css/images/icon-message-notification.png'),
+				icon: imageSrc || Links.staticLink('images/icon-message-notification.png'),
 				data: messageData
 			};
 			if (messageData?.uid) {

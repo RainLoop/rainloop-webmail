@@ -500,11 +500,13 @@ trait Messages
 			try
 			{
 				if ('SPAM' === $sLearning) {
+//					$this->MailClient()->MessageSetFlag($sFromFolder, $oUids, '\\junk');
 					$this->MailClient()->MessageSetFlag($sFromFolder, $oUids, MessageFlag::JUNK);
 					$this->MailClient()->MessageSetFlag($sFromFolder, $oUids, MessageFlag::NOTJUNK, false);
 				} else if ('HAM' === $sLearning) {
 					$this->MailClient()->MessageSetFlag($sFromFolder, $oUids, MessageFlag::NOTJUNK);
 					$this->MailClient()->MessageSetFlag($sFromFolder, $oUids, MessageFlag::JUNK, false);
+//					$this->MailClient()->MessageSetFlag($sFromFolder, $oUids, '\\junk', false);
 				}
 			}
 			catch (\Throwable $oException)
