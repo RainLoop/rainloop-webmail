@@ -1,8 +1,6 @@
 <?php
 namespace OCA\SnappyMail\Settings;
 
-use OCA\SnappyMail\Util\SnappyMailHelper;
-
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IConfig;
 use OCP\Settings\ISettings;
@@ -21,16 +19,14 @@ class PersonalSettings implements ISettings
 		$uid = \OC::$server->getUserSession()->getUser()->getUID();
 		$sEmail = $this->config->getUserValue($uid, 'snappymail', 'snappymail-email');
 		if (!$sEmail) {
-			$sEmail = $this->config->getUserValue($uid, 'rainloop', 'rainloop-email');
-			if ($sEmail) {
-				$this->config->setUserValue($uid, 'rainloop', 'rainloop-email'. $sEmail);
-				$sPassword = $this->config->getUserValue($uid, 'rainloop', 'rainloop-password');
-				if ($sPassword) {
-					require_once \dirname(__DIR__) . '/Util/SnappyMailHelper.php';
-					$sPassword = SnappyMailHelper::decodeRainLoopPassword($sPassword, md5($sEmail));
-				}
-				if ($sPassword) {
-					$this->config->setUserValue($uid, 'snappymail', 'snappymail-password', SnappyMailHelper::encodePassword($sPassword, \md5($sEmail)));
+			$aRainLoop = \OCA\SnappyMail\Util\RainLoop::getLoginCredentials($uid, $this->config);
+			if ($aRainLoop) {
+				$sEmail = $aRainLoop[0];
+				$this->config->setUserValue($uid, 'snappymail', 'snappymail-email', $sEmail);
+				if ($aRainLoop[1]) {
+					$this->config->setUserValue($uid, 'snappymail', 'snappymail-password',
+						\OCA\SnappyMail\Util\SnappyMailHelper::encodePassword($aRainLoop[1], \md5($sEmail))
+					);
 				}
 			}
 		}

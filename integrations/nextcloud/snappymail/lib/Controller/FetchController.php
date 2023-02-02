@@ -26,7 +26,7 @@ class FetchController extends Controller {
 		$error = 'Upgrade failed';
 		try {
 			SnappyMailHelper::loadApp();
-			if (SnappyMail\Upgrade::core()) {
+			if (\SnappyMail\Upgrade::core()) {
 				return new JSONResponse([
 					'status' => 'success',
 					'Message' => $this->l->t('Upgraded successfully')
@@ -60,10 +60,9 @@ class FetchController extends Controller {
 			}
 
 			if (!empty($_POST['import-rainloop'])) {
-				$result = SnappyMailHelper::importRainLoop();
 				return new JSONResponse([
 					'status' => 'success',
-					'Message' => \implode("\n", $result)
+					'Message' => \implode("\n", \OCA\SnappyMail\Util\RainLoop::import())
 				]);
 			}
 
@@ -92,22 +91,18 @@ class FetchController extends Controller {
 	 */
 	public function setPersonal(): JSONResponse {
 		try {
-
+			$sEmail = '';
 			if (isset($_POST['appname'], $_POST['snappymail-password'], $_POST['snappymail-email']) && 'snappymail' === $_POST['appname']) {
 				$sUser =  \OC::$server->getUserSession()->getUser()->getUID();
 
-				$sPostEmail = $_POST['snappymail-email'];
-				$this->config->setUserValue($sUser, 'snappymail', 'snappymail-email', $sPostEmail);
+				$sEmail = $_POST['snappymail-email'];
+				$this->config->setUserValue($sUser, 'snappymail', 'snappymail-email', $sEmail);
 
 				$sPass = $_POST['snappymail-password'];
 				if ('******' !== $sPass) {
-					require_once $this->appManager->getAppPath('snappymail').'/lib/Util/SnappyMailHelper.php';
-
 					$this->config->setUserValue($sUser, 'snappymail', 'snappymail-password',
-						$sPass ? SnappyMailHelper::encodePassword($sPass, \md5($sPostEmail)) : '');
+						$sPass ? SnappyMailHelper::encodePassword($sPass, \md5($sEmail)) : '');
 				}
-
-				$sEmail = $this->config->getUserValue($sUser, 'snappymail', 'snappymail-email', '');
 			} else {
 				return new JSONResponse([
 					'status' => 'error',
