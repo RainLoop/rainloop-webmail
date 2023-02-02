@@ -82,6 +82,8 @@ export const GnuPGUserStore = new class {
 										if (oData?.Result) {
 											key.armor = oData.Result;
 											showScreenPopup(OpenPgpKeyPopupView, [key]);
+										} else {
+											passphrases.delete(key.id);
 										}
 									}, {
 										keyId: key.id,
@@ -196,6 +198,7 @@ export const GnuPGUserStore = new class {
 					if (result?.Result && false !== result.Result.data) {
 						return result.Result;
 					}
+					passphrases.delete(key.id);
 				}
 			}
 		}
