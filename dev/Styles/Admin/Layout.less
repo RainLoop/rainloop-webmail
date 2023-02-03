@@ -36,6 +36,7 @@
 
 #rl-right {
 	flex-grow: 1;
+	padding-top: 50px;
 	transition: left 0.3s ease-out, right 0.3s ease-out;
 	z-index: 1;
 }
@@ -70,10 +71,11 @@
 	border: 1px solid var(--border-color, #aaa);
 	border-radius: var(--border-radius, 5px);
 	box-shadow: @rlMainShadow;
-	height: calc(100% - 50px - @rlLowMargin - @rlLowMargin);
-	margin: (50px + @rlLowMargin) @rlLowMargin @rlLowMargin 0;
+	height: calc(100% - @rlLowMargin - @rlLowMargin);
+	margin: 0 @rlLowMargin @rlLowMargin 0;
 	overflow-y: auto;
 	padding: 20px;
+	scroll-behavior: smooth;
 }
 
 /* desktop */
