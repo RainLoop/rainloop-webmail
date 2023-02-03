@@ -1,4 +1,4 @@
-import { createElement } from 'Common/Globals';
+import { doc, createElement } from 'Common/Globals';
 import { forEachObjectEntry, pInt } from 'Common/Utils';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
@@ -12,6 +12,24 @@ const
 		'>': '&gt;',
 		'"': '&quot;',
 		"'": '&#x27;'
+	},
+
+	hcont = Element.fromHTML('<div area="hidden" style="position:absolute;left:-200vw;width:max(50vw,400px)"></div>'),
+	getRealHeight = el => {
+		hcont.innerHTML = el.outerHTML;
+		const result = hcont.clientHeight;
+		hcont.innerHTML = '';
+		return result;
+	},
+	blockquoteSwitcher = () => {
+		tpl.content.querySelectorAll('blockquote').forEach(node => {
+			let h = node.clientHeight || getRealHeight(node);
+			if (0 === h || 100 < h) {
+				const el = Element.fromHTML('<details class="sm-bq-switcher"><summary>•••</summary></details>');
+				node.replaceWith(el);
+				el.append(node);
+			}
+		});
 	},
 
 	replaceWithChildren = node => node.replaceWith(...[...node.childNodes]),
@@ -78,6 +96,8 @@ const
 		}
 		return url;
 	};
+
+doc.body.append(hcont);
 
 export const
 
@@ -435,6 +455,8 @@ export const
 			}
 		});
 
+		blockquoteSwitcher();
+
 //		return tpl.content.firstChild;
 		result.html = tpl.innerHTML.trim();
 		return result;
@@ -588,7 +610,7 @@ export const
 			aText = aNextText;
 		} while (bDo);
 
-		return aText.join('\n')
+		tpl.innerHTML = aText.join('\n')
 			// .replace(/~~~\/blockquote~~~\n~~~blockquote~~~/g, '\n')
 			.replace(/&/g, '&amp;')
 			.replace(/>/g, '&gt;')
@@ -602,6 +624,8 @@ export const
 			.replace(/~~~blockquote~~~\s*/g, '<blockquote>')
 			.replace(/\s*~~~\/blockquote~~~/g, '</blockquote>')
 			.replace(/\n/g, '<br>');
+		blockquoteSwitcher();
+		return tpl.innerHTML.trim();
 	},
 
 	WYSIWYGS = ko.observableArray();

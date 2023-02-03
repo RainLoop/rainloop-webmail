@@ -25,14 +25,6 @@ import { LanguageStore } from 'Stores/Language';
 import Remote from 'Remote/User/Fetch';
 
 const
-	hcont = Element.fromHTML('<div area="hidden" style="position:absolute;left:-200vw;width:max(50vw,400px)"></div>'),
-	getRealHeight = el => {
-		hcont.innerHTML = el.outerHTML;
-		const result = hcont.clientHeight;
-		hcont.innerHTML = '';
-		return result;
-	},
-
 	toggleTag = (message, keyword) => {
 		const lower = keyword.toLowerCase(),
 			flags = message.flags,
@@ -59,8 +51,6 @@ const
 		emails.forEach(email =>
 			unic[email.email] || localEmails.has(email.email) || localEmails.set(email.email, email)
 		);
-
-doc.body.append(hcont);
 
 export class MessageModel extends AbstractModel {
 	constructor() {
@@ -307,7 +297,6 @@ export class MessageModel extends AbstractModel {
 			}
 
 			this.isHtml(true);
-			this.initView();
 			return true;
 		}
 	}
@@ -327,23 +316,8 @@ export class MessageModel extends AbstractModel {
 			);
 			this.isHtml(false);
 			this.hasImages(false);
-			this.initView();
 			return true;
 		}
-	}
-
-	initView() {
-		// init BlockquoteSwitcher
-		this.body.querySelectorAll('blockquote').forEach(node => {
-			if (node.textContent.trim()) {
-				let h = node.clientHeight || getRealHeight(node);
-				if (0 === h || 100 < h) {
-					const el = Element.fromHTML('<details class="sm-bq-switcher"><summary>•••</summary></details>');
-					node.replaceWith(el);
-					el.append(node);
-				}
-			}
-		});
 	}
 
 	viewPopupMessage(print) {
