@@ -797,7 +797,7 @@ class Actions
 					$aResult['allowSpellcheck'] = (bool) $oSettings->GetConf('allowSpellcheck', false);
 
 					$aResult['ViewHTML'] = (bool)$oSettings->GetConf('ViewHTML', $aResult['ViewHTML']);
-					$show_images = (bool) $oSettings->GetConf('ShowImages', $aResult['ShowImages']);
+					$show_images = (bool) $oSettings->GetConf('ShowImages', false);
 					$aResult['ViewImages'] = $oSettings->GetConf('ViewImages', $show_images ? 'always' : 'ask');
 					$aResult['ViewImagesWhitelist'] = $oSettings->GetConf('ViewImagesWhitelist', '');
 					$aResult['RemoveColors'] = (bool)$oSettings->GetConf('RemoveColors', $aResult['RemoveColors']);
