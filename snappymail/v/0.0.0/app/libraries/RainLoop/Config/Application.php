@@ -93,14 +93,18 @@ class Application extends \RainLoop\Config\AbstractConfig
 	{
 		// Workarounds for the changed application structure
 		if ('labs' === $sSectionKey) {
-			if (\str_contains($sParamKey, 'imap_')) {
+			if (\str_starts_with($sParamKey, 'imap_')) {
 				$sSectionKey = 'imap';
 				$sParamKey = \str_replace('imap_', '', $sParamKey);
 			}
-			if (\str_contains($sParamKey, 'use_app_debug_')) {
+			if (\str_starts_with($sParamKey, 'use_app_debug_')) {
 				$sSectionKey = 'debug';
 				$sParamKey = \str_replace('use_app_debug_js', 'javascript', $sParamKey);
 				$sParamKey = \str_replace('use_app_debug_css', 'css', $sParamKey);
+			}
+			if ('cache_system_data' === $sParamKey) {
+				$sSectionKey = 'cache';
+				$sParamKey = 'system_data';
 			}
 		}
 		parent::Set($sSectionKey, $sParamKey, $mParamValue);
@@ -363,7 +367,9 @@ Enables caching in the system'),
 				'http' => array(true, 'Browser-level cache. If enabled, caching is maintainted without using files'),
 				'http_expires' => array(3600, 'Browser-level cache time (seconds, Expires header)'),
 
-				'server_uids' => array(true, 'Caching message UIDs when searching and sorting (threading)')
+				'server_uids' => array(true, 'Caching message UIDs when searching and sorting (threading)'),
+
+				'system_data' => array(true)
 			),
 
 			'imap' => array(
@@ -376,7 +382,6 @@ Enables caching in the system'),
 			),
 
 			'labs' => array(
-				'cache_system_data' => array(true),
 				'date_from_headers' => array(true, 'Display message RFC 2822 date and time header, instead of the arrival internal date.'),
 				'allow_message_append' => array(false),
 				'login_fault_delay' => array(1),

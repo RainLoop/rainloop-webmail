@@ -150,25 +150,21 @@ abstract class Service
 
 			$oActions = Api::Actions();
 
+			$sThemeName = $oActions->GetTheme($bAdmin);
+
 			$aTemplateParameters = array(
+				'{{BaseAppThemeName}}' => $sThemeName,
 				'{{BaseAppFaviconPngLinkTag}}' => $sFaviconPngLink ? '<link type="image/png" rel="shortcut icon" href="'.$sFaviconPngLink.'">' : '',
 				'{{BaseAppFaviconTouchLinkTag}}' => $sAppleTouchLink ? '<link type="image/png" rel="apple-touch-icon" href="'.$sAppleTouchLink.'">' : '',
-				'{{BaseAppMainCssLink}}' => Utils::WebStaticPath('css/'.($bAdmin ? 'admin' : 'app').$sAppCssMin.'.css'),
 				'{{BaseAppManifestLink}}' => Utils::WebStaticPath('manifest.json'),
 				'{{BaseFavIconSvg}}' => $sFaviconUrl ? '' : Utils::WebStaticPath('favicon.svg'),
 				'{{LoadingDescriptionEsc}}' => \htmlspecialchars($oConfig->Get('webmail', 'loading_description', 'SnappyMail'), ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
-				'{{BaseAppAdmin}}' => $bAdmin ? 1 : 0,
-
-				'{{NO_SCRIPT_DESC}}' => \nl2br($oActions->StaticI18N('NO_SCRIPT_TITLE') . "\n" . $oActions->StaticI18N('NO_SCRIPT_DESC')),
-				'{{NO_COOKIE_TITLE}}' => $oActions->StaticI18N('NO_COOKIE_TITLE'),
-				'{{NO_COOKIE_DESC}}' => $oActions->StaticI18N('NO_COOKIE_DESC'),
-				'{{BAD_BROWSER_TITLE}}' => $oActions->StaticI18N('BAD_BROWSER_TITLE'),
-				'{{BAD_BROWSER_DESC}}' => \nl2br($oActions->StaticI18N('BAD_BROWSER_DESC'))
+				'{{BaseAppAdmin}}' => $bAdmin ? 1 : 0
 			);
 
 			$sCacheFileName = '';
-			if ($oConfig->Get('labs', 'cache_system_data', true)) {
-				$sCacheFileName = 'TMPL:' . $sLanguage . \md5(
+			if ($oConfig->Get('cache', 'system_data', true)) {
+				$sCacheFileName = 'TMPL:' . $sLanguage . \sha1(
 					Utils::jsonEncode(array(
 						$oConfig->Get('cache', 'index', ''),
 						$oActions->Plugins()->Hash(),
@@ -184,13 +180,17 @@ abstract class Service
 			if ($sResult) {
 				$sResult .= '<!--cached-->';
 			} else {
-				$sThemeName = $oActions->GetTheme($bAdmin);
 				$aTemplateParameters['{{BaseAppBootCss}}'] = \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot'.$sAppCssMin.'.css');
 				$aTemplateParameters['{{BaseAppBootScript}}'] = \file_get_contents(APP_VERSION_ROOT_PATH.'static/js'.($sAppJsMin ? '/min' : '').'/boot'.$sAppJsMin.'.js');
-				$aTemplateParameters['{{BaseAppThemeName}}'] = $sThemeName;
+				$aTemplateParameters['{{BaseAppMainCssLink}}'] = Utils::WebStaticPath('css/'.($bAdmin ? 'admin' : 'app').$sAppCssMin.'.css');
 				$aTemplateParameters['{{BaseAppThemeCss}}'] = \preg_replace('/\\s*([:;{},]+)\\s*/s', '$1', $oActions->compileCss($sThemeName, $bAdmin));
 				$aTemplateParameters['{{BaseLanguage}}'] = $oActions->compileLanguage($sLanguage, $bAdmin);
 				$aTemplateParameters['{{BaseTemplates}}'] = Utils::ClearHtmlOutput($oServiceActions->compileTemplates($bAdmin));
+				$aTemplateParameters['{{NO_SCRIPT_DESC}}'] = \nl2br($oActions->StaticI18N('NO_SCRIPT_TITLE') . "\n" . $oActions->StaticI18N('NO_SCRIPT_DESC'));
+				$aTemplateParameters['{{NO_COOKIE_TITLE}}'] = $oActions->StaticI18N('NO_COOKIE_TITLE');
+				$aTemplateParameters['{{NO_COOKIE_DESC}}'] = $oActions->StaticI18N('NO_COOKIE_DESC');
+				$aTemplateParameters['{{BAD_BROWSER_TITLE}}'] = $oActions->StaticI18N('BAD_BROWSER_TITLE');
+				$aTemplateParameters['{{BAD_BROWSER_DESC}}'] = \nl2br($oActions->StaticI18N('BAD_BROWSER_DESC'));
 				$sResult = Utils::ClearHtmlOutput(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'));
 				$sResult = \strtr($sResult, $aTemplateParameters);
 				if ($sCacheFileName) {

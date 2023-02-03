@@ -422,7 +422,7 @@ class ServiceActions
 			$bAdmin = 'Admin' === (isset($this->aPaths[2]) ? (string) $this->aPaths[2] : 'App');
 			$sLanguage = $this->oActions->ValidateLanguage($this->aPaths[3], '', $bAdmin);
 
-			$bCacheEnabled = $this->Config()->Get('labs', 'cache_system_data', true);
+			$bCacheEnabled = $this->Config()->Get('cache', 'system_data', true);
 			if (!empty($sLanguage) && $bCacheEnabled) {
 				$this->oActions->verifyCacheByKey($this->sQuery);
 			}
@@ -460,7 +460,7 @@ class ServiceActions
 		$bAppDebug = $this->Config()->Get('debug', 'enable', false);
 		$sMinify = ($bAppDebug || $this->Config()->Get('debug', 'javascript', false)) ? '' : 'min';
 
-		$bCacheEnabled = !$bAppDebug && $this->Config()->Get('labs', 'cache_system_data', true);
+		$bCacheEnabled = !$bAppDebug && $this->Config()->Get('cache', 'system_data', true);
 		if ($bCacheEnabled) {
 			$this->oActions->verifyCacheByKey($this->sQuery . $sMinify);
 		}
@@ -504,7 +504,7 @@ class ServiceActions
 			$bAppDebug = $this->Config()->Get('debug', 'enable', false);
 			$sMinify = ($bAppDebug || $this->Config()->Get('debug', 'css', false)) ? '' : 'min';
 
-			$bCacheEnabled = !$bAppDebug && $this->Config()->Get('labs', 'cache_system_data', true);
+			$bCacheEnabled = !$bAppDebug && $this->Config()->Get('cache', 'system_data', true);
 			if ($bCacheEnabled) {
 				$this->oActions->verifyCacheByKey($this->sQuery . $sMinify);
 			}
