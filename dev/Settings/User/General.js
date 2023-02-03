@@ -45,7 +45,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		['layout', 'messageReadDelay', 'messagesPerPage', 'checkMailInterval',
 		 'editorDefaultType', 'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt',
 		 'viewHTML', 'viewImages', 'viewImagesWhitelist', 'removeColors',
-		 'hideDeleted', 'listInlineAttachments', 'simpleAttachmentsList',
+		 'hideDeleted', 'listInlineAttachments', 'simpleAttachmentsList', 'collapseBlockquotes',
 		 'useCheckboxesInList', 'listGrouped', 'useThreads', 'replySameFolder', 'msgDefaultAction', 'allowSpellcheck'
 		].forEach(name => this[name] = SettingsUserStore[name]);
 
@@ -104,7 +104,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.addSettings(['ViewHTML', 'ViewImages', 'ViewImagesWhitelist', 'HideDeleted',
 			'ListInlineAttachments', 'simpleAttachmentsList', 'UseCheckboxesInList', 'listGrouped', 'ReplySameFolder',
 			'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt', 'allowSpellcheck',
-			'DesktopNotifications', 'SoundNotification']);
+			'DesktopNotifications', 'SoundNotification', 'CollapseBlockquotes']);
 
 		const fReloadLanguageHelper = (saveSettingsStep) => () => {
 				this.languageTrigger(saveSettingsStep);

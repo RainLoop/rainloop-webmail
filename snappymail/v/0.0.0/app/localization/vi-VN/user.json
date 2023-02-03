@@ -413,6 +413,7 @@
 		"SOUND_NOTIFICATION": "Thông báo âm thanh",
 		"CHROME_NOTIFICATION_DESC": "Hiện thị thông báo nẩy lên nhanh khi có thư mới",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Đang bị chặn bởi trình duyệt web)",
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
 		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
 		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",

@@ -413,6 +413,7 @@
 		"SOUND_NOTIFICATION": "提示音",
 		"CHROME_NOTIFICATION_DESC": "显示新邮件弹窗",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(被浏览器阻止)",
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
 		"LIST_INLINE_ATTACHMENTS": "在列表中显示内联附件",
 		"LIST_SIMPLE_ATTACHMENTS": "简洁附件列表",
 		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",

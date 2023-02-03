@@ -413,6 +413,7 @@
 		"SOUND_NOTIFICATION": "Soinu-jakinarazpena",
 		"CHROME_NOTIFICATION_DESC": "Erakutsi mezu berrien jakinarazpen popup-ak",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Nabigatzaileak blokeatuta)",
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
 		"LIST_INLINE_ATTACHMENTS": "Erakutsi sareko eranskinak zerrendan",
 		"LIST_SIMPLE_ATTACHMENTS": "Eranskinen zerrenda arrunta",
 		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",

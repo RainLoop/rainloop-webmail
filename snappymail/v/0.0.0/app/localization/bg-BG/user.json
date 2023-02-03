@@ -413,6 +413,7 @@
 		"SOUND_NOTIFICATION": "Звуково известяване",
 		"CHROME_NOTIFICATION_DESC": "Покажи известие при ново съобщение",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Блокирано от браузъра)",
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
 		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
 		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",

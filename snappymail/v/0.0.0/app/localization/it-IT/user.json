@@ -413,6 +413,7 @@
 		"SOUND_NOTIFICATION": "Notifica sonora",
 		"CHROME_NOTIFICATION_DESC": "Mostra le notifiche in caso di nuovi messaggi",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Bloccate dal browser)",
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
 		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
 		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",

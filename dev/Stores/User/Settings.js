@@ -19,6 +19,7 @@ export const SettingsUserStore = new class {
 			viewImages: 0,
 			viewImagesWhitelist: '',
 			removeColors: 0,
+			collapseBlockquotes: 1,
 			listInlineAttachments: 0,
 			simpleAttachmentsList: 0,
 			useCheckboxesInList: 1,
@@ -86,6 +87,7 @@ export const SettingsUserStore = new class {
 		self.viewImages(SettingsGet('ViewImages'));
 		self.viewImagesWhitelist(SettingsGet('ViewImagesWhitelist'));
 		self.removeColors(SettingsGet('RemoveColors'));
+		self.collapseBlockquotes(SettingsGet('CollapseBlockquotes'));
 		self.listInlineAttachments(SettingsGet('ListInlineAttachments'));
 		self.simpleAttachmentsList(SettingsGet('simpleAttachmentsList'));
 		self.useCheckboxesInList(SettingsGet('UseCheckboxesInList'));

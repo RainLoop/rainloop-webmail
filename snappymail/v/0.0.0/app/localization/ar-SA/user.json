@@ -413,6 +413,7 @@
 		"SOUND_NOTIFICATION": "صوت التنبيهات",
 		"CHROME_NOTIFICATION_DESC": "إظهار نافذة منبثقة في حالة قدوم ايميل جديد",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(تم إعتراضها من قبل المتصفح)",
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
 		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
 		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",

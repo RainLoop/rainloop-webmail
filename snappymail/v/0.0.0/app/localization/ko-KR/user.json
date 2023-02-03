@@ -413,6 +413,7 @@
 		"SOUND_NOTIFICATION": "소리 알림",
 		"CHROME_NOTIFICATION_DESC": "새 메시지 알림 팝업 사용",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(브라우저에 의해 차단됨)",
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
 		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
 		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",

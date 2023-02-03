@@ -182,6 +182,7 @@ trait User
 		$this->setSettingsFromParams($oSettings, 'ViewImagesWhitelist', 'string');
 		$this->setSettingsFromParams($oSettings, 'RemoveColors', 'bool');
 		$this->setSettingsFromParams($oSettings, 'ListInlineAttachments', 'bool');
+		$this->setSettingsFromParams($oSettings, 'CollapseBlockquotes', 'bool');
 		$this->setSettingsFromParams($oSettings, 'simpleAttachmentsList', 'bool');
 		$this->setSettingsFromParams($oSettings, 'listGrouped', 'bool');
 		$this->setSettingsFromParams($oSettings, 'ContactsAutosave', 'bool');

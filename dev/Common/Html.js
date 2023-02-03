@@ -22,6 +22,7 @@ const
 		return result;
 	},
 	blockquoteSwitcher = () => {
+		SettingsUserStore.collapseBlockquotes() &&
 //		tpl.content.querySelectorAll('blockquote').forEach(node => {
 		[...tpl.content.querySelectorAll('blockquote')].reverse().forEach(node => {
 			let h = node.clientHeight || getRealHeight(node);

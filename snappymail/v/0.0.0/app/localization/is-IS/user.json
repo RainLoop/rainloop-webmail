@@ -413,6 +413,7 @@
 		"SOUND_NOTIFICATION": "Tilkynningarhljóð",
 		"CHROME_NOTIFICATION_DESC": "Sýna tilkynningarglugga fyrir ný skilaboð",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Lokað af vafra)",
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
 		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
 		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",

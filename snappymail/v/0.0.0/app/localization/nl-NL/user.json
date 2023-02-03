@@ -413,6 +413,7 @@
 		"SOUND_NOTIFICATION": "Notificatie geluid",
 		"CHROME_NOTIFICATION_DESC": "Toon nieuwe berichten popup",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Geblokkeerd door de browser)",
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
 		"LIST_INLINE_ATTACHMENTS": "Toon inline bijlagen in lijst",
 		"LIST_SIMPLE_ATTACHMENTS": "Simpele bijlagen lijst",
 		"LIST_MESSAGES_GROUPED": "Toon berichten gegroepeerd (bij sorteren op Datum of Van)",

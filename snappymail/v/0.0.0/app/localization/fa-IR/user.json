@@ -413,6 +413,7 @@
 		"SOUND_NOTIFICATION": "آگاه‌سازی با صدا",
 		"CHROME_NOTIFICATION_DESC": "پنجره اعلان دریافت پیام جدید را نمایش بده",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(مسدود شده توسط مرورگر)",
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
 		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
 		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",

@@ -413,6 +413,7 @@
 		"SOUND_NOTIFICATION": "Garsinis pranešimas",
 		"CHROME_NOTIFICATION_DESC": "Rodyti iššokančius pranešimus apie naujas žinutes",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Blokuoja naršyklė)",
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
 		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
 		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
 		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
