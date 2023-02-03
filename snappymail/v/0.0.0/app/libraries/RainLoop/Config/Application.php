@@ -4,7 +4,7 @@ namespace RainLoop\Config;
 
 class Application extends \RainLoop\Config\AbstractConfig
 {
-	private $aReplaceEnv = null;
+	private ?array $aReplaceEnv = null;
 
 	public function __construct()
 	{
@@ -23,19 +23,16 @@ class Application extends \RainLoop\Config\AbstractConfig
 			(isset($_SERVER) && \is_array($_SERVER) && \count($_SERVER)))
 		{
 			$sEnvNames = $this->Get('labs', 'replace_env_in_configuration', '');
-			if (\strlen($sEnvNames))
-			{
+			if (\strlen($sEnvNames)) {
 				$this->aReplaceEnv = \explode(',', $sEnvNames);
-				if (\is_array($this->aReplaceEnv))
-				{
+				if (\is_array($this->aReplaceEnv)) {
 					$this->aReplaceEnv = \array_map('trim', $this->aReplaceEnv);
 					$this->aReplaceEnv = \array_map('strtolower', $this->aReplaceEnv);
 				}
 			}
 		}
 
-		if (!\is_array($this->aReplaceEnv) || 0 === \count($this->aReplaceEnv))
-		{
+		if (!\is_array($this->aReplaceEnv) || !\count($this->aReplaceEnv)) {
 			$this->aReplaceEnv = null;
 		}
 
@@ -58,34 +55,23 @@ class Application extends \RainLoop\Config\AbstractConfig
 	public function Get(string $sSection, string $sName, $mDefault = null)
 	{
 		$mResult = parent::Get($sSection, $sName, $mDefault);
-		if ($this->aReplaceEnv && \is_string($mResult))
-		{
+		if ($this->aReplaceEnv && \is_string($mResult)) {
 			$sKey = \strtolower($sSection.'.'.$sName);
-			if (\in_array($sKey, $this->aReplaceEnv) && false !== strpos($mResult, '$'))
-			{
+			if (\in_array($sKey, $this->aReplaceEnv) && false !== strpos($mResult, '$')) {
 				$mResult = \preg_replace_callback('/\$([^\s]+)/', function($aMatch) {
-
-					if (!empty($aMatch[0]) && !empty($aMatch[1]))
-					{
-						if (!empty($_ENV[$aMatch[1]]))
-						{
+					if (!empty($aMatch[0]) && !empty($aMatch[1])) {
+						if (!empty($_ENV[$aMatch[1]])) {
+							return $_ENV[$aMatch[1]];
+						}
+						if (!empty($_SERVER[$aMatch[1]])) {
 							return $_SERVER[$aMatch[1]];
 						}
-
-						if (!empty($_SERVER[$aMatch[1]]))
-						{
-							return $_SERVER[$aMatch[1]];
-						}
-
 						return $aMatch[0];
 					}
-
 					return '';
-
 				}, $mResult);
 			}
 		}
-
 		return $mResult;
 	}
 
@@ -105,6 +91,13 @@ class Application extends \RainLoop\Config\AbstractConfig
 			if ('cache_system_data' === $sParamKey) {
 				$sSectionKey = 'cache';
 				$sParamKey = 'system_data';
+			}
+			if ('force_https' === $sParamKey) {
+				$sSectionKey = 'security';
+			}
+			if ('check_new_messages' === $sParamKey) {
+				$sSectionKey = 'imap';
+				$sParamKey = 'fetch_new_messages';
 			}
 		}
 		parent::Set($sSectionKey, $sParamKey, $mParamValue);
@@ -187,24 +180,25 @@ class Application extends \RainLoop\Config\AbstractConfig
 			),
 
 			'security' => array(
-				'custom_server_signature'    => array('SnappyMail'),
-				'x_xss_protection_header'    => array('1; mode=block'),
+				'custom_server_signature' => array('SnappyMail'),
+				'x_xss_protection_header' => array('1; mode=block'),
 
-				'openpgp'                    => array(false),
+				'openpgp'                 => array(false),
 
-				'allow_admin_panel'          => array(true, 'Access settings'),
-				'admin_login'                => array('admin', 'Login and password for web admin panel'),
-				'admin_password'             => array(''),
-				'admin_totp'                 => array(''),
-				'admin_panel_host'           => array(''),
-				'admin_panel_key'            => array('admin'),
+				'allow_admin_panel'       => array(true, 'Access settings'),
+				'admin_login'             => array('admin', 'Login and password for web admin panel'),
+				'admin_password'          => array(''),
+				'admin_totp'              => array(''),
+				'admin_panel_host'        => array(''),
+				'admin_panel_key'         => array('admin'),
 
-				'hide_x_mailer_header'       => array(true),
-				'content_security_policy'    => array('', 'For example to allow all images use "img-src https:". More info at https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy#directives'),
-				'csp_report'                 => array(false, 'Report CSP errors to PHP and/or SnappyMail Log'),
-				'encrypt_cipher'             => array('aes-256-cbc-hmac-sha1', 'A valid cipher method from https://php.net/openssl_get_cipher_methods'),
-				'cookie_samesite'            => array('Strict', 'Strict, Lax or None'),
-				'secfetch_allow'             => array('', 'Additional allowed Sec-Fetch combinations separated by ";".
+				'force_https'             => array(false),
+				'hide_x_mailer_header'    => array(true),
+				'content_security_policy' => array('', 'For example to allow all images use "img-src https:". More info at https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy#directives'),
+				'csp_report'              => array(false, 'Report CSP errors to PHP and/or SnappyMail Log'),
+				'encrypt_cipher'          => array('aes-256-cbc-hmac-sha1', 'A valid cipher method from https://php.net/openssl_get_cipher_methods'),
+				'cookie_samesite'         => array('Strict', 'Strict, Lax or None'),
+				'secfetch_allow'          => array('', 'Additional allowed Sec-Fetch combinations separated by ";".
 For example:
 * Allow iframe on same domain in any mode: dest=iframe,site=same-origin
 * Allow navigate to iframe on same domain: mode=navigate,dest=iframe,site=same-origin
@@ -379,6 +373,7 @@ Enables caching in the system'),
 				'message_list_permanent_filter' => array(''),
 				'message_all_headers' => array(false),
 				'show_login_alert' => array(true),
+				'fetch_new_messages' => array(true),
 			),
 
 			'labs' => array(
@@ -391,12 +386,11 @@ Enables caching in the system'),
 				'smtp_show_server_errors' => array(false),
 				'sieve_auth_plain_initial' => array(true),
 				'sieve_allow_fileinto_inbox' => array(false),
-				'mail_func_clear_headers' => array(true),
-				'mail_func_additional_parameters' => array(false),
+				'mail_func_clear_headers' => array(true, 'PHP mail() remove To and Subject headers'),
+				'mail_func_additional_parameters' => array(false, 'PHP mail() set -f emailaddress'),
 				'folders_spec_limit' => array(50),
 				'curl_proxy' => array(''),
 				'curl_proxy_auth' => array(''),
-				'force_https' => array(false),
 				'custom_login_link' => array(''),
 				'custom_logout_link' => array(''),
 				'http_client_ip_check_proxy' => array(false),
@@ -408,7 +402,6 @@ Enables caching in the system'),
 				'image_exif_auto_rotate' => array(false),
 				'cookie_default_path' => array(''),
 				'cookie_default_secure' => array(false),
-				'check_new_messages' => array(true),
 				'replace_env_in_configuration' => array(''),
 				'boundary_prefix' => array(''),
 				'dev_email' => array(''),

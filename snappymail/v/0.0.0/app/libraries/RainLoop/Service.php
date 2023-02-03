@@ -38,7 +38,7 @@ abstract class Service
 		\header('X-XSS-Protection: '.$sXssProtectionOptionsHeader);
 
 		$oHttp = \MailSo\Base\Http::SingletonInstance();
-		if ($oConfig->Get('labs', 'force_https', false) && !$oHttp->IsSecure()) {
+		if ($oConfig->Get('security', 'force_https', false) && !$oHttp->IsSecure()) {
 			\header('Location: https://'.$oHttp->GetHost(false, false).$oHttp->GetUrl());
 			exit;
 		}

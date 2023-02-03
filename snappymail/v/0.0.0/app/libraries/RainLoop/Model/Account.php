@@ -221,7 +221,7 @@ abstract class Account implements \JsonSerializable
 
 		$oSettings->expunge_all_on_delete |= !!$oConfig->Get('imap', 'use_expunge_all_on_delete', false);
 		$oSettings->fast_simple_search = !(!$oSettings->fast_simple_search || !$oConfig->Get('imap', 'message_list_fast_simple_search', true));
-		$oSettings->fetch_new_messages = !(!$oSettings->fetch_new_messages || !$oConfig->Get('labs', 'check_new_messages', true));
+		$oSettings->fetch_new_messages = !(!$oSettings->fetch_new_messages || !$oConfig->Get('imap', 'fetch_new_messages', true));
 		$oSettings->force_select |= !!$oConfig->Get('imap', 'use_force_selection', false);
 		$oSettings->message_all_headers |= !!$oConfig->Get('imap', 'message_all_headers', false);
 		$oSettings->search_filter = $oSettings->search_filter ?: \trim($oConfig->Get('imap', 'message_list_permanent_filter', ''));
