@@ -22,7 +22,8 @@ const
 		return result;
 	},
 	blockquoteSwitcher = () => {
-		tpl.content.querySelectorAll('blockquote').forEach(node => {
+//		tpl.content.querySelectorAll('blockquote').forEach(node => {
+		[...tpl.content.querySelectorAll('blockquote')].reverse().forEach(node => {
 			let h = node.clientHeight || getRealHeight(node);
 			if (0 === h || 100 < h) {
 				const el = Element.fromHTML('<details class="sm-bq-switcher"><summary>•••</summary></details>');

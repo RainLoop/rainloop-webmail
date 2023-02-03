@@ -426,7 +426,7 @@ export class MailMessageView extends AbstractViewRight {
 		registerShortcut('b', '', [Scope.MessageList, Scope.MessageView], () => {
 			const message = currentMessage();
 			if (message?.body) {
-				message.body.querySelectorAll('.sm-bq-switcher > summary').forEach(node => node.click());
+				message.body.querySelectorAll('details').forEach(node => node.open = !node.open);
 				return false;
 			}
 		});
