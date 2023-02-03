@@ -1,3 +1,31 @@
+## 2.25.3 – 2023-02-03
+
+## Added
+- Make message collapse quotes optional
+  [#902](https://github.com/the-djmaze/snappymail/pull/902)
+
+## Changed
+- Improved loginErrorDelay to prevent timing attacks and default to 5 seconds
+- Moved message collapse quotes to HTML parser
+- Moved some application.ini settings to other sections
+- Moved source "/assets/*" to proper location in /snappymail/v/0.0.0/static/
+- Set checkMailInterval to 15 minutes by default (now that it is configurable)
+
+## Fixed
+- Prevent plugin property decrypt error
+  [#859](https://github.com/the-djmaze/snappymail/pull/859)
+- Index.html cache issue
+  [#891](https://github.com/the-djmaze/snappymail/pull/891)
+- Images whitelist regular expression failed
+  [#201](https://github.com/the-djmaze/snappymail/pull/201)
+- Undefined index: ShowImages
+  [#901](https://github.com/the-djmaze/snappymail/pull/901)
+- Chrome shows LSep boxes in certain emails
+  [#900](https://github.com/the-djmaze/snappymail/pull/900)
+- Don't remember OpenPGP/GnuPGP key passphrase when it fails
+  [#840](https://github.com/the-djmaze/snappymail/pull/840)
+
+
 ## 2.25.2 – 2023-02-02
 
 ## Added

@@ -34,7 +34,7 @@ And don't forget to read the [RainLoop documentation](https://www.rainloop.net/d
 **GNU AFFERO GENERAL PUBLIC LICENSE Version 3 (AGPL)**.
 http://www.gnu.org/licenses/agpl-3.0.html
 
-Copyright (c) 2020 - 2022 SnappyMail
+Copyright (c) 2020 - 2023 SnappyMail
 Copyright (c) 2013 - 2022 RainLoop
 
 ## Modifications
@@ -142,24 +142,24 @@ RainLoop 1.17 vs SnappyMail
 |js/*           	|RainLoop 	|Snappy   	|
 |---------------	|--------:	|--------:	|
 |admin.js        	|2.170.153	|   81.572	|
-|app.js          	|4.207.787	|  414.740	|
+|app.js          	|4.207.787	|  415.364	|
 |boot.js         	|  868.735	|    2.711	|
 |libs.js         	|  658.812	|  192.392	|
 |sieve.js         	|        0	|   85.597	|
 |polyfills.js    	|  334.608	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|8.240.095	|  777.297	|
+|TOTAL           	|8.240.095	|  777.921	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
 |admin.min.js    	|  256.831	|   40.301	| 73.606	| 13.336	| 60.877  	| 11.973	|
-|app.min.js      	|  515.367	|  191.250	|139.456	| 63.920	|110.485  	| 54.737	|
+|app.min.js      	|  515.367	|  191.465	|139.456	| 64.051	|110.485  	| 54.830	|
 |boot.min.js     	|   84.659	|    1.600	| 26.998	|    940	| 23.643  	|    767	|
 |libs.min.js     	|  584.772	|   91.434	|180.901	| 33.893	|155.182  	| 30.383	|
 |sieve.min.js     	|        0	|   41.566	|      0	| 10.427	|      0  	|  9.413	|
 |polyfills.min.js	|   32.837	|        0	| 11.406	|      0	| 10.175  	|      0	|
-|TOTAL user      	|1.217.635	|  284.284	|358.761	| 98.753	|299.485  	| 85.887	|
-|TOTAL user+sieve	|1.217.635	|  325.850	|358.761	|109.180	|299.485  	| 95.300	|
+|TOTAL user      	|1.217.635	|  284.499	|358.761	| 98.884	|299.485  	| 85.980	|
+|TOTAL user+sieve	|1.217.635	|  326.065	|358.761	|109.311	|299.485  	| 95.393	|
 |TOTAL admin     	|  959.099	|  133.335	|292.911	| 48.169	|249.877  	| 43.123	|
 
 For a user its around 70% smaller and faster than traditional RainLoop.
@@ -193,8 +193,8 @@ For a user its around 70% smaller and faster than traditional RainLoop.
 |app.min.css 	| 274.947	| 66.384	| 39.647	| 15.084	| 13.224	|
 |boot.css    	|       	|  1.326	|       	|    664	|    545	|
 |boot.min.css	|       	|  1.071	|       	|    590	|    474	|
-|admin.css    	|       	| 30.388	|       	|  6.929	|  6.020	|
-|admin.min.css	|       	| 24.579	|       	|  6.255	|  5.525	|
+|admin.css    	|       	| 30.447	|       	|  6.973	|  6.071	|
+|admin.min.css	|       	| 24.582	|       	|  6.258	|  5.526	|
 
 ### PGP
 RainLoop uses the old OpenPGP.js v2
