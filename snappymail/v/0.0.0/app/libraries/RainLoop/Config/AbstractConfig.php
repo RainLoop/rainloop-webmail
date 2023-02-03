@@ -91,9 +91,11 @@ abstract class AbstractConfig implements \JsonSerializable
 	public function getDecrypted(string $sSection, string $sName, $mDefault = null)
 	{
 		// $salt = \basename($this->sFile) not possible due to RainLoop\Plugins\Property
-		return isset($this->aData[$sSection][$sName][0])
-			? \SnappyMail\Crypt::DecryptFromJSON($this->aData[$sSection][$sName][0], \APP_SALT)
-			: $mDefault;
+		if (!empty($this->aData[$sSection][$sName][0])) try {
+			return \SnappyMail\Crypt::DecryptFromJSON($this->aData[$sSection][$sName][0], \APP_SALT);
+		} catch (\Throwable $e) {
+		}
+		return $mDefault;
 	}
 
 	public function setEncrypted(string $sSectionKey, string $sParamKey, $mParamValue) : void

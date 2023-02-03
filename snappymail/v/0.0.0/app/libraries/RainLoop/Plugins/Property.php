@@ -187,9 +187,14 @@ class Property implements \JsonSerializable
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
+		$mValue = $this->mValue;
+		if ($this->encrypted && $mValue) try {
+			$mValue = \SnappyMail\Crypt::DecryptFromJSON($mValue, \APP_SALT);
+		} catch (\Throwable $e) {
+		}
 		return array(
 			'@Object' => 'Object/PluginProperty',
-			'value' => $this->encrypted ? \SnappyMail\Crypt::DecryptFromJSON($this->mValue, \APP_SALT) : $this->mValue,
+			'value' => $mValue,
 			'placeholder' => $this->sPlaceholder,
 			'name' => $this->sName,
 			'type' => $this->iType,
