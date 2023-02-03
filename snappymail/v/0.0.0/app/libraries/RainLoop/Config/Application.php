@@ -379,7 +379,7 @@ Enables caching in the system'),
 			'labs' => array(
 				'date_from_headers' => array(true, 'Display message RFC 2822 date and time header, instead of the arrival internal date.'),
 				'allow_message_append' => array(false),
-				'login_fault_delay' => array(1),
+				'login_fault_delay' => array(5, 'When login fails, wait N seconds before responding'),
 				'log_ajax_response_write_limit' => array(300),
 				'allow_html_editor_biti_buttons' => array(false),
 				'allow_ctrl_enter_on_compose' => array(true),

@@ -128,7 +128,6 @@ trait Attachments
 				break;
 		}
 
-//		$this->requestSleep();
 		return $this->DefaultResponse($bError ? false : $mResult);
 	}
 

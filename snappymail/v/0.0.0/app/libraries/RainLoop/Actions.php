@@ -890,19 +890,14 @@ class Actions
 		return $aResult;
 	}
 
-	protected function requestSleep(int $iDelay = 1): void
-	{
-		$time = \microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'];
-		if ($iDelay > $time) {
-			\usleep(\intval(($iDelay - $time) * 1000000));
-		}
-	}
-
 	protected function loginErrorDelay(): void
 	{
-		$iDelay = (int)$this->oConfig->Get('labs', 'login_fault_delay', 0);
+		$iDelay = (int) $this->oConfig->Get('labs', 'login_fault_delay', 0);
 		if (0 < $iDelay) {
-			$this->requestSleep($iDelay);
+			$seconds = $iDelay - (\microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']);
+			if (0 < $seconds) {
+				\usleep(\intval($seconds * 1000000));
+			}
 		}
 	}
 
