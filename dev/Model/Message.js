@@ -292,10 +292,12 @@ export class MessageModel extends AbstractModel {
 				}
 				if ('match' === SettingsUserStore.viewImages()) {
 					let regex = SettingsUserStore.viewImagesWhitelist()
+						.trim()
 						.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&')
-						.replace(/[\s\S,;:]+/g, '|')
+						.replace(/[\s\r\n,;:]+/g, '|')
 						.replace(/\|+/g, '|');
 					if (regex.length) {
+						console.log('whitelist images = '+regex);
 						regex = new RegExp(regex);
 						this.showExternalImages(
 							(this.from[0]?.email.match(regex)/* || this.sender[0]?.email.match(regex)*/) ? null : regex
