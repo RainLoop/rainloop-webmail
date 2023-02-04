@@ -384,23 +384,32 @@ export class MessageModel extends AbstractModel {
 	showExternalImages(regex) {
 		const body = this.body;
 		if (body && this.hasImages()) {
-			this.hasImages(false);
-			body.rlHasImages = false;
-
-			let attr = 'data-x-src',
+			let hasImages = false,
+				isValid = src => {
+					if (!regex || src.match(regex)) {
+						return true;
+					}
+					hasImages = true;
+				},
+				attr = 'data-x-src',
 				src, useProxy = !!SettingsGet('UseLocalProxyForExternalImages');
 			body.querySelectorAll('img[' + attr + ']').forEach(node => {
 				src = node.getAttribute(attr);
-				if (!regex || src.match(regex)) {
+				if (isValid(src)) {
 					node.src = useProxy ? proxy(src) : src;
 				}
 			});
 
 			body.querySelectorAll('[data-x-style-url]').forEach(node => {
-				JSON.parse(node.dataset.xStyleUrl).forEach(data =>
-					node.style[data[0]] = "url('" + (useProxy ? proxy(data[1]) : data[1]) + "')"
-				);
+				JSON.parse(node.dataset.xStyleUrl).forEach(data => {
+					if (isValid(data[1])) {
+						node.style[data[0]] = "url('" + (useProxy ? proxy(data[1]) : data[1]) + "')"
+					}
+				});
 			});
+
+			this.hasImages(hasImages);
+			body.rlHasImages = hasImages;
 		}
 	}
 
