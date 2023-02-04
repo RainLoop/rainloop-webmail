@@ -6,6 +6,10 @@
  */
 define('SNAPPYMAIL_PUBLIC_DIR', '/usr/local/CyberCP/public/snappymail');
 
+if (PHP_SAPI !== 'cli' && false === stripos(php_sapi_name(), 'cli')) {
+	exit('not cli');
+}
+
 chdir(SNAPPYMAIL_PUBLIC_DIR);
 
 spl_autoload_register(function($sClassName){
