@@ -104,11 +104,6 @@ class Utils
 		));
 	}
 
-	public static function UrlEncode(string $sV, bool $bEncode = false) : string
-	{
-		return $bEncode ? \urlencode($sV) : $sV;
-	}
-
 	public static function WebPath() : string
 	{
 		static $sAppPath;

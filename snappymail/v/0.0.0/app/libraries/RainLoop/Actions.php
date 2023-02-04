@@ -253,14 +253,14 @@ class Actions
 		}
 	}
 
-	protected function compileLogParams(string $sLine, ?Model\Account $oAccount = null, bool $bUrlEncode = false, array $aAdditionalParams = array()): string
+	protected function compileLogParams(string $sLine, ?Model\Account $oAccount = null, array $aAdditionalParams = array()): string
 	{
 		$aClear = array();
 
 		if (false !== \strpos($sLine, '{date:')) {
 			$oConfig = $this->oConfig;
-			$sLine = \preg_replace_callback('/\{date:([^}]+)\}/', function ($aMatch) use ($oConfig, $bUrlEncode) {
-				return Utils::UrlEncode((new \DateTime('now', new \DateTimeZone($oConfig->Get('logs', 'time_zone', 'UTC'))))->format($aMatch[1]), $bUrlEncode);
+			$sLine = \preg_replace_callback('/\{date:([^}]+)\}/', function ($aMatch) use ($oConfig) {
+				return (new \DateTime('now', new \DateTimeZone($oConfig->Get('logs', 'time_zone', 'UTC'))))->format($aMatch[1]);
 			}, $sLine);
 
 			$aClear['/\{date:([^}]*)\}/'] = 'date';
@@ -272,13 +272,13 @@ class Actions
 			}
 
 			if ($oAccount) {
-				$sLine = \str_replace('{imap:login}', Utils::UrlEncode($oAccount->IncLogin(), $bUrlEncode), $sLine);
-				$sLine = \str_replace('{imap:host}', Utils::UrlEncode($oAccount->Domain()->IncHost(), $bUrlEncode), $sLine);
-				$sLine = \str_replace('{imap:port}', Utils::UrlEncode($oAccount->Domain()->IncPort(), $bUrlEncode), $sLine);
+				$sLine = \str_replace('{imap:login}', $oAccount->IncLogin(), $sLine);
+				$sLine = \str_replace('{imap:host}', $oAccount->Domain()->IncHost(), $sLine);
+				$sLine = \str_replace('{imap:port}', $oAccount->Domain()->IncPort(), $sLine);
 
-				$sLine = \str_replace('{smtp:login}', Utils::UrlEncode($oAccount->OutLogin(), $bUrlEncode), $sLine);
-				$sLine = \str_replace('{smtp:host}', Utils::UrlEncode($oAccount->Domain()->OutHost(), $bUrlEncode), $sLine);
-				$sLine = \str_replace('{smtp:port}', Utils::UrlEncode($oAccount->Domain()->OutPort(), $bUrlEncode), $sLine);
+				$sLine = \str_replace('{smtp:login}', $oAccount->OutLogin(), $sLine);
+				$sLine = \str_replace('{smtp:host}', $oAccount->Domain()->OutHost(), $sLine);
+				$sLine = \str_replace('{smtp:port}', $oAccount->Domain()->OutPort(), $sLine);
 			}
 
 			$aClear['/\{imap:([^}]*)\}/i'] = 'imap';
@@ -287,18 +287,18 @@ class Actions
 
 		if (false !== \strpos($sLine, '{request:')) {
 			if (false !== \strpos($sLine, '{request:ip}')) {
-				$sLine = \str_replace('{request:ip}', Utils::UrlEncode($this->Http()->GetClientIp(
-					$this->oConfig->Get('labs', 'http_client_ip_check_proxy', false)), $bUrlEncode), $sLine);
+				$sLine = \str_replace('{request:ip}',
+					$this->Http()->GetClientIp($this->oConfig->Get('labs', 'http_client_ip_check_proxy', false)),
+					$sLine);
 			}
 
 			if (false !== \strpos($sLine, '{request:domain}')) {
-				$sLine = \str_replace('{request:domain}',
-					Utils::UrlEncode($this->Http()->GetHost(true, true), $bUrlEncode), $sLine);
+				$sLine = \str_replace('{request:domain}', $this->Http()->GetHost(true, true), $sLine);
 			}
 
 			if (false !== \strpos($sLine, '{request:domain-clear}')) {
 				$sLine = \str_replace('{request:domain-clear}',
-					Utils::UrlEncode(\MailSo\Base\Utils::GetClearDomainName($this->Http()->GetHost(true, true)), $bUrlEncode),
+					\MailSo\Base\Utils::GetClearDomainName($this->Http()->GetHost(true, true)),
 					$sLine);
 			}
 
@@ -308,15 +308,15 @@ class Actions
 		if (false !== \strpos($sLine, '{user:')) {
 			if (false !== \strpos($sLine, '{user:uid}')) {
 				$sLine = \str_replace('{user:uid}',
-					Utils::UrlEncode(\base_convert(\sprintf('%u',
-						\crc32(Utils::GetConnectionToken())), 10, 32), $bUrlEncode),
+					\base_convert(\sprintf('%u', \crc32(Utils::GetConnectionToken())), 10, 32),
 					$sLine
 				);
 			}
 
 			if (false !== \strpos($sLine, '{user:ip}')) {
-				$sLine = \str_replace('{user:ip}', Utils::UrlEncode($this->Http()->GetClientIp(
-					$this->oConfig->Get('labs', 'http_client_ip_check_proxy', false)), $bUrlEncode), $sLine);
+				$sLine = \str_replace('{user:ip}',
+					$this->Http()->GetClientIp($this->oConfig->Get('labs', 'http_client_ip_check_proxy', false)),
+					$sLine);
 			}
 
 			if (\preg_match('/\{user:(email|login|domain)\}/i', $sLine)) {
@@ -327,14 +327,12 @@ class Actions
 				if ($oAccount) {
 					$sEmail = $oAccount->Email();
 
-					$sLine = \str_replace('{user:email}', Utils::UrlEncode($sEmail, $bUrlEncode), $sLine);
-					$sLine = \str_replace('{user:login}', Utils::UrlEncode(
-						\MailSo\Base\Utils::GetAccountNameFromEmail($sEmail), $bUrlEncode), $sLine);
-					$sLine = \str_replace('{user:domain}', Utils::UrlEncode(
-						\MailSo\Base\Utils::GetDomainFromEmail($sEmail), $bUrlEncode), $sLine);
-					$sLine = \str_replace('{user:domain-clear}', Utils::UrlEncode(
-						\MailSo\Base\Utils::GetClearDomainName(
-							\MailSo\Base\Utils::GetDomainFromEmail($sEmail)), $bUrlEncode), $sLine);
+					$sLine = \str_replace('{user:email}', $sEmail, $sLine);
+					$sLine = \str_replace('{user:login}', \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail), $sLine);
+					$sLine = \str_replace('{user:domain}', \MailSo\Base\Utils::GetDomainFromEmail($sEmail), $sLine);
+					$sLine = \str_replace('{user:domain-clear}',
+						\MailSo\Base\Utils::GetClearDomainName(\MailSo\Base\Utils::GetDomainFromEmail($sEmail)),
+						$sLine);
 				}
 			}
 
@@ -593,13 +591,13 @@ class Actions
 	{
 		$sLine = $this->oConfig->Get('logs', 'auth_logging_format', '');
 		if (!empty($sLine)) {
-			$this->LoggerAuth()->Write($this->compileLogParams($sLine, $oAccount, false, $aAdditionalParams), \LOG_WARNING);
+			$this->LoggerAuth()->Write($this->compileLogParams($sLine, $oAccount, $aAdditionalParams), \LOG_WARNING);
 		}
 		if (($this->oConfig->Get('logs', 'auth_logging', false) || $this->oConfig->Get('logs', 'auth_syslog', false))
 		 && \openlog('snappymail', 0, \LOG_AUTHPRIV)) {
 			\syslog(\LOG_ERR, $this->compileLogParams(
 				$admin ? 'Admin Auth failed: ip={request:ip} user={user:login}' : 'Auth failed: ip={request:ip} user={imap:login}',
-				$oAccount, false, $aAdditionalParams
+				$oAccount, $aAdditionalParams
 			));
 			\closelog();
 		}
