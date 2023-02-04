@@ -45,7 +45,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		['layout', 'messageReadDelay', 'messagesPerPage', 'checkMailInterval',
 		 'editorDefaultType', 'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt',
 		 'viewHTML', 'viewImages', 'viewImagesWhitelist', 'removeColors',
-		 'hideDeleted', 'listInlineAttachments', 'simpleAttachmentsList', 'collapseBlockquotes',
+		 'hideDeleted', 'listInlineAttachments', 'simpleAttachmentsList', 'collapseBlockquotes', 'maxBlockquotesLevel',
 		 'useCheckboxesInList', 'listGrouped', 'useThreads', 'replySameFolder', 'msgDefaultAction', 'allowSpellcheck'
 		].forEach(name => this[name] = SettingsUserStore[name]);
 
@@ -100,6 +100,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.addSetting('MessagesPerPage');
 		this.addSetting('CheckMailInterval');
 		this.addSetting('Layout');
+		this.addSetting('MaxBlockquotesLevel');
 
 		this.addSettings(['ViewHTML', 'ViewImages', 'ViewImagesWhitelist', 'HideDeleted',
 			'ListInlineAttachments', 'simpleAttachmentsList', 'UseCheckboxesInList', 'listGrouped', 'ReplySameFolder',

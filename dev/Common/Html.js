@@ -119,6 +119,8 @@ export const
 			debug = false, // Config()->Get('debug', 'enable', false);
 			detectHiddenImages = true, // !!SettingsGet('try_to_detect_hidden_images'),
 
+			bqLevel = parseInt(SettingsUserStore.maxBlockquotesLevel()),
+
 			result = {
 				hasExternals: false
 			},
@@ -199,6 +201,10 @@ export const
 		const nodeIterator = document.createNodeIterator(tpl.content, NodeFilter.SHOW_COMMENT);
 		while (nodeIterator.nextNode()) {
 			nodeIterator.referenceNode.remove();
+		}
+
+		if (0 < bqLevel) {
+			tpl.content.querySelectorAll(new Array(1 + bqLevel).fill('blockquote').join(' ')).forEach(node => node.remove());
 		}
 
 		tpl.content.querySelectorAll('*').forEach(oElement => {

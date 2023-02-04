@@ -693,6 +693,7 @@ class Actions
 					'RemoveColors' => (bool) $oConfig->Get('defaults', 'remove_colors', false),
 					'ListInlineAttachments' => false,
 					'CollapseBlockquotes' => true,
+					'MaxBlockquotesLevel' => 0,
 					'simpleAttachmentsList' => false,
 					'listGrouped' => false,
 					'MessagesPerPage' => (int) $oConfig->Get('webmail', 'messages_per_page', 25),
@@ -804,6 +805,7 @@ class Actions
 					$aResult['RemoveColors'] = (bool)$oSettings->GetConf('RemoveColors', $aResult['RemoveColors']);
 					$aResult['ListInlineAttachments'] = (bool)$oSettings->GetConf('ListInlineAttachments', $aResult['ListInlineAttachments']);
 					$aResult['CollapseBlockquotes'] = (bool)$oSettings->GetConf('CollapseBlockquotes', $aResult['CollapseBlockquotes']);
+					$aResult['MaxBlockquotesLevel'] = (int)$oSettings->GetConf('MaxBlockquotesLevel', $aResult['MaxBlockquotesLevel']);
 					$aResult['simpleAttachmentsList'] = (bool)$oSettings->GetConf('simpleAttachmentsList', $aResult['simpleAttachmentsList']);
 					$aResult['listGrouped'] = (bool)$oSettings->GetConf('listGrouped', $aResult['listGrouped']);
 					$aResult['ContactsAutosave'] = (bool)$oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);

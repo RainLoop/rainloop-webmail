@@ -216,6 +216,14 @@
 			<em style="margin: 0 0 1em 2em;display: block;" data-i18n="SETTINGS_GENERAL/PREFER_HTML_INFO"></em>
 		</div>
 	</div>
+	<div class="control-group">
+		<label data-i18n="SETTINGS_GENERAL/MAX_QUOTE_LEVEL"></label>
+		<div>
+			<input type="number" min="0" step="1" class="span1" data-bind="textInput: maxBlockquotesLevel">
+			&nbsp;
+			<span data-bind="saveTrigger: maxBlockquotesLevelTrigger"></span>
+		</div>
+	</div>
 
 	<div class="control-group">
 		<label data-i18n="SETTINGS_GENERAL/EXTERNAL_IMAGES"></label>
