@@ -39,7 +39,7 @@ abstract class Service
 
 		$oHttp = \MailSo\Base\Http::SingletonInstance();
 		if ($oConfig->Get('security', 'force_https', false) && !$oHttp->IsSecure()) {
-			\header('Location: https://'.$oHttp->GetHost(false, false).$oHttp->GetUrl());
+			\header('Location: https://'.$oHttp->GetHost(false).$oHttp->GetUrl());
 			exit;
 		}
 

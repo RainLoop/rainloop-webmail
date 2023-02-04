@@ -37,7 +37,7 @@ trait UserAuth
 			$bAdded = false;
 
 			if ($this->Config()->Get('login', 'determine_user_domain', false)) {
-				$sUserHost = \trim($this->Http()->GetHost(false, true, true));
+				$sUserHost = \trim($this->Http()->GetHost(true, true));
 				$this->Logger()->Write('Determined user domain: ' . $sUserHost, \LOG_INFO, 'LOGIN');
 
 				$aDomainParts = \explode('.', $sUserHost);

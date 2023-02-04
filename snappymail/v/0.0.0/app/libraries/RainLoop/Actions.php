@@ -147,7 +147,7 @@ class Actions
 				. '][' . \MailSo\Base\Http::GetServer('SERVER_SOFTWARE', '~')
 				. '][' . (\MailSo\Base\Utils::FunctionCallable('php_sapi_name') ? \php_sapi_name() : '~')
 				. '][Streams:' . \implode(',', \stream_get_transports())
-				. '][' . $oHttp->GetMethod() . ' ' . $oHttp->GetScheme() . '://' . $oHttp->GetHost(false, false) . \MailSo\Base\Http::GetServer('REQUEST_URI', '') . ']'
+				. '][' . $oHttp->GetMethod() . ' ' . $oHttp->GetScheme() . '://' . $oHttp->GetHost(false) . \MailSo\Base\Http::GetServer('REQUEST_URI', '') . ']'
 			);
 		}
 
@@ -293,13 +293,13 @@ class Actions
 
 			if (false !== \strpos($sLine, '{request:domain}')) {
 				$sLine = \str_replace('{request:domain}',
-					Utils::UrlEncode($this->Http()->GetHost(false, true, true), $bUrlEncode), $sLine);
+					Utils::UrlEncode($this->Http()->GetHost(true, true), $bUrlEncode), $sLine);
 			}
 
 			if (false !== \strpos($sLine, '{request:domain-clear}')) {
 				$sLine = \str_replace('{request:domain-clear}',
-					Utils::UrlEncode(
-						\MailSo\Base\Utils::GetClearDomainName($this->Http()->GetHost(false, true, true)), $bUrlEncode), $sLine);
+					Utils::UrlEncode(\MailSo\Base\Utils::GetClearDomainName($this->Http()->GetHost(true, true)), $bUrlEncode),
+					$sLine);
 			}
 
 			$aClear['/\{request:([^}]*)\}/i'] = 'request';
@@ -907,7 +907,7 @@ class Actions
 
 	protected function getAdditionalLogParamsByUserLogin(string $sLogin, bool $bAdmin = false): array
 	{
-		$sHost = $bAdmin ? $this->Http()->GetHost(false, true, true) : \MailSo\Base\Utils::GetDomainFromEmail($sLogin);
+		$sHost = $bAdmin ? $this->Http()->GetHost(true, true) : \MailSo\Base\Utils::GetDomainFromEmail($sLogin);
 		return array(
 			'{imap:login}' => $sLogin,
 			'{imap:host}' => $sHost,

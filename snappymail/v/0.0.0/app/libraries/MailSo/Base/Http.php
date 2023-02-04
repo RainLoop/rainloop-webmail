@@ -109,23 +109,18 @@ class Http
 		   ));
 	}
 
-	public function GetHost(bool $bWithRemoteUserData = false, bool $bWithoutWWW = true, bool $bWithoutPort = false) : string
+	public function GetHost(bool $bWithoutWWW = true, bool $bWithoutPort = false) : string
 	{
 		$sHost = static::GetServer('HTTP_HOST', '');
 		if (!\strlen($sHost)) {
-			$sName = static::GetServer('SERVER_NAME');
+			$sName = static::GetServer('SERVER_NAME', '');
 			$iPort = (int) static::GetServer('SERVER_PORT', 80);
 
 			$sHost = (\in_array($iPort, array(80, 433))) ? $sName : $sName.':'.$iPort;
 		}
 
-		if ($bWithoutWWW) {
-			$sHost = 'www.' === \substr(\strtolower($sHost), 0, 4) ? \substr($sHost, 4) : $sHost;
-		}
-
-		if ($bWithRemoteUserData) {
-			$sUser = \trim(static::GetServer('REMOTE_USER', ''));
-			$sHost = (\strlen($sUser) ? $sUser.'@' : '').$sHost;
+		if ($bWithoutWWW && 'www.' === \substr(\strtolower($sHost), 0, 4)) {
+			$sHost = \substr($sHost, 4);
 		}
 
 		return $bWithoutPort ? \preg_replace('/:\d+$/', '', $sHost) : $sHost;
@@ -249,6 +244,6 @@ class Http
 
 	public function GetFullUrl() : string
 	{
-		return $this->GetScheme().'://'.$this->GetHost(true, false).$this->GetPath();
+		return $this->GetScheme().'://'.$this->GetHost(false).$this->GetPath();
 	}
 }
