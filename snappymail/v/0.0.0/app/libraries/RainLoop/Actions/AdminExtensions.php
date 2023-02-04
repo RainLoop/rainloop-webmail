@@ -5,27 +5,25 @@ namespace RainLoop\Actions;
 use RainLoop\Enumerations\PluginPropertyType;
 use RainLoop\Exceptions\ClientException;
 use RainLoop\Notifications;
+use SnappyMail\Repository;
 
 trait AdminExtensions
 {
 
 	public function DoAdminPackagesList() : array
 	{
-		return $this->DefaultResponse(\SnappyMail\Repository::getPackagesList());
+		return $this->DefaultResponse(Repository::getPackagesList());
 	}
 
 	public function DoAdminPackageDelete() : array
 	{
-		$sId = $this->GetActionParam('id', '');
-		$bResult = \SnappyMail\Repository::deletePackage($sId);
-		static::pluginEnable($sId, false);
-		return $this->DefaultResponse($bResult);
+		return $this->DefaultResponse(Repository::deletePackage($this->GetActionParam('id', '')));
 	}
 
 	public function DoAdminPackageInstall() : array
 	{
 		$sType = $this->GetActionParam('type', '');
-		$bResult = \SnappyMail\Repository::installPackage(
+		$bResult = Repository::installPackage(
 			$sType,
 			$this->GetActionParam('id', ''),
 			$this->GetActionParam('file', '')
@@ -53,7 +51,7 @@ trait AdminExtensions
 			}
 		}
 
-		return $this->DefaultResponse($this->pluginEnable($sId, !$bDisable));
+		return $this->DefaultResponse(Repository::enablePackage($sId, !$bDisable));
 	}
 
 	public function DoAdminPluginLoad() : array
@@ -144,32 +142,4 @@ trait AdminExtensions
 
 		throw new ClientException(Notifications::CantSavePluginSettings);
 	}
-
-	private function pluginEnable(string $sName, bool $bEnable = true) : bool
-	{
-		if (!\strlen($sName)) {
-			return false;
-		}
-
-		$oConfig = $this->Config();
-
-		$aEnabledPlugins = \SnappyMail\Repository::getEnabledPackagesNames();
-
-		$aNewEnabledPlugins = array();
-		if ($bEnable) {
-			$aNewEnabledPlugins = $aEnabledPlugins;
-			$aNewEnabledPlugins[] = $sName;
-		} else {
-			foreach ($aEnabledPlugins as $sPlugin) {
-				if ($sName !== $sPlugin && \strlen($sPlugin)) {
-					$aNewEnabledPlugins[] = $sPlugin;
-				}
-			}
-		}
-
-		$oConfig->Set('plugins', 'enabled_list', \trim(\implode(',', \array_unique($aNewEnabledPlugins)), ' ,'));
-
-		return $oConfig->Save();
-	}
-
 }

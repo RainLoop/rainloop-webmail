@@ -61,5 +61,7 @@ if ($oPlugin) {
 $aList = SnappyMail\Repository::getEnabledPackagesNames();
 $aList[] = 'mailbox-detect';
 $oConfig->Set('plugins', 'enabled_list', implode(',', array_unique($aList)));
+// v2.5.4
+//\SnappyMail\Repository::enablePackage('mailbox-detect');
 
 $oConfig->Save();

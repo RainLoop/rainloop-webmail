@@ -180,6 +180,33 @@ abstract class Repository
 		);
 	}
 
+	public static function enablePackage(string $sName, bool $bEnable = true) : bool
+	{
+		if (!\strlen($sName)) {
+			return false;
+		}
+
+		$oConfig = \RainLoop\Api::Config();
+
+		$aEnabledPlugins = static::getEnabledPackagesNames();
+
+		$aNewEnabledPlugins = array();
+		if ($bEnable) {
+			$aNewEnabledPlugins = $aEnabledPlugins;
+			$aNewEnabledPlugins[] = $sName;
+		} else {
+			foreach ($aEnabledPlugins as $sPlugin) {
+				if ($sName !== $sPlugin && \strlen($sPlugin)) {
+					$aNewEnabledPlugins[] = $sPlugin;
+				}
+			}
+		}
+
+		$oConfig->Set('plugins', 'enabled_list', \trim(\implode(',', \array_unique($aNewEnabledPlugins)), ' ,'));
+
+		return $oConfig->Save();
+	}
+
 	public static function getPackagesList() : array
 	{
 		empty($_ENV['SNAPPYMAIL_INCLUDE_AS_API']) && \RainLoop\Api::Actions()->IsAdminLoggined();
@@ -228,6 +255,7 @@ abstract class Repository
 	public static function deletePackage(string $sId) : bool
 	{
 		\RainLoop\Api::Actions()->IsAdminLoggined();
+		static::enablePackage($sId, false);
 		return static::deletePackageDir($sId);
 	}
 
