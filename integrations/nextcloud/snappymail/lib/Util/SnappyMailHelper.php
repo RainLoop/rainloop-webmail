@@ -125,9 +125,9 @@ class SnappyMailHelper
 			}
 		} else if ($aRainLoop = RainLoop::getLoginCredentials($sUID, $config)) {
 			$sEmail = $aRainLoop[0];
-			$config->setUserValue($sUser, 'snappymail', 'snappymail-email', $sEmail);
+			$config->setUserValue($sUID, 'snappymail', 'snappymail-email', $sEmail);
 			if ($aRainLoop[1]) {
-				$config->setUserValue($sUser, 'snappymail', 'snappymail-password', static::encodePassword($aRainLoop[1], \md5($sEmail)));
+				$config->setUserValue($sUID, 'snappymail', 'snappymail-password', static::encodePassword($aRainLoop[1], \md5($sEmail)));
 			}
 		}
 		return [$sUID, $sEmail, $sPassword ?: ''];
