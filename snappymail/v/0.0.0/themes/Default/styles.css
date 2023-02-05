@@ -1,5 +1,7 @@
 
 :root {
+	color-scheme: light;
+
 	/* MAIN */
 	--main-color: #333;
 	--main-bg-color: #48525C;
