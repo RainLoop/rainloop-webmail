@@ -100,4 +100,9 @@
 	--tab-active-bg-clr: #fff;
 	--tab-hover-border-clr: #eee;
 
+	--smDialogShrink: 20px;
+	--smMainShadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+.rl-mobile {
+	--smDialogShrink: 50px;
 }

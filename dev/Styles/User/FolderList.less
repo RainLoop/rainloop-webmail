@@ -2,21 +2,24 @@
 @folderItemPadding: 7px;
 @subPadding: 15px;
 
-.b-folders {
+#V-MailFolderList,
+#V-MailFolderList .b-content {
+	height: 100%;
+}
 
-	> * {
-		position: absolute;
-		right: 2px;
-		left: 0;
-	}
+.b-folders {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	padding-right: 2px;
 
 	ul {
 		margin: 0;
 	}
 
 	input {
-		width: calc(100% - 8px);
 		margin-left: 4px;
+		width: calc(100% - 8px);
 	}
 
 	.move-action-content-wrapper {
@@ -35,24 +38,17 @@
 	}
 
 	.b-toolbar {
-		top: 0;
-		padding: 10px 0 0 @rlLowMargin;
+		padding: 10px 0 10px @rlLowMargin;
 		color: #fff;
-		z-index: 101;
 	}
 
 	.b-footer {
-		bottom: 10px;
-		padding: 0 10px 0 5px;
-		z-index: 101;
-
+		padding: 10px @rlLowMargin;
 		overflow: hidden;
 		white-space: nowrap;
 	}
 
 	.b-content {
-		bottom: 32px + @rlLowMargin + @rlBottomMargin;
-		top: 50px + @rlLowMargin;
 		overflow: hidden;
 		overflow-y: auto;
 		min-width: 100px;

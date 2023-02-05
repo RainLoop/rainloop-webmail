@@ -1,9 +1,4 @@
 
-#rl-content {
-	display:flex;
-	height: 100%;
-}
-
 #rl-left {
 	flex-grow: 0;
 	flex-shrink: 0;
@@ -70,7 +65,7 @@
 	background-color: var(--settings-bg-clr, #fff);
 	border: 1px solid var(--border-color, #aaa);
 	border-radius: var(--border-radius, 5px);
-	box-shadow: @rlMainShadow;
+	box-shadow: var(--smMainShadow);
 	height: calc(100% - @rlLowMargin - @rlLowMargin);
 	margin: 0 @rlLowMargin @rlLowMargin 0;
 	overflow-y: auto;
@@ -96,7 +91,6 @@
 @media screen and (max-width: 999px) {
 	#rl-settings-subscreen {
 		padding: 10px;
-		margin-right: 0;
 	}
 
 	#rl-right {

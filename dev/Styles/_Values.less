@@ -1,7 +1,14 @@
 
 @rlLeftWidth: 200px;
-
-@rlMainShadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-
 @rlLowMargin: 8px;
 @rlBottomMargin: 5px;
+
+:root {
+	--rlLeftWidth: 200px;
+	--smDialogShrink: 20px;
+	--smMainShadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+.rl-mobile {
+	/* For Firefox */
+	--smDialogShrink: 50px;
+}
