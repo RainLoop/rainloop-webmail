@@ -277,7 +277,9 @@ export class MessageModel extends AbstractModel {
 			body.classList.toggle('plain', 0);
 
 			if (!this.isSpam() && FolderUserStore.spamFolder() != this.folder) {
-				if ('always' === SettingsUserStore.viewImages()) {
+				if (('dkim' === SettingsUserStore.viewImages() && 'pass' === this.dkim[0]?.[0])
+				 || 'always' === SettingsUserStore.viewImages()
+				) {
 					this.showExternalImages();
 				}
 				if ('match' === SettingsUserStore.viewImages()) {
