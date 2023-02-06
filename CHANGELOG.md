@@ -1,3 +1,43 @@
+## 2.25.4 – 2023-02-06
+
+## Added
+- message maximum quoted text level for speed.
+  [#902](https://github.com/the-djmaze/snappymail/pull/902)
+- LoveDark Theme by @TheCuteFoxxy
+  [#913](https://github.com/the-djmaze/snappymail/pull/913)
+
+## Changed
+- Moved pluginEnable() to \SnappyMail\Repository::enablePackage()
+- Updrate French language by @hguilbert
+- Cleanup material-design checkbox
+- Some style change for settings panels
+- Some MailMessageView styling
+- Disabled blockquotes height calculation for
+  [#902](https://github.com/the-djmaze/snappymail/pull/902)
+- Enhance Add domain dialog
+  [#916](https://github.com/the-djmaze/snappymail/pull/916)
+
+## Fixed
+- Fixed arrows in thread view while scrolling
+  [#908](https://github.com/the-djmaze/snappymail/pull/908)
+- CSS btn-thin were too high
+- Whitelist to show images directly
+  [#201](https://github.com/the-djmaze/snappymail/pull/201)
+- MailSo\Base\Http::GetHost(): Return value must be of type string
+  [#910](https://github.com/the-djmaze/snappymail/pull/910)
+- Nextcloud undefined variable $sUser
+  [#915](https://github.com/the-djmaze/snappymail/pull/915)
+- Hopefull improved styling for Firefox mobile fixes
+- Scroll display error
+  [#912](https://github.com/the-djmaze/snappymail/pull/912)
+- Autofocus was triggered when view resized
+- Better solution for Settings Page is bigger than the Account Page
+  [#897](https://github.com/the-djmaze/snappymail/pull/897)
+
+### Removed
+- $bUrlEncode as it was always false
+
+
 ## 2.25.3 – 2023-02-03
 
 ## Added

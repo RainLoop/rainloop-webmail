@@ -4,9 +4,9 @@ class LoginOverridePlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Login Override',
-		VERSION = '2.0',
+		VERSION = '2.1',
 		RELEASE = '2023-02-01',
-		REQUIRED = '2.25.2',
+		REQUIRED = '2.25.3',
 		CATEGORY = 'Filters',
 		DESCRIPTION = 'Override IMAP/SMTP login credentials for specific users.';
 
