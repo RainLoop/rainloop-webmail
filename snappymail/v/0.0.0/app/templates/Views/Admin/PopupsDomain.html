@@ -284,13 +284,10 @@
 		<i class="fontastic" data-bind="css: {'icon-spinner': testing()}">ℹ</i>
 		<span data-i18n="GLOBAL/TEST"></span>
 	</a>
-	<a class="btn buttonClose" data-bind="click: close" data-icon="✖" data-i18n="GLOBAL/CLOSE"></a>
-	<a class="btn" data-bind="command: createOrAddCommand, visible: edit()">
+	<a class="btn buttonClose" data-bind="click: close, visible: edit()" data-icon="✖" data-i18n="GLOBAL/CLOSE"></a>
+	<a class="btn buttonClose" data-bind="click: close, visible: !edit()" data-icon="✖" data-i18n="GLOBAL/CANCEL"></a>
+	<a class="btn" data-bind="command: createOrAddCommand">
 		<i class="fontastic" data-bind="css: {'icon-spinner': saving()}">✔</i>
-		<span data-i18n="GLOBAL/UPDATE"></span>
-	</a>
-	<a class="btn" data-bind="command: createOrAddCommand, visible: !edit()">
-		<i class="fontastic" data-bind="css: {'icon-spinner': saving()}">✚</i>
-		<span data-i18n="GLOBAL/ADD"></span>
+		<span data-i18n="GLOBAL/SAVE"></span>
 	</a>
 </footer>
