@@ -61,6 +61,7 @@
 		opacity:0;
 		position:absolute;
 		top:0;
+		left:0;
 	}
 
 	&:focus-within {
@@ -76,23 +77,18 @@
 .e-checkbox.material-design {
 
 	line-height: 20px;
+	padding-left: 18px;
+	position: relative;
 	width: auto !important;
 
 	> div {
-		position: relative;
-		width: 18px;
-		height: 18px;
-		vertical-align: top;
-	}
-
-	> div > div {
 		position: absolute;
 		margin-top: 1px;
 		.checkbox-box-sizes();
 		animation: checkmark-to-box 200ms ease-out forwards;
 	}
 
-	input:checked + div div {
+	input:checked + div {
 		.checkbox-mark-sizes();
 		animation: box-to-checkmark 200ms ease-out forwards;
 	}
