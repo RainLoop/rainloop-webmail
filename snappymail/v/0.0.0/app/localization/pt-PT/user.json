@@ -22,10 +22,10 @@
 		"NOT_SPAM": "Não é spam",
 		"USERNAME": "Nome de usuário",
 		"PASSWORD": "Palavra-passe",
-		"REMEMBER": "Remember",
+		"REMEMBER": "Lembrar",
 		"REPLY_TO": "Resp.-Para",
 		"SAVE": "Guardar",
-		"SAVE_CHANGES": "Save changes?",
+		"SAVE_CHANGES": "Guardar alterações?",
 		"SEARCH": "Pesquisar",
 		"SPAM": "Spam",
 		"SUBJECT": "Assunto",
@@ -34,7 +34,7 @@
 		"SERVER_MESSAGE": "Mensagem do servidor",
 		"YES": "Sim",
 		"NO": "Não",
-		"INACTIVE": "Inactive",
+		"INACTIVE": "Inativo",
 		"DEFAULT": "predefinida",
 		"HELP": "Ajuda"
 	},
@@ -152,7 +152,7 @@
 		"SPAM_SCORE": "Pontuação de Spam",
 		"HAS_VIRUS_WARNING": "AVISO: vírus detetado",
 		"TAGS": "Marcadores",
-		"NEW_TAG": "New tag"
+		"NEW_TAG": "Novo marcador"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Importante",
@@ -171,17 +171,17 @@
 		"SEARCHING_DESC": "A pesquisar..."
 	},
 	"CONTACTS": {
-		"TAB_CONTACT": "Contact",
-		"TAB_LOCATIONS": "Locations",
-		"TAB_BUSINESS": "Business",
-		"LABEL_ORGANIZATION": "Organization",
-		"LABEL_DEPARTMENT": "Department",
-		"LABEL_TITLE": "Title",
-		"TAB_CRYPTO": "Crypto",
-		"ASK": "Ask",
-		"NEVER": "Never",
-		"ALWAYS": "Always",
-		"ALWAYS_IF_POSSIBLE": "Always if possible",
+		"TAB_CONTACT": "Contactos",
+		"TAB_LOCATIONS": "Localizações",
+		"TAB_BUSINESS": "Empresa",
+		"LABEL_ORGANIZATION": "Empresa",
+		"LABEL_DEPARTMENT": "Departamento",
+		"LABEL_TITLE": "Cargo",
+		"TAB_CRYPTO": "Criptografia",
+		"ASK": "Perguntar",
+		"NEVER": "Nunca",
+		"ALWAYS": "Sempre",
+		"ALWAYS_IF_POSSIBLE": "Sempre que possível",
 		"BUTTON_ADD_CONTACT": "Adicionar contacto",
 		"BUTTON_CREATE_CONTACT": "Criar",
 		"BUTTON_UPDATE_CONTACT": "Atualizar",
@@ -203,7 +203,7 @@
 		"ADD_MENU_NICKNAME": "Alcunha",
 		"ADD_MENU_NOTE": "Notas",
 		"ADD_MENU_PHONE": "Telefone",
-		"ADD_MENU_URL": "URL",
+		"ADD_MENU_URL": "Website",
 		"ADD_MENU_ADDRESS": "Morada",
 		"ADD_MENU_BIRTHDAY": "Aniversário",
 		"ADD_MENU_TAGS": "Marcadores",
@@ -226,18 +226,18 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Sem anexos aqui.",
 		"ATTACHMENTS_ERROR_DESC": "Aviso! Nem todos os anexos foram carregados.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Ainda não foram carregados todos os anexos",
-		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_SPELLCHECK": "Ativar corretor ortográfico do navegador",
 		"BUTTON_REQUEST_READ_RECEIPT": "Pedir um recibo de leitura",
 		"BUTTON_MARK_AS_IMPORTANT": "Marcar como importante",
 		"BUTTON_REQUEST_DSN": "Pedir um recibo de entrega",
-		"BUTTON_REQUIRE_TLS": "Require secure delivery"
+		"BUTTON_REQUIRE_TLS": "Exigir entrega segura"
 	},
 	"POPUPS_ASK": {
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Tem a certeza de que quer fechar esta janela?",
 		"DESC_WANT_DELETE_MESSAGES": "Tem a certeza de que quer eliminar a(s) mensagem(s)?"
 	},
 	"POPUPS_LANGUAGES": {
-		"TITLE_LANGUAGES": "Escolha o idioma"
+		"TITLE_LANGUAGES": "Escolha o seu idioma"
 	},
 	"POPUPS_ADD_ACCOUNT": {
 		"TITLE_ADD_ACCOUNT": "Adicionar conta?",
@@ -316,7 +316,7 @@
 		"MARK_AS_READ_LABEL": "Marcar como lida",
 		"REPLY_INTERVAL_LABEL": "Intervalo de resposta (dias)",
 		"KEEP_LABEL": "Manter",
-		"STOP_LABEL": "Stop further processing of rules",
+		"STOP_LABEL": "Interromper o processamento das regras",
 		"VACATION_SUBJECT_LABEL": "Assunto (opcional)",
 		"VACATION_MESSAGE_LABEL": "Mensagem",
 		"VACATION_RECIPIENTS_LABEL": "Destinatários (separados por vírgula)",
@@ -356,7 +356,7 @@
 	},
 	"EDITOR": {
 		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> TEXTO",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"TEXT_SWITCHER_SOURCE": "HTML <-> FONTE"
 	},
 	"SETTINGS_LABELS": {
 		"GENERAL": "Geral",
@@ -385,7 +385,7 @@
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Geral",
 		"LANGUAGE": "Idioma",
-		"HOUR_FORMAT": "Hour format",
+		"HOUR_FORMAT": "Formato da hora",
 		"IDENTITY": "Identidade",
 		"LAYOUT": "Apresentação",
 		"LAYOUT_NO_SPLIT": "Sem separação",
@@ -396,7 +396,7 @@
 		"EDITOR_PLAIN": "Texto simples",
 		"VIEW_OPTIONS": "Ver opções",
 		"USE_PREVIEW_PANE": "Use o painel de pré-visualização",
-		"HIDE_DELETED_MESSAGES": "Ocultar mensagens marcadas para exclusão",
+		"HIDE_DELETED_MESSAGES": "Ocultar mensagens marcadas para eliminação",
 		"USE_CHECKBOXES_IN_LIST": "Apresentar caixas de seleção na lista",
 		"USE_THREADS": "Usar tópicos de conversa",
 		"REPLY_SAME_FOLDER": "Colocar respostas na pasta das mensagens a que responde",
@@ -404,25 +404,25 @@
 		"PREFER_HTML_INFO": "Por vezes as mensagens são recebidas em ambos os formatos. Esta opção determina se prefere apresentar o conteúdo em HTML ou em texto simples.",
 		"REMOVE_COLORS": "Retirar imagens de fundo e coloração de texto do corpo das mensagens",
 		"MESSAGE_PER_PAGE": "Mensagens por página",
-		"CHECK_MAIL_INTERVAL": "Check mail interval",
+		"CHECK_MAIL_INTERVAL": "Intervalo de verificação do correio",
 		"MARK_MESSAGE_READ_AFTER": "Marcar mensagem como lida após",
-		"MSG_DEFAULT_ACTION": "Default action",
+		"MSG_DEFAULT_ACTION": "Ação predefinida",
 		"SECONDS": "segundos",
-		"MINUTES": "minutes",
+		"MINUTES": "minutos",
 		"NOTIFICATIONS": "Notificações",
 		"SOUND_NOTIFICATION": "Notificações sonoras",
 		"CHROME_NOTIFICATION_DESC": "Apresentar notificações para novas mensagens",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Bloqueado pelo navegador)",
-		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
-		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
-		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
-		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
-		"EXTERNAL_IMAGES": "External images",
-		"IMAGES_OPTION_ASK": "Always ask",
-		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
-		"IMAGES_OPTION_ALWAYS": "Show always",
-		"IMAGES_WHITELIST": "Images whitelist"
+		"COLLAPSE_BLOCKQUOTES": "Minimizar texto citado",
+		"MAX_QUOTE_LEVEL": "Níveis máximos de texto citado visíveis",
+		"LIST_INLINE_ATTACHMENTS": "Mostrar na lista de anexos os anexos integrados no corpo",
+		"LIST_SIMPLE_ATTACHMENTS": "Lista simples de anexos",
+		"LIST_MESSAGES_GROUPED": "Agrupar mensagens listadas (quando ordenadas por data ou remetente)",
+		"EXTERNAL_IMAGES": "Imagens externas",
+		"IMAGES_OPTION_ASK": "Perguntar sempre",
+		"IMAGES_OPTION_WHITELIST": "Lista Branca ou perguntar",
+		"IMAGES_OPTION_ALWAYS": "Mostrar sempre",
+		"IMAGES_WHITELIST": "Lista Branca de imagens"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Adicionar destinatários automaticamente à sua lista de endereços",
@@ -436,7 +436,7 @@
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Temas",
 		"LABEL_BACKGROUND": "Imagem de fundo",
-		"LABEL_FONTS": "Fonts",
+		"LABEL_FONTS": "Tipos de letra",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Carregar imagem de fundo (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Ficheiro muito grande",
 		"ERROR_FILE_TYPE_ERROR": "Tipo de ficheiro inválido (apenas JPG e PNG)",
@@ -457,8 +457,8 @@
 		"HELP_DELETE_FOLDER": "Eliminar pasta",
 		"HELP_SHOW_HIDE_FOLDER": "Mostrar\/ocultar pasta",
 		"HELP_CHECK_FOR_NEW_MESSAGES": "Procurar\/não procurar novas mensagens",
-		"HIDE_UNSUBSCRIBED": "Esconder pastas não-subscritas",
-		"UNHIDE_KOLAB_FOLDERS": "Unhide Kolab folders",
+		"HIDE_UNSUBSCRIBED": "Esconder pastas não subscritas",
+		"UNHIDE_KOLAB_FOLDERS": "Tonar pastas Kolab visíveis",
 		"TYPE_CALENDAR": "Calendário",
 		"TYPE_CONFIGURATION": "Configuração",
 		"TYPE_CONTACTS": "Contactos",
@@ -474,7 +474,7 @@
 		"BUTTON_ADD_ACCOUNT": "Adicionar uma conta",
 		"BUTTON_ADD_IDENTITY": "Adicionar uma identidade",
 		"LOADING_PROCESS": "A atualizar...",
-		"SHOW_UNREAD": "Show unread messages count"
+		"SHOW_UNREAD": "Mostrar contador de mensagens não lidas"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importar chave",
@@ -522,11 +522,11 @@
 		"LABEL_CLOSE_COMPOSE": "Fechar janela de composição"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
+		"REQUEST_ERROR": "A solicitação falhou",
+		"REQUEST_ABORTED": "A solicitação foi abortada",
+		"REQUEST_TIMEOUT": "A solicitação expirou",
 		"INVALID_TOKEN": "Token inválido",
-		"AUTH_ERROR": "Falha na autenticação",
+		"AUTH_ERROR": "A autenticação falhou",
 		"CONNECTION_ERROR": "Não foi possível ligar ao servidor",
 		"DOMAIN_ALREADY_EXISTS": "O domínio já existe",
 		"DOMAIN_NOT_ALLOWED": "Este domínio não é permitido",
