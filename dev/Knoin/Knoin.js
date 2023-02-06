@@ -79,7 +79,6 @@ const
 					const endShowHide = e => {
 						if (e.target === vmDom) {
 							if (vmDom.classList.contains('animate')) {
-								autofocus(vmDom);
 								vm.afterShow?.();
 							} else {
 								vmDom.close();
@@ -98,6 +97,7 @@ const
 								vmDom.backdrop.style.zIndex = 3000 + (visiblePopups.size * 2);
 							}
 							vm.keyScope.set();
+							setTimeout(()=>autofocus(vmDom),1);
 							requestAnimationFrame(() => { // wait just before the next paint
 								vmDom.offsetHeight; // force a reflow
 								vmDom.classList.add('animate'); // trigger the transitions
