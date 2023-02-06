@@ -26,7 +26,10 @@ class InstallStep implements IRepairStep
 
 		\OCA\SnappyMail\Util\SnappyMailHelper::loadApp();
 
+		\SnappyMail\Upgrade::fixPermissions();
+
 		$app_dir = \dirname(\dirname(__DIR__)) . '/app';
+//		$app_dir = \rtrim(APP_INDEX_ROOT_PATH, '\\/');
 
 		// https://github.com/the-djmaze/snappymail/issues/790#issuecomment-1366527884
 		if (!\file_exists($app_dir . '/.htaccess') && \file_exists($app_dir . '/_htaccess')) {

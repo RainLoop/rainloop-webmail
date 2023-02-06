@@ -209,6 +209,9 @@ abstract class Upgrade
 				if (!$bResult) {
 					throw new \Exception('Extract core files failed');
 				}
+
+				static::fixPermissions();
+
 				\error_log('Update success');
 				// opcache_reset is a terrible solution
 //				\is_callable('opcache_reset') && \opcache_reset();
@@ -219,4 +222,33 @@ abstract class Upgrade
 		}
 		return $bResult;
 	}
+
+	// Prevents Apache access error due to directories being 0700
+	public static function fixPermissions($mode = 0755) : void
+	{
+		$target = \rtrim(APP_INDEX_ROOT_PATH, '\\/');
+		// Prevent Apache access error due to directories being 0700
+		foreach (\glob("{$target}/snappymail/v/*",  \GLOB_ONLYDIR) as $dir) {
+			\chmod($dir, 0755);
+			$iterator = new \RecursiveIteratorIterator(
+				new \RecursiveDirectoryIterator("{$dir}/static", \FilesystemIterator::SKIP_DOTS),
+				\RecursiveIteratorIterator::SELF_FIRST
+			);
+			foreach ($items as $item) {
+				if ($item->isDir()) {
+					\chmod($item, 0755);
+				}
+			}
+			$iterator = new \RecursiveIteratorIterator(
+				new \RecursiveDirectoryIterator("{$dir}/themes", \FilesystemIterator::SKIP_DOTS),
+				\RecursiveIteratorIterator::SELF_FIRST
+			);
+			foreach ($items as $item) {
+				if ($item->isDir()) {
+					\chmod($item, 0755);
+				}
+			}
+		}
+	}
+
 }

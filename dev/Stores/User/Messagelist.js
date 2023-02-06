@@ -205,7 +205,6 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 				const collection = MessageCollectionModel.reviveFromJson(oData.Result, bCached);
 				if (collection) {
 					error = '';
-					let unreadCountChange = false;
 
 					const
 						folder = getFolderFromCacheList(collection.folder),
@@ -222,7 +221,6 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 
 						if (null != folderInfo.unreadEmails) {
 							if (pInt(folder.unreadEmails()) !== pInt(folderInfo.unreadEmails)) {
-								unreadCountChange = true;
 								MessageFlagsCache.clearFolder(folder.fullName);
 							}
 							folder.unreadEmails(folderInfo.unreadEmails);
@@ -279,10 +277,6 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 
 					MessagelistUserStore(collection);
 					MessagelistUserStore.isIncomplete(false);
-
-					if (folder && (bCached || unreadCountChange || SettingsUserStore.useThreads())) {
-						rl.app.folderInformation(folder.fullName, collection);
-					}
 				} else {
 					MessagelistUserStore.count(0);
 					MessagelistUserStore([]);
