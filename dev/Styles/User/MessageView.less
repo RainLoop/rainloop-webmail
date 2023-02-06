@@ -5,34 +5,31 @@ html.rl-no-preview-pane {
 	}
 }
 
-#V-MailMessageView.focused .messageView {
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+#V-MailMessageView .top-toolbar {
+	color: #fff;
+	padding: 10px 0;
+}
+html.rl-no-preview-pane #V-MailMessageView .top-toolbar {
+	padding-left: 1px;
+}
+html:not(.rl-mobile):not(.rl-no-preview-pane) #V-MailMessageView .top-toolbar {
+	visibility: hidden;
+}
+html.rl-bottom-preview-pane #V-MailMessageView .top-toolbar {
+	display: none;
 }
 
 .messageView {
 	background-color: #fff;
 	border: 1px solid var(--border-color, #aaa);
 	border-radius: var(--border-radius, 5px);
-	height: 100%;
-
-	.toolbar {
-		position: absolute;
-		top: -50px;
-		right: 0;
-		left: 0;
-		height: 30px;
-		padding: 10px 0;
-		color: #fff;
-	}
+	height: calc(100% - 50px);
+	position: relative;
 
 	.priorityHigh .subject::before {
 		content: '! '; /*❗*/
 		color: red;
 		font-weight: bolder;
-	}
-
-	.b-content {
-		height: 100%;
 	}
 
 	.b-message {
@@ -141,10 +138,6 @@ html.rl-no-preview-pane {
 			opacity: 0.5;
 		}
 
-		.messageButtons {
-			margin-top: 5px;
-		}
-
 		.informationShort {
 			margin: 0 56px 0 0;
 			overflow: hidden;
@@ -238,6 +231,11 @@ html.rl-no-preview-pane {
 			padding-right: 10px;
 		}
 	}
+}
+
+#V-MailMessageView.focused .messageView {
+	border-color: #9d9d9d;
+	box-shadow: var(--smMainShadow);
 }
 
 #messageItem {
@@ -443,31 +441,12 @@ html.rl-no-preview-pane {
 }
 
 html.rl-no-preview-pane .messageView {
-
-	.toolbar {
-		padding-left: 1px;
-	}
-
-	.b-content {
-		top: 50px;
-		left: 0;
-		bottom: @rlBottomMargin;
-		right: @rlBottomMargin;
-		border: 1px solid var(--border-color, #aaa);
-		box-shadow: var(--smMainShadow);
-	}
-}
-
-html:not(.rl-mobile):not(.rl-no-preview-pane) .messageView {
-	.top-toolbar {
-		display: none;
-	}
+	border: 1px solid var(--border-color, #aaa);
+	box-shadow: var(--smMainShadow);
 }
 
 html.rl-bottom-preview-pane .messageView {
-	.b-content {
-		bottom: @rlBottomMargin;
-	}
+	height: 100%;
 }
 
 html.rl-fullscreen {
@@ -476,20 +455,11 @@ html.rl-fullscreen {
 	#V-MailMessageList,
 	#V-SettingsPane,
 	#V-SystemDropDown,
-	#V-MailMessageView .messageView .toolbar {
+	#V-MailMessageView .top-toolbar {
 		display: none !important;
 	}
 
 	.messageView {
-		border: 0;
-	}
-
-	.messageView .b-content {
-		position: fixed;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
 		border: 0;
 	}
 }
