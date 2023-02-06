@@ -31,13 +31,13 @@
 
 #rl-right {
 	flex-grow: 1;
-	padding-top: 50px;
 	transition: left 0.3s ease-out, right 0.3s ease-out;
 	z-index: 1;
 }
 
 #V-AdminPane {
-	height: 100%;
+	height: calc(100% - 50px - @rlLowMargin);
+	margin: 50px @rlLowMargin 0 0;
 
 	> .b-toolbar {
 		color: #fff;
@@ -56,6 +56,10 @@
 	}
 }
 
+.rl-mobile #V-AdminPane {
+	margin-right: 0;
+}
+
 .btn.btn-logout {
 	padding-left: 12px;
 	padding-right: 12px;
@@ -66,8 +70,7 @@
 	border: 1px solid var(--border-color, #aaa);
 	border-radius: var(--border-radius, 5px);
 	box-shadow: var(--smMainShadow);
-	height: calc(100% - @rlLowMargin - @rlLowMargin);
-	margin: 0 @rlLowMargin @rlLowMargin 0;
+	height: 100%;
 	overflow-y: auto;
 	padding: 20px;
 	scroll-behavior: smooth;
