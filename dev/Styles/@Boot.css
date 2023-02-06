@@ -58,7 +58,6 @@ html, body {
 body#rl-app {
 	height: 100vh;
 	height: 100dvh;
-	overflow: hidden;
 	width: 100vw;
 }
 
