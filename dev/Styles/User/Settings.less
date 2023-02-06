@@ -49,7 +49,8 @@
 }
 
 #V-SettingsPane {
-	height: 100%;
+	height: calc(100% - 50px - @rlLowMargin);
+	margin: 50px @rlLowMargin 0 0;
 
 	.btn-toolbar {
 		position: absolute;
@@ -71,8 +72,7 @@
 	border: 1px solid var(--border-color, #aaa);
 	border-radius: var(--border-radius, 5px);
 	box-shadow: var(--smMainShadow);
-	height: calc(100% - 50px - @rlLowMargin - @rlLowMargin);
-	margin: 50px @rlLowMargin @rlLowMargin 0;
+	height: 100%;
 	overflow-y: auto;
 	padding:20px;
 	scroll-behavior: smooth;
