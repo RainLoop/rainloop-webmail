@@ -77,7 +77,6 @@
 .thm-message-list-top-toolbar, .thm-message-list-bottom-toolbar {
     background-color: #111 !important;
 	color: var(--main-color);
-	background-repeat: repeat-x !important;
 }
 
 .btn:not(.btn-success):not(.btn-warning):not(.btn-danger) {
