@@ -279,8 +279,12 @@
 							</span>
 						</div>
 
-						<div class="showImages" data-bind="visible: message().hasImages(), click: showImages"
-							data-icon="🖼" data-i18n="MESSAGE/BUTTON_SHOW_IMAGES"></div>
+						<div class="showImages" data-bind="visible: message().hasImages()">
+							<div class="btn" data-bind="click: showImages" data-icon="🖼" data-i18n="MESSAGE/BUTTON_SHOW_IMAGES"></div>
+							<div data-bind="foreach: message().whitelistOptions()">
+								<div class="btn" data-bind="click: $root.whitelistText, text: $data" data-icon="🖼"></div>
+							</div>
+						</div>
 					</div>
 
 					<div class="openpgp-control encrypted" data-bind="visible: message().pgpEncrypted(), css: {'success': message().pgpDecrypted()}">
