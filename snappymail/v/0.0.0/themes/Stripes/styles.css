@@ -4,6 +4,7 @@
 	--main-color: #333;
 	--main-bg-color: #010101;
 	--main-bg-image: url("images/background.jpg");
+	--main-bg-size: cover;
 
 	/* LOADING */
 	--loading-color: #fff;
