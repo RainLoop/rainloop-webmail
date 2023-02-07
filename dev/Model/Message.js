@@ -75,6 +75,7 @@ export class MessageModel extends AbstractModel {
 		this.messageId = '';
 		this.inReplyTo = '';
 		this.references = '';
+		this.autocrypt = {};
 
 		addObservablesTo(this, {
 			subject: '',
@@ -111,7 +112,6 @@ export class MessageModel extends AbstractModel {
 
 			readReceipt: '',
 
-			autocrypt: '',
 			// rfc8621
 			id: '',
 //			threadId: '',
