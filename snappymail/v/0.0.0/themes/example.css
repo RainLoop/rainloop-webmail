@@ -1,5 +1,7 @@
 
 :root {
+	color-scheme: light;
+
 	/* MAIN */
 	--main-color: #333;
 	--main-bg-color: #e3e3e3;
@@ -102,7 +104,4 @@
 
 	--smDialogShrink: 20px;
 	--smMainShadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-.rl-mobile {
-	--smDialogShrink: 50px;
 }

@@ -840,6 +840,8 @@ export class ComposePopupView extends AbstractViewPopup {
 					this.aDraftInfo = ['reply', message.uid, message.folder];
 					this.sInReplyTo = message.messageId;
 					this.sReferences = (message.messageId + ' ' + message.references).trim();
+					// OpenPGP “Transferable Public Key”
+//					message.autocrypt?.keydata
 					break;
 
 				case ComposeType.Forward:

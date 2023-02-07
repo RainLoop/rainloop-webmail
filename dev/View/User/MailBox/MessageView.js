@@ -499,6 +499,13 @@ export class MailMessageView extends AbstractViewRight {
 		currentMessage().showExternalImages();
 	}
 
+	whitelistText(txt) {
+		let value = (SettingsUserStore.viewImagesWhitelist().trim() + '\n' + txt).trim();
+		SettingsUserStore.viewImagesWhitelist(value);
+		Remote.saveSetting('ViewImagesWhitelist', value);
+		currentMessage().showExternalImages(1);
+	}
+
 	/**
 	 * @returns {string}
 	 */

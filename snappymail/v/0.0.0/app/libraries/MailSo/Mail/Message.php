@@ -485,6 +485,14 @@ class Message implements \JsonSerializable
 			$this->aFlagsLowerCase
 		));
 
+		$aAutocrypt = [];
+		if ($this->sAutocrypt) {
+			foreach (\explode(';', $this->sAutocrypt) as $entry) {
+				$entry = \explode('=', \trim($entry), 2);
+				$aAutocrypt[$entry[0]] = $entry[1];
+			}
+		}
+
 		return array(
 			'@Object' => 'Object/Message',
 			'folder' => $this->sFolder,
@@ -512,7 +520,7 @@ class Message implements \JsonSerializable
 			'threads' => $this->aThreads,
 			'unsubsribeLinks' => $this->UnsubsribeLinks,
 			'readReceipt' => '',
-			'autocrypt' => $this->sAutocrypt,
+			'autocrypt' => $aAutocrypt ?: null,
 
 			'attachments' => $this->Attachments,
 

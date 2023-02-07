@@ -75,6 +75,7 @@ export class MessageModel extends AbstractModel {
 		this.messageId = '';
 		this.inReplyTo = '';
 		this.references = '';
+		this.autocrypt = {};
 
 		addObservablesTo(this, {
 			subject: '',
@@ -111,7 +112,6 @@ export class MessageModel extends AbstractModel {
 
 			readReceipt: '',
 
-			autocrypt: '',
 			// rfc8621
 			id: '',
 //			threadId: '',
@@ -150,8 +150,19 @@ export class MessageModel extends AbstractModel {
 					}
 				});
 				return tagOptions
-			}
+			},
 
+			whitelistOptions: () => {
+				let options = [];
+				if ('match' === SettingsUserStore.viewImages()) {
+					let from = this.from[0],
+						list = SettingsUserStore.viewImagesWhitelist();
+					from && options.push(from.email);
+					this.html().match(/src=["'][^"']+/g)?.forEach(m => options.push(m.replace(/^.+(:\/\/[^/]+).+$/, '$1')));
+					options = options.filter(txt => !list.includes(txt));
+				}
+				return options.unique();
+			}
 		});
 	}
 
@@ -277,22 +288,13 @@ export class MessageModel extends AbstractModel {
 			body.classList.toggle('plain', 0);
 
 			if (!this.isSpam() && FolderUserStore.spamFolder() != this.folder) {
-				if ('always' === SettingsUserStore.viewImages()) {
+				if (('dkim' === SettingsUserStore.viewImages() && 'pass' === this.dkim[0]?.[0])
+				 || 'always' === SettingsUserStore.viewImages()
+				) {
 					this.showExternalImages();
 				}
 				if ('match' === SettingsUserStore.viewImages()) {
-					let regex = SettingsUserStore.viewImagesWhitelist()
-						.trim()
-						.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&')
-						.replace(/[\s\r\n,;:]+/g, '|')
-						.replace(/\|+/g, '|');
-					if (regex.length) {
-						console.log('whitelist images = '+regex);
-						regex = new RegExp(regex);
-						this.showExternalImages(
-							(this.from[0]?.email.match(regex)/* || this.sender[0]?.email.match(regex)*/) ? null : regex
-						);
-					}
+					this.showExternalImages(1);
 				}
 			}
 
@@ -384,6 +386,20 @@ export class MessageModel extends AbstractModel {
 	showExternalImages(regex) {
 		const body = this.body;
 		if (body && this.hasImages()) {
+			if (regex) {
+				regex = SettingsUserStore.viewImagesWhitelist()
+					.trim()
+					.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&')
+					.replace(/[\s\r\n,;:]+/g, '|')
+					.replace(/\|+/g, '|');
+				if (regex) {
+					console.log('whitelist images = '+regex);
+					regex = new RegExp(regex);
+					if (this.from[0]?.email.match(regex)) {
+						regex = 0;
+					}
+				}
+			}
 			let hasImages = false,
 				isValid = src => {
 					if (!regex || src.match(regex)) {

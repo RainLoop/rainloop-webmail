@@ -1166,7 +1166,7 @@ trait Messages
 			foreach ($aAttachments as $sTempName => $aData) {
 				$sFileName = (string) $aData['name'];
 				$bIsInline = (bool) $aData['inline'];
-				$sCID = (string) $aData['cid'];
+				$sCID = (string) $aData['cId'];
 				$sContentLocation = (string) $aData['location'];
 				$sMimeType = (string) $aData['type'];
 

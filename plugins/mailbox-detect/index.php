@@ -9,8 +9,8 @@ class MailboxDetectPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'MailboxDetect',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '2.2',
-		RELEASE  = '2023-01-23',
+		VERSION  = '2.3',
+		RELEASE  = '2023-02-07',
 		REQUIRED = '2.25.0',
 		CATEGORY = 'General',
 		LICENSE  = 'MIT',
@@ -36,7 +36,7 @@ class MailboxDetectPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$oActions = \RainLoop\Api::Actions();
 			$oAccount = $oActions->getAccountFromToken();
 			if (!$oAccount) {
-				\error_log('No Account');
+				$this->Logger()->Write('No Account');
 				return;
 			}
 			$oSettingsLocal = $oActions->SettingsProvider(true)->Load($oAccount);
@@ -114,8 +114,9 @@ class MailboxDetectPlugin extends \RainLoop\Plugins\AbstractPlugin
 				foreach ($found as $role => $folders) {
 					if (isset($folders[0])) {
 						// Set the first as default
-//						\error_log("Set role {$role}");
-						$aResponse['Result']['@Collection'][$folders[0]]['role'] = $role;
+						$aFolder = &$aResponse['Result']['@Collection'][$folders[0]];
+						$this->Logger()->Write("Set {$role} mailbox to {$aFolder['fullName']}");
+						$aFolder['role'] = $role;
 					} else if ($this->Config()->Get('plugin', 'autocreate_system_folders', false)) {
 						try
 						{
@@ -136,19 +137,22 @@ class MailboxDetectPlugin extends \RainLoop\Plugins\AbstractPlugin
 								}
 							}
 */
-//							\error_log("Create mailbox {$sFolderNameToCreate}");
-							$oFolder = $oActions->MailClient()->FolderCreate(
+							$this->Logger()->Write("Create {$role} mailbox {$sFolderNameToCreate}");
+							$aFolder = $oActions->MailClient()->FolderCreate(
 								$sFolderNameToCreate,
 								$sParent,
 								true,
 								$sDelimiter
-							);
-							$aResponse['Result']['@Collection'][] = \json_encode($oFolder);
+							)->jsonSerialize();
+							$aFolder['role'] = $role;
+							$aResponse['Result']['@Collection'][] = $aFolder;
 						}
 						catch (\Throwable $oException)
 						{
 							$this->Logger()->WriteException($oException);
 						}
+					} else {
+						$this->Logger()->Write("Mailbox for {$role} not created");
 					}
 				}
 			}

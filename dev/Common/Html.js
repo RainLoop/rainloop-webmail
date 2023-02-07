@@ -1,4 +1,4 @@
-import { doc, createElement } from 'Common/Globals';
+import { createElement } from 'Common/Globals';
 import { forEachObjectEntry, pInt } from 'Common/Utils';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
@@ -14,27 +14,13 @@ const
 		"'": '&#x27;'
 	},
 
-	// eslint-disable-next-line max-len
-	hcont = Element.fromHTML('<div area="hidden" style="position:absolute;top:0;left:-200vw;max-width:max(50vw,400px);max-height:50vh"></div>'),
-
 	blockquoteSwitcher = () => {
 		SettingsUserStore.collapseBlockquotes() &&
 //		tpl.content.querySelectorAll('blockquote').forEach(node => {
 		[...tpl.content.querySelectorAll('blockquote')].reverse().forEach(node => {
-			let h = node.scrollHeight;
-/*
-			if (!h) {
-				// Attempt to get height
-				hcont.innerHTML = node.outerHTML;
-				h = hcont.scrollHeight;
-				hcont.innerHTML = '';
-			}
-*/
-			if (0 === h || 100 < h) {
-				const el = Element.fromHTML('<details class="sm-bq-switcher"><summary>•••</summary></details>');
-				node.replaceWith(el);
-				el.append(node);
-			}
+			const el = Element.fromHTML('<details class="sm-bq-switcher"><summary>•••</summary></details>');
+			node.replaceWith(el);
+			el.append(node);
 		});
 	},
 
@@ -103,8 +89,6 @@ const
 		return url;
 	};
 
-doc.body.append(hcont);
-
 export const
 
 	/**
@@ -119,6 +103,7 @@ export const
 	 * @returns {string}
 	 */
 	cleanHtml = (html, oAttachments) => {
+		let aColor;
 		const
 			debug = false, // Config()->Get('debug', 'enable', false);
 			detectHiddenImages = true, // !!SettingsGet('try_to_detect_hidden_images'),
@@ -137,11 +122,7 @@ export const
 
 			// convert body attributes to CSS
 			tasks = {
-				link: value => {
-					if (/^#[a-fA-Z0-9]{3,6}$/.test(value)) {
-						tpl.content.querySelectorAll('a').forEach(node => node.style.color || (node.style.color = value))
-					}
-				},
+				link: value => aColor = value,
 				text: (value, node) => node.style.color = value,
 				topmargin: (value, node) => node.style.marginTop = pInt(value) + 'px',
 				leftmargin: (value, node) => node.style.marginLeft = pInt(value) + 'px',
@@ -178,9 +159,11 @@ export const
 				'colspan', 'rowspan', 'headers'
 			],
 			disallowedTags = [
-				'HEAD','STYLE','SVG','SCRIPT','TITLE','LINK','BASE','META',
+				'STYLE','SVG','SCRIPT','TITLE','LINK','BASE','META',
 				'INPUT','OUTPUT','SELECT','BUTTON','TEXTAREA',
 				'BGSOUND','KEYGEN','SOURCE','OBJECT','EMBED','APPLET','IFRAME','FRAME','FRAMESET','VIDEO','AUDIO','AREA','MAP'
+				// Not supported by <template> element
+//				,'HTML','HEAD','BODY'
 			],
 			nonEmptyTags = [
 				'A','B','EM','I','SPAN','STRONG'
@@ -188,11 +171,11 @@ export const
 
 		tpl.innerHTML = html
 //			.replace(/<pre[^>]*>[\s\S]*?<\/pre>/gi, pre => pre.replace(/\n/g, '\n<br>'))
-			.replace(/<!doctype[^>]*>/gi, '')
-			.replace(/<\?xml[^>]*\?>/gi, '')
 			// Not supported by <template> element
+//			.replace(/<!doctype[^>]*>/gi, '')
+//			.replace(/<\?xml[^>]*\?>/gi, '')
 			.replace(/<(\/?)body(\s[^>]*)?>/gi, '<$1div class="mail-body"$2>')
-			.replace(/<\/?(html|head)[^>]*>/gi, '')
+//			.replace(/<\/?(html|head)[^>]*>/gi, '')
 			// Fix Reddit https://github.com/the-djmaze/snappymail/issues/540
 			.replace(/<span class="preview-text"[\s\S]+?<\/span>/, '')
 			// https://github.com/the-djmaze/snappymail/issues/900
@@ -303,6 +286,7 @@ export const
 //					setAttribute('rel', 'external nofollow noopener noreferrer');
 				}
 				setAttribute('tabindex', '-1');
+				aColor && !oElement.style.color && (oElement.style.color = aColor);
 			}
 
 //			if (['CENTER','FORM'].includes(name)) {
