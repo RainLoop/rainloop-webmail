@@ -1,4 +1,4 @@
-import { doc, createElement } from 'Common/Globals';
+import { createElement } from 'Common/Globals';
 import { forEachObjectEntry, pInt } from 'Common/Utils';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
@@ -14,27 +14,13 @@ const
 		"'": '&#x27;'
 	},
 
-	// eslint-disable-next-line max-len
-	hcont = Element.fromHTML('<div area="hidden" style="position:absolute;top:0;left:-200vw;max-width:max(50vw,400px);max-height:50vh"></div>'),
-
 	blockquoteSwitcher = () => {
 		SettingsUserStore.collapseBlockquotes() &&
 //		tpl.content.querySelectorAll('blockquote').forEach(node => {
 		[...tpl.content.querySelectorAll('blockquote')].reverse().forEach(node => {
-			let h = node.scrollHeight;
-/*
-			if (!h) {
-				// Attempt to get height
-				hcont.innerHTML = node.outerHTML;
-				h = hcont.scrollHeight;
-				hcont.innerHTML = '';
-			}
-*/
-			if (0 === h || 100 < h) {
-				const el = Element.fromHTML('<details class="sm-bq-switcher"><summary>•••</summary></details>');
-				node.replaceWith(el);
-				el.append(node);
-			}
+			const el = Element.fromHTML('<details class="sm-bq-switcher"><summary>•••</summary></details>');
+			node.replaceWith(el);
+			el.append(node);
 		});
 	},
 
@@ -102,8 +88,6 @@ const
 		}
 		return url;
 	};
-
-doc.body.append(hcont);
 
 export const
 
