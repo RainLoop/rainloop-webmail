@@ -226,26 +226,22 @@ abstract class Upgrade
 	// Prevents Apache access error due to directories being 0700
 	public static function fixPermissions($mode = 0755) : void
 	{
+		\umask(0022);
 		$target = \rtrim(APP_INDEX_ROOT_PATH, '\\/');
 		// Prevent Apache access error due to directories being 0700
 		foreach (\glob("{$target}/snappymail/v/*",  \GLOB_ONLYDIR) as $dir) {
 			\chmod($dir, 0755);
-			$iterator = new \RecursiveIteratorIterator(
-				new \RecursiveDirectoryIterator("{$dir}/static", \FilesystemIterator::SKIP_DOTS),
-				\RecursiveIteratorIterator::SELF_FIRST
-			);
-			foreach ($items as $item) {
-				if ($item->isDir()) {
-					\chmod($item, 0755);
-				}
-			}
-			$iterator = new \RecursiveIteratorIterator(
-				new \RecursiveDirectoryIterator("{$dir}/themes", \FilesystemIterator::SKIP_DOTS),
-				\RecursiveIteratorIterator::SELF_FIRST
-			);
-			foreach ($items as $item) {
-				if ($item->isDir()) {
-					\chmod($item, 0755);
+			foreach (['static','themes'] as $folder) {
+				$iterator = new \RecursiveIteratorIterator(
+					new \RecursiveDirectoryIterator("{$dir}/{$folder}", \FilesystemIterator::SKIP_DOTS),
+					\RecursiveIteratorIterator::SELF_FIRST
+				);
+				foreach ($items as $item) {
+					if ($item->isDir()) {
+						\chmod($item, 0755);
+					} else if ($item->isFile()) {
+						\chmod($item, 0644);
+					}
 				}
 			}
 		}
