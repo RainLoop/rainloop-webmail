@@ -478,7 +478,7 @@ class BodyStructure implements \JsonSerializable
 		$oStructure->sContentType = \strtolower(\trim($sContentTypeMain.'/'.$sContentTypeSub));
 		$oStructure->aContentTypeParams = $aContentTypeParams;
 		$oStructure->sCharset = $sCharset;
-		$oStructure->sContentID = $sContentID;
+		$oStructure->sContentID = \trim($sContentID);
 		$oStructure->sDescription = $sDescription;
 		$oStructure->sMailEncodingName = \strtolower($sMailEncodingName);
 		$oStructure->sDisposition = \strtolower($sDisposition);
