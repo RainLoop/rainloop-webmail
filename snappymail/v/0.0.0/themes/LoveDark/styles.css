@@ -1,4 +1,3 @@
-
 :root {
 	color-scheme: dark;
 
@@ -6,6 +5,7 @@
 	--main-color: #fff;
 	--main-bg-color: #48525C;
 	--main-bg-image: url("images/background.jpg");
+	--main-bg-size: cover;
 
 	/* LOADING */
 	--loading-color: #ddd;
