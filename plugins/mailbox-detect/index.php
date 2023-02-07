@@ -9,8 +9,8 @@ class MailboxDetectPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'MailboxDetect',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '2.2',
-		RELEASE  = '2023-01-23',
+		VERSION  = '2.3',
+		RELEASE  = '2023-02-07',
 		REQUIRED = '2.25.0',
 		CATEGORY = 'General',
 		LICENSE  = 'MIT',
@@ -137,13 +137,14 @@ class MailboxDetectPlugin extends \RainLoop\Plugins\AbstractPlugin
 							}
 */
 //							\error_log("Create mailbox {$sFolderNameToCreate}");
-							$oFolder = $oActions->MailClient()->FolderCreate(
+							$aFolder = $oActions->MailClient()->FolderCreate(
 								$sFolderNameToCreate,
 								$sParent,
 								true,
 								$sDelimiter
-							);
-							$aResponse['Result']['@Collection'][] = \json_encode($oFolder);
+							)->jsonSerialize();
+							$aFolder['role'] = $role;
+							$aResponse['Result']['@Collection'][] = $aFolder;
 						}
 						catch (\Throwable $oException)
 						{
