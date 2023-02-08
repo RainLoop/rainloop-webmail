@@ -22,7 +22,7 @@ class LoginOverridePlugin extends \RainLoop\Plugins\AbstractPlugin
 		$sMapping = \trim($this->Config()->Get('plugin', 'email_mapping', ''));
 		if (!empty($sMapping)) {
 			$aList = \preg_split('/\\R/', $sMapping);
-			foreach ($aList as $line) {
+			foreach ($aList as $sLine) {
 				$aData = \explode(':', $sLine, 2);
 				if (!empty($aData[1]) && $sEmail === \trim($aData[0])) {
 					$sEmail = \trim($aData[1]);
