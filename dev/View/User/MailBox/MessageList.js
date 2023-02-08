@@ -48,6 +48,9 @@ import { ComposePopupView } from 'View/Popup/Compose';
 
 import { MessageModel } from 'Model/Message';
 
+import { Layout, ClientSideKeyNameMessageListSize } from 'Common/EnumsUser';
+import { setLayoutResizer } from 'Common/UtilsUser';
+
 const
 	canBeMovedHelper = () => MessagelistUserStore.hasCheckedOrSelected(),
 
@@ -563,6 +566,23 @@ export class MailMessageList extends AbstractViewRight {
 	onBuild(dom) {
 		const b_content = dom.querySelector('.b-content'),
 			eqs = (ev, s) => ev.target.closestWithin(s, dom);
+
+		setTimeout(() => {
+			// initMailboxLayoutResizer
+			const top = dom.querySelector('.messageList'),
+				fToggle = () => {
+					let layout = SettingsUserStore.layout();
+					setLayoutResizer(top, ClientSideKeyNameMessageListSize,
+						(ThemeStore.isMobile() || Layout.NoPreview === layout)
+							? 0
+							: (Layout.SidePreview === layout ? 'Width' : 'Height')
+					);
+				};
+			if (top) {
+				fToggle();
+				addEventListener('rl-layout', fToggle);
+			}
+		}, 1);
 
 		this.selector.init(b_content, Scope.MessageList);
 

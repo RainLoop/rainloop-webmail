@@ -251,7 +251,7 @@ export class AppUser extends AbstractApp {
 						setTimeout(() => {
 							const left = elementById('rl-left'),
 								fToggle = () =>
-									setLayoutResizer(left, null, ClientSideKeyNameFolderListSize,
+									setLayoutResizer(left, ClientSideKeyNameFolderListSize,
 										(ThemeStore.isMobile() || leftPanelDisabled()) ? 0 : 'Width');
 							if (left) {
 								fToggle();

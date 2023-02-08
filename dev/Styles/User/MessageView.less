@@ -1,4 +1,35 @@
 
+#V-MailMessageView {
+	flex-grow: 1;
+	overflow: auto;
+	padding-bottom: @rlLowMargin;
+
+	.b-message-view-backdrop {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, .4);
+		z-index: 10;
+		text-align: center;
+
+		.backdrop-message {
+			position: relative;
+			display: inline-block;
+			color: white;
+			font-size: 20px;
+			line-height: 30px;
+			background: rgba(0, 0, 0, .6);
+			padding: 15px;
+			border-radius: var(--border-radius, 5px);
+			text-shadow: 0 1px 1px #000;
+			transform: translateY(-50%);
+			top: 50%;
+		}
+	}
+}
+
 html.rl-no-preview-pane {
 	#rl-right:not(.message-selected) #V-MailMessageView {
 		display: none;

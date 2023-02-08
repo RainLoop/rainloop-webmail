@@ -196,37 +196,24 @@ showMessageComposer = (params = []) =>
 	rl.app.showMessageComposer(params);
 },
 
-setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
+setLayoutResizer = (source, sClientSideKeyName, mode) =>
 {
 	if (source.layoutResizer && source.layoutResizer.mode != mode) {
-		target?.removeAttribute('style');
 		source.removeAttribute('style');
 	}
 	source.observer?.disconnect();
 //	source.classList.toggle('resizable', mode);
 	if (mode) {
-		const length = Local.get(sClientSideKeyName + mode) || SettingsGet('Resizer' + sClientSideKeyName + mode),
-			setTargetPos = mode => {
-				let value;
-				if ('Width' == mode) {
-					value = source.offsetWidth;
-					target && (target.style.left = value + 'px');
-				} else {
-					value = source.offsetHeight;
-					target && (target.style.top = value + 'px');
-				}
-				return value;
-			};
+		const length = Local.get(sClientSideKeyName + mode) || SettingsGet('Resizer' + sClientSideKeyName + mode);
 		if (length) {
 			source.style[mode.toLowerCase()] = length + 'px';
-			setTargetPos(mode);
 		}
 		if (!source.layoutResizer) {
 			const resizer = createElement('div', {'class':'resizer'}),
 				save = (data => Remote.saveSettings(0, data)).debounce(500),
 				size = {},
 				store = () => {
-					const value = setTargetPos(resizer.mode),
+					const value = ('Width' == resizer.mode) ? source.offsetWidth : source.offsetHeight,
 						prop = resizer.key + resizer.mode;
 					(value == Local.get(prop)) || Local.set(prop, value);
 					(value == SettingsGet('Resizer' + prop)) || save({['Resizer' + prop]: value});
