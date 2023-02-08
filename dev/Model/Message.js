@@ -156,12 +156,24 @@ export class MessageModel extends AbstractModel {
 				let options = [];
 				if ('match' === SettingsUserStore.viewImages()) {
 					let from = this.from[0],
-						list = SettingsUserStore.viewImagesWhitelist();
-					from && options.push(from.email);
-					this.html().match(/src=["'][^"']+/g)?.forEach(m => options.push(m.replace(/^.+(:\/\/[^/]+).+$/, '$1')));
-					options = options.filter(txt => !list.includes(txt));
+						list = SettingsUserStore.viewImagesWhitelist(),
+						counts = {};
+					this.html().match(/src=["'][^"']+/g)?.forEach(m => {
+						m = m.replace(/^.+(:\/\/[^/]+).+$/, '$1');
+						if (counts[m]) {
+							++counts[m];
+						} else {
+							counts[m] = 1;
+							options.push(m);
+						}
+					});
+					options = options.filter(txt => !list.includes(txt)).sort((a,b) => (counts[a] < counts[b])
+						? 1
+						: (counts[a] > counts[b] ? -1 : a.localeCompare(b))
+					);
+					from && options.unshift(from.email);
 				}
-				return options.unique();
+				return options;
 			}
 		});
 	}

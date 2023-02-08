@@ -193,6 +193,8 @@ export class MailMessageView extends AbstractViewRight {
 				return '';
 			},
 
+			showWhitelistOptions: () => 'match' === SettingsUserStore.viewImages(),
+
 			firstUnsubsribeLink: () => currentMessage()?.unsubsribeLinks()[0] || '',
 
 			pgpSupported: () => currentMessage() && PgpUserStore.isSupported(),
