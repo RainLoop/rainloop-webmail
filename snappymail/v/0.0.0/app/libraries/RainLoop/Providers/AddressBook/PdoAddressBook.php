@@ -150,34 +150,41 @@ class PdoAddressBook
 			return false;
 		}
 		$time = \microtime(true) - $time;
-		\SnappyMail\HTTP\Stream::JSON(['messsage'=>"Fetched remote data in {$time} seconds"]);
+		\SnappyMail\HTTP\Stream::JSON(['messsage'=>"Received ".\count($aRemoteSyncData)." remote contacts in {$time} seconds"]);
+		\SnappyMail\Log::info('PdoAddressBook', \count($aRemoteSyncData) . ' remote contacts');
 
-		$aDatabaseSyncData = $this->prepareDatabaseSyncData();
+		$aLocalSyncData = $this->prepareDatabaseSyncData();
+		\SnappyMail\Log::info('PdoAddressBook', \count($aLocalSyncData) . ' local contacts');
 
 //		$this->oLogger->WriteDump($aRemoteSyncData);
-//		$this->oLogger->WriteDump($aDatabaseSyncData);
+//		$this->oLogger->WriteDump($aLocalSyncData);
 
 		$bReadWrite = $this->isDAVReadWrite();
 
 		// Delete remote when Mode = read + write
 		if ($bReadWrite) {
 			\SnappyMail\Log::info('PdoAddressBook', 'Sync() is import and export');
-			foreach ($aDatabaseSyncData as $sKey => $aData) {
+			$iCount = 0;
+			foreach ($aLocalSyncData as $sKey => $aData) {
 				if ($aData['deleted']) {
-					unset($aDatabaseSyncData[$sKey]);
+					++$iCount;
+					unset($aLocalSyncData[$sKey]);
 					if (isset($aRemoteSyncData[$sKey], $aRemoteSyncData[$sKey]['vcf'])) {
 						\SnappyMail\HTTP\Stream::JSON(['messsage'=>"Delete remote {$sKey}"]);
 						$this->davClientRequest($oClient, 'DELETE', $sPath.$aRemoteSyncData[$sKey]['vcf']);
 					}
 				}
 			}
+			if ($iCount) {
+				\SnappyMail\Log::info('PdoAddressBook', $iCount . ' remote contacts removed');
+			}
 		} else {
 			\SnappyMail\Log::info('PdoAddressBook', 'Sync() is import only');
 		}
 
-		// Delete from db
+		// Delete local
 		$aIdsForDeletion = array();
-		foreach ($aDatabaseSyncData as $sKey => $aData) {
+		foreach ($aLocalSyncData as $sKey => $aData) {
 			if (!empty($aData['etag']) && !isset($aRemoteSyncData[$sKey])) {
 				$aIdsForDeletion[] = $aData['id_contact'];
 			}
@@ -186,38 +193,30 @@ class PdoAddressBook
 			\SnappyMail\HTTP\Stream::JSON(['messsage'=>'Delete local ' . \implode(', ', $aIdsForDeletion)]);
 			$this->DeleteContacts($aIdsForDeletion);
 			unset($aIdsForDeletion);
+			\SnappyMail\Log::info('PdoAddressBook', \count($aIdsForDeletion) . ' local contacts removed');
 		}
 
 		$this->flushDeletedContacts();
 
-		//+++new or newer (from db)
-		foreach ($aDatabaseSyncData as $sKey => $aData) {
-			if ((empty($aData['etag']) && !isset($aRemoteSyncData[$sKey])) // new
-				||
-				(!empty($aData['etag']) && isset($aRemoteSyncData[$sKey]) && // newer
-					$aRemoteSyncData[$sKey]['etag'] !== $aData['etag'] &&
-					$aRemoteSyncData[$sKey]['changed'] < $aData['changed']
-				)
-			) {
-				\SnappyMail\HTTP\Stream::JSON(['messsage'=>"Update remote {$sKey}"]);
-				$mID = $aData['id_contact'];
-				$oContact = $this->GetContactByID($mID);
-				if ($oContact) {
-					$sExsistensBody = '';
-					$mExsistenRemoteID = isset($aRemoteSyncData[$sKey]['vcf']) && !empty($aData['etag']) ? $aRemoteSyncData[$sKey]['vcf'] : '';
-					if (\strlen($mExsistenRemoteID)) {
-						$oResponse = $this->davClientRequest($oClient, 'GET', $sPath.$mExsistenRemoteID);
-						if ($oResponse) {
-							$sExsistensBody = \trim($oResponse->body);
-						}
-
-//						$this->oLogger->WriteDump($sExsistensBody);
-					}
-
-					// Add remote when Mode = read + write
-					if ($sExsistensBody && $bReadWrite) {
+		// local is new or newer
+		if ($bReadWrite) {
+			foreach ($aLocalSyncData as $sKey => $aData) {
+				if ((empty($aData['etag']) && !isset($aRemoteSyncData[$sKey])) // new
+				 // newer
+				 || (!empty($aData['etag']) && isset($aRemoteSyncData[$sKey]) &&
+						$aRemoteSyncData[$sKey]['etag'] !== $aData['etag'] &&
+						$aRemoteSyncData[$sKey]['changed'] < $aData['changed']
+					)
+				) {
+					\SnappyMail\HTTP\Stream::JSON(['messsage'=>"Update remote {$sKey}"]);
+					$mID = $aData['id_contact'];
+					$oContact = $this->GetContactByID($mID);
+					if ($oContact) {
+						$sRemoteID = isset($aRemoteSyncData[$sKey]['vcf']) && !empty($aData['etag'])
+							? $aRemoteSyncData[$sKey]['vcf'] : '';
+						\SnappyMail\Log::info('PdoAddressBook', "Update contact {$sKey} in DAV");
 						$oResponse = $this->davClientRequest($oClient, 'PUT',
-							$sPath.(\strlen($mExsistenRemoteID) ? $mExsistenRemoteID : $oContact->IdContactStr.'.vcf'),
+							$sPath . ($sRemoteID ?: $oContact->IdContactStr.'.vcf'),
 							$oContact->vCard->serialize() . "\r\n\r\n");
 						if ($oResponse) {
 							$sEtag = \trim(\trim($oResponse->getHeader('etag')), '"\'');
@@ -233,25 +232,26 @@ class PdoAddressBook
 									)
 								);
 							}
+						} else {
+							\SnappyMail\Log::warning('PdoAddressBook', "Update/create remote failed");
 						}
+					} else {
+						\SnappyMail\Log::warning('PdoAddressBook', "Local contact {$sKey} not found");
 					}
+					unset($oContact);
 				}
-
-				unset($oContact);
 			}
 		}
-		//---new
 
-		//+++new or newer (from carddav)
+		// remote is new or newer
 		foreach ($aRemoteSyncData as $sKey => $aData) {
-			if (!isset($aDatabaseSyncData[$sKey]) // new
-					 ||
-				($aDatabaseSyncData[$sKey]['etag'] !== $aData['etag'] && // newer
-					$aDatabaseSyncData[$sKey]['changed'] < $aData['changed'])
+			if (!isset($aLocalSyncData[$sKey]) // new
+			 // newer
+			 || ($aLocalSyncData[$sKey]['etag'] !== $aData['etag'] && $aLocalSyncData[$sKey]['changed'] < $aData['changed'])
 			) {
 				\SnappyMail\HTTP\Stream::JSON(['messsage'=>"Update local {$sKey}"]);
-				$mExistingContactID = isset($aDatabaseSyncData[$sKey]['id_contact']) ?
-					$aDatabaseSyncData[$sKey]['id_contact'] : '';
+
+				$oVCard = null;
 
 				$oResponse = $this->davClientRequest($oClient, 'GET', $sPath.$aData['vcf']);
 				if ($oResponse) {
@@ -263,41 +263,41 @@ class PdoAddressBook
 					}
 
 					if (!empty($sBody)) {
-						$oVCard = null;
 						try {
 							$oVCard = \Sabre\VObject\Reader::read($sBody);
-						}
-						catch (\Throwable $oExc) {
+						} catch (\Throwable $oExc) {
 							if ($this->oLogger) {
 								$this->oLogger->WriteException($oExc);
 								$this->oLogger->WriteDump($sBody);
 							}
 						}
-
-						if ($oVCard instanceof VCard) {
-							$oVCard->UID = $aData['uid'];
-
-							$oContact = null;
-							if ($mExistingContactID) {
-								$oContact = $this->GetContactByID($mExistingContactID);
-							}
-							if (!$oContact) {
-								$oContact = new Contact();
-							}
-
-							$oContact->setVCard($oVCard);
-
-							$sEtag = \trim($oResponse->getHeader('etag'), " \n\r\t\v\x00\"'");
-							if (!empty($sEtag)) {
-								$oContact->Etag = $sEtag;
-							}
-
-							$this->ContactSave($oContact);
-							unset($oContact);
-//						} else if ($this->oLogger) {
-//							$this->oLogger->WriteDump($sBody);
-						}
 					}
+				}
+
+				if ($oVCard instanceof VCard) {
+					$oVCard->UID = $aData['uid'];
+
+					$oContact = empty($aLocalSyncData[$sKey]['id_contact'])
+						 ? null
+						 : $this->GetContactByID($aLocalSyncData[$sKey]['id_contact']);
+					if ($oContact) {
+						\SnappyMail\Log::info('PdoAddressBook', "Update local contact {$sKey}");
+					} else {
+						\SnappyMail\Log::info('PdoAddressBook', "Create local contact {$sKey}");
+						$oContact = new Contact();
+					}
+
+					$oContact->setVCard($oVCard);
+
+					$sEtag = \trim($oResponse->getHeader('etag'), " \n\r\t\v\x00\"'");
+					if (!empty($sEtag)) {
+						$oContact->Etag = $sEtag;
+					}
+
+					$this->ContactSave($oContact);
+					unset($oContact);
+				} else {
+					\SnappyMail\Log::error('PdoAddressBook', "Import remote contact {$sKey} failed");
 				}
 			}
 		}
