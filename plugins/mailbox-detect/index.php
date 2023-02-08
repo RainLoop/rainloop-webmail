@@ -9,8 +9,8 @@ class MailboxDetectPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'MailboxDetect',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '2.3',
-		RELEASE  = '2023-02-07',
+		VERSION  = '2.4',
+		RELEASE  = '2023-02-08',
 		REQUIRED = '2.25.0',
 		CATEGORY = 'General',
 		LICENSE  = 'MIT',
@@ -28,6 +28,11 @@ class MailboxDetectPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(false),
 		);
+	}
+
+	protected function Logger() : \MailSo\Log\Logger
+	{
+		return $this->Manager()->Actions()->Logger();
 	}
 
 	public function AfterFolders(array &$aResponse)
