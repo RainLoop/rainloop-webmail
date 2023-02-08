@@ -23,8 +23,7 @@ abstract class HtmlUtils
 	public static function BuildHtml(string $sHtml, array &$aFoundCids, array &$aFoundDataURL, array &$aFoundContentLocationUrls) : string
 	{
 		$bState = true;
-		if (\MailSo\Base\Utils::FunctionCallable('libxml_use_internal_errors'))
-		{
+		if (\MailSo\Base\Utils::FunctionCallable('libxml_use_internal_errors')) {
 			$bState = \libxml_use_internal_errors(true);
 		}
 
@@ -86,13 +85,11 @@ abstract class HtmlUtils
 
 		$oDoc->normalizeDocument();
 
-		if (\MailSo\Base\Utils::FunctionCallable('libxml_clear_errors'))
-		{
+		if (\MailSo\Base\Utils::FunctionCallable('libxml_clear_errors')) {
 			\libxml_clear_errors();
 		}
 
-		if (\MailSo\Base\Utils::FunctionCallable('libxml_use_internal_errors'))
-		{
+		if (\MailSo\Base\Utils::FunctionCallable('libxml_use_internal_errors')) {
 			\libxml_use_internal_errors($bState);
 		}
 
@@ -110,12 +107,10 @@ abstract class HtmlUtils
 		$sIdRight = \md5(\microtime());
 
 		$aNodes = $oBody->getElementsByTagName('*');
-		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
-		{
+		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement) {
 			$sTagNameLower = \strtolower($oElement->nodeName);
 
-			if (\in_array($sTagNameLower, $aRemoveTags))
-			{
+			if (\in_array($sTagNameLower, $aRemoveTags)) {
 				$aRemove[] = $oElement;
 				continue;
 			}
@@ -147,16 +142,14 @@ abstract class HtmlUtils
 			if ($aCid) {
 				foreach ($aCid as $sCidName => $sCid) {
 					$sCidName = \strtolower(\preg_replace('/([A-Z])/', '-\1', $sCidName));
-					if (\in_array($sCidName, array('background-image', 'list-style-image', 'content')))
-					{
+					if (\in_array($sCidName, array('background-image', 'list-style-image', 'content'))) {
 						$sStyles = $oElement->hasAttribute('style')
 							? \trim(\trim($oElement->getAttribute('style')), ';')
 							: '';
 
 						$sBack = $sCidName.':url(cid:'.$sCid.')';
 						$sStyles = \preg_replace('/'.\preg_quote($sCidName).'\\s*:\\s*[^;]+/i', $sBack, $sStyles);
-						if (false === \strpos($sStyles, $sBack))
-						{
+						if (false === \strpos($sStyles, $sBack)) {
 							$sStyles .= ";{$sBack}";
 						}
 
@@ -169,30 +162,24 @@ abstract class HtmlUtils
 			// Remove all remaining data-* attributes
 			if ($oElement->hasAttributes()) {
 				foreach ($oElement->attributes as $oAttr) {
-					if ('data-' === \substr(\strtolower($oAttr->nodeName), 0, 5))
-					{
+					if ('data-' === \substr(\strtolower($oAttr->nodeName), 0, 5)) {
 						$oElement->removeAttribute($oAttr->nodeName);
 					}
 				}
 			}
 
-			if ('img' === $sTagNameLower)
-			{
+			if ('img' === $sTagNameLower) {
 				$sSrc = $oElement->getAttribute('src');
-				if ('data:image/' === \strtolower(\substr($sSrc, 0, 11)))
-				{
+				if ('data:image/' === \strtolower(\substr($sSrc, 0, 11))) {
 					$sHash = \md5($sSrc) . '@' . $sIdRight;
 					$aFoundDataURL[$sHash] = $sSrc;
-
 					$oElement->setAttribute('src', 'cid:'.$sHash);
 				}
 			}
 		}
 
-		foreach ($aRemove as /* @var $oElement \DOMElement */ $oElement)
-		{
-			if (isset($oElement->parentNode))
-			{
+		foreach ($aRemove as /* @var $oElement \DOMElement */ $oElement) {
+			if (isset($oElement->parentNode)) {
 				@$oElement->parentNode->removeChild($oElement);
 			}
 		}
