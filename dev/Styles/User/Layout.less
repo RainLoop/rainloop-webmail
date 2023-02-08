@@ -67,15 +67,29 @@ html:not(.rl-left-panel-disabled) #rl-left {
 }
 
 .rl-side-preview-pane #V-MailMessageList {
+	resize: horizontal; /*overflow: auto;*/
+	min-width: 320px;
+	max-width: 60%;
+}
+/*
+.rl-side-preview-pane #V-MailMessageList .messageList {
 	resize: horizontal; overflow: auto;
 	min-width: 320px;
 	max-width: 60%;
 }
+*/
 .rl-bottom-preview-pane #V-MailMessageList {
+	resize: vertical; /*overflow: auto;*/
+	min-height: 200px;
+	max-height: 60%;
+}
+/*
+.rl-side-preview-pane #V-MailMessageList .messageList {
 	resize: vertical; overflow: auto;
 	min-height: 200px;
 	max-height: 60%;
 }
+*/
 .rl-bottom-preview-pane #V-MailMessageList > .resizer {
 	cursor: ns-resize;
 	height: 5px;
