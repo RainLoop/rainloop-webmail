@@ -402,19 +402,19 @@ export class MessageModel extends AbstractModel {
 				regex = SettingsUserStore.viewImagesWhitelist()
 					.trim()
 					.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&')
-					.replace(/[\s\r\n,;:]+/g, '|')
+					.replace(/[\s\r\n,;]+/g, '|')
 					.replace(/\|+/g, '|');
 				if (regex) {
 					console.log('whitelist images = '+regex);
 					regex = new RegExp(regex);
 					if (this.from[0]?.email.match(regex)) {
-						regex = 0;
+						regex = null;
 					}
 				}
 			}
 			let hasImages = false,
 				isValid = src => {
-					if (!regex || src.match(regex)) {
+					if (null == regex || (regex && src.match(regex))) {
 						return true;
 					}
 					hasImages = true;
