@@ -279,9 +279,9 @@
 							</span>
 						</div>
 
-						<div class="showImages" data-bind="visible: message().hasImages()">
+						<div class="btn-toolbar showImages" data-bind="visible: message().hasImages()">
 							<div class="btn" data-bind="click: showImages" data-icon="🖼" data-i18n="MESSAGE/BUTTON_SHOW_IMAGES"></div>
-							<div class="btn-group" data-bind="registerBootstrapDropdown: true, visible: showWhitelistOptions" style="display: inline-block">
+							<div class="btn-group dropdown" data-bind="registerBootstrapDropdown: true, visible: showWhitelistOptions" style="display: inline-block">
 								<a class="btn dropdown-toggle" id="whitelist-dropdown-id" data-icon="🖼" href="#" tabindex="-1"><span data-i18n="SETTINGS_GENERAL/IMAGES_WHITELIST"></span> ▼</a>
 								<menu class="dropdown-menu" role="menu" aria-labelledby="whitelist-dropdown-id">
 									<!-- ko foreach: message().whitelistOptions() -->
