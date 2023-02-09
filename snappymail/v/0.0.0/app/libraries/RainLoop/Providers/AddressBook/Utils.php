@@ -22,20 +22,29 @@ class Utils
 		'namesuffix'          => 4,
 		'shortname'           => 'NICKNAME',
 		'nickname'            => 'NICKNAME',
+		'birthday'            => 'BDAY',
+
+		'mobile'              => array('TEL', 'CELL'),
+		'mobilephone'         => array('TEL', 'CELL'),
+
+		'businessemail'       => array('EMAIL', 'WORK'),
+		'businessemail2'      => array('EMAIL', 'WORK'),
+		'businessemail3'      => array('EMAIL', 'WORK'),
 		'businessphone'       => array('TEL', 'WORK'),
 		'businessphone2'      => array('TEL', 'WORK'),
 		'businessphone3'      => array('TEL', 'WORK'),
+		'businessmobile'      => array('TEL', 'WORK,CELL'),
+		'businessmobilephone' => array('TEL', 'WORK,CELL'),
+		'businessweb'         => array('URL', 'WORK'),
+		'businesswebpage'     => array('URL', 'WORK'),
+		'businesswebsite'     => array('URL', 'WORK'),
 		'companyphone'        => array('TEL', 'WORK'),
 		'companymainphone'    => array('TEL', 'WORK'),
+
+		'primaryphone'        => array('TEL', 'PREF,HOME'),
 		'homephone'           => array('TEL', 'HOME'),
 		'homephone2'          => array('TEL', 'HOME'),
 		'homephone3'          => array('TEL', 'HOME'),
-		'mobile'              => array('TEL', 'CELL'),
-		'mobilephone'         => array('TEL', 'CELL'),
-		'businessmobile'      => array('TEL', 'WORK,CELL'),
-		'businessmobilephone' => array('TEL', 'WORK,CELL'),
-		'otherphone'          => 'TEL',
-		'primaryphone'        => array('TEL', 'PREF,HOME'),
 		'email'               => array('EMAIL', 'HOME'),
 		'email2'              => array('EMAIL', 'HOME'),
 		'email3'              => array('EMAIL', 'HOME'),
@@ -48,53 +57,73 @@ class Utils
 		'emailaddress'        => array('EMAIL', 'HOME'),
 		'email2address'       => array('EMAIL', 'HOME'),
 		'email3address'       => array('EMAIL', 'HOME'),
-		'otheremail'          => 'EMAIL',
-		'businessemail'       => array('EMAIL', 'WORK'),
-		'businessemail2'      => array('EMAIL', 'WORK'),
-		'businessemail3'      => array('EMAIL', 'WORK'),
 		'personalemail'       => array('EMAIL', 'HOME'),
 		'personalemail2'      => array('EMAIL', 'HOME'),
 		'personalemail3'      => array('EMAIL', 'HOME'),
+		'personalwebsite'     => array('URL', 'HOME'),
+
+		'otheremail'          => 'EMAIL',
+		'otherphone'          => 'TEL',
 		'notes'               => 'NOTE',
 		'web'                 => 'URL',
-		'businessweb'         => array('URL', 'WORK'),
 		'webpage'             => 'URL',
-		'businesswebpage'     => array('URL', 'WORK'),
-		'website'             => 'URL',
-		'businesswebsite'     => array('URL', 'WORK'),
-		'personalwebsite'     => 'URL',
-		'birthday'            => 'BDAY'
+		'website'             => 'URL'
+/*
+	TODO:
+		'company'             => '',
+		'department'          => '',
+		'jobtitle'            => '',
+		'officelocation'      => '',
+		'homestreet'          => '',
+		'homecity'            => '',
+		'homestate'           => '',
+		'homepostalcode'      => '',
+		'homecountry'         => '',
+		'businessstreet'      => '',
+		'businesscity'        => '',
+		'businessstate'       => '',
+		'businesspostalcode'  => '',
+		'businesscountry'     => '',
+*/
 	);
 
-	public static function CsvArrayToContacts(array $aCsvData) : iterable
+	public static function CsvStreamToContacts(/*resource*/ $rFile, string $sDelimiter) : iterable
 	{
-		foreach ($aCsvData as $aItem) {
+		\setlocale(LC_CTYPE, 'en_US.UTF-8');
+
+		$aHeaders = \fgetcsv($rFile, 5000, $sDelimiter, '"');
+		if (!$aHeaders || 3 >= \count($aHeaders)) {
+			return;
+		}
+		foreach ($aHeaders as $iIndex => $sItemName) {
+			$sItemName = \MailSo\Base\Utils::Utf8Clear($sItemName);
+			$sItemName = \strtoupper(\trim(\preg_replace('/[\s\-]+/', '', $sItemName)));
+			if (!\array_key_exists($sItemName, \Sabre\VObject\Component\VCard::$propertyMap)) {
+				$sItemName = \strtolower($sItemName);
+				$sItemName = isset(static::$aMap[$sItemName]) ? static::$aMap[$sItemName] : null;
+			}
+			$aHeaders[$iIndex] = $sItemName;
+		}
+
+		while (false !== ($mRow = \fgetcsv($rFile, 5000, $sDelimiter, '"'))) {
 			\MailSo\Base\Utils::ResetTimeLimit();
 			$iCount = 0;
 			$oVCard = new \Sabre\VObject\Component\VCard;
 			$aName = ['','','','',''];
-			foreach ($aItem as $sItemName => $sItemValue) {
-				$sItemName = \strtoupper(\trim(\preg_replace('/[\s\-]+/', '', $sItemName)));
+			foreach ($mRow as $iIndex => $sItemValue) {
+				$sItemName = $aHeaders[$iIndex];
 				$sItemValue = \trim($sItemValue);
-				if (!empty($sItemName) && !empty($sItemValue)) {
-					if (\array_key_exists($sItemName, \Sabre\VObject\Component\VCard::$propertyMap)) {
-						$mData = $sItemName;
+				if (isset($sItemName) && !empty($sItemValue)) {
+					$mType = \is_array($sItemName) ? $sItemName[0] : $sItemName;
+					++$iCount;
+					if (\is_int($mType)) {
+						$aName[$mType] = $sItemValue;
+					} else if (\is_array($sItemName)) {
+						$oVCard->add($mType, $sItemValue, ['type' => $sItemName[1]]);
+					} else if ('FN' === $mType || 'NICKNAME' === $mType) {
+						$oVCard->$mType = $sItemValue;
 					} else {
-						$sItemName = \strtolower($sItemName);
-						$mData = !empty($sItemName) && isset($aMap[$sItemName]) ? $aMap[$sItemName] : null;
-					}
-					if ($mData) {
-						$mType = \is_array($mData) ? $mData[0] : $mData;
-						++$iCount;
-						if (\is_int($mType)) {
-							$aName[$mType] = $sItemValue;
-						} else if (\is_array($mData)) {
-							$oVCard->add($mType, $sItemValue, ['type' => $mData[1]]);
-						} else if ('FN' === $mType || 'NICKNAME' === $mType) {
-							$oVCard->$mType = $sItemValue;
-						} else {
-							$oVCard->add($mType, $sItemValue);
-						}
+						$oVCard->add($mType, $sItemValue);
 					}
 				}
 			}

@@ -83,19 +83,6 @@ class AddressBook extends AbstractProvider
 		return $this->IsActive() ? $this->oDriver->IncFrec($aEmails, $bCreateAuto) : false;
 	}
 
-	public function ImportCsvArray(array $aCsvData) : int
-	{
-		$iCount = 0;
-		if ($this->IsActive()) {
-			foreach (AddressBook\Utils::CsvArrayToContacts($aCsvData) as $oContact) {
-				if ($this->ContactSave($oContact)) {
-					++$iCount;
-				}
-			}
-		}
-		return $iCount;
-	}
-
 	public function ImportVcfFile(string $sVcfData) : int
 	{
 		$iCount = 0;
