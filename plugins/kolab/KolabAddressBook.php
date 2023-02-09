@@ -133,12 +133,16 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 			$oParams->iLimit = 999; // Is the max
 			$oMessageList = $this->MailClient()->MessageList($oParams);
 			foreach ($oMessageList as $oMessage) {
-				if ($rCsv) {
-					$oContact = $this->MessageAsContact($oMessage);
-					\RainLoop\Providers\AddressBook\Utils::VCardToCsv($rCsv, $oContact, $bCsvHeader);
-					$bCsvHeader = false;
-				} else if ($xCard = $this->fetchXCardFromMessage($oMessage)) {
-					echo $xCard->serialize();
+				try {
+					if ($rCsv) {
+						$oContact = $this->MessageAsContact($oMessage);
+						\RainLoop\Providers\AddressBook\Utils::VCardToCsv($rCsv, $oContact->vCard, $bCsvHeader);
+						$bCsvHeader = false;
+					} else if ($xCard = $this->fetchXCardFromMessage($oMessage)) {
+						echo $xCard->serialize();
+					}
+				} catch (\Throwable $oExc) {
+					$this->oLogger && $this->oLogger->WriteException($oExc);
 				}
 			}
 		}

@@ -2,6 +2,8 @@
 
 namespace RainLoop\Providers\AddressBook;
 
+use Sabre\VObject\Component\VCard;
+
 class Utils
 {
 	private static $aMap = array(
@@ -98,7 +100,7 @@ class Utils
 		foreach ($aHeaders as $iIndex => $sItemName) {
 			$sItemName = \MailSo\Base\Utils::Utf8Clear($sItemName);
 			$sItemName = \strtoupper(\trim(\preg_replace('/[\s\-]+/', '', $sItemName)));
-			if (!\array_key_exists($sItemName, \Sabre\VObject\Component\VCard::$propertyMap)) {
+			if (!\array_key_exists($sItemName, VCard::$propertyMap)) {
 				$sItemName = \strtolower($sItemName);
 				$sItemName = isset(static::$aMap[$sItemName]) ? static::$aMap[$sItemName] : null;
 			}
@@ -108,7 +110,7 @@ class Utils
 		while (false !== ($mRow = \fgetcsv($rFile, 5000, $sDelimiter, '"'))) {
 			\MailSo\Base\Utils::ResetTimeLimit();
 			$iCount = 0;
-			$oVCard = new \Sabre\VObject\Component\VCard;
+			$oVCard = new VCard;
 			$aName = ['','','','',''];
 			foreach ($mRow as $iIndex => $sItemValue) {
 				$sItemName = $aHeaders[$iIndex];
@@ -138,7 +140,7 @@ class Utils
 		}
 	}
 
-	public static function VCardToCsv($stream, Classes\Contact $oContact, bool $bWithHeader = false)/* : int|false*/
+	public static function VCardToCsv($stream, VCard $oVCard, bool $bWithHeader = false)/* : int|false*/
 	{
 		$aData = array();
 		if ($bWithHeader) {
@@ -152,8 +154,6 @@ class Utils
 				'Business Street', 'Business City', 'Business State', 'Business Postal Code', 'Business Country'
 			));
 		}
-
-		$oVCard = $oContact->vCard;
 
 		$aName = isset($oVCard->N) ? $oVCard->N->getParts() : ['','','','',''];
 
@@ -203,7 +203,7 @@ class Utils
 		$oVCardSplitter = new \Sabre\VObject\Splitter\VCard($rFile);
 		if ($oVCardSplitter) {
 			while ($oVCard = $oVCardSplitter->getNext()) {
-				if ($oVCard instanceof \Sabre\VObject\Component\VCard) {
+				if ($oVCard instanceof VCard) {
 					\MailSo\Base\Utils::ResetTimeLimit();
 					$oContact = new Classes\Contact();
 					$oContact->setVCard($oVCard);
