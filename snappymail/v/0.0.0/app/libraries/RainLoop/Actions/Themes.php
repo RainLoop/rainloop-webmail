@@ -13,7 +13,7 @@ trait Themes
 			 && ($oAccount = $this->getAccountFromToken(false))
 			 && $this->GetCapa(\RainLoop\Enumerations\Capa::THEMES)
 			 && ($oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount))) {
-				$sTheme = (string) $oSettingsLocal->GetConf('Theme', $sTheme);
+				$sTheme = $this->ValidateTheme((string) $oSettingsLocal->GetConf('Theme', $sTheme)) ?: $sTheme;
 			}
 			$sTheme = $this->ValidateTheme($sTheme) ?: 'Default';
 		}
