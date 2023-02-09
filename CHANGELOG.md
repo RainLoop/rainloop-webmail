@@ -1,3 +1,42 @@
+## 2.25.5 – 2023-02-09
+
+## Added
+- New dark themes by @TheCuteFoxxy
+  [#925](https://github.com/the-djmaze/snappymail/pull/925)
+- External images option 'Always when DKIM is valid' for
+  [#201](https://github.com/the-djmaze/snappymail/pull/201)
+- Image whitelist menu on message for
+  [#201](https://github.com/the-djmaze/snappymail/pull/201)
+
+## Changed
+- pt-PT translation by @ner00
+  [#917](https://github.com/the-djmaze/snappymail/pull/917) and
+  [#920](https://github.com/the-djmaze/snappymail/pull/920)
+- fr-FR translation by @hguilbert
+  [#919](https://github.com/the-djmaze/snappymail/pull/919)
+- Layout section rl-right now is `display: flex` and solves
+  [#928](https://github.com/the-djmaze/snappymail/pull/928)
+- Some Themes background to `cover`
+  [#918](https://github.com/the-djmaze/snappymail/pull/918)
+- Speedup cleanHtml() parser
+- Reduce memory usage on addressbook import
+
+## Fixed
+- Prevent loading loop between MessageList and FolderInformation requests
+- Admin -> Config layout
+- Inline images sometimes failed
+- Undefined index: cid
+  [#921](https://github.com/the-djmaze/snappymail/pull/921)
+- On upgrade prevent Apache access errors for
+  [#358](https://github.com/the-djmaze/snappymail/pull/358)
+- Import contacts as CSV is broken
+  [#931](https://github.com/the-djmaze/snappymail/pull/931)
+
+### Removed
+- Blockquote height calculator for
+  [#902](https://github.com/the-djmaze/snappymail/pull/902)
+
+
 ## 2.25.4 – 2023-02-06
 
 ## Added
