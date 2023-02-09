@@ -156,7 +156,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 			return false;
 		}
 
-		$id = $oContact->id;
+		$id = \intval($oContact->id);
 		$sUID = '';
 
 		$oVCard = $oContact->vCard;
