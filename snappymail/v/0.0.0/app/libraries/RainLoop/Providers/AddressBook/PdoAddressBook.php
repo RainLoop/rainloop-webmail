@@ -107,9 +107,12 @@ class PdoAddressBook
 	private function prepareDatabaseSyncData() : array
 	{
 		$aResult = array();
-		$oStmt = $this->prepareAndExecute('SELECT id_contact, id_contact_str, changed, deleted, etag FROM rainloop_ab_contacts WHERE id_user = :id_user', array(
-			':id_user' => array($this->iUserID, \PDO::PARAM_INT)
-		));
+		$oStmt = $this->prepareAndExecute('SELECT id_contact, id_contact_str, changed, deleted, etag
+			FROM rainloop_ab_contacts
+			WHERE id_user = :id_user
+			ORDER BY deleted DESC',
+			array(':id_user' => array($this->iUserID, \PDO::PARAM_INT))
+		);
 
 		if ($oStmt) {
 			$aFetch = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
