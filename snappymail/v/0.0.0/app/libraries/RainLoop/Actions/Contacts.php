@@ -253,15 +253,24 @@ trait Contacts
 
 	private function importContactsFromVcfFile(\RainLoop\Model\Account $oAccount, /*resource*/ $rFile): int
 	{
+		$iCount = 0;
 		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
 		if (\is_resource($rFile) && $oAddressBookProvider && $oAddressBookProvider->IsActive()) {
-			$sFile = \stream_get_contents($rFile);
-			if (\is_string($sFile) && 5 < \strlen($sFile)) {
+			try
+			{
 				$this->Logger()->Write('Import contacts from vcf');
-				return $oAddressBookProvider->ImportVcfFile($sFile);
+				foreach (\RainLoop\Providers\AddressBook\Utils::VcfStreamToContacts($rFile) as $oContact) {
+					if ($oAddressBookProvider->ContactSave($oContact)) {
+						++$iCount;
+					}
+				}
+			}
+			catch (\Throwable $oExc)
+			{
+				$this->Logger()->WriteException($oExc);
 			}
 		}
-		return 0;
+		return $iCount;
 	}
 
 	private function importContactsFromCsvFile(\RainLoop\Model\Account $oAccount, /*resource*/ $rFile, string $sFileStart): int
@@ -269,12 +278,19 @@ trait Contacts
 		$iCount = 0;
 		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
 		if (\is_resource($rFile) && $oAddressBookProvider && $oAddressBookProvider->IsActive()) {
-			$this->oLogger->Write('Import contacts from csv');
-			$sDelimiter = ((int)\strpos($sFileStart, ',') > (int)\strpos($sFileStart, ';')) ? ',' : ';';
-			foreach (\RainLoop\Providers\AddressBook\Utils::CsvStreamToContacts($rFile, $sDelimiter) as $oContact) {
-				if ($oAddressBookProvider->ContactSave($oContact)) {
-					++$iCount;
+			try
+			{
+				$this->Logger()->Write('Import contacts from csv');
+				$sDelimiter = ((int)\strpos($sFileStart, ',') > (int)\strpos($sFileStart, ';')) ? ',' : ';';
+				foreach (\RainLoop\Providers\AddressBook\Utils::CsvStreamToContacts($rFile, $sDelimiter) as $oContact) {
+					if ($oAddressBookProvider->ContactSave($oContact)) {
+						++$iCount;
+					}
 				}
+			}
+			catch (\Throwable $oExc)
+			{
+				$this->Logger()->WriteException($oExc);
 			}
 		}
 		return $iCount;

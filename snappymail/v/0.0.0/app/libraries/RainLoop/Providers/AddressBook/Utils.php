@@ -198,13 +198,9 @@ class Utils
 		));
 	}
 
-	public static function VcfFileToContacts(string $sVcfData) : iterable
+	public static function VcfStreamToContacts(/*resource*/ $rFile) : iterable
 	{
-		$sVcfData = \trim($sVcfData);
-		if ("\xef\xbb\xbf" === \substr($sVcfData, 0, 3)) {
-			$sVcfData = \substr($sVcfData, 3);
-		}
-		$oVCardSplitter = new \Sabre\VObject\Splitter\VCard($sVcfData);
+		$oVCardSplitter = new \Sabre\VObject\Splitter\VCard($rFile);
 		if ($oVCardSplitter) {
 			while ($oVCard = $oVCardSplitter->getNext()) {
 				if ($oVCard instanceof \Sabre\VObject\Component\VCard) {

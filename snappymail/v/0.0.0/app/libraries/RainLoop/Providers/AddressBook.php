@@ -82,24 +82,4 @@ class AddressBook extends AbstractProvider
 	{
 		return $this->IsActive() ? $this->oDriver->IncFrec($aEmails, $bCreateAuto) : false;
 	}
-
-	public function ImportVcfFile(string $sVcfData) : int
-	{
-		$iCount = 0;
-		if ($this->IsActive()) {
-			try
-			{
-				foreach (AddressBook\Utils::VcfFileToContacts($sVcfData) as $oContact) {
-					if ($this->ContactSave($oContact)) {
-						++$iCount;
-					}
-				}
-			}
-			catch (\Throwable $oExc)
-			{
-				$this->Logger()->WriteException($oExc);
-			}
-		}
-		return $iCount;
-	}
 }
