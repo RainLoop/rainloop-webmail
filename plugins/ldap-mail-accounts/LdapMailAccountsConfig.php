@@ -18,10 +18,10 @@ class LdapMailAccountsConfig
 	public const CONFIG_FIELD_USERNAME = "field_username";
 	public const CONFIG_SEARCH_STRING = "search_string";
 	public const CONFIG_FIELD_MAIL_DOMAIN = "field_domain";
-	public const CONFIG_FIELD_MAIL_ADDRESS_MAIN_ACCOUNT = "field_mail_address_main_account";
-	public const CONFIG_FIELD_MAIL_ADDRESS_ADDITIONAL_ACCOUNT = "field_mail_address_additional_account";
 	public const CONFIG_BOOL_OVERWRITE_MAIL_ADDRESS_MAIN_ACCOUNT = "bool_overwrite_mail_address_main_account";
+	public const CONFIG_FIELD_MAIL_ADDRESS_MAIN_ACCOUNT = "field_mail_address_main_account";
 	public const CONFIG_BOOL_OVERWRITE_MAIL_ADDRESS_ADDITIONAL_ACCOUNT = "bool_overwrite_mail_address_additional_account";
+	public const CONFIG_FIELD_MAIL_ADDRESS_ADDITIONAL_ACCOUNT = "field_mail_address_additional_account";
 
 	public $server;
 	public $protocol;

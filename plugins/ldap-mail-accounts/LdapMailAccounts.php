@@ -84,7 +84,11 @@ class LdapMailAccounts
 				$this->config->objectclass,
 				$this->config->field_name,
 				$this->config->field_username,
-				$this->config->field_domain
+				$this->config->field_domain,
+				$this->config->bool_overwrite_mail_address_main_account,
+				$this->config->field_mail_address_main_account,
+				$this->config->bool_overwrite_mail_address_additional_account,
+				$this->config->field_mail_address_additional_account
 			);
 		}
 		catch (LdapMailAccountsException $e) {
@@ -264,6 +268,10 @@ class LdapMailAccounts
 	 * @param string $nameField
 	 * @param string $usernameField
 	 * @param string $domainField
+	 * @param bool $overwriteMailMainAccount
+	 * @param string $mailAddressFieldMainAccount
+	 * @param bool $overwriteMailAdditionalAccount
+	 * @param string $mailAddressFieldAdditionalAccount
 	 * @return LdapMailAccountResult[]
 	 * @throws LdapMailAccountsException
 	 */
@@ -274,7 +282,11 @@ class LdapMailAccounts
 		string $objectClass,
 		string $nameField,
 		string $usernameField,
-		string $domainField): array
+		string $domainField,
+		bool $overwriteMailMainAccount,
+		string $mailAddressFieldMainAccount,
+		bool $overwriteMailAdditionalAccount,
+		string $mailAddressFieldAdditionalAccount): array
 	{
 		$this->EnsureBound();
 		$nameField = strtolower($nameField);
@@ -284,7 +296,20 @@ class LdapMailAccounts
 		$filter = "(&(objectclass=$objectClass)($searchField=$searchString))";
 		$this->logger->Write("Used ldap filter to search for additional mail accounts: $filter", \LOG_NOTICE, self::LOG_KEY);
 
-		$ldapResult = @ldap_search($this->ldap, $searchBase, $filter, ['dn', $usernameField, $nameField, $domainField]);
+		//Set together the attributes to search inside the LDAP
+		$ldapAttributes = ['dn', $usernameField, $nameField, $domainField];
+		if ($overwriteMailMainAccount)
+		{
+			\array_push($ldapAttributes, $mailAddressFieldMainAccount);
+		}
+
+		if ($overwriteMailAdditionalAccount)
+		{
+			\array_push($ldapAttributes, $mailAddressFieldAdditionalAccount);
+		}
+
+
+		$ldapResult = @ldap_search($this->ldap, $searchBase, $filter, $ldapAttributes);
 		if (!$ldapResult) {
 			$this->HandleLdapError("Fetch $objectClass");
 			return [];
@@ -310,6 +335,9 @@ class LdapMailAccounts
 
 			$result->domain = $this->LdapGetAttribute($entry, $domainField, true, true);
 			$result->domain = $this->RemoveEventualLocalPart($result->domain);
+
+			$result->mailMainAccount = $this->LdapGetAttribute($entry, $mailAddressFieldMainAccount, true, $overwriteMailMainAccount);
+			$result->mailAdditionalAccount = $this->LdapGetAttribute($entry, $mailAddressFieldAdditionalAccount, true, $overwriteMailAdditionalAccount);
 
 			$results[] = $result;
 		}
@@ -407,4 +435,10 @@ class LdapMailAccountResult
 
 	/** @var string */
 	public $domain;
+
+	/** @var string */
+	public $mailMainAccount;
+
+	/** @var string */
+	public $mailAdditionalAccount;
 }
