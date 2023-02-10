@@ -316,8 +316,11 @@ abstract class SearchCriterias
 
 	public static function escapeSearchString(\MailSo\Imap\ImapClient $oImapClient, string $sSearch) : string
 	{
-		return !\MailSo\Base\Utils::IsAscii($sSearch)
-			? '{'.\strlen($sSearch).'}'."\r\n".$sSearch : $oImapClient->EscapeString($sSearch);
+//		return $oImapClient->EscapeString($sSearch);
+//		return \MailSo\Base\Utils::IsAscii($sSearch) || $oImapClient->hasCapability('QQMail'))
+		return (\MailSo\Base\Utils::IsAscii($sSearch) || !$oImapClient->hasCapability('LITERAL+'))
+			? $oImapClient->EscapeString($sSearch)
+			: '{'.\strlen($sSearch).'}'."\r\n{$sSearch}";
 	}
 
 	private static function parseSearchDate(string $sDate) : int
