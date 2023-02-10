@@ -13,9 +13,9 @@ trait Themes
 			 && ($oAccount = $this->getAccountFromToken(false))
 			 && $this->GetCapa(\RainLoop\Enumerations\Capa::THEMES)
 			 && ($oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount))) {
-				$sTheme = $this->ValidateTheme((string) $oSettingsLocal->GetConf('Theme', $sTheme)) ?: $sTheme;
+				$sTheme = (string) $oSettingsLocal->GetConf('Theme', $sTheme);
 			}
-			$sTheme = $this->ValidateTheme($sTheme) ?: 'Default';
+			$sTheme = $this->ValidateTheme($sTheme);
 		}
 		return $sTheme;
 	}
@@ -92,7 +92,13 @@ trait Themes
 
 	public function ValidateTheme(string $sTheme): string
 	{
-		return \in_array($sTheme, $this->GetThemes()) ? $sTheme : $this->Config()->Get('webmail', 'theme', 'Default');
+		if (!\in_array($sTheme, $this->GetThemes())) {
+			$sTheme = $this->Config()->Get('webmail', 'theme', 'Default');
+			if (!\in_array($sTheme, $this->GetThemes())) {
+				$sTheme = 'Default';
+			}
+		}
+		return $sTheme;
 	}
 
 	public function compileCss(string $sTheme, bool $bAdmin, bool $bMinified = false) : string
