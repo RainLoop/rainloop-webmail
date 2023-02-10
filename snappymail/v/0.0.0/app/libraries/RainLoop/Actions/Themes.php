@@ -92,7 +92,7 @@ trait Themes
 
 	public function ValidateTheme(string $sTheme): string
 	{
-		return \in_array($sTheme, $this->GetThemes()) ? $sTheme : $this->Config()->Get('themes', 'default', 'Default');
+		return \in_array($sTheme, $this->GetThemes()) ? $sTheme : $this->Config()->Get('webmail', 'theme', 'Default');
 	}
 
 	public function compileCss(string $sTheme, bool $bAdmin, bool $bMinified = false) : string
