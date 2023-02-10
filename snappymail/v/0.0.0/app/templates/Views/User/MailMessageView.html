@@ -130,14 +130,14 @@
 			</div>
 			<div class="informationShort" data-bind="hidden: showFullInfo">
 				<span class="from" data-bind="html: viewFromShort, title: message().from"></span>
-				<i data-bind="visible: viewFromDkimVisibility, css: viewFromDkimStatusIconClass, title: viewFromDkimStatusTitle"></i>
+				<i data-bind="visible: viewDkimIcon, css: dkimIconClass, title: dkimTitle"></i>
 			</div>
 			<div class="informationFull" data-bind="visible: showFullInfo, with: message">
 				<table>
 					<tr data-bind="visible: from.length">
 						<td data-i18n="GLOBAL/FROM"></td>
 						<td><span data-bind="text: from"></span>
-							<i data-bind="visible: $parent.viewFromDkimVisibility, css: $parent.viewFromDkimStatusIconClass, title: $parent.viewFromDkimStatusTitle"></i>
+							<i data-bind="visible: $parent.viewDkimIcon, css: $parent.dkimIconClass, title: $parent.dkimTitle"></i>
 						</td>
 					</tr>
 					<tr data-bind="visible: to.length">

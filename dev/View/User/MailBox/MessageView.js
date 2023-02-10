@@ -112,8 +112,7 @@ export class MailMessageView extends AbstractViewRight {
 
 			// viewer
 			viewFromShort: '',
-			viewFromDkimData: ['none', ''],
-			viewToShort: ''
+			dkimData: ['none', '', '']
 		});
 
 		this.moveAction = moveAction;
@@ -171,10 +170,10 @@ export class MailMessageView extends AbstractViewRight {
 
 			canBeRepliedOrForwarded: () => !MessagelistUserStore.isDraftFolder() && this.messageVisibility(),
 
-			viewFromDkimVisibility: () => 'none' !== this.viewFromDkimData()[0],
+			viewDkimIcon: () => 'none' !== this.dkimData()[0],
 
-			viewFromDkimStatusIconClass:() => {
-				switch (this.viewFromDkimData()[0]) {
+			dkimIconClass:() => {
+				switch (this.dkimData()[0]) {
 					case 'none':
 						return '';
 					case 'pass':
@@ -184,13 +183,9 @@ export class MailMessageView extends AbstractViewRight {
 				}
 			},
 
-			viewFromDkimStatusTitle:() => {
-				const status = this.viewFromDkimData();
-				if (arrayLength(status) && status[0]) {
-					return status[1] || 'DKIM: ' + status[0];
-				}
-
-				return '';
+			dkimTitle:() => {
+				const dkim = this.dkimData();
+				return dkim[0] ? dkim[2] || 'DKIM: ' + dkim[0] : '';
 			},
 
 			showWhitelistOptions: () => 'match' === SettingsUserStore.viewImages(),
@@ -212,10 +207,7 @@ export class MailMessageView extends AbstractViewRight {
 					this.viewHash = message.hash;
 					// TODO: make first param a user setting #683
 					this.viewFromShort(message.from.toString(false, true));
-					let dkim = 1 === arrayLength(message.from) && message.dkim
-						&& message.dkim.find(dkim => message.from[0].email.includes(dkim[1]));
-					this.viewFromDkimData(dkim ? [dkim[0], dkim[2]] : ['none', '']);
-					this.viewToShort(message.to.toString(true, true));
+					this.dkimData(message.dkim[0] || ['none', '', '']);
 				} else {
 					MessagelistUserStore.selectedMessage(null);
 
@@ -503,6 +495,11 @@ export class MailMessageView extends AbstractViewRight {
 
 	whitelistText(txt) {
 		let value = (SettingsUserStore.viewImagesWhitelist().trim() + '\n' + txt).trim();
+/*
+		if ('pass' === currentMessage().spf[0]?.[0]) value += '+spf';
+		if ('pass' === currentMessage().dkim[0]?.[0]) value += '+dkim';
+		if ('pass' === currentMessage().dmarc[0]?.[0]) value += '+dmarc';
+*/
 		SettingsUserStore.viewImagesWhitelist(value);
 		Remote.saveSetting('ViewImagesWhitelist', value);
 		currentMessage().showExternalImages(1);

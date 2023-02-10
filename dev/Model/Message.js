@@ -300,9 +300,7 @@ export class MessageModel extends AbstractModel {
 			body.classList.toggle('plain', 0);
 
 			if (!this.isSpam() && FolderUserStore.spamFolder() != this.folder) {
-				if (('dkim' === SettingsUserStore.viewImages() && 'pass' === this.dkim[0]?.[0])
-				 || 'always' === SettingsUserStore.viewImages()
-				) {
+				if ('always' === SettingsUserStore.viewImages()) {
 					this.showExternalImages();
 				}
 				if ('match' === SettingsUserStore.viewImages()) {
@@ -399,11 +397,19 @@ export class MessageModel extends AbstractModel {
 		const body = this.body;
 		if (body && this.hasImages()) {
 			if (regex) {
-				regex = SettingsUserStore.viewImagesWhitelist()
-					.trim()
-					.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&')
-					.replace(/[\s\r\n,;]+/g, '|')
-					.replace(/\|+/g, '|');
+				regex = [];
+				SettingsUserStore.viewImagesWhitelist().trim().split(/[\s\r\n,;]+/g).forEach(rule => {
+					rule = rule.split('+');
+					rule[0] = rule[0].trim();
+					if (rule[0]
+					 && (!rule.includes('spf') || 'pass' === this.spf[0]?.[0])
+					 && (!rule.includes('dkim') || 'pass' === this.dkim[0]?.[0])
+					 && (!rule.includes('dmarc') || 'pass' === this.dmarc[0]?.[0])
+					) {
+						regex.push(rule[0].replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&'));
+					}
+				});
+				regex = regex.join('|').replace(/\|+/g, '|');
 				if (regex) {
 					console.log('whitelist images = '+regex);
 					regex = new RegExp(regex);

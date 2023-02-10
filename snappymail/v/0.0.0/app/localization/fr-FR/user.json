@@ -421,7 +421,6 @@
 		"EXTERNAL_IMAGES": "Images externes",
 		"IMAGES_OPTION_ASK": "Toujours demander",
 		"IMAGES_OPTION_WHITELIST": "Ajouter à la liste blanche ou demander",
-		"IMAGES_OPTION_DKIM": "Toujours afficher quand DKIM est valide",
 		"IMAGES_OPTION_ALWAYS": "Toujours afficher",
 		"IMAGES_WHITELIST": "Liste blanche Images"
 	},
