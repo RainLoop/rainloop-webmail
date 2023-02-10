@@ -32,6 +32,9 @@ From that point, all instance-wide SnappyMail settings can be tweaked as you wis
 
 ![grafik](https://user-images.githubusercontent.com/63400209/199768097-7bd939a7-56d0-47ba-b481-aeac08776fb4.png)
 
+## App Integrations
+### Contacts
+SnappyMail automatically connects with the Nextcloud contacts app. Download and install the [contacts app](https://apps.nextcloud.com/apps/contacts) for SnappyMail to obtain access to all registered users on the Nextcloud system, as well as users' personal contacts saved in here.
 
 ## SnappyMail Settings, Where Are They?
 
