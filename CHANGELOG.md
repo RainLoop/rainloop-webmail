@@ -1,3 +1,32 @@
+## 2.26.0 – 2023-02-10
+
+## Added
+- Whitelist advanced SPF/DKIM/DMARC valid feature
+  [#938](https://github.com/the-djmaze/snappymail/pull/938)
+
+## Changed
+- \RainLoop\Providers\AddressBook\Utils functions param `Contact` changed to `VCard`
+
+## Fixed
+- Issue with themes and Chrome cache
+  [#188](https://github.com/the-djmaze/snappymail/pull/188)
+- Settings panel width due to display:flex
+  [#940](https://github.com/the-djmaze/snappymail/pull/940)
+- Not respecting default theme setting
+  [#941](https://github.com/the-djmaze/snappymail/pull/941)
+- Some files had 0755 instead of 0644
+- Some spacing between message "view images" buttons for
+  [#201](https://github.com/the-djmaze/snappymail/pull/201)
+- Whitelist failed when empty or when using `:`
+  [#938](https://github.com/the-djmaze/snappymail/pull/938)
+- Cosmetics of the external images whitelist menu
+  [#939](https://github.com/the-djmaze/snappymail/pull/939)
+- PdoAddressBook ORDER BY deleted DESC to prevent sync and export issues
+- Undefined variable $items in upgrade.php
+- qq.com not supporting literal-string in search
+  [#836](https://github.com/the-djmaze/snappymail/pull/836)
+
+
 ## 2.25.5 – 2023-02-09
 
 ## Added
