@@ -78,9 +78,10 @@ export class AbstractViewPopup extends AbstractView
 	afterShow() {}  // Happens after  showModal() animation transitionend
 	onHide() {}     // Happens before animation transitionend
 	afterHide() {}  // Happens after  animation transitionend
-
-	close() {}
 */
+	close() {
+		this.modalVisible(false);
+	}
 }
 
 AbstractViewPopup.showModal = function(params = []) {

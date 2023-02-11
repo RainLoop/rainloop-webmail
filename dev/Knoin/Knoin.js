@@ -48,8 +48,6 @@ const
 				vm.viewModelDom = ViewModelClass.__dom = vmDom;
 
 				if (dialog) {
-					vm.close = () => hideScreenPopup(ViewModelClass);
-
 					// Firefox < 98 / Safari < 15.4 HTMLDialogElement not defined
 					if (!vmDom.showModal) {
 						vmDom.className = 'polyfill';
@@ -154,14 +152,6 @@ const
 			destroy && vm.viewModelDom.remove();
 		});
 	},
-
-	/**
-	 * @param {Function} ViewModelClassToHide
-	 * @returns {void}
-	 */
-	hideScreenPopup = ViewModelClassToHide =>
-		ViewModelClassToHide?.__vm && ViewModelClassToHide.__dom
-		&& ViewModelClassToHide.__vm.modalVisible(false),
 
 	/**
 	 * @param {string} screenName
@@ -276,7 +266,7 @@ export const
 		});
 
 		const cross = new Crossroads();
-		cross.addRoute(/^([^/]+)\/?(.*)$/, screenOnRoute);
+		cross.addRoute(/^([^/]*)\/?(.*)$/, screenOnRoute);
 
 		hasher.add(cross.parse.bind(cross));
 		hasher.init();
