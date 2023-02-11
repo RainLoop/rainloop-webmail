@@ -169,67 +169,58 @@ const
 	 * @returns {void}
 	 */
 	screenOnRoute = (screenName, subPart) => {
-		let vmScreen = null,
-			isSameScreen = false;
-
-		if (null == screenName || '' == screenName) {
-			screenName = defaultScreenName;
-		}
-
-		if (fireEvent('sm-show-screen', screenName, 1)) {
-
+		screenName = screenName || defaultScreenName;
+		if (screenName && fireEvent('sm-show-screen', screenName, 1)) {
 			// Close all popups
 			for (let vm of visiblePopups) {
 				(false === vm.onClose()) || vm.close();
 			}
 
-			if (screenName) {
-				vmScreen = screen(screenName);
-				if (!vmScreen) {
-					vmScreen = screen(defaultScreenName);
-					if (vmScreen) {
-						subPart = screenName + '/' + subPart;
-						screenName = defaultScreenName;
-					}
+			let vmScreen = screen(screenName);
+			if (!vmScreen) {
+				vmScreen = screen(defaultScreenName);
+				if (vmScreen) {
+					subPart = screenName + '/' + subPart;
+					screenName = defaultScreenName;
+				}
+			}
+
+			if (vmScreen?.__started) {
+				let isSameScreen = currentScreen && vmScreen === currentScreen;
+
+				if (!vmScreen.__builded) {
+					vmScreen.__builded = true;
+
+					vmScreen.viewModels.forEach(ViewModelClass =>
+						buildViewModel(ViewModelClass, vmScreen)
+					);
+
+					vmScreen.onBuild?.();
 				}
 
-				if (vmScreen?.__started) {
-					isSameScreen = currentScreen && vmScreen === currentScreen;
+				setTimeout(() => {
+					// hide screen
+					currentScreen && !isSameScreen && hideScreen(currentScreen);
+					// --
 
-					if (!vmScreen.__builded) {
-						vmScreen.__builded = true;
+					currentScreen = vmScreen;
 
-						vmScreen.viewModels.forEach(ViewModelClass =>
-							buildViewModel(ViewModelClass, vmScreen)
-						);
+					// show screen
+					if (!isSameScreen) {
+						vmScreen.onShow?.();
 
-						vmScreen.onBuild?.();
+						forEachViewModel(vmScreen, (vm, dom) => {
+							vm.beforeShow?.();
+							i18nToNodes(dom);
+							dom.hidden = false;
+							vm.onShow?.();
+							autofocus(dom);
+						});
 					}
+					// --
 
-					setTimeout(() => {
-						// hide screen
-						currentScreen && !isSameScreen && hideScreen(currentScreen);
-						// --
-
-						currentScreen = vmScreen;
-
-						// show screen
-						if (!isSameScreen) {
-							vmScreen.onShow?.();
-
-							forEachViewModel(vmScreen, (vm, dom) => {
-								vm.beforeShow?.();
-								i18nToNodes(dom);
-								dom.hidden = false;
-								vm.onShow?.();
-								autofocus(dom);
-							});
-						}
-						// --
-
-						vmScreen.__cross?.parse(subPart);
-					}, 1);
-				}
+					vmScreen.__cross?.parse(subPart);
+				}, 1);
 			}
 		}
 	};
