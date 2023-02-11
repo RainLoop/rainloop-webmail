@@ -18,7 +18,8 @@ const
 		SettingsUserStore.collapseBlockquotes() &&
 //		tpl.content.querySelectorAll('blockquote').forEach(node => {
 		[...tpl.content.querySelectorAll('blockquote')].reverse().forEach(node => {
-			const el = Element.fromHTML('<details class="sm-bq-switcher"><summary>•••</summary></details>');
+			const el = createElement('details', {class:'sm-bq-switcher'});
+			el.innerHTML = '<summary>•••</summary>';
 			node.replaceWith(el);
 			el.append(node);
 		});

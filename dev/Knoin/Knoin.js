@@ -1,6 +1,6 @@
 import ko from 'ko';
 import { koComputable } from 'External/ko';
-import { doc, $htmlCL, elementById, fireEvent } from 'Common/Globals';
+import { doc, $htmlCL, elementById, createElement, fireEvent } from 'Common/Globals';
 import { forEachObjectEntry } from 'Common/Utils';
 import { i18nToNodes } from 'Common/Translator';
 
@@ -40,9 +40,9 @@ const
 			ViewModelClass.__vm = vm;
 
 			if (vmPlace) {
-				vmDom = Element.fromHTML(dialog
-					? '<dialog id="V-'+ id + '"></dialog>'
-					: '<div id="V-'+ id + '" hidden=""></div>');
+				vmDom = dialog
+					? createElement('dialog',{id:'V-'+id})
+					: createElement('div',{id:'V-'+id,hidden:''})
 				vmPlace.append(vmDom);
 
 				vm.viewModelDom = ViewModelClass.__dom = vmDom;
@@ -55,7 +55,7 @@ const
 						vmDom.className = 'polyfill';
 						vmDom.showModal = () => {
 							vmDom.backdrop ||
-								vmDom.before(vmDom.backdrop = Element.fromHTML('<div class="dialog-backdrop"></div>'));
+								vmDom.before(vmDom.backdrop = createElement('div',{class:'dialog-backdrop'}));
 							vmDom.setAttribute('open','');
 							vmDom.open = true;
 							vmDom.returnValue = null;
@@ -285,7 +285,7 @@ export const
 		});
 
 		const cross = new Crossroads();
-		cross.addRoute(/^([a-zA-Z0-9-]*)\/?(.*)$/, screenOnRoute);
+		cross.addRoute(/^([^/]+)\/?(.*)$/, screenOnRoute);
 
 		hasher.add(cross.parse.bind(cross));
 		hasher.init();

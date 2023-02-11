@@ -310,11 +310,13 @@ populateMessageBody = (oMessage, popup) => {
 								oMessage.isHtml(body.classList.contains('html'));
 								oMessage.hasImages(body.rlHasImages);
 							} else {
-								body = Element.fromHTML('<div id="' + id + '" hidden="" class="b-text-part '
-									+ (oMessage.pgpSigned() ? ' openpgp-signed' : '')
-									+ (oMessage.pgpEncrypted() ? ' openpgp-encrypted' : '')
-									+ '">'
-									+ '</div>');
+								body = createElement('div',{
+									id:id,
+									hidden:'',
+									class:'b-text-part'
+										+ (oMessage.pgpSigned() ? ' openpgp-signed' : '')
+										+ (oMessage.pgpEncrypted() ? ' openpgp-encrypted' : '')
+								});
 								oMessage.body = body;
 								if (!SettingsUserStore.viewHTML() || !oMessage.viewHtml()) {
 									oMessage.viewPlain();
