@@ -266,7 +266,7 @@ export class EmailModel extends AbstractModel {
 		this.name = name;
 		this.dkimStatus = dkimStatus;
 
-		this.clearDuplicateName();
+		this.cleanup();
 	}
 
 	/**
@@ -276,7 +276,7 @@ export class EmailModel extends AbstractModel {
 	 */
 	static reviveFromJson(json) {
 		const email = super.reviveFromJson(json);
-		email?.clearDuplicateName();
+		email?.cleanup();
 		return email;
 	}
 
@@ -286,7 +286,6 @@ export class EmailModel extends AbstractModel {
 	clear() {
 		this.email = '';
 		this.name = '';
-
 		this.dkimStatus = 'none';
 	}
 
@@ -298,17 +297,9 @@ export class EmailModel extends AbstractModel {
 	}
 
 	/**
-	 * @param {boolean} withoutName = false
-	 * @returns {string}
-	 */
-	hash(withoutName = false) {
-		return '#' + (withoutName ? '' : this.name) + '#' + (this.email || this.name) + '#';
-	}
-
-	/**
 	 * @returns {void}
 	 */
-	clearDuplicateName() {
+	cleanup() {
 		if (this.name === this.email) {
 			this.name = '';
 		}
@@ -385,7 +376,7 @@ export class EmailModel extends AbstractModel {
 			if (result.length) {
 				this.name = result[0].name || '';
 				this.email = result[0].address || '';
-				this.clearDuplicateName();
+				this.cleanup();
 				return true;
 			}
 		}
