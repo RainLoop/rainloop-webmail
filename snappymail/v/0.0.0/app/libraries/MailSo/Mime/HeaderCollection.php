@@ -76,12 +76,9 @@ class HeaderCollection extends \MailSo\Base\Collection
 
 	public function GetAsEmailCollection(string $sHeaderName, bool $bCharsetAutoDetect = false) : ?EmailCollection
 	{
-		$oResult = null;
-		$sValue = $this->ValueByName($sHeaderName, $bCharsetAutoDetect);
-		if (\strlen($sValue)) {
-			$oResult = new EmailCollection($sValue);
-		}
-		return $oResult;
+		return new EmailCollection(
+			$this->ValueByName($sHeaderName, $bCharsetAutoDetect)
+		);
 	}
 
 	public function ParametersByName(string $sHeaderName) : ?ParameterCollection
