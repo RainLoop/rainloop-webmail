@@ -81,7 +81,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 		if (\strlen($sValue)) {
 			$oResult = new EmailCollection($sValue);
 		}
-		return $oResult && $oResult->count() ? $oResult : null;
+		return $oResult;
 	}
 
 	public function ParametersByName(string $sHeaderName) : ?ParameterCollection

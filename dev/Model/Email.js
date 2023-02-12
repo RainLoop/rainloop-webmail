@@ -302,7 +302,7 @@ export class EmailModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	hash(withoutName = false) {
-		return '#' + (withoutName ? '' : this.name) + '#' + this.email + '#';
+		return '#' + (withoutName ? '' : this.name) + '#' + (this.email || this.name) + '#';
 	}
 
 	/**
@@ -328,8 +328,8 @@ export class EmailModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	toLine(friendlyView, wrapWithLink) {
-		let result = this.email,
-			name = this.name,
+		let name = this.name,
+			result = this.email || name,
 			toLink = text =>
 				'<a href="mailto:'
 				+ encodeHtml(result) + (name ? '?to=' + encodeURIComponent('"' + name + '" <' + result + '>') : '')
