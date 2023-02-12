@@ -92,7 +92,8 @@ abstract class NetClient
 		}
 
 		if ($this->IsConnected()) {
-			$this->writeLogException(new Exceptions\SocketAlreadyConnectedException, \LOG_ERR);
+			$this->writeLogException(new Exceptions\SocketAlreadyConnectedException, \LOG_ERR, false);
+			return;
 		}
 
 		$this->Settings = $oSettings;
@@ -212,14 +213,6 @@ abstract class NetClient
 			$this->writeLogException(new Exceptions\SocketConnectionDoesNotAvailableException, \LOG_ERR);
 		}
 		return false;
-	}
-
-	/**
-	 * @throws \MailSo\Net\Exceptions\SocketConnectionDoesNotAvailableException
-	 */
-	public function IsConnectedWithException() : void
-	{
-		$this->IsConnected(true);
 	}
 
 	public function StreamContextParams() : array
