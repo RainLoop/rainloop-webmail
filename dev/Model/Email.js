@@ -329,7 +329,7 @@ export class EmailModel extends AbstractModel {
 	 */
 	toLine(friendlyView, wrapWithLink) {
 		let name = this.name,
-			result = this.email || name,
+			result = this.email,
 			toLink = text =>
 				'<a href="mailto:'
 				+ encodeHtml(result) + (name ? '?to=' + encodeURIComponent('"' + name + '" <' + result + '>') : '')
@@ -348,7 +348,7 @@ export class EmailModel extends AbstractModel {
 				result = toLink();
 			}
 		}
-		return result;
+		return result || name;
 	}
 
 	static splitEmailLine(line) {
