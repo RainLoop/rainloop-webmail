@@ -1,7 +1,6 @@
 
 import { ParseMime } from 'Mime/Parser';
 import { AttachmentModel } from 'Model/Attachment';
-import { EmailModel } from 'Model/Email';
 import { FileInfo } from 'Common/File';
 import { BEGIN_PGP_MESSAGE } from 'Stores/User/Pgp';
 
@@ -17,16 +16,10 @@ export function MimeToMessage(data, message)
 		let html = struct.getByContentType('text/html');
 		html = html ? html.body : '';
 
-		if (struct.headers.subject) {
-			message.subject(struct.headers.subject.value);
-		}
-		['from','to'].forEach(name => {
-			if (struct.headers[name] && !message[name].length) {
-				let mail = new EmailModel;
-				mail.parse(struct.headers[name].value);
-				message[name].push(mail);
-			}
-		});
+		message.subject(struct.headerValue('subject') || '');
+
+		// EmailCollectionModel
+		['from','to'].forEach(name => message[name].fromString(struct.headerValue(name)));
 
 		struct.forEach(part => {
 			let cd = part.header('content-disposition'),

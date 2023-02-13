@@ -551,7 +551,7 @@ class ServiceActions
 	{
 		$this->oHttp->ServerNoCache();
 		$sTo = \trim($_GET['to'] ?? '');
-		if (!empty($sTo) && \preg_match('/^mailto:/i', $sTo)) {
+		if (\preg_match('/^mailto:/i', $sTo)) {
 			\SnappyMail\Cookies::set(
 				Actions::AUTH_MAILTO_TOKEN_KEY,
 				Utils::EncodeKeyValuesQ(array(

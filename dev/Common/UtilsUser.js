@@ -4,7 +4,7 @@ import { MessageSetAction, ComposeType/*, FolderType*/ } from 'Common/EnumsUser'
 import { doc, createElement, elementById, dropdowns, dropdownVisibility, SettingsGet, leftPanelDisabled } from 'Common/Globals';
 import { plainToHtml } from 'Common/Html';
 import { getNotification } from 'Common/Translator';
-import { EmailModel } from 'Model/Email';
+import { EmailCollectionModel } from 'Model/EmailCollection';
 import { MessageModel } from 'Model/Message';
 import { MessageUserStore } from 'Stores/User/Message';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
@@ -158,27 +158,13 @@ mailToHelper = mailToUrl => {
 		const
 			email = mailToUrl[0],
 			params = new URLSearchParams(mailToUrl[1]),
-			toEmailModel = value => null != value ? EmailModel.parseEmailLine(value) : null;
+			to = params.get('to'),
+			toEmailModel = value => EmailCollectionModel.fromString(value);
 
 		showMessageComposer([
 			ComposeType.Empty,
 			null,
-			params.get('to')
-				? Object.values(
-						toEmailModel(email + ',' + params.get('to')).reduce((result, value) => {
-							if (value) {
-								if (result[value.email]) {
-									if (!result[value.email].name) {
-										result[value.email] = value;
-									}
-								} else {
-									result[value.email] = value;
-								}
-							}
-							return result;
-						}, {})
-					)
-				: EmailModel.parseEmailLine(email),
+			toEmailModel(to ? email + ',' + to : email),
 			toEmailModel(params.get('cc')),
 			toEmailModel(params.get('bcc')),
 			params.get('subject'),

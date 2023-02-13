@@ -37,7 +37,7 @@ import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import Remote from 'Remote/User/Fetch';
 
 import { ComposeAttachmentModel } from 'Model/ComposeAttachment';
-import { EmailModel } from 'Model/Email';
+import { EmailModel, addressparser } from 'Model/Email';
 
 import { decorateKoCommands, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
@@ -59,12 +59,7 @@ const
 
 	base64_encode = text => btoa(unescape(encodeURIComponent(text))).match(/.{1,76}/g).join('\r\n'),
 
-	email = new EmailModel(),
-	getEmail = value => {
-		email.clear();
-		email.parse(value.trim());
-		return email.email || false;
-	},
+	getEmail = value => addressparser(value)[0]?.address || false,
 
 	/**
 	 * @param {Array} aList

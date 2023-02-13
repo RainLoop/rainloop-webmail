@@ -18,32 +18,83 @@ import { AbstractModel } from 'Knoin/AbstractModel';
  * @param {String} str Address field
  * @return {Array} An array of address objects
  */
-function addressparser(str) {
-	var tokenizer = new Tokenizer(str);
-	var tokens = tokenizer.tokenize();
-	var addresses = [];
-	var address = [];
-	var parsedAddresses = [];
+export function addressparser(str) {
+	str = (str || '').toString();
 
-	tokens.forEach(token => {
-		if (token.type === 'operator' && (token.value === ',' || token.value === ';')) {
-			address.length && addresses.push(address);
+	let
+		endOperator = '',
+		node = {
+			type: 'text',
+			value: ''
+		},
+		escaped = false,
+		address = [],
+		addresses = [];
+
+	const
+		/*
+		 * Operator tokens and which tokens are expected to end the sequence
+		 */
+		OPERATORS = {
+		  '"': '"',
+		  '(': ')',
+		  '<': '>',
+		  ',': '',
+		  // Groups are ended by semicolons
+		  ':': ';',
+		  // Semicolons are not a legal delimiter per the RFC2822 grammar other
+		  // than for terminating a group, but they are also not valid for any
+		  // other use in this context.  Given that some mail clients have
+		  // historically allowed the semicolon as a delimiter equivalent to the
+		  // comma in their UI, it makes sense to treat them the same as a comma
+		  // when used outside of a group.
+		  ';': ''
+		},
+		pushToken = token => {
+			token.value = (token.value || '').toString().trim();
+			token.value.length && address.push(token);
+			node = {
+				type: 'text',
+				value: ''
+			},
+			escaped = false;
+		},
+		pushAddress = () => {
+			if (address.length) {
+				address = _handleAddress(address);
+				if (address.length) {
+					addresses = addresses.concat(address);
+				}
+			}
 			address = [];
+		};
+
+	[...str].forEach(chr => {
+		if (!escaped && (chr === endOperator || (!endOperator && chr in OPERATORS))) {
+			pushToken(node);
+			if (',' === chr || ';' === chr) {
+				pushAddress();
+			} else {
+				endOperator = endOperator ? '' : OPERATORS[chr];
+				if ('<' === chr) {
+					node.type = 'address';
+				} else if ('(' === chr) {
+					node.type = 'comment';
+				} else if (':' === chr) {
+					node.type = 'group';
+				}
+			}
 		} else {
-			address.push(token);
+			node.value += chr;
+			escaped = !escaped && '\\' === chr;
 		}
 	});
+	pushToken(node);
 
-	address.length && addresses.push(address);
+	pushAddress();
 
-	addresses.forEach(address => {
-		address = _handleAddress(address);
-		if (address.length) {
-			parsedAddresses = parsedAddresses.concat(address);
-		}
-	});
-
-	return parsedAddresses;
+	return addresses;
+//	return addresses.map(item => (item.name || item.address) ? new EmailModel(item.address, item.name) : null).filter(v => v);
 }
 
 /**
@@ -53,37 +104,21 @@ function addressparser(str) {
  * @return {Object} Address object
  */
 function _handleAddress(tokens) {
-	var isGroup = false;
-	var state = 'text';
-	var address = void 0;
-	var addresses = [];
-	var data = {
-		address: [],
-		comment: [],
-		group: [],
-		text: []
-	};
+	let
+		isGroup = false,
+		address = {},
+		addresses = [],
+		data = {
+			address: [],
+			comment: [],
+			group: [],
+			text: []
+		};
 
 	// Filter out <addresses>, (comments) and regular text
 	tokens.forEach(token => {
-		if (token.type === 'operator') {
-			switch (token.value) {
-				case '<':
-					state = 'address';
-					break;
-				case '(':
-					state = 'comment';
-					break;
-				case ':':
-					state = 'group';
-					isGroup = true;
-					break;
-				default:
-					state = 'text';
-			}
-		} else if (token.value) {
-			data[state].push(token.value);
-		}
+		isGroup = isGroup || 'group' === token.type;
+		data[token.type].push(token.value);
 	});
 
 	// If there is no text but a comment, replace the two
@@ -94,10 +129,11 @@ function _handleAddress(tokens) {
 
 	if (isGroup) {
 		// http://tools.ietf.org/html/rfc2822#appendix-A.1.3
-		data.text = data.text.join(' ');
 		addresses.push({
-			name: data.text || address && address.name,
-			group: data.group.length ? addressparser(data.group.join(',')) : []
+			address: '',
+			name: data.text.join(' ').trim(),
+			group: addressparser(data.group.join(','))
+//			,comment: data.comment.join(' ').trim()
 		});
 	} else {
 		// If no address was found, try to detect one from regular text
@@ -128,7 +164,7 @@ function _handleAddress(tokens) {
 			}
 		}
 
-		// If there's still is no text but a comment exixts, replace the two
+		// If there's still is no text but a comment exists, replace the two
 		if (!data.text.length && data.comment.length) {
 			data.text = data.comment;
 			data.comment = [];
@@ -139,119 +175,27 @@ function _handleAddress(tokens) {
 			data.text = data.text.concat(data.address.splice(1));
 		}
 
-		// Join values with spaces
-		data.text = data.text.join(' ');
-		data.address = data.address.join(' ');
-
-		if (!data.address && isGroup) {
-			return [];
-		}
 		address = {
-			address: data.address || data.text || '',
-			name: data.text || data.address || ''
+			// Join values with spaces
+			address: data.address.join(' ').trim(),
+			name: data.text.join(' ').trim()
+//			,comment: data.comment.join(' ').trim()
 		};
 
 		if (address.address === address.name) {
-			if ((address.address || '').match(/@/)) {
+			if (address.address.includes('@')) {
 				address.name = '';
 			} else {
 				address.address = '';
 			}
 		}
 
+//		address.address = address.address.replace(/^[<]+(.*)[>]+$/g, '$1');
+
 		addresses.push(address);
 	}
 
 	return addresses;
-}
-
-/*
- * Operator tokens and which tokens are expected to end the sequence
- */
-var OPERATORS = {
-  '"': '"',
-  '(': ')',
-  '<': '>',
-  ',': '',
-  // Groups are ended by semicolons
-  ':': ';',
-  // Semicolons are not a legal delimiter per the RFC2822 grammar other
-  // than for terminating a group, but they are also not valid for any
-  // other use in this context.  Given that some mail clients have
-  // historically allowed the semicolon as a delimiter equivalent to the
-  // comma in their UI, it makes sense to treat them the same as a comma
-  // when used outside of a group.
-  ';': ''
-};
-
-class Tokenizer
-{
-	constructor(str) {
-		this.str = (str || '').toString();
-		this.operatorCurrent = '';
-		this.operatorExpecting = '';
-		this.node = null;
-		this.escaped = false;
-		this.list = [];
-	}
-
-	tokenize() {
-		var list = [];
-		[...this.str].forEach(c => this.checkChar(c));
-
-		this.list.forEach(node => {
-			node.value = (node.value || '').toString().trim();
-			node.value && list.push(node);
-		});
-
-		return list;
-	}
-
-	checkChar(chr) {
-		if ((chr in OPERATORS || chr === '\\') && this.escaped) {
-			this.escaped = false;
-		} else if (this.operatorExpecting && chr === this.operatorExpecting) {
-			this.node = {
-				type: 'operator',
-				value: chr
-			};
-			this.list.push(this.node);
-			this.node = null;
-			this.operatorExpecting = '';
-			this.escaped = false;
-			return;
-		} else if (!this.operatorExpecting && chr in OPERATORS) {
-			this.node = {
-				type: 'operator',
-				value: chr
-			};
-			this.list.push(this.node);
-			this.node = null;
-			this.operatorExpecting = OPERATORS[chr];
-			this.escaped = false;
-			return;
-		}
-
-		if (!this.escaped && chr === '\\') {
-			this.escaped = true;
-			return;
-		}
-
-		if (!this.node) {
-			this.node = {
-				type: 'text',
-				value: ''
-			};
-			this.list.push(this.node);
-		}
-
-		if (this.escaped && chr !== '\\') {
-			this.node.value += '\\';
-		}
-
-		this.node.value += chr;
-		this.escaped = false;
-	}
 }
 
 export class EmailModel extends AbstractModel {
@@ -260,12 +204,11 @@ export class EmailModel extends AbstractModel {
 	 * @param {string=} name = ''
 	 * @param {string=} dkimStatus = 'none'
 	 */
-	constructor(email = '', name = '', dkimStatus = 'none') {
+	constructor(email, name, dkimStatus = 'none') {
 		super();
-		this.email = email;
-		this.name = name;
+		this.email = email || '';
+		this.name = name || '';
 		this.dkimStatus = dkimStatus;
-
 		this.cleanup();
 	}
 
@@ -277,7 +220,7 @@ export class EmailModel extends AbstractModel {
 	static reviveFromJson(json) {
 		const email = super.reviveFromJson(json);
 		email?.cleanup();
-		return email;
+		return email?.validate() ? email : null;
 	}
 
 	/**
@@ -340,46 +283,5 @@ export class EmailModel extends AbstractModel {
 			}
 		}
 		return result || name;
-	}
-
-	static splitEmailLine(line) {
-		const result = [];
-		let exists = false;
-		addressparser(line).forEach(item => {
-			const address = item.address
-				? new EmailModel(item.address.replace(/^[<]+(.*)[>]+$/g, '$1'), item.name || '')
-				: null;
-
-			if (address?.email) {
-				exists = true;
-			}
-
-			result.push(address ? address.toLine() : item.name);
-		});
-		return exists ? result : null;
-	}
-
-	static parseEmailLine(line) {
-		return addressparser(line).map(item =>
-			item.address ? new EmailModel(item.address.replace(/^[<]+(.*)[>]+$/g, '$1'), item.name || '') : null
-		).filter(v => v);
-	}
-
-	/**
-	 * @param {string} emailAddress
-	 * @returns {boolean}
-	 */
-	parse(emailAddress) {
-		emailAddress = emailAddress.trim();
-		if (emailAddress) {
-			const result = addressparser(emailAddress);
-			if (result.length) {
-				this.name = result[0].name || '';
-				this.email = result[0].address || '';
-				this.cleanup();
-				return true;
-			}
-		}
-		return false;
 	}
 }
