@@ -314,8 +314,8 @@ populateMessageBody = (oMessage, popup) => {
 							messagesDom.append(body);
 
 							popup || (oMessage.body.hidden = false);
-							popup && oMessage.viewPopupMessage();
 						}
+						popup && oMessage.viewPopupMessage();
 
 						MessageFlagsCache.initMessage(oMessage);
 						if (oMessage.isUnseen()) {
