@@ -67,7 +67,7 @@ const
 	 * @returns {string}
 	 */
 	emailArrayToStringLineHelper = (aList, bFriendly) =>
-		aList.map(item => item.toLine(bFriendly)).join(', '),
+		aList.filter(item => item.email).map(item => item.toLine(bFriendly)).join(', '),
 
 	reloadDraftFolder = () => {
 		const draftsFolder = FolderUserStore.draftsFolder();
@@ -200,10 +200,6 @@ export class ComposePopupView extends AbstractViewPopup {
 		};
 
 		this.oEditor = null;
-		this.aDraftInfo = null;
-		this.sInReplyTo = '';
-		this.bFromDraft = false;
-		this.sReferences = '';
 
 		this.sLastFocusedField = 'to';
 
@@ -849,33 +845,17 @@ export class ComposePopupView extends AbstractViewPopup {
 					break;
 
 				case ComposeType.Draft:
-					this.to(emailArrayToStringLineHelper(message.to));
-					this.cc(emailArrayToStringLineHelper(message.cc));
-					this.bcc(emailArrayToStringLineHelper(message.bcc));
-					this.replyTo(emailArrayToStringLineHelper(message.replyTo));
-
 					this.bFromDraft = true;
-
 					this.draftsFolder(message.folder);
 					this.draftUid(message.uid);
-
-					this.subject(sSubject);
-					this.prepareMessageAttachments(message, msgComposeType);
-
-					this.aDraftInfo = 3 === arrayLength(aDraftInfo) ? aDraftInfo : null;
-					this.sInReplyTo = message.inReplyTo;
-					this.sReferences = message.references;
-					break;
-
+					// fallthrough
 				case ComposeType.EditAsNew:
 					this.to(emailArrayToStringLineHelper(message.to));
 					this.cc(emailArrayToStringLineHelper(message.cc));
 					this.bcc(emailArrayToStringLineHelper(message.bcc));
 					this.replyTo(emailArrayToStringLineHelper(message.replyTo));
-
 					this.subject(sSubject);
 					this.prepareMessageAttachments(message, msgComposeType);
-
 					this.aDraftInfo = 3 === arrayLength(aDraftInfo) ? aDraftInfo : null;
 					this.sInReplyTo = message.inReplyTo;
 					this.sReferences = message.references;
