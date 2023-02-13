@@ -220,22 +220,13 @@ export class EmailModel extends AbstractModel {
 	static reviveFromJson(json) {
 		const email = super.reviveFromJson(json);
 		email?.cleanup();
-		return email?.validate() ? email : null;
-	}
-
-	/**
-	 * @returns {void}
-	 */
-	clear() {
-		this.email = '';
-		this.name = '';
-		this.dkimStatus = 'none';
+		return email?.valid() ? email : null;
 	}
 
 	/**
 	 * @returns {boolean}
 	 */
-	validate() {
+	valid() {
 		return this.name || this.email;
 	}
 
@@ -246,14 +237,6 @@ export class EmailModel extends AbstractModel {
 		if (this.name === this.email) {
 			this.name = '';
 		}
-	}
-
-	/**
-	 * @param {string} query
-	 * @returns {boolean}
-	 */
-	search(query) {
-		return (this.name + ' ' + this.email).toLowerCase().includes(query.toLowerCase());
 	}
 
 	/**
