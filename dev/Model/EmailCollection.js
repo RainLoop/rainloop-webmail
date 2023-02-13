@@ -40,7 +40,7 @@ export class EmailCollectionModel extends AbstractCollectionModel
 		if (str) {
 			let items = {}, key;
 			addressparser(str).forEach(item => {
-				item = new EmailModel(item.address, item.name);
+				item = new EmailModel(item.email, item.name);
 				// Make them unique
 				key = item.email || item.name;
 				if (key && (item.name || !items[key])) {

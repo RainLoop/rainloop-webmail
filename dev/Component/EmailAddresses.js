@@ -5,15 +5,15 @@ const contentType = 'snappymail/emailaddress',
 	getAddressKey = li => li?.emailaddress?.key,
 
 	parseEmailLine = line => addressparser(line).map(item =>
-			(item.name || item.address)
-				? new EmailModel(item.address, item.name) : null
+			(item.name || item.email)
+				? new EmailModel(item.email, item.name) : null
 		).filter(v => v),
 	splitEmailLine = line => {
 		const result = [];
 		let exists = false;
 		addressparser(line).forEach(item => {
-			const address = (item.name || item.address)
-				? new EmailModel(item.address, item.name)
+			const address = (item.name || item.email)
+				? new EmailModel(item.email, item.name)
 				: null;
 
 			if (address?.email) {

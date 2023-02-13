@@ -59,7 +59,7 @@ const
 
 	base64_encode = text => btoa(unescape(encodeURIComponent(text))).match(/.{1,76}/g).join('\r\n'),
 
-	getEmail = value => addressparser(value)[0]?.address || false,
+	getEmail = value => addressparser(value)[0]?.email || false,
 
 	/**
 	 * @param {Array} aList

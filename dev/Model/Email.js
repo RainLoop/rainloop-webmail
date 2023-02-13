@@ -77,7 +77,7 @@ export function addressparser(str) {
 			} else {
 				endOperator = endOperator ? '' : OPERATORS[chr];
 				if ('<' === chr) {
-					node.type = 'address';
+					node.type = 'email';
 				} else if ('(' === chr) {
 					node.type = 'comment';
 				} else if (':' === chr) {
@@ -94,7 +94,7 @@ export function addressparser(str) {
 	pushAddress();
 
 	return addresses;
-//	return addresses.map(item => (item.name || item.address) ? new EmailModel(item.address, item.name) : null).filter(v => v);
+//	return addresses.map(item => (item.name || item.email) ? new EmailModel(item.email, item.name) : null).filter(v => v);
 }
 
 /**
@@ -109,13 +109,12 @@ function _handleAddress(tokens) {
 		address = {},
 		addresses = [],
 		data = {
-			address: [],
+			email: [],
 			comment: [],
 			group: [],
 			text: []
 		};
 
-	// Filter out <addresses>, (comments) and regular text
 	tokens.forEach(token => {
 		isGroup = isGroup || 'group' === token.type;
 		data[token.type].push(token.value);
@@ -129,68 +128,71 @@ function _handleAddress(tokens) {
 
 	if (isGroup) {
 		// http://tools.ietf.org/html/rfc2822#appendix-A.1.3
+/*
 		addresses.push({
-			address: '',
+			email: '',
 			name: data.text.join(' ').trim(),
 			group: addressparser(data.group.join(','))
 //			,comment: data.comment.join(' ').trim()
 		});
+*/
+		addresses = addresses.concat(addressparser(data.group.join(',')));
 	} else {
 		// If no address was found, try to detect one from regular text
-		if (!data.address.length && data.text.length) {
+		if (!data.email.length && data.text.length) {
 			var i = data.text.length;
 			while (i--) {
 				if (data.text[i].match(/^[^@\s]+@[^@\s]+$/)) {
-					data.address = data.text.splice(i, 1);
+					data.email = data.text.splice(i, 1);
 					break;
 				}
 			}
 
 			// still no address
-			if (!data.address.length) {
+			if (!data.email.length) {
 				i = data.text.length;
 				while (i--) {
 					data.text[i] = data.text[i].replace(/\s*\b[^@\s]+@[^@\s]+\b\s*/, address => {
-						if (!data.address.length) {
-							data.address = [address.trim()];
+						if (!data.email.length) {
+							data.email = [address.trim()];
 							return '';
 						}
 						return address.trim();
 					});
-					if (data.address.length) {
+					if (data.email.length) {
 						break;
 					}
 				}
 			}
 		}
 
-		// If there's still is no text but a comment exists, replace the two
+		// If there's still no text but a comment exists, replace the two
 		if (!data.text.length && data.comment.length) {
 			data.text = data.comment;
 			data.comment = [];
 		}
 
 		// Keep only the first address occurence, push others to regular text
-		if (data.address.length > 1) {
-			data.text = data.text.concat(data.address.splice(1));
+		if (data.email.length > 1) {
+			data.text = data.text.concat(data.email.splice(1));
 		}
 
 		address = {
 			// Join values with spaces
-			address: data.address.join(' ').trim(),
+			email: data.email.join(' ').trim(),
 			name: data.text.join(' ').trim()
 //			,comment: data.comment.join(' ').trim()
 		};
 
-		if (address.address === address.name) {
-			if (address.address.includes('@')) {
+		if (address.email === address.name) {
+			if (address.email.includes('@')) {
 				address.name = '';
 			} else {
-				address.address = '';
+				address.email = '';
 			}
 		}
 
-//		address.address = address.address.replace(/^[<]+(.*)[>]+$/g, '$1');
+//		address.email = address.email.replace(/^[<]+(.*)[>]+$/g, '$1');
 
 		addresses.push(address);
 	}
