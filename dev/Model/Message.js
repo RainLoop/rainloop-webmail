@@ -334,11 +334,14 @@ export class MessageModel extends AbstractModel {
 	}
 
 	viewPopupMessage(print) {
-		const timeStampInUTC = this.dateTimeStampInUTC() || 0,
+		const
+			timeStampInUTC = this.dateTimeStampInUTC() || 0,
 			ccLine = this.cc.toString(),
 			bccLine = this.bcc.toString(),
 			m = 0 < timeStampInUTC ? new Date(timeStampInUTC * 1000) : null,
-			win = open(''),
+			win = open('', 'sm-msg-'+this.requestHash
+				/*,newWindow ? 'innerWidth=' + elementById('V-MailMessageView').clientWidth : ''*/
+			),
 			sdoc = win.document,
 			subject = encodeHtml(this.subject()),
 			mode = this.isHtml() ? 'div' : 'pre',
