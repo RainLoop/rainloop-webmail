@@ -25,6 +25,8 @@ import { LanguageStore } from 'Stores/Language';
 import Remote from 'Remote/User/Fetch';
 
 const
+	msgHtml = msg => cleanHtml(msg.html(), msg.attachments()),
+
 	toggleTag = (message, keyword) => {
 		const lower = keyword.toLowerCase(),
 			flags = message.flags,
@@ -291,7 +293,7 @@ export class MessageModel extends AbstractModel {
 	viewHtml() {
 		const body = this.body;
 		if (body && this.html()) {
-			let result = cleanHtml(this.html(), this.attachments());
+			let result = msgHtml(this);
 			this.hasExternals(result.hasExternals);
 			this.hasImages(body.rlHasImages = !!result.hasExternals);
 
@@ -460,7 +462,7 @@ export class MessageModel extends AbstractModel {
 			);
 			return clone.innerHTML;
 		}
-		let result = cleanHtml(this.html(), this.attachments())
+		let result = msgHtml(this);
 		return result.html || plainToHtml(this.plain());
 	}
 

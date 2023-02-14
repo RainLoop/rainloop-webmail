@@ -276,7 +276,7 @@ populateMessageBody = (oMessage, popup) => {
 						MessageUserStore.error('');
 						const messagesDom = MessageUserStore.bodiesDom();
 						if (messagesDom) {
-							let id = 'rl-msg-' + oMessage.hash.replace(/[^a-zA-Z0-9]/g, ''),
+							let id = 'rl-msg-' + oMessage.hash,
 								body = elementById(id);
 							if (body) {
 								oMessage.body = body;
