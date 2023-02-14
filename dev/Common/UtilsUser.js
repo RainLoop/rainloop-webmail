@@ -258,36 +258,23 @@ populateMessageBody = (oMessage, popup) => {
 				}
 			} else {
 				let json = oData?.Result;
-
-				if (
-					json &&
-					MessageModel.validJson(json) &&
-					oMessage.folder === json.folder
+				if (json
+				 && MessageModel.validJson(json)
+				 && oMessage.hash === json.hash
+//				 && oMessage.folder === json.folder
+//				 && oMessage.uid == json.uid
+				 && oMessage.revivePropertiesFromJson(json)
 				) {
-					const threads = oMessage.threads(),
-						isNew = !popup && oMessage.uid != json.uid && threads.includes(json.uid),
-						messagesDom = MessageUserStore.bodiesDom();
-					if (isNew) {
-						oMessage = MessageModel.reviveFromJson(json);
-						if (oMessage) {
-							oMessage.threads(threads);
-							MessageFlagsCache.initMessage(oMessage);
-
-							// Set clone
-							oMessage = MessageModel.fromMessageListItem(oMessage);
-						}
-						MessageUserStore.message(oMessage);
-					}
-
-					if (oMessage && oMessage.uid == json.uid) {
-						popup || MessageUserStore.error('');
 /*
-						if (bCached) {
-							delete json.flags;
-						}
+					if (bCached) {
+						delete json.flags;
+					}
 */
-						isNew || oMessage.revivePropertiesFromJson(json);
-
+					if (popup) {
+						oMessage.viewPopupMessage();
+					} else {
+						MessageUserStore.error('');
+						const messagesDom = MessageUserStore.bodiesDom();
 						if (messagesDom) {
 							let id = 'rl-msg-' + oMessage.hash.replace(/[^a-zA-Z0-9]/g, ''),
 								body = elementById(id);
@@ -313,42 +300,16 @@ populateMessageBody = (oMessage, popup) => {
 
 							messagesDom.append(body);
 
-							popup || (oMessage.body.hidden = false);
+							oMessage.body.hidden = false;
 						}
-						popup && oMessage.viewPopupMessage();
+					}
 
-						MessageFlagsCache.initMessage(oMessage);
-						if (oMessage.isUnseen()) {
-							MessageUserStore.MessageSeenTimer = setTimeout(
-								() => MessagelistUserStore.setAction(oMessage.folder, MessageSetAction.SetSeen, [oMessage]),
-								SettingsUserStore.messageReadDelay() * 1000 // seconds
-							);
-						}
-
-						if (isNew) {
-							let selectedMessage = MessagelistUserStore.selectedMessage();
-							if (
-								selectedMessage &&
-								(oMessage.folder !== selectedMessage.folder || oMessage.uid != selectedMessage.uid)
-							) {
-								MessagelistUserStore.selectedMessage(null);
-								if (1 === MessagelistUserStore.length) {
-									MessagelistUserStore.focusedMessage(null);
-								}
-							} else if (!selectedMessage) {
-								selectedMessage = MessagelistUserStore.find(
-									subMessage =>
-										subMessage &&
-										subMessage.folder === oMessage.folder &&
-										subMessage.uid == oMessage.uid
-								);
-
-								if (selectedMessage) {
-									MessagelistUserStore.selectedMessage(selectedMessage);
-									MessagelistUserStore.focusedMessage(selectedMessage);
-								}
-							}
-						}
+					MessageFlagsCache.initMessage(oMessage);
+					if (oMessage.isUnseen()) {
+						MessageUserStore.MessageSeenTimer = setTimeout(
+							() => MessagelistUserStore.setAction(oMessage.folder, MessageSetAction.SetSeen, [oMessage]),
+							SettingsUserStore.messageReadDelay() * 1000 // seconds
+						);
 					}
 				}
 			}

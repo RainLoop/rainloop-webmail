@@ -5,7 +5,7 @@ import { i18n } from 'Common/Translator';
 
 import { doc, SettingsGet } from 'Common/Globals';
 import { encodeHtml, plainToHtml, htmlToPlain, cleanHtml } from 'Common/Html';
-import { isFunction, forEachObjectEntry } from 'Common/Utils';
+import { forEachObjectEntry } from 'Common/Utils';
 import { serverRequestRaw, proxy } from 'Common/Links';
 import { addObservablesTo, addComputablesTo } from 'External/ko';
 
@@ -212,6 +212,7 @@ export class MessageModel extends AbstractModel {
 //			this.attachments(AttachmentCollectionModel.reviveFromJson(json.attachments, this.foundCIDs));
 
 			this.computeSenderEmail();
+			return true;
 		}
 	}
 
@@ -353,9 +354,7 @@ export class MessageModel extends AbstractModel {
 		);
 		sdoc.close();
 
-		if (print) {
-			setTimeout(() => win.print(), 100);
-		}
+		print && setTimeout(() => win.print(), 100);
 	}
 
 	/**
@@ -377,24 +376,21 @@ export class MessageModel extends AbstractModel {
 	}
 
 	/**
-	 * @param {MessageModel} message
 	 * @returns {MessageModel}
-	 */
-	static fromMessageListItem(message) {
+	 *//*
+	clone() {
 		let self = new MessageModel();
-		if (message) {
-			// Clone message values
-			forEachObjectEntry(message, (key, value) => {
-				if (ko.isObservable(value)) {
-					ko.isComputed(value) || self[key](value());
-				} else if (!isFunction(value)) {
-					self[key] = value;
-				}
-			});
-			self.computeSenderEmail();
-		}
+		// Clone message values
+		forEachObjectEntry(this, (key, value) => {
+			if (ko.isObservable(value)) {
+				ko.isComputed(value) || self[key](value());
+			} else if (!isFunction(value)) {
+				self[key] = value;
+			}
+		});
+		self.computeSenderEmail();
 		return self;
-	}
+	}*/
 
 	showExternalImages(regex) {
 		const body = this.body;

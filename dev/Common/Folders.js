@@ -129,7 +129,7 @@ folderInformation = (folder, list) => {
 						const oldHash = folderFromCache.hash,
 							unreadCountChange = (folderFromCache.unreadEmails() !== result.unreadEmails);
 
-//							folderFromCache.revivePropertiesFromJson(result);
+//						folderFromCache.revivePropertiesFromJson(result);
 						folderFromCache.expires = Date.now();
 						folderFromCache.uidNext = result.uidNext;
 						folderFromCache.hash = result.hash;
@@ -151,9 +151,11 @@ folderInformation = (folder, list) => {
 						if (!oldHash || unreadCountChange || result.hash !== oldHash) {
 							if (folderFromCache.fullName === FolderUserStore.currentFolderFullName()) {
 								MessagelistUserStore.reload();
+/*
 							} else if (getFolderInboxName() === folderFromCache.fullName) {
 //								Remote.messageList(null, {folder: getFolderFromCacheList(getFolderInboxName())}, true);
 								Remote.messageList(null, {folder: getFolderInboxName()}, true);
+*/
 							}
 						}
 					}

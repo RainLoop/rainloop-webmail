@@ -235,7 +235,8 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.selector.on('ItemSelect', message => {
 			if (message) {
-				populateMessageBody(MessageModel.fromMessageListItem(message));
+//				populateMessageBody(message.clone());
+				populateMessageBody(message);
 			} else {
 				MessageUserStore.message(null);
 			}
