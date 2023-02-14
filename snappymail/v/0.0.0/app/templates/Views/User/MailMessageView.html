@@ -31,7 +31,7 @@
 	</div>
 
 	<!-- ko if: message -->
-	<div class="b-message" data-bind="i18nUpdate: message, css: message().lineAsCss(0)">
+	<div class="b-message" data-bind="i18nUpdate: message, css: message()?.lineAsCss(0)">
 		<div class="message-fixed-button-toolbar">
 			<a class="btn btn-success buttonEdit fontastic hide-mobile" data-bind="visible: isDraftFolder(), command: editCommand">🖉</a>
 			<div class="btn-group" style="margin-right: -8px; display: inline;">
