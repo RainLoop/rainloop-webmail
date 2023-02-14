@@ -33,7 +33,7 @@ export function MimeToMessage(data, message)
 				attachment.fileNameExt = attachment.fileName.replace(/^.+(\.[a-z]+)$/, '$1');
 				attachment.fileType = FileInfo.getType('', type.value);
 				attachment.url = part.dataUrl;
-				attachment.friendlySize = FileInfo.friendlySize(part.body.length);
+				attachment.estimatedSize = part.body.length;
 /*
 				attachment.isThumbnail = false;
 				attachment.contentLocation = '';
