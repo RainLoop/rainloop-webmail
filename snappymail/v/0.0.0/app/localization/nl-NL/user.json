@@ -403,7 +403,7 @@
 		"PREFER_HTML": "Geef de voorkeur aan HTML boven platte tekst",
 		"PREFER_HTML_INFO": "Berichten komen soms in beide formaten. Deze optie bepaalt of u het HTML-gedeelte of het platte tekstgedeelte wilt weergeven.",
 		"REMOVE_COLORS": "Verwijder achtergrond- en tekstkleuren uit het bericht",
-		"ALLOW_STYLES": "Allow <style> CSS",
+		"ALLOW_STYLES": "CSS <style> toestaan",
 		"MESSAGE_PER_PAGE": "Berichten op pagina",
 		"CHECK_MAIL_INTERVAL": "Controleer mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Bericht markeren als gelezen na",

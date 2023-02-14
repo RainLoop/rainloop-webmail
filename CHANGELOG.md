@@ -1,3 +1,33 @@
+## 2.26.1 – 2023-02-14
+
+## Added
+- Option to allow `<style>` in messages (beta)
+- Message in new tab/window was missing BCC
+
+## Changed
+- Don't clone message for viewing, so that there is instant interaction with messagelist item
+- emailArrayToStringLineHelper() now filters addresses without email address
+- Cleanup EmailModel and better email address parsing and handling
+- Workaround "server connection error"
+  [#936](https://github.com/the-djmaze/snappymail/pull/936)
+- Cleanup AbstractViewPopup handling
+- Italian translation by @lota
+  [#948](https://github.com/the-djmaze/snappymail/pull/948)
+- Replace Element.fromHTML() with createElement()
+
+## Fixed
+- New subfolder not visible
+  [#937](https://github.com/the-djmaze/snappymail/pull/937)
+- OpenPGP decrypted attachments `friendlySize` not a function
+- Message @media print was broken due to new `display:flex`
+- addressparser() didn't handle groups properly
+- middleclick in messages list failed when messagesDom not yet initialized
+- Cannot open messages that have an email address without an @ in the From header
+  [#950](https://github.com/the-djmaze/snappymail/pull/950)
+- CSS don't display:flex when `[hidden]`
+- Default theme handling by @Niveshkrishna
+
+
 ## 2.26.0 – 2023-02-10
 
 ## Added
