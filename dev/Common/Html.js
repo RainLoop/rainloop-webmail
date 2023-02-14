@@ -133,7 +133,7 @@ export const
 			},
 			allowedAttributes = [
 				// defaults
-				'name', 'class',
+				'name',
 				'dir', 'lang', 'style', 'title',
 				'background', 'bgcolor', 'alt', 'height', 'width', 'src', 'href',
 				'border', 'bordercolor', 'charset', 'direction',
@@ -171,6 +171,12 @@ export const
 				'A','B','EM','I','SPAN','STRONG'
 			];
 
+		if (SettingsUserStore.allowStyles()) {
+			allowedAttributes.push('class');
+		} else {
+			msgId = 0;
+		}
+
 		tpl.innerHTML = html
 			// Strip Microsoft comments
 			.replace(/<!--\[if[\s\S]*?endif\]-->/gi, '')
@@ -205,8 +211,11 @@ export const
 			if ('STYLE' === name) {
 				if (msgId) {
 					let css = new CSS().parse(oElement.textContent);
-					css.applyNamespace(msgId);
+					css.applyNamespace(msgId, 'msg-');
 					oElement.textContent = css;
+					if (SettingsUserStore.removeColors()) {
+						oElement.textContent = oElement.textContent.replace(/(background-)color:[^};]+/g, '');
+					}
 				} else {
 					oElement.remove();
 				}
@@ -225,29 +234,23 @@ export const
 				oElement.remove();
 				return;
 			}
-/*
-			// Idea to allow CSS
-			if ('STYLE' === name) {
-				msgId = '#rl-msg-061eb4d647771be4185943ce91f0039d';
-				oElement.textContent = oElement.textContent
-					.replace(/[^{}]+{/g, m => msgId + ' ' + m.replace(',', ', '+msgId+' '))
-					.replace(/(background-)color:[^};]+/g, '');
-				return;
-			}
-*/
+
 			const aAttrsForRemove = [],
+				className = oElement.className,
 				hasAttribute = name => oElement.hasAttribute(name),
 				getAttribute = name => hasAttribute(name) ? oElement.getAttribute(name).trim() : '',
 				setAttribute = (name, value) => oElement.setAttribute(name, value),
 				delAttribute = name => oElement.removeAttribute(name);
 
-			if ('mail-body' === oElement.className) {
+			if ('mail-body' === className) {
 				forEachObjectEntry(tasks, (name, cb) => {
 					if (hasAttribute(name)) {
 						cb(getAttribute(name), oElement);
 						delAttribute(name);
 					}
 				});
+			} else if (msgId && className) {
+				oElement.className = className.replace(/(^|\s+)/g, '$1msg-');
 			}
 
 			if (oElement.hasAttributes()) {

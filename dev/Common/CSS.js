@@ -27,11 +27,13 @@ export class CSS
 		 * Given css array, parses it and then for every selector,
 		 * prepends namespace to prevent css collision issues
 		 */
-		css.applyNamespace = (namespace) => css.forEach(obj => {
+		css.applyNamespace = (namespace, prefix) => css.forEach(obj => {
 			if (obj.type === 'media') {
-				obj.subStyles.applyNamespace(namespace);
+				obj.subStyles.applyNamespace(namespace, prefix);
 			} else {
-				obj.selector = obj.selector.split(',').map(selector => namespace + ' ' + selector).join(',');
+				obj.selector = obj.selector.split(',').map(selector =>
+					namespace + ' ' + selector.replace('.', '.'+prefix)
+				).join(',');
 			}
 		});
 

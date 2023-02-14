@@ -25,9 +25,7 @@ import { LanguageStore } from 'Stores/Language';
 import Remote from 'Remote/User/Fetch';
 
 const
-	msgHtml = msg => cleanHtml(msg.html(), msg.attachments(),
-		SettingsUserStore.allowStyles() ? '#rl-msg-' + msg.hash : ''
-	),
+	msgHtml = msg => cleanHtml(msg.html(), msg.attachments(), '#rl-msg-' + msg.hash),
 
 	toggleTag = (message, keyword) => {
 		const lower = keyword.toLowerCase(),
