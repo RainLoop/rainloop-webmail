@@ -403,6 +403,7 @@
 		"PREFER_HTML": "Usa HTML predefinito anziché formato testo",
 		"PREFER_HTML_INFO": "Il messaggio a volte contiene entrambi i formati. Questa opzione agisce sulla visualizzazione del messaggio in HTML o della versione in formato testo.",
 		"REMOVE_COLORS": "Rimuovi lo sfondo e i colori del testo dal messaggio",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "Messaggi per pagina",
 		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Contrassegna il messaggio come letto dopo",

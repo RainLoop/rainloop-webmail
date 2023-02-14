@@ -689,6 +689,7 @@ class Actions
 					'ViewImages' => 'ask',
 					'ViewImagesWhitelist' => '',
 					'RemoveColors' => (bool) $oConfig->Get('defaults', 'remove_colors', false),
+					'AllowStyles' => false,
 					'ListInlineAttachments' => false,
 					'CollapseBlockquotes' => true,
 					'MaxBlockquotesLevel' => 0,
@@ -801,6 +802,7 @@ class Actions
 					$aResult['ViewImages'] = $oSettings->GetConf('ViewImages', $show_images ? 'always' : 'ask');
 					$aResult['ViewImagesWhitelist'] = $oSettings->GetConf('ViewImagesWhitelist', '');
 					$aResult['RemoveColors'] = (bool)$oSettings->GetConf('RemoveColors', $aResult['RemoveColors']);
+					$aResult['AllowStyles'] = (bool)$oSettings->GetConf('AllowStyles', $aResult['AllowStyles']);
 					$aResult['ListInlineAttachments'] = (bool)$oSettings->GetConf('ListInlineAttachments', $aResult['ListInlineAttachments']);
 					$aResult['CollapseBlockquotes'] = (bool)$oSettings->GetConf('CollapseBlockquotes', $aResult['CollapseBlockquotes']);
 					$aResult['MaxBlockquotesLevel'] = (int)$oSettings->GetConf('MaxBlockquotesLevel', $aResult['MaxBlockquotesLevel']);

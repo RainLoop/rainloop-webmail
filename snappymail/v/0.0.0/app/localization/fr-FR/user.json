@@ -403,6 +403,7 @@
 		"PREFER_HTML": "Préférer le HTML au texte brut",
 		"PREFER_HTML_INFO": "Les messages arrivent parfois dans les deux formats. Cette option contrôle si vous voulez que la partie HTML ou la partie texte brut soit affichée.",
 		"REMOVE_COLORS": "Supprimer les couleurs d'arrière-plan et de texte du message",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "Messages par page",
 		"CHECK_MAIL_INTERVAL": "Vérifier le messagerie à l'intervalle",
 		"MARK_MESSAGE_READ_AFTER": "Marquer le message comme lu après",

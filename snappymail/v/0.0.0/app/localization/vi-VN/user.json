@@ -403,6 +403,7 @@
 		"PREFER_HTML": "Nghiêng về lựa chọn HTML hơn dạng chữ viết thường",
 		"PREFER_HTML_INFO": "Đôi lúc thư nhận được sẽ ở cả hai dạng. Lựa chọn này cho phép bạn chỉnh phần HTML hay phần chữ viết thường trong thư bạn muốn hiển thị lên.",
 		"REMOVE_COLORS": "Loại bỏ hình nền và màu chữ trong phần thân của thư",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "Số thư hiển thị trên trang",
 		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Đánh dấu thư là để đọc sau",

@@ -1,4 +1,5 @@
 import { createElement } from 'Common/Globals';
+import { CSS } from 'Common/CSS';
 import { forEachObjectEntry, pInt } from 'Common/Utils';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
@@ -103,7 +104,7 @@ export const
 	 * @param {string} text
 	 * @returns {string}
 	 */
-	cleanHtml = (html, oAttachments) => {
+	cleanHtml = (html, oAttachments, msgId) => {
 		let aColor;
 		const
 			debug = false, // Config()->Get('debug', 'enable', false);
@@ -132,7 +133,7 @@ export const
 			},
 			allowedAttributes = [
 				// defaults
-				'name',
+				'name', 'class',
 				'dir', 'lang', 'style', 'title',
 				'background', 'bgcolor', 'alt', 'height', 'width', 'src', 'href',
 				'border', 'bordercolor', 'charset', 'direction',
@@ -160,7 +161,7 @@ export const
 				'colspan', 'rowspan', 'headers'
 			],
 			disallowedTags = [
-				'STYLE','SVG','SCRIPT','TITLE','LINK','BASE','META',
+				'SVG','SCRIPT','TITLE','LINK','BASE','META',
 				'INPUT','OUTPUT','SELECT','BUTTON','TEXTAREA',
 				'BGSOUND','KEYGEN','SOURCE','OBJECT','EMBED','APPLET','IFRAME','FRAME','FRAMESET','VIDEO','AUDIO','AREA','MAP'
 				// Not supported by <template> element
@@ -171,6 +172,8 @@ export const
 			];
 
 		tpl.innerHTML = html
+			// Strip Microsoft comments
+			.replace(/<!--\[if[\s\S]*?endif\]-->/gi, '')
 //			.replace(/<pre[^>]*>[\s\S]*?<\/pre>/gi, pre => pre.replace(/\n/g, '\n<br>'))
 			// Not supported by <template> element
 //			.replace(/<!doctype[^>]*>/gi, '')
@@ -198,6 +201,17 @@ export const
 		tpl.content.querySelectorAll('*').forEach(oElement => {
 			const name = oElement.tagName,
 				oStyle = oElement.style;
+
+			if ('STYLE' === name) {
+				if (msgId) {
+					let css = new CSS().parse(oElement.textContent);
+					css.applyNamespace(msgId);
+					oElement.textContent = css;
+				} else {
+					oElement.remove();
+				}
+				return;
+			}
 
 			// \MailSo\Base\HtmlUtils::ClearTags()
 			if (disallowedTags.includes(name)

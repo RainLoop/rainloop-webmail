@@ -403,6 +403,7 @@
 		"PREFER_HTML": "HTML gegenüber Klartext bevorzugen",
 		"PREFER_HTML_INFO": "Nachrichten können manchmal in beiden Formaten empfangen werden. Diese Option setzt, ob die Nachricht standardmäßig in HTML oder als Klartext angezeigt wird.",
 		"REMOVE_COLORS": "Entferne Hintergrund- und Textfarben aus der Nachricht",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "Nachrichten pro Seite",
 		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Nachricht als gelesen markieren nach",
