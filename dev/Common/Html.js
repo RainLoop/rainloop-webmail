@@ -113,12 +113,13 @@ const
 		 * Given css array, parses it and then for every selector,
 		 * prepends namespace to prevent css collision issues
 		 */
-		css.applyNamespace = (namespace, prefix) => css.forEach(obj => {
+		css.applyNamespace = namespace => css.forEach(obj => {
 			if (obj.type === 'media') {
-				obj.subStyles.applyNamespace(namespace, prefix);
+				obj.subStyles.applyNamespace(namespace);
 			} else {
 				obj.selector = obj.selector.split(',').map(selector =>
-					namespace + ' ' + selector.replace('.', '.'+prefix)
+					(namespace + ' .mail-body ' + selector.replace(/\./g, '.msg-'))
+					.replace(/\sbody/gi, '')
 				).join(',');
 			}
 		});
@@ -146,10 +147,7 @@ const
 					// Never have more than a single line break in a row
 					.replace(/\n+/, "\n")
 					// Remove :root and html
-					.split(/\s+/g).map(item => item
-						.replace(/^body$/, '.mail-body')
-						.replace(/^(:root|html)$/, '')
-					).join(' ').trim();
+					.split(/\s+/g).map(item => item.replace(/^(:root|html)$/, '')).join(' ').trim();
 
 				// determine the type
 				if (selector.includes('@media')) {
@@ -292,8 +290,8 @@ export const
 			if ('STYLE' === name) {
 				let css = msgId ? parseCSS(oElement.textContent) : [];
 				if (css.length) {
-					css.applyNamespace(msgId, 'msg-');
-					css = css.toString().replace('.msg-mail-body', '.mail-body');
+					css.applyNamespace(msgId);
+					css = css.toString();
 					if (SettingsUserStore.removeColors()) {
 						css = css.replace(/(background-)?color:[^};]+;?/g, '');
 					}
