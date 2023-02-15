@@ -227,7 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Aðvörun! Ekki er búið að senda inn öll viðhengi.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Ekki er búið að senda inn öll viðhengi.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
-		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"ALLOW_DRAFT_AUTOSAVE": "Vista drög sjálfkrafa",
 		"BUTTON_REQUEST_READ_RECEIPT": "Biðja um staðfestingu á lestri",
 		"BUTTON_MARK_AS_IMPORTANT": "Merkja sem mikilvægt",
 		"BUTTON_REQUEST_DSN": "Biðja um staðfestingu á afhendingu",

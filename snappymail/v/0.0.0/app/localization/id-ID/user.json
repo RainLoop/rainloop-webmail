@@ -227,7 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Peringatan! belum semua lampiran terunggah.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Belum semua lampiran terunggah.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
-		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"ALLOW_DRAFT_AUTOSAVE": "Simpan konsep otomatis",
 		"BUTTON_REQUEST_READ_RECEIPT": "Minta pemberitahuan telah dibaca",
 		"BUTTON_MARK_AS_IMPORTANT": "Tandai sebagai pesan penting",
 		"BUTTON_REQUEST_DSN": "Minta pemberitahuan berhasil kirim",

@@ -227,7 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Warnung! Nicht alle Anhänge wurden hochgeladen.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Es wurden noch nicht alle Anhänge hochgeladen.",
 		"ALLOW_SPELLCHECK": "Rechtschreibprüfung durch den Browser zulassen",
-		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"ALLOW_DRAFT_AUTOSAVE": "Entwurf automatisch speichern",
 		"BUTTON_REQUEST_READ_RECEIPT": "Empfangsbestätigung anfordern",
 		"BUTTON_MARK_AS_IMPORTANT": "Als Wichtig markieren",
 		"BUTTON_REQUEST_DSN": "Übermittlungsstatus anfordern",

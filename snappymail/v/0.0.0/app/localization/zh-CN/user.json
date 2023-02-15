@@ -227,7 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "注意！还有正在上传的附件。",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "还有附件正在上传。",
 		"ALLOW_SPELLCHECK": "启用浏览器拼写检查器",
-		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"ALLOW_DRAFT_AUTOSAVE": "自动保存草稿",
 		"BUTTON_REQUEST_READ_RECEIPT": "要求已读回执",
 		"BUTTON_MARK_AS_IMPORTANT": "标记为“重要”",
 		"BUTTON_REQUEST_DSN": "要求送达回执",

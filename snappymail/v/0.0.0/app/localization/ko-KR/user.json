@@ -227,7 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "경고! 모든 첨부파일이 업로드 되지 않습니다.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "첨부파일이 아직 업로드되지 않았습니다.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
-		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"ALLOW_DRAFT_AUTOSAVE": "작성 중인 메시지 자동 저장",
 		"BUTTON_REQUEST_READ_RECEIPT": "수신 확인 요청",
 		"BUTTON_MARK_AS_IMPORTANT": "중요 표시",
 		"BUTTON_REQUEST_DSN": "수신 확인 요청",

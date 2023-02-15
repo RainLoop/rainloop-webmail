@@ -227,7 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Внимание! Не всички прикачени файлове са качени.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Все още не са качени всички прикрепени файлове",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
-		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"ALLOW_DRAFT_AUTOSAVE": "Автоматично запазване на чернова",
 		"BUTTON_REQUEST_READ_RECEIPT": "Поискайте разписка за прочитане на съобщението",
 		"BUTTON_MARK_AS_IMPORTANT": "Отбележи като важно",
 		"BUTTON_REQUEST_DSN": "Уведомяване при доставка",

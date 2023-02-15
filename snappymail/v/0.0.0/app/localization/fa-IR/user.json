@@ -227,7 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "اخطار! همه پیوست‌ها هنوز بارگذاری نشده است.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "همه پیوست‌ها هنوز بارگذاری نشده است.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
-		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"ALLOW_DRAFT_AUTOSAVE": "ذخیره خودکار پیش‌نویس",
 		"BUTTON_REQUEST_READ_RECEIPT": "درخواست دریافت رسید خواندن",
 		"BUTTON_MARK_AS_IMPORTANT": "علامت زدن به عنوان مهم",
 		"BUTTON_REQUEST_DSN": "درخواست دریافت رسید تحویل درمقصد",

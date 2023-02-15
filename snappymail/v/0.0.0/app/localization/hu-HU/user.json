@@ -227,7 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Figyelem! Még nem lett feltöltve minden melléklet.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Még nem lett feltöltve minden melléklet.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
-		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"ALLOW_DRAFT_AUTOSAVE": "Piszkozat automatikus mentése",
 		"BUTTON_REQUEST_READ_RECEIPT": "Olvasási visszaigazolás kérése",
 		"BUTTON_MARK_AS_IMPORTANT": "Megjelölés fontosként",
 		"BUTTON_REQUEST_DSN": "Továbbítási visszaigazolás kérés",

@@ -227,7 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "警告！すべての添付ファイルがアップロードされているわけではありません。",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "すべての添付ファイルがアップロードされているわけではありません。",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
-		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"ALLOW_DRAFT_AUTOSAVE": "下書きを自動的に保存する",
 		"BUTTON_REQUEST_READ_RECEIPT": "開封確認を要求する",
 		"BUTTON_MARK_AS_IMPORTANT": "重要フラグをつける",
 		"BUTTON_REQUEST_DSN": "配信確認を要求する",

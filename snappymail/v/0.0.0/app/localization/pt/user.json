@@ -227,7 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Aviso! Nem todos os anexos foram carregados.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Ainda não foram carregados todos os anexos",
 		"ALLOW_SPELLCHECK": "Ativar corretor ortográfico do navegador",
-		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"ALLOW_DRAFT_AUTOSAVE": "Guardar rascunho automaticamente",
 		"BUTTON_REQUEST_READ_RECEIPT": "Pedir um recibo de leitura",
 		"BUTTON_MARK_AS_IMPORTANT": "Marcar como importante",
 		"BUTTON_REQUEST_DSN": "Pedir um recibo de entrega",

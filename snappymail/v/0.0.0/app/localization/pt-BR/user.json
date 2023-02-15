@@ -227,7 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Alerta! Nem todos os arquivos foram anexados.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Alguns anexos ainda não foram completamente enviados",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
-		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"ALLOW_DRAFT_AUTOSAVE": "Salvar automaticamente rascunho",
 		"BUTTON_REQUEST_READ_RECEIPT": "Pedir recibo de leitura",
 		"BUTTON_MARK_AS_IMPORTANT": "Marcar como importante",
 		"BUTTON_REQUEST_DSN": "Pedir recibo de entrega",

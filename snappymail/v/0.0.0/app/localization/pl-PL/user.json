@@ -227,7 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Ostrzeżenie! Nie wszystkie załączniki zostały przesłane na serwer.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Jeszcze nie wszystkie załączniki zostały przesłane na serwer.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
-		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatycznie zapisuj szkic",
 		"BUTTON_REQUEST_READ_RECEIPT": "Żądaj potwierdzenia przeczytania wiadomości",
 		"BUTTON_MARK_AS_IMPORTANT": "Oznacz jako ważną",
 		"BUTTON_REQUEST_DSN": "Żądaj potwierdzenia dostarczenia wiadomości",

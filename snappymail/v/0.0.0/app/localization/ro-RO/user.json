@@ -227,7 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Warning! Not all attachments have been uploaded.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Not all attachments have been uploaded yet",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
-		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"ALLOW_DRAFT_AUTOSAVE": "Salvează ciorna automat",
 		"BUTTON_REQUEST_READ_RECEIPT": "Cere confirmare de citire",
 		"BUTTON_MARK_AS_IMPORTANT": "Mark as important",
 		"BUTTON_REQUEST_DSN": "Request a delivery receipt",

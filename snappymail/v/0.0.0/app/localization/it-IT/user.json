@@ -227,7 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Attenzione! Non tutti gli allegati sono stati caricati.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Non tutti gli allegati sono stati caricati al momento.",
 		"ALLOW_SPELLCHECK": "Abilita il controllo ortografico del browser",
-		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
+		"ALLOW_DRAFT_AUTOSAVE": "Salva automaticamente la bozza",
 		"BUTTON_REQUEST_READ_RECEIPT": "Richiedi conferma di lettura",
 		"BUTTON_MARK_AS_IMPORTANT": "Marca come importante",
 		"BUTTON_REQUEST_DSN": "Richiedi conferma del ricevimento",
