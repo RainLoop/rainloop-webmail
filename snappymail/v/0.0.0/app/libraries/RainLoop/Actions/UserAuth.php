@@ -121,7 +121,6 @@ trait UserAuth
 		$this->resolveLoginCredentials($sEmail, $sPassword, $sLogin);
 
 		if (!\str_contains($sEmail, '@') || !\strlen($sPassword)) {
-			$this->loginErrorDelay();
 			throw new ClientException(Notifications::InvalidInputArgument);
 		}
 
@@ -135,20 +134,13 @@ trait UserAuth
 			}
 		} catch (\Throwable $oException) {
 			$this->LoggerAuthHelper($oAccount, $this->getAdditionalLogParamsByUserLogin($sInputEmail));
-			$this->loginErrorDelay();
 			throw $oException;
 		}
 
-		try {
-			$this->imapConnect($oAccount, true);
-			if ($bMainAccount) {
-				$bSignMe && $this->SetSignMeToken($oAccount);
-				$this->StorageProvider()->Put($oAccount, StorageType::SESSION, Utils::GetSessionToken(), 'true');
-			}
-		} catch (\Throwable $oException) {
-			$this->loginErrorDelay();
-
-			throw $oException;
+		$this->imapConnect($oAccount, true);
+		if ($bMainAccount) {
+			$bSignMe && $this->SetSignMeToken($oAccount);
+			$this->StorageProvider()->Put($oAccount, StorageType::SESSION, Utils::GetSessionToken(), 'true');
 		}
 
 		return $oAccount;

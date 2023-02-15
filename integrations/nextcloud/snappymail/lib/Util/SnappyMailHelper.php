@@ -73,11 +73,18 @@ class SnappyMailHelper
 				}
 */
 				if ($doLogin && $aCredentials[1] && $aCredentials[2]) {
-					$oActions->Logger()->AddSecret($aCredentials[2]);
-					$oAccount = $oActions->LoginProcess($aCredentials[1], $aCredentials[2], false);
-					if ($oAccount) {
-						$oActions->Plugins()->RunHook('login.success', array($oAccount));
-						$oActions->SetAuthToken($oAccount);
+					try {
+						$oActions->Logger()->AddSecret($aCredentials[2]);
+						$oAccount = $oActions->LoginProcess($aCredentials[1], $aCredentials[2], false);
+						if ($oAccount) {
+							$oActions->Plugins()->RunHook('login.success', array($oAccount));
+							$oActions->SetAuthToken($oAccount);
+						}
+					} catch (\Throwable $e) {
+						// Login failure, reset password to prevent more attempts
+						$sUID = \OC::$server->getUserSession()->getUser()->getUID();
+						\OC::$server->getSession()['snappymail-password'] = '';
+						\OC::$server->getConfig()->setUserValue($sUID, 'snappymail', 'snappymail-password', '');
 					}
 				}
 			}

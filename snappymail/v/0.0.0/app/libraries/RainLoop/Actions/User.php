@@ -40,7 +40,12 @@ trait User
 
 		$this->Logger()->AddSecret($sPassword);
 
-		$oAccount = $this->LoginProcess($sEmail, $sPassword, $bSignMe);
+		try {
+			$oAccount = $this->LoginProcess($sEmail, $sPassword, $bSignMe);
+		} catch (\Throwable $oException) {
+			$this->loginErrorDelay();
+			throw $oException;
+		}
 
 		$this->SetAuthToken($oAccount);
 
