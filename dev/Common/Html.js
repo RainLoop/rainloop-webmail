@@ -144,7 +144,12 @@ const
 
 				let selector = arr[arr[2] === undefined ? 5 : 2].split('\r\n').join('\n').trim()
 					// Never have more than a single line break in a row
-					.replace(/\n+/, "\n");
+					.replace(/\n+/, "\n")
+					// Remove :root and html
+					.split(/\s+/g).map(item => item
+						.replace(/^body$/, '.mail-body')
+						.replace(/^(:root|html)$/, '')
+					).join(' ').trim();
 
 				// determine the type
 				if (selector.includes('@media')) {
@@ -154,7 +159,7 @@ const
 						type: 'media',
 						subStyles: parseCSS(arr[3] + '\n}') //recursively parse media query inner css
 					});
-				} else if (!selector.includes('@') && ![':root','html','body'].includes(selector)) {
+				} else if (selector && !selector.includes('@')) {
 					// we have standard css
 					css.push({
 						selector: selector,
@@ -288,7 +293,7 @@ export const
 				let css = msgId ? parseCSS(oElement.textContent) : [];
 				if (css.length) {
 					css.applyNamespace(msgId, 'msg-');
-					css = css.toString();
+					css = css.toString().replace('.msg-mail-body', '.mail-body');
 					if (SettingsUserStore.removeColors()) {
 						css = css.replace(/(background-)?color:[^};]+;?/g, '');
 					}
