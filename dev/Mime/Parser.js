@@ -1,3 +1,4 @@
+//import { b64Encode } from 'Common/Utils';
 
 const
 	// RFC2045
@@ -68,6 +69,7 @@ export function ParseMime(text)
 					body = QPDecode(body);
 				}
 				body = btoa(body);
+//				body = b64Encode(body);
 			}
 			return 'data:' + this.headerValue('content-type') + ';base64,' + body;
 		}

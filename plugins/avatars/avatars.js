@@ -63,11 +63,11 @@
 			.slice(0,2)
 			.toUpperCase(),
 		setIdenticon = (from, fn) => hash(from.email).then(hash =>
-			fn('data:image/svg+xml;base64,' + btoa(window.identiconSvg(
+			fn('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(window.identiconSvg(
 				hash,
 				fromChars(from),
 				window.getComputedStyle(getEl('rl-app'), null).getPropertyValue('font-family')
-			)))
+			)))))
 		),
 		addQueue = (msg, fn) => {
 			msg.from?.[0] && setIdenticon(msg.from[0], fn);

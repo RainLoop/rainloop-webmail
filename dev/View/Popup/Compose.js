@@ -11,7 +11,7 @@ import {
 	FolderType
 } from 'Common/EnumsUser';
 
-import { pInt, isArray, arrayLength } from 'Common/Utils';
+import { pInt, isArray, arrayLength, b64Encode } from 'Common/Utils';
 import { encodeHtml, HtmlEditor, htmlToPlain } from 'Common/Html';
 import { koArrayWithDestroy, addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
 
@@ -57,7 +57,7 @@ const
 
 	tpl = createElement('template'),
 
-	base64_encode = text => btoa(unescape(encodeURIComponent(text))).match(/.{1,76}/g).join('\r\n'),
+	base64_encode = text => b64Encode(text).match(/.{1,76}/g).join('\r\n'),
 
 	getEmail = value => addressparser(value)[0]?.email || false,
 
