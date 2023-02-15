@@ -236,7 +236,7 @@ abstract class Upgrade
 					new \RecursiveDirectoryIterator("{$dir}/{$folder}", \FilesystemIterator::SKIP_DOTS),
 					\RecursiveIteratorIterator::SELF_FIRST
 				);
-				foreach ($items as $item) {
+				foreach ($iterator as $item) {
 					if ($item->isDir()) {
 						\chmod($item, 0755);
 					} else if ($item->isFile()) {

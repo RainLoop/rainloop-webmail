@@ -15,7 +15,7 @@ trait Themes
 			 && ($oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount))) {
 				$sTheme = (string) $oSettingsLocal->GetConf('Theme', $sTheme);
 			}
-			$sTheme = $this->ValidateTheme($sTheme) ?: 'Default';
+			$sTheme = $this->ValidateTheme($sTheme);
 		}
 		return $sTheme;
 	}
@@ -92,7 +92,13 @@ trait Themes
 
 	public function ValidateTheme(string $sTheme): string
 	{
-		return \in_array($sTheme, $this->GetThemes()) ? $sTheme : $this->Config()->Get('themes', 'default', 'Default');
+		if (!\in_array($sTheme, $this->GetThemes())) {
+			$sTheme = $this->Config()->Get('webmail', 'theme', 'Default');
+			if (!\in_array($sTheme, $this->GetThemes())) {
+				$sTheme = 'Default';
+			}
+		}
+		return $sTheme;
 	}
 
 	public function compileCss(string $sTheme, bool $bAdmin, bool $bMinified = false) : string

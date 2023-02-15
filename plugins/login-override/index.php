@@ -4,8 +4,8 @@ class LoginOverridePlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Login Override',
-		VERSION = '2.1',
-		RELEASE = '2023-02-01',
+		VERSION = '2.2',
+		RELEASE = '2023-02-08',
 		REQUIRED = '2.25.3',
 		CATEGORY = 'Filters',
 		DESCRIPTION = 'Override IMAP/SMTP login credentials for specific users.';
@@ -22,7 +22,7 @@ class LoginOverridePlugin extends \RainLoop\Plugins\AbstractPlugin
 		$sMapping = \trim($this->Config()->Get('plugin', 'email_mapping', ''));
 		if (!empty($sMapping)) {
 			$aList = \preg_split('/\\R/', $sMapping);
-			foreach ($aList as $line) {
+			foreach ($aList as $sLine) {
 				$aData = \explode(':', $sLine, 2);
 				if (!empty($aData[1]) && $sEmail === \trim($aData[0])) {
 					$sEmail = \trim($aData[1]);

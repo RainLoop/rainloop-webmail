@@ -1,6 +1,6 @@
 import ko from 'ko';
 import { koComputable } from 'External/ko';
-import { doc, $htmlCL, elementById, fireEvent } from 'Common/Globals';
+import { doc, $htmlCL, elementById, createElement, fireEvent } from 'Common/Globals';
 import { forEachObjectEntry } from 'Common/Utils';
 import { i18nToNodes } from 'Common/Translator';
 
@@ -40,22 +40,20 @@ const
 			ViewModelClass.__vm = vm;
 
 			if (vmPlace) {
-				vmDom = Element.fromHTML(dialog
-					? '<dialog id="V-'+ id + '"></dialog>'
-					: '<div id="V-'+ id + '" hidden=""></div>');
+				vmDom = dialog
+					? createElement('dialog',{id:'V-'+id})
+					: createElement('div',{id:'V-'+id,hidden:''})
 				vmPlace.append(vmDom);
 
 				vm.viewModelDom = ViewModelClass.__dom = vmDom;
 
 				if (dialog) {
-					vm.close = () => hideScreenPopup(ViewModelClass);
-
 					// Firefox < 98 / Safari < 15.4 HTMLDialogElement not defined
 					if (!vmDom.showModal) {
 						vmDom.className = 'polyfill';
 						vmDom.showModal = () => {
 							vmDom.backdrop ||
-								vmDom.before(vmDom.backdrop = Element.fromHTML('<div class="dialog-backdrop"></div>'));
+								vmDom.before(vmDom.backdrop = createElement('div',{class:'dialog-backdrop'}));
 							vmDom.setAttribute('open','');
 							vmDom.open = true;
 							vmDom.returnValue = null;
@@ -156,80 +154,63 @@ const
 	},
 
 	/**
-	 * @param {Function} ViewModelClassToHide
-	 * @returns {void}
-	 */
-	hideScreenPopup = ViewModelClassToHide =>
-		ViewModelClassToHide?.__vm && ViewModelClassToHide.__dom
-		&& ViewModelClassToHide.__vm.modalVisible(false),
-
-	/**
 	 * @param {string} screenName
 	 * @param {string} subPart
 	 * @returns {void}
 	 */
 	screenOnRoute = (screenName, subPart) => {
-		let vmScreen = null,
-			isSameScreen = false;
-
-		if (null == screenName || '' == screenName) {
-			screenName = defaultScreenName;
-		}
-
-		if (fireEvent('sm-show-screen', screenName, 1)) {
-
+		screenName = screenName || defaultScreenName;
+		if (screenName && fireEvent('sm-show-screen', screenName, 1)) {
 			// Close all popups
 			for (let vm of visiblePopups) {
 				(false === vm.onClose()) || vm.close();
 			}
 
-			if (screenName) {
-				vmScreen = screen(screenName);
-				if (!vmScreen) {
-					vmScreen = screen(defaultScreenName);
-					if (vmScreen) {
-						subPart = screenName + '/' + subPart;
-						screenName = defaultScreenName;
-					}
+			let vmScreen = screen(screenName);
+			if (!vmScreen) {
+				vmScreen = screen(defaultScreenName);
+				if (vmScreen) {
+					subPart = screenName + '/' + subPart;
+					screenName = defaultScreenName;
+				}
+			}
+
+			if (vmScreen?.__started) {
+				let isSameScreen = currentScreen && vmScreen === currentScreen;
+
+				if (!vmScreen.__builded) {
+					vmScreen.__builded = true;
+
+					vmScreen.viewModels.forEach(ViewModelClass =>
+						buildViewModel(ViewModelClass, vmScreen)
+					);
+
+					vmScreen.onBuild?.();
 				}
 
-				if (vmScreen?.__started) {
-					isSameScreen = currentScreen && vmScreen === currentScreen;
+				setTimeout(() => {
+					// hide screen
+					currentScreen && !isSameScreen && hideScreen(currentScreen);
+					// --
 
-					if (!vmScreen.__builded) {
-						vmScreen.__builded = true;
+					currentScreen = vmScreen;
 
-						vmScreen.viewModels.forEach(ViewModelClass =>
-							buildViewModel(ViewModelClass, vmScreen)
-						);
+					// show screen
+					if (!isSameScreen) {
+						vmScreen.onShow?.();
 
-						vmScreen.onBuild?.();
+						forEachViewModel(vmScreen, (vm, dom) => {
+							vm.beforeShow?.();
+							i18nToNodes(dom);
+							dom.hidden = false;
+							vm.onShow?.();
+							autofocus(dom);
+						});
 					}
+					// --
 
-					setTimeout(() => {
-						// hide screen
-						currentScreen && !isSameScreen && hideScreen(currentScreen);
-						// --
-
-						currentScreen = vmScreen;
-
-						// show screen
-						if (!isSameScreen) {
-							vmScreen.onShow?.();
-
-							forEachViewModel(vmScreen, (vm, dom) => {
-								vm.beforeShow?.();
-								i18nToNodes(dom);
-								dom.hidden = false;
-								vm.onShow?.();
-								autofocus(dom);
-							});
-						}
-						// --
-
-						vmScreen.__cross?.parse(subPart);
-					}, 1);
-				}
+					vmScreen.__cross?.parse(subPart);
+				}, 1);
 			}
 		}
 	};
@@ -285,7 +266,7 @@ export const
 		});
 
 		const cross = new Crossroads();
-		cross.addRoute(/^([a-zA-Z0-9-]*)\/?(.*)$/, screenOnRoute);
+		cross.addRoute(/^([^/]*)\/?(.*)$/, screenOnRoute);
 
 		hasher.add(cross.parse.bind(cross));
 		hasher.init();

@@ -28,7 +28,7 @@ class Email implements \JsonSerializable
 	 */
 	function __construct(string $sEmail, string $sDisplayName = '')
 	{
-		if (!\strlen(\trim($sEmail))) {
+		if (!\strlen(\trim($sEmail)) && !\strlen(\trim($sDisplayName))) {
 			throw new \InvalidArgumentException;
 		}
 

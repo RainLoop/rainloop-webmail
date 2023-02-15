@@ -133,9 +133,8 @@ trait Contacts
 				\ini_set('auto_detect_line_endings', '1');
 				$mData = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
 				if ($mData) {
-					$sFileStart = \fread($mData, 20);
+					$sFileStart = \fread($mData, 128);
 					\rewind($mData);
-
 					if (false !== $sFileStart) {
 						$sFileStart = \trim($sFileStart);
 						if (false !== \strpos($sFileStart, 'BEGIN:VCARD')) {
@@ -255,64 +254,45 @@ trait Contacts
 	private function importContactsFromVcfFile(\RainLoop\Model\Account $oAccount, /*resource*/ $rFile): int
 	{
 		$iCount = 0;
-		if ($oAccount && \is_resource($rFile)) {
-			$oAddressBookProvider = $this->AddressBookProvider($oAccount);
-			if ($oAddressBookProvider && $oAddressBookProvider->IsActive()) {
-				$sFile = \stream_get_contents($rFile);
-				if (\is_resource($rFile)) {
-					\fclose($rFile);
-				}
-
-				if (is_string($sFile) && 5 < \strlen($sFile)) {
-					$this->Logger()->Write('Import contacts from vcf');
-					$iCount = $oAddressBookProvider->ImportVcfFile($sFile);
+		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
+		if (\is_resource($rFile) && $oAddressBookProvider && $oAddressBookProvider->IsActive()) {
+			try
+			{
+				$this->Logger()->Write('Import contacts from vcf');
+				foreach (\RainLoop\Providers\AddressBook\Utils::VcfStreamToContacts($rFile) as $oContact) {
+					if ($oAddressBookProvider->ContactSave($oContact)) {
+						++$iCount;
+					}
 				}
 			}
+			catch (\Throwable $oExc)
+			{
+				$this->Logger()->WriteException($oExc);
+			}
 		}
-
 		return $iCount;
 	}
 
 	private function importContactsFromCsvFile(\RainLoop\Model\Account $oAccount, /*resource*/ $rFile, string $sFileStart): int
 	{
 		$iCount = 0;
-		$aHeaders = null;
-		$aData = array();
-
-		if ($oAccount && \is_resource($rFile)) {
-			$oAddressBookProvider = $this->AddressBookProvider($oAccount);
-			if ($oAddressBookProvider && $oAddressBookProvider->IsActive()) {
+		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
+		if (\is_resource($rFile) && $oAddressBookProvider && $oAddressBookProvider->IsActive()) {
+			try
+			{
+				$this->Logger()->Write('Import contacts from csv');
 				$sDelimiter = ((int)\strpos($sFileStart, ',') > (int)\strpos($sFileStart, ';')) ? ',' : ';';
-
-				\setlocale(LC_CTYPE, 'en_US.UTF-8');
-				while (false !== ($mRow = \fgetcsv($rFile, 5000, $sDelimiter, '"'))) {
-					if (null === $aHeaders) {
-						if (3 >= \count($mRow)) {
-							return 0;
-						}
-
-						$aHeaders = $mRow;
-
-						foreach ($aHeaders as $iIndex => $sHeaderValue) {
-							$aHeaders[$iIndex] = \MailSo\Base\Utils::Utf8Clear($sHeaderValue);
-						}
-					} else {
-						$aNewItem = array();
-						foreach ($aHeaders as $iIndex => $sHeaderValue) {
-							$aNewItem[$sHeaderValue] = isset($mRow[$iIndex]) ? $mRow[$iIndex] : '';
-						}
-
-						$aData[] = $aNewItem;
+				foreach (\RainLoop\Providers\AddressBook\Utils::CsvStreamToContacts($rFile, $sDelimiter) as $oContact) {
+					if ($oAddressBookProvider->ContactSave($oContact)) {
+						++$iCount;
 					}
 				}
-
-				if (\count($aData)) {
-					$this->oLogger->Write('Import contacts from csv');
-					$iCount = $oAddressBookProvider->ImportCsvArray($aData);
-				}
+			}
+			catch (\Throwable $oExc)
+			{
+				$this->Logger()->WriteException($oExc);
 			}
 		}
-
 		return $iCount;
 	}
 

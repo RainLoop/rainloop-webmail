@@ -9,7 +9,7 @@ class CSP
 {
 	public
 		$base = ["'self'"],
-		$default = ["'self'"],
+		$default = ["'self'", 'data:'],
 		// Knockout.js requires eval() for observable binding purposes
 		// Safari < 15.4 does not support strict-dynamic
 //		$script  = ["'strict-dynamic'", "'unsafe-eval'"],

@@ -4,7 +4,7 @@ import { MessageSetAction, ComposeType/*, FolderType*/ } from 'Common/EnumsUser'
 import { doc, createElement, elementById, dropdowns, dropdownVisibility, SettingsGet, leftPanelDisabled } from 'Common/Globals';
 import { plainToHtml } from 'Common/Html';
 import { getNotification } from 'Common/Translator';
-import { EmailModel } from 'Model/Email';
+import { EmailCollectionModel } from 'Model/EmailCollection';
 import { MessageModel } from 'Model/Message';
 import { MessageUserStore } from 'Stores/User/Message';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
@@ -158,27 +158,13 @@ mailToHelper = mailToUrl => {
 		const
 			email = mailToUrl[0],
 			params = new URLSearchParams(mailToUrl[1]),
-			toEmailModel = value => null != value ? EmailModel.parseEmailLine(value) : null;
+			to = params.get('to'),
+			toEmailModel = value => EmailCollectionModel.fromString(value);
 
 		showMessageComposer([
 			ComposeType.Empty,
 			null,
-			params.get('to')
-				? Object.values(
-						toEmailModel(email + ',' + params.get('to')).reduce((result, value) => {
-							if (value) {
-								if (result[value.email]) {
-									if (!result[value.email].name) {
-										result[value.email] = value;
-									}
-								} else {
-									result[value.email] = value;
-								}
-							}
-							return result;
-						}, {})
-					)
-				: EmailModel.parseEmailLine(email),
+			toEmailModel(to ? email + ',' + to : email),
 			toEmailModel(params.get('cc')),
 			toEmailModel(params.get('bcc')),
 			params.get('subject'),
@@ -196,37 +182,24 @@ showMessageComposer = (params = []) =>
 	rl.app.showMessageComposer(params);
 },
 
-setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
+setLayoutResizer = (source, sClientSideKeyName, mode) =>
 {
 	if (source.layoutResizer && source.layoutResizer.mode != mode) {
-		target?.removeAttribute('style');
 		source.removeAttribute('style');
 	}
 	source.observer?.disconnect();
 //	source.classList.toggle('resizable', mode);
 	if (mode) {
-		const length = Local.get(sClientSideKeyName + mode) || SettingsGet('Resizer' + sClientSideKeyName + mode),
-			setTargetPos = mode => {
-				let value;
-				if ('Width' == mode) {
-					value = source.offsetWidth;
-					target && (target.style.left = value + 'px');
-				} else {
-					value = source.offsetHeight;
-					target && (target.style.top = value + 'px');
-				}
-				return value;
-			};
+		const length = Local.get(sClientSideKeyName + mode) || SettingsGet('Resizer' + sClientSideKeyName + mode);
 		if (length) {
 			source.style[mode.toLowerCase()] = length + 'px';
-			setTargetPos(mode);
 		}
 		if (!source.layoutResizer) {
 			const resizer = createElement('div', {'class':'resizer'}),
 				save = (data => Remote.saveSettings(0, data)).debounce(500),
 				size = {},
 				store = () => {
-					const value = setTargetPos(resizer.mode),
+					const value = ('Width' == resizer.mode) ? source.offsetWidth : source.offsetHeight,
 						prop = resizer.key + resizer.mode;
 					(value == Local.get(prop)) || Local.set(prop, value);
 					(value == SettingsGet('Resizer' + prop)) || save({['Resizer' + prop]: value});
@@ -285,49 +258,38 @@ populateMessageBody = (oMessage, popup) => {
 				}
 			} else {
 				let json = oData?.Result;
-
-				if (
-					json &&
-					MessageModel.validJson(json) &&
-					oMessage.folder === json.folder
+				if (json
+				 && MessageModel.validJson(json)
+				 && oMessage.hash === json.hash
+//				 && oMessage.folder === json.folder
+//				 && oMessage.uid == json.uid
+				 && oMessage.revivePropertiesFromJson(json)
 				) {
-					const threads = oMessage.threads(),
-						isNew = !popup && oMessage.uid != json.uid && threads.includes(json.uid),
-						messagesDom = MessageUserStore.bodiesDom();
-					if (isNew) {
-						oMessage = MessageModel.reviveFromJson(json);
-						if (oMessage) {
-							oMessage.threads(threads);
-							MessageFlagsCache.initMessage(oMessage);
-
-							// Set clone
-							oMessage = MessageModel.fromMessageListItem(oMessage);
-						}
-						MessageUserStore.message(oMessage);
-					}
-
-					if (oMessage && oMessage.uid == json.uid) {
-						popup || MessageUserStore.error('');
 /*
-						if (bCached) {
-							delete json.flags;
-						}
+					if (bCached) {
+						delete json.flags;
+					}
 */
-						isNew || oMessage.revivePropertiesFromJson(json);
-
+					if (popup) {
+						oMessage.viewPopupMessage();
+					} else {
+						MessageUserStore.error('');
+						const messagesDom = MessageUserStore.bodiesDom();
 						if (messagesDom) {
-							let id = 'rl-msg-' + oMessage.hash.replace(/[^a-zA-Z0-9]/g, ''),
+							let id = 'rl-msg-' + oMessage.hash,
 								body = elementById(id);
 							if (body) {
 								oMessage.body = body;
 								oMessage.isHtml(body.classList.contains('html'));
 								oMessage.hasImages(body.rlHasImages);
 							} else {
-								body = Element.fromHTML('<div id="' + id + '" hidden="" class="b-text-part '
-									+ (oMessage.pgpSigned() ? ' openpgp-signed' : '')
-									+ (oMessage.pgpEncrypted() ? ' openpgp-encrypted' : '')
-									+ '">'
-									+ '</div>');
+								body = createElement('div',{
+									id:id,
+									hidden:'',
+									class:'b-text-part'
+										+ (oMessage.pgpSigned() ? ' openpgp-signed' : '')
+										+ (oMessage.pgpEncrypted() ? ' openpgp-encrypted' : '')
+								});
 								oMessage.body = body;
 								if (!SettingsUserStore.viewHTML() || !oMessage.viewHtml()) {
 									oMessage.viewPlain();
@@ -338,42 +300,16 @@ populateMessageBody = (oMessage, popup) => {
 
 							messagesDom.append(body);
 
-							popup || (oMessage.body.hidden = false);
-							popup && oMessage.viewPopupMessage();
+							oMessage.body.hidden = false;
 						}
+					}
 
-						MessageFlagsCache.initMessage(oMessage);
-						if (oMessage.isUnseen()) {
-							MessageUserStore.MessageSeenTimer = setTimeout(
-								() => MessagelistUserStore.setAction(oMessage.folder, MessageSetAction.SetSeen, [oMessage]),
-								SettingsUserStore.messageReadDelay() * 1000 // seconds
-							);
-						}
-
-						if (isNew) {
-							let selectedMessage = MessagelistUserStore.selectedMessage();
-							if (
-								selectedMessage &&
-								(oMessage.folder !== selectedMessage.folder || oMessage.uid != selectedMessage.uid)
-							) {
-								MessagelistUserStore.selectedMessage(null);
-								if (1 === MessagelistUserStore.length) {
-									MessagelistUserStore.focusedMessage(null);
-								}
-							} else if (!selectedMessage) {
-								selectedMessage = MessagelistUserStore.find(
-									subMessage =>
-										subMessage &&
-										subMessage.folder === oMessage.folder &&
-										subMessage.uid == oMessage.uid
-								);
-
-								if (selectedMessage) {
-									MessagelistUserStore.selectedMessage(selectedMessage);
-									MessagelistUserStore.focusedMessage(selectedMessage);
-								}
-							}
-						}
+					MessageFlagsCache.initMessage(oMessage);
+					if (oMessage.isUnseen()) {
+						MessageUserStore.MessageSeenTimer = setTimeout(
+							() => MessagelistUserStore.setAction(oMessage.folder, MessageSetAction.SetSeen, [oMessage]),
+							SettingsUserStore.messageReadDelay() * 1000 // seconds
+						);
 					}
 				}
 			}

@@ -67,9 +67,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 			}
 
 			if (\is_array($aList) && \count($aList)) {
-				$aList = \array_map('strtoupper', $aList);
-				\sort($aList);
-				return $aList;
+				return \array_map('strtoupper', $aList);
 			}
 		}
 		return null;

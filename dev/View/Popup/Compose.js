@@ -37,7 +37,7 @@ import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import Remote from 'Remote/User/Fetch';
 
 import { ComposeAttachmentModel } from 'Model/ComposeAttachment';
-import { EmailModel } from 'Model/Email';
+import { EmailModel, addressparser } from 'Model/Email';
 
 import { decorateKoCommands, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
@@ -59,12 +59,7 @@ const
 
 	base64_encode = text => btoa(unescape(encodeURIComponent(text))).match(/.{1,76}/g).join('\r\n'),
 
-	email = new EmailModel(),
-	getEmail = value => {
-		email.clear();
-		email.parse(value.trim());
-		return email.email || false;
-	},
+	getEmail = value => addressparser(value)[0]?.email || false,
 
 	/**
 	 * @param {Array} aList
@@ -72,7 +67,7 @@ const
 	 * @returns {string}
 	 */
 	emailArrayToStringLineHelper = (aList, bFriendly) =>
-		aList.map(item => item.toLine(bFriendly)).join(', '),
+		aList.filter(item => item.email).map(item => item.toLine(bFriendly)).join(', '),
 
 	reloadDraftFolder = () => {
 		const draftsFolder = FolderUserStore.draftsFolder();
@@ -205,10 +200,6 @@ export class ComposePopupView extends AbstractViewPopup {
 		};
 
 		this.oEditor = null;
-		this.aDraftInfo = null;
-		this.sInReplyTo = '';
-		this.bFromDraft = false;
-		this.sReferences = '';
 
 		this.sLastFocusedField = 'to';
 
@@ -854,33 +845,17 @@ export class ComposePopupView extends AbstractViewPopup {
 					break;
 
 				case ComposeType.Draft:
-					this.to(emailArrayToStringLineHelper(message.to));
-					this.cc(emailArrayToStringLineHelper(message.cc));
-					this.bcc(emailArrayToStringLineHelper(message.bcc));
-					this.replyTo(emailArrayToStringLineHelper(message.replyTo));
-
 					this.bFromDraft = true;
-
 					this.draftsFolder(message.folder);
 					this.draftUid(message.uid);
-
-					this.subject(sSubject);
-					this.prepareMessageAttachments(message, msgComposeType);
-
-					this.aDraftInfo = 3 === arrayLength(aDraftInfo) ? aDraftInfo : null;
-					this.sInReplyTo = message.inReplyTo;
-					this.sReferences = message.references;
-					break;
-
+					// fallthrough
 				case ComposeType.EditAsNew:
 					this.to(emailArrayToStringLineHelper(message.to));
 					this.cc(emailArrayToStringLineHelper(message.cc));
 					this.bcc(emailArrayToStringLineHelper(message.bcc));
 					this.replyTo(emailArrayToStringLineHelper(message.replyTo));
-
 					this.subject(sSubject);
 					this.prepareMessageAttachments(message, msgComposeType);
-
 					this.aDraftInfo = 3 === arrayLength(aDraftInfo) ? aDraftInfo : null;
 					this.sInReplyTo = message.inReplyTo;
 					this.sReferences = message.references;

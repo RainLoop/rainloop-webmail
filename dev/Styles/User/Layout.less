@@ -14,11 +14,13 @@
 	z-index: 0;
 }
 
-#rl-right {
+#rl-right:not([hidden]) {
+	display: flex;
 	flex-grow: 1;
-	max-width: 100vw;
-	position: relative;
-	z-index: 1;
+	width: 20%;
+}
+.rl-bottom-preview-pane #rl-right {
+	flex-direction: column;
 }
 
 /*
@@ -58,80 +60,26 @@ html:not(.rl-left-panel-disabled) #rl-left {
 }
 
 #rl-left > .resizer,
-.rl-side-preview-pane #V-MailMessageList > .resizer {
+.rl-side-preview-pane #V-MailMessageList .resizer {
 	cursor: ew-resize;
-	height: 100%;
+	cursor: col-resize;
 	right: 0;
 	top: 0;
+	bottom: 0;
 	width: 5px;
 }
-
-.rl-side-preview-pane #V-MailMessageList {
-	resize: horizontal; /*overflow: auto;*/
-	min-width: 320px;
-	max-width: 60%;
-}
-.rl-bottom-preview-pane #V-MailMessageList {
-	resize: vertical; /*overflow: auto;*/
-	min-height: 200px;
-	max-height: 60%;
-}
-.rl-bottom-preview-pane #V-MailMessageList > .resizer {
+.rl-bottom-preview-pane #V-MailMessageList .resizer {
 	cursor: ns-resize;
-	height: 5px;
-	left: 0;
+	cursor: row-resize;
 	bottom: 0;
-	width: 100%;
+	left: 0;
+	right: 0;
+	height: 5px;
 }
 
 html:not(.rl-left-panel-disabled) #rl-left > .resizer,
-#V-MailMessageList > .resizer {
+#V-MailMessageList .resizer {
 	display: block;
-}
-
-#V-MailMessageList {
-	position: relative;
-	height: 100%;
-	width: 50%;
-}
-
-#V-MailMessageView {
-	position: absolute;
-	top: 0;
-	bottom: 13px;
-	right: 0;
-	left: 0;
-
-	.b-message-view-backdrop {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background: rgba(0, 0, 0, .4);
-		z-index: 10;
-		text-align: center;
-
-		.backdrop-message {
-			position: relative;
-			display: inline-block;
-			color: white;
-			font-size: 20px;
-			line-height: 30px;
-			background: rgba(0, 0, 0, .6);
-			padding: 15px;
-			border-radius: var(--border-radius, 5px);
-			text-shadow: 0 1px 1px #000;
-			transform: translateY(-50%);
-			top: 50%;
-		}
-	}
-}
-
-html.rl-side-preview-pane {
-	#V-MailMessageView {
-		left: 50%;
-	}
 }
 
 #top-system-dropdown-id::after,
@@ -201,16 +149,6 @@ html.rl-side-preview-pane {
 	#rl-left {
 		width: @rlLeftWidth + 20;
 	}
-
-	#V-MailMessageList {
-		width: 40%;
-	}
-
-	html.rl-side-preview-pane {
-		#V-MailMessageView {
-			left: 40%;
-		}
-	}
 }
 
 /* mobile and tablet */
@@ -253,17 +191,6 @@ html.rl-left-panel-disabled {
 	}
 }
 
-html.rl-no-preview-pane {
-
-	#V-MailMessageList {
-		position: absolute;
-		left: 0;
-		right: 0;
-		width: auto;
-	}
-
-}
-
 html.rl-mobile #rl-left > .resizer,
 html.rl-no-preview-pane #rl-right .resizer {
 	display: none !important;
@@ -278,25 +205,10 @@ html.rl-mobile {
 		top: 0;
 		bottom: 0;
 		width: 50vw;
-		z-index: 2;
+		z-index: 3;
 	}
 	&.rl-left-panel-disabled #rl-left {
 		display: none;
-	}
-}
-
-html.rl-bottom-preview-pane {
-
-	#V-MailMessageList {
-		height: 300px;
-		position: absolute;
-		left: 0;
-		right: 0;
-		width: auto;
-	}
-
-	#V-MailMessageView {
-		top: 300px;
 	}
 }
 

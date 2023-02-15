@@ -1,8 +1,29 @@
 import { doc, createElement, addEventsListeners } from 'Common/Globals';
-import { EmailModel } from 'Model/Email';
+import { EmailModel, addressparser } from 'Model/Email';
 
 const contentType = 'snappymail/emailaddress',
-	getAddressKey = li => li?.emailaddress?.key;
+	getAddressKey = li => li?.emailaddress?.key,
+
+	parseEmailLine = line => addressparser(line).map(item =>
+			(item.name || item.email)
+				? new EmailModel(item.email, item.name) : null
+		).filter(v => v),
+	splitEmailLine = line => {
+		const result = [];
+		let exists = false;
+		addressparser(line).forEach(item => {
+			const address = (item.name || item.email)
+				? new EmailModel(item.email, item.name)
+				: null;
+
+			if (address?.email) {
+				exists = true;
+			}
+
+			result.push(address ? address.toLine() : item.name);
+		});
+		return exists ? result : null;
+	};
 
 let dragAddress, datalist;
 
@@ -154,8 +175,8 @@ export class EmailAddressesComponent {
 		if (val) {
 			const self = this,
 				v = val.trim(),
-				hook = (v && [',', ';', '\n'].includes(v.slice(-1))) ? EmailModel.splitEmailLine(val) : null,
-				values = (hook || [val]).map(value => EmailModel.parseEmailLine(value))
+				hook = (v && [',', ';', '\n'].includes(v.slice(-1))) ? splitEmailLine(val) : null,
+				values = (hook || [val]).map(value => parseEmailLine(value))
 						.flat(Infinity)
 						.map(item => (item.toLine ? [item.toLine(), item] : [item, null]));
 

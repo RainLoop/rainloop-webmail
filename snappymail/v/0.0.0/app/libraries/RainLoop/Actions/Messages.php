@@ -989,10 +989,7 @@ trait Messages
 		$oFrom = $oMessage->GetFrom();
 		$oMessage->RegenerateMessageId($oFrom ? $oFrom->GetDomain() : '');
 
-		$oReplyTo = new \MailSo\Mime\EmailCollection($this->GetActionParam('replyTo', ''));
-		if ($oReplyTo->count()) {
-			$oMessage->SetReplyTo($oReplyTo);
-		}
+		$oMessage->SetReplyTo(new \MailSo\Mime\EmailCollection($this->GetActionParam('replyTo', '')));
 
 		if (!empty($this->GetActionParam('readReceiptRequest', 0))) {
 			// Read Receipts Reference Main Account Email, Not Identities #147
@@ -1010,35 +1007,17 @@ trait Messages
 
 		$oMessage->SetSubject($this->GetActionParam('subject', ''));
 
-		$oToEmails = new \MailSo\Mime\EmailCollection($this->GetActionParam('to', ''));
-		if ($oToEmails->count()) {
-			$oMessage->SetTo($oToEmails);
-		}
-
-		$oCcEmails = new \MailSo\Mime\EmailCollection($this->GetActionParam('cc', ''));
-		if ($oCcEmails->count()) {
-			$oMessage->SetCc($oCcEmails);
-		}
-
-		$oBccEmails = new \MailSo\Mime\EmailCollection($this->GetActionParam('bcc', ''));
-		if ($oBccEmails->count()) {
-			$oMessage->SetBcc($oBccEmails);
-		}
+		$oMessage->SetTo(new \MailSo\Mime\EmailCollection($this->GetActionParam('to', '')));
+		$oMessage->SetCc(new \MailSo\Mime\EmailCollection($this->GetActionParam('cc', '')));
+		$oMessage->SetBcc(new \MailSo\Mime\EmailCollection($this->GetActionParam('bcc', '')));
 
 		$aDraftInfo = $this->GetActionParam('draftInfo', null);
 		if ($bWithDraftInfo && \is_array($aDraftInfo) && !empty($aDraftInfo[0]) && !empty($aDraftInfo[1]) && !empty($aDraftInfo[2])) {
 			$oMessage->SetDraftInfo($aDraftInfo[0], $aDraftInfo[1], $aDraftInfo[2]);
 		}
 
-		$sInReplyTo = $this->GetActionParam('inReplyTo', '');
-		if (\strlen($sInReplyTo)) {
-			$oMessage->SetInReplyTo($sInReplyTo);
-		}
-
-		$sReferences = $this->GetActionParam('references', '');
-		if (\strlen($sReferences)) {
-			$oMessage->SetReferences($sReferences);
-		}
+		$oMessage->SetInReplyTo($this->GetActionParam('inReplyTo', ''));
+		$oMessage->SetReferences($this->GetActionParam('references', ''));
 
 		$aFoundCids = array();
 		$aFoundDataURL = array();

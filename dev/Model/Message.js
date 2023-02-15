@@ -5,7 +5,7 @@ import { i18n } from 'Common/Translator';
 
 import { doc, SettingsGet } from 'Common/Globals';
 import { encodeHtml, plainToHtml, htmlToPlain, cleanHtml } from 'Common/Html';
-import { isFunction, forEachObjectEntry } from 'Common/Utils';
+import { forEachObjectEntry } from 'Common/Utils';
 import { serverRequestRaw, proxy } from 'Common/Links';
 import { addObservablesTo, addComputablesTo } from 'External/ko';
 
@@ -25,6 +25,8 @@ import { LanguageStore } from 'Stores/Language';
 import Remote from 'Remote/User/Fetch';
 
 const
+	msgHtml = msg => cleanHtml(msg.html(), msg.attachments(), '#rl-msg-' + msg.hash),
+
 	toggleTag = (message, keyword) => {
 		const lower = keyword.toLowerCase(),
 			flags = message.flags,
@@ -212,6 +214,7 @@ export class MessageModel extends AbstractModel {
 //			this.attachments(AttachmentCollectionModel.reviveFromJson(json.attachments, this.foundCIDs));
 
 			this.computeSenderEmail();
+			return true;
 		}
 	}
 
@@ -290,7 +293,7 @@ export class MessageModel extends AbstractModel {
 	viewHtml() {
 		const body = this.body;
 		if (body && this.html()) {
-			let result = cleanHtml(this.html(), this.attachments());
+			let result = msgHtml(this);
 			this.hasExternals(result.hasExternals);
 			this.hasImages(body.rlHasImages = !!result.hasExternals);
 
@@ -300,9 +303,7 @@ export class MessageModel extends AbstractModel {
 			body.classList.toggle('plain', 0);
 
 			if (!this.isSpam() && FolderUserStore.spamFolder() != this.folder) {
-				if (('dkim' === SettingsUserStore.viewImages() && 'pass' === this.dkim[0]?.[0])
-				 || 'always' === SettingsUserStore.viewImages()
-				) {
+				if ('always' === SettingsUserStore.viewImages()) {
 					this.showExternalImages();
 				}
 				if ('match' === SettingsUserStore.viewImages()) {
@@ -335,26 +336,30 @@ export class MessageModel extends AbstractModel {
 	}
 
 	viewPopupMessage(print) {
-		const timeStampInUTC = this.dateTimeStampInUTC() || 0,
+		const
+			timeStampInUTC = this.dateTimeStampInUTC() || 0,
 			ccLine = this.cc.toString(),
+			bccLine = this.bcc.toString(),
 			m = 0 < timeStampInUTC ? new Date(timeStampInUTC * 1000) : null,
-			win = open(''),
-			sdoc = win.document;
-		let subject = encodeHtml(this.subject()),
+			win = open('', 'sm-msg-'+this.requestHash
+				/*,newWindow ? 'innerWidth=' + elementById('V-MailMessageView').clientWidth : ''*/
+			),
+			sdoc = win.document,
+			subject = encodeHtml(this.subject()),
 			mode = this.isHtml() ? 'div' : 'pre',
-			cc = ccLine ? `<div>${encodeHtml(i18n('GLOBAL/CC'))}: ${encodeHtml(ccLine)}</div>` : '',
+			to = `<div>${encodeHtml(i18n('GLOBAL/TO'))}: ${encodeHtml(this.to)}</div>`
+				+ (ccLine ? `<div>${encodeHtml(i18n('GLOBAL/CC'))}: ${encodeHtml(ccLine)}</div>` : '')
+				+ (bccLine ? `<div>${encodeHtml(i18n('GLOBAL/BCC'))}: ${encodeHtml(bccLine)}</div>` : ''),
 			style = getComputedStyle(doc.querySelector('.messageView')),
 			prop = property => style.getPropertyValue(property);
 		sdoc.write(PreviewHTML
 			.replace('<title>', '<title>'+subject)
 			// eslint-disable-next-line max-len
-			.replace('<body>', `<body style="background-color:${prop('background-color')};color:${prop('color')}"><header><h1>${subject}</h1><time>${encodeHtml(m ? m.format('LLL',0,LanguageStore.hourCycle()) : '')}</time><div>${encodeHtml(this.from)}</div><div>${encodeHtml(i18n('GLOBAL/TO'))}: ${encodeHtml(this.to)}</div>${cc}</header><${mode}>${this.bodyAsHTML()}</${mode}>`)
+			.replace('<body>', `<body style="background-color:${prop('background-color')};color:${prop('color')}"><header><h1>${subject}</h1><time>${encodeHtml(m ? m.format('LLL',0,LanguageStore.hourCycle()) : '')}</time><div>${encodeHtml(this.from)}</div>${to}</header><${mode}>${this.bodyAsHTML()}</${mode}>`)
 		);
 		sdoc.close();
 
-		if (print) {
-			setTimeout(() => win.print(), 100);
-		}
+		print && setTimeout(() => win.print(), 100);
 	}
 
 	/**
@@ -376,45 +381,50 @@ export class MessageModel extends AbstractModel {
 	}
 
 	/**
-	 * @param {MessageModel} message
 	 * @returns {MessageModel}
-	 */
-	static fromMessageListItem(message) {
+	 *//*
+	clone() {
 		let self = new MessageModel();
-		if (message) {
-			// Clone message values
-			forEachObjectEntry(message, (key, value) => {
-				if (ko.isObservable(value)) {
-					ko.isComputed(value) || self[key](value());
-				} else if (!isFunction(value)) {
-					self[key] = value;
-				}
-			});
-			self.computeSenderEmail();
-		}
+		// Clone message values
+		forEachObjectEntry(this, (key, value) => {
+			if (ko.isObservable(value)) {
+				ko.isComputed(value) || self[key](value());
+			} else if (!isFunction(value)) {
+				self[key] = value;
+			}
+		});
+		self.computeSenderEmail();
 		return self;
-	}
+	}*/
 
 	showExternalImages(regex) {
 		const body = this.body;
 		if (body && this.hasImages()) {
 			if (regex) {
-				regex = SettingsUserStore.viewImagesWhitelist()
-					.trim()
-					.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&')
-					.replace(/[\s\r\n,;:]+/g, '|')
-					.replace(/\|+/g, '|');
+				regex = [];
+				SettingsUserStore.viewImagesWhitelist().trim().split(/[\s\r\n,;]+/g).forEach(rule => {
+					rule = rule.split('+');
+					rule[0] = rule[0].trim();
+					if (rule[0]
+					 && (!rule.includes('spf') || 'pass' === this.spf[0]?.[0])
+					 && (!rule.includes('dkim') || 'pass' === this.dkim[0]?.[0])
+					 && (!rule.includes('dmarc') || 'pass' === this.dmarc[0]?.[0])
+					) {
+						regex.push(rule[0].replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&'));
+					}
+				});
+				regex = regex.join('|').replace(/\|+/g, '|');
 				if (regex) {
 					console.log('whitelist images = '+regex);
 					regex = new RegExp(regex);
 					if (this.from[0]?.email.match(regex)) {
-						regex = 0;
+						regex = null;
 					}
 				}
 			}
 			let hasImages = false,
 				isValid = src => {
-					if (!regex || src.match(regex)) {
+					if (null == regex || (regex && src.match(regex))) {
 						return true;
 					}
 					hasImages = true;
@@ -452,7 +462,7 @@ export class MessageModel extends AbstractModel {
 			);
 			return clone.innerHTML;
 		}
-		let result = cleanHtml(this.html(), this.attachments())
+		let result = msgHtml(this);
 		return result.html || plainToHtml(this.plain());
 	}
 

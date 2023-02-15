@@ -1,11 +1,9 @@
 import { Scope } from 'Common/Enums';
-import { Layout, ClientSideKeyNameMessageListSize } from 'Common/EnumsUser';
-import { doc, createElement, leftPanelDisabled, Settings, elementById } from 'Common/Globals';
+import { doc, createElement, leftPanelDisabled, Settings } from 'Common/Globals';
 import { pString, pInt } from 'Common/Utils';
-import { setLayoutResizer, moveAction } from 'Common/UtilsUser';
+import { moveAction } from 'Common/UtilsUser';
 import { getFolderFromCacheList, getFolderFullName, getFolderInboxName } from 'Common/Cache';
 import { i18n, initOnStartOrLangChange } from 'Common/Translator';
-import { SettingsUserStore } from 'Stores/User/Settings';
 
 import { AppUserStore } from 'Stores/User/App';
 import { AccountUserStore } from 'Stores/User/Account';
@@ -113,24 +111,6 @@ export class MailBoxUserScreen extends AbstractScreen {
 	 * @returns {void}
 	 */
 	onBuild() {
-		setTimeout(() => {
-			// initMailboxLayoutResizer
-			const top = elementById('V-MailMessageList'),
-				bottom = elementById('V-MailMessageView'),
-				fToggle = () => {
-					let layout = SettingsUserStore.layout();
-					setLayoutResizer(top, bottom, ClientSideKeyNameMessageListSize,
-						(ThemeStore.isMobile() || Layout.NoPreview === layout)
-							? 0
-							: (Layout.SidePreview === layout ? 'Width' : 'Height')
-					);
-				};
-			if (top && bottom) {
-				fToggle();
-				addEventListener('rl-layout', fToggle);
-			}
-		}, 1);
-
 		doc.addEventListener('click', event =>
 			event.target.closest('#rl-right') && moveAction(false)
 		);

@@ -52,11 +52,17 @@ class PdoAddressBook
 			$sDsn = 'sqlite:' . APP_PRIVATE_DATA . 'AddressBook.sqlite';
 /*
 			// TODO: use local db?
-			$homedir = \RainLoop\Api::Actions()->StorageProvider()->GenerateFilePath(
-				$oAccount,
-				\RainLoop\Providers\Storage\Enumerations\StorageType::ROOT
-			);
-			$sDsn = 'sqlite:' . $homedir . '/AddressBook.sqlite';
+			$oAccount = \RainLoop\Api::Actions()->getMainAccountFromToken(false);
+			if ($oAccount) {
+				$homedir = \RainLoop\Api::Actions()->StorageProvider()->GenerateFilePath(
+					$oAccount,
+					\RainLoop\Providers\Storage\Enumerations\StorageType::ROOT
+				);
+				if (!\is_file($homedir . 'AddressBook.sqlite') && \is_file(APP_PRIVATE_DATA . '/AddressBook.sqlite')) {
+					\copy(APP_PRIVATE_DATA . '/AddressBook.sqlite', $homedir . 'AddressBook.sqlite');
+				}
+				$sDsn = 'sqlite:' . $homedir . 'AddressBook.sqlite';
+			}
 */
 		} else {
 			$sDsn = \trim($oConfig->Get('contacts', 'pdo_dsn', ''));
@@ -101,9 +107,12 @@ class PdoAddressBook
 	private function prepareDatabaseSyncData() : array
 	{
 		$aResult = array();
-		$oStmt = $this->prepareAndExecute('SELECT id_contact, id_contact_str, changed, deleted, etag FROM rainloop_ab_contacts WHERE id_user = :id_user', array(
-			':id_user' => array($this->iUserID, \PDO::PARAM_INT)
-		));
+		$oStmt = $this->prepareAndExecute('SELECT id_contact, id_contact_str, changed, deleted, etag
+			FROM rainloop_ab_contacts
+			WHERE id_user = :id_user
+			ORDER BY deleted DESC',
+			array(':id_user' => array($this->iUserID, \PDO::PARAM_INT))
+		);
 
 		if ($oStmt) {
 			$aFetch = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -308,6 +317,7 @@ class PdoAddressBook
 	public function Export(string $sType = 'vcf') : bool
 	{
 		if (1 > $this->iUserID) {
+			\SnappyMail\Log::warning('PdoAddressBook', 'Export() invalid $iUserID');
 			return false;
 		}
 
@@ -317,16 +327,21 @@ class PdoAddressBook
 		$aDatabaseSyncData = $this->prepareDatabaseSyncData();
 		if (\count($aDatabaseSyncData)) {
 			foreach ($aDatabaseSyncData as $mData) {
-				if ($mData && isset($mData['id_contact'], $mData['deleted']) && !$mData['deleted']) {
-					$oContact = $this->GetContactByID($mData['id_contact']);
-					if ($oContact) {
-						if ($rCsv) {
-							Utils::VCardToCsv($rCsv, $oContact, $bCsvHeader);
-							$bCsvHeader = false;
-						} else {
-							echo $oContact->vCard->serialize();
+				try {
+//					if ($mData && isset($mData['id_contact'], $mData['deleted']) && !$mData['deleted']) {
+					if ($mData && !empty($mData['id_contact'])) {
+						$oContact = $this->GetContactByID($mData['id_contact']);
+						if ($oContact) {
+							if ($rCsv) {
+								Utils::VCardToCsv($rCsv, $oContact->vCard, $bCsvHeader);
+								$bCsvHeader = false;
+							} else {
+								echo $oContact->vCard->serialize();
+							}
 						}
 					}
+				} catch (\Throwable $oExc) {
+					$this->oLogger && $this->oLogger->WriteException($oExc);
 				}
 			}
 		}
@@ -337,6 +352,7 @@ class PdoAddressBook
 	public function ContactSave(Contact $oContact) : bool
 	{
 		if (1 > $this->iUserID) {
+			\SnappyMail\Log::warning('PdoAddressBook', 'ContactSave() invalid $iUserID');
 			return false;
 		}
 
@@ -436,6 +452,7 @@ class PdoAddressBook
 	public function DeleteContacts(array $aContactIds) : bool
 	{
 		if (1 > $this->iUserID) {
+			\SnappyMail\Log::warning('PdoAddressBook', 'DeleteContacts() invalid $iUserID');
 			return false;
 		}
 
@@ -744,7 +761,7 @@ class PdoAddressBook
 			p.prop_value as jcard
 		FROM rainloop_ab_contacts AS c
 		LEFT JOIN rainloop_ab_properties AS p ON (p.id_contact = c.id_contact AND p.prop_type = :prop_type)
-		WHERE c.deleted = 0 AND c.id_user = :id_user';
+		WHERE c.id_user = :id_user AND c.deleted = 0';
 
 		$aParams = array(
 			':id_user' => array($this->iUserID, \PDO::PARAM_INT),

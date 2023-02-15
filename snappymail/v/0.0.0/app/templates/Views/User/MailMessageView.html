@@ -31,7 +31,7 @@
 	</div>
 
 	<!-- ko if: message -->
-	<div class="b-message" data-bind="i18nUpdate: message, css: message().lineAsCss(0)">
+	<div class="b-message" data-bind="i18nUpdate: message, css: message()?.lineAsCss(0)">
 		<div class="message-fixed-button-toolbar">
 			<a class="btn btn-success buttonEdit fontastic hide-mobile" data-bind="visible: isDraftFolder(), command: editCommand">🖉</a>
 			<div class="btn-group" style="margin-right: -8px; display: inline;">
@@ -130,14 +130,14 @@
 			</div>
 			<div class="informationShort" data-bind="hidden: showFullInfo">
 				<span class="from" data-bind="html: viewFromShort, title: message().from"></span>
-				<i data-bind="visible: viewFromDkimVisibility, css: viewFromDkimStatusIconClass, title: viewFromDkimStatusTitle"></i>
+				<i data-bind="visible: viewDkimIcon, css: dkimIconClass, title: dkimTitle"></i>
 			</div>
 			<div class="informationFull" data-bind="visible: showFullInfo, with: message">
 				<table>
 					<tr data-bind="visible: from.length">
 						<td data-i18n="GLOBAL/FROM"></td>
 						<td><span data-bind="text: from"></span>
-							<i data-bind="visible: $parent.viewFromDkimVisibility, css: $parent.viewFromDkimStatusIconClass, title: $parent.viewFromDkimStatusTitle"></i>
+							<i data-bind="visible: $parent.viewDkimIcon, css: $parent.dkimIconClass, title: $parent.dkimTitle"></i>
 						</td>
 					</tr>
 					<tr data-bind="visible: to.length">
@@ -279,11 +279,11 @@
 							</span>
 						</div>
 
-						<div class="showImages" data-bind="visible: message().hasImages()">
+						<div class="btn-toolbar showImages" data-bind="visible: message().hasImages()">
 							<div class="btn" data-bind="click: showImages" data-icon="🖼" data-i18n="MESSAGE/BUTTON_SHOW_IMAGES"></div>
-							<div class="btn-group" data-bind="registerBootstrapDropdown: true, visible: showWhitelistOptions" style="display: inline-block">
+							<div class="btn-group dropdown" data-bind="registerBootstrapDropdown: true, visible: showWhitelistOptions" style="display: inline-block">
 								<a class="btn dropdown-toggle" id="whitelist-dropdown-id" data-icon="🖼" href="#" tabindex="-1"><span data-i18n="SETTINGS_GENERAL/IMAGES_WHITELIST"></span> ▼</a>
-								<menu class="dropdown-menu right-edge" role="menu" aria-labelledby="whitelist-dropdown-id">
+								<menu class="dropdown-menu" role="menu" aria-labelledby="whitelist-dropdown-id">
 									<!-- ko foreach: message().whitelistOptions() -->
 									<li role="presentation">
 										<a href="#" tabindex="-1" data-bind="click: $root.whitelistText, text: $data"></a>

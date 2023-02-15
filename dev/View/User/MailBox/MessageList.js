@@ -48,6 +48,9 @@ import { ComposePopupView } from 'View/Popup/Compose';
 
 import { MessageModel } from 'Model/Message';
 
+import { Layout, ClientSideKeyNameMessageListSize } from 'Common/EnumsUser';
+import { setLayoutResizer } from 'Common/UtilsUser';
+
 const
 	canBeMovedHelper = () => MessagelistUserStore.hasCheckedOrSelected(),
 
@@ -159,12 +162,12 @@ export class MailMessageList extends AbstractViewRight {
 				let list = [], current, sort = FolderUserStore.sortMode() || 'DATE';
 				if (sort.includes('FROM')) {
 					MessagelistUserStore.forEach(msg => {
-						let email = msg.from?.[0].email;
+						let email = msg.from[0].email;
 						if (!current || email != current.id) {
 							current = {
 								id: email,
 								label: msg.from[0].toLine(),
-								search: 'from=' + msg.from[0].email,
+								search: 'from=' + email,
 								messages: []
 							};
 							list.push(current);
@@ -232,7 +235,8 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.selector.on('ItemSelect', message => {
 			if (message) {
-				populateMessageBody(MessageModel.fromMessageListItem(message));
+//				populateMessageBody(message.clone());
+				populateMessageBody(message);
 			} else {
 				MessageUserStore.message(null);
 			}
@@ -563,6 +567,23 @@ export class MailMessageList extends AbstractViewRight {
 	onBuild(dom) {
 		const b_content = dom.querySelector('.b-content'),
 			eqs = (ev, s) => ev.target.closestWithin(s, dom);
+
+		setTimeout(() => {
+			// initMailboxLayoutResizer
+			const top = dom.querySelector('.messageList'),
+				fToggle = () => {
+					let layout = SettingsUserStore.layout();
+					setLayoutResizer(top, ClientSideKeyNameMessageListSize,
+						(ThemeStore.isMobile() || Layout.NoPreview === layout)
+							? 0
+							: (Layout.SidePreview === layout ? 'Width' : 'Height')
+					);
+				};
+			if (top) {
+				fToggle();
+				addEventListener('rl-layout', fToggle);
+			}
+		}, 1);
 
 		this.selector.init(b_content, Scope.MessageList);
 

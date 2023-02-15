@@ -1,3 +1,101 @@
+## 2.26.1 – 2023-02-14
+
+## Added
+- Option to allow `<style>` in messages (beta)
+- Message in new tab/window was missing BCC
+
+## Changed
+- Don't clone message for viewing, so that there is instant interaction with messagelist item
+- emailArrayToStringLineHelper() now filters addresses without email address
+- Cleanup EmailModel and better email address parsing and handling
+- Workaround "server connection error"
+  [#936](https://github.com/the-djmaze/snappymail/pull/936)
+- Cleanup AbstractViewPopup handling
+- Italian translation by @lota
+  [#948](https://github.com/the-djmaze/snappymail/pull/948)
+- Replace Element.fromHTML() with createElement()
+
+## Fixed
+- New subfolder not visible
+  [#937](https://github.com/the-djmaze/snappymail/pull/937)
+- OpenPGP decrypted attachments `friendlySize` not a function
+- Message @media print was broken due to new `display:flex`
+- addressparser() didn't handle groups properly
+- middleclick in messages list failed when messagesDom not yet initialized
+- Cannot open messages that have an email address without an @ in the From header
+  [#950](https://github.com/the-djmaze/snappymail/pull/950)
+- CSS don't display:flex when `[hidden]`
+- Default theme handling by @Niveshkrishna
+
+
+## 2.26.0 – 2023-02-10
+
+## Added
+- Whitelist advanced SPF/DKIM/DMARC valid feature
+  [#938](https://github.com/the-djmaze/snappymail/pull/938)
+
+## Changed
+- \RainLoop\Providers\AddressBook\Utils functions param `Contact` changed to `VCard`
+
+## Fixed
+- Issue with themes and Chrome cache
+  [#188](https://github.com/the-djmaze/snappymail/pull/188)
+- Settings panel width due to display:flex
+  [#940](https://github.com/the-djmaze/snappymail/pull/940)
+- Not respecting default theme setting
+  [#941](https://github.com/the-djmaze/snappymail/pull/941)
+- Some files had 0755 instead of 0644
+- Some spacing between message "view images" buttons for
+  [#201](https://github.com/the-djmaze/snappymail/pull/201)
+- Whitelist failed when empty or when using `:`
+  [#938](https://github.com/the-djmaze/snappymail/pull/938)
+- Cosmetics of the external images whitelist menu
+  [#939](https://github.com/the-djmaze/snappymail/pull/939)
+- PdoAddressBook ORDER BY deleted DESC to prevent sync and export issues
+- Undefined variable $items in upgrade.php
+- qq.com not supporting literal-string in search
+  [#836](https://github.com/the-djmaze/snappymail/pull/836)
+
+
+## 2.25.5 – 2023-02-09
+
+## Added
+- New dark themes by @TheCuteFoxxy
+  [#925](https://github.com/the-djmaze/snappymail/pull/925)
+- External images option 'Always when DKIM is valid' for
+  [#201](https://github.com/the-djmaze/snappymail/pull/201)
+- Image whitelist menu on message for
+  [#201](https://github.com/the-djmaze/snappymail/pull/201)
+
+## Changed
+- pt-PT translation by @ner00
+  [#917](https://github.com/the-djmaze/snappymail/pull/917) and
+  [#920](https://github.com/the-djmaze/snappymail/pull/920)
+- fr-FR translation by @hguilbert
+  [#919](https://github.com/the-djmaze/snappymail/pull/919)
+- Layout section rl-right now is `display: flex` and solves
+  [#928](https://github.com/the-djmaze/snappymail/pull/928)
+- Some Themes background to `cover`
+  [#918](https://github.com/the-djmaze/snappymail/pull/918)
+- Speedup cleanHtml() parser
+- Reduce memory usage on addressbook import
+
+## Fixed
+- Prevent loading loop between MessageList and FolderInformation requests
+- Admin -> Config layout
+- Inline images sometimes failed
+- Undefined index: cid
+  [#921](https://github.com/the-djmaze/snappymail/pull/921)
+- On upgrade prevent Apache access errors for
+  [#358](https://github.com/the-djmaze/snappymail/pull/358)
+- Import contacts as CSV is broken
+  [#931](https://github.com/the-djmaze/snappymail/pull/931)
+
+### Removed
+- Blockquote height calculator for
+  [#902](https://github.com/the-djmaze/snappymail/pull/902)
+
+
 ## 2.25.4 – 2023-02-06
 
 ## Added

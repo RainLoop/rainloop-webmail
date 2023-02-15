@@ -403,6 +403,7 @@
 		"PREFER_HTML": "Geef de voorkeur aan HTML boven platte tekst",
 		"PREFER_HTML_INFO": "Berichten komen soms in beide formaten. Deze optie bepaalt of u het HTML-gedeelte of het platte tekstgedeelte wilt weergeven.",
 		"REMOVE_COLORS": "Verwijder achtergrond- en tekstkleuren uit het bericht",
+		"ALLOW_STYLES": "CSS <style> toestaan",
 		"MESSAGE_PER_PAGE": "Berichten op pagina",
 		"CHECK_MAIL_INTERVAL": "Controleer mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Bericht markeren als gelezen na",
@@ -421,7 +422,6 @@
 		"EXTERNAL_IMAGES": "External images",
 		"IMAGES_OPTION_ASK": "Always ask",
 		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
-		"IMAGES_OPTION_DKIM": "Show always when DKIM is valid",
 		"IMAGES_OPTION_ALWAYS": "Show always",
 		"IMAGES_WHITELIST": "Images whitelist"
 	},

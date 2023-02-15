@@ -5,6 +5,31 @@ html.rl-mobile, html.rl-no-preview-pane {
 	}
 }
 
+#V-MailMessageList {
+	position: relative;
+}
+.rl-side-preview-pane #V-MailMessageList {
+	height: 100%;
+}
+.rl-no-preview-pane #V-MailMessageList {
+	height: 100%;
+	width: 100%;
+}
+.rl-side-preview-pane #V-MailMessageList .messageList {
+	max-width: 50vw;
+	min-width: 320px;
+	overflow: auto;
+	resize: horizontal;
+	width: 35vw;
+}
+.rl-bottom-preview-pane #V-MailMessageList .messageList {
+	height: 35vh;
+	max-height: 50vh;
+	min-height: 200px;
+	overflow: auto;
+	resize: vertical;
+}
+
 #V-MailMessageList.focused .messageList {
 	border-color: #9d9d9d;
 	box-shadow: var(--smMainShadow);

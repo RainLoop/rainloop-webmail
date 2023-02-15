@@ -29,7 +29,7 @@ abstract class Stream
 		// We just fake Drupal https://www.drupal.org/docs/8/core/modules/big-pipe/bigpipe-environment-requirements
 		\header('Surrogate-Control: no-store, content="BigPipe/1.0"');
 		// Explicitly disable caching so Varnish and other upstreams won't cache.
-		\header('Cache-Control: no-store, no-cache, must-revalidate');
+		\header('Cache-Control: no-store');
 		\header('Pragma: no-cache');
 
 		// Nginx: disable fastcgi_buffering and disable gzip for this request.

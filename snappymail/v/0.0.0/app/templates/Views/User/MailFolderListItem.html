@@ -6,7 +6,7 @@
 		<i data-bind="css: collapsedCss()"></i>
 		<!-- ko text: name --><!-- /ko -->
 	</a>
-	<!-- ko if: subFolders.length -->
+	<!-- ko if: subFolders().length -->
 	<ul data-bind="template: { name: 'MailFolderListItem', foreach: subFolders }, css: { 'collapsed': collapsed() }"></ul>
 	<!-- /ko -->
 </li>
