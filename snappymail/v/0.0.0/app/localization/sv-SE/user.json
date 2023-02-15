@@ -227,6 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Varning! Inte alla bilagor har överförts.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Alla bilagor är inte uppladddade än",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "Begär mottagningskvitto",
 		"BUTTON_MARK_AS_IMPORTANT": "Markera som viktigt",
 		"BUTTON_REQUEST_DSN": "Begär ett leveranskvitto",
@@ -482,7 +483,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Skapa nycklar",
 		"TITLE_PRIVATE": "Privat",
 		"TITLE_PUBLIC": "Publik",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Spara utkast automatiskt",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

@@ -227,6 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Pozor! Priloge niso bile vse naložene.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Priloge še niso bile naložene v celoti.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "Zahtevaj potrdilo o branju",
 		"BUTTON_MARK_AS_IMPORTANT": "Označi kot pomembno",
 		"BUTTON_REQUEST_DSN": "Zahtevaj potrdilo o dostavi",
@@ -482,7 +483,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Generiraj ključe",
 		"TITLE_PRIVATE": "Zasebni",
 		"TITLE_PUBLIC": "Javni",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Samodejno shrani osnutek",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

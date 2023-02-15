@@ -227,6 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Attention ! Toutes les pièces jointes n'ont pas été téléchargées.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Toutes les pièces jointes n'ont pas encore été téléchargées",
 		"ALLOW_SPELLCHECK": "Activer le vérificateur d'orthographe du navigateur",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "Demander une confirmation de lecture",
 		"BUTTON_MARK_AS_IMPORTANT": "Marquer comme important",
 		"BUTTON_REQUEST_DSN": "Demander un accusé de réception",
@@ -482,7 +483,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Générer les clés",
 		"TITLE_PRIVATE": "Privée",
 		"TITLE_PUBLIC": "Publique",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Brouillon sauvegardé automatiquement",
 		"GET_MAILVELOPE": "Obtenez le module complémentaire de navigateur Mailvelope"
 	},
 	"SHORTCUTS_HELP": {

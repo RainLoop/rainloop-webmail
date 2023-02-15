@@ -227,6 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Pozor! Nie všetky prílohy boli nahraté.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Nie všetky prílohy boli už nahraté na server.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "Vyžiadať potvrdenie o prečítaní",
 		"BUTTON_MARK_AS_IMPORTANT": "Označiť ako dôležité",
 		"BUTTON_REQUEST_DSN": "Vyžiadať potvrdenie o doručení",
@@ -482,7 +483,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Generate Keys",
 		"TITLE_PRIVATE": "Private",
 		"TITLE_PUBLIC": "Public",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automaticky uložiť koncept.",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

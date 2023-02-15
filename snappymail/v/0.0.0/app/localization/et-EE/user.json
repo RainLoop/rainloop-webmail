@@ -227,6 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Tähelepanu! Kõiki manuseid ei ole üles laetud.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Kõiki manuseid ei ole veel üles laetud.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "Palu lugemise kohta kinnitust",
 		"BUTTON_MARK_AS_IMPORTANT": "Tähista olulisena",
 		"BUTTON_REQUEST_DSN": "Palu kättesaamise kohta kinnitust",
@@ -482,7 +483,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Genereeri võti",
 		"TITLE_PRIVATE": "Privaatne",
 		"TITLE_PUBLIC": "Avalik",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

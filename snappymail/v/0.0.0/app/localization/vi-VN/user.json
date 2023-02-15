@@ -227,6 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Cảnh báo! Các tập tin đính kèm chưa được tải lên hết.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Các tập tin đính kèm chưa được tải lên hết.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "Yêu cầu thông báo khi người nhận đã đọc thư",
 		"BUTTON_MARK_AS_IMPORTANT": "Đánh dấu thư quan trọng",
 		"BUTTON_REQUEST_DSN": "Yêu cầu thông báo thư đã gửi thành công",
@@ -482,7 +483,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Tạo một đôi mật mã",
 		"TITLE_PRIVATE": "Mã lưu riêng",
 		"TITLE_PUBLIC": "Mã chia sẻ công cộng",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Tự động lưu nháp",
 		"GET_MAILVELOPE": "Tải về tiện ích trình duyệt cài thêm tên Mailvelope."
 	},
 	"SHORTCUTS_HELP": {

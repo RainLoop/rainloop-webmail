@@ -227,6 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Advarsels! Ikke alle vedhæftninger er overført.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Overførsel af vedhæftninger igang.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "Bed om kvittering for læsning",
 		"BUTTON_MARK_AS_IMPORTANT": "Markér som vigtig",
 		"BUTTON_REQUEST_DSN": "Bed om kvittering for modtagelse",
@@ -482,7 +483,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Generer nøgler",
 		"TITLE_PRIVATE": "Privat",
 		"TITLE_PUBLIC": "Offentlig",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Gem kladde automatisk",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

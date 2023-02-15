@@ -10,8 +10,6 @@ import { SettingsUserStore } from 'Stores/User/Settings';
 import { GnuPGUserStore } from 'Stores/User/GnuPG';
 import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
 
-import Remote from 'Remote/User/Fetch';
-
 import { showScreenPopup } from 'Knoin/Knoin';
 
 import { OpenPgpImportPopupView } from 'View/Popup/OpenPgpImport';
@@ -46,10 +44,6 @@ export class UserSettingsSecurity extends AbstractViewSettings {
 		this.canOpenPGP = SettingsCapa('OpenPGP');
 		this.canGnuPG = GnuPGUserStore.isSupported();
 		this.canMailvelope = !!window.mailvelope;
-
-		this.allowDraftAutosave = SettingsUserStore.allowDraftAutosave;
-
-		this.allowDraftAutosave.subscribe(value => Remote.saveSetting('AllowDraftAutosave', value))
 	}
 
 	addOpenPgpKey() {

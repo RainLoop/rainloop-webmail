@@ -227,6 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Alerta! Nem todos os arquivos foram anexados.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Alguns anexos ainda não foram completamente enviados",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "Pedir recibo de leitura",
 		"BUTTON_MARK_AS_IMPORTANT": "Marcar como importante",
 		"BUTTON_REQUEST_DSN": "Pedir recibo de entrega",
@@ -482,7 +483,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Gerar chave",
 		"TITLE_PRIVATE": "Privado",
 		"TITLE_PUBLIC": "Público",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Salvar automaticamente rascunho",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

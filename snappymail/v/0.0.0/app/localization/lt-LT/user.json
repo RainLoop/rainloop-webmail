@@ -227,6 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Dėmesio! Ne visi priedai buvo įkelti.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Dar ne visi priedai buvo įkelti",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "Prašyti pranešti kada bus perskaitytas",
 		"BUTTON_MARK_AS_IMPORTANT": "Žymėti svarbiu",
 		"BUTTON_REQUEST_DSN": "Prašyti laiško gavimo pažymos",
@@ -482,7 +483,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Sukurti raktus",
 		"TITLE_PRIVATE": "Privatus",
 		"TITLE_PUBLIC": "Viešas",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

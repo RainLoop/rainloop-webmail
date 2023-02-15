@@ -227,6 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Advarsel: ett eller flere vedlegg er ikke blitt lastet opp enda.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Ett eller flere vedlegg er ikke blitt lastet opp enda",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "Be om en bekreftelse fra mottaker på at meldinga er lest",
 		"BUTTON_MARK_AS_IMPORTANT": "Marker som viktig",
 		"BUTTON_REQUEST_DSN": "Be om leveringsbekreftelse",
@@ -482,7 +483,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Lag nøkler",
 		"TITLE_PRIVATE": "Privat",
 		"TITLE_PUBLIC": "Offentlig",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Lagre utkast automatisk",
 		"GET_MAILVELOPE": "Få nettlesertillegg Mailvelope."
 	},
 	"SHORTCUTS_HELP": {

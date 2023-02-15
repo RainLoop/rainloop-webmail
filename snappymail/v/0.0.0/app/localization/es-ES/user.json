@@ -227,6 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "¡Atención! No se han subido todos los archivos adjuntos.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "No se han subido todos los archivos adjuntos.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "Solicitar confirmación de lectura",
 		"BUTTON_MARK_AS_IMPORTANT": "Marcar como importante",
 		"BUTTON_REQUEST_DSN": "Solicitar una confirmación de entrega",
@@ -482,7 +483,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Generar llaves",
 		"TITLE_PRIVATE": "Privado",
 		"TITLE_PUBLIC": "Público",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

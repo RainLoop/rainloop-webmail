@@ -492,57 +492,59 @@ export class ComposePopupView extends AbstractViewPopup {
 	}
 
 	saveCommand() {
-		if (FolderUserStore.draftsFolderNotEnabled()) {
-			showScreenPopup(FolderSystemPopupView, [FolderType.Drafts]);
-		} else {
-			this.savedError(false);
-			this.saving(true);
-			this.autosaveStart();
-			this.getMessageRequestParams(FolderUserStore.draftsFolder(), 1).then(params => {
-				Remote.request('SaveMessage',
-					(iError, oData) => {
-						let result = false;
+		if (!this.saving() && !this.sending()) {
+			if (FolderUserStore.draftsFolderNotEnabled()) {
+				showScreenPopup(FolderSystemPopupView, [FolderType.Drafts]);
+			} else {
+				this.savedError(false);
+				this.saving(true);
+				this.autosaveStart();
+				this.getMessageRequestParams(FolderUserStore.draftsFolder(), 1).then(params => {
+					Remote.request('SaveMessage',
+						(iError, oData) => {
+							let result = false;
 
-						this.saving(false);
+							this.saving(false);
 
-						if (!iError) {
-							if (oData.Result.folder && oData.Result.uid) {
-								result = true;
+							if (!iError) {
+								if (oData.Result.folder && oData.Result.uid) {
+									result = true;
 
-								if (this.bFromDraft) {
-									const message = MessageUserStore.message();
-									if (message && this.draftsFolder() === message.folder && this.draftUid() == message.uid) {
-										MessageUserStore.message(null);
+									if (this.bFromDraft) {
+										const message = MessageUserStore.message();
+										if (message && this.draftsFolder() === message.folder && this.draftUid() == message.uid) {
+											MessageUserStore.message(null);
+										}
 									}
+
+									this.draftsFolder(oData.Result.folder);
+									this.draftUid(oData.Result.uid);
+
+									this.savedTime(new Date);
+
+									if (this.bFromDraft) {
+										setFolderHash(this.draftsFolder(), '');
+									}
+									setFolderHash(FolderUserStore.draftsFolder(), '');
 								}
-
-								this.draftsFolder(oData.Result.folder);
-								this.draftUid(oData.Result.uid);
-
-								this.savedTime(new Date);
-
-								if (this.bFromDraft) {
-									setFolderHash(this.draftsFolder(), '');
-								}
-								setFolderHash(FolderUserStore.draftsFolder(), '');
 							}
-						}
 
-						if (!result) {
-							this.savedError(true);
-							this.savedErrorDesc(getNotification(Notification.CantSaveMessage));
-						}
+							if (!result) {
+								this.savedError(true);
+								this.savedErrorDesc(getNotification(Notification.CantSaveMessage));
+							}
 
-						reloadDraftFolder();
-					},
-					params,
-					200000
-				);
-			}).catch(e => {
-				this.saving(false);
-				this.savedError(true);
-				this.savedErrorDesc(getNotification(Notification.CantSaveMessage) + ': ' + e);
-			});
+							reloadDraftFolder();
+						},
+						params,
+						200000
+					);
+				}).catch(e => {
+					this.saving(false);
+					this.savedError(true);
+					this.savedErrorDesc(getNotification(Notification.CantSaveMessage) + ': ' + e);
+				});
+			}
 		}
 	}
 
@@ -569,12 +571,7 @@ export class ComposePopupView extends AbstractViewPopup {
 	skipCommand() {
 		ComposePopupView.inEdit(true);
 
-		if (
-			!this.saving() &&
-			!this.sending() &&
-			!FolderUserStore.draftsFolderNotEnabled() &&
-			SettingsUserStore.allowDraftAutosave()
-		) {
+		if (!FolderUserStore.draftsFolderNotEnabled() && SettingsUserStore.allowDraftAutosave()) {
 			this.saveCommand();
 		}
 
@@ -597,8 +594,6 @@ export class ComposePopupView extends AbstractViewPopup {
 				&& !FolderUserStore.draftsFolderNotEnabled()
 				&& SettingsUserStore.allowDraftAutosave()
 				&& !this.isEmptyForm(false)
-				&& !this.saving()
-				&& !this.sending()
 				&& !this.savedError()
 			) {
 				this.saveCommand();

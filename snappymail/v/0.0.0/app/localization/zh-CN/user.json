@@ -227,6 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "注意！还有正在上传的附件。",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "还有附件正在上传。",
 		"ALLOW_SPELLCHECK": "启用浏览器拼写检查器",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "要求已读回执",
 		"BUTTON_MARK_AS_IMPORTANT": "标记为“重要”",
 		"BUTTON_REQUEST_DSN": "要求送达回执",
@@ -482,7 +483,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "生成 密钥",
 		"TITLE_PRIVATE": "私有",
 		"TITLE_PUBLIC": "公开",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "自动保存草稿",
 		"GET_MAILVELOPE": "获取 Mailvelope 浏览器扩展。"
 	},
 	"SHORTCUTS_HELP": {

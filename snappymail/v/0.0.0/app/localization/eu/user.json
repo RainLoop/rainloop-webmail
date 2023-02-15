@@ -227,6 +227,7 @@
 		"ATTACHMENTS_ERROR_DESC": "Kontuz! Eranskin guztiak ez dira kargatu.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Eranskin guztiak ez dira kargatu oraindik.",
 		"ALLOW_SPELLCHECK": "Gaitu nabigatzaileko hizkuntza-zuzentzailea",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "Eskatu irakurketa-agiria",
 		"BUTTON_MARK_AS_IMPORTANT": "MArkatu garrantzitsu bezala",
 		"BUTTON_REQUEST_DSN": "Eskatu jasotze-agiria",
@@ -482,7 +483,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Sortu Gako Parea",
 		"TITLE_PRIVATE": "Pribatua",
 		"TITLE_PUBLIC": "Publikoa",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatikoi gorde zirriborroa",
 		"GET_MAILVELOPE": "Lortu Mailvelope nabigatzaileko gehigarria."
 	},
 	"SHORTCUTS_HELP": {
