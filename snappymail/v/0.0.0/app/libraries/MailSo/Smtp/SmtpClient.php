@@ -72,14 +72,14 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
-	public function Connect(\MailSo\Net\ConnectSettings $oSettings, string $sEhloHost = '[127.0.0.1]') : void
+	public function Connect(\MailSo\Net\ConnectSettings $oSettings) : void
 	{
 		parent::Connect($oSettings);
 
 		$this->validateResponse(220);
 
-		$this->ehloOrHelo($sEhloHost);
-		$this->sEhlo = $sEhloHost;
+		$this->ehloOrHelo($oSettings->Ehlo);
+		$this->sEhlo = $oSettings->Ehlo;
 
 		if (ConnectionSecurityType::STARTTLS === $this->Settings->type
 		 || (ConnectionSecurityType::AUTO_DETECT === $this->Settings->type && $this->hasCapability('STARTTLS'))) {

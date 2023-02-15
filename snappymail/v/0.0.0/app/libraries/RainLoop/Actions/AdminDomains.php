@@ -132,7 +132,8 @@ trait AdminDomains
 					$oSmtpClient->SetLogger($this->Logger());
 
 					$oSettings = $oDomain->SmtpSettings();
-					$oSmtpClient->Connect($oSettings, \MailSo\Smtp\SmtpClient::EhloHelper());
+					$oSettings->Ehlo = \MailSo\Smtp\SmtpClient::EhloHelper();
+					$oSmtpClient->Connect($oSettings);
 
 					if (!empty($aAuth['user'])) {
 						$oSettings->Login = $aAuth['user'];
