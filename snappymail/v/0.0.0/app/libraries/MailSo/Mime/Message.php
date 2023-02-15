@@ -179,16 +179,19 @@ class Message extends Part
 
 	public function SetInReplyTo(string $sInReplyTo) : self
 	{
-		$this->aHeadersValue[Enumerations\Header::IN_REPLY_TO] = $sInReplyTo;
-
+		$sInReplyTo = \trim($sInReplyTo);
+		if (\strlen($sInReplyTo)) {
+			$this->aHeadersValue[Enumerations\Header::IN_REPLY_TO] = $sInReplyTo;
+		}
 		return $this;
 	}
 
 	public function SetReferences(string $sReferences) : self
 	{
-		$this->aHeadersValue[Enumerations\Header::REFERENCES] =
-			\MailSo\Base\Utils::StripSpaces($sReferences);
-
+		$sReferences = \MailSo\Base\Utils::StripSpaces($sReferences);
+		if (\strlen($sReferences)) {
+			$this->aHeadersValue[Enumerations\Header::REFERENCES] = $sReferences;
+		}
 		return $this;
 	}
 
@@ -239,8 +242,9 @@ class Message extends Part
 
 	public function SetTo(EmailCollection $oEmails) : self
 	{
-		$this->aHeadersValue[Enumerations\Header::TO_] = $oEmails;
-
+		if ($oEmails->count()) {
+			$this->aHeadersValue[Enumerations\Header::TO_] = $oEmails;
+		}
 		return $this;
 	}
 
@@ -253,22 +257,25 @@ class Message extends Part
 
 	public function SetReplyTo(EmailCollection $oEmails) : self
 	{
-		$this->aHeadersValue[Enumerations\Header::REPLY_TO] = $oEmails;
-
+		if ($oEmails->count()) {
+			$this->aHeadersValue[Enumerations\Header::REPLY_TO] = $oEmails;
+		}
 		return $this;
 	}
 
 	public function SetCc(EmailCollection $oEmails) : self
 	{
-		$this->aHeadersValue[Enumerations\Header::CC] = $oEmails;
-
+		if ($oEmails->count()) {
+			$this->aHeadersValue[Enumerations\Header::CC] = $oEmails;
+		}
 		return $this;
 	}
 
 	public function SetBcc(EmailCollection $oEmails) : self
 	{
-		$this->aHeadersValue[Enumerations\Header::BCC] = $oEmails;
-
+		if ($oEmails->count()) {
+			$this->aHeadersValue[Enumerations\Header::BCC] = $oEmails;
+		}
 		return $this;
 	}
 
