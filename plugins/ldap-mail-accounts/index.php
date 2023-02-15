@@ -32,6 +32,8 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 	public function Init(): void
 	{
 		$this->addHook("login.success", 'AddAdditionalLdapMailAccounts');
+		$this->addHook('imap.before-login', 'MapImapCredentialsByLDAP');
+		$this->addHook('smtp.before-login', 'MapSmtpCredentialsByLDAP');
 	}
 
 	// Function gets called by RainLoop/Actions/User.php
@@ -48,6 +50,32 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 		$oldapMailAccounts = new LdapMailAccounts($config, $this->Manager()->Actions()->Logger());
 
 		$oldapMailAccounts->AddLdapMailAccounts($oAccount);
+	}
+
+	// Function gets called by Account.php
+	/**
+	 * Overwrite the mailaddress of the account with the one found in LDAP by this plugin at IMAP login
+	 *
+	 * @param Account $oAccount
+	 * @param ImapClient $oImapClient
+	 * @param \MailSo\Imap\Settings $oSettings
+	 */
+	public function MapImapCredentialsByLDAP(\RainLoop\Model\Account $oAccount, \MailSo\Imap\ImapClient $oImapClient, \MailSo\Imap\Settings $oSettings)
+	{
+		//$oSettings->Login = $oAccount->IncLogin();
+	}
+
+	// Function gets called by Account.php
+	/**
+	 * Overwrite the mailaddress of the account with the one found in LDAP by this plugin at SMTP login
+	 *
+	 * @param Account $oAccount
+	 * @param SmtpClient $oSmtpClient
+	 * @param \MailSo\Smtp\Settings $oSettings
+	 */
+	public function MapSmtpCredentialsByLDAP(\RainLoop\Model\Account $oAccount, \MailSo\Smtp\SmtpClient $oSmtpClient, \MailSo\Smtp\Settings $oSettings)
+	{
+
 	}
 
 	/**

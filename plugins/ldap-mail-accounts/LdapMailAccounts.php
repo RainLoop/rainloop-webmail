@@ -113,7 +113,7 @@ class LdapMailAccounts
 
 		$aAccounts = $oActions->GetAccounts($oAccount);
 
-		//Search for accounts with suffix " (LDAP)" at the end of the name that where created by this plugin and initially remove them from the
+		//Search for accounts with suffix " (LDAP)" at the end of the name that were created by this plugin and initially remove them from the
 		//account array. This only removes the visibility but does not delete the config done by the user. So if a user looses access to a
 		//mailbox the user will not see the account anymore but the configuration can be restored when the user regains access to it
 		foreach($aAccounts as $key => $aAccount)
@@ -129,31 +129,40 @@ class LdapMailAccounts
 			$sUsername = $mailAddressResult->username;
 			$sDomain = $mailAddressResult->domain;
 			$sName = $mailAddressResult->name;
+			$sEmail = "";
+
+			//Create the email string - if disabled inside the config the email is a combination of the found username + @ + the found domain
+			if ($this->config->bool_overwrite_mail_address_additional_account) {
+				$sEmail = $mailAddressResult->mailAdditionalAccount;
+			}
+			else {
+				$sEmail = "$sUsername@$sDomain";
+			}
 
 			//Check if the domain of the found mail address is in the list of configured domains
 			if ($oActions->DomainProvider()->Load($sDomain, true))
 			{
 				//only execute if the found account isn't already in the list of additional accounts
 				//and if the found account is different from the main account
-				if (!isset($aAccounts["$sUsername@$sDomain"]) && $oAccount->Email() !== "$sUsername@$sDomain")
+				if (!isset($aAccounts[$sEmail]) && $oAccount->Email() !== $sEmail)
 				{
 					//Try to login the user with the same password as the primary account has
 					//if this fails the user will see the new mail addresses but will be asked for the correct password
 					$sPass = $oAccount->IncPassword();
 
-					$oNewAccount = RainLoop\Model\AdditionalAccount::NewInstanceFromCredentials($oActions, "$sUsername@$sDomain", $sUsername, $sPass);
+					$oNewAccount = RainLoop\Model\AdditionalAccount::NewInstanceFromCredentials($oActions, $sEmail, $sUsername, $sPass);
 
-					$aAccounts["$sUsername@$sDomain"] = $oNewAccount->asTokenArray($oAccount);
+					$aAccounts[$sEmail] = $oNewAccount->asTokenArray($oAccount);
 				}
 
 				//Always inject/update the found mailbox names into the array (also if the mailbox already existed)
-				if (isset($aAccounts["$sUsername@$sDomain"]))
+				if (isset($aAccounts[$sEmail]))
 				{
-					$aAccounts["$sUsername@$sDomain"]['name'] = $sName . " (LDAP)";
+					$aAccounts[$sEmail]['name'] = $sName . " (LDAP)";
 				}
 			}
 			else {
-				$this->logger->Write("Domain $sDomain is not part of configured domains in SnappyMail Admin Panel - mail address $sUsername@$sDomain will not be added.", \LOG_NOTICE, self::LOG_KEY);
+				$this->logger->Write("Domain $sDomain is not part of configured domains in SnappyMail Admin Panel - mail address $sEmail will not be added.", \LOG_NOTICE, self::LOG_KEY);
 			}
 		}
 
