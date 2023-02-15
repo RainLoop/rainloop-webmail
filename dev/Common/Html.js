@@ -356,7 +356,7 @@ export const
 						delAttribute('width');
 					}
 					value = oStyle.removeProperty('width');
-					if (value && !oStyle.maxWidth) {
+					if (parseInt(value,10) && !oStyle.maxWidth) {
 						oStyle.maxWidth = value;
 						oStyle.width = '100%';
 					}
