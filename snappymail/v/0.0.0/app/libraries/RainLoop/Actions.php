@@ -245,8 +245,8 @@ class Actions
 	public function BootEnd(): void
 	{
 		try {
-			if ($this->MailClient()->IsLoggined()) {
-				$this->MailClient()->Disconnect();
+			if ($this->ImapClient()->IsLoggined()) {
+				$this->ImapClient()->Disconnect();
 			}
 		} catch (\Throwable $oException) {
 			unset($oException);
@@ -1094,9 +1094,9 @@ class Actions
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->MailClient()->IsLoggined()) {
+		if (!$this->ImapClient()->IsLoggined()) {
 			try {
-				$oAccount->ImapConnectAndLogin($this->oPlugins, $this->MailClient()->ImapClient(), $this->oConfig);
+				$oAccount->ImapConnectAndLogin($this->oPlugins, $this->ImapClient(), $this->oConfig);
 			} catch (\MailSo\Net\Exceptions\ConnectionException $oException) {
 				throw new Exceptions\ClientException(Notifications::ConnectionError, $oException);
 			} catch (\Throwable $oException) {

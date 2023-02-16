@@ -57,14 +57,14 @@ trait Folders
 			$aQuota = null;
 			if ($this->GetCapa(Capa::QUOTA)) {
 				try {
-//					$aQuota = $this->MailClient()->Quota();
-					$aQuota = $this->MailClient()->QuotaRoot();
+//					$aQuota = $this->ImapClient()->Quota();
+					$aQuota = $this->ImapClient()->QuotaRoot();
 				} catch (\Throwable $oException) {
 					// ignore
 				}
 			}
 
-			$aCapabilities = \array_values(\array_filter($this->MailClient()->Capability(), function ($item) {
+			$aCapabilities = \array_values(\array_filter($this->ImapClient()->Capability(), function ($item) {
 				return !\preg_match('/^(IMAP|AUTH|LOGIN|SASL)/', $item);
 			}));
 
@@ -73,7 +73,7 @@ trait Folders
 				array(
 					'quotaUsage' => $aQuota ? $aQuota[0] * 1024 : null,
 					'quotaLimit' => $aQuota ? $aQuota[1] * 1024 : null,
-					'namespace' => $this->MailClient()->GetPersonalNamespace(),
+					'namespace' => $this->ImapClient()->GetPersonalNamespace(),
 					'capabilities' => $aCapabilities
 				)
 			);
@@ -109,7 +109,7 @@ trait Folders
 		$sFolderFullName = $this->GetActionParam('folder');
 		$sMetadataKey = $this->GetActionParam('key');
 		if ($sFolderFullName && $sMetadataKey) {
-			$this->MailClient()->FolderSetMetadata($sFolderFullName, [
+			$this->ImapClient()->FolderSetMetadata($sFolderFullName, [
 				$sMetadataKey => $this->GetActionParam('value') ?: null
 			]);
 		}
@@ -125,7 +125,7 @@ trait Folders
 
 		try
 		{
-			$this->MailClient()->{$bSubscribe ? 'FolderSubscribe' : 'FolderUnsubscribe'}($sFolderFullName);
+			$this->ImapClient()->{$bSubscribe ? 'FolderSubscribe' : 'FolderUnsubscribe'}($sFolderFullName);
 		}
 		catch (\Throwable $oException)
 		{
@@ -231,7 +231,7 @@ trait Folders
 
 		try
 		{
-			$this->MailClient()->FolderDelete($this->GetActionParam('folder', ''));
+			$this->ImapClient()->FolderDelete($this->GetActionParam('folder', ''));
 		}
 		catch (\MailSo\Mail\Exceptions\NonEmptyFolder $oException)
 		{
@@ -254,7 +254,7 @@ trait Folders
 
 		try
 		{
-			$this->MailClient()->FolderClear($this->GetActionParam('folder', ''));
+			$this->ImapClient()->FolderClear($this->GetActionParam('folder', ''));
 		}
 		catch (\Throwable $oException)
 		{

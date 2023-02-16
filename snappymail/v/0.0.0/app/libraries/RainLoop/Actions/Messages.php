@@ -62,6 +62,7 @@ trait Messages
 		$oAccount = $this->initMailClientConnection();
 
 		if ($sHash) {
+//			$oInfo = $this->MailClient()->FolderHash($oParams->sFolderName);
 			$oInfo = $this->ImapClient()->FolderStatusAndSelect($oParams->sFolderName);
 			$aRequestHash = \explode('-', $sHash);
 			$sFolderHash = $oInfo->getHash($this->ImapClient()->Hash());
@@ -135,7 +136,7 @@ trait Messages
 				$sMessageFolder = $this->GetActionParam('messageFolder', '');
 				$iMessageUid = (int) $this->GetActionParam('messageUid', 0);
 				if (\strlen($sMessageFolder) && 0 < $iMessageUid) {
-					$this->MailClient()->MessageDelete($sMessageFolder, new SequenceSet($iMessageUid));
+					$this->ImapClient()->MessageDelete($sMessageFolder, new SequenceSet($iMessageUid));
 				}
 
 				if (null !== $iNewUid && 0 < $iNewUid) {
@@ -250,7 +251,7 @@ trait Messages
 					if (\strlen($sDraftFolder) && 0 < $iDraftUid) {
 						try
 						{
-							$this->MailClient()->MessageDelete($sDraftFolder, new SequenceSet($iDraftUid));
+							$this->ImapClient()->MessageDelete($sDraftFolder, new SequenceSet($iDraftUid));
 						}
 						catch (\Throwable $oException)
 						{
@@ -452,7 +453,7 @@ trait Messages
 
 		try
 		{
-			$this->MailClient()->MessageDelete($sFolder, new SequenceSet($aUids), true);
+			$this->ImapClient()->MessageDelete($sFolder, new SequenceSet($aUids), true);
 		}
 		catch (\Throwable $oException)
 		{
@@ -517,7 +518,7 @@ trait Messages
 
 		try
 		{
-			$this->MailClient()->MessageMove($sFromFolder, $sToFolder, $oUids);
+			$this->ImapClient()->MessageMove($sFromFolder, $sToFolder, $oUids);
 		}
 		catch (\Throwable $oException)
 		{
@@ -546,7 +547,7 @@ trait Messages
 
 		try
 		{
-			$this->MailClient()->MessageCopy(
+			$this->ImapClient()->MessageCopy(
 				$this->GetActionParam('fromFolder', ''),
 				$this->GetActionParam('toFolder', ''),
 				new SequenceSet(\explode(',', (string) $this->GetActionParam('uids', '')))
@@ -651,7 +652,7 @@ trait Messages
 
 			$oAccount = $this->initMailClientConnection();
 
-			$oImapClient = $this->MailClient()->ImapClient();
+			$oImapClient = $this->ImapClient();
 			$oImapClient->FolderExamine($sFolderName);
 
 			$aParts = [

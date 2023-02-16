@@ -228,7 +228,7 @@ trait User
 
 		try
 		{
-			$aQuota = $this->MailClient()->QuotaRoot();
+			$aQuota = $this->ImapClient()->QuotaRoot();
 		}
 		catch (\Throwable $oException)
 		{
