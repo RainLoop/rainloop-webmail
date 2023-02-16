@@ -280,39 +280,7 @@ const
 
 	// Recursively examine container nodes and wrap any inline children.
 	fixContainer = ( container, root ) => {
-/*
-		// Live, but very slow
-		let children = container.childNodes;
-		let wrapper = null;
-		let i = 0, l = children.length, child, isBR;
-
-		for ( ; i < l; ++i ) {
-			child = children[i];
-			isBR = child.nodeName === 'BR';
-			if ( !isBR && isInline( child )
-//			 && (root.__squire__._config.blockTag !== 'DIV' || (child.matches && !child.matches(phrasingElements)))
-			) {
-				wrapper = wrapper || createElement( 'div' );
-				wrapper.append( child );
-				--i;
-				--l;
-			} else if ( isBR || wrapper ) {
-				wrapper = wrapper || createElement( 'div' );
-				fixCursor( wrapper, root );
-				if ( isBR ) {
-					child.replaceWith( wrapper );
-				} else {
-					child.before( wrapper  );
-					++i;
-					++l;
-				}
-				wrapper = null;
-			}
-			isContainer( child ) && fixContainer( child, root );
-		}
-*/
 		let wrapper, isBR;
-		// Not live, and fast
 		[...container.children].forEach(child => {
 			isBR = child.nodeName === 'BR';
 			if ( !isBR && isInline( child )
@@ -323,10 +291,10 @@ const
 			} else if ( isBR || wrapper ) {
 				wrapper = wrapper || createElement( 'div' );
 				fixCursor( wrapper, root );
-				isBR ? child.replaceWith( wrapper ) : child.before( wrapper  );
+				child[isBR ? 'replaceWith' : 'before']( wrapper );
 				wrapper = null;
 			}
-			isContainer( child )  && fixContainer( child, root );
+			isContainer( child ) && fixContainer( child, root );
 		});
 		wrapper && container.append( fixCursor( wrapper, root ) );
 		return container;
