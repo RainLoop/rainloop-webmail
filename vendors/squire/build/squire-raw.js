@@ -280,6 +280,8 @@ const
 
 	// Recursively examine container nodes and wrap any inline children.
 	fixContainer = ( container, root ) => {
+/*
+		// Live, but very slow
 		let children = container.childNodes;
 		let wrapper = null;
 		let i = 0, l = children.length, child, isBR;
@@ -290,16 +292,12 @@ const
 			if ( !isBR && isInline( child )
 //			 && (root.__squire__._config.blockTag !== 'DIV' || (child.matches && !child.matches(phrasingElements)))
 			) {
-				if ( !wrapper ) {
-					 wrapper = createElement( 'div' );
-				}
+				wrapper = wrapper || createElement( 'div' );
 				wrapper.append( child );
 				--i;
 				--l;
 			} else if ( isBR || wrapper ) {
-				if ( !wrapper ) {
-					wrapper = createElement( 'div' );
-				}
+				wrapper = wrapper || createElement( 'div' );
 				fixCursor( wrapper, root );
 				if ( isBR ) {
 					child.replaceWith( wrapper );
@@ -312,34 +310,24 @@ const
 			}
 			isContainer( child ) && fixContainer( child, root );
 		}
-/*
-		// Not live
+*/
+		let wrapper, isBR;
+		// Not live, and fast
 		[...container.children].forEach(child => {
 			isBR = child.nodeName === 'BR';
 			if ( !isBR && isInline( child )
 //			 && (root.__squire__._config.blockTag !== 'DIV' || (child.matches && !child.matches(phrasingElements)))
 			) {
-				if ( !wrapper ) {
-					 wrapper = createElement( 'div' );
-				}
+				wrapper = wrapper || createElement( 'div' );
 				wrapper.append( child );
 			} else if ( isBR || wrapper ) {
-				if ( !wrapper ) {
-					wrapper = createElement( 'div' );
-				}
+				wrapper = wrapper || createElement( 'div' );
 				fixCursor( wrapper, root );
-				if ( isBR ) {
-					child.replaceWith( wrapper );
-				} else {
-					child.before( wrapper  );
-				}
+				isBR ? child.replaceWith( wrapper ) : child.before( wrapper  );
 				wrapper = null;
 			}
-			if ( isContainer( child ) ) {
-				fixContainer( child, root );
-			}
+			isContainer( child )  && fixContainer( child, root );
 		});
-*/
 		wrapper && container.append( fixCursor( wrapper, root ) );
 		return container;
 	},
