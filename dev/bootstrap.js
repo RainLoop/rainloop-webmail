@@ -44,21 +44,31 @@ export default App => {
 		}, init);
 		if (postData) {
 			init.method = 'POST';
-			init.headers['Content-Type'] = 'application/json';
+			let asJSON = 1,
+				XToken = Settings.app('token'),
+				object = {};
 			if (postData instanceof FormData) {
-				const object = {};
 				postData.forEach((value, key) => {
-					if (!Reflect.has(object, key)){
+					if (value instanceof File) {
+						asJSON = 0;
+					} else if (!Reflect.has(object, key)) {
 						object[key] = value;
 					} else {
 						isArray(object[key]) || (object[key] = [object[key]]);
 						object[key].push(value);
 					}
 				});
-				postData = object;
+				if (asJSON) {
+					postData = object;
+				} else {
+					postData.set('XToken', XToken);
+				}
 			}
-			postData.XToken = Settings.app('token');
-			init.body = JSON.stringify(postData);
+			if (asJSON) {
+				init.headers['Content-Type'] = 'application/json';
+				postData = JSON.stringify(postData);
+			}
+			init.body = postData;
 		}
 		init.headers['X-SM-Token'] = Settings.app('token');
 //		init.headers = new Headers(init.headers);

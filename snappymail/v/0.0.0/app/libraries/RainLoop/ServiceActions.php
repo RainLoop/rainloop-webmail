@@ -77,7 +77,9 @@ class ServiceActions
 		$aResponse = null;
 		$oException = null;
 
-		$_POST = \json_decode(\file_get_contents('php://input'), true);
+		if (empty($_POST) || (!empty($_SERVER['CONTENT_TYPE']) && \str_contains($_SERVER['CONTENT_TYPE'], 'application/json'))) {
+			$_POST = \json_decode(\file_get_contents('php://input'), true);
+		}
 
 		$sAction = $_POST['Action'] ?? '';
 		if (empty($sAction) && $this->oHttp->IsGet() && !empty($this->aPaths[2])) {
@@ -195,40 +197,6 @@ class ServiceActions
 		return $sResult;
 	}
 
-	public function ServiceAppend() : string
-	{
-		\ob_start();
-		$bResponse = false;
-		$oException = null;
-		try
-		{
-			if (\method_exists($this->oActions, 'Append') && \is_callable(array($this->oActions, 'Append'))) {
-				isset($_POST) && $this->oActions->SetActionParams($_POST, 'Append');
-				$bResponse = $this->oActions->Append();
-			}
-		}
-		catch (\Throwable $oException)
-		{
-			$bResponse = false;
-		}
-
-		\header('Content-Type: text/plain; charset=utf-8');
-		$sResult = true === $bResponse ? '1' : '0';
-
-		$sObResult = \ob_get_clean();
-		if (\strlen($sObResult)) {
-			$this->Logger()->Write($sObResult, \LOG_ERR, 'OB-DATA');
-		}
-
-		if ($oException) {
-			$this->Logger()->WriteException($oException, \LOG_ERR);
-		}
-
-		$this->Logger()->Write($sResult, \LOG_INFO, 'APPEND');
-
-		return $sResult;
-	}
-
 	private function privateUpload(string $sAction, int $iSizeLimit = 0) : string
 	{
 		$oConfig = $this->Config();
@@ -239,10 +207,8 @@ class ServiceActions
 		{
 			$aFile = null;
 			$sInputName = 'uploader';
-			$iError = Enumerations\UploadError::UNKNOWN;
 			$iSizeLimit = (0 < $iSizeLimit ? $iSizeLimit : ((int) $oConfig->Get('webmail', 'attachment_size_limit', 0))) * 1024 * 1024;
 
-			$iError = UPLOAD_ERR_OK;
 			$_FILES = isset($_FILES) ? $_FILES : null;
 			if (isset($_FILES[$sInputName], $_FILES[$sInputName]['name'], $_FILES[$sInputName]['tmp_name'], $_FILES[$sInputName]['size'])) {
 				$iError = (isset($_FILES[$sInputName]['error'])) ? (int) $_FILES[$sInputName]['error'] : UPLOAD_ERR_OK;

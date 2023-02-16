@@ -157,8 +157,8 @@ trait Contacts
 		}
 
 		if (UPLOAD_ERR_OK !== $iError) {
-			$iClientError = \RainLoop\Enumerations\UploadError::NORMAL;
-			$sError = $this->getUploadErrorMessageByCode($iError, $iClientError);
+			$iClientError = 0;
+			$sError = \RainLoop\Enumerations\UploadError::getUserMessage($iError, $iClientError);
 			if (!empty($sError)) {
 				return $this->FalseResponse($iClientError, $sError);
 			}

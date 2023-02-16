@@ -14,31 +14,35 @@ trait Folders
 	 * Appends uploaded rfc822 message to mailbox
 	 * @throws \MailSo\RuntimeException
 	 */
-	public function Append(): bool
+	public function DoFolderAppend(): array
 	{
 		$oAccount = $this->initMailClientConnection();
 
 		$sFolderFullName = $this->GetActionParam('folder', '');
 
-		if ($oAccount
-		 && !empty($sFolderFullName)
-		 && !empty($_FILES['appendFile'])
-		 && \is_uploaded_file($_FILES['appendFile']['tmp_name'])
-		 && \UPLOAD_ERR_OK == $_FILES['appendFile']['error']
-		 && $this->oConfig->Get('labs', 'allow_message_append', false)
-		) {
+		if (!$this->oConfig->Get('labs', 'allow_message_append', false)) {
+			return $this->FalseResponse(999, 'Permission denied');
+		}
+
+		if (empty($_FILES['appendFile'])) {
+			return $this->FalseResponse(999, 'No file');
+		}
+
+		if (\UPLOAD_ERR_OK != $_FILES['appendFile']['error']) {
+			return $this->FalseResponse($iErrorCode, \RainLoop\Enumerations\UploadError::getMessage($iErrorCode));
+		}
+
+		if ($oAccount && !empty($sFolderFullName) && \is_uploaded_file($_FILES['appendFile']['tmp_name'])) {
 			$sSavedName = 'append-post-' . \md5($sFolderFullName . $_FILES['appendFile']['name'] . $_FILES['appendFile']['tmp_name']);
 			if ($this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $_FILES['appendFile']['tmp_name'])) {
 				$iMessageStreamSize = $this->FilesProvider()->FileSize($oAccount, $sSavedName);
 				$rMessageStream = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
-
 				$this->MailClient()->MessageAppendStream($rMessageStream, $iMessageStreamSize, $sFolderFullName);
-
 				$this->FilesProvider()->Clear($oAccount, $sSavedName);
+				return $this->TrueResponse();
 			}
 		}
-
-		return $this->TrueResponse();
+		return $this->FalseResponse(999);
 	}
 
 	public function DoFolders() : array
