@@ -240,7 +240,7 @@ export const
 				'colspan', 'rowspan', 'headers'
 			],
 			disallowedTags = [
-				'SVG','SCRIPT','TITLE','LINK','BASE','META',
+				'SCRIPT','TITLE','LINK','BASE','META',
 				'INPUT','OUTPUT','SELECT','BUTTON','TEXTAREA',
 				'BGSOUND','KEYGEN','SOURCE','OBJECT','EMBED','APPLET','IFRAME','FRAME','FRAMESET','VIDEO','AUDIO','AREA','MAP'
 				// Not supported by <template> element
@@ -278,6 +278,9 @@ export const
 		while (nodeIterator.nextNode()) {
 			nodeIterator.referenceNode.remove();
 		}
+
+		// https://github.com/the-djmaze/snappymail/issues/972
+		tpl.content.querySelectorAll('SVG').forEach(oElement => oElement.remove());
 
 		if (0 < bqLevel) {
 			tpl.content.querySelectorAll(new Array(1 + bqLevel).fill('blockquote').join(' ')).forEach(node => node.remove());
