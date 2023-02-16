@@ -93,7 +93,8 @@ abstract class NetClient
 
 		if ($this->IsConnected()) {
 			$this->writeLogException(new Exceptions\SocketAlreadyConnectedException, \LOG_ERR, false);
-			$this->Disconnect();
+//			$this->Disconnect();
+			return;
 		}
 
 		$this->Settings = $oSettings;
@@ -202,6 +203,7 @@ abstract class NetClient
 		}
 	}
 
+//	abstract public function Login(ConnectSettings $oSettings) : self;
 	abstract public function Logout() : void;
 
 	public function IsConnected(bool $bThrowExceptionOnFalse = false) : bool

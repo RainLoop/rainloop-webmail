@@ -49,22 +49,15 @@ class ImapClient extends \MailSo\Net\NetClient
 
 	private bool $bIsLoggined = false;
 
-	private string $sLogginedUser = '';
-
 	private bool $UTF8 = false;
 
 	public function Hash() : string
 	{
 		return \md5('ImapClientHash/'.
-			$this->GetLogginedUser() . '@' .
+			$this->Settings->Login . '@' .
 			$this->GetConnectedHost() . ':' .
 			$this->GetConnectedPort()
 		);
-	}
-
-	public function GetLogginedUser() : string
-	{
-		return $this->sLogginedUser;
 	}
 
 	/**
@@ -109,22 +102,25 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function Login(Settings $oSettings) : self
 	{
+		if ($this->bIsLoggined) {
+			return $this;
+		}
+
 		if (!empty($oSettings->ProxyAuthUser) && !empty($oSettings->ProxyAuthPassword)) {
-			$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($oSettings->ProxyAuthUser));
+			$sLogin = $oSettings->ProxyAuthUser;
 			$sPassword = $oSettings->ProxyAuthPassword;
 			$sProxyAuthUser = $oSettings->Login;
 		} else {
-			$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($oSettings->Login));
+			$sLogin = $oSettings->Login;
 			$sPassword = $oSettings->Password;
 			$sProxyAuthUser = '';
 		}
 
-		if (!\strlen($sLogin) || !\strlen($sPassword))
-		{
+		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sLogin));
+
+		if (!\strlen($sLogin) || !\strlen($sPassword)) {
 			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
 		}
-
-		$this->sLogginedUser = $sLogin;
 
 		$type = '';
 		foreach ($oSettings->SASLMechanisms as $sasl_type) {
