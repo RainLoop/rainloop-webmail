@@ -1,7 +1,7 @@
 import { isArray, arrayLength } from 'Common/Utils';
 import {
 	MessageFlagsCache,
-	setFolderHash,
+	setFolderETag,
 	getFolderInboxName,
 	getFolderFromCacheList
 } from 'Common/Cache';
@@ -126,13 +126,13 @@ folderInformation = (folder, list) => {
 					const result = data.Result,
 						folderFromCache = getFolderFromCacheList(result.folder);
 					if (folderFromCache) {
-						const oldHash = folderFromCache.hash,
+						const oldHash = folderFromCache.etag,
 							unreadCountChange = (folderFromCache.unreadEmails() !== result.unreadEmails);
 
 //						folderFromCache.revivePropertiesFromJson(result);
 						folderFromCache.expires = Date.now();
 						folderFromCache.uidNext = result.uidNext;
-						folderFromCache.hash = result.hash;
+						folderFromCache.etag = result.etag;
 						folderFromCache.totalEmails(result.totalEmails);
 						folderFromCache.unreadEmails(result.unreadEmails);
 
@@ -148,7 +148,7 @@ folderInformation = (folder, list) => {
 
 						MessagelistUserStore.notifyNewMessages(folderFromCache.fullName, result.newMessages);
 
-						if (!oldHash || unreadCountChange || result.hash !== oldHash) {
+						if (!oldHash || unreadCountChange || result.etag !== oldHash) {
 							if (folderFromCache.fullName === FolderUserStore.currentFolderFullName()) {
 								MessagelistUserStore.reload();
 /*
@@ -181,21 +181,21 @@ folderInformationMultiply = (boot = false) => {
 			if (!iError && arrayLength(oData.Result)) {
 				const utc = Date.now();
 				oData.Result.forEach(item => {
-					const folder = getFolderFromCacheList(item.folder);
+					const folder = getFolderFromCacheList(item.name);
 
 					if (folder) {
-						const oldHash = folder.hash,
+						const oldHash = folder.etag,
 							unreadCountChange = folder.unreadEmails() !== item.unreadEmails;
 
 //						folder.revivePropertiesFromJson(item);
 						folder.expires = utc;
-						folder.hash = item.hash;
+						folder.etag = item.etag;
 						folder.totalEmails(item.totalEmails);
 						folder.unreadEmails(item.unreadEmails);
 
 						unreadCountChange && MessageFlagsCache.clearFolder(folder.fullName);
 
-						if (!oldHash || item.hash !== oldHash) {
+						if (!oldHash || item.etag !== oldHash) {
 							if (folder.fullName === FolderUserStore.currentFolderFullName()) {
 								MessagelistUserStore.reload();
 							}
@@ -217,13 +217,13 @@ folderInformationMultiply = (boot = false) => {
 
 moveOrDeleteResponseHelper = (iError, oData) => {
 	if (iError) {
-		setFolderHash(FolderUserStore.currentFolderFullName(), '');
+		setFolderETag(FolderUserStore.currentFolderFullName(), '');
 		alert(getNotification(iError));
 	} else if (FolderUserStore.currentFolder()) {
 		if (2 === arrayLength(oData.Result)) {
-			setFolderHash(oData.Result[0], oData.Result[1]);
+			setFolderETag(oData.Result[0], oData.Result[1]);
 		} else {
-			setFolderHash(FolderUserStore.currentFolderFullName(), '');
+			setFolderETag(FolderUserStore.currentFolderFullName(), '');
 		}
 		MessagelistUserStore.reload(!MessagelistUserStore.length);
 	}

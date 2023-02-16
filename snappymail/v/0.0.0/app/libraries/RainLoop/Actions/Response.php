@@ -193,7 +193,7 @@ trait Response
 
 			$sHash = $mResponse->Hash($this->ImapClient()->Hash());
 			if ($sHash) {
-				$aResult['hash'] = $sHash;
+				$aResult['etag'] = $sHash;
 			}
 
 			if (null === $this->aCheckableFolder) {

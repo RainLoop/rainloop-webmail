@@ -19,7 +19,7 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { folderInformation, messagesDeleteHelper } from 'Common/Folders';
 import { serverRequest } from 'Common/Links';
 import { i18n, getNotification, getUploadErrorDescByCode, timestampToString } from 'Common/Translator';
-import { MessageFlagsCache, setFolderHash } from 'Common/Cache';
+import { MessageFlagsCache, setFolderETag } from 'Common/Cache';
 import { Settings, SettingsCapa, SettingsGet, elementById, addShortcut, createElement } from 'Common/Globals';
 //import { exitFullscreen, isFullscreen, toggleFullscreen } from 'Common/Fullscreen';
 
@@ -72,7 +72,7 @@ const
 	reloadDraftFolder = () => {
 		const draftsFolder = FolderUserStore.draftsFolder();
 		if (draftsFolder && UNUSED_OPTION_VALUE !== draftsFolder) {
-			setFolderHash(draftsFolder, '');
+			setFolderETag(draftsFolder, '');
 			if (FolderUserStore.currentFolderFullName() === draftsFolder) {
 				MessagelistUserStore.reload(true);
 			} else {
@@ -447,7 +447,7 @@ export class ComposePopupView extends AbstractViewPopup {
 						flagsCache.push(('forward' === this.aDraftInfo[0]) ? '$forwarded' : '\\answered');
 						MessageFlagsCache.setFor(this.aDraftInfo[2], this.aDraftInfo[1], flagsCache);
 						MessagelistUserStore.reloadFlagsAndCachedMessage();
-						setFolderHash(this.aDraftInfo[2], '');
+						setFolderETag(this.aDraftInfo[2], '');
 					}
 				}
 
@@ -469,8 +469,8 @@ export class ComposePopupView extends AbstractViewPopup {
 							} else {
 								this.close();
 							}
-							setFolderHash(this.draftsFolder(), '');
-							setFolderHash(sSentFolder, '');
+							setFolderETag(this.draftsFolder(), '');
+							setFolderETag(sSentFolder, '');
 							reloadDraftFolder();
 						},
 						params,
@@ -523,9 +523,9 @@ export class ComposePopupView extends AbstractViewPopup {
 									this.savedTime(new Date);
 
 									if (this.bFromDraft) {
-										setFolderHash(this.draftsFolder(), '');
+										setFolderETag(this.draftsFolder(), '');
 									}
-									setFolderHash(FolderUserStore.draftsFolder(), '');
+									setFolderETag(FolderUserStore.draftsFolder(), '');
 								}
 							}
 

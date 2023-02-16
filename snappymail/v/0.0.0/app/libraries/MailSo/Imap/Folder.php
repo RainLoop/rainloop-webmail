@@ -159,7 +159,7 @@ class Folder implements \JsonSerializable
 
 	public function Hash(string $sClientHash) : ?string
 	{
-		return $this->getHash($sClientHash);
+		return $this->getETag($sClientHash);
 	}
 
 	#[\ReturnTypeWillChange]
@@ -172,7 +172,7 @@ class Folder implements \JsonSerializable
 				'totalEmails' => (int) $this->MESSAGES,
 				'unreadEmails' => (int) $this->UNSEEN,
 				'uidNext' => (int) $this->UIDNEXT,
-//				'hash' => $this->Hash($this->ImapClient()->Hash())
+//				'etag' => $this->Hash($this->ImapClient()->Hash())
 			);
 		}
 */

@@ -378,7 +378,7 @@ class MailClient
 			'mailboxId' => $oInfo->MAILBOXID ?: '',
 //			'flags' => $oInfo->Flags,
 //			'permanentFlags' => $oInfo->PermanentFlags,
-			'hash' => $oInfo->getHash($this->oImapClient->Hash()),
+			'etag' => $oInfo->getETag($this->oImapClient->Hash()),
 			'messagesFlags' => $aFlags,
 			'newMessages' => $this->getFolderNextMessageInformation(
 				$sFolderName,
@@ -396,7 +396,8 @@ class MailClient
 	 */
 	public function FolderHash(string $sFolderName) : string
 	{
-		return $this->oImapClient->FolderStatus($sFolderName)->getHash($this->oImapClient->Hash());
+		return $this->oImapClient->FolderStatus($sFolderName)->getETag($this->oImapClient->Hash());
+//		return $this->oImapClient->FolderStatusAndSelect($sFolderName)->getETag($this->oImapClient->Hash());
 	}
 
 	/**
@@ -420,8 +421,8 @@ class MailClient
 		$sSerializedHashKey = null;
 		if ($oCacher && $oCacher->IsInited()) {
 			$sSerializedHashKey =
-				"ThreadsMapSorted/{$sSearch}/{$sFolderName}/{$oMessageCollection->FolderHash}";
-//				"ThreadsMapSorted/{$sSearch}/{$iThreadLimit}/{$sFolderName}/{$oMessageCollection->FolderHash}";
+				"ThreadsMapSorted/{$sSearch}/{$sFolderName}/{$oMessageCollection->FolderInfo->etag}";
+//				"ThreadsMapSorted/{$sSearch}/{$iThreadLimit}/{$sFolderName}/{$oMessageCollection->FolderInfo->etag}";
 
 			if ($this->oLogger) {
 				$this->oLogger->Write($sSerializedHashKey);
@@ -668,7 +669,7 @@ class MailClient
 			throw new \InvalidArgumentException('THREAD not supported');
 		}
 
-		$oMessageCollection->FolderHash = $oInfo->getHash($this->oImapClient->Hash());
+		$oInfo->generateETag($this->oImapClient);
 
 		if (!$oParams->iThreadUid) {
 			$oMessageCollection->NewMessages = $this->getFolderNextMessageInformation(
@@ -692,7 +693,7 @@ class MailClient
 				}
 				if (\strlen($sSearch)) {
 					// Don't use SORT for speed
-					$aUids = $this->GetUids($oParams, $sSearch, $oMessageCollection->FolderHash/*, $bUseSort*/);
+					$aUids = $this->GetUids($oParams, $sSearch, $oInfo->etag/*, $bUseSort*/);
 				} else {
 					$bUseSort = $this->oImapClient->hasCapability('SORT');
 					if (2 > $oInfo->MESSAGES) {
@@ -702,7 +703,7 @@ class MailClient
 						$end = \min($oInfo->MESSAGES, \max(1, $oInfo->MESSAGES - $oParams->iOffset + $oParams->iLimit));
 						$start = \max(1, $end - ($oParams->iLimit * 3) + 1);
 						$oParams->oSequenceSet = new SequenceSet(\range($end, $start), false);
-						$aRequestIndexes = $this->GetUids($oParams, '', $oMessageCollection->FolderHash, $bUseSort);
+						$aRequestIndexes = $this->GetUids($oParams, '', $oInfo->etag, $bUseSort);
 						// Attempt to get the correct $oParams->iLimit slice
 						$aRequestIndexes = \array_slice($aRequestIndexes, $oParams->iOffset ? $oParams->iLimit : 0, $oParams->iLimit);
 					} else {
@@ -716,7 +717,7 @@ class MailClient
 			} else {
 				$aUids = ($bUseThreads && $oParams->iThreadUid)
 					? [$oParams->iThreadUid]
-					: $this->GetUids($oParams, '', $oMessageCollection->FolderHash, $bUseSort);
+					: $this->GetUids($oParams, '', $oInfo->etag, $bUseSort);
 
 				if ($bUseThreads) {
 					$aAllThreads = $this->MessageListThreadsMap($oMessageCollection, $oParams->oCacher);
@@ -745,7 +746,7 @@ class MailClient
 				}
 
 				if ($aUids && \strlen($sSearch)) {
-					$aSearchedUids = $this->GetUids($oParams, $sSearch, $oMessageCollection->FolderHash/*, $bUseSort*/);
+					$aSearchedUids = $this->GetUids($oParams, $sSearch, $oInfo->etag/*, $bUseSort*/);
 					if ($bUseThreads && !$oParams->iThreadUid) {
 						$matchingThreadUids = [];
 						foreach ($aAllThreads as $aMap) {

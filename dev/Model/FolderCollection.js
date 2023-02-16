@@ -127,8 +127,8 @@ export class FolderCollectionModel extends AbstractCollectionModel
 			let oCacheFolder = getFolderFromCacheList(oFolder.fullName);
 			if (oCacheFolder) {
 //				oCacheFolder.revivePropertiesFromJson(oFolder);
-				if (oFolder.hash) {
-					oCacheFolder.hash = oFolder.hash;
+				if (oFolder.etag) {
+					oCacheFolder.etag = oFolder.etag;
 				}
 				if (null != oFolder.totalEmails) {
 					oCacheFolder.totalEmails(oFolder.totalEmails);
@@ -300,7 +300,7 @@ export class FolderModel extends AbstractModel {
 
 		this.exists = true;
 
-		this.hash = '';
+		this.etag = '';
 		this.id = 0;
 		this.uidNext = 0;
 

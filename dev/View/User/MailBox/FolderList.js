@@ -3,7 +3,7 @@ import ko from 'ko';
 import { Scope } from 'Common/Enums';
 import { addShortcut } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
-//import { setFolderHash } from 'Common/Cache';
+//import { setFolderETag } from 'Common/Cache';
 import { addComputablesTo } from 'External/ko';
 
 import { AppUserStore } from 'Stores/User/App';
@@ -105,7 +105,7 @@ export class MailFolderList extends AbstractViewLeft {
 						}
 /*
 						if (folder.fullName === FolderUserStore.currentFolderFullName()) {
-							setFolderHash(folder.fullName, '');
+							setFolderETag(folder.fullName, '');
 						}
 */
 						let search = '';

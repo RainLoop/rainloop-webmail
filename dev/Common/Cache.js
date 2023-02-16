@@ -34,28 +34,26 @@ export const
 	setFolderInboxName = name => inboxFolderName = name,
 
 	/**
-	 * @param {string} folderHash
+	 * @param {string} fullNameHash
 	 * @returns {string}
 	 */
-	getFolderFullName = folderHash => (folderHash && FOLDERS_NAME_CACHE[folderHash]) || '',
+	getFolderFullName = fullNameHash => (fullNameHash && FOLDERS_NAME_CACHE[fullNameHash]) || '',
 
 	/**
-	 * @param {string} folderHash
-	 * @param {string} folderFullName
 	 * @param {?FolderModel} folder
 	 */
 	setFolder = folder => {
-		folder.hash = '';
+		folder.etag = '';
 		FOLDERS_CACHE[folder.fullName] = folder;
 		FOLDERS_NAME_CACHE[folder.fullNameHash] = folder.fullName;
 	},
 
 	/**
 	 * @param {string} folderFullName
-	 * @param {string} folderHash
+	 * @param {string} folderETag
 	 */
-	setFolderHash = (folderFullName, folderHash) =>
-		FOLDERS_CACHE[folderFullName] && (FOLDERS_CACHE[folderFullName].hash = folderHash),
+	setFolderETag = (folderFullName, folderETag) =>
+		FOLDERS_CACHE[folderFullName] && (FOLDERS_CACHE[folderFullName].etag = folderETag),
 
 	/**
 	 * @param {string} folderFullName

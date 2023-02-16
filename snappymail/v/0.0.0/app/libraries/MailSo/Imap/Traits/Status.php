@@ -94,7 +94,7 @@ trait Status
 		 */
 		$SIZE;
 
-	public function getHash(string $sClientHash) : ?string
+	public function getETag(string $sClientHash) : ?string
 	{
 		if (!isset($this->MESSAGES, $this->UIDNEXT)) {
 			return null;

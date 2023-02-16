@@ -10,7 +10,7 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import {
 	getFolderInboxName,
 	getFolderFromCacheList,
-	setFolderHash,
+	setFolderETag,
 	MessageFlagsCache
 } from 'Common/Cache';
 
@@ -174,7 +174,7 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 	let iOffset = (MessagelistUserStore.page() - 1) * SettingsUserStore.messagesPerPage();
 
 	if (bDropCurrentFolderCache) {
-		setFolderHash(FolderUserStore.currentFolderFullName(), '');
+		setFolderETag(FolderUserStore.currentFolderFullName(), '');
 	}
 
 	if (bDropPagePosition) {
@@ -207,13 +207,14 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 					error = '';
 
 					const
-						folder = getFolderFromCacheList(collection.folder),
-						folderInfo = collection.folderInfo;
+						folderInfo = collection.folder,
+						folder = getFolderFromCacheList(folderInfo.name);
+					collection.folder = folderInfo.name;
 					if (folder && !bCached) {
 //						folder.revivePropertiesFromJson(result);
 						folder.expires = Date.now();
 						folder.uidNext = folderInfo.uidNext;
-						folder.hash = collection.folderHash;
+						folder.etag = folderInfo.etag;
 
 						if (null != folderInfo.totalEmails) {
 							folder.totalEmails(folderInfo.totalEmails);
@@ -251,14 +252,14 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 					MessagelistUserStore.threadUid(collection.threadUid);
 
 					MessagelistUserStore.endHash(
-						collection.folder +
+						folderInfo.name +
 						'|' + collection.search +
 						'|' + MessagelistUserStore.threadUid() +
 						'|' + MessagelistUserStore.page()
 					);
 					MessagelistUserStore.endThreadUid(collection.threadUid);
 					const message = MessageUserStore.message();
-					if (message && collection.folder !== message.folder) {
+					if (message && folderInfo.name !== message.folder) {
 						MessageUserStore.message(null);
 					}
 
@@ -370,7 +371,7 @@ MessagelistUserStore.removeMessagesFromList = (
 	messages.forEach(item => item?.isUnseen() && ++unseenCount);
 
 	if (fromFolder) {
-		fromFolder.hash = '';
+		fromFolder.etag = '';
 		if (!copy) {
 			fromFolder.totalEmails(
 				0 <= fromFolder.totalEmails() - oUids.size ? fromFolder.totalEmails() - oUids.size : 0
@@ -385,7 +386,7 @@ MessagelistUserStore.removeMessagesFromList = (
 	}
 
 	if (toFolder) {
-		toFolder.hash = '';
+		toFolder.etag = '';
 
 		if (trashFolder === toFolder.fullName || spamFolder === toFolder.fullName) {
 			unseenCount = 0;

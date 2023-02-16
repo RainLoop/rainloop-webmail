@@ -304,8 +304,8 @@ trait Folders
 						$aInboxInformation = $this->MailClient()->FolderInformation($sFolder);
 						if (isset($aInboxInformation['folder'])) {
 							$aResult[] = [
-								'folder' => $aInboxInformation['folder'],
-								'hash' => $aInboxInformation['hash'],
+								'name' => $aInboxInformation['folder'],
+								'etag' => $aInboxInformation['etag'],
 								'totalEmails' => $aInboxInformation['totalEmails'],
 								'unreadEmails' => $aInboxInformation['unreadEmails'],
 							];

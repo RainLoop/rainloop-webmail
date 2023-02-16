@@ -65,7 +65,7 @@ trait Messages
 //			$oInfo = $this->MailClient()->FolderHash($oParams->sFolderName);
 			$oInfo = $this->ImapClient()->FolderStatusAndSelect($oParams->sFolderName);
 			$aRequestHash = \explode('-', $sHash);
-			$sFolderHash = $oInfo->getHash($this->ImapClient()->Hash());
+			$sFolderHash = $oInfo->getETag($this->ImapClient()->Hash());
 			$sHash = $oParams->hash() . '-' . $sFolderHash;
 			if ($aRequestHash[1] == $sFolderHash) {
 				$this->verifyCacheByKey($sHash);
