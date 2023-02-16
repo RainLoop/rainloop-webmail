@@ -18,6 +18,16 @@ class Application extends \RainLoop\Config\AbstractConfig
 	{
 		$bResult = parent::Load();
 
+		$max = \floatval($this->Get('security', 'max_sys_getloadavg', 0));
+		if ($max && \function_exists('sys_getloadavg')) {
+			$load = \sys_getloadavg();
+			if ($load && $load[0] > $max) {
+				\header('HTTP/1.1 503 Service Unavailable');
+				\header('Retry-After: 120');
+				exit('Mailserver too busy. Please try again later.');
+			}
+		}
+
 		$this->aReplaceEnv = null;
 		if ((isset($_ENV) && \is_array($_ENV) && \count($_ENV)) ||
 			(isset($_SERVER) && \is_array($_SERVER) && \count($_SERVER)))
@@ -194,6 +204,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 				'force_https'             => array(false),
 				'hide_x_mailer_header'    => array(true),
+				'max_sys_getloadavg'      => array(0.0, 'https://en.m.wikipedia.org/wiki/Load_(computing)'),
 				'content_security_policy' => array('', 'For example to allow all images use "img-src https:". More info at https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy#directives'),
 				'csp_report'              => array(false, 'Report CSP errors to PHP and/or SnappyMail Log'),
 				'encrypt_cipher'          => array('aes-256-cbc-hmac-sha1', 'A valid cipher method from https://php.net/openssl_get_cipher_methods'),

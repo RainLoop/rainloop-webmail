@@ -3,16 +3,6 @@ if (defined('APP_VERSION_ROOT_PATH')) {
 	return;
 }
 
-if (function_exists('sys_getloadavg')) {
-	$load = sys_getloadavg();
-	if ($load && $load[0] > 95) {
-		header('HTTP/1.1 503 Service Unavailable');
-		header('Retry-After: 120');
-		exit('Mailserver too busy. Please try again later.');
-	}
-	unset($load);
-}
-
 // PHP 8
 if (!function_exists('str_contains')) {
 	function str_contains(string $haystack, string $needle) : bool
