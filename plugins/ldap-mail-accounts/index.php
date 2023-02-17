@@ -63,6 +63,7 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 	public function MapImapCredentialsByLDAP(\RainLoop\Model\Account $oAccount, \MailSo\Imap\ImapClient $oImapClient, \MailSo\Imap\Settings $oSettings)
 	{
 		//$oSettings->Login = $oAccount->IncLogin();
+		//$this->Manager()->Actions()->Logger()->Write("E-Mail address: $oSettings->Login", \LOG_WARNING, "LDAP MAIL ACCOUNTS PLUGIN");
 	}
 
 	// Function gets called by Account.php
@@ -95,20 +96,6 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 				->SetDescription("The ldap field containing the mail address to use on the SnappyMail main account.
 					\nThe value found inside ldap will overwrite the mail address of the SnappyMail main account (the account the user logged in at SnappyMail)")
 				->SetDefaultValue("mail"),
-		]);	
-
-		$groupOverwriteAdditionalAccount = new \RainLoop\Plugins\PropertyCollection('Overwrite mail address of additional account');
-		$groupOverwriteAdditionalAccount->exchangeArray([	
-			\RainLoop\Plugins\Property::NewInstance(LdapMailAccountsConfig::CONFIG_BOOL_OVERWRITE_MAIL_ADDRESS_ADDITIONAL_ACCOUNT)->SetLabel('Enabled')
-			->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
-			->SetDefaultValue(false),				
-			
-			\RainLoop\Plugins\Property::NewInstance(LdapMailAccountsConfig::CONFIG_FIELD_MAIL_ADDRESS_ADDITIONAL_ACCOUNT)
-				->SetLabel("Mail address field for additional account")
-				->SetType(RainLoop\Enumerations\PluginPropertyType::STRING)
-				->SetDescription("The ldap field containing the mail address to use on the found additional mail account.
-					\nThe value found inside ldap will be used as mail address of the additional mail accounts created by this plugin.")
-				->SetDefaultValue("mail"),	
 		]);	
 
 		return [
@@ -173,15 +160,21 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 					\nIf this field contains an email address, only the domain-part after the @ is used.")
 				->SetDefaultValue("mail"),
 
+			\RainLoop\Plugins\Property::NewInstance(LdapMailAccountsConfig::CONFIG_FIELD_MAIL_ADDRESS_ADDITIONAL_ACCOUNT)
+				->SetLabel("Mail address field for additional account")
+				->SetType(RainLoop\Enumerations\PluginPropertyType::STRING)
+				->SetDescription("The ldap field containing the mail address to use on the found additional mail account.
+					\nThe value found inside ldap will be used as mail address of the additional mail accounts created by this plugin.
+					\nIn most cases this could be the same ldap field as in \"Domain name field of additional account\"")
+				->SetDefaultValue("mail"),
+
 			\RainLoop\Plugins\Property::NewInstance(LdapMailAccountsConfig::CONFIG_FIELD_NAME)
 				->SetLabel("Additional account name field")
 				->SetType(RainLoop\Enumerations\PluginPropertyType::STRING)
 				->SetDescription("The field containing the default sender name of the found additional mail account.")
 				->SetDefaultValue("displayName"),
 
-			$groupOverwriteMainAccount,	
-
-			$groupOverwriteAdditionalAccount,
+			$groupOverwriteMainAccount
 					
 		];
 	}

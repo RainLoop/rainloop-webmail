@@ -18,10 +18,9 @@ class LdapMailAccountsConfig
 	public const CONFIG_FIELD_USERNAME = "field_username";
 	public const CONFIG_SEARCH_STRING = "search_string";
 	public const CONFIG_FIELD_MAIL_DOMAIN = "field_domain";
+	public const CONFIG_FIELD_MAIL_ADDRESS_ADDITIONAL_ACCOUNT = "field_mail_address_additional_account";
 	public const CONFIG_BOOL_OVERWRITE_MAIL_ADDRESS_MAIN_ACCOUNT = "bool_overwrite_mail_address_main_account";
 	public const CONFIG_FIELD_MAIL_ADDRESS_MAIN_ACCOUNT = "field_mail_address_main_account";
-	public const CONFIG_BOOL_OVERWRITE_MAIL_ADDRESS_ADDITIONAL_ACCOUNT = "bool_overwrite_mail_address_additional_account";
-	public const CONFIG_FIELD_MAIL_ADDRESS_ADDITIONAL_ACCOUNT = "field_mail_address_additional_account";
 
 	public $server;
 	public $protocol;
@@ -37,7 +36,6 @@ class LdapMailAccountsConfig
 	public $field_mail_address_main_account;
 	public $field_mail_address_additional_account;
 	public $bool_overwrite_mail_address_main_account;
-	public $bool_overwrite_mail_address_additional_account;
 
 	public static function MakeConfig(Plugin $config): LdapMailAccountsConfig
 	{
@@ -53,10 +51,9 @@ class LdapMailAccountsConfig
 		$ldap->field_username = trim($config->Get("plugin", self::CONFIG_FIELD_USERNAME));
 		$ldap->search_string = trim($config->Get("plugin", self::CONFIG_SEARCH_STRING));
 		$ldap->field_domain = trim($config->Get("plugin", self::CONFIG_FIELD_MAIL_DOMAIN));
+		$ldap->field_mail_address_additional_account = trim($config->Get("plugin", self::CONFIG_FIELD_MAIL_ADDRESS_ADDITIONAL_ACCOUNT));
 		$ldap->bool_overwrite_mail_address_main_account = $config->Get("plugin", self::CONFIG_BOOL_OVERWRITE_MAIL_ADDRESS_MAIN_ACCOUNT);
 		$ldap->field_mail_address_main_account = trim($config->Get("plugin", self::CONFIG_FIELD_MAIL_ADDRESS_MAIN_ACCOUNT));
-		$ldap->bool_overwrite_mail_address_additional_account = $config->Get("plugin", self::CONFIG_BOOL_OVERWRITE_MAIL_ADDRESS_ADDITIONAL_ACCOUNT);
-		$ldap->field_mail_address_additional_account = trim($config->Get("plugin", self::CONFIG_FIELD_MAIL_ADDRESS_ADDITIONAL_ACCOUNT));
 
 		return $ldap;
 	}

@@ -87,7 +87,6 @@ class LdapMailAccounts
 				$this->config->field_domain,
 				$this->config->bool_overwrite_mail_address_main_account,
 				$this->config->field_mail_address_main_account,
-				$this->config->bool_overwrite_mail_address_additional_account,
 				$this->config->field_mail_address_additional_account
 			);
 		}
@@ -129,15 +128,7 @@ class LdapMailAccounts
 			$sUsername = $mailAddressResult->username;
 			$sDomain = $mailAddressResult->domain;
 			$sName = $mailAddressResult->name;
-			$sEmail = "";
-
-			//Create the email string - if disabled inside the config the email is a combination of the found username + @ + the found domain
-			if ($this->config->bool_overwrite_mail_address_additional_account) {
-				$sEmail = $mailAddressResult->mailAdditionalAccount;
-			}
-			else {
-				$sEmail = "$sUsername@$sDomain";
-			}
+			$sEmail = $mailAddressResult->mailAdditionalAccount;
 
 			//Check if the domain of the found mail address is in the list of configured domains
 			if ($oActions->DomainProvider()->Load($sDomain, true))
@@ -149,7 +140,7 @@ class LdapMailAccounts
 					//Try to login the user with the same password as the primary account has
 					//if this fails the user will see the new mail addresses but will be asked for the correct password
 					$sPass = $oAccount->IncPassword();
-
+					//After creating the accounts here $sUsername is used as username to login to the IMAP server (see Account.php)
 					$oNewAccount = RainLoop\Model\AdditionalAccount::NewInstanceFromCredentials($oActions, $sEmail, $sUsername, $sPass);
 
 					$aAccounts[$sEmail] = $oNewAccount->asTokenArray($oAccount);
@@ -294,7 +285,6 @@ class LdapMailAccounts
 		string $domainField,
 		bool $overwriteMailMainAccount,
 		string $mailAddressFieldMainAccount,
-		bool $overwriteMailAdditionalAccount,
 		string $mailAddressFieldAdditionalAccount): array
 	{
 		$this->EnsureBound();
@@ -306,17 +296,11 @@ class LdapMailAccounts
 		$this->logger->Write("Used ldap filter to search for additional mail accounts: $filter", \LOG_NOTICE, self::LOG_KEY);
 
 		//Set together the attributes to search inside the LDAP
-		$ldapAttributes = ['dn', $usernameField, $nameField, $domainField];
+		$ldapAttributes = ['dn', $usernameField, $nameField, $domainField, $mailAddressFieldAdditionalAccount];
 		if ($overwriteMailMainAccount)
 		{
 			\array_push($ldapAttributes, $mailAddressFieldMainAccount);
 		}
-
-		if ($overwriteMailAdditionalAccount)
-		{
-			\array_push($ldapAttributes, $mailAddressFieldAdditionalAccount);
-		}
-
 
 		$ldapResult = @ldap_search($this->ldap, $searchBase, $filter, $ldapAttributes);
 		if (!$ldapResult) {
@@ -346,7 +330,7 @@ class LdapMailAccounts
 			$result->domain = $this->RemoveEventualLocalPart($result->domain);
 
 			$result->mailMainAccount = $this->LdapGetAttribute($entry, $mailAddressFieldMainAccount, true, $overwriteMailMainAccount);
-			$result->mailAdditionalAccount = $this->LdapGetAttribute($entry, $mailAddressFieldAdditionalAccount, true, $overwriteMailAdditionalAccount);
+			$result->mailAdditionalAccount = $this->LdapGetAttribute($entry, $mailAddressFieldAdditionalAccount, true, true);
 
 			$results[] = $result;
 		}
