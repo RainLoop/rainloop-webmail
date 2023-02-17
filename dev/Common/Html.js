@@ -14,6 +14,14 @@ const
 		"'": '&#x27;'
 	},
 
+	disallowedTags = [
+		'svg','script','title','link','base','meta',
+		'input','output','select','button','textarea',
+		'bgsound','keygen','source','object','embed','applet','iframe','frame','frameset','video','audio','area','map'
+		// not supported by <template> element
+//		,'html','head','body'
+	].join(','),
+
 	blockquoteSwitcher = () => {
 		SettingsUserStore.collapseBlockquotes() &&
 //		tpl.content.querySelectorAll('blockquote').forEach(node => {
@@ -90,6 +98,12 @@ const
 		return url;
 	},
 
+	cleanCSS = source =>
+		source.trim().replace(/-(ms|webkit)-[^;]+(;|$)/g, '')
+			// Drop Microsoft Office style properties
+//			.replace(/mso-[^:;]+:[^;]+/gi, '')
+	,
+
 	/*
 		Parses given css string, and returns css object
 		keys as selectors and values are css rules
@@ -161,7 +175,7 @@ const
 					// we have standard css
 					css.push({
 						selector: selector,
-						rules: arr[6]
+						rules: cleanCSS(arr[6])
 					});
 				}
 			}
@@ -239,13 +253,6 @@ export const
 				// td
 				'colspan', 'rowspan', 'headers'
 			],
-			disallowedTags = [
-				'SCRIPT','TITLE','LINK','BASE','META',
-				'INPUT','OUTPUT','SELECT','BUTTON','TEXTAREA',
-				'BGSOUND','KEYGEN','SOURCE','OBJECT','EMBED','APPLET','IFRAME','FRAME','FRAMESET','VIDEO','AUDIO','AREA','MAP'
-				// Not supported by <template> element
-//				,'HTML','HEAD','BODY'
-			],
 			nonEmptyTags = [
 				'A','B','EM','I','SPAN','STRONG'
 			];
@@ -279,14 +286,12 @@ export const
 			nodeIterator.referenceNode.remove();
 		}
 
-		// https://github.com/the-djmaze/snappymail/issues/972
-		tpl.content.querySelectorAll('SVG').forEach(oElement => oElement.remove());
+		tpl.content.querySelectorAll(
+			disallowedTags
+			+ (0 < bqLevel ? ',' + (new Array(1 + bqLevel).fill('blockquote').join(' ')) : '')
+		).forEach(oElement => oElement.remove());
 
-		if (0 < bqLevel) {
-			tpl.content.querySelectorAll(new Array(1 + bqLevel).fill('blockquote').join(' ')).forEach(node => node.remove());
-		}
-
-		tpl.content.querySelectorAll('*').forEach(oElement => {
+		[...tpl.content.querySelectorAll('*')].forEach(oElement => {
 			const name = oElement.tagName,
 				oStyle = oElement.style;
 
@@ -306,8 +311,7 @@ export const
 			}
 
 			// \MailSo\Base\HtmlUtils::ClearTags()
-			if (disallowedTags.includes(name)
-			 || 'none' == oStyle.display
+			if ('none' == oStyle.display
 			 || 'hidden' == oStyle.visibility
 //			 || (oStyle.lineHeight && 1 > parseFloat(oStyle.lineHeight)
 //			 || (oStyle.maxHeight && 1 > parseFloat(oStyle.maxHeight)
@@ -543,8 +547,7 @@ export const
 					oStyle.removeProperty('color');
 				}
 
-				// Drop Microsoft Office style properties
-//				oStyle.cssText = oStyle.cssText.replace(/mso-[^:;]+:[^;]+/gi, '');
+				oStyle.cssText = cleanCSS(oStyle.cssText);
 			}
 
 			if (debug && aAttrsForRemove.length) {
