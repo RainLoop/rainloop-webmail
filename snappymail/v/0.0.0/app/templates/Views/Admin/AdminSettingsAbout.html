@@ -51,6 +51,23 @@
 				</div>
 			</div>
 
+			<h3>System</h3>
+			<table class="table table-hover table-bordered"><tbody>
+				<tr>
+					<td>Average load past minute</td>
+					<td data-bind="text: load1"></td>
+				</tr>
+				<tr>
+					<td>Average load past 5 minutes</td>
+					<td data-bind="text: load5"></td>
+				</tr>
+				<tr>
+					<td>Average load past 15 minutes</td>
+					<td data-bind="text: load15"></td>
+				</tr>
+			</tbody>
+			</table>
+
 			<h3>PHP optional extensions</h3>
 			<table class="table table-hover table-bordered"><thead><tr>
 				<th>Extension</th>

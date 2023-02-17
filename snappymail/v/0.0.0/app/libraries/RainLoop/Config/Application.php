@@ -19,12 +19,12 @@ class Application extends \RainLoop\Config\AbstractConfig
 		$bResult = parent::Load();
 
 		$max = \floatval($this->Get('security', 'max_sys_getloadavg', 0));
-		if ($max && \function_exists('sys_getloadavg')) {
+		if ($max && \is_callable('sys_getloadavg')) {
 			$load = \sys_getloadavg();
 			if ($load && $load[0] > $max) {
-				\header('HTTP/1.1 503 Service Unavailable');
+				\header('HTTP/1.1 503 Service Unavailable', true, 503);
 				\header('Retry-After: 120');
-				exit('Mailserver too busy. Please try again later.');
+				exit("Mailserver too busy ({$load[0]}). Please try again later.");
 			}
 		}
 

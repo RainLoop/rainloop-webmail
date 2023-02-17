@@ -16,6 +16,9 @@ export class AdminSettingsAbout /*extends AbstractViewSettings*/ {
 			coreWarning: false,
 			coreVersion: '',
 			coreVersionCompare: -2,
+			load1: 0,
+			load5: 0,
+			load15: 0,
 			errorDesc: ''
 		});
 		this.coreChecking = ko.observable(false).extend({ throttle: 100 });
@@ -51,18 +54,21 @@ export class AdminSettingsAbout /*extends AbstractViewSettings*/ {
 	}
 
 	onBuild() {
-		Remote.request('AdminPHPExtensions', (iError, data) => iError || this.phpextensions(data.Result));
-
 //	beforeShow() {
 		this.coreChecking(true);
-		Remote.request('AdminUpdateInfo', (iError, data) => {
+		Remote.request('AdminInfo', (iError, data) => {
 			this.coreChecking(false);
-			if (!iError && data?.Result) {
+			data = data?.Result;
+			if (!iError && data) {
+				this.load1(data.system.load?.[0]);
+				this.load5(data.system.load?.[1]);
+				this.load15(data.system.load?.[2]);
+				this.phpextensions(data.php);
 				this.coreReal(true);
-				this.coreUpdatable(!!data.Result.updatable);
-				this.coreWarning(!!data.Result.warning);
-				this.coreVersion(data.Result.version || '');
-				this.coreVersionCompare(data.Result.versionCompare);
+				this.coreUpdatable(!!data.core.updatable);
+				this.coreWarning(!!data.core.warning);
+				this.coreVersion(data.core.version || '');
+				this.coreVersionCompare(data.core.versionCompare);
 			} else {
 				this.coreReal(false);
 				this.coreWarning(false);

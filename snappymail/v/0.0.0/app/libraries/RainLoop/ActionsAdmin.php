@@ -205,40 +205,6 @@ class ActionsAdmin extends Actions
 			: false);
 	}
 
-	public function DoAdminPHPExtensions() : array
-	{
-		$aResult = [
-			[
-				'name' => 'PHP ' . PHP_VERSION,
-				'loaded' => true,
-				'version' => PHP_VERSION
-			],
-			[
-				'name' => 'PHP 64bit',
-				'loaded' => PHP_INT_SIZE == 8,
-				'version' => PHP_INT_SIZE
-			]
-		];
-		foreach (['APCu', 'cURL','GnuPG','GD','Gmagick','Imagick','iconv','intl','LDAP','OpenSSL','pdo_mysql','pdo_pgsql','pdo_sqlite','redis','Sodium','Tidy','uuid','XXTEA','Zip'] as $name) {
-			$aResult[] = [
-				'name' => ('OpenSSL' === $name && \defined('OPENSSL_VERSION_TEXT')) ? OPENSSL_VERSION_TEXT : $name,
-				'loaded' => \extension_loaded(\strtolower($name)),
-				'version' => \phpversion($name)
-			];
-		}
-		$aResult[] = [
-			'name' => 'Fileinfo',
-			'loaded' => \class_exists('finfo'),
-			'version' => \phpversion('fileinfo')
-		];
-		$aResult[] = [
-			'name' => 'Phar',
-			'loaded' => \class_exists('PharData'),
-			'version' => \phpversion('phar')
-		];
-		return $this->DefaultResponse($aResult);
-	}
-
 	// /?admin/Backup
 	public function DoAdminBackup() : void
 	{
@@ -261,7 +227,7 @@ class ActionsAdmin extends Actions
 		exit;
 	}
 
-	public function DoAdminUpdateInfo() : array
+	public function DoAdminInfo() : array
 	{
 		$this->IsAdminLoggined();
 
@@ -294,13 +260,50 @@ class ActionsAdmin extends Actions
 			$aWarnings[] = 'Can not edit: ' . APP_INDEX_ROOT_PATH . 'index.php';
 		}
 
-		return $this->DefaultResponse(array(
-			 'updatable' => \SnappyMail\Repository::canUpdateCore(),
-			 'warning' => $bShowWarning,
-			 'version' => $sVersion,
-			 'versionCompare' => \version_compare(APP_VERSION, $sVersion),
-			 'warnings' => $aWarnings
-		));
+		$aResult = [
+			'system' => [
+				'load' => \is_callable('sys_getloadavg') ? \sys_getloadavg() : null
+			],
+			'core' => [
+				 'updatable' => \SnappyMail\Repository::canUpdateCore(),
+				 'warning' => $bShowWarning,
+				 'version' => $sVersion,
+				 'versionCompare' => \version_compare(APP_VERSION, $sVersion),
+				 'warnings' => $aWarnings
+			],
+			'php' => [
+				[
+					'name' => 'PHP ' . PHP_VERSION,
+					'loaded' => true,
+					'version' => PHP_VERSION
+				],
+				[
+					'name' => 'PHP 64bit',
+					'loaded' => PHP_INT_SIZE == 8,
+					'version' => PHP_INT_SIZE
+				]
+			]
+		];
+
+		foreach (['APCu', 'cURL','GnuPG','GD','Gmagick','Imagick','iconv','intl','LDAP','OpenSSL','pdo_mysql','pdo_pgsql','pdo_sqlite','redis','Sodium','Tidy','uuid','XXTEA','Zip'] as $name) {
+			$aResult['php'][] = [
+				'name' => ('OpenSSL' === $name && \defined('OPENSSL_VERSION_TEXT')) ? OPENSSL_VERSION_TEXT : $name,
+				'loaded' => \extension_loaded(\strtolower($name)),
+				'version' => \phpversion($name)
+			];
+		}
+		$aResult['php'][] = [
+			'name' => 'Fileinfo',
+			'loaded' => \class_exists('finfo'),
+			'version' => \phpversion('fileinfo')
+		];
+		$aResult['php'][] = [
+			'name' => 'Phar',
+			'loaded' => \class_exists('PharData'),
+			'version' => \phpversion('phar')
+		];
+
+		return $this->DefaultResponse($aResult);
 	}
 
 	public function DoAdminUpgradeCore() : array
