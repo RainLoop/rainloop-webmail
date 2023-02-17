@@ -134,8 +134,11 @@ class LdapMailAccounts
 			if ($oActions->DomainProvider()->Load($sDomain, true))
 			{
 				//only execute if the found account isn't already in the list of additional accounts
-				//and if the found account is different from the main account
-				if (!isset($aAccounts[$sEmail]) && $oAccount->Email() !== $sEmail)
+				//and if the found account is different from the main account.
+				//The check if the address is different from the one of the main account when using the Nextcloud integration needs
+				//to be done twice: directly on the mail address (when Nextcloud is configured to log the user in by mail address)
+				//or on "$sUsername@$sDomain" for the case Nextcloud logs the user in to SnappyMail by his username and a default domain.
+				if (!isset($aAccounts[$sEmail]) && $oAccount->Email() !== $sEmail && $oAccount->Email() !== "$sUsername@$sDomain")
 				{
 					//Try to login the user with the same password as the primary account has
 					//if this fails the user will see the new mail addresses but will be asked for the correct password
