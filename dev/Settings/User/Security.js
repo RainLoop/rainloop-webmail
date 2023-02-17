@@ -15,6 +15,8 @@ import { showScreenPopup } from 'Knoin/Knoin';
 import { OpenPgpImportPopupView } from 'View/Popup/OpenPgpImport';
 import { OpenPgpGeneratePopupView } from 'View/Popup/OpenPgpGenerate';
 
+import Remote from 'Remote/User/Fetch';
+
 export class UserSettingsSecurity extends AbstractViewSettings {
 	constructor() {
 		super();
@@ -60,5 +62,11 @@ export class UserSettingsSecurity extends AbstractViewSettings {
 		 * The iframe will be injected into the container identified by selector.
 		 */
 		window.mailvelope && mailvelope.createSettingsContainer('#mailvelope-settings'/*[, keyring], options*/);
+		/**
+		 * https://github.com/the-djmaze/snappymail/issues/973
+		Remote.request('GetStoredPGPKeys', (iError, data) => {
+			console.dir([iError, data]);
+		});
+		*/
 	}
 }
