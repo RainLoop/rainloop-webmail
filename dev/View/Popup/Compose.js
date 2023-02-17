@@ -1404,7 +1404,10 @@ export class ComposePopupView extends AbstractViewPopup {
 			encrypt = this.pgpEncrypt() && this.canPgpEncrypt(),
 			isHtml = this.oEditor.isHtml();
 
-		let Text = this.oEditor.getData();
+		let Text = this.oEditor.getData().trim();
+		if (!Text.length) {
+			throw 'Message body is empty';
+		}
 		if (isHtml) {
 			let l;
 			do {
