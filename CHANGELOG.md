@@ -1,3 +1,39 @@
+## 2.26.2 – 2023-02-17
+
+## Added
+- Remove CSS white-space from messages to prevent annoying side scrolling
+- Show error when trying to send empty message
+  [#974](https://github.com/the-djmaze/snappymail/pull/974)
+- max_sys_loadavg as setting
+  [#971](https://github.com/the-djmaze/snappymail/pull/971)
+
+## Changed
+- Speedup and improved cleanHtml() and cleanCSS() handling
+- Better handling of upload .eml files to a mailbox
+- Rename Folder Hash to ETag as it is the more obvious name
+- Moved AllowDraftAutosave option from Settings -> Security to Settings -> General -> Compose
+- SmtpClient->Connect() use $oSettings->Ehlo
+- Improved handling of `<style>` elements in messages
+- French updated by @hguilbert
+
+## Fixed
+- Remove SVG elements properly from messages
+  [#972](https://github.com/the-djmaze/snappymail/pull/972)
+- Sending large HTML messages slow/fail
+  [#962](https://github.com/the-djmaze/snappymail/pull/962)
+- Nextcloud login failed
+  [#969](https://github.com/the-djmaze/snappymail/pull/969)
+- DoMessageList() hash check was incorrect
+- "Move to folder" button overlays folder sidebar on mobile
+  [#961](https://github.com/the-djmaze/snappymail/pull/961)
+- Spanish translation SPAM and NOT SPAM strings are reversed
+  [#964](https://github.com/the-djmaze/snappymail/pull/964)
+- Can't open Thunderbird PGP keys from decrypted message
+  [#958](https://github.com/the-djmaze/snappymail/pull/958)
+- Can't close Sieve dialog
+  [#960](https://github.com/the-djmaze/snappymail/pull/960)
+
+
 ## 2.26.1 – 2023-02-14
 
 ## Added

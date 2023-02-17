@@ -15,7 +15,7 @@ import { showScreenPopup } from 'Knoin/Knoin';
 import { OpenPgpImportPopupView } from 'View/Popup/OpenPgpImport';
 import { OpenPgpGeneratePopupView } from 'View/Popup/OpenPgpGenerate';
 
-import Remote from 'Remote/User/Fetch';
+//import Remote from 'Remote/User/Fetch';
 
 export class UserSettingsSecurity extends AbstractViewSettings {
 	constructor() {
