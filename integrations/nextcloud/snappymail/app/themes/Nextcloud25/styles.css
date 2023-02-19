@@ -93,6 +93,67 @@ html.rl-left-panel-disabled #rl-app #rl-left {
 }
 
 /*
+ * loading and login screen
+ */
+
+#rl-app #rl-loading,
+#rl-app #rl-loading-error,
+#rl-app #V-Login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    top: unset;
+    position: unset;
+    min-width: unset;
+    max-width: unset;
+    transform: unset;
+    text-shadow: none;
+    transition: none;
+
+    background-color: var(--color-main-background-blur, var(--color-main-background));
+    -webkit-backdrop-filter: var(--filter-background-blur, none);
+    backdrop-filter: var(--filter-background-blur, none);
+
+    color: var(--color-main-text);
+    width: 100%;
+    height: 100%;
+}
+
+#rl-app .LoginView .descWrapper {
+    color: var(--color-main-text);
+}
+
+#rl-app .LoginView .alert {
+    position: unset;
+}
+
+#rl-app .LoginView form {
+    min-width: 250px;
+    max-width: 500px;
+    width: 90%;
+
+    background-color: var(--color-main-background);
+    border: unset;
+    border-radius: var(--border-radius-large);
+    box-shadow: 0 0 10px var(--color-box-shadow);
+    color: var(--color-main-text);
+}
+
+#rl-app .LoginView .controls > .fontastic:first-child {
+    padding: unset;
+    left: 10px;
+}
+
+#rl-app #rl-loading[hidden],
+#rl-app #rl-loading-error[hidden],
+#rl-app .LoginView .alert[hidden] {
+    display: none;
+}
+
+/*
  * icons
  */
 
@@ -158,6 +219,11 @@ html.rl-left-panel-disabled #rl-app #rl-left {
 #rl-app .alert.alert-error {
     background-color: rgba(var(--color-error-rgb), 0.1);
     border-color: var(--color-error);
+}
+
+#rl-app .alert .close {
+    top: -0.6rem;
+    right: unset;
 }
 
 #rl-app .alert br {
@@ -328,13 +394,16 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     box-sizing: content-box !important;
 }
 
+#rl-app button.btn.buttonLogin,
 #rl-app .btn.btn-success {
     color: var(--color-primary-element-text);
     background-color: var(--color-primary-element);
     border-color: var(--color-primary-element) !important;
 }
 
+#rl-app button.btn.buttonLogin:hover,
 #rl-app .btn.btn-success:hover,
+#rl-app button.btn.buttonLogin:focus,
 #rl-app .btn.btn-success:focus {
     background-color: var(--color-primary-element-hover) !important;
     border-color: var(--color-primary-element-hover) !important;
