@@ -1385,3 +1385,74 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 #rl-app #V-PopupsCompose header .minimize-custom {
     box-sizing: content-box;
 }
+
+/*
+ * nextcloud file picker
+ */
+
+#rl-app #V-PopupsCompose .btn[data-bind*="nextcloudAttach"] {
+    font-size: 0;
+}
+
+#rl-app #V-PopupsCompose .btn[data-bind*="nextcloudAttach"]::before {
+    display: block;
+    content: "";
+    height: 100%;
+    width: 30px;
+    --nc-logo: url("data:image/svg+xml,<svg height='29' width='64' fill-rule='evenodd' stroke-linecap='round' stroke-linejoin='round' version='1.1' xmlns='http://www.w3.org/2000/svg'><path d='m32.028 0c-6.6304 0-12.249 4.4952-13.991 10.564-1.5172-3.259-4.7762-5.5066-8.5971-5.5066-5.1694 0-9.4398 4.2704-9.4398 9.496s4.2704 9.4961 9.496 9.4961c3.7647 0 7.0799-2.2476 8.5971-5.5066 1.6856 6.0685 7.3046 10.564 13.935 10.564 6.5742 0 12.193-4.4389 13.991-10.451 1.5171 3.1466 4.7761 5.338 8.4846 5.338 5.2257 0 9.4961-4.2704 9.4961-9.4961s-4.2704-9.4398-9.4961-9.4398c-3.7085 0-6.9675 2.1914-8.4846 5.338-1.7981-5.9561-7.3608-10.395-13.991-10.395zm0 5.5628c5.0009 0 8.9903 3.9894 8.9903 8.9903s-3.9894 8.9904-8.9903 8.9904-8.9903-3.9895-8.9903-8.9904 3.9894-8.9903 8.9903-8.9903zm-22.532 5.057c2.1914 0 3.9333 1.7419 3.9333 3.9333s-1.7419 3.9333-3.9333 3.9333-3.9332-1.7419-3.9332-3.9333 1.7419-3.9333 3.9332-3.9333zm45.008 0c2.1915 0 3.9333 1.7419 3.9333 3.9333s-1.7418 3.9333-3.9333 3.9333-3.9332-1.7419-3.9332-3.9333c0.0562-2.1914 1.7418-3.9333 3.9332-3.9333z' fill-rule='nonzero'></path></svg>");
+    -webkit-mask-image: var(--nc-logo);
+    mask-image: var(--nc-logo);
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 30px;
+    mask-size: 30px;
+    background-color: var(--color-main-text);
+}
+
+#rl-app #V-PopupsNextcloudFiles {
+    user-select: none;
+}
+
+#rl-app #V-PopupsNextcloudFiles li {
+    line-height: 33px;
+}
+
+#rl-app #V-PopupsNextcloudFiles li input {
+    margin: 7px;
+}
+
+#rl-app #V-PopupsNextcloudFiles li[data-icon],
+#rl-app #V-PopupsNextcloudFiles li details summary {
+    padding: 3px 10px;
+}
+
+#rl-app #V-PopupsNextcloudFiles li:not(:last-child),
+#rl-app #V-PopupsNextcloudFiles li details[open]>summary {
+    border-bottom: 1px solid var(--color-border);
+}
+
+#rl-app #V-PopupsNextcloudFiles li details[open]>summary {
+    background-color: var(--color-primary-light);
+    border-bottom-color: var(--color-primary-element-hover);
+}
+
+#rl-app #V-PopupsNextcloudFiles li:hover {
+    background-color: unset;
+}
+
+#rl-app #V-PopupsNextcloudFiles li[data-icon]:hover,
+#rl-app #V-PopupsNextcloudFiles li details:not([open]):hover,
+#rl-app #V-PopupsNextcloudFiles li details[open]>summary:hover {
+    background-color: var(--color-background-hover);
+}
+
+#rl-app #V-PopupsNextcloudFiles li details summary[data-icon] {
+    list-style-type: none;
+}
+
+#rl-app #V-PopupsNextcloudFiles li details summary[data-icon]::before {
+    color: var(--color-primary);
+    font-size: 20px;
+}
