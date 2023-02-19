@@ -1245,23 +1245,24 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
  * scrollbar
  */
 
-#rl-app ::-webkit-scrollbar {
+::-webkit-scrollbar {
     width: 12px;
     height: 12px;
 }
 
-#rl-app ::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
     background: var(--color-scrollbar);
     border-radius: var(--border-radius-large);
     border: 2px solid transparent;
     background-clip: content-box;
 }
 
-#rl-app ::-webkit-scrollbar-track-piece {
+::-webkit-scrollbar-corner,
+::-webkit-scrollbar-track-piece {
     background-color: transparent;
 }
 
-#rl-app ::selection {
+#rl-app::selection {
     background-color: var(--color-primary-element);
     color: var(--color-primary-text);
 }
