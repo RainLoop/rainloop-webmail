@@ -338,6 +338,7 @@ html.rl-left-panel-disabled #rl-app #rl-left {
  */
 
 #rl-app .btn,
+#rl-app button,
 #rl-app button.btn:not(.button-vue) {
     min-height: 36px;
     height: 36px;
@@ -370,20 +371,23 @@ html.rl-left-panel-disabled #rl-app #rl-left {
 }
 
 #rl-app .btn:not(.disabled, [disabled]):hover,
-#rl-app .btn:not(.disabled, [disabled]):focus {
+#rl-app button:not(.disabled, [disabled]):hover,
+#rl-app .btn:not(.disabled, [disabled]):focus,
+#rl-app button:not(.disabled, [disabled]):focus {
     border-color: var(--color-primary-element) !important;
     outline: none;
     opacity: unset;
 }
 
-#rl-app .btn:not(.disabled, [disabled]):active {
+#rl-app .btn:not(.disabled, [disabled]):active,
+#rl-app button:not(.disabled, [disabled]):active {
     outline: none;
     opacity: unset;
     background-color: var(--color-main-background);
     color: var(--color-text-light);
 }
 
-#rl-app .btn, .btn.active, .btn:active, .btn.disabled, .btn[disabled] {
+#rl-app .btn, .btn.active, .btn:active, .btn.disabled, .btn[disabled], #rl-app button {
     text-shadow: none;
     box-shadow: none;
 }
