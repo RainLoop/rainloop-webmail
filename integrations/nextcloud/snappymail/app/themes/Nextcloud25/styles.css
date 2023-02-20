@@ -556,6 +556,12 @@ html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-f
     -webkit-appearance: none;
 }
 
+#rl-app input::-webkit-outer-spin-button,
+#rl-app input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 #rl-app input[type=number] { 
     -moz-appearance: textfield;
     -webkit-appearance: textfield; 
