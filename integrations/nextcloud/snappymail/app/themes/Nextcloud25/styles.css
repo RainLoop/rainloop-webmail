@@ -92,6 +92,17 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     margin-left: unset;
 }
 
+#rl-app .error-to {
+    color: var(--color-error);
+}
+
+#rl-app [data-rainloopErrorTip]::before {
+    background: var(--color-background-dark);
+    border-radius: var(--border-radius);
+    border-color: var(--color-border-dark);
+    color: var(--color-error);
+}
+
 /*
  * loading and login screen
  */
