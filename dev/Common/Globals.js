@@ -11,6 +11,8 @@ export const
 
 	elementById = id => doc.getElementById(id),
 
+	appEl = elementById('rl-app'),
+
 	Settings = rl.settings,
 	SettingsGet = Settings.get,
 	SettingsCapa = name => name && !!(SettingsGet('Capa') || {})[name],

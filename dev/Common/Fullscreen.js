@@ -1,20 +1,19 @@
-import { doc, elementById, $htmlCL } from 'Common/Globals';
+import { doc, appEl, $htmlCL } from 'Common/Globals';
 
 // Fullscreen must be on app, else other popups fail
 export const
-	app = elementById('rl-app'),
-	appFullscreen = () => (doc.fullscreenElement || doc.webkitFullscreenElement) === app,
+	appFullscreen = () => (doc.fullscreenElement || doc.webkitFullscreenElement) === appEl,
 	exitFullscreen = () => appFullscreen() && (doc.exitFullscreen || doc.webkitExitFullscreen).call(doc),
 	isFullscreen = ko.observable(false),
-	toggleFullscreen = () => isFullscreen() ? exitFullscreen() : app.requestFullscreen();
+	toggleFullscreen = () => isFullscreen() ? exitFullscreen() : appEl.requestFullscreen();
 
-if (app) {
+if (appEl) {
 	let event = 'fullscreenchange';
-	if (!app.requestFullscreen && app.webkitRequestFullscreen) {
-		app.requestFullscreen = app.webkitRequestFullscreen;
+	if (!appEl.requestFullscreen && appEl.webkitRequestFullscreen) {
+		appEl.requestFullscreen = appEl.webkitRequestFullscreen;
 		event = 'webkit'+event;
 	}
-	if (app.requestFullscreen) {
+	if (appEl.requestFullscreen) {
 		doc.addEventListener(event, () => {
 			isFullscreen(appFullscreen());
 			$htmlCL.toggle('rl-fullscreen', appFullscreen());

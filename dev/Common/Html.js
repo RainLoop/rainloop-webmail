@@ -3,7 +3,7 @@ import { forEachObjectEntry, pInt } from 'Common/Utils';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
 const
-	tpl = createElement('template'),
+	tmpl = createElement('template'),
 	htmlre = /[&<>"']/g,
 	httpre = /^(https?:)?\/\//i,
 	htmlmap = {
@@ -24,8 +24,8 @@ const
 
 	blockquoteSwitcher = () => {
 		SettingsUserStore.collapseBlockquotes() &&
-//		tpl.content.querySelectorAll('blockquote').forEach(node => {
-		[...tpl.content.querySelectorAll('blockquote')].reverse().forEach(node => {
+//		tmpl.content.querySelectorAll('blockquote').forEach(node => {
+		[...tmpl.content.querySelectorAll('blockquote')].reverse().forEach(node => {
 			const el = createElement('details', {class:'sm-bq-switcher'});
 			el.innerHTML = '<summary>•••</summary>';
 			node.replaceWith(el);
@@ -264,7 +264,7 @@ export const
 			msgId = 0;
 		}
 
-		tpl.innerHTML = html
+		tmpl.innerHTML = html
 			// Strip Microsoft comments
 			.replace(/<!--\[if[\s\S]*?endif\]-->/gi, '')
 //			.replace(/<pre[^>]*>[\s\S]*?<\/pre>/gi, pre => pre.replace(/\n/g, '\n<br>'))
@@ -282,17 +282,17 @@ export const
 
 		// \MailSo\Base\HtmlUtils::ClearComments()
 		// https://github.com/the-djmaze/snappymail/issues/187
-		const nodeIterator = document.createNodeIterator(tpl.content, NodeFilter.SHOW_COMMENT);
+		const nodeIterator = document.createNodeIterator(tmpl.content, NodeFilter.SHOW_COMMENT);
 		while (nodeIterator.nextNode()) {
 			nodeIterator.referenceNode.remove();
 		}
 
-		tpl.content.querySelectorAll(
+		tmpl.content.querySelectorAll(
 			disallowedTags
 			+ (0 < bqLevel ? ',' + (new Array(1 + bqLevel).fill('blockquote').join(' ')) : '')
 		).forEach(oElement => oElement.remove());
 
-		[...tpl.content.querySelectorAll('*')].forEach(oElement => {
+		[...tmpl.content.querySelectorAll('*')].forEach(oElement => {
 			const name = oElement.tagName,
 				oStyle = oElement.style;
 
@@ -555,8 +555,8 @@ export const
 
 		blockquoteSwitcher();
 
-//		return tpl.content.firstChild;
-		result.html = tpl.innerHTML.trim();
+//		return tmpl.content.firstChild;
+		result.html = tmpl.innerHTML.trim();
 		return result;
 	},
 
@@ -567,7 +567,7 @@ export const
 	htmlToPlain = html => {
 		const
 			hr = '⎯'.repeat(64),
-			forEach = (selector, fn) => tpl.content.querySelectorAll(selector).forEach(fn),
+			forEach = (selector, fn) => tmpl.content.querySelectorAll(selector).forEach(fn),
 			blockquotes = node => {
 				let bq;
 				while ((bq = node.querySelector('blockquote'))) {
@@ -595,7 +595,7 @@ export const
 			html = html.replace(/\n*<\/(div|tr)(\s[\s\S]*?)?>\n*/gi, '\n');
 		}
 
-		tpl.innerHTML = html
+		tmpl.innerHTML = html
 			.replace(/<t[dh](\s[\s\S]*?)?>/gi, '\t')
 			.replace(/<\/tr(\s[\s\S]*?)?>/gi, '\n');
 
@@ -645,16 +645,16 @@ export const
 		forEach('i,em', i => i.replaceWith(`*${i.textContent}*`));
 
 		// Convert line-breaks
-		tpl.innerHTML = tpl.innerHTML
+		tmpl.innerHTML = tmpl.innerHTML
 			.replace(/\n{3,}/gm, '\n\n')
 			.replace(/\n<br[^>]*>/g, '\n')
 			.replace(/<br[^>]*>\n/g, '\n');
 		forEach('br', br => br.replaceWith('\n'));
 
 		// Blockquotes must be last
-		blockquotes(tpl.content);
+		blockquotes(tmpl.content);
 
-		return (tpl.content.textContent || '').trim();
+		return (tmpl.content.textContent || '').trim();
 	},
 
 	/**
@@ -708,7 +708,7 @@ export const
 			aText = aNextText;
 		} while (bDo);
 
-		tpl.innerHTML = aText.join('\n')
+		tmpl.innerHTML = aText.join('\n')
 			// .replace(/~~~\/blockquote~~~\n~~~blockquote~~~/g, '\n')
 			.replace(/&/g, '&amp;')
 			.replace(/>/g, '&gt;')
@@ -723,7 +723,7 @@ export const
 			.replace(/\s*~~~\/blockquote~~~/g, '</blockquote>')
 			.replace(/\n/g, '<br>');
 		blockquoteSwitcher();
-		return tpl.innerHTML.trim();
+		return tmpl.innerHTML.trim();
 	},
 
 	WYSIWYGS = ko.observableArray();
