@@ -6,6 +6,7 @@
 			let view = e.detail;
 			view.nextcloudAttach = () => {
 				rl.nextcloud.selectFiles().then(files => {
+					let urls = [];
 					files && files.forEach(file => {
 						if (file.name) {
 							let attachment = view.addAttachmentHelper(
@@ -29,10 +30,14 @@
 								}
 							);
 						} else if (file.url) {
-							// TODO: other editors and text/plain
-							view.oEditor.editor.squire.makeLink(file.url);
+							urls.push(file.url);
 						}
 					});
+					if (urls.length) {
+						// TODO: other editors and text/plain
+						// https://github.com/the-djmaze/snappymail/issues/981
+						view.oEditor.editor.squire.insertHTML(urls.join("<br>"));
+					}
 				});
 			};
 		}
