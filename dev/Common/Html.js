@@ -328,15 +328,16 @@ export const
 				hasAttribute = name => oElement.hasAttribute(name),
 				getAttribute = name => hasAttribute(name) ? oElement.getAttribute(name).trim() : '',
 				setAttribute = (name, value) => oElement.setAttribute(name, value),
-				delAttribute = name => oElement.removeAttribute(name);
+				delAttribute = name => {
+					let value = getAttribute(name);
+					oElement.removeAttribute(name);
+					return value;
+				};
 
 			if ('mail-body' === className) {
-				forEachObjectEntry(tasks, (name, cb) => {
-					if (hasAttribute(name)) {
-						cb(getAttribute(name), oElement);
-						delAttribute(name);
-					}
-				});
+				forEachObjectEntry(tasks, (name, cb) =>
+					hasAttribute(name) && cb(delAttribute(name), oElement)
+				);
 			} else if (msgId && className) {
 				oElement.className = className.replace(/(^|\s+)/g, '$1msg-');
 			}
@@ -358,13 +359,12 @@ export const
 			if (!oStyle.backgroundImage) {
 				if ('TD' !== name && 'TH' !== name) {
 					// Make width responsive
-					if (hasAttribute('width')) {
-						value = getAttribute('width');
+					if (hasAttribute('width') && !oStyle.width) {
+						value = delAttribute('width');
 						oStyle.width = value.includes('%') ? value : value + 'px';
-						delAttribute('width');
 					}
 					value = oStyle.width;
-					if (parseInt(value,10) && !oStyle.maxWidth) {
+					if (100 < parseInt(value,10) && !oStyle.maxWidth) {
 						oStyle.maxWidth = value;
 						oStyle.width = '100%';
 					} else if (!value?.includes('%')) {
@@ -372,9 +372,8 @@ export const
 					}
 					// Make height responsive
 					if (hasAttribute('height')) {
-						value = getAttribute('height');
+						value = delAttribute('height');
 						oStyle.height = value.includes('%') ? value : value + 'px';
-						delAttribute('height');
 					}
 					value = oStyle.removeProperty('height');
 					if (value && !oStyle.maxHeight) {
@@ -412,8 +411,7 @@ export const
 
 			let skipStyle = false;
 			if (hasAttribute('src')) {
-				value = stripTracking(getAttribute('src'));
-				delAttribute('src');
+				value = stripTracking(delAttribute('src'));
 
 				if ('IMG' === name) {
 					oElement.loading = 'lazy';
@@ -474,18 +472,15 @@ export const
 			}
 
 			if (hasAttribute('background')) {
-				oStyle.backgroundImage = 'url("' + getAttribute('background') + '")';
-				delAttribute('background');
+				oStyle.backgroundImage = 'url("' + delAttribute('background') + '")';
 			}
 
 			if (hasAttribute('bgcolor')) {
-				oStyle.backgroundColor = getAttribute('bgcolor');
-				delAttribute('bgcolor');
+				oStyle.backgroundColor = delAttribute('bgcolor');
 			}
 
 			if (hasAttribute('color')) {
-				oStyle.color = getAttribute('color');
-				delAttribute('color');
+				oStyle.color = delAttribute('color');
 			}
 
 			if (!skipStyle) {
