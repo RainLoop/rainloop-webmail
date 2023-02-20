@@ -12,22 +12,23 @@ import { showScreenPopup } from 'Knoin/Knoin';
 import { OpenPgpKeyPopupView } from 'View/Popup/OpenPgpKey';
 import { AskPopupView } from 'View/Popup/Ask';
 
+import { Passphrases } from 'Storage/Passphrases';
+
 const
 	findOpenPGPKey = (keys, query/*, sign*/) =>
 		keys.find(key =>
 			key.emails.includes(query) || query == key.id || query == key.fingerprint
 		),
 
-	passphrases = new Map(),
 	decryptKey = async (privateKey, btnTxt = 'LABEL_SIGN') => {
 		if (privateKey.key.isDecrypted()) {
 			return privateKey.key;
 		}
 		const key = privateKey.id,
-			pass = passphrases.has(key)
-				? {password:passphrases.get(key), remember:false}
+			pass = Passphrases.has(key)
+				? {password:Passphrases.get(key), remember:false}
 				: await AskPopupView.password(
-					'OpenPGP.js key<br>' + privateKey.id + ' ' + privateKey.emails[0],
+					'OpenPGP.js key<br>' + key + ' ' + privateKey.emails[0],
 					'OPENPGP/'+btnTxt
 				);
 		if (pass) {
@@ -36,7 +37,7 @@ const
 					privateKey: privateKey.key,
 					passphrase
 				});
-			result && pass.remember && passphrases.set(key, passphrase);
+			result && pass.remember && Passphrases.set(key, passphrase);
 			return result;
 		}
 	},
