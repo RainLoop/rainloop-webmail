@@ -636,6 +636,45 @@ select option {
 }
 
 /*
+ * textareas
+ */
+
+#rl-app .squire-toolbar {
+    height: 50px;
+    box-sizing: content-box;
+    border-color: var(--color-border);
+}
+
+#rl-app textarea,
+#rl-app div[contenteditable],
+#rl-app .squire-wysiwyg,
+#rl-app .squire-plain {
+    padding: 8px 12px;
+    margin: unset;
+    font-size: var(--default-font-size);
+    color: var(--color-main-text);
+    background-color: unset;
+    outline: none;
+    border: 2px solid var(--color-border-dark);
+    border-radius: var(--border-radius-large);
+}
+
+#rl-app textarea:hover,
+#rl-app div[contenteditable=true]:hover,
+#rl-app .squire-wysiwyg:hover,
+#rl-app .squire-plain:hover,
+#rl-app textarea:active,
+#rl-app div[contenteditable=true]:active,
+#rl-app .squire-wysiwyg:active,
+#rl-app .squire-plain:active,
+#rl-app textarea:focus,
+#rl-app div[contenteditable=true]:focus,
+#rl-app .squire-wysiwyg:focus,
+#rl-app .squire-plain:focus {
+    border-color: var(--color-primary-element);
+}
+
+/*
  * checkboxes
  */
 
@@ -1364,6 +1403,13 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     background-color: transparent;
 }
 
+::-webkit-resizer {
+    border: 10px solid transparent;
+    border-radius: var(--border-radius);
+    border-bottom-color: var(--color-border-dark);
+    border-right-color: var(--color-border-dark);
+}
+
 #rl-app::selection {
     background-color: var(--color-primary-element);
     color: var(--color-primary-text);
@@ -1387,14 +1433,8 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     background: unset;
 }
 
-#rl-app .squire-toolbar {
-    height: 50px;
-    box-sizing: content-box;
-}
-
 #rl-app dialog > header,
-#rl-app dialog > footer,
-#rl-app .squire-toolbar {
+#rl-app dialog > footer {
     border-color: var(--color-border);
 }
 
