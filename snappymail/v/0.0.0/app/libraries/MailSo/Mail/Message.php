@@ -493,7 +493,7 @@ class Message implements \JsonSerializable
 			}
 		}
 
-		return array(
+		$result = array(
 			'@Object' => 'Object/Message',
 			'folder' => $this->sFolder,
 			'uid' => $this->Uid,
@@ -517,7 +517,6 @@ class Message implements \JsonSerializable
 			'deliveredTo' => $this->oDeliveredTo,
 
 			'priority' => $this->iPriority,
-			'threads' => $this->aThreads,
 			'unsubsribeLinks' => $this->UnsubsribeLinks,
 			'readReceipt' => '',
 			'autocrypt' => $aAutocrypt ?: null,
@@ -540,5 +539,11 @@ class Message implements \JsonSerializable
 //			'keywords' => $keywords,
 			'size' => $this->iSize
 		);
+
+		if ($this->aThreads) {
+			$result['threads'] = $this->aThreads;
+		}
+
+		return $result;
 	}
 }
