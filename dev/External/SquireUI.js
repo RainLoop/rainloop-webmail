@@ -27,11 +27,6 @@ const
 
 	SquireDefaultConfig = {
 /*
-		blockTag: 'P',
-		undo: {
-			documentSizeThreshold: -1, // -1 means no threshold
-			undoLimit: -1 // -1 means no limit
-		},
 		addLinks: true // allow_smart_html_links
 */
 		sanitizeToDOMFragment: (html, isPaste/*, squire*/) => {
@@ -379,7 +374,6 @@ class SquireUI
 		squire.addEventListener('cursor', );
 		squire.addEventListener('select', );
 		squire.addEventListener('input', );
-		squire.addEventListener('willPaste', );
 		squire.addEventListener( 'keydown keyup', monitorShiftKey )
 		squire.addEventListener( 'keydown', onKey )
 */
