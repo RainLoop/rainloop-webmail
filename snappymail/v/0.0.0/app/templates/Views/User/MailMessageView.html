@@ -30,8 +30,7 @@
 	<div class="b-message-view-desc" data-i18n="MESSAGE/MESSAGE_VIEW_DESC" data-bind="visible: !message() && '' === messageError() && !hasCheckedMessages()">
 	</div>
 
-	<!-- ko if: message -->
-	<div class="b-message" data-bind="i18nUpdate: message, css: message()?.lineAsCss(0)">
+	<div class="b-message" data-bind="visible: message, css: message()?.lineAsCss(0)">
 		<div class="message-fixed-button-toolbar">
 			<a class="btn btn-success buttonEdit fontastic hide-mobile" data-bind="visible: isDraftFolder(), command: editCommand">🖉</a>
 			<div class="btn-group" style="margin-right: -8px; display: inline;">
@@ -121,7 +120,7 @@
 			</div>
 		</div>
 
-		<div class="messageItemHeader">
+		<div class="messageItemHeader" data-bind="if: message, i18nUpdate: message">
 			<div class="subjectParent">
 				<span class="infoParent g-ui-user-select-none fontastic" data-bind="click: toggleFullInfo">ℹ</span>
 				<span class="flagParent g-ui-user-select-none flagOff fontastic" data-bind="text: message().isFlagged() ? '★' : '☆', css: {'flagOn': message().isFlagged(), 'flagOff': !message().isFlagged()}"></span>
@@ -176,7 +175,7 @@
 			</div>
 		</div>
 		<div id="messageItem">
-			<div class="messageItemHeader">
+			<div class="messageItemHeader" data-bind="if: message, i18nUpdate: message">
 				<div data-bind="hidden: showFullInfo">
 					<time class="date" data-moment-format="FULL" data-bind="visible: 0 < message().dateTimeStampInUTC(), moment: message().dateTimeStampInUTC()"></time>
 					<div class="informationShortWrp">
@@ -223,7 +222,7 @@
 				</div>
 
 				<div data-bind="hidden: messageLoadingThrottle">
-					<div class="bodySubHeader">
+					<div class="bodySubHeader" data-bind="if: message, i18nUpdate: message">
 						<div class="readReceipt" data-bind="visible: askReadReceipt, click: readReceipt"
 							data-icon="✉" data-i18n="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></div>
 						<details class="attachmentsPlace" data-bind="visible: hasAttachments, css: {'selection-mode' : showAttachmentControls}">
@@ -294,19 +293,22 @@
 						</div>
 					</div>
 
-					<div class="openpgp-control encrypted" data-bind="visible: message().pgpEncrypted(), css: {'success': message().pgpDecrypted()}">
+					<!-- ko if: message()?.pgpEncrypted() -->
+					<div class="openpgp-control encrypted" data-bind="i18nUpdate: message, css: {'success': message().pgpDecrypted()}">
 						<span data-icon="🔒" data-i18n="OPENPGP/ENCRYPTED_MESSAGE"></span>
 						<button class="btn" data-bind="visible: pgpSupported, click: pgpDecrypt" data-i18n="OPENPGP/BUTTON_DECRYPT"></button>
 					</div>
-					<div class="openpgp-control signed" data-bind="visible: message().pgpSigned(), css: {'success': message().pgpVerified() && message().pgpVerified().success, 'error': message().pgpVerified() && !message().pgpVerified().success}">
+					<!-- /ko -->
+					<!-- ko if: message()?.pgpSigned() -->
+					<div class="openpgp-control signed" data-bind="i18nUpdate: message, css: {'success': message().pgpVerified() && message().pgpVerified().success, 'error': message().pgpVerified() && !message().pgpVerified().success}">
 						<span data-icon="✍" data-i18n="OPENPGP/SIGNED_MESSAGE"></span>
 						<button class="btn" data-bind="visible: pgpSupported, click: pgpVerify" data-i18n="OPENPGP/BUTTON_VERIFY"></button>
 					</div>
+					<!-- /ko -->
 
-					<div class="bodyText" data-bind="initDom: messagesBodiesDom"></div>
+					<div class="bodyText"></div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<!-- /ko -->
 </div>

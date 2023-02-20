@@ -290,49 +290,46 @@ export class MessageModel extends AbstractModel {
 		return [[...toResult.values()], [...ccResult.values()]];
 	}
 
-	viewHtml() {
+	viewBody(html) {
 		const body = this.body;
-		if (body && this.html()) {
-			let result = msgHtml(this);
-			this.hasExternals(result.hasExternals);
-			this.hasImages(body.rlHasImages = !!result.hasExternals);
-
-			body.innerHTML = result.html;
-
-			body.classList.toggle('html', 1);
-			body.classList.toggle('plain', 0);
-
-			if (!this.isSpam() && FolderUserStore.spamFolder() != this.folder) {
-				if ('always' === SettingsUserStore.viewImages()) {
-					this.showExternalImages();
+		if (body) {
+			if (html) {
+				let result = msgHtml(this);
+				this.hasExternals(result.hasExternals);
+				this.hasImages(!!result.hasExternals);
+				body.innerHTML = result.html;
+				if (!this.isSpam() && FolderUserStore.spamFolder() != this.folder) {
+					if ('always' === SettingsUserStore.viewImages()) {
+						this.showExternalImages();
+					}
+					if ('match' === SettingsUserStore.viewImages()) {
+						this.showExternalImages(1);
+					}
 				}
-				if ('match' === SettingsUserStore.viewImages()) {
-					this.showExternalImages(1);
-				}
+			} else {
+				body.innerHTML = plainToHtml(
+					(this.plain()
+						? this.plain()
+							.replace(/-----BEGIN PGP (SIGNED MESSAGE-----(\r?\n[a-z][^\r\n]+)+|SIGNATURE-----[\s\S]*)/, '')
+							.trim()
+						: htmlToPlain(body.innerHTML)
+					)
+				);
+				this.hasImages(false);
 			}
-
-			this.isHtml(true);
+			body.classList.toggle('html', html);
+			body.classList.toggle('plain', !html);
+			this.isHtml(html);
 			return true;
 		}
 	}
 
+	viewHtml() {
+		return this.html() && this.viewBody(true);
+	}
+
 	viewPlain() {
-		const body = this.body;
-		if (body) {
-			body.classList.toggle('html', 0);
-			body.classList.toggle('plain', 1);
-			body.innerHTML = plainToHtml(
-				(this.plain()
-					? this.plain()
-						.replace(/-----BEGIN PGP (SIGNED MESSAGE-----(\r?\n[a-z][^\r\n]+)+|SIGNATURE-----[\s\S]*)/, '')
-						.trim()
-					: htmlToPlain(body.innerHTML)
-				)
-			);
-			this.isHtml(false);
-			this.hasImages(false);
-			return true;
-		}
+		return this.viewBody(false);
 	}
 
 	viewPopupMessage(print) {
@@ -447,7 +444,6 @@ export class MessageModel extends AbstractModel {
 			});
 
 			this.hasImages(hasImages);
-			body.rlHasImages = hasImages;
 		}
 	}
 

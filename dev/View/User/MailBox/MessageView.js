@@ -128,7 +128,6 @@ export class MailMessageView extends AbstractViewRight {
 
 		this.message = currentMessage;
 		this.messageLoadingThrottle = MessageUserStore.loading;
-		this.messagesBodiesDom = MessageUserStore.bodiesDom;
 		this.messageError = MessageUserStore.error;
 
 		this.fullScreenMode = isFullscreen;
@@ -166,7 +165,7 @@ export class MailMessageView extends AbstractViewRight {
 
 			listAttachments: () => currentMessage()?.attachments()
 				.filter(item => SettingsUserStore.listInlineAttachments() || !item.isLinked()),
-			hasAttachments: () => this.listAttachments().length,
+			hasAttachments: () => this.listAttachments()?.length,
 
 			canBeRepliedOrForwarded: () => !MessagelistUserStore.isDraftFolder() && this.messageVisibility(),
 
@@ -459,6 +458,8 @@ export class MailMessageView extends AbstractViewRight {
 			}
 			return false;
 		});
+
+		MessageUserStore.bodiesDom(dom.querySelector('.bodyText'));
 	}
 
 	scrollMessageToTop() {

@@ -17,7 +17,6 @@ import { LanguageStore } from 'Stores/Language';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import { IdentityUserStore } from 'Stores/User/Identity';
 import { NotificationUserStore } from 'Stores/User/Notification';
-import { MessageUserStore } from 'Stores/User/Message';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
 
 import Remote from 'Remote/User/Fetch';
@@ -102,7 +101,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.addSetting('Layout');
 		this.addSetting('MaxBlockquotesLevel');
 
-		this.addSettings(['ViewHTML', 'ViewImages', 'ViewImagesWhitelist', 'HideDeleted', 'AllowStyles',
+		this.addSettings(['ViewHTML', 'ViewImages', 'ViewImagesWhitelist', 'HideDeleted', 'RemoveColors', 'AllowStyles',
 			'ListInlineAttachments', 'simpleAttachmentsList', 'UseCheckboxesInList', 'listGrouped', 'ReplySameFolder',
 			'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt', 'allowSpellcheck',
 			'DesktopNotifications', 'SoundNotification', 'CollapseBlockquotes', 'AllowDraftAutosave']);
@@ -122,14 +121,6 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 
 			hourCycle: value =>
 				Remote.saveSetting('hourCycle', value),
-
-			removeColors: value => {
-				let dom = MessageUserStore.bodiesDom();
-				if (dom) {
-					dom.innerHTML = '';
-				}
-				Remote.saveSetting('RemoveColors', value);
-			},
 
 			notificationSound: value => {
 				Remote.saveSetting('NotificationSound', value);

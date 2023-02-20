@@ -70,9 +70,8 @@ export class SystemDropDownUserView extends AbstractViewRight {
 /*						// Not working yet
 						forEachObjectEntry(oData.Result, (key, value) => rl.settings.set(key, value));
 						clearCache();
-//						MessageUserStore.setMessage();
-//						MessageUserStore.purgeMessageBodyCache();
-//						MessageUserStore.hideMessageBodies();
+//						MessageUserStore.message();
+//						MessageUserStore.purgeCache();
 						MessagelistUserStore([]);
 //						FolderUserStore.folderList([]);
 						loadFolders(value => {
