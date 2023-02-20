@@ -511,7 +511,8 @@ html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-f
     text-align: center;
 }
 
-#rl-app #V-MailMessageList .btn-toolbar .btn-group .btn {
+#rl-app #V-MailMessageList .btn-toolbar .btn-group .btn,
+#rl-app .squire-toolbar.btn-toolbar .btn {
     border-radius: var(--border-radius-large);
     margin: 0 .5px;
 }
