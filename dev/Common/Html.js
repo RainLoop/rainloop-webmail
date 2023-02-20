@@ -363,10 +363,12 @@ export const
 						oStyle.width = value.includes('%') ? value : value + 'px';
 						delAttribute('width');
 					}
-					value = oStyle.removeProperty('width');
+					value = oStyle.width;
 					if (parseInt(value,10) && !oStyle.maxWidth) {
 						oStyle.maxWidth = value;
 						oStyle.width = '100%';
+					} else if (!value?.includes('%')) {
+						oStyle.removeProperty('width');
 					}
 					// Make height responsive
 					if (hasAttribute('height')) {
