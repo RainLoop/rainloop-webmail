@@ -986,8 +986,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     border-radius: var(--border-radius-large);
 }
 
-#rl-app #messageItem .readReceipt:hover,
-#rl-app #messageItem .showImages:hover {
+#rl-app #messageItem .readReceipt:hover {
     background-color: var(--color-primary-light-hover);
 }
 
