@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { Notification } from 'Common/Enums';
+import { Notifications } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
 import { PackageAdminStore } from 'Stores/Admin/Package';
@@ -67,7 +67,7 @@ export class AdminSettingsPackages extends AbstractViewSettings {
 
 			if (iError) {
 				this.packagesError(
-					getNotification(install ? Notification.CantInstallPackage : Notification.CantDeletePackage)
+					getNotification(install ? Notifications.CantInstallPackage : Notifications.CantDeletePackage)
 					+ (data.ErrorMessage ? ':\n' + data.ErrorMessage : '')
 				);
 			} else if (data.Result.Reload) {
@@ -113,7 +113,7 @@ export class AdminSettingsPackages extends AbstractViewSettings {
 				if (iError) {
 					plugin.enabled(disable);
 					this.packagesError(
-						(Notification.UnsupportedPluginPackage === iError && data?.ErrorMessage)
+						(Notifications.UnsupportedPluginPackage === iError && data?.ErrorMessage)
 						? data.ErrorMessage
 						: getNotification(iError)
 					);

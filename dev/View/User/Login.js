@@ -1,4 +1,4 @@
-import { Notification } from 'Common/Enums';
+import { Notifications } from 'Common/Enums';
 import { ClientSideKeyNameLastSignMe } from 'Common/EnumsUser';
 import { SettingsGet, fireEvent } from 'Common/Globals';
 import { getNotification, translatorReload, convertLangName } from 'Common/Translator';
@@ -120,11 +120,11 @@ export class LoginUserView extends AbstractViewLogin {
 					});
 					if (iError) {
 						this.submitRequest(false);
-						if (Notification.InvalidInputArgument == iError) {
-							iError = Notification.AuthError;
+						if (Notifications.InvalidInputArgument == iError) {
+							iError = Notifications.AuthError;
 						}
 						this.submitError(getNotification(iError, oData?.ErrorMessage,
-							Notification.UnknownNotification));
+							Notifications.UnknownNotification));
 						this.submitErrorAdditional(oData?.ErrorMessageAdditional);
 					} else {
 						rl.setData(oData.Result);

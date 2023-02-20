@@ -2,6 +2,7 @@ import ko from 'ko';
 import { SettingsGet } from 'Common/Globals';
 import { koComputable, addObservablesTo, koArrayWithDestroy } from 'External/ko';
 import Remote from 'Remote/User/Fetch';
+import { Notifications } from 'Common/Enums';
 
 export const ContactUserStore = koArrayWithDestroy();
 
@@ -43,7 +44,7 @@ ContactUserStore.sync = fResultFunc => {
 			} catch (e) {
 				ContactUserStore.syncing(false);
 				console.error(e);
-				fResultFunc?.(Notification.UnknownError);
+				fResultFunc?.(Notifications.UnknownError);
 			}
 		}, 'ContactsSync');
 	}

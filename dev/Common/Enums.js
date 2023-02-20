@@ -39,7 +39,7 @@ SaveSettingStatus = {
 /**
  * @enum {number}
  */
-Notification = {
+Notifications = {
 	RequestError: 1,
 	RequestAborted: 2,
 	RequestTimeout: 3,

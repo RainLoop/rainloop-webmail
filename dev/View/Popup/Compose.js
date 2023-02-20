@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import {
-	Notification,
+	Notifications,
 	UploadErrorCode
 } from 'Common/Enums';
 
@@ -458,13 +458,13 @@ export class ComposePopupView extends AbstractViewPopup {
 						(iError, data) => {
 							this.sending(false);
 							if (iError) {
-								if (Notification.CantSaveMessage === iError) {
+								if (Notifications.CantSaveMessage === iError) {
 									this.sendSuccessButSaveError(true);
 									this.savedErrorDesc(i18n('COMPOSE/SAVED_ERROR_ON_SEND').trim());
 								} else {
 									this.sendError(true);
 									this.sendErrorDesc(getNotification(iError, data?.ErrorMessage)
-										|| getNotification(Notification.CantSendMessage));
+										|| getNotification(Notifications.CantSendMessage));
 								}
 							} else {
 								this.close();
@@ -531,7 +531,7 @@ export class ComposePopupView extends AbstractViewPopup {
 
 							if (!result) {
 								this.savedError(true);
-								this.savedErrorDesc(getNotification(Notification.CantSaveMessage));
+								this.savedErrorDesc(getNotification(Notifications.CantSaveMessage));
 							}
 
 							reloadDraftFolder();
@@ -542,7 +542,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				}).catch(e => {
 					this.saving(false);
 					this.savedError(true);
-					this.savedErrorDesc(getNotification(Notification.CantSaveMessage) + ': ' + e);
+					this.savedErrorDesc(getNotification(Notifications.CantSaveMessage) + ': ' + e);
 				});
 			}
 		}
@@ -612,7 +612,7 @@ export class ComposePopupView extends AbstractViewPopup {
 						data.Result.map(item => (item?.[0] ? (new EmailModel(item[0], item[1])).toLine() : null))
 						.filter(v => v)
 					);
-				} else if (Notification.RequestAborted !== iError) {
+				} else if (Notifications.RequestAborted !== iError) {
 					fResponse([]);
 				}
 			},

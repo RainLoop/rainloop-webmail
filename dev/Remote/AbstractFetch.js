@@ -1,4 +1,4 @@
-import { Notification } from 'Common/Enums';
+import { Notifications } from 'Common/Enums';
 import { isArray, pInt, pString } from 'Common/Utils';
 import { serverRequest } from 'Common/Links';
 import { getNotification } from 'Common/Translator';
@@ -9,18 +9,18 @@ const getURL = (add = '') => serverRequest('Json') + pString(add),
 
 checkResponseError = data => {
 	const err = data ? data.ErrorCode : null;
-	if (Notification.InvalidToken === err) {
+	if (Notifications.InvalidToken === err) {
 		console.error(getNotification(err));
 //		alert(getNotification(err));
 		rl.logoutReload();
 	} else if ([
-			Notification.AuthError,
-			Notification.ConnectionError,
-			Notification.DomainNotAllowed,
-			Notification.AccountNotAllowed,
-			Notification.MailServerError,
-			Notification.UnknownNotification,
-			Notification.UnknownError
+			Notifications.AuthError,
+			Notifications.ConnectionError,
+			Notifications.DomainNotAllowed,
+			Notifications.AccountNotAllowed,
+			Notifications.MailServerError,
+			Notifications.UnknownNotification,
+			Notifications.UnknownError
 		].includes(err)
 	) {
 		if (7 < ++iJsonErrorCount) {
@@ -65,7 +65,7 @@ class FetchError extends Error
 {
 	constructor(code, message) {
 		super(message);
-		this.code = code || Notification.JsonFalse;
+		this.code = code || Notifications.JsonFalse;
 	}
 }
 
@@ -145,7 +145,7 @@ export class AbstractFetchRemote
 						iJsonErrorCount = 0;
 					} else {
 						checkResponseError(data);
-						iError = data.ErrorCode || Notification.UnknownError
+						iError = data.ErrorCode || Notifications.UnknownError
 					}
 				}
 
@@ -197,7 +197,7 @@ export class AbstractFetchRemote
 				abort(action, 0, 1);
 
 				if (!data) {
-					return Promise.reject(new FetchError(Notification.JsonParse));
+					return Promise.reject(new FetchError(Notifications.JsonParse));
 				}
 /*
 				let isCached = false, type = '';

@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { Notification } from 'Common/Enums';
+import { Notifications } from 'Common/Enums';
 import { FolderMetadataKeys } from 'Common/EnumsUser';
 import { getNotification } from 'Common/Translator';
 
@@ -84,7 +84,7 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 				})
 				.catch(error => {
 					FolderUserStore.folderListError(
-						getNotification(error.code, '', Notification.CantRenameFolder)
+						getNotification(error.code, '', Notifications.CantRenameFolder)
 						+ '.\n' + error.message);
 				});
 		}
@@ -119,8 +119,8 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 		 && folderToRemove.askDelete()
 		) {
 			if (0 < folderToRemove.totalEmails()) {
-//				FolderUserStore.folderListError(getNotification(Notification.CantDeleteNonEmptyFolder));
-				folderToRemove.errorMsg(getNotification(Notification.CantDeleteNonEmptyFolder));
+//				FolderUserStore.folderListError(getNotification(Notifications.CantDeleteNonEmptyFolder));
+				folderToRemove.errorMsg(getNotification(Notifications.CantDeleteNonEmptyFolder));
 			} else {
 				folderForDeletion(null);
 
@@ -141,7 +141,7 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 							},
 							error => {
 								FolderUserStore.folderListError(
-									getNotification(error.code, '', Notification.CantDeleteFolder)
+									getNotification(error.code, '', Notifications.CantDeleteFolder)
 									+ '.\n' + error.message
 								);
 							}

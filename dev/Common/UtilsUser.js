@@ -1,5 +1,5 @@
 import { MessageFlagsCache } from 'Common/Cache';
-import { Notification } from 'Common/Enums';
+import { Notifications } from 'Common/Enums';
 import { MessageSetAction, ComposeType/*, FolderType*/ } from 'Common/EnumsUser';
 import { doc, createElement, elementById, dropdowns, dropdownVisibility, SettingsGet, leftPanelDisabled } from 'Common/Globals';
 import { plainToHtml } from 'Common/Html';
@@ -293,7 +293,7 @@ populateMessageBody = (oMessage, popup) => {
 			popup || MessageUserStore.loading(true);
 			Remote.message((iError, oData/*, bCached*/) => {
 				if (iError) {
-					if (Notification.RequestAborted !== iError && !popup) {
+					if (Notifications.RequestAborted !== iError && !popup) {
 						MessageUserStore.message(null);
 						MessageUserStore.error(getNotification(iError));
 					}

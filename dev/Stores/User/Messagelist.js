@@ -1,7 +1,7 @@
 import { koComputable, addObservablesTo, addComputablesTo } from 'External/ko';
 
 import { SMAudio } from 'Common/Audio';
-import { Notification } from 'Common/Enums';
+import { Notifications } from 'Common/Enums';
 import { MessageSetAction } from 'Common/EnumsUser';
 import { $htmlCL } from 'Common/Globals';
 import { arrayLength, pInt, pString } from 'Common/Utils';
@@ -198,7 +198,7 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 			let error = '';
 			if (iError) {
 				error = getNotification(iError);
-				if (Notification.RequestAborted !== iError) {
+				if (Notifications.RequestAborted !== iError) {
 					MessagelistUserStore([]);
 				}
 			} else {
@@ -281,7 +281,7 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 				} else {
 					MessagelistUserStore.count(0);
 					MessagelistUserStore([]);
-					error = getNotification(Notification.CantGetMessageList);
+					error = getNotification(Notifications.CantGetMessageList);
 				}
 				MessagelistUserStore.error(error);
 			}

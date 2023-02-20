@@ -90,10 +90,10 @@ export default App => {
 			} catch (e) {
 				console.error(e);
 //				console.log(data);
-				return Promise.reject(Notification.JsonParse);
+				return Promise.reject(Notifications.JsonParse);
 				return {
 					Result: false,
-					ErrorCode: 952, // Notification.JsonParse
+					ErrorCode: 952, // Notifications.JsonParse
 					ErrorMessage: e.message,
 					ErrorMessageAdditional: data
 				}
