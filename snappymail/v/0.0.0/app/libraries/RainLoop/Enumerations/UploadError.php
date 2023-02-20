@@ -31,7 +31,7 @@ abstract class UploadError
 		return isset(static::$messages[$code]) ? static::$messages[$code] : 0;
 	}
 
-	protected function getUserMessage(int $iError, int &$iClientError): string
+	public static function getUserMessage(int $iError, int &$iClientError): string
 	{
 		$iClientError = $iError;
 		switch ($iError) {
