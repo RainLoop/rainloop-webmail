@@ -20,7 +20,7 @@ import { folderInformation, messagesDeleteHelper } from 'Common/Folders';
 import { serverRequest } from 'Common/Links';
 import { i18n, getNotification, getUploadErrorDescByCode, timestampToString } from 'Common/Translator';
 import { MessageFlagsCache, setFolderETag } from 'Common/Cache';
-import { Settings, SettingsCapa, SettingsGet, elementById, addShortcut, createElement } from 'Common/Globals';
+import { SettingsCapa, SettingsGet, elementById, addShortcut, createElement } from 'Common/Globals';
 //import { exitFullscreen, isFullscreen, toggleFullscreen } from 'Common/Fullscreen';
 
 import { AppUserStore } from 'Stores/User/App';
@@ -1119,12 +1119,12 @@ export class ComposePopupView extends AbstractViewPopup {
 			return false;
 		});
 
-		if (Settings.app('allowCtrlEnterOnCompose')) {
-			addShortcut('enter', 'meta', ScopeCompose, () => {
+		addShortcut('enter', 'meta', ScopeCompose, () => {
+//			if (SettingsUserStore.allowCtrlEnterOnCompose()) {
 				this.sendCommand();
 				return false;
-			});
-		}
+//			}
+		});
 		addShortcut('mailsend', '', ScopeCompose, () => {
 			this.sendCommand();
 			return false;

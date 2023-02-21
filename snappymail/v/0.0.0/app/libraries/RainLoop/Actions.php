@@ -727,7 +727,6 @@ class Actions
 				}
 				$aResult['System'] = \array_merge(
 					$aResult['System'], array(
-						'allowCtrlEnterOnCompose' => (bool)$oConfig->Get('labs', 'allow_ctrl_enter_on_compose', false),
 						'allowAppendMessage' => (bool)$oConfig->Get('labs', 'allow_message_append', false),
 						'folderSpecLimit' => (int)$oConfig->Get('labs', 'folders_spec_limit', 50),
 						'listPermanentFiltered' => '' !== \trim($oConfig->Get('imap', 'message_list_permanent_filter', '')),
@@ -758,6 +757,11 @@ class Actions
 					}
 				}
 
+				if ($oConfig->Get('login', 'determine_user_language', true)) {
+					$sLanguage = $this->ValidateLanguage($UserLanguageRaw, $sLanguage, false);
+				}
+
+				// MainAccount or AdditionalAccount
 				$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 				if ($oSettingsLocal instanceof Settings) {
 					$aResult['SentFolder'] = (string)$oSettingsLocal->GetConf('SentFolder', '');
@@ -774,10 +778,7 @@ class Actions
 					$aResult['CheckMailInterval'] = (int)$oSettingsLocal->GetConf('CheckMailInterval', $aResult['CheckMailInterval']);
 				}
 
-				if ($oConfig->Get('login', 'determine_user_language', true)) {
-					$sLanguage = $this->ValidateLanguage($UserLanguageRaw, $sLanguage, false);
-				}
-
+				// MainAccount
 				$oSettings = $this->SettingsProvider()->Load($oAccount);
 				if ($oSettings instanceof Settings) {
 					if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)) {
@@ -796,6 +797,7 @@ class Actions
 					$aResult['pgpSign'] = (bool) $oSettings->GetConf('pgpSign', false);
 					$aResult['pgpEncrypt'] = (bool) $oSettings->GetConf('pgpEncrypt', false);
 					$aResult['allowSpellcheck'] = (bool) $oSettings->GetConf('allowSpellcheck', false);
+//					$aResult['allowCtrlEnterOnCompose'] = (bool) $oSettings->GetConf('allowCtrlEnterOnCompose', true);
 
 					$aResult['ViewHTML'] = (bool)$oSettings->GetConf('ViewHTML', $aResult['ViewHTML']);
 					$show_images = (bool) $oSettings->GetConf('ShowImages', false);
