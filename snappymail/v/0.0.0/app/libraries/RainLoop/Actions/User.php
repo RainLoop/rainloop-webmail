@@ -36,7 +36,7 @@ trait User
 	{
 		$sEmail = \MailSo\Base\Utils::Trim($this->GetActionParam('Email', ''));
 		$sPassword = $this->GetActionParam('Password', '');
-		$bSignMe = !empty($this->GetActionParam('SignMe', 0));
+		$bSignMe = !empty($this->GetActionParam('signMe', 0));
 
 		$this->Logger()->AddSecret($sPassword);
 

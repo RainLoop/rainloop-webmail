@@ -33,7 +33,7 @@ export class AdminSettingsGeneral extends AbstractViewSettings {
 		this.theme = ThemeStore.theme;
 		this.themes = ThemeStore.themes;
 
-		this.addSettings(['AllowLanguagesOnSettings']);
+		this.addSettings(['allowLanguagesOnSettings']);
 
 		addObservablesTo(this, {
 			capaThemes: SettingsCapa('Themes'),
@@ -60,7 +60,7 @@ export class AdminSettingsGeneral extends AbstractViewSettings {
 		this.addSetting('AttachmentLimit');
 		this.addSetting('Theme', value => changeTheme(value, this.themeTrigger));
 
-		this.uploadData = SettingsGet('PhpUploadSizes');
+		this.uploadData = SettingsGet('phpUploadSizes');
 		this.uploadDataDesc =
 			(this.uploadData?.upload_max_filesize || this.uploadData?.post_max_size)
 				? [

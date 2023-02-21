@@ -268,13 +268,13 @@ export class AppUser extends AbstractApp {
 							navigator.registerProtocolHandler?.(
 								'mailto',
 								location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
-								(SettingsGet('Title') || 'SnappyMail')
+								(SettingsGet('title') || 'SnappyMail')
 							);
 						} catch (e) {
 							console.error(e);
 						}
 
-						setTimeout(() => mailToHelper(SettingsGet('MailToEmail')), 500);
+						setTimeout(() => mailToHelper(SettingsGet('mailToEmail')), 500);
 					} else {
 						this.logout();
 					}

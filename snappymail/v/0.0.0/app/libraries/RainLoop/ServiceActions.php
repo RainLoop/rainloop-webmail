@@ -638,7 +638,7 @@ class ServiceActions
 			$this->Logger()->Write($sResult, \LOG_INFO, 'APPDATA');
 			return $sResult;
 		} catch (\Throwable $oException) {
-			$self->Logger()->WriteExceptionShort($oException);
+			$this->Logger()->WriteExceptionShort($oException);
 			\MailSo\Base\Http::StatusHeader(500);
 			return $oException->getMessage();
 		}

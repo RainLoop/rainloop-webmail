@@ -1292,7 +1292,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			 */
 			let text = this.oEditor.getData(),
 				encrypted = PgpUserStore.isEncrypted(text),
-				size = SettingsGet('PhpUploadSizes')['post_max_size'],
+				size = SettingsGet('phpUploadSizes')['post_max_size'],
 				quota = pInt(size);
 			switch (size.slice(-1)) {
 				case 'G': quota *= 1024; // fallthrough

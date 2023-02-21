@@ -34,7 +34,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 
 		this.soundNotification = SMAudio.notifications;
 		this.notificationSound = ko.observable(SettingsGet('NotificationSound'));
-		this.notificationSounds = ko.observableArray(SettingsGet('NewMailSounds'));
+		this.notificationSounds = ko.observableArray(SettingsGet('newMailSounds'));
 
 		this.desktopNotification = NotificationUserStore.enabled;
 		this.isDesktopNotificationAllowed = NotificationUserStore.allowed;
@@ -48,7 +48,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		 'useCheckboxesInList', 'listGrouped', 'useThreads', 'replySameFolder', 'msgDefaultAction', 'allowSpellcheck'
 		].forEach(name => this[name] = SettingsUserStore[name]);
 
-		this.allowLanguagesOnSettings = !!SettingsGet('AllowLanguagesOnSettings');
+		this.allowLanguagesOnSettings = !!SettingsGet('allowLanguagesOnSettings');
 
 		this.languageTrigger = ko.observable(SaveSettingStatus.Idle);
 

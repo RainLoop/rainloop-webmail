@@ -26,7 +26,7 @@ export class LoginUserView extends AbstractViewLogin {
 		super();
 
 		addObservablesTo(this, {
-			loadingDesc: SettingsGet('LoadingDescription'),
+			loadingDesc: SettingsGet('loadingDescription'),
 
 			email: SettingsGet('DevEmail'),
 			password: SettingsGet('DevPassword'),
@@ -44,7 +44,7 @@ export class LoginUserView extends AbstractViewLogin {
 			signMeType: SignMeUnused
 		});
 
-		this.allowLanguagesOnLogin = !!SettingsGet('AllowLanguagesOnLogin');
+		this.allowLanguagesOnLogin = !!SettingsGet('allowLanguagesOnLogin');
 
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
@@ -111,7 +111,7 @@ export class LoginUserView extends AbstractViewLogin {
 		if (valid) {
 			this.submitRequest(true);
 			data.set('Language', this.bSendLanguage ? this.language() : '');
-			data.set('SignMe', this.signMe() ? 1 : 0);
+			data.set('signMe', this.signMe() ? 1 : 0);
 			Remote.request('Login',
 				(iError, oData) => {
 					fireEvent('sm-user-login-response', {
@@ -142,7 +142,7 @@ export class LoginUserView extends AbstractViewLogin {
 	onBuild(dom) {
 		super.onBuild(dom);
 
-		const signMe = (SettingsGet('SignMe') || '').toLowerCase();
+		const signMe = (SettingsGet('signMe') || '').toLowerCase();
 
 		switch (signMe) {
 			case 'defaultoff':

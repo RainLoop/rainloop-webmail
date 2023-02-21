@@ -23,8 +23,8 @@ export const
 			ThemeStore.themes(isArray(themes) ? themes : []);
 			ThemeStore.theme(SettingsGet('Theme'));
 			if (!ThemeStore.isMobile()) {
-				ThemeStore.userBackgroundName(SettingsGet('UserBackgroundName'));
-				ThemeStore.userBackgroundHash(SettingsGet('UserBackgroundHash'));
+				ThemeStore.userBackgroundName(SettingsGet('userBackgroundName'));
+				ThemeStore.userBackgroundHash(SettingsGet('userBackgroundHash'));
 			}
 			ThemeStore.fontSansSerif(SettingsGet('fontSansSerif'));
 			ThemeStore.fontSerif(SettingsGet('fontSerif'));

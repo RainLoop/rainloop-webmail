@@ -15,7 +15,7 @@ export class AdminSettingsPackages extends AbstractViewSettings {
 	constructor() {
 		super();
 
-		this.addSettings(['EnabledPlugins']);
+		this.addSettings(['pluginsEnable']);
 
 		addObservablesTo(this, {
 			packagesError: ''

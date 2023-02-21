@@ -2,7 +2,7 @@
 
 namespace RainLoop;
 
-class Settings
+class Settings implements \JsonSerializable
 {
 	/**
 	 * @var array
@@ -14,9 +14,15 @@ class Settings
 		$this->aData = $aData;
 	}
 
-	public function DataAsArray() : array
+	public function toArray() : array
 	{
 		return $this->aData;
+	}
+
+	#[\ReturnTypeWillChange]
+	public function jsonSerialize()
+	{
+		return $this->aData;;
 	}
 
 	/**

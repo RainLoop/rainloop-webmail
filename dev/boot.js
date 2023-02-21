@@ -58,7 +58,7 @@ window.rl = {
 	},
 
 	setTitle: title =>
-		doc.title = (title || '') + (RL_APP_DATA.Title ? (title ? ' - ' : '') + RL_APP_DATA.Title : ''),
+		doc.title = (title || '') + (RL_APP_DATA.title ? (title ? ' - ' : '') + RL_APP_DATA.title : ''),
 
 	initData: appData => {
 		RL_APP_DATA = appData;

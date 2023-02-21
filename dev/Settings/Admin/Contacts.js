@@ -22,7 +22,7 @@ export class AdminSettingsContacts extends AbstractViewSettings {
 			this.testContactsErrorMessage('');
 		});
 
-		this.addSettings(['ContactsEnable','ContactsSync']);
+		this.addSettings(['contactsEnable','contactsSync']);
 
 		addObservablesTo(this, {
 			testing: false,

@@ -610,8 +610,8 @@ class Actions
 
 		$aResult = array(
 			'Auth' => false,
-			'Title' => $oConfig->Get('webmail', 'title', 'SnappyMail Webmail'),
-			'LoadingDescription' => $oConfig->Get('webmail', 'loading_description', 'SnappyMail'),
+			'title' => $oConfig->Get('webmail', 'title', 'SnappyMail Webmail'),
+			'loadingDescription' => $oConfig->Get('webmail', 'loading_description', 'SnappyMail'),
 			'Plugins' => array(),
 			'System' => \array_merge(
 				array(
@@ -626,7 +626,7 @@ class Actions
 					'adminAllowed' => (bool)$oConfig->Get('security', 'allow_admin_panel', true)
 				) : array()
 			),
-			'AllowLanguagesOnLogin' => (bool) $oConfig->Get('login', 'allow_languages_on_login', true)
+			'allowLanguagesOnLogin' => (bool) $oConfig->Get('login', 'allow_languages_on_login', true)
 		);
 
 		$sLanguage = $oConfig->Get('webmail', 'language', 'en');
@@ -637,16 +637,16 @@ class Actions
 			if ($aResult['Auth']) {
 				$aResult['AdminLogin'] = (string)$oConfig->Get('security', 'admin_login', '');
 				$aResult['AdminTOTP'] = (string)$oConfig->Get('security', 'admin_totp', '');
-				$aResult['EnabledPlugins'] = (bool)$oConfig->Get('plugins', 'enable', false);
+				$aResult['pluginsEnable'] = (bool)$oConfig->Get('plugins', 'enable', false);
 
-				$aResult['LoginDefaultDomain'] = $oConfig->Get('login', 'default_domain', '');
-				$aResult['DetermineUserLanguage'] = (bool)$oConfig->Get('login', 'determine_user_language', true);
-				$aResult['DetermineUserDomain'] = (bool)$oConfig->Get('login', 'determine_user_domain', false);
+				$aResult['loginDefaultDomain'] = $oConfig->Get('login', 'default_domain', '');
+				$aResult['determineUserLanguage'] = (bool)$oConfig->Get('login', 'determine_user_language', true);
+				$aResult['determineUserDomain'] = (bool)$oConfig->Get('login', 'determine_user_domain', false);
 
 				$aResult['supportedPdoDrivers'] = \RainLoop\Common\PdoAbstract::getAvailableDrivers();
 
-				$aResult['ContactsEnable'] = (bool)$oConfig->Get('contacts', 'enable', false);
-				$aResult['ContactsSync'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
+				$aResult['contactsEnable'] = (bool)$oConfig->Get('contacts', 'enable', false);
+				$aResult['contactsSync'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
 				$aResult['ContactsPdoType'] = Providers\AddressBook\PdoAddressBook::validPdoType($this->oConfig->Get('contacts', 'type', 'sqlite'));
 				$aResult['ContactsPdoDsn'] = (string)$oConfig->Get('contacts', 'pdo_dsn', '');
 				$aResult['ContactsPdoType'] = (string)$oConfig->Get('contacts', 'type', '');
@@ -654,7 +654,7 @@ class Actions
 				$aResult['ContactsPdoPassword'] = static::APP_DUMMY;
 				$aResult['ContactsSuggestionsLimit'] = (int)$oConfig->Get('contacts', 'suggestions_limit', 20);
 
-				$aResult['FaviconUrl'] = $oConfig->Get('webmail', 'favicon_url', '');
+				$aResult['faviconUrl'] = $oConfig->Get('webmail', 'favicon_url', '');
 
 				$aResult['WeakPassword'] = \is_file(APP_PRIVATE_DATA.'admin_password.txt');
 
@@ -681,7 +681,6 @@ class Actions
 					'AccountHash' => $oAccount->Hash(),
 					'AccountSignMe' => isset($_COOKIE[self::AUTH_SIGN_ME_TOKEN_KEY]),
 					'MainEmail' => \MailSo\Base\Utils::IdnToUtf8($this->getMainAccountFromToken()->Email()),
-					'MailToEmail' => '',
 
 					'ContactsIsAllowed' => $this->AddressBookProvider($oAccount)->IsActive(),
 
@@ -714,9 +713,7 @@ class Actions
 					'ShowUnreadCount' => false,
 					'UnhideKolabFolders' => false,
 					'CheckMailInterval' => 15,
-					'UserBackgroundName' => '',
-					'UserBackgroundHash' => '',
-					'SieveAllowFileintoInbox' => (bool)$oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false)
+					'sieveAllowFileintoInbox' => (bool)$oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false)
 				]);
 
 				$aAttachmentsActions = array();
@@ -753,7 +750,7 @@ class Actions
 
 					$mMailToData = Utils::DecodeKeyValuesQ($sToken);
 					if (!empty($mMailToData['MailTo']) && 'MailTo' === $mMailToData['MailTo'] && !empty($mMailToData['To'])) {
-						$aResult['MailToEmail'] = \MailSo\Base\Utils::IdnToUtf8($mMailToData['To']);
+						$aResult['mailToEmail'] = \MailSo\Base\Utils::IdnToUtf8($mMailToData['To']);
 					}
 				}
 
@@ -764,6 +761,14 @@ class Actions
 				// MainAccount or AdditionalAccount
 				$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 				if ($oSettingsLocal instanceof Settings) {
+/*
+					foreach ($oSettingsLocal->toArray() as $key => $value) {
+						$aResult[\lcfirst($key)] = $value;
+					}
+					$aResult['junkFolder'] = $aResult['spamFolder'];
+					unset($aResult['checkableFolder']);
+					unset($aResult['theme']);
+*/
 					$aResult['SentFolder'] = (string)$oSettingsLocal->GetConf('SentFolder', '');
 					$aResult['DraftsFolder'] = (string)$oSettingsLocal->GetConf('DraftFolder', '');
 					$aResult['JunkFolder'] = (string)$oSettingsLocal->GetConf('SpamFolder', '');
@@ -781,6 +786,11 @@ class Actions
 				// MainAccount
 				$oSettings = $this->SettingsProvider()->Load($oAccount);
 				if ($oSettings instanceof Settings) {
+/*
+					foreach ($oSettings->toArray() as $key => $value) {
+						$aResult[\lcfirst($key)] = $value;
+					}
+*/
 					if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)) {
 						$sLanguage = (string) $oSettings->GetConf('Language', $sLanguage);
 					}
@@ -830,14 +840,14 @@ class Actions
 					$aResult['fontMono'] = $oSettings->GetConf('fontMono', '');
 
 					if ($this->GetCapa(Enumerations\Capa::USER_BACKGROUND)) {
-						$aResult['UserBackgroundName'] = (string)$oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
-						$aResult['UserBackgroundHash'] = (string)$oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
+						$aResult['userBackgroundName'] = (string)$oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
+						$aResult['userBackgroundHash'] = (string)$oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
 					}
 				}
 
-				$aResult['NewMailSounds'] = [];
+				$aResult['newMailSounds'] = [];
 				foreach (\glob(APP_VERSION_ROOT_PATH.'static/sounds/*.mp3') as $file) {
-					$aResult['NewMailSounds'][] = \basename($file, '.mp3');
+					$aResult['newMailSounds'][] = \basename($file, '.mp3');
 				}
 			}
 			else {
@@ -853,13 +863,13 @@ class Actions
 					$aResult['DevPassword'] = '';
 				}
 
-				$aResult['SignMe'] = (string) $oConfig->Get('login', 'sign_me_auto', Enumerations\SignMeType::DEFAULT_OFF);
+				$aResult['signMe'] = (string) $oConfig->Get('login', 'sign_me_auto', Enumerations\SignMeType::DEFAULT_OFF);
 			}
 		}
 
 		if ($aResult['Auth']) {
-			$aResult['UseLocalProxyForExternalImages'] = (bool)$oConfig->Get('labs', 'use_local_proxy_for_external_images', false);
-			$aResult['AllowLanguagesOnSettings'] = (bool) $oConfig->Get('webmail', 'allow_languages_on_settings', true);
+			$aResult['useLocalProxyForExternalImages'] = (bool)$oConfig->Get('labs', 'use_local_proxy_for_external_images', false);
+			$aResult['allowLanguagesOnSettings'] = (bool) $oConfig->Get('webmail', 'allow_languages_on_settings', true);
 			$aResult['Capa'] = $this->Capa($bAdmin, $oAccount);
 			$value = \ini_get('upload_max_filesize');
 			$upload_max_filesize = \intval($value);
@@ -869,7 +879,7 @@ class Actions
 				case 'K': $upload_max_filesize *= 1024;
 			}
 			$aResult['AttachmentLimit'] = \min($upload_max_filesize, ((int) $oConfig->Get('webmail', 'attachment_size_limit', 10)) * 1024 * 1024);
-			$aResult['PhpUploadSizes'] = array(
+			$aResult['phpUploadSizes'] = array(
 				'upload_max_filesize' => $value,
 				'post_max_size' => \ini_get('post_max_size')
 			);
