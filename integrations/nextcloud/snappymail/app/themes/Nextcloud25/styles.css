@@ -743,6 +743,10 @@ input[type="checkbox"]:checked,
     overflow: unset;
 }
 
+#rl-app #V-MailMessageList .messageList {
+    min-width: 350px;
+}
+
 #rl-app .thm-message-list-top-toolbar,
 #rl-app .thm-message-list-bottom-toolbar {
     background: unset !important;
