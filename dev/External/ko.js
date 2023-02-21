@@ -28,6 +28,18 @@ export const
 
 	dispose = disposable => isFunction(disposable?.dispose) && disposable.dispose(),
 
+	onKey = (key, element, fValueAccessor, fAllBindings, viewModel) => {
+		let fn = event => {
+			if (key == event.key) {
+//				stopEvent(event);
+//				element.dispatchEvent(new Event('change'));
+				fValueAccessor().call(viewModel);
+			}
+		};
+		element.addEventListener('keydown', fn);
+		ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeEventListener('keydown', fn));
+	},
+
 	// With this we don't need delegateRunOnDestroy
 	koArrayWithDestroy = data => {
 		data = ko.observableArray(data);
@@ -56,41 +68,18 @@ Object.assign(ko.bindingHandlers, {
 	},
 
 	onEnter: {
-		init: (element, fValueAccessor, fAllBindings, viewModel) => {
-			let fn = event => {
-				if ('Enter' == event.key) {
-					element.dispatchEvent(new Event('change'));
-					fValueAccessor().call(viewModel);
-				}
-			};
-			element.addEventListener('keydown', fn);
-			ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeEventListener('keydown', fn));
-		}
+		init: (element, fValueAccessor, fAllBindings, viewModel) =>
+			onKey('Enter', element, fValueAccessor, fAllBindings, viewModel)
 	},
 
 	onEsc: {
-		init: (element, fValueAccessor, fAllBindings, viewModel) => {
-			let fn = event => {
-				if ('Escape' == event.key) {
-					element.dispatchEvent(new Event('change'));
-					fValueAccessor().call(viewModel);
-				}
-			};
-			element.addEventListener('keyup', fn);
-			ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeEventListener('keyup', fn));
-		}
+		init: (element, fValueAccessor, fAllBindings, viewModel) =>
+			onKey('Escape', element, fValueAccessor, fAllBindings, viewModel)
 	},
 
 	onSpace: {
-		init: (element, fValueAccessor, fAllBindings, viewModel) => {
-			let fn = event => {
-				if (' ' == event.key) {
-					fValueAccessor().call(viewModel, event);
-				}
-			};
-			element.addEventListener('keyup', fn);
-			ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeEventListener('keyup', fn));
-		}
+		init: (element, fValueAccessor, fAllBindings, viewModel) =>
+			onKey(' ', element, fValueAccessor, fAllBindings, viewModel)
 	},
 
 	i18nUpdate: {

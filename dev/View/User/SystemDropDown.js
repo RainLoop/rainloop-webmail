@@ -12,7 +12,7 @@ import { KeyboardShortcutsHelpPopupView } from 'View/Popup/KeyboardShortcutsHelp
 import { AccountPopupView } from 'View/Popup/Account';
 import { ContactsPopupView } from 'View/Popup/Contacts';
 
-import { doc, leftPanelDisabled, fireEvent, SettingsCapa, registerShortcut } from 'Common/Globals';
+import { doc, leftPanelDisabled, fireEvent, stopEvent, SettingsCapa, registerShortcut } from 'Common/Globals';
 
 import { ThemeStore } from 'Stores/Theme';
 
@@ -56,8 +56,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 		let email = account?.email;
 		if (email && 0 === event.button && AccountUserStore.email() != email) {
 			AccountUserStore.loading(true);
-			event.preventDefault();
-			event.stopPropagation();
+			stopEvent(event);
 			Remote.request('AccountSwitch',
 				(iError/*, oData*/) => {
 					if (iError) {

@@ -18,6 +18,7 @@ import {
 	Settings,
 	SettingsCapa,
 	fireEvent,
+	stopEvent,
 	addShortcut,
 	registerShortcut
 } from 'Common/Globals';
@@ -283,19 +284,18 @@ export class MailMessageView extends AbstractViewRight {
 
 			let el = eqs(event, 'a');
 			if (el && 0 === event.button && mailToHelper(el.href)) {
-				event.preventDefault();
-				event.stopPropagation();
+				stopEvent(event);
 				return;
 			}
 
 			if (eqs(event, '.attachmentsPlace .showPreview')) {
-				event.stopPropagation();
+				stopEvent(event);
 				return;
 			}
 
 			el = eqs(event, '.attachmentsPlace .showPreplay');
 			if (el) {
-				event.stopPropagation();
+				stopEvent(event);
 				const attachment = ko.dataFor(el);
 				if (attachment && SMAudio.supported) {
 					switch (true) {

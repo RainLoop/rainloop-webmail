@@ -33,6 +33,11 @@ export const
 		new CustomEvent(name, {detail:detail, cancelable: !!cancelable})
 	),
 
+	stopEvent = event => {
+		event.preventDefault();
+		event.stopPropagation();
+	},
+
 	formFieldFocused = () => doc.activeElement?.matches('input,textarea'),
 
 	addShortcut = (...args) => shortcuts.add(...args),

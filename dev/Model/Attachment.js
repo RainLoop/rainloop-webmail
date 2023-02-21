@@ -1,6 +1,7 @@
 import ko from 'ko';
 
 import { FileInfo, FileType } from 'Common/File';
+import { stopEvent } from 'Common/Globals';
 import {
 	attachmentDownload,
 	serverRequestRaw
@@ -53,7 +54,7 @@ export class AttachmentModel extends AbstractModel {
 	}
 
 	toggleChecked(self, event) {
-		event.stopPropagation();
+		stopEvent(event);
 		self.checked(!self.checked());
 	}
 

@@ -8,7 +8,7 @@ import { ComposeType, FolderType, MessageSetAction } from 'Common/EnumsUser';
 import { doc,
 	leftPanelDisabled, toggleLeftPanel,
 	Settings, SettingsCapa,
-	addEventsListeners,
+	addEventsListeners, stopEvent,
 	addShortcut, registerShortcut, formFieldFocused
 } from 'Common/Globals';
 
@@ -412,8 +412,7 @@ export class MailMessageList extends AbstractViewRight {
 	moveCommand(vm, event) {
 		if (this.mobileCheckedStateShow()) {
 			if (vm && event?.preventDefault) {
-				event.preventDefault();
-				event.stopPropagation();
+				stopEvent(event);
 			}
 
 			let b = moveAction();

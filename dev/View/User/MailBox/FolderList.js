@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { Scope } from 'Common/Enums';
-import { addShortcut } from 'Common/Globals';
+import { addShortcut, stopEvent } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
 //import { setFolderETag } from 'Common/Cache';
 import { addComputablesTo } from 'External/ko';
@@ -80,8 +80,7 @@ export class MailFolderList extends AbstractViewLeft {
 					setExpandedFolder(folder.fullName, collapsed);
 
 					folder.collapsed(!collapsed);
-					event.preventDefault();
-					event.stopPropagation();
+					stopEvent(event);
 					return;
 				}
 			}
