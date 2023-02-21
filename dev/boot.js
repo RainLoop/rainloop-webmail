@@ -82,7 +82,78 @@ window.rl = {
 		rl.app.refresh();
 	},
 
-	loadScript: loadScript
+	loadScript: loadScript,
+
+	fetch: (resource, init, postData) => {
+		init = Object.assign({
+			mode: 'same-origin',
+			cache: 'no-cache',
+			redirect: 'error',
+			referrerPolicy: 'no-referrer',
+			credentials: 'same-origin',
+			headers: {}
+		}, init);
+		let asJSON = 1,
+			XToken = RL_APP_DATA.System?.token,
+			object = {};
+		if (postData) {
+			init.method = 'POST';
+			if (postData instanceof FormData) {
+				postData.forEach((value, key) => {
+					if (value instanceof File) {
+						asJSON = 0;
+					} else if (!Reflect.has(object, key)) {
+						object[key] = value;
+					} else {
+						Array.isArray(object[key]) || (object[key] = [object[key]]);
+						object[key].push(value);
+					}
+				});
+				if (asJSON) {
+					postData = object;
+//					postData.XToken = XToken;
+				} else {
+					XToken && postData.set('XToken', XToken);
+				}
+			}
+			if (asJSON) {
+				init.headers['Content-Type'] = 'application/json';
+				postData = JSON.stringify(postData);
+			}
+			init.body = postData;
+		}
+		XToken && (init.headers['X-SM-Token'] = XToken);
+//		init.headers = new Headers(init.headers);
+		return fetch(resource, init);
+	},
+
+	fetchJSON: (resource, init, postData) => {
+		init = Object.assign({ headers: {} }, init);
+		init.headers.Accept = 'application/json';
+		return rl.fetch(resource, init, postData).then(response => {
+			if (!response.ok) {
+				return Promise.reject('Network response error: ' + response.status);
+			}
+			/* TODO: use this for non-developers?
+			response.clone()
+			let data = response.text();
+			try {
+				return JSON.parse(data);
+			} catch (e) {
+				console.error(e);
+//				console.log(data);
+				return Promise.reject(Notifications.JsonParse);
+				return {
+					Result: false,
+					ErrorCode: 952, // Notifications.JsonParse
+					ErrorMessage: e.message,
+					ErrorMessageAdditional: data
+				}
+			}
+			*/
+			return response.json();
+		});
+	}
 };
 
 if (!navigator.cookieEnabled) {
@@ -92,7 +163,8 @@ if (!navigator.cookieEnabled) {
 	eId('loading').hidden = true;
 	eId('BadBrowser').hidden = false;
 } else {
-	loadScript(qUri(`${admin ? 'Admin' : ''}AppData/0/${Math.random().toString().slice(2)}/`))
+	rl.fetchJSON(qUri(`${admin ? 'Admin' : ''}AppData/0/${Math.random().toString().slice(2)}/`))
+	.then(data => rl.initData(data))
 	.catch(e => showError(e));
 }
 

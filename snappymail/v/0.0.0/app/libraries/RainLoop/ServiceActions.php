@@ -631,18 +631,16 @@ class ServiceActions
 
 	private function localAppData(bool $bAdmin = false) : string
 	{
-		\header('Content-Type: application/javascript; charset=utf-8');
+		\header('Content-Type: application/json; charset=utf-8');
 		$this->oHttp->ServerNoCache();
 		try {
-			$sResult = 'rl.initData('
-				. Utils::jsonEncode($this->oActions->AppData($bAdmin))
-				. ');';
-
+			$sResult = Utils::jsonEncode($this->oActions->AppData($bAdmin));
 			$this->Logger()->Write($sResult, \LOG_INFO, 'APPDATA');
-
 			return $sResult;
-		} catch (\Throwable $e) {
-			return 'alert(' . \json_encode('ERROR: ' . $e->getMessage()) . ');';
+		} catch (\Throwable $oException) {
+			$self->Logger()->WriteExceptionShort($oException);
+			\MailSo\Base\Http::StatusHeader(500);
+			return $oException->getMessage();
 		}
 	}
 
