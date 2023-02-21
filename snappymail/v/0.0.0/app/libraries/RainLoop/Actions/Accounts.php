@@ -210,8 +210,8 @@ trait Accounts
 			if ($oSettingsLocal instanceof \RainLoop\Settings) {
 				$oConfig = $this->Config();
 				$aResult['SentFolder'] = (string) $oSettingsLocal->GetConf('SentFolder', '');
-				$aResult['DraftsFolder'] = (string) $oSettingsLocal->GetConf('DraftFolder', '');
-				$aResult['JunkFolder'] = (string) $oSettingsLocal->GetConf('SpamFolder', '');
+				$aResult['DraftsFolder'] = (string) $oSettingsLocal->GetConf('DraftsFolder', '');
+				$aResult['JunkFolder'] = (string) $oSettingsLocal->GetConf('JunkFolder', '');
 				$aResult['TrashFolder'] = (string) $oSettingsLocal->GetConf('TrashFolder', '');
 				$aResult['ArchiveFolder'] = (string) $oSettingsLocal->GetConf('ArchiveFolder', '');
 				$aResult['HideUnsubscribed'] = (bool) $oSettingsLocal->GetConf('HideUnsubscribed', false);

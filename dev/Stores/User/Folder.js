@@ -199,11 +199,11 @@ FolderUserStore = new class {
 
 	saveSystemFolders(folders) {
 		folders = folders || {
-			Sent: FolderUserStore.sentFolder(),
-			Drafts: FolderUserStore.draftsFolder(),
-			Spam: FolderUserStore.spamFolder(),
-			Trash: FolderUserStore.trashFolder(),
-			Archive: FolderUserStore.archiveFolder()
+			sent: FolderUserStore.sentFolder(),
+			drafts: FolderUserStore.draftsFolder(),
+			junk: FolderUserStore.spamFolder(),
+			trash: FolderUserStore.trashFolder(),
+			archive: FolderUserStore.archiveFolder()
 		};
 		forEachObjectEntry(folders, (k,v)=>Settings.set(k+'Folder',v));
 		rl.app.Remote.request('SystemFoldersUpdate', null, folders);

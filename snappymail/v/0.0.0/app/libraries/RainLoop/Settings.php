@@ -8,6 +8,12 @@ class Settings implements \JsonSerializable
 
 	public function __construct(array $aData)
 	{
+		if (isset($aData['SpamFolder']) && !isset($aData['JunkFolder'])) {
+			$aData['JunkFolder'] = $aData['SpamFolder'];
+		}
+		if (isset($aData['DraftFolder']) && !isset($aData['DraftsFolder'])) {
+			$aData['DraftsFolder'] = $aData['DraftFolder'];
+		}
 		$this->aData = $aData;
 	}
 

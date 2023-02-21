@@ -9,9 +9,9 @@ class MailboxDetectPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'MailboxDetect',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '2.4',
-		RELEASE  = '2023-02-08',
-		REQUIRED = '2.25.0',
+		VERSION  = '2.5',
+		RELEASE  = '2023-02-21',
+		REQUIRED = '2.26.3',
 		CATEGORY = 'General',
 		LICENSE  = 'MIT',
 		DESCRIPTION = 'Autodetect system folders and/or create them when needed';
@@ -48,8 +48,8 @@ class MailboxDetectPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$roles = [
 				'inbox'   => false,
 				'sent'    => !!$oSettingsLocal->GetConf('SentFolder', ''),
-				'drafts'  => !!$oSettingsLocal->GetConf('DraftFolder', ''),
-				'junk'    => !!$oSettingsLocal->GetConf('SpamFolder', ''),
+				'drafts'  => !!$oSettingsLocal->GetConf('DraftsFolder', ''),
+				'junk'    => !!$oSettingsLocal->GetConf('JunkFolder', ''),
 				'trash'   => !!$oSettingsLocal->GetConf('TrashFolder', ''),
 				'archive' => !!$oSettingsLocal->GetConf('ArchiveFolder', '')
 			];

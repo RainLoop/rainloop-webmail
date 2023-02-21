@@ -332,11 +332,11 @@ trait Folders
 
 		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
-		$oSettingsLocal->SetConf('SentFolder', $this->GetActionParam('Sent', ''));
-		$oSettingsLocal->SetConf('DraftFolder', $this->GetActionParam('Drafts', ''));
-		$oSettingsLocal->SetConf('SpamFolder', $this->GetActionParam('Spam', ''));
-		$oSettingsLocal->SetConf('TrashFolder', $this->GetActionParam('Trash', ''));
-		$oSettingsLocal->SetConf('ArchiveFolder', $this->GetActionParam('Archive', ''));
+		$oSettingsLocal->SetConf('SentFolder', $this->GetActionParam('sent', ''));
+		$oSettingsLocal->SetConf('DraftsFolder', $this->GetActionParam('drafts', ''));
+		$oSettingsLocal->SetConf('JunkFolder', $this->GetActionParam('junk', ''));
+		$oSettingsLocal->SetConf('TrashFolder', $this->GetActionParam('trash', ''));
+		$oSettingsLocal->SetConf('ArchiveFolder', $this->GetActionParam('archive', ''));
 
 		return $this->DefaultResponse($this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
 	}
