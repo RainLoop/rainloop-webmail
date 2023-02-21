@@ -14,6 +14,10 @@ class Settings implements \JsonSerializable
 		if (isset($aData['DraftFolder']) && !isset($aData['DraftsFolder'])) {
 			$aData['DraftsFolder'] = $aData['DraftFolder'];
 		}
+		if (isset($aData['Language']) && !isset($aData['language'])) {
+			$aData['language'] = $aData['Language'];
+			unset($aData['Language']);
+		}
 		$this->aData = $aData;
 	}
 

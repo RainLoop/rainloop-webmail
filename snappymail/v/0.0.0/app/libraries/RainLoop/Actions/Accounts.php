@@ -202,10 +202,10 @@ trait Accounts
 		if ($this->switchAccount(\trim($this->GetActionParam('Email', '')))) {
 			$oAccount = $this->getAccountFromToken();
 			$aResult['Email'] = $oAccount->Email();
-			$aResult['AccountHash'] = $oAccount->Hash();
-			$aResult['MainEmail'] = ($oAccount instanceof AdditionalAccount)
+			$aResult['accountHash'] = $oAccount->Hash();
+			$aResult['mainEmail'] = ($oAccount instanceof AdditionalAccount)
 				? $oAccount->ParentEmail() : '';
-			$aResult['ContactsIsAllowed'] = $this->AddressBookProvider($oAccount)->IsActive();
+			$aResult['contactsAllowed'] = $this->AddressBookProvider($oAccount)->IsActive();
 			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 			if ($oSettingsLocal instanceof \RainLoop\Settings) {
 				$oConfig = $this->Config();

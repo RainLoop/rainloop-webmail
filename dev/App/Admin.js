@@ -27,7 +27,7 @@ export class AdminApp extends AbstractApp {
 			rl.route.root();
 			setTimeout(() => location.href = '/', 1);
 		} else if (SettingsGet('Auth')) {
-			this.weakPassword(SettingsGet('WeakPassword'));
+			this.weakPassword(SettingsGet('weakPassword'));
 			startScreens([SettingsAdminScreen]);
 		} else {
 			startScreens([LoginAdminScreen]);

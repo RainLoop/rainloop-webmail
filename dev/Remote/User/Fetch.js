@@ -41,7 +41,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 
 		let sGetAdd = '';
 		if (folderETag) {
-			params.hash = folderETag + '-' + SettingsGet('AccountHash');
+			params.hash = folderETag + '-' + SettingsGet('accountHash');
 			sGetAdd = 'MessageList/' + SUB_QUERY_PREFIX + '/' + b64EncodeJSONSafe(params);
 			params = {};
 		}
@@ -77,7 +77,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 						sFolderFullName,
 						iUid,
 						AppUserStore.threadsAllowed() && SettingsUserStore.useThreads() ? 1 : 0,
-						SettingsGet('AccountHash')
+						SettingsGet('accountHash')
 					])
 			);
 

@@ -21,7 +21,7 @@ export class UserSettingsAccounts /*extends AbstractViewSettings*/ {
 		this.accounts = AccountUserStore;
 		this.loading = AccountUserStore.loading;
 		this.identities = IdentityUserStore;
-		this.mainEmail = SettingsGet('MainEmail');
+		this.mainEmail = SettingsGet('mainEmail');
 
 		this.accountForDeletion = ko.observable(null).askDeleteHelper();
 		this.identityForDeletion = ko.observable(null).askDeleteHelper();
@@ -88,7 +88,7 @@ export class UserSettingsAccounts /*extends AbstractViewSettings*/ {
 
 	accountsAndIdentitiesAfterMove() {
 		Remote.request('AccountsAndIdentitiesSortOrder', null, {
-			Accounts: AccountUserStore.getEmailAddresses().filter(v => v != SettingsGet('MainEmail')),
+			Accounts: AccountUserStore.getEmailAddresses().filter(v => v != SettingsGet('mainEmail')),
 			Identities: IdentityUserStore.map(item => (item ? item.id() : ""))
 		});
 	}

@@ -1005,7 +1005,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				clickElement: dom.querySelector('#composeUploadButton'),
 				dragAndDropElement: dom.querySelector('.b-attachment-place')
 			}),
-			attachmentSizeLimit = pInt(SettingsGet('AttachmentLimit'));
+			attachmentSizeLimit = pInt(SettingsGet('attachmentLimit'));
 
 		oJua
 			.on('onDragEnter', () => {

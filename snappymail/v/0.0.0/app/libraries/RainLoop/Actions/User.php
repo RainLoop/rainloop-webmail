@@ -51,15 +51,15 @@ trait User
 
 		$this->Plugins()->RunHook('login.success', array($oAccount));
 
-		$sLanguage = $this->GetActionParam('Language', '');
+		$sLanguage = $this->GetActionParam('language', '');
 		if ($oAccount && $sLanguage) {
 			$oSettings = $this->SettingsProvider()->Load($oAccount);
 			if ($oSettings) {
 				$sLanguage = $this->ValidateLanguage($sLanguage);
-				$sCurrentLanguage = $oSettings->GetConf('Language', '');
+				$sCurrentLanguage = $oSettings->GetConf('language', '');
 
 				if ($sCurrentLanguage !== $sLanguage) {
-					$oSettings->SetConf('Language', $sLanguage);
+					$oSettings->SetConf('language', $sLanguage);
 					$this->SettingsProvider()->Save($oAccount, $oSettings);
 				}
 			}
@@ -145,11 +145,11 @@ trait User
 		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
 		if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)) {
-			$this->setSettingsFromParams($oSettings, 'Language', 'string', function ($sLanguage) use ($self) {
+			$this->setSettingsFromParams($oSettings, 'language', 'string', function ($sLanguage) use ($self) {
 				return $self->ValidateLanguage($sLanguage);
 			});
 		} else {
-//			$oSettings->SetConf('Language', $this->ValidateLanguage($oConfig->Get('webmail', 'language', 'en')));
+//			$oSettings->SetConf('language', $this->ValidateLanguage($oConfig->Get('webmail', 'language', 'en')));
 		}
 		$this->setSettingsFromParams($oSettings, 'hourCycle', 'string');
 

@@ -3,7 +3,7 @@ import { addObservablesTo } from 'External/ko';
 import { ThemeStore } from 'Stores/Theme';
 
 export const AppUserStore = {
-	allowContacts: () => !!SettingsGet('ContactsIsAllowed')
+	allowContacts: () => !!SettingsGet('contactsAllowed')
 };
 
 addObservablesTo(AppUserStore, {

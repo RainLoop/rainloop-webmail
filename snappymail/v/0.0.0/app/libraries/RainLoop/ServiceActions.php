@@ -578,14 +578,14 @@ class ServiceActions
 
 							$oSettings = $this->SettingsProvider()->Load($oAccount);
 							if ($oSettings) {
-								$sLanguage = isset($aAdditionalOptions['Language']) ?
-									$aAdditionalOptions['Language'] : '';
+								$sLanguage = isset($aAdditionalOptions['language']) ?
+									$aAdditionalOptions['language'] : '';
 
 								if ($sLanguage) {
 									$sLanguage = $this->oActions->ValidateLanguage($sLanguage);
-									if ($sLanguage !== $oSettings->GetConf('Language', '')) {
+									if ($sLanguage !== $oSettings->GetConf('language', '')) {
 										$bNeedToSettings = true;
-										$oSettings->SetConf('Language', $sLanguage);
+										$oSettings->SetConf('language', $sLanguage);
 									}
 								}
 							}

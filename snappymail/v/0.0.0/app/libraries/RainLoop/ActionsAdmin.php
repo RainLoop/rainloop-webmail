@@ -48,11 +48,11 @@ class ActionsAdmin extends Actions
 
 		$self = $this;
 
-		$this->setConfigFromParams($oConfig, 'Language', 'webmail', 'language', 'string', function ($sLanguage) use ($self) {
+		$this->setConfigFromParams($oConfig, 'language', 'webmail', 'language', 'string', function ($sLanguage) use ($self) {
 			return $self->ValidateLanguage($sLanguage, '', false);
 		});
 
-		$this->setConfigFromParams($oConfig, 'LanguageAdmin', 'webmail', 'language_admin', 'string', function ($sLanguage) use ($self) {
+		$this->setConfigFromParams($oConfig, 'languageAdmin', 'webmail', 'language_admin', 'string', function ($sLanguage) use ($self) {
 			return $self->ValidateLanguage($sLanguage, '', true);
 		});
 
@@ -64,18 +64,17 @@ class ActionsAdmin extends Actions
 
 		$this->setConfigFromParams($oConfig, 'allowLanguagesOnSettings', 'webmail', 'allow_languages_on_settings', 'bool');
 		$this->setConfigFromParams($oConfig, 'allowLanguagesOnLogin', 'login', 'allow_languages_on_login', 'bool');
-		$this->setConfigFromParams($oConfig, 'AttachmentLimit', 'webmail', 'attachment_size_limit', 'int');
+		$this->setConfigFromParams($oConfig, 'attachmentLimit', 'webmail', 'attachment_size_limit', 'int');
 
 		$this->setConfigFromParams($oConfig, 'loginDefaultDomain', 'login', 'default_domain', 'string');
 
 		$this->setConfigFromParams($oConfig, 'contactsEnable', 'contacts', 'enable', 'bool');
 		$this->setConfigFromParams($oConfig, 'contactsSync', 'contacts', 'allow_sync', 'bool');
-		$this->setConfigFromParams($oConfig, 'ContactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
-		$this->setConfigFromParams($oConfig, 'ContactsPdoUser', 'contacts', 'pdo_user', 'string');
-		$this->setConfigFromParams($oConfig, 'ContactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
-		$this->setConfigFromParams($oConfig, 'ContactsSuggestionsLimit', 'contacts', 'suggestions_limit', 'int');
-
-		$this->setConfigFromParams($oConfig, 'ContactsPdoType', 'contacts', 'type', 'string', function ($sType) use ($self) {
+		$this->setConfigFromParams($oConfig, 'contactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
+		$this->setConfigFromParams($oConfig, 'contactsPdoUser', 'contacts', 'pdo_user', 'string');
+		$this->setConfigFromParams($oConfig, 'contactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
+		$this->setConfigFromParams($oConfig, 'contactsSuggestionsLimit', 'contacts', 'suggestions_limit', 'int');
+		$this->setConfigFromParams($oConfig, 'contactsPdoType', 'contacts', 'type', 'string', function ($sType) use ($self) {
 			return Providers\AddressBook\PdoAddressBook::validPdoType($sType);
 		});
 
@@ -142,10 +141,10 @@ class ActionsAdmin extends Actions
 		$this->IsAdminLoggined();
 
 		$oConfig = $this->Config();
-		$this->setConfigFromParams($oConfig, 'ContactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
-		$this->setConfigFromParams($oConfig, 'ContactsPdoUser', 'contacts', 'pdo_user', 'string');
-		$this->setConfigFromParams($oConfig, 'ContactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
-		$this->setConfigFromParams($oConfig, 'ContactsPdoType', 'contacts', 'type', 'string', function ($sType) {
+		$this->setConfigFromParams($oConfig, 'contactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
+		$this->setConfigFromParams($oConfig, 'contactsPdoUser', 'contacts', 'pdo_user', 'string');
+		$this->setConfigFromParams($oConfig, 'contactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
+		$this->setConfigFromParams($oConfig, 'contactsPdoType', 'contacts', 'type', 'string', function ($sType) {
 			return Providers\AddressBook\PdoAddressBook::validPdoType($sType);
 		});
 

@@ -116,7 +116,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 				this.languageTrigger(SaveSettingStatus.Saving);
 				translatorReload(value)
 					.then(fReloadLanguageHelper(SaveSettingStatus.Success), fReloadLanguageHelper(SaveSettingStatus.Failed))
-					.then(() => Remote.saveSetting('Language', value));
+					.then(() => Remote.saveSetting('language', value));
 			},
 
 			hourCycle: value =>

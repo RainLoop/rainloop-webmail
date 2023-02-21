@@ -65,7 +65,7 @@ export const SettingsUserStore = new class {
 		let iAutoLogoutTimer;
 		self.delayLogout = (() => {
 			clearTimeout(iAutoLogoutTimer);
-			if (0 < self.autoLogout() && !SettingsGet('AccountSignMe')) {
+			if (0 < self.autoLogout() && !SettingsGet('accountSignMe')) {
 				iAutoLogoutTimer = setTimeout(
 					rl.app.logout,
 					self.autoLogout() * 60000

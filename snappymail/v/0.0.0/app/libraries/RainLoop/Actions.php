@@ -635,8 +635,8 @@ class Actions
 		if ($bAdmin) {
 			$aResult['Auth'] = $this->IsAdminLoggined(false);
 			if ($aResult['Auth']) {
-				$aResult['AdminLogin'] = (string)$oConfig->Get('security', 'admin_login', '');
-				$aResult['AdminTOTP'] = (string)$oConfig->Get('security', 'admin_totp', '');
+				$aResult['adminLogin'] = (string)$oConfig->Get('security', 'admin_login', '');
+				$aResult['adminTOTP'] = (string)$oConfig->Get('security', 'admin_totp', '');
 				$aResult['pluginsEnable'] = (bool)$oConfig->Get('plugins', 'enable', false);
 
 				$aResult['loginDefaultDomain'] = $oConfig->Get('login', 'default_domain', '');
@@ -647,20 +647,20 @@ class Actions
 
 				$aResult['contactsEnable'] = (bool)$oConfig->Get('contacts', 'enable', false);
 				$aResult['contactsSync'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
-				$aResult['ContactsPdoType'] = Providers\AddressBook\PdoAddressBook::validPdoType($this->oConfig->Get('contacts', 'type', 'sqlite'));
-				$aResult['ContactsPdoDsn'] = (string)$oConfig->Get('contacts', 'pdo_dsn', '');
-				$aResult['ContactsPdoType'] = (string)$oConfig->Get('contacts', 'type', '');
-				$aResult['ContactsPdoUser'] = (string)$oConfig->Get('contacts', 'pdo_user', '');
-				$aResult['ContactsPdoPassword'] = static::APP_DUMMY;
-				$aResult['ContactsSuggestionsLimit'] = (int)$oConfig->Get('contacts', 'suggestions_limit', 20);
+				$aResult['contactsPdoType'] = Providers\AddressBook\PdoAddressBook::validPdoType($this->oConfig->Get('contacts', 'type', 'sqlite'));
+				$aResult['contactsPdoDsn'] = (string)$oConfig->Get('contacts', 'pdo_dsn', '');
+				$aResult['contactsPdoType'] = (string)$oConfig->Get('contacts', 'type', '');
+				$aResult['contactsPdoUser'] = (string)$oConfig->Get('contacts', 'pdo_user', '');
+				$aResult['contactsPdoPassword'] = static::APP_DUMMY;
+				$aResult['contactsSuggestionsLimit'] = (int)$oConfig->Get('contacts', 'suggestions_limit', 20);
 
 				$aResult['faviconUrl'] = $oConfig->Get('webmail', 'favicon_url', '');
 
-				$aResult['WeakPassword'] = \is_file(APP_PRIVATE_DATA.'admin_password.txt');
+				$aResult['weakPassword'] = \is_file(APP_PRIVATE_DATA.'admin_password.txt');
 
 				$aResult['System']['languagesAdmin'] = \SnappyMail\L10n::getLanguages(true);
-				$aResult['LanguageAdmin'] = $this->ValidateLanguage($oConfig->Get('webmail', 'language_admin', 'en'), '', true);
-				$aResult['UserLanguageAdmin'] = $this->ValidateLanguage($UserLanguageRaw, '', true, true);
+				$aResult['languageAdmin'] = $this->ValidateLanguage($oConfig->Get('webmail', 'language_admin', 'en'), '', true);
+				$aResult['languageUsers'] = $this->ValidateLanguage($UserLanguageRaw, '', true, true);
 			} else {
 				$passfile = APP_PRIVATE_DATA.'admin_password.txt';
 				$sPassword = $oConfig->Get('security', 'admin_password', '');
@@ -678,11 +678,11 @@ class Actions
 				$aResult = \array_merge($aResult, [
 					'Auth' => true,
 					'Email' => \MailSo\Base\Utils::IdnToUtf8($oAccount->Email()),
-					'AccountHash' => $oAccount->Hash(),
-					'AccountSignMe' => isset($_COOKIE[self::AUTH_SIGN_ME_TOKEN_KEY]),
-					'MainEmail' => \MailSo\Base\Utils::IdnToUtf8($this->getMainAccountFromToken()->Email()),
+					'accountHash' => $oAccount->Hash(),
+					'accountSignMe' => isset($_COOKIE[self::AUTH_SIGN_ME_TOKEN_KEY]),
+					'mainEmail' => \MailSo\Base\Utils::IdnToUtf8($this->getMainAccountFromToken()->Email()),
 
-					'ContactsIsAllowed' => $this->AddressBookProvider($oAccount)->IsActive(),
+					'contactsAllowed' => $this->AddressBookProvider($oAccount)->IsActive(),
 
 					'ViewHTML' => (bool) $oConfig->Get('defaults', 'view_html', true),
 					'ViewImages' => 'ask',
@@ -732,7 +732,7 @@ class Actions
 					)
 				);
 
-				if ($aResult['ContactsIsAllowed'] && $oConfig->Get('contacts', 'allow_sync', false)) {
+				if ($aResult['contactsAllowed'] && $oConfig->Get('contacts', 'allow_sync', false)) {
 					$aData = $this->getContactsSyncData($oAccount) ?: [
 						'Mode' => 0,
 						'Url' => '',
@@ -792,7 +792,7 @@ class Actions
 					}
 */
 					if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)) {
-						$sLanguage = (string) $oSettings->GetConf('Language', $sLanguage);
+						$sLanguage = (string) $oSettings->GetConf('language', $sLanguage);
 					}
 					$aResult['hourCycle'] = $oSettings->GetConf('hourCycle', '');
 
@@ -840,8 +840,8 @@ class Actions
 					$aResult['fontMono'] = $oSettings->GetConf('fontMono', '');
 
 					if ($this->GetCapa(Enumerations\Capa::USER_BACKGROUND)) {
-						$aResult['userBackgroundName'] = (string)$oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
-						$aResult['userBackgroundHash'] = (string)$oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
+						$aResult['userBackgroundName'] = (string)$oSettings->GetConf('UserBackgroundName', '');
+						$aResult['userBackgroundHash'] = (string)$oSettings->GetConf('UserBackgroundHash', '');
 					}
 				}
 
@@ -878,7 +878,7 @@ class Actions
 				case 'M': $upload_max_filesize *= 1024;
 				case 'K': $upload_max_filesize *= 1024;
 			}
-			$aResult['AttachmentLimit'] = \min($upload_max_filesize, ((int) $oConfig->Get('webmail', 'attachment_size_limit', 10)) * 1024 * 1024);
+			$aResult['attachmentLimit'] = \min($upload_max_filesize, ((int) $oConfig->Get('webmail', 'attachment_size_limit', 10)) * 1024 * 1024);
 			$aResult['phpUploadSizes'] = array(
 				'upload_max_filesize' => $value,
 				'post_max_size' => \ini_get('post_max_size')
@@ -888,8 +888,8 @@ class Actions
 
 		$aResult['Theme'] = $this->GetTheme($bAdmin);
 
-		$aResult['Language'] = $this->ValidateLanguage($sLanguage, '', false);
-		$aResult['UserLanguage'] = $this->ValidateLanguage($UserLanguageRaw, '', false, true);
+		$aResult['language'] = $this->ValidateLanguage($sLanguage, '', false);
+		$aResult['userLanguage'] = $this->ValidateLanguage($UserLanguageRaw, '', false, true);
 
 		$aResult['PluginsLink'] = $this->oPlugins->HaveJs($bAdmin)
 			? 'Plugins/0/' . ($bAdmin ? 'Admin' : 'User') . '/' . $this->StaticCache() . '/'

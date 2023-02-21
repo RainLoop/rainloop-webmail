@@ -110,7 +110,7 @@ export class LoginUserView extends AbstractViewLogin {
 
 		if (valid) {
 			this.submitRequest(true);
-			data.set('Language', this.bSendLanguage ? this.language() : '');
+			data.set('language', this.bSendLanguage ? this.language() : '');
 			data.set('signMe', this.signMe() ? 1 : 0);
 			Remote.request('Login',
 				(iError, oData) => {

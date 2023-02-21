@@ -156,7 +156,7 @@ export class AppUser extends AbstractApp {
 					? items.map(oValue => new AccountModel(oValue.email, oValue.name))
 					: []
 				);
-				AccountUserStore.unshift(new AccountModel(SettingsGet('MainEmail'), '', false));
+				AccountUserStore.unshift(new AccountModel(SettingsGet('mainEmail'), '', false));
 
 				items = oData.Result.Identities;
 				IdentityUserStore(isArray(items)
@@ -204,7 +204,7 @@ export class AppUser extends AbstractApp {
 
 	refresh() {
 		ThemeStore.populate();
-		LanguageStore.language(SettingsGet('Language'));
+		LanguageStore.language(SettingsGet('language'));
 		changeTheme(SettingsGet('Theme'));
 		this.start();
 	}
