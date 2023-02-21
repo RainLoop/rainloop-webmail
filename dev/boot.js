@@ -60,23 +60,6 @@ window.rl = {
 	setTitle: title =>
 		doc.title = (title || '') + (RL_APP_DATA.title ? (title ? ' - ' : '') + RL_APP_DATA.title : ''),
 
-	initData: appData => {
-		RL_APP_DATA = appData;
-		const url = appData.StaticLibsJs,
-			cb = () => rl.app.bootstart();
-		loadScript(url)
-			.then(() => loadScript(url.replace('/libs.', `/${admin?'admin':'app'}.`)))
-			.then(() => appData.PluginsLink ? loadScript(qUri(appData.PluginsLink)) : Promise.resolve())
-			.then(() => rl.app
-					? cb()
-					: doc.addEventListener('readystatechange', () => 'complete' == doc.readyState && cb())
-			)
-			.catch(e => {
-				showError(e);
-				throw e;
-			});
-	},
-
 	setData: appData => {
 		RL_APP_DATA = appData;
 		rl.app.refresh();
@@ -164,7 +147,22 @@ if (!navigator.cookieEnabled) {
 	eId('BadBrowser').hidden = false;
 } else {
 	rl.fetchJSON(qUri(`${admin ? 'Admin' : ''}AppData/0/${Math.random().toString().slice(2)}/`))
-	.then(data => rl.initData(data))
+	.then(appData => {
+		RL_APP_DATA = appData;
+		const url = appData.StaticLibsJs,
+			cb = () => rl.app.bootstart();
+		loadScript(url)
+			.then(() => loadScript(url.replace('/libs.', `/${admin?'admin':'app'}.`)))
+			.then(() => appData.PluginsLink ? loadScript(qUri(appData.PluginsLink)) : Promise.resolve())
+			.then(() => rl.app
+				? cb()
+				: doc.addEventListener('readystatechange', () => 'complete' == doc.readyState && cb())
+			)
+			.catch(e => {
+				showError(e);
+				throw e;
+			});
+	})
 	.catch(e => showError(e));
 }
 
