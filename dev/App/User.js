@@ -1,7 +1,7 @@
 import 'External/User/ko';
 
 import { SMAudio } from 'Common/Audio';
-import { isArray, pString, pInt } from 'Common/Utils';
+import { isArray, pInt } from 'Common/Utils';
 import { mailToHelper, setLayoutResizer, dropdownsDetectVisibility } from 'Common/UtilsUser';
 
 import {
@@ -160,18 +160,7 @@ export class AppUser extends AbstractApp {
 
 				items = oData.Result.Identities;
 				IdentityUserStore(isArray(items)
-					? items.map(identityData => {
-						const identity = new IdentityModel(
-							pString(identityData.Id),
-							pString(identityData.Email)
-						);
-						identity.name(pString(identityData.Name));
-						identity.replyTo(pString(identityData.ReplyTo));
-						identity.bcc(pString(identityData.Bcc));
-						identity.signature(pString(identityData.Signature));
-						identity.signatureInsertBefore(!!identityData.SignatureInsertBefore);
-						return identity;
-					})
+					? items.map(identityData => IdentityModel.reviveFromJson(identityData))
 					: []
 				);
 			}

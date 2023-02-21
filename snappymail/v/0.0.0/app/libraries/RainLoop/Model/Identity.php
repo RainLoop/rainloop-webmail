@@ -103,8 +103,7 @@ class Identity implements \JsonSerializable
 			$this->sReplyTo = !empty($aData['ReplyTo']) ? $aData['ReplyTo'] : '';
 			$this->sBcc = !empty($aData['Bcc']) ? $aData['Bcc'] : '';
 			$this->sSignature = !empty($aData['Signature']) ? $aData['Signature'] : '';
-			$this->bSignatureInsertBefore = isset($aData['SignatureInsertBefore']) ?
-				!empty($aData['SignatureInsertBefore']) : true;
+			$this->bSignatureInsertBefore = !empty($aData['SignatureInsertBefore']);
 
 			return true;
 		}
@@ -112,6 +111,7 @@ class Identity implements \JsonSerializable
 		return false;
 	}
 
+	// Used to store
 	public function ToSimpleJSON(): array
 	{
 		return array(
@@ -129,13 +129,14 @@ class Identity implements \JsonSerializable
 	public function jsonSerialize()
 	{
 		return array(
-			'Id' => $this->sId,
-			'Email' => Utils::IdnToUtf8($this->sEmail),
-			'Name' => $this->sName,
-			'ReplyTo' => $this->sReplyTo,
-			'Bcc' => $this->sBcc,
-			'Signature' => $this->sSignature,
-			'SignatureInsertBefore' => $this->bSignatureInsertBefore
+			'@Object' => 'Object/Identity',
+			'id' => $this->sId,
+			'email' => Utils::IdnToUtf8($this->sEmail),
+			'name' => $this->sName,
+			'replyTo' => $this->sReplyTo,
+			'bcc' => $this->sBcc,
+			'signature' => $this->sSignature,
+			'signatureInsertBefore' => $this->bSignatureInsertBefore
 		);
 	}
 
