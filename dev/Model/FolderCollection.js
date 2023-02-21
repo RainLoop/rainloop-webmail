@@ -465,6 +465,14 @@ export class FolderModel extends AbstractModel {
 		});
 	}
 
+	edit() {
+		this.canBeEdited() && this.editing(true);
+	}
+
+	unedit() {
+		this.editing(false);
+	}
+
 	/**
 	 * For url safe '/#/mailbox/...' path
 	 */

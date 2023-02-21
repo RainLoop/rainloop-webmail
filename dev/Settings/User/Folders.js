@@ -52,8 +52,6 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 
 		this.folderForDeletion = folderForDeletion;
 
-		this.folderForEdit = ko.observable(null).extend({ toggleSubscribeProperty: [this, 'editing'] });
-
 		SettingsUserStore.hideUnsubscribed.subscribe(value => Remote.saveSetting('HideUnsubscribed', value));
 		SettingsUserStore.unhideKolabFolders.subscribe(value => Remote.saveSetting('UnhideKolabFolders', value));
 	}
@@ -89,13 +87,7 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 				});
 		}
 
-//		this.folderForEdit(null);
 		folder.editing(false);
-	}
-
-	folderEditOnEsc(folder) {
-//		this.folderForEdit(null);
-		folder?.editing(false);
 	}
 
 	onShow() {
