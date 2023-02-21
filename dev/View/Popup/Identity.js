@@ -49,7 +49,6 @@ export class IdentityPopupView extends AbstractViewPopup {
 			const data = new FormData(form);
 			data.set('Id', this.id());
 			data.set('Signature', this.signature());
-			data.set('SignatureInsertBefore', this.signatureInsertBefore() ? 1 : 0);
 			Remote.request('IdentityUpdate', iError => {
 					this.submitRequest(false);
 					if (iError) {
