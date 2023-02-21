@@ -1302,8 +1302,8 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 }
 
 #rl-app #V-SettingsPane #rl-settings-subscreen {
-    margin: 58px 0px 8px 0px;
-    height: calc(100% - 58px - 8px);
+    margin: 8px 0px;
+    height: calc(100% - 8px - 8px);
 }
 
 #rl-app #V-SettingsPane .btn-toolbar {
