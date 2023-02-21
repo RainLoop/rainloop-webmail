@@ -53,7 +53,7 @@
 			return function(...args) {
 				timer && clearTimeout(timer);
 				timer = setTimeout(()=>{
-					func.apply(this, args)
+					func.apply(this, args);
 					timer = 0;
 				}, ms);
 			};
@@ -68,12 +68,10 @@
 		Function.prototype.throttle = function(ms) {
 			let func = this, timer;
 			return function(...args) {
-				if (!timer) {
-					timer = setTimeout(()=>{
-						func.apply(this, args)
+				timer = timer || setTimeout(()=>{
+						func.apply(this, args);
 						timer = 0;
 					}, ms);
-				}
 			};
 		};
 	}

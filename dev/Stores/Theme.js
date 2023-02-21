@@ -3,6 +3,7 @@ import { $htmlCL, appEl, elementById, leftPanelDisabled, Settings, SettingsGet }
 import { isArray, arrayLength } from 'Common/Utils';
 import { cssLink, serverRequestRaw } from 'Common/Links';
 import { SaveSettingStatus } from 'Common/Enums';
+import { addSubscribablesTo } from 'External/ko';
 
 let __themeTimer = 0;
 
@@ -60,35 +61,39 @@ export const
 
 	convertThemeName = theme => theme.replace(/@[a-z]+$/, '').replace(/([A-Z])/g, ' $1').trim();
 
-ThemeStore.isMobile.subscribe(value => $htmlCL.toggle('rl-mobile', value));
+addSubscribablesTo(ThemeStore, {
+	isMobile: value => $htmlCL.toggle('rl-mobile', value),
 
-ThemeStore.fontSansSerif.subscribe(value => {
-	if (null != value) {
-		let cl = appEl.classList;
-		cl.forEach(name => {
-			if (name.startsWith('font') && !/font(Serif|Mono)/.test(name)) {
-				cl.remove(name);
-			}
-		});
-		value && cl.add('font'+value);
-	}
-});
-ThemeStore.fontSerif.subscribe(value => {
-	if (null != value) {
-		let cl = appEl.classList;
-		cl.forEach(name => name.startsWith('fontSerif') && cl.remove(name));
-		value && cl.add('fontSerif'+value);
-	}
-});
-ThemeStore.fontMono.subscribe(value => {
-	if (null != value) {
-		let cl = appEl.classList;
-		cl.forEach(name => name.startsWith('fontMono') && cl.remove(name));
-		value && cl.add('fontMono'+value);
-	}
-});
+	fontSansSerif: value => {
+		if (null != value) {
+			let cl = appEl.classList;
+			cl.forEach(name => {
+				if (name.startsWith('font') && !/font(Serif|Mono)/.test(name)) {
+					cl.remove(name);
+				}
+			});
+			value && cl.add('font'+value);
+		}
+	},
 
-ThemeStore.userBackgroundHash.subscribe(value => {
-	appEl.classList.toggle('UserBackground', !!value);
-	appEl.style.backgroundImage = value ? "url("+serverRequestRaw('UserBackground', value)+")" : null;
+	fontSerif: value => {
+		if (null != value) {
+			let cl = appEl.classList;
+			cl.forEach(name => name.startsWith('fontSerif') && cl.remove(name));
+			value && cl.add('fontSerif'+value);
+		}
+	},
+
+	fontMono: value => {
+		if (null != value) {
+			let cl = appEl.classList;
+			cl.forEach(name => name.startsWith('fontMono') && cl.remove(name));
+			value && cl.add('fontMono'+value);
+		}
+	},
+
+	userBackgroundHash: value => {
+		appEl.classList.toggle('UserBackground', !!value);
+		appEl.style.backgroundImage = value ? "url("+serverRequestRaw('UserBackground', value)+")" : null;
+	}
 });
