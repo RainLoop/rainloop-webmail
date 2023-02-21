@@ -151,7 +151,7 @@
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Sim",
 		"BUTTON_NO": "Não",
-		"DESC_WANT_CLOSE_THIS_WINDOW": "Tem a certeza de que quer fechar esta janela?"
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Quer mesmo fechar esta janela?"
 	},
 	"POPUPS_LANGUAGES": {
 		"TITLE_LANGUAGES": "Escolha o seu idioma"
