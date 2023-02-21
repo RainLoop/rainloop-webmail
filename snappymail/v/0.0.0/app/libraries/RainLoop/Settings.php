@@ -4,10 +4,7 @@ namespace RainLoop;
 
 class Settings implements \JsonSerializable
 {
-	/**
-	 * @var array
-	 */
-	protected $aData = array();
+	protected array $aData = array();
 
 	public function __construct(array $aData)
 	{
