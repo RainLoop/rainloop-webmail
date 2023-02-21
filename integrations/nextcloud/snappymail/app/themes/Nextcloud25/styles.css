@@ -461,6 +461,7 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     width: -webkit-fill-available;
     width: -moz-available;
     width: fill-available;
+    overflow: hidden;
 }
 
 #rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic {
