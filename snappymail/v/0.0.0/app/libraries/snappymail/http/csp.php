@@ -29,8 +29,8 @@ class CSP
 	{
 		if ($default) {
 			foreach (\explode(';', $default) as $directive) {
-				$values = \explode(' ', $directive);
-				$name = \str_replace('-', '_', \preg_replace('/-(src)$/D', '', \trim(\array_shift($values))));
+				$values = \preg_split('/\\s+/', $directive);
+				$name = \str_replace('-', '_', \preg_replace('/-(src|uri)$/D', '', \trim(\array_shift($values))));
 				$this->$name = \array_unique(\array_merge($this->$name, $values));
 			}
 		}
@@ -72,6 +72,11 @@ class CSP
 			\header('Content-Security-Policy-Report-Only: ' . $this);
 		} else {
 			\header('Content-Security-Policy: ' . $this);
+		}
+		if (!$this->frame_ancestors) {
+			\header('X-Frame-Options: DENY');
+		} else {
+//			\header('X-Frame-Options: SAMEORIGIN');
 		}
 	}
 
