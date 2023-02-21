@@ -234,6 +234,7 @@
 		"BUTTON_REQUIRE_TLS": "Exiger une livraison sécurisée"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Êtes-vous sûr de vouloir fermer cette fenêtre ?",
 		"DESC_WANT_DELETE_MESSAGES": "Êtes-vous sûr de vouloir supprimer ce(s) message(s) ?"
 	},

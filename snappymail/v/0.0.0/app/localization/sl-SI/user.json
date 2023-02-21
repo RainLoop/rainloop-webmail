@@ -234,6 +234,7 @@
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Želite zapreti to okno?",
 		"DESC_WANT_DELETE_MESSAGES": "Želite izbrisati sporočilo\/-a?"
 	},

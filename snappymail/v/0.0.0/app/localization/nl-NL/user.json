@@ -234,6 +234,7 @@
 		"BUTTON_REQUIRE_TLS": "Veilige bezorging vereisen"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Weet u zeker dat u dit venster wilt sluiten?",
 		"DESC_WANT_DELETE_MESSAGES": "Weet u zeker dat u dit\/deze bericht\/berichten wilt verwijderen?"
 	},

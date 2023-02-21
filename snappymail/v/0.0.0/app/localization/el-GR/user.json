@@ -234,6 +234,7 @@
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Είστε σίγουροι πως θέλετε να κλείσετε αυτό το παράθυρο;",
 		"DESC_WANT_DELETE_MESSAGES": "Είστε σίγουροι πως θέλετε να διαγράψετε το (τα) μήνυμα(τα);"
 	},

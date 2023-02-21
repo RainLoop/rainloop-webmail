@@ -197,7 +197,7 @@ export class AppUser extends AbstractApp {
 		addEventListener('beforeunload', event => {
 			if (arePopupsVisible() || (ThemeStore.isMobile() && MessageUserStore.message())) {
 				event.preventDefault();
-				return event.returnValue = "Are you sure you want to exit?";
+				return event.returnValue = i18n('POPUPS_ASK/EXIT_ARE_YOU_SURE');
 			}
 		}, {capture: true});
 	}
@@ -263,18 +263,15 @@ export class AppUser extends AbstractApp {
 
 						PgpUserStore.init();
 
-						// When auto-login is active
-						try {
-							navigator.registerProtocolHandler?.(
-								'mailto',
-								location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
-								(SettingsGet('title') || 'SnappyMail')
-							);
-						} catch (e) {
-							console.error(e);
-						}
-
 						setTimeout(() => mailToHelper(SettingsGet('mailToEmail')), 500);
+
+						// When auto-login is active
+						navigator.registerProtocolHandler?.(
+							'mailto',
+							location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
+							(SettingsGet('title') || 'SnappyMail')
+						);
+
 					} else {
 						this.logout();
 					}

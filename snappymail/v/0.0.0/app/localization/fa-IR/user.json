@@ -234,6 +234,7 @@
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "آیا از بستن این پنجره مطمئن هستید؟",
 		"DESC_WANT_DELETE_MESSAGES": "آیا از حذف این پیام(ها) اطمینان دارید؟"
 	},

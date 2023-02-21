@@ -234,6 +234,7 @@
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "정말로 이 페이지를 닫으시겠습니까 ?",
 		"DESC_WANT_DELETE_MESSAGES": "정말로 선택한 메세지를 삭제하시겠습니까 ?"
 	},

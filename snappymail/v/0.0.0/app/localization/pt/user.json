@@ -234,6 +234,7 @@
 		"BUTTON_REQUIRE_TLS": "Exigir entrega segura"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Tem a certeza de que quer fechar esta janela?",
 		"DESC_WANT_DELETE_MESSAGES": "Tem a certeza de que quer eliminar a(s) mensagem(s)?"
 	},
