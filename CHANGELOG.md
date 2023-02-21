@@ -1,3 +1,31 @@
+## 2.26.3 – 2023-02-21
+
+## Added
+- Translate "Are you sure you want to exit?"
+- stderr as Logger
+
+## Changed
+- Moved rl.fetch and rl.fetchJSON to boot.js so that AppData can be fetched as JSON
+- Many AppData properties to JavaScript camelCase
+- Cleanup Identity handling
+- Merge GnuPG and OpenPGP.js passphrases
+- Removed unused Squire code
+
+## Fixed
+- Notification enum conflicts with window.Notification
+- language selector didn't show current language in green
+- Threads indicator got lost with new message cache handling
+- messagesBodiesDom never cached previous messages
+- Nextcloud File picker doesn't insert multiple links
+  [#981](https://github.com/the-djmaze/snappymail/pull/981)
+- Call to protected method RainLoop\Enumerations\UploadError::getUserMessage()
+  [#982](https://github.com/the-djmaze/snappymail/pull/982)
+- Issue with the top logo and text of a certain e-mail
+  [#953](https://github.com/the-djmaze/snappymail/pull/953)
+- Facebook logo missing from emails sent out by it
+  [#954](https://github.com/the-djmaze/snappymail/pull/954)
+
+
 ## 2.26.2 – 2023-02-17
 
 ## Added
