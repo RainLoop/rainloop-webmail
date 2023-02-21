@@ -187,6 +187,29 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 					$sEmail = $sCustomEmail;
 				}
 				$aResult['DevEmail'] = $sEmail ?: '';
+			} else if (!empty($aResult['ContactsSync'])) {
+				$bSave = false;
+				if (empty($aResult['ContactsSync']['Url'])) {
+					$aResult['ContactsSync']['Url'] = "{$sWebDAV}/addressbooks/users/{$sUID}/contacts/";
+					$bSave = true;
+				}
+				if (empty($aResult['ContactsSync']['User'])) {
+					$aResult['ContactsSync']['User'] = $sUID;
+					$bSave = true;
+				}
+				if (empty($aResult['ContactsSync']['Password'])) {
+					$aResult['ContactsSync']['Password'] = '';
+				}
+				if ($bSave) {
+					$oActions = \RainLoop\Api::Actions();
+					$oAccount = $oActions->getAccountFromToken();
+					$this->setContactsSyncData($oAccount, array(
+						'Mode' => $aResult['ContactsSync']['Mode'],
+						'User' => $aResult['ContactsSync']['User'],
+						'Password' => $aResult['ContactsSync']['Password'],
+						'Url' => $aResult['ContactsSync']['Url']
+					));
+				}
 			}
 		}
 	}
