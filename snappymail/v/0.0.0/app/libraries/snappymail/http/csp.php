@@ -19,6 +19,7 @@ class CSP
 		$img     = ["'self'", 'data:'],
 		$style   = ["'self'", "'unsafe-inline'"],
 		$frame   = [],
+		$frame_ancestors = [],
 
 		$report = false,
 		$report_to = [],
@@ -29,7 +30,7 @@ class CSP
 		if ($default) {
 			foreach (\explode(';', $default) as $directive) {
 				$values = \explode(' ', $directive);
-				$name = \preg_replace('/-.+/', '', \trim(\array_shift($values)));
+				$name = \str_replace('-', '_', \preg_replace('/-(src)$/D', '', \trim(\array_shift($values))));
 				$this->$name = \array_unique(\array_merge($this->$name, $values));
 			}
 		}
@@ -52,6 +53,9 @@ class CSP
 		}
 		if ($this->frame) {
 			$params[] = 'frame-src ' . \implode(' ', \array_unique($this->frame));
+		}
+		if ($this->frame_ancestors) {
+			$params[] = 'frame-ancestors ' . \implode(' ', \array_unique($this->frame_ancestors));
 		}
 
 		// Deprecated
