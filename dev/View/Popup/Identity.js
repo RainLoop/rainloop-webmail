@@ -1,4 +1,5 @@
-import { addObservablesTo, addSubscribablesTo } from 'External/ko';
+
+import { addObservablesTo } from 'External/ko';
 
 import { getNotification } from 'Common/Translator';
 
@@ -6,48 +7,33 @@ import Remote from 'Remote/User/Fetch';
 
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
+import { IdentityModel } from 'Model/Identity';
+
 export class IdentityPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Identity');
 
-		this.id = '';
 		addObservablesTo(this, {
+			id: '',
 			edit: false,
-			owner: false,
 
 			email: '',
 			emailFocused: false,
 
 			name: '',
+			nameFocused: false,
 
 			replyTo: '',
-			replyToFocused: false,
+			showReplyTo: false,
 
 			bcc: '',
-			bccFocused: false,
-			bccHasError: false,
+			showBcc: false,
 
 			signature: '',
 			signatureInsertBefore: false,
 
-			showBcc: false,
-			showReplyTo: false,
-
 			submitRequest: false,
 			submitError: ''
-		});
-
-		addSubscribablesTo(this, {
-			replyTo: value => {
-				if (false === this.showReplyTo() && value.length) {
-					this.showReplyTo(true);
-				}
-			},
-			bcc: value => {
-				if (false === this.showBcc() && value.length) {
-					this.showBcc(true);
-				}
-			}
 		});
 /*
 		this.email.valueHasMutated();
@@ -61,8 +47,9 @@ export class IdentityPopupView extends AbstractViewPopup {
 			this.signature?.__fetchEditorValue?.();
 			this.submitRequest(true);
 			const data = new FormData(form);
-			data.set('Id', this.id);
+			data.set('Id', this.id());
 			data.set('Signature', this.signature());
+			data.set('SignatureInsertBefore', this.signatureInsertBefore() ? 1 : 0);
 			Remote.request('IdentityUpdate', iError => {
 					this.submitRequest(false);
 					if (iError) {
@@ -88,32 +75,23 @@ export class IdentityPopupView extends AbstractViewPopup {
 
 		if (identity) {
 			this.edit(true);
-
-			this.id = identity.id() || '';
-			this.name(identity.name());
-			this.email(identity.email());
-			this.replyTo(identity.replyTo());
-			this.bcc(identity.bcc());
-			this.signature(identity.signature());
-			this.signatureInsertBefore(identity.signatureInsertBefore());
-
-			this.owner(!this.id);
 		} else {
 			this.edit(false);
-
-			this.id = Jua.randomId();
-			this.name('');
-			this.email('');
-			this.replyTo('');
-			this.bcc('');
-			this.signature('');
-			this.signatureInsertBefore(false);
-
-			this.owner(false);
+			identity = new IdentityModel;
+			identity.id(Jua.randomId());
 		}
+		this.id(identity.id() || '');
+		this.name(identity.name());
+		this.email(identity.email());
+		this.replyTo(identity.replyTo());
+		this.showReplyTo(0 < identity.replyTo().length);
+		this.bcc(identity.bcc());
+		this.showBcc(0 < identity.bcc().length);
+		this.signature(identity.signature());
+		this.signatureInsertBefore(identity.signatureInsertBefore());
 	}
 
 	afterShow() {
-		this.owner() || this.emailFocused(true);
+		this.id() ? this.emailFocused(true) : this.nameFocused(true);
 	}
 }
