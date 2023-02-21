@@ -3,8 +3,9 @@ import { AbstractCollectionModel } from 'Model/AbstractCollection';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { isArray, getKeyByValue, forEachObjectEntry, b64EncodeJSONSafe } from 'Common/Utils';
 import { ClientSideKeyNameExpandedFolders, FolderType, FolderMetadataKeys } from 'Common/EnumsUser';
-import { getFolderFromCacheList, setFolder, setFolderInboxName } from 'Common/Cache';
+import { getFolderFromCacheList, setFolder, setFolderInboxName, removeFolderFromCacheList } from 'Common/Cache';
 import { Settings, SettingsGet, fireEvent } from 'Common/Globals';
+import { Notifications } from 'Common/Enums';
 
 import * as Local from 'Storage/Client';
 
@@ -14,7 +15,7 @@ import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
 import { sortFolders } from 'Common/Folders';
-import { i18n, translateTrigger } from 'Common/Translator';
+import { i18n, translateTrigger, getNotification } from 'Common/Translator';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
@@ -471,6 +472,41 @@ export class FolderModel extends AbstractModel {
 
 	unedit() {
 		this.editing(false);
+	}
+
+	rename() {
+		const folder = this,
+			nameToEdit = folder.nameForEdit().trim();
+		if (nameToEdit && folder.name() !== nameToEdit) {
+			Remote.abort('Folders').post('FolderRename', FolderUserStore.foldersRenaming, {
+					folder: folder.fullName,
+					newFolderName: nameToEdit,
+					subscribe: folder.isSubscribed() ? 1 : 0
+				})
+				.then(data => {
+					folder.name(nameToEdit/*data.name*/);
+					if (folder.subFolders.length) {
+						Remote.setTrigger(FolderUserStore.foldersLoading, true);
+//						clearTimeout(Remote.foldersTimeout);
+//						Remote.foldersTimeout = setTimeout(loadFolders, 500);
+						setTimeout(loadFolders, 500);
+						// TODO: rename all subfolders with folder.delimiter to prevent reload?
+					} else {
+						removeFolderFromCacheList(folder.fullName);
+						folder.fullName = data.Result.fullName;
+						setFolder(folder);
+						const parent = getFolderFromCacheList(folder.parentName);
+						sortFolders(parent ? parent.subFolders : FolderUserStore.folderList);
+					}
+				})
+				.catch(error => {
+					FolderUserStore.folderListError(
+						getNotification(error.code, '', Notifications.CantRenameFolder)
+						+ '.\n' + error.message);
+				});
+		}
+
+		folder.editing(false);
 	}
 
 	/**

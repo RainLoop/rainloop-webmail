@@ -5,7 +5,7 @@
 			tooltipErrorTip: errorMsg"></span>
 		<input type="text"
 			autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-			data-bind="value: nameForEdit, visible: editing, hasfocus: editing, onEnter: function () { $root.folderEditOnEnter($data); }, onEsc: unedit">
+			data-bind="textInput: nameForEdit, visible: editing, hasfocus: editing, onEnter: rename, onEsc: unedit">
 		&nbsp;
 		<span class="folder-system-name" data-bind="text: manageFolderSystemName, visible: isSystemFolder"></span>
 	</td>

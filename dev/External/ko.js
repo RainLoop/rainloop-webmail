@@ -28,12 +28,12 @@ export const
 
 	dispose = disposable => isFunction(disposable?.dispose) && disposable.dispose(),
 
-	onKey = (key, element, fValueAccessor, fAllBindings, viewModel) => {
+	onKey = (key, element, fValueAccessor, fAllBindings, model) => {
 		let fn = event => {
 			if (key == event.key) {
 //				stopEvent(event);
 //				element.dispatchEvent(new Event('change'));
-				fValueAccessor().call(viewModel);
+				fValueAccessor().call(model);
 			}
 		};
 		element.addEventListener('keydown', fn);
@@ -68,18 +68,18 @@ Object.assign(ko.bindingHandlers, {
 	},
 
 	onEnter: {
-		init: (element, fValueAccessor, fAllBindings, viewModel) =>
-			onKey('Enter', element, fValueAccessor, fAllBindings, viewModel)
+		init: (element, fValueAccessor, fAllBindings, model) =>
+			onKey('Enter', element, fValueAccessor, fAllBindings, model)
 	},
 
 	onEsc: {
-		init: (element, fValueAccessor, fAllBindings, viewModel) =>
-			onKey('Escape', element, fValueAccessor, fAllBindings, viewModel)
+		init: (element, fValueAccessor, fAllBindings, model) =>
+			onKey('Escape', element, fValueAccessor, fAllBindings, model)
 	},
 
 	onSpace: {
-		init: (element, fValueAccessor, fAllBindings, viewModel) =>
-			onKey(' ', element, fValueAccessor, fAllBindings, viewModel)
+		init: (element, fValueAccessor, fAllBindings, model) =>
+			onKey(' ', element, fValueAccessor, fAllBindings, model)
 	},
 
 	i18nUpdate: {
