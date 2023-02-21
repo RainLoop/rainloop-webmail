@@ -283,11 +283,6 @@ class SquireUI
 		toolbar.className = 'squire-toolbar btn-toolbar';
 		let group, action/*, touchTap*/;
 		for (group in actions) {
-/*
-			if ('bidi' == group && !rl.settings.app('allowHtmlEditorBitiButtons')) {
-				continue;
-			}
-*/
 			let toolgroup = createElement('div');
 			toolgroup.className = 'btn-group';
 			toolgroup.id = 'squire-toolgroup-'+group;

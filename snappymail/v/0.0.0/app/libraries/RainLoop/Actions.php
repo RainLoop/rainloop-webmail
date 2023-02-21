@@ -727,7 +727,6 @@ class Actions
 				}
 				$aResult['System'] = \array_merge(
 					$aResult['System'], array(
-						'allowHtmlEditorBitiButtons' => (bool)$oConfig->Get('labs', 'allow_html_editor_biti_buttons', false),
 						'allowCtrlEnterOnCompose' => (bool)$oConfig->Get('labs', 'allow_ctrl_enter_on_compose', false),
 						'allowAppendMessage' => (bool)$oConfig->Get('labs', 'allow_message_append', false),
 						'folderSpecLimit' => (int)$oConfig->Get('labs', 'folders_spec_limit', 50),
