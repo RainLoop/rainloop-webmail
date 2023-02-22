@@ -3,30 +3,27 @@
 const
 	qUri = path => doc.location.pathname.replace(/\/+$/,'') + '/?/' + path,
 	eId = id => doc.getElementById('rl-'+id),
-	app = eId('app'),
-	admin = app && '1' == app.dataset.admin,
+	admin = '1' == eId('app')?.dataset?.admin,
 	layout = doc.cookie.match(/(^|;) ?rllayout=([^;]+)/) || '',
 
-	showError = msg => {
-		let div = eId('loading-error');
-		div.append(msg);
+	toggle = div => {
 		eId('loading').hidden = true;
 		div.hidden = false;
 	},
+	showError = msg => {
+		let div = eId('loading-error');
+		div.append(msg);
+		toggle(div);
+	},
 
-	loadScript = src => {
-		if (!src) {
-			throw new Error('src should not be empty.');
-		}
-		return new Promise((resolve, reject) => {
+	loadScript = src => src ? new Promise((resolve, reject) => {
 			const script = doc.createElement('script');
 			script.onload = () => resolve();
 			script.onerror = () => reject('Failed loading ' + src);
 			script.src = src;
 //			script.async = true;
 			doc.head.append(script);
-		});
-	};
+		}) : Promise.reject('src is empty');
 
 try {
 	let smctoken = doc.cookie.match(/(^|;) ?smctoken=([^;]+)/);
@@ -138,11 +135,9 @@ window.rl = {
 };
 
 if (!navigator.cookieEnabled) {
-	eId('loading').hidden = true;
-	eId('NoCookie').hidden = false;
+	toggle(eId('NoCookie'));
 } else if (![].flat) {
-	eId('loading').hidden = true;
-	eId('BadBrowser').hidden = false;
+	toggle(eId('BadBrowser'));
 } else {
 	rl.fetchJSON(qUri(`${admin ? 'Admin' : ''}AppData/0/${Math.random().toString().slice(2)}/`))
 	.then(appData => {
