@@ -41,15 +41,14 @@ abstract class Api
 		$CSP = new \SnappyMail\HTTP\CSP(\trim($oConfig->Get('security', 'content_security_policy', '')));
 		$CSP->report = $oConfig->Get('security', 'csp_report', false);
 		$CSP->report_only = $oConfig->Get('debug', 'enable', false); // || SNAPPYMAIL_DEV
-//		$CSP->frame = \explode(' ', $oConfig->Get('security', 'csp_frame', ''));
 
 		// Allow https: due to remote images in e-mails or use proxy
 		if (!$oConfig->Get('security', 'use_local_proxy_for_external_images', '')) {
-			$CSP->img[] = 'https:';
-			$CSP->img[] = 'http:';
+			$CSP->add('img-src', 'https:');
+			$CSP->add('img-src', 'http:');
 		}
 		if ($sScriptNonce) {
-			$CSP->script[] = "'nonce-{$sScriptNonce}'";
+			$CSP->add('script-src', "'nonce-{$sScriptNonce}'");
 		}
 
 		static::Actions()->Plugins()->RunHook('main.content-security-policy', array($CSP));

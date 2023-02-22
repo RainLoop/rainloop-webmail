@@ -6,9 +6,9 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'reCaptcha',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '2.14',
-		RELEASE  = '2023-01-11',
-		REQUIRED = '2.23',
+		VERSION  = '2.15',
+		RELEASE  = '2023-02-22',
+		REQUIRED = '2.26.4',
 		CATEGORY = 'General',
 		LICENSE  = 'MIT',
 		DESCRIPTION = 'A CAPTCHA (v2) is a program that can generate and grade tests that humans can pass but current computer programs cannot. For example, humans can read distorted text as the one shown below, but current computer programs can\'t. More info at https://developers.google.com/recaptcha';
@@ -141,12 +141,9 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	public function ContentSecurityPolicy(\SnappyMail\HTTP\CSP $CSP)
 	{
-//		$CSP->script[] = 'https://www.google.com/recaptcha/';
-		$CSP->script[] = 'https://www.gstatic.com/recaptcha/';
-		$CSP->script[] = 'https://www.recaptcha.net/recaptcha/';
-//		$CSP->frame[] = 'https://www.google.com/recaptcha/';
-//		$CSP->frame[] = 'https://recaptcha.google.com/recaptcha/';
-		$CSP->frame[] = 'https://www.recaptcha.net/recaptcha/';
+		$CSP->add('script-src', 'https://www.gstatic.com/recaptcha/');
+		$CSP->add('script-src', 'https://www.recaptcha.net/recaptcha/');
+		$CSP->add('frame-src', 'https://www.recaptcha.net/recaptcha/');
 	}
 
 }

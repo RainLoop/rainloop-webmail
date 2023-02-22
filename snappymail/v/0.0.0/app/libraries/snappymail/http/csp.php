@@ -8,62 +8,57 @@ namespace SnappyMail\HTTP;
 class CSP
 {
 	public
-		$base = ["'self'"],
-		$default = ["'self'", 'data:'],
-		// Knockout.js requires eval() for observable binding purposes
-		// Safari < 15.4 does not support strict-dynamic
-//		$script  = ["'strict-dynamic'", "'unsafe-eval'"],
-		$script  = ["'self'", "'unsafe-eval'"],
-		// Knockout.js requires unsafe-inline?
-//		$script  = ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-		$img     = ["'self'", 'data:'],
-		$style   = ["'self'", "'unsafe-inline'"],
-		$frame   = [],
-		$frame_ancestors = [],
-
 		$report = false,
 		$report_to = [],
 		$report_only = false;
+
+	private $directives = [
+		'base-uri' => ["'self'"],
+		'default-src' => ["'self'", 'data:'],
+		// Knockout.js requires eval() for observable binding purposes
+		// Safari < 15.4 does not support strict-dynamic
+//		'script-src' => ["'strict-dynamic'", "'unsafe-eval'"],
+		'script-src' => ["'self'", "'unsafe-eval'"],
+		// Knockout.js requires unsafe-inline?
+//		'script-src' => ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+		'img-src' => ["'self'", 'data:'],
+		'style-src' => ["'self'", "'unsafe-inline'"],
+	];
 
 	function __construct(string $default = '')
 	{
 		if ($default) {
 			foreach (\explode(';', $default) as $directive) {
-				$values = \preg_split('/\\s+/', $directive);
-				$name = \str_replace('-', '_', \preg_replace('/-(src|uri)$/D', '', \trim(\array_shift($values))));
-				$this->$name = \array_unique(\array_merge($this->$name, $values));
+				$sources = \preg_split('/\\s+/', \trim($directive));
+				$directive = \array_shift($sources);
+				if (!isset($this->directives[$directive])) {
+					$this->directives[$directive] = [];
+				}
+				$this->directives[$directive] = \array_merge($this->directives[$directive], $sources);
 			}
 		}
 	}
 
 	function __toString() : string
 	{
-		$params = [
-			'base-uri ' . \implode(' ', \array_unique($this->base)),
-			'default-src ' . \implode(' ', \array_unique($this->default))
-		];
-		if ($this->script) {
-			$params[] = 'script-src ' . \implode(' ', \array_unique($this->script));
-		}
-		if ($this->img) {
-			$params[] = 'img-src ' . \implode(' ', \array_unique($this->img));
-		}
-		if ($this->style) {
-			$params[] = 'style-src ' . \implode(' ', \array_unique($this->style));
-		}
-		if ($this->frame) {
-			$params[] = 'frame-src ' . \implode(' ', \array_unique($this->frame));
-		}
-		if ($this->frame_ancestors) {
-			$params[] = 'frame-ancestors ' . \implode(' ', \array_unique($this->frame_ancestors));
-		}
-
-		// Deprecated
+		// report-uri deprecated
+		unset($this->directives['report-uri']);
 		if ($this->report) {
-			$params[] = 'report-uri ./?/CspReport';
+			$this->directives['report-uri'] = [\RainLoop\Utils::WebPath() . '?/CspReport'];
 		}
-
+		$params = [];
+		foreach ($this->directives as $directive => $sources) {
+			$params[] = $directive . ' ' . \implode(' ', \array_unique($sources));
+		}
 		return \implode('; ', $params);
+	}
+
+	public function add(string $directive, string $source) : void
+	{
+		if (!isset($this->directives[$directive])) {
+			$this->directives[$directive] = [];
+		}
+		$this->directives[$directive][] = $source;
 	}
 
 	public function setHeaders() : void
@@ -73,7 +68,7 @@ class CSP
 		} else {
 			\header('Content-Security-Policy: ' . $this);
 		}
-		if (!$this->frame_ancestors) {
+		if (empty($this->directives['frame-ancestors'])) {
 			\header('X-Frame-Options: DENY');
 		} else {
 //			\header('X-Frame-Options: SAMEORIGIN');
