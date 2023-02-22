@@ -35,7 +35,7 @@ const
 
 	replaceWithChildren = node => node.replaceWith(...[...node.childNodes]),
 
-	url = /(^|\s|\n|\/?>)(https?:\/\/[-A-Z0-9+&#/%?=()~_|!:,.;]*[-A-Z0-9+&#/%=~()_|])/gi,
+	urlRegExp = /https?:\/\/[^\p{C}\p{Z}]+[^\p{C}\p{Z}.]/gu,
 	// eslint-disable-next-line max-len
 	email = /(^|\s|\n|\/?>)((?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x21\x23-\x5b\x5d-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x21-\x5a\x53-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])+)\]))/gi,
 	// rfc3966
@@ -713,9 +713,9 @@ export const
 			.replace(/&/g, '&amp;')
 			.replace(/>/g, '&gt;')
 			.replace(/</g, '&lt;')
-			.replace(url, (...m) => {
-				m[2] = stripTracking(m[2]);
-				return `${m[1]}<a href="${m[2]}" target="_blank">${m[2]}</a>`;
+			.replace(urlRegExp, (...m) => {
+				m[0] = stripTracking(m[0]);
+				return `<a href="${m[0]}" target="_blank">${m[0]}</a>`;
 			})
 			.replace(email, '$1<a href="mailto:$2">$2</a>')
 			.replace(tel, '$1<a href="$2">$2</a>')
