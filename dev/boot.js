@@ -37,8 +37,6 @@ try {
 		smctoken = encodeURIComponent(btoa(String.fromCharCode(...data)));
 	}
 	localStorage.setItem('smctoken', smctoken);
-//	doc.cookie = `smctoken=${smctoken};path=${doc.location.pathname};samesite=strict;secure";
-//	doc.cookie = 'smctoken='+smctoken+";path=/;samesite=lax";
 	doc.cookie = 'smctoken='+smctoken+";path=/;samesite=strict";
 } catch (e) {
 	console.error(e);
