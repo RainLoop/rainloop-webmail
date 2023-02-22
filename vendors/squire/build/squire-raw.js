@@ -1766,7 +1766,7 @@ const
 		return frag;
 	},
 
-	linkRegExp = /\b(?:((?:(?:ht|f)tps?:\/\/|www\d{0,3}[.]|[a-z0-9][a-z0-9.-]*[.][a-z]{2,}\/)(?:[^\s()<>]+|\([^\s()<>]+\))+(?:[^\s?&`!()[\]{};:'".,<>«»“”‘’]|\([^\s()<>]+\)))|([\w\-.%+]+@(?:[\w-]+\.)+[a-z]{2,}\b(?:[?][^&?\s]+=[^\s?&`!()[\]{};:'".,<>«»“”‘’]+(?:&[^&?\s]+=[^\s?&`!()[\]{};:'".,<>«»“”‘’]+)*)?))/i,
+	linkRegExp = /\b(?:((https?:\/\/)?(?:www\d{0,3}\.|[a-z0-9][a-z0-9.-]*\.[a-z]{2,}\/)(?:[^\s()<>]+|\([^\s()<>]+\))+(?:[^\s?&`!()[\]{};:'".,<>«»“”‘’]|\([^\s()<>]+\)))|([\w\-.%+]+@(?:[\w-]+\.)+[a-z]{2,}\b(?:\?[^&?\s]+=[^\s?&`!()[\]{};:'".,<>«»“”‘’]+(?:&[^&?\s]+=[^\s?&`!()[\]{};:'".,<>«»“”‘’]+)*)?))/i,
 
 	addLinks = (frag, root) => {
 		let walker = createTreeWalker(frag, SHOW_TEXT, node => !getClosest(node, root, 'A'));
@@ -1781,14 +1781,11 @@ const
 					child = doc.createTextNode(data.slice(0, index));
 					parent.insertBefore(child, node);
 				}
-				child = createElement('A', mergeObjects({
-					href: match[1] ?
-						/^(?:ht|f)tps?:/i.test(match[1]) ?
-							match[1] :
-							'http://' + match[1] :
-						'mailto:' + match[0]
-				}, null, false));
-				child.textContent = data.slice(index, endIndex);
+				child = createElement('A', {
+					href: match[1]
+						? (match[2] ? match[1] : 'https://' + match[1])
+						: 'mailto:' + match[0]
+				}, [data.slice(index, endIndex)]);
 				parent.insertBefore(child, node);
 				node.data = data = data.slice(endIndex);
 			}
