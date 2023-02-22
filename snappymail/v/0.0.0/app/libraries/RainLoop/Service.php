@@ -180,14 +180,8 @@ abstract class Service
 			if ($sResult) {
 				$sResult .= '<!--cached-->';
 			} else {
-				$SameSite = \strtolower($oConfig->Get('security', 'cookie_samesite', 'Strict'));
-				$Secure = (isset($_SERVER['HTTPS']) || 'none' == $SameSite) ? ';secure' : '';
 				$aTemplateParameters['{{BaseAppBootCss}}'] = \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot'.$sAppCssMin.'.css');
-				$aTemplateParameters['{{BaseAppBootScript}}'] = \str_replace(
-					'samesite=strict',
-					"samesite={$SameSite}{$Secure}",
-					\file_get_contents(APP_VERSION_ROOT_PATH.'static/js'.($sAppJsMin ? '/min' : '').'/boot'.$sAppJsMin.'.js')
-				);
+				$aTemplateParameters['{{BaseAppBootScript}}'] = \file_get_contents(APP_VERSION_ROOT_PATH.'static/js'.($sAppJsMin ? '/min' : '').'/boot'.$sAppJsMin.'.js');
 				$aTemplateParameters['{{BaseAppMainCssLink}}'] = Utils::WebStaticPath('css/'.($bAdmin ? 'admin' : 'app').$sAppCssMin.'.css');
 				$aTemplateParameters['{{BaseAppThemeCss}}'] = \preg_replace('/\\s*([:;{},]+)\\s*/s', '$1', $oActions->compileCss($sThemeName, $bAdmin));
 				$aTemplateParameters['{{BaseLanguage}}'] = $oActions->compileLanguage($sLanguage, $bAdmin);
@@ -203,6 +197,10 @@ abstract class Service
 					$oActions->Cacher()->Set($sCacheFileName, $sResult);
 				}
 			}
+
+			$SameSite = \strtolower($oConfig->Get('security', 'cookie_samesite', 'Strict'));
+			$Secure = (isset($_SERVER['HTTPS']) || 'none' == $SameSite) ? ';secure' : '';
+			$sResult = \str_replace('samesite=strict', "samesite={$SameSite}{$Secure}", $sResult);
 
 			$sScriptNonce = \SnappyMail\UUID::generate();
 			static::setCSP($sScriptNonce);
