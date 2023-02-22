@@ -959,8 +959,18 @@ html:not(rl-mobile) #rl-app .hideMessageListCheckbox .checkboxCheckAll {
  * message view
  */
 
- #rl-app #V-MailMessageView {
+#rl-app #V-MailMessageView {
     bottom: 0;
+}
+
+#rl-app #V-MailMessageList .btn-toolbar,
+#rl-app #V-MailMessageView .btn-toolbar {
+    padding: 10px 1px;
+}
+
+#rl-app .messageList,
+#rl-app .messageView {
+    height: calc(100% - 60px);
 }
 
 html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar {
@@ -1242,7 +1252,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
  * account selector
  */
 
-#rl-app .btn-toolbar.g-ui-user-select-none {
+#rl-app #V-SystemDropDown .btn-toolbar.g-ui-user-select-none {
     border: solid 1px var(--color-border-dark);
     border-radius: var(--border-radius-large);
     height: 36px;
