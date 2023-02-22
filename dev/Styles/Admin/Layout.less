@@ -56,10 +56,6 @@
 	}
 }
 
-.rl-mobile #V-AdminPane {
-	margin-right: 0;
-}
-
 .btn.btn-logout {
 	padding-left: 12px;
 	padding-right: 12px;
@@ -92,12 +88,16 @@
 
 /* mobile and tablet */
 @media screen and (max-width: 999px) {
-	#rl-settings-subscreen {
-		padding: 10px;
-	}
-
 	#rl-right {
 		min-width: calc(100% - @rlLowMargin);
+	}
+
+	#V-AdminPane {
+		margin-right: 0;
+	}
+
+	#rl-settings-subscreen {
+		padding: 10px;
 	}
 
 	html.rl-left-panel-disabled {
