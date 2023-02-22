@@ -342,13 +342,6 @@ export class MailMessageView extends AbstractViewRight {
 			}
 		});
 
-		AppUserStore.focusedState.subscribe(value => {
-			if (Scope.MessageView !== value) {
-				this.scrollMessageToTop();
-				this.scrollMessageToLeft();
-			}
-		});
-
 		keyScopeReal.subscribe(value => this.messageDomFocused(Scope.MessageView === value));
 
 		// initShortcuts
@@ -463,7 +456,7 @@ export class MailMessageView extends AbstractViewRight {
 	}
 
 	scrollMessageToTop() {
-		oMessageScrollerDom().scrollTop = (50 < oMessageScrollerDom().scrollTop) ? 50 : 0;
+		oMessageScrollerDom().scrollTop = 0;
 	}
 
 	scrollMessageToLeft() {
