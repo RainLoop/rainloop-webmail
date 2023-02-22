@@ -103,10 +103,10 @@
 		"EMPTY_LIST": "Liste vide.",
 		"EMPTY_SEARCH_LIST": "Aucun message ne correspond à votre recherche.",
 		"SEARCH_RESULT_FOR": "Résultats de recherche pour \"%SEARCH%\"",
-		"BACK_TO_MESSAGE_LIST": "retour à la liste des messages",
+		"BACK_TO_MESSAGE_LIST": "Retour à la liste des messages",
 		"PUT_MESSAGE_HERE": "Glisser un message ici pour l'afficher dans la liste",
-		"TODAY_AT": "aujourd'hui à %TIME%",
-		"YESTERDAY_AT": "hier à %TIME%",
+		"TODAY_AT": "Aujourd'hui à %TIME%",
+		"YESTERDAY_AT": "Hier à %TIME%",
 		"NEW_MESSAGE_NOTIFICATION": "Vous avez %COUNT% nouveaux messages !",
 		"QUOTA_SIZE": "Vous utilisez <strong>%SIZE% (%PROC%%)<\/strong> sur <strong>%LIMIT%<\/strong>",
 		"SORT": "Trier",
@@ -173,11 +173,11 @@
 	"CONTACTS": {
 		"TAB_CONTACT": "Contact",
 		"TAB_LOCATIONS": "Localisations",
-		"TAB_BUSINESS": "Métier",
+		"TAB_BUSINESS": "professionnel",
 		"LABEL_ORGANIZATION": "Entreprise",
-		"LABEL_DEPARTMENT": "Department",
+		"LABEL_DEPARTMENT": "Service",
 		"LABEL_TITLE": "Titre",
-		"TAB_CRYPTO": "Chiffre",
+		"TAB_CRYPTO": "Chiffrement",
 		"ASK": "Demander",
 		"NEVER": "Jamais",
 		"ALWAYS": "Toujours",
@@ -211,7 +211,7 @@
 		"BUTTON_SYNC": "Synchronisation (CardDAV)"
 	},
 	"COMPOSE": {
-		"LINK_SHOW_INPUTS": "voir tous les champs",
+		"LINK_SHOW_INPUTS": "Voir tous les champs",
 		"BUTTON_SEND": "Envoyer",
 		"BUTTON_MINIMIZE": "Réduire",
 		"SAVED_TIME": "Enregistré à %TIME%",
@@ -234,7 +234,7 @@
 		"BUTTON_REQUIRE_TLS": "Exiger une livraison sécurisée"
 	},
 	"POPUPS_ASK": {
-		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
+		"EXIT_ARE_YOU_SURE": "Êtes-vous sûr de vouloir quitter ?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Êtes-vous sûr de vouloir fermer cette fenêtre ?",
 		"DESC_WANT_DELETE_MESSAGES": "Êtes-vous sûr de vouloir supprimer ce(s) message(s) ?"
 	},
