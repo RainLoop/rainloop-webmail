@@ -173,15 +173,6 @@ export class MailFolderList extends AbstractViewLeft {
 			moveAction(false);
 			return false;
 		});
-
-		AppUserStore.focusedState.subscribe(value => {
-			let el = qs('li a.focused');
-			el?.classList.remove('focused');
-			if (Scope.FolderList === value) {
-				el = qs('li a.selected');
-				el?.classList.add('focused');
-			}
-		});
 	}
 
 	scrollToFocused() {

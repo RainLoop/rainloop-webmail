@@ -7,6 +7,12 @@
 	height: 100%;
 }
 
+.focused .b-folders a.focused {
+	background-color: var(--folders-focused-bg-color, #333);
+	border-left-color: #fff;
+	color: var(--folders-focused-color, #eee);
+}
+
 .b-folders {
 	display: flex;
 	flex-direction: column;
@@ -101,20 +107,10 @@
 					background-color: var(--folders-selected-bg-color, #333);
 					color: var(--folders-selected-color, #eee);
 				}
-
-				&.focused {
-					background-color: var(--folders-focused-bg-color, #333);
-					color: var(--folders-focused-color, #eee);
-				}
 			}
 			&:not(.selectable) {
 				cursor: default;
 				font-style: italic;
-			}
-
-			&.focused {
-				background-color: #888;
-				border-left-color: #fff;
 			}
 
 			&.unread-sub {

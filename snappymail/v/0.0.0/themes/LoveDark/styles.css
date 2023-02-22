@@ -160,10 +160,6 @@ dialog header, dialog footer,
 	filter: invert(1);
 }
 
-.b-folders li a.focused {
-	background-color: #111;
-}
-
 .tabs [id^="tab"]:checked + label {
 	background: linear-gradient(#555 0%, #000 100%);
 }
