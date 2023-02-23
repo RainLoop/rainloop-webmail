@@ -40,7 +40,7 @@ abstract class Service
 		$oHttp = \MailSo\Base\Http::SingletonInstance();
 		if ($oConfig->Get('security', 'force_https', false) && !$oHttp->IsSecure()) {
 			\header('Location: https://'.$oHttp->GetHost(false).$oHttp->GetUrl());
-			exit;
+			return true;
 		}
 
 		// See https://github.com/kjdev/php-ext-brotli
@@ -140,7 +140,7 @@ abstract class Service
 				$login = $oConfig->Get('labs', 'custom_login_link', '');
 				if ($login && !$oActions->getAccountFromToken(false)) {
 					\header("Location: {$login}");
-					exit;
+					return true;
 				}
 			}
 
