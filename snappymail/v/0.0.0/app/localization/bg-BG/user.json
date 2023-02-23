@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Добави акаунт"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Мобилна версия",
-		"BUTTON_DESKTOP_VERSION": "Десктоп версия"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Разширено търсене",
 		"TEXT": "Текст",

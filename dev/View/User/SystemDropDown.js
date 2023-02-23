@@ -12,9 +12,7 @@ import { KeyboardShortcutsHelpPopupView } from 'View/Popup/KeyboardShortcutsHelp
 import { AccountPopupView } from 'View/Popup/Account';
 import { ContactsPopupView } from 'View/Popup/Contacts';
 
-import { doc, leftPanelDisabled, fireEvent, stopEvent, SettingsCapa, registerShortcut } from 'Common/Globals';
-
-import { ThemeStore } from 'Stores/Theme';
+import { fireEvent, stopEvent, SettingsCapa, registerShortcut } from 'Common/Globals';
 
 import Remote from 'Remote/User/Fetch';
 import { getNotification } from 'Common/Translator';
@@ -109,14 +107,6 @@ export class SystemDropDownUserView extends AbstractViewRight {
 
 	contactsClick() {
 		this.allowContacts && showScreenPopup(ContactsPopupView);
-	}
-
-	toggleLayout()
-	{
-		const mobile = !ThemeStore.isMobile();
-		doc.cookie = 'rllayout=' + (mobile ? 'mobile' : 'desktop') + '; samesite=strict';
-		ThemeStore.isMobile(mobile);
-		leftPanelDisabled(mobile);
 	}
 
 	logoutClick() {

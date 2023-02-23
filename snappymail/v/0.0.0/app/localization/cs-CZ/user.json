@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Přidat účet"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobilní verze",
-		"BUTTON_DESKTOP_VERSION": "Desktop verze"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Rozšířené hledání",
 		"TEXT": "Text",

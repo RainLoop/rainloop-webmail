@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Aggiungi account"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Versione mobile",
-		"BUTTON_DESKTOP_VERSION": "Versione desktop"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Ricerca avanzata",
 		"TEXT": "Messaggio",

@@ -4,7 +4,6 @@ const
 	qUri = path => doc.location.pathname.replace(/\/+$/,'') + '/?/' + path,
 	eId = id => doc.getElementById('rl-'+id),
 	admin = '1' == eId('app')?.dataset?.admin,
-	layout = doc.cookie.match(/(^|;) ?rllayout=([^;]+)/) || '',
 
 	toggle = div => {
 		eId('loading').hidden = true;
@@ -40,8 +39,6 @@ try {
 }
 
 let RL_APP_DATA = {};
-
-doc.documentElement.classList.toggle('rl-mobile', 'mobile' === layout[2] || (!layout && 1000 > innerWidth));
 
 window.rl = {
 	adminArea: () => admin,
@@ -109,27 +106,27 @@ window.rl = {
 		init = Object.assign({ headers: {} }, init);
 		init.headers.Accept = 'application/json';
 		return rl.fetch(resource, init, postData).then(response => {
-			if (!response.ok) {
-				return Promise.reject('Network response error: ' + response.status);
-			}
-			/* TODO: use this for non-developers?
-			response.clone()
-			let data = response.text();
-			try {
-				return JSON.parse(data);
-			} catch (e) {
-				console.error(e);
-//				console.log(data);
-				return Promise.reject(Notifications.JsonParse);
-				return {
-					Result: false,
-					ErrorCode: 952, // Notifications.JsonParse
-					ErrorMessage: e.message,
-					ErrorMessageAdditional: data
+			if (response.ok) {
+				/* TODO: use this for non-developers?
+				response.clone()
+				let data = response.text();
+				try {
+					return JSON.parse(data);
+				} catch (e) {
+					console.error(e);
+//					console.log(data);
+					return Promise.reject(Notifications.JsonParse);
+					return {
+						Result: false,
+						ErrorCode: 952, // Notifications.JsonParse
+						ErrorMessage: e.message,
+						ErrorMessageAdditional: data
+					}
 				}
+				*/
+				return response.json();
 			}
-			*/
-			return response.json();
+			return Promise.reject('Network response error: ' + response.status);
 		});
 	}
 };

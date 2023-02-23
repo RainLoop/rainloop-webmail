@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "アカウントを追加"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "モバイル版",
-		"BUTTON_DESKTOP_VERSION": "デスクトップ版"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "高度な検索",
 		"TEXT": "キーワード",

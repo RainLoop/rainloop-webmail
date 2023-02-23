@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Thêm tài khoản"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Phiên bản điện thoại",
-		"BUTTON_DESKTOP_VERSION": "Phiên bản máy tính"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Tìm kiếm nâng cao",
 		"TEXT": "Nội dung trong mail",

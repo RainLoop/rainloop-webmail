@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "ضفّ حساب"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobile version",
-		"BUTTON_DESKTOP_VERSION": "Desktop version"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "البحث المطور",
 		"TEXT": "النص",

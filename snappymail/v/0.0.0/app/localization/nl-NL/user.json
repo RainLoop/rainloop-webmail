@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Account toevoegen"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobiele versie",
-		"BUTTON_DESKTOP_VERSION": "Desktop versie"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Geavanceerd zoeken",
 		"TEXT": "Tekst",

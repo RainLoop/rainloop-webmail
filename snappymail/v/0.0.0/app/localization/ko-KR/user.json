@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "계정 추가"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "모바일 버전",
-		"BUTTON_DESKTOP_VERSION": "데스크탑 버전"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "고급 검색",
 		"TEXT": "본문",

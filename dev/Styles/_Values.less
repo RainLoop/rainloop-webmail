@@ -2,11 +2,16 @@
 @rlLeftWidth: 200px;
 @rlLowMargin: 8px;
 
+/* mobile and tablet */
+@maxMobileWidth: 799px;
+
 :root {
 	--smDialogShrink: 20px;
 	--smMainShadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
-.rl-mobile {
-	/* For Firefox */
-	--smDialogShrink: 25px;
+/* For Firefox */
+@media screen and (max-width: @maxMobileWidth) {
+	:root {
+		--smDialogShrink: 25px;
+	}
 }

@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Lägg till konto"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobilversion",
-		"BUTTON_DESKTOP_VERSION": "Datorversion"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Avancerad sök",
 		"TEXT": "Text",

@@ -73,7 +73,7 @@
 }
 
 /* desktop */
-@media screen and (min-width: 1000px) {
+@media screen and (min-width: @maxMobileWidth + 1px) {
 	.toggleLeft {
 		display: none;
 	}
@@ -86,8 +86,7 @@
 	}
 }
 
-/* mobile and tablet */
-@media screen and (max-width: 999px) {
+@media screen and (max-width: @maxMobileWidth) {
 	#rl-right {
 		min-width: calc(100% - @rlLowMargin);
 	}

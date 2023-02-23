@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Gehitu kontua"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mugikorreko bertsioa",
-		"BUTTON_DESKTOP_VERSION": "Mahaigaineko bertsioa"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Bilaketa aurreratua",
 		"TEXT": "Testua",

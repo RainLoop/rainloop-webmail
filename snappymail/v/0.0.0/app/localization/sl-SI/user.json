@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Dodaj račun"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobilna različica",
-		"BUTTON_DESKTOP_VERSION": "Namizna različica"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Napredno iskanje",
 		"TEXT": "Besedilo",

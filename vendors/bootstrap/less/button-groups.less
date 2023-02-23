@@ -5,12 +5,9 @@
 
 // Make the div behave like a button
 .btn-group {
+  margin-right: 3px;
   position: relative;
   white-space: nowrap; // prevent buttons from wrapping when in tight spaces (e.g., the table on the tests page)
-}
-
-.btn-group + .btn-group {
-  margin-left: 3px;
 }
 
 // Optional: Group multiple button groups together for a toolbar
@@ -18,25 +15,26 @@
   .btn-group {
     display: inline-block;
   }
-  .btn + .btn,
-  .btn-group + .btn,
-  .btn + .btn-group {
-    margin-left: 3px;
+  * {
+    margin-right: 3px;
+  }
+  *:last-child {
+    margin-right: 0;
   }
 }
 
 // Float them, remove border radius, then re-add to first and last elements
-.btn-group > .btn {
-  position: relative;
+.btn-group > * {
   border-radius: 0;
+  position: relative;
+  margin-right: 0;
 }
-.btn-group > .btn + .btn {
+.btn-group > * + * {
   margin-left: -1px;
 }
 
 // Set corners individual because sometimes a single button can be in a .btn-group and we need :first-child and :last-child to both match
 .btn-group > .btn:first-child {
-  margin-left: 0;
   border-top-left-radius: 3px;
   border-bottom-left-radius: 3px;
 }

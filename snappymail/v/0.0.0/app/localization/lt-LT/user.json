@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Pridėti paskyrą"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobili versija",
-		"BUTTON_DESKTOP_VERSION": "Standartinė versija"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Detali paieška",
 		"TEXT": "Laiško Tekstas",

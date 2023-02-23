@@ -96,7 +96,7 @@ export const EditorDefaultType = {
  * @enum {number}
  */
 export const Layout = {
-	NoPreview: 0,
+//	NoPreview: 0,
 	SidePreview: 1,
 	BottomPreview: 2
 };

@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Pievienot kontu"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobilā versija",
-		"BUTTON_DESKTOP_VERSION": "Darba virsmas versija"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Papildus meklēšana",
 		"TEXT": "Teksts",

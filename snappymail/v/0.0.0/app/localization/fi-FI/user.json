@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Lisää tili"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobiiliversio",
-		"BUTTON_DESKTOP_VERSION": "Työpöytäversio"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Tarkka haku",
 		"TEXT": "Teksti",

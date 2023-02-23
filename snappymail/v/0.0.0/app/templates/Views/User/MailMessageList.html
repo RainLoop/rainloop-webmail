@@ -1,19 +1,15 @@
 <div class="btn-toolbar">
-	<!-- ko if: isMobile() -->
 	<a class="btn btn-thin fontastic toggleLeft" data-bind="click: toggleLeftPanel, text: leftPanelDisabled() ? '❯' : '❮'">❮</a>
 	<a class="btn buttonCompose" data-bind="click: composeClick, css: {'btn-warning': composeInEdit, 'btn-success': !composeInEdit()}, visible: mobileCheckedStateHide()" data-i18n="[title]FOLDER_LIST/BUTTON_NEW_MESSAGE">
 		<i class="icon-paper-plane"></i>
 	</a>
-	<!-- /ko -->
 	<a class="btn" data-bind="click: reload, visible: mobileCheckedStateHide()" data-i18n="[title]MESSAGE_LIST/BUTTON_RELOAD">
 		<i class="icon-spinner not-animated"></i>
 	</a>
-	<div class="btn-group" data-bind="visible: mobileCheckedStateShow()">
-		<a href="#" tabindex="-1" class="btn" data-bind="command: moveCommand" data-i18n="[title]GLOBAL/MOVE_TO">
-			<i class="icon-copy visible-on-ctrl-btn"></i>
-			<i class="fontastic hidden-on-ctrl-btn">📁</i>
-		</a>
-	</div>
+	<a href="#" tabindex="-1" class="btn" data-bind="visible: mobileCheckedStateShow(), command: moveCommand" data-i18n="[title]GLOBAL/MOVE_TO">
+		<i class="icon-copy visible-on-ctrl-btn"></i>
+		<i class="fontastic hidden-on-ctrl-btn">📁</i>
+	</a>
 	<div class="btn-group" data-bind="visible: mobileCheckedStateShow()">
 		<a class="btn fontastic" data-bind="visible: archiveAllowed, command: archiveCommand" data-i18n="[title]GLOBAL/TO_ARCHIVE">🗄</a>
 		<a class="btn fontastic" data-bind="visible: canMarkAsSpam, command: spamCommand" data-i18n="[title]GLOBAL/SPAM">⚠</a>

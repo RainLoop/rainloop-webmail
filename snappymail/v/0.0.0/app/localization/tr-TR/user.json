@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Hesap Ekle"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobil versiyonu",
-		"BUTTON_DESKTOP_VERSION": "Masaüstü versiyonu"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Detaylı Arama",
 		"TEXT": "Metin",

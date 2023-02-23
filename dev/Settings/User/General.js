@@ -86,7 +86,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 			layoutTypes: () => {
 				translateTrigger();
 				return [
-					{ id: Layout.NoPreview, name: i18n('SETTINGS_GENERAL/LAYOUT_NO_SPLIT') },
+					{ id: 0, name: i18n('SETTINGS_GENERAL/LAYOUT_NO_SPLIT') },
 					{ id: Layout.SidePreview, name: i18n('SETTINGS_GENERAL/LAYOUT_VERTICAL_SPLIT') },
 					{ id: Layout.BottomPreview, name: i18n('SETTINGS_GENERAL/LAYOUT_HORIZONTAL_SPLIT') }
 				];

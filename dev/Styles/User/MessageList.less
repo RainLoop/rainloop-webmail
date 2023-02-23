@@ -1,33 +1,6 @@
 
-html.rl-mobile, html.rl-no-preview-pane {
-	.message-selected #V-MailMessageList {
-		display: none;
-	}
-}
-
 #V-MailMessageList {
 	position: relative;
-}
-.rl-side-preview-pane #V-MailMessageList {
-	height: 100%;
-}
-.rl-no-preview-pane #V-MailMessageList {
-	height: 100%;
-	width: 100%;
-}
-.rl-side-preview-pane #V-MailMessageList .messageList {
-	max-width: 50vw;
-	min-width: 320px;
-	overflow: auto;
-	resize: horizontal;
-	width: 35vw;
-}
-.rl-bottom-preview-pane #V-MailMessageList .messageList {
-	height: 35vh;
-	max-height: 50vh;
-	min-height: 200px;
-	overflow: auto;
-	resize: vertical;
 }
 
 #V-MailMessageList.focused .messageList {
@@ -192,18 +165,6 @@ html.rl-mobile, html.rl-no-preview-pane {
 			padding: 3px 5px;
 			background-color: #f4f4f4;
 			text-align: center;
-		}
-	}
-}
-
-html:not(.rl-mobile) {
-	.hideMessageListCheckbox {
-		.checkboxCheckAll {
-			visibility: hidden;
-		}
-
-		.messageCheckbox {
-			display: none;
 		}
 	}
 }
@@ -396,11 +357,49 @@ html:not(.rl-mobile) {
 	}
 }
 
-@media screen and (min-width: 1000px) {
+html:not(.rl-bottom-preview-pane):not(.rl-side-preview-pane) {
+	.message-selected #V-MailMessageList {
+		display: none;
+	}
+	#V-MailMessageList {
+		height: 100%;
+		width: 100%;
+	}
+}
+
+@media screen and (min-width: @maxMobileWidth + 1px) {
 	.messageList {
 		.listDragOver {
 			transition: all 400ms ease;
 		}
+	}
+
+	.hideMessageListCheckbox {
+		.checkboxCheckAll {
+			visibility: hidden;
+		}
+		.checkboxMessage {
+			display: none;
+		}
+	}
+
+	.rl-side-preview-pane #V-MailMessageList {
+		height: 100%;
+	}
+	.rl-side-preview-pane #V-MailMessageList .messageList {
+		max-width: 50vw;
+		min-width: 320px;
+		overflow: auto;
+		resize: horizontal;
+		width: 35vw;
+	}
+
+	.rl-bottom-preview-pane #V-MailMessageList .messageList {
+		height: 35vh;
+		max-height: 50vh;
+		min-height: 200px;
+		overflow: auto;
+		resize: vertical;
 	}
 }
 

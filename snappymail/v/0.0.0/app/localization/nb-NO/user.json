@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Legg til konto"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobilversjon",
-		"BUTTON_DESKTOP_VERSION": "Skrivebordsversjon"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Avansert søk",
 		"TEXT": "Tekst",

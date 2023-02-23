@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "添加帳戶"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobile version",
-		"BUTTON_DESKTOP_VERSION": "Desktop version"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "高級搜索",
 		"TEXT": "內容",

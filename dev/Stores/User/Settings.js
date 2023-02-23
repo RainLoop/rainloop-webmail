@@ -49,11 +49,10 @@ export const SettingsUserStore = new class {
 
 		self.init();
 
-		self.usePreviewPane = koComputable(() => Layout.NoPreview !== self.layout() && !ThemeStore.isMobile());
+		self.usePreviewPane = koComputable(() => self.layout() && !ThemeStore.isMobile());
 
 		const toggleLayout = () => {
-			const value = ThemeStore.isMobile() ? Layout.NoPreview : self.layout();
-			$htmlCL.toggle('rl-no-preview-pane', Layout.NoPreview === value);
+			const value = ThemeStore.isMobile() ? 0 : self.layout();
 			$htmlCL.toggle('rl-side-preview-pane', Layout.SidePreview === value);
 			$htmlCL.toggle('rl-bottom-preview-pane', Layout.BottomPreview === value);
 			fireEvent('rl-layout', value);

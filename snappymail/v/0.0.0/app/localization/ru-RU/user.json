@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Добавить ещё аккаунт"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Мобильная версия",
-		"BUTTON_DESKTOP_VERSION": "Полная версия"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Расширенный поиск писем",
 		"TEXT": "Текст",

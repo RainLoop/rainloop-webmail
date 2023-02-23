@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Додати ще акаунт"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Мобільна версія",
-		"BUTTON_DESKTOP_VERSION": "Повна версія"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Розширений пошук листів",
 		"TEXT": "Текст",

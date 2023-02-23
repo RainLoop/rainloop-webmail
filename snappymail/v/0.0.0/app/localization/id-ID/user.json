@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Tambah Akun"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Versi Mobile",
-		"BUTTON_DESKTOP_VERSION": "Versi Desktop"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Pencarian Rinci",
 		"TEXT": "Teks",

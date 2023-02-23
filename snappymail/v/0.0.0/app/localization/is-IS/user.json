@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Bæta við aðgangi"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Farsímaútgáfa",
-		"BUTTON_DESKTOP_VERSION": "Vinnutölvuútgáfa"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Ítarleg leit",
 		"TEXT": "Texti",

@@ -8,6 +8,9 @@ import { addSubscribablesTo } from 'External/ko';
 let __themeTimer = 0;
 
 export const
+	// Also see Styles/_Values.less @maxMobileWidth
+	isMobile = matchMedia('(max-width: 799px)'),
+
 	ThemeStore = {
 		theme: ko.observable(''),
 		themes: ko.observableArray(),
@@ -16,7 +19,7 @@ export const
 		fontSansSerif: ko.observable(''),
 		fontSerif: ko.observable(''),
 		fontMono: ko.observable(''),
-		isMobile: ko.observable($htmlCL.contains('rl-mobile')),
+		isMobile: ko.observable(false),
 
 		populate: () => {
 			const themes = Settings.app('themes');
@@ -62,8 +65,6 @@ export const
 	convertThemeName = theme => theme.replace(/@[a-z]+$/, '').replace(/([A-Z])/g, ' $1').trim();
 
 addSubscribablesTo(ThemeStore, {
-	isMobile: value => $htmlCL.toggle('rl-mobile', value),
-
 	fontSansSerif: value => {
 		if (null != value) {
 			let cl = appEl.classList;
@@ -97,3 +98,9 @@ addSubscribablesTo(ThemeStore, {
 		appEl.style.backgroundImage = value ? "url("+serverRequestRaw('UserBackground', value)+")" : null;
 	}
 });
+
+isMobile.onchange = e => {
+	ThemeStore.isMobile(e.matches);
+	$htmlCL.toggle('rl-mobile', e.matches);
+};
+isMobile.onchange(isMobile);

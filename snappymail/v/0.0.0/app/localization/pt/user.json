@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Adicionar conta"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Versão móvel",
-		"BUTTON_DESKTOP_VERSION": "Versão computador"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Pesquisa avançada",
 		"TEXT": "Texto",

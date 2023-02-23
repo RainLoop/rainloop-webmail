@@ -1,5 +1,3 @@
-import { mailbox } from 'Common/Links';
-import { getFolderInboxName } from 'Common/Cache';
 import { leftPanelDisabled, toggleLeftPanel } from 'Common/Globals';
 
 import { MessageUserStore } from 'Stores/User/Message';
@@ -24,9 +22,5 @@ export class SettingsPaneUserView extends AbstractViewRight {
 		dom.addEventListener('click', () =>
 			ThemeStore.isMobile() && !event.target.closestWithin('.toggleLeft', dom) && leftPanelDisabled(true)
 		);
-	}
-
-	backToInbox() {
-		hasher.setHash(mailbox(getFolderInboxName()));
 	}
 }

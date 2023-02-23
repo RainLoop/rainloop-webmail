@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Fiók hozzáadás"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobil verzió",
-		"BUTTON_DESKTOP_VERSION": "Asztali verzió"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Részletes keresés",
 		"TEXT": "Szöveg",

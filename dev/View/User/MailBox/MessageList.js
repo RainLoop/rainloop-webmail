@@ -573,7 +573,7 @@ export class MailMessageList extends AbstractViewRight {
 				fToggle = () => {
 					let layout = SettingsUserStore.layout();
 					setLayoutResizer(top, ClientSideKeyNameMessageListSize,
-						(ThemeStore.isMobile() || Layout.NoPreview === layout)
+						(ThemeStore.isMobile() || !layout)
 							? 0
 							: (Layout.SidePreview === layout ? 'Width' : 'Height')
 					);

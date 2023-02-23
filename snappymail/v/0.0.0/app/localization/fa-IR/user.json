@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "ساخت کاربر"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "نسخه موبایل",
-		"BUTTON_DESKTOP_VERSION": "نسخه رومیزی"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "جستجوی پیشرفته",
 		"TEXT": "متن",

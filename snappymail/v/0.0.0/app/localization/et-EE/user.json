@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Lisa konto"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobiiliversioon",
-		"BUTTON_DESKTOP_VERSION": "Töölauaversioon"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Täpsem otsing",
 		"TEXT": "Tekst",

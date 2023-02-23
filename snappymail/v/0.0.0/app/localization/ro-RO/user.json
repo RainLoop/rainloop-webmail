@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Adaugă un cont"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Versiunea de mobil",
-		"BUTTON_DESKTOP_VERSION": "Versiunea desktop"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Căutare avansată",
 		"TEXT": "Conținut",
