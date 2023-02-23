@@ -13,7 +13,6 @@ import {
 
 import {
 	elementById,
-	leftPanelDisabled,
 	keyScopeReal,
 	Settings,
 	SettingsCapa,
@@ -39,7 +38,6 @@ import { AccountUserStore } from 'Stores/User/Account';
 import { FolderUserStore, isAllowedKeyword } from 'Stores/User/Folder';
 import { MessageUserStore } from 'Stores/User/Message';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
-import { ThemeStore } from 'Stores/Theme';
 
 import * as Local from 'Storage/Client';
 
