@@ -146,10 +146,6 @@ export class MailMessageList extends AbstractViewRight {
 				return c && MessagelistUserStore().length > c;
 			},
 
-			mobileCheckedStateShow: () => ThemeStore.isMobile() ? MessagelistUserStore.hasChecked() : 1,
-
-			mobileCheckedStateHide: () => ThemeStore.isMobile() ? !MessagelistUserStore.hasChecked() : 1,
-
 			listGrouped: () => {
 				let uid = MessagelistUserStore.threadUid(),
 					sort = FolderUserStore.sortMode() || 'DATE';
@@ -410,7 +406,7 @@ export class MailMessageList extends AbstractViewRight {
 	}
 
 	moveCommand(vm, event) {
-		if (this.mobileCheckedStateShow()) {
+		if (MessagelistUserStore.hasChecked()) {
 			if (vm && event?.preventDefault) {
 				stopEvent(event);
 			}

@@ -1,5 +1,5 @@
 import { Scope } from 'Common/Enums';
-import { doc, createElement, leftPanelDisabled, Settings } from 'Common/Globals';
+import { doc, createElement, Settings } from 'Common/Globals';
 import { pString, pInt } from 'Common/Utils';
 import { moveAction } from 'Common/UtilsUser';
 import { getFolderFromCacheList, getFolderFullName, getFolderInboxName } from 'Common/Cache';
@@ -9,7 +9,6 @@ import { AppUserStore } from 'Stores/User/App';
 import { AccountUserStore } from 'Stores/User/Account';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
-import { ThemeStore } from 'Stores/Theme';
 
 import { SystemDropDownUserView } from 'View/User/SystemDropDown';
 import { MailFolderList } from 'View/User/MailBox/FolderList';
@@ -57,11 +56,8 @@ export class MailBoxUserScreen extends AbstractScreen {
 	 */
 	onShow() {
 		this.updateWindowTitle();
-
 		AppUserStore.focusedState('none');
 		AppUserStore.focusedState(Scope.MessageList);
-
-		ThemeStore.isMobile() && leftPanelDisabled(true);
 	}
 
 	/**

@@ -280,8 +280,6 @@ export class MailMessageView extends AbstractViewRight {
 	onBuild(dom) {
 		const eqs = (ev, s) => ev.target.closestWithin(s, dom);
 		dom.addEventListener('click', event => {
-			ThemeStore.isMobile() && leftPanelDisabled(true);
-
 			let el = eqs(event, 'a');
 			if (el && 0 === event.button && mailToHelper(el.href)) {
 				stopEvent(event);

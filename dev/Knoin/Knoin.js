@@ -4,6 +4,9 @@ import { doc, $htmlCL, elementById, createElement, fireEvent } from 'Common/Glob
 import { forEachObjectEntry } from 'Common/Utils';
 import { i18nToNodes } from 'Common/Translator';
 
+import { leftPanelDisabled } from 'Common/Globals';
+import { ThemeStore } from 'Stores/Theme';
+
 let
 	currentScreen = null,
 	defaultScreenName = '';
@@ -151,6 +154,7 @@ const
 			vm.onHide?.();
 			destroy && vm.viewModelDom.remove();
 		});
+		ThemeStore.isMobile() && leftPanelDisabled(true);
 	},
 
 	/**

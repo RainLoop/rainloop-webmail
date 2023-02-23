@@ -1,16 +1,16 @@
-<div class="btn-toolbar">
+<div class="btn-toolbar" data-bind="css: {'hasChecked':checkAll}">
 	<a class="btn btn-thin fontastic toggleLeft" data-bind="click: toggleLeftPanel, text: leftPanelDisabled() ? '❯' : '❮'">❮</a>
-	<a class="btn buttonCompose" data-bind="click: composeClick, css: {'btn-warning': composeInEdit, 'btn-success': !composeInEdit()}, visible: mobileCheckedStateHide()" data-i18n="[title]FOLDER_LIST/BUTTON_NEW_MESSAGE">
+	<a class="btn buttonCompose" data-bind="click: composeClick, css: {'btn-warning': composeInEdit, 'btn-success': !composeInEdit()}" data-i18n="[title]FOLDER_LIST/BUTTON_NEW_MESSAGE">
 		<i class="icon-paper-plane"></i>
 	</a>
-	<a class="btn" data-bind="click: reload, visible: mobileCheckedStateHide()" data-i18n="[title]MESSAGE_LIST/BUTTON_RELOAD">
+	<a class="btn onCheckedHide" data-bind="click: reload" data-i18n="[title]MESSAGE_LIST/BUTTON_RELOAD">
 		<i class="icon-spinner not-animated"></i>
 	</a>
-	<a href="#" tabindex="-1" class="btn" data-bind="visible: mobileCheckedStateShow(), command: moveCommand" data-i18n="[title]GLOBAL/MOVE_TO">
+	<a href="#" tabindex="-1" class="btn onCheckedShow" data-bind="command: moveCommand" data-i18n="[title]GLOBAL/MOVE_TO">
 		<i class="icon-copy visible-on-ctrl-btn"></i>
 		<i class="fontastic hidden-on-ctrl-btn">📁</i>
 	</a>
-	<div class="btn-group" data-bind="visible: mobileCheckedStateShow()">
+	<div class="btn-group onCheckedShow">
 		<a class="btn fontastic" data-bind="visible: archiveAllowed, command: archiveCommand" data-i18n="[title]GLOBAL/TO_ARCHIVE">🗄</a>
 		<a class="btn fontastic" data-bind="visible: canMarkAsSpam, command: spamCommand" data-i18n="[title]GLOBAL/SPAM">⚠</a>
 		<a class="btn" data-bind="visible: isSpamFolder, command: notSpamCommand" data-i18n="[title]GLOBAL/NOT_SPAM">
@@ -68,7 +68,7 @@
 			</li>
 		</menu>
 	</div>
-	<div class="btn-group dropdown sortFolder" data-bind="visible: sortSupported() && mobileCheckedStateHide(), registerBootstrapDropdown: true, openDropdownTrigger: sortDropdownTrigger">
+	<div class="btn-group dropdown sortFolder" data-bind="visible: sortSupported(), registerBootstrapDropdown: true, openDropdownTrigger: sortDropdownTrigger">
 		<a id="sort-list-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1" data-i18n="[title]MESSAGE_LIST/SORT" data-bind="text: sortText">⬇</a>
 		<menu class="dropdown-menu" role="menu" aria-labelledby="sort-list-dropdown-id">
 			<li role="presentation" data-sort="" data-bind="click: changeSort">

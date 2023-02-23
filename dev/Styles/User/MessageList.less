@@ -367,6 +367,19 @@ html:not(.rl-bottom-preview-pane):not(.rl-side-preview-pane) {
 	}
 }
 
+@media screen and (max-width: @maxMobileWidth) {
+	#V-MailMessageList .btn-toolbar:not(.hasChecked) .onCheckedShow {
+		display: none;
+	}
+	#V-MailMessageList .hasChecked {
+		.buttonCompose,
+		.onCheckedHide,
+		.sortFolder {
+			display: none;
+		}
+	}
+}
+
 @media screen and (min-width: @maxMobileWidth + 1px) {
 	.messageList {
 		.listDragOver {
