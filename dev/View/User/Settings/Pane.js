@@ -9,7 +9,6 @@ export class SettingsPaneUserView extends AbstractViewRight {
 	constructor() {
 		super();
 
-		this.isMobile = ThemeStore.isMobile;
 		this.leftPanelDisabled = leftPanelDisabled;
 		this.toggleLeftPanel = toggleLeftPanel;
 	}

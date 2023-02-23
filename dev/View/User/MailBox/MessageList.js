@@ -90,7 +90,7 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.composeInEdit = ComposePopupView.inEdit;
 
-		this.isMobile = ThemeStore.isMobile;
+		this.isMobile = ThemeStore.isMobile; // Obsolete
 		this.leftPanelDisabled = leftPanelDisabled;
 		this.toggleLeftPanel = toggleLeftPanel;
 
