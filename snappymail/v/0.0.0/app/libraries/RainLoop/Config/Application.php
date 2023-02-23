@@ -171,7 +171,10 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'message_read_delay'          => array(5, 'Mark message read after N seconds'),
 
 				'attachment_size_limit'       => array(\min($upload_max_filesize, 25), 'File size limit (MB) for file upload on compose screen
-0 for unlimited.')
+0 for unlimited.'),
+
+				'compress_output' => array(false, 'brotli or gzip compress the output.
+Warning: only enable when server does not do this, else double compression errors occur')
 			),
 
 			'interface' => array(

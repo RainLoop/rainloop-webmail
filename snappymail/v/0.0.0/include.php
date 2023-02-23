@@ -134,22 +134,6 @@ if (isset($_SERVER['HTTPS'])) {
 	header('Strict-Transport-Security: max-age=31536000');
 }
 
-// See https://github.com/kjdev/php-ext-brotli
-if (!ini_get('zlib.output_compression') && !ini_get('brotli.output_compression')) {
-	if (defined('USE_BROTLI') && is_callable('brotli_compress_add') && false !== stripos($_SERVER['HTTP_ACCEPT_ENCODING'], 'br')) {
-		ob_start(function(string $buffer, int $phase){
-			static $resource;
-			if ($phase & PHP_OUTPUT_HANDLER_START) {
-				header('Content-Encoding: br');
-				$resource = brotli_compress_init(/*int $quality = 11, int $mode = BROTLI_GENERIC*/);
-			}
-			return brotli_compress_add($resource, $buffer, ($phase & PHP_OUTPUT_HANDLER_FINAL) ? BROTLI_FINISH : BROTLI_PROCESS);
-		});
-	} else if (defined('USE_GZIP')) {
-		ob_start('ob_gzhandler');
-	}
-}
-
 // cPanel https://github.com/the-djmaze/snappymail/issues/697
 if (!empty($_ENV['CPANEL']) && !is_dir(APP_PLUGINS_PATH.'login-remote')) {
 	require __DIR__ . '/cpanel.php';
