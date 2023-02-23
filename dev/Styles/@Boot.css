@@ -1,7 +1,7 @@
 :root {
-	--fontSans: Verdana, Geneva, "Bitstream Vera Sans", "DejaVu LGC Sans", Arial, sans-serif;
-	--fontSerif: "Nimbus Roman No9 L", "Times New Roman", Times, FreeSerif, serif;
-	--fontMono: "Liberation Mono", Monaco, Menlo, Consolas, "Courier New", FreeMono, Courier, monospace;
+	--fontSans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	--fontSerif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+	--fontMono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 #rl-app.fontArial {
