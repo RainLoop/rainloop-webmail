@@ -37,9 +37,9 @@ const
 
 	urlRegExp = /https?:\/\/[^\p{C}\p{Z}]+[^\p{C}\p{Z}.]/gu,
 	// eslint-disable-next-line max-len
-	email = /((?:[^"(),.:;<>@[\]\\\p{C}\p{Z}]+(?:\.[^"(),.:;<>@[\]\\\p{C}\p{Z}]+)*|"(?:\\?[^"\\\p{C}\p{Z}])*")@[^@\p{C}\p{Z}]+[^@\p{C}\p{Z}.])/gui,
+	email = /(^|\r|\n|\p{C}\p{Z})((?:[^"(),.:;<>@[\]\\\p{C}\p{Z}]+(?:\.[^"(),.:;<>@[\]\\\p{C}\p{Z}]+)*|"(?:\\?[^"\\\p{C}\p{Z}])*")@[^@\p{C}\p{Z}]+[^@\p{C}\p{Z}.])/gui,
 	// rfc3966
-	tel = /(^|\s|\n|\/?>)(tel:(\+[0-9().-]+|[0-9*#().-]+(;phone-context=\+[0-9+().-]+)?))/g,
+	tel = /(tel:(\+[0-9().-]+|[0-9*#().-]+(;phone-context=\+[0-9+().-]+)?))/g,
 
 	// Strip tracking
 	/** TODO: implement other url strippers like from
@@ -717,8 +717,8 @@ export const
 				m[0] = stripTracking(m[0]);
 				return `<a href="${m[0]}" target="_blank">${m[0]}</a>`;
 			})
-			.replace(email, '<a href="mailto:$1">$1</a>')
-			.replace(tel, '$1<a href="$2">$2</a>')
+			.replace(email, '$1<a href="mailto:$2">$2</a>')
+			.replace(tel, '<a href="$1">$1</a>')
 			.replace(/~~~blockquote~~~\s*/g, '<blockquote>')
 			.replace(/\s*~~~\/blockquote~~~/g, '</blockquote>')
 			.replace(/\n/g, '<br>');
