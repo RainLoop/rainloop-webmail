@@ -87,8 +87,7 @@ export class Selector {
 		 * Below code is used to keep checked/focused/selected states when array is refreshed.
 		 */
 
-		let aCache = [],
-			aCheckedCache = [],
+		let aCheckedCache = [],
 			mFocused = null,
 			mSelected = null;
 
@@ -99,7 +98,6 @@ export class Selector {
 					items.forEach(item => {
 						const uid = this.getItemUid(item);
 						if (uid) {
-							aCache.push(uid);
 							item.checked() && aCheckedCache.push(uid);
 							if (!mFocused && item.focused()) {
 								mFocused = uid;
@@ -118,8 +116,7 @@ export class Selector {
 		koList.subscribe(aItems => {
 			selectedItemUseCallback = false;
 
-			koFocusedItem(null);
-			koSelectedItem(null);
+			this.unselect();
 
 			if (isArray(aItems)) {
 				let temp,
@@ -182,7 +179,6 @@ export class Selector {
 				}
 			}
 
-			aCache = [];
 			aCheckedCache = [];
 			mFocused = null;
 			mSelected = null;
