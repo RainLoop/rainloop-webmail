@@ -155,7 +155,7 @@ mailToHelper = mailToUrl => {
 		mailToUrl = mailToUrl.slice(7).split('?');
 
 		const
-			email = mailToUrl[0],
+			email = decodeURIComponent(mailToUrl[0]),
 			params = new URLSearchParams(mailToUrl[1]),
 			to = params.get('to'),
 			toEmailModel = value => EmailCollectionModel.fromString(value);
