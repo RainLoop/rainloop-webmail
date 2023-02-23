@@ -322,7 +322,7 @@ MessagelistUserStore.setAction = (sFolderFullName, iSetAction, messages) => {
 			case MessageSetAction.UnsetSeen:
 				folder = getFolderFromCacheList(sFolderFullName);
 				if (folder) {
-					folder.unreadEmails(folder.unreadEmails() - alreadyUnread + length);
+					folder.unreadEmails(Math.max(0, folder.unreadEmails() - alreadyUnread + length));
 				}
 				Remote.request('MessageSetSeen', null, {
 					folder: sFolderFullName,
@@ -378,9 +378,7 @@ MessagelistUserStore.removeMessagesFromList = (
 			);
 
 			if (0 < unseenCount) {
-				fromFolder.unreadEmails(
-					0 <= fromFolder.unreadEmails() - unseenCount ? fromFolder.unreadEmails() - unseenCount : 0
-				);
+				fromFolder.unreadEmails(Math.max(0, fromFolder.unreadEmails() - unseenCount));
 			}
 		}
 	}
