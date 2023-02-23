@@ -102,5 +102,6 @@ addSubscribablesTo(ThemeStore, {
 isMobile.onchange = e => {
 	ThemeStore.isMobile(e.matches);
 	$htmlCL.toggle('rl-mobile', e.matches);
+	leftPanelDisabled(e.matches);
 };
 isMobile.onchange(isMobile);

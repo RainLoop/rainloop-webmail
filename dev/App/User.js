@@ -182,7 +182,6 @@ export class AppUser extends AbstractApp {
 	bootstart() {
 		super.bootstart();
 
-		addEventListener('resize', () => leftPanelDisabled(ThemeStore.isMobile() || 1000 > innerWidth));
 		addEventListener('beforeunload', event => {
 			if (arePopupsVisible() || (ThemeStore.isMobile() && MessageUserStore.message())) {
 				event.preventDefault();
