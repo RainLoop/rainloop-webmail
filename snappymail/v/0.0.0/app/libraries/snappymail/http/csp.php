@@ -64,6 +64,13 @@ class CSP
 		$this->directives[$directive][] = $source;
 	}
 
+	public function get(string $directive) : array
+	{
+		return isset($this->directives[$directive])
+			? $this->directives[$directive]
+			: [];
+	}
+
 	public function setHeaders() : void
 	{
 		if ($this->report_only) {
