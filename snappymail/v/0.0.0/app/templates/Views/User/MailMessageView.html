@@ -291,20 +291,20 @@
 								</menu>
 							</div>
 						</div>
-					</div>
 
-					<!-- ko if: message()?.pgpEncrypted() -->
-					<div class="openpgp-control encrypted" data-bind="i18nUpdate: message, css: {'success': message().pgpDecrypted()}">
-						<span data-icon="🔒" data-i18n="OPENPGP/ENCRYPTED_MESSAGE"></span>
-						<button class="btn" data-bind="visible: pgpSupported, click: pgpDecrypt" data-i18n="OPENPGP/BUTTON_DECRYPT"></button>
+						<div data-bind="visible: message().pgpEncrypted()">
+							<div class="openpgp-control encrypted" data-bind="css: {'success': message().pgpDecrypted()}">
+								<span data-icon="🔒" data-i18n="OPENPGP/ENCRYPTED_MESSAGE"></span>
+								<button class="btn" data-bind="visible: pgpSupported, click: pgpDecrypt" data-i18n="OPENPGP/BUTTON_DECRYPT"></button>
+							</div>
+						</div>
+						<div data-bind="visible: message().pgpSigned()">
+							<div class="openpgp-control signed" data-bind="css: {'success': message().pgpVerified() && message().pgpVerified().success, 'error': message().pgpVerified() && !message().pgpVerified().success}">
+								<span data-icon="✍" data-i18n="OPENPGP/SIGNED_MESSAGE"></span>
+								<button class="btn" data-bind="visible: pgpSupported, click: pgpVerify" data-i18n="OPENPGP/BUTTON_VERIFY"></button>
+							</div>
+						</div>
 					</div>
-					<!-- /ko -->
-					<!-- ko if: message()?.pgpSigned() -->
-					<div class="openpgp-control signed" data-bind="i18nUpdate: message, css: {'success': message().pgpVerified() && message().pgpVerified().success, 'error': message().pgpVerified() && !message().pgpVerified().success}">
-						<span data-icon="✍" data-i18n="OPENPGP/SIGNED_MESSAGE"></span>
-						<button class="btn" data-bind="visible: pgpSupported, click: pgpVerify" data-i18n="OPENPGP/BUTTON_VERIFY"></button>
-					</div>
-					<!-- /ko -->
 
 					<div class="bodyText"></div>
 				</div>

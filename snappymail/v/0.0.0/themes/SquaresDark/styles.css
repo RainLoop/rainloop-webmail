@@ -6,7 +6,11 @@
 	--main-color: #fff;
 	--main-bg-color: #3C454D;
 	--main-bg-image: url("images/background.jpg");
+	--link-color: #6AE;
 	--border-color: #555;
+	--hr-color: #666;
+
+	--panel-bg-clr: #000;
 
 	/* LOADING */
 	--loading-color: #ddd;
@@ -39,17 +43,26 @@
 	--folders-drop-bg-color: rgba(0,0,0,0.5);
 
 	/* SETTINGS */
-	--settings-bg-clr: #000;
 	--settings-menu-color: #fff;
 	--settings-menu-selected-color: #fff;
 	--settings-menu-selected-bg-color: rgba(0,0,0,0.5);
 	--settings-menu-hover-color: #fff;
 	--settings-menu-hover-bg-color: rgba(0,0,0,0.5);
 
-	/* MESSAGE LIST */
+	/* MESSAGES */
 	--message-list-toolbar-bg-color: #222;
+	--message-header-bg-clr: #222;
+
+	/* DIALOGS */
+	--dialog-clr: #fff;
+	--dialog-bg-clr: #000;
+	--dialog-border-clr: #555;
 
 	/* FORMS */
+	--btn-clr: #fff;
+	--btn-bg-clr: #000;
+	--btn-border-clr: rgba(255,255,255,.20);
+
 	--input-clr: #fff;
 	--input-bg-clr: #000;
 	--input-border-clr: #aaa;
@@ -69,16 +82,11 @@
 
 .thm-message-list-top-toolbar, .thm-message-list-bottom-toolbar {
 	background-image: linear-gradient(to bottom,#444,#111) !important;
-	background-repeat: repeat-x !important;
-	color: var(--main-color);
 }
 
 .btn:not(.btn-success):not(.btn-warning):not(.btn-danger) {
-	border-color: rgba(255,255,255,.15) rgba(255,255,255,.15) rgba(255,255,255,.25);
 	box-shadow: inset 0 1px 0 rgba(0,0,0,.2), 0 1px 2px rgba(255,255,255,.05);
-	color: var(--main-color);
 	text-shadow: 0 -1px 0 rgba(255,255,255,.25);
-	background-color: #000;
 }
 .btn:not(.btn-success):not(.btn-warning):not(.btn-danger).active,
 .btn:not(.btn-success):not(.btn-warning):not(.btn-danger):active {
@@ -88,45 +96,9 @@
 	border-color: #333;
 	border-top-color: #ccc;
 }
-.btn .caret {
-	border-top-color: var(--main-color);
-}
-
-#rl-popups > dialog,
-.messageList,
-.messageView,
-.alert-info,
-#V-PopupsCompose .b-attachment-place {
-	background-color: #000;
-	border-color: #555;
-	color: var(--main-color);
-}
-
-.legend,
-.messageView #messageItem {
-	color: var(--main-color);
-}
-
-.rl-mobile .squire-toolbar,
-#V-PopupsCompose .b-attachment-place.dragAndDropOver {
-	background-color: #222;
-}
-
-.g-ui-link,
-.messageView .messageItemHeader .informationShort a,
-.messageView #messageItem .bodyText .b-text-part a {
-	color: #6AE;
-}
-
-.messageView .messageItemHeader,
-.messageView #messageItem .bodySubHeader > * {
-	background-color: #222;
-	border-bottom-color: #444;
-}
 
 .messageListItem {
 	border-left-color: #111;
-	color: #EEE;
 }
 
 .table-hover tbody tr:hover td,
@@ -149,10 +121,6 @@
 
 .select, select {
 	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIGhlaWdodD0nMTBweCcgd2lkdGg9JzE1cHgnPjx0ZXh0IHg9JzAnIHk9JzEwJyBmaWxsPSdyZ2IoMjU1LDI1NSwyNTUpJz7ilr48L3RleHQ+PC9zdmc+);
-}
-
-hr {
-	border-color: #666;
 }
 
 #messageItem .b-text-part blockquote,
