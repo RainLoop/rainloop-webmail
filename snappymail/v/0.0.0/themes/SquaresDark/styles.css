@@ -39,6 +39,7 @@
 	--folders-drop-bg-color: rgba(0,0,0,0.5);
 
 	/* SETTINGS */
+	--settings-bg-clr: #000;
 	--settings-menu-color: #fff;
 	--settings-menu-selected-color: #fff;
 	--settings-menu-selected-bg-color: rgba(0,0,0,0.5);
@@ -92,7 +93,6 @@
 }
 
 #rl-popups > dialog,
-#rl-settings-subscreen,
 .messageList,
 .messageView,
 .alert-info,

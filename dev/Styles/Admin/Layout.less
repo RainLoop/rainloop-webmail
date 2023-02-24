@@ -39,6 +39,14 @@
 	height: calc(100% - 50px - @rlLowMargin);
 	margin: 50px @rlLowMargin 0 0;
 
+	background-color: var(--settings-bg-clr, #fff);
+	border: 1px solid var(--border-color, #aaa);
+	border-radius: var(--border-radius, 5px);
+	box-shadow: var(--smMainShadow);
+	overflow-y: auto;
+	padding: 20px;
+	scroll-behavior: smooth;
+
 	> .b-toolbar {
 		color: #fff;
 		display: flex;
@@ -59,17 +67,6 @@
 .btn.btn-logout {
 	padding-left: 12px;
 	padding-right: 12px;
-}
-
-#rl-settings-subscreen {
-	background-color: var(--settings-bg-clr, #fff);
-	border: 1px solid var(--border-color, #aaa);
-	border-radius: var(--border-radius, 5px);
-	box-shadow: var(--smMainShadow);
-	height: 100%;
-	overflow-y: auto;
-	padding: 20px;
-	scroll-behavior: smooth;
 }
 
 /* desktop */
@@ -93,9 +90,6 @@
 
 	#V-AdminPane {
 		margin-right: 0;
-	}
-
-	#rl-settings-subscreen {
 		padding: 10px;
 	}
 

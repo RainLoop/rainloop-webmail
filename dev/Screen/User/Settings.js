@@ -22,7 +22,7 @@ import { SettingsPaneUserView } from 'View/User/Settings/Pane';
 
 export class SettingsUserScreen extends AbstractSettingsScreen {
 	constructor() {
-		super([SystemDropDownUserView, SettingsMenuUserView, SettingsPaneUserView]);
+		super([SettingsMenuUserView, SettingsPaneUserView, SystemDropDownUserView]);
 
 		const views = [
 			UserSettingsGeneral

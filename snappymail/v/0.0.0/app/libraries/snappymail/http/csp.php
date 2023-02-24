@@ -50,6 +50,9 @@ class CSP
 		foreach ($this->directives as $directive => $sources) {
 			$params[] = $directive . ' ' . \implode(' ', \array_unique($sources));
 		}
+//		if (empty($this->directives['frame-ancestors'])) {
+//			$params[] = "frame-ancestors 'none';";
+//		}
 		return \implode('; ', $params);
 	}
 

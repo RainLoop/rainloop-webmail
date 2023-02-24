@@ -53,8 +53,8 @@ export const SettingsUserStore = new class {
 
 		const toggleLayout = () => {
 			const value = ThemeStore.isMobile() ? 0 : self.layout();
-			$htmlCL.toggle('rl-side-preview-pane', Layout.SidePreview === value);
-			$htmlCL.toggle('rl-bottom-preview-pane', Layout.BottomPreview === value);
+			$htmlCL.toggle('sm-msgView-side', Layout.SidePreview === value);
+			$htmlCL.toggle('sm-msgView-bottom', Layout.BottomPreview === value);
 			fireEvent('rl-layout', value);
 		};
 		self.layout.subscribe(toggleLayout);

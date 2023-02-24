@@ -33,7 +33,7 @@
 #V-MailMessageView .top-toolbar {
 	color: #fff;
 	padding: 10px 0;
-	visibility: hidden;
+	visibility: visible;
 }
 
 .messageView {
@@ -461,21 +461,19 @@
 	}
 }
 
-html:not(.rl-bottom-preview-pane):not(.rl-side-preview-pane) {
+html:not(.sm-msgView-bottom):not(.sm-msgView-side) {
 	#rl-right:not(.message-selected) #V-MailMessageView {
 		display: none;
 	}
+}
+
+html.sm-msgView-side {
 	#V-MailMessageView .top-toolbar {
-		padding-left: 1px;
-		visibility: visible;
-	}
-	.messageView {
-		border: 1px solid var(--border-color, #aaa);
-		box-shadow: var(--smMainShadow);
+		visibility: hidden;
 	}
 }
 
-html.rl-bottom-preview-pane {
+html.sm-msgView-bottom {
 	#V-MailMessageView .top-toolbar {
 		display: none;
 	}

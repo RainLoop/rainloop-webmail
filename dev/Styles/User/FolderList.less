@@ -208,24 +208,19 @@
 /**/
 }
 
-.btn {
-	&.buttonCompose {
-		max-height: 2em;
-		max-width: fit-content;
-		overflow: hidden;
-		width: calc(100% - 48px);
-	}
+#rl-left .buttonCompose {
+	max-height: 2em;
+	max-width: fit-content;
+	overflow: hidden;
+	width: calc(100% - 48px);
 }
 
 html.rl-left-panel-disabled {
-	.buttonComposeText{
+	.buttonComposeText,
+	.buttonContacts {
 		display: none;
 	}
-	.btn.buttonCompose {
+	#rl-left .buttonCompose {
 		width: auto;
-	}
-	.btn.buttonContacts {
-		margin-top: 10px !important;
-		margin-left: 0 !important;
 	}
 }

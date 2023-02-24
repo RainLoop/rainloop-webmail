@@ -1,6 +1,8 @@
 
 #V-MailMessageList {
 	position: relative;
+	height: 100%;
+	width: 100%;
 }
 
 #V-MailMessageList.focused .messageList {
@@ -357,26 +359,14 @@
 	}
 }
 
-html:not(.rl-bottom-preview-pane):not(.rl-side-preview-pane) {
-	.message-selected #V-MailMessageList {
-		display: none;
-	}
-	#V-MailMessageList {
-		height: 100%;
-		width: 100%;
-	}
+html:not(.sm-msgView-bottom):not(.sm-msgView-side) .message-selected #V-MailMessageList {
+	display: none;
 }
 
 @media screen and (max-width: @maxMobileWidth) {
-	#V-MailMessageList .btn-toolbar:not(.hasChecked) .onCheckedShow {
+	#V-MailMessageList .btn-toolbar:not(.hasChecked) .onCheckedShow,
+	#V-MailMessageList .hasChecked .onCheckedHide {
 		display: none;
-	}
-	#V-MailMessageList .hasChecked {
-		.buttonCompose,
-		.onCheckedHide,
-		.sortFolder {
-			display: none;
-		}
 	}
 }
 
@@ -396,23 +386,29 @@ html:not(.rl-bottom-preview-pane):not(.rl-side-preview-pane) {
 		}
 	}
 
-	.rl-side-preview-pane #V-MailMessageList {
-		height: 100%;
-	}
-	.rl-side-preview-pane #V-MailMessageList .messageList {
-		max-width: 50vw;
-		min-width: 320px;
-		overflow: auto;
-		resize: horizontal;
-		width: 35vw;
+	.sm-msgView-side #V-MailMessageList {
+		width: unset;
+
+		.messageList {
+			max-width: 50vw;
+			min-width: 320px;
+			overflow: auto;
+			resize: horizontal;
+			width: 35vw;
+		}
 	}
 
-	.rl-bottom-preview-pane #V-MailMessageList .messageList {
-		height: 35vh;
-		max-height: 50vh;
-		min-height: 200px;
-		overflow: auto;
-		resize: vertical;
+	.sm-msgView-bottom #V-MailMessageList {
+		height: unset;
+		width: unset;
+
+		.messageList {
+			height: 35vh;
+			max-height: 50vh;
+			min-height: 200px;
+			overflow: auto;
+			resize: vertical;
+		}
 	}
 }
 
@@ -437,7 +433,7 @@ html:not(.rl-bottom-preview-pane):not(.rl-side-preview-pane) {
 	top: 0;
 }
 
-.rl-side-preview-pane, .rl-mobile {
+.sm-msgView-side, .rl-mobile {
 
 	.messageListItem > div + div {
 		flex-wrap: wrap;
