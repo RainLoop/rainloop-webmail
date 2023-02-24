@@ -8,6 +8,7 @@ const eol = require('gulp-eol');
 const filter = require('gulp-filter');
 const expect = require('gulp-expect-file');
 const gcmq = require('gulp-group-css-media-queries');
+const less = require('gulp-less');
 
 const { config } = require('./config');
 const { del } = require('./common');
@@ -29,7 +30,6 @@ const cssBootBuild = () => {
 
 const cssMainBuild = () => {
 	const
-		less = require('gulp-less'),
 		lessFilter = filter('**/*.less', { restore: true }),
 		src = config.paths.css.main.src.concat([config.paths.less.main.src]);
 
@@ -51,7 +51,6 @@ const cssMainBuild = () => {
 
 const cssAdminBuild = () => {
 	const
-		less = require('gulp-less'),
 		lessFilter = filter('**/*.less', { restore: true }),
 		src = config.paths.css.admin.src;
 
