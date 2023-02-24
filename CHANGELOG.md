@@ -1,3 +1,37 @@
+## 2.26.4 – 2023-02-24
+
+## Added
+- Add CSP frame-ancestors for
+  [#537](https://github.com/the-djmaze/snappymail/pull/537)
+
+## Changed
+- Reduce/simplify CSS footprint
+- Use the System/Browser font by default by @HeySora
+  [#988](https://github.com/the-djmaze/snappymail/pull/988)
+- Make layout fully responsive using matchMedia('(max-width: 799px)')
+- Move brotli and gzip compress option to application.ini
+- After page refreshes in background whilst editing a draft, the space bar stops working
+  [#860](https://github.com/the-djmaze/snappymail/pull/860)
+- Updated Portuguese by @ner00
+  [#984](https://github.com/the-djmaze/snappymail/pull/984)
+- Updated French by @hguilbert
+  [#985](https://github.com/the-djmaze/snappymail/pull/985)
+
+## Fixed
+- unset border-box for message body
+  [#990](https://github.com/the-djmaze/snappymail/pull/990)
+- Unread email count badge shows -1
+  [#989](https://github.com/the-djmaze/snappymail/pull/989)
+- unicode mailto: addresses not decoded
+- Unicode email/url address matching
+  [#955](https://github.com/the-djmaze/snappymail/pull/955)
+- Invalid Token if run in IFrame
+  [#537](https://github.com/the-djmaze/snappymail/pull/537)
+
+### Removed
+- rl.initData
+
+
 ## 2.26.3 – 2023-02-21
 
 ## Added
@@ -9,7 +43,6 @@
 - Many AppData properties to JavaScript camelCase
 - Cleanup Identity handling
 - Merge GnuPG and OpenPGP.js passphrases
-- Removed unused Squire code
 
 ## Fixed
 - Notification enum conflicts with window.Notification
@@ -24,6 +57,10 @@
   [#953](https://github.com/the-djmaze/snappymail/pull/953)
 - Facebook logo missing from emails sent out by it
   [#954](https://github.com/the-djmaze/snappymail/pull/954)
+
+### Removed
+- Unused Squire code
+
 
 
 ## 2.26.2 – 2023-02-17
