@@ -42,10 +42,11 @@ download = (link, name = "") => {
 	}
 },
 
-downloadZip = (hashes, onError, fTrigger, folder) => {
+downloadZip = (name, hashes, onError, fTrigger, folder) => {
 	if (hashes.length) {
 		let params = {
 			target: 'zip',
+			filename: name,
 			hashes: hashes
 		};
 		if (!onError) {

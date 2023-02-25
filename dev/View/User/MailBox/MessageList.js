@@ -363,13 +363,19 @@ export class MailMessageList extends AbstractViewRight {
 		]);
 	}
 
+	/**
+	 * Download selected messages
+	 */
 	downloadZipCommand() {
 		let hashes = []/*, uids = []*/;
 //		MessagelistUserStore.forEach(message => message.checked() && uids.push(message.uid));
 		MessagelistUserStore.forEach(message => message.checked() && hashes.push(message.requestHash));
-		downloadZip(hashes, null, null, MessagelistUserStore().folder);
+		downloadZip(null, hashes, null, null, MessagelistUserStore().folder);
 	}
 
+	/**
+	 * Download attachments of selected messages
+	 */
 	downloadAttachCommand() {
 		let hashes = [];
 		MessagelistUserStore.forEach(message => {
@@ -381,7 +387,7 @@ export class MailMessageList extends AbstractViewRight {
 				});
 			}
 		});
-		downloadZip(hashes);
+		downloadZip(null, hashes);
 	}
 
 	deleteWithoutMoveCommand() {
