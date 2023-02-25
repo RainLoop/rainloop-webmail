@@ -16,7 +16,7 @@
 		"BUTTON_LOGIN": "Войти в админ панель"
 	},
 	"TOP_PANEL": {
-		"LABEL_ADMIN_PANEL": "Админка"
+		"LABEL_ADMIN_PANEL": "Панель управления администратора"
 	},
 	"SETTINGS_LABELS": {
 		"GENERAL": "Основные",
@@ -25,18 +25,18 @@
 		"CONTACTS": "Контакты",
 		"DOMAINS": "Домены",
 		"SECURITY": "Безопасность",
-		"PACKAGES": "Пакеты",
-		"CONFIG": "Config",
+		"PACKAGES": "Плагины",
+		"CONFIG": "Файл конфигурации",
 		"ABOUT": "О Программе"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Интерфейс",
 		"LABEL_LANGUAGE": "Язык",
-		"LABEL_LANGUAGE_ADMIN": "Язык (Админ)",
-		"LABEL_THEME": "Тема",
+		"LABEL_LANGUAGE_ADMIN": "Язык (Панели Администратора)",
+		"LABEL_THEME": "Темы",
 		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Разрешить выбор языка на экране настроек",
 		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Разрешить выбор темы на экране настроек",
-		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Allow background selection on settings screen",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Разрешить выбор фона на экране настроек",
 		"LABEL_SHOW_THUMBNAILS": "Показывать миниатюры (для вложений)",
 		"LEGEND_MAIN": "Основное",
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "Предельный размер вложений",
@@ -76,7 +76,7 @@
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "Домены",
 		"BUTTON_ADD_DOMAIN": "Добавить домен",
-		"BUTTON_ADD_ALIAS": "Добавить Алиас",
+		"BUTTON_ADD_ALIAS": "Добавить псевдоним",
 		"DELETE_ARE_YOU_SURE": "Вы уверены?",
 		"HTML_DOMAINS_HELPER": "Список доменов к которым разрешен доступ.\n<br>\nНажмите на имя, чтобы настроить домен.\n"
 	},
@@ -85,7 +85,7 @@
 		"LABEL_USE_IMAGE_PROXY": "Использовать локальный прокси для внешних изображений",
 		"LABEL_ALLOW_OPEN_PGP": "Разрешить OpenPGP",
 		"LABEL_SHOW_PHP_INFO": "Показать PHP информацию",
-		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Admin Panel Access Credentials",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Учетные данные для доступа к панели администратора",
 		"LABEL_CURRENT_PASSWORD": "Текущий пароль",
 		"LABEL_NEW_PASSWORD": "Новый пароль",
 		"LABEL_REPEAT_PASSWORD": "Повторить пароль",
@@ -108,11 +108,11 @@
 		"HTML_NEW_VERSION": "Новая <b>%VERSION%<\/b> версия доступна.",
 		"LABEL_UPDATING": "Обновление",
 		"LABEL_CHECKING": "Проверка",
-		"BUTTON_RELEASES": "Releases"
+		"BUTTON_RELEASES": "Релизы"
 	},
 	"POPUPS_DOMAIN_ALIAS": {
-		"TITLE_ADD_DOMAIN_ALIAS": "Добавить Алиас",
-		"LABEL_ALIAS": "Алиас",
+		"TITLE_ADD_DOMAIN_ALIAS": "Добавить псевдоним",
+		"LABEL_ALIAS": "Псевдоним",
 		"LABEL_DOMAIN": "Домен"
 	},
 	"POPUPS_DOMAIN": {
@@ -124,20 +124,20 @@
 		"LABEL_SERVER": "Сервер",
 		"LABEL_PORT": "Порт",
 		"LABEL_SECURE": "Безопасность",
-		"TIMEOUT": "Timeout",
-		"DISABLE_CAPABILITIES": "Disable capabilities",
+		"TIMEOUT": "Тайм-аут",
+		"DISABLE_CAPABILITIES": "Отключить функции",
 		"LIMITS": "Limits",
 		"FOLDERS": "Folders",
 		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "Белый список",
 		"SECURE_OPTION_NONE": "Нет",
-		"LABEL_ALLOW_SIEVE_SCRIPTS": "Разрешить sieve скрипты",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Разрешить Sieve сценарии",
 		"LABEL_USE_SHORT_LOGIN": "Использовать короткий логин",
 		"LABEL_USE_AUTH": "Использовать аутентификацию",
-		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_SET_SENDER": "Использовать логин в качестве отправителя",
 		"LABEL_USE_PHP_MAIL": "Использовать mail() функцию",
 		"BUTTON_WHITE_LIST": "Белый список",
-		"BUTTON_SIEVE_CONFIGURATION": "настройки Sieve",
+		"BUTTON_SIEVE_CONFIGURATION": "Настройки Sieve",
 		"BUTTON_BACK_TO_IMAP": "Назад к IMAP настройкам",
 		"BUTTON_BACK": "Назад",
 		"BUTTON_UPDATE": "Обновить",
@@ -149,8 +149,8 @@
 		"DESC_NOTHING_TO_CONFIGURE": "Без настроек"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Yes",
-		"BUTTON_NO": "No",
+		"BUTTON_YES": "Да",
+		"BUTTON_NO": "Нет",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Вы уверены, что хотите закрыть это окно?"
 	},
 	"POPUPS_LANGUAGES": {
@@ -165,15 +165,15 @@
 		"UNKNOWN_ERROR": "Неизвестная ошибка"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
+		"REQUEST_ERROR": "Запрос не выполнен",
+		"REQUEST_ABORTED": "Запрос прерван",
+		"REQUEST_TIMEOUT": "Истекло время запроса",
 		"INVALID_TOKEN": "Неверный токен запроса",
 		"AUTH_ERROR": "Не удалось авторизоваться",
 		"DOMAIN_ALREADY_EXISTS": "Домен уже существует",
 		"CANT_SAVE_PLUGIN_SETTINGS": "Не могу сохранить настройки",
-		"CANT_INSTALL_PACKAGE": "Ошибка установки пакета",
-		"CANT_DELETE_PACKAGE": "Ошибка удаления пакета",
+		"CANT_INSTALL_PACKAGE": "Ошибка установки плагина",
+		"CANT_DELETE_PACKAGE": "Ошибка удаления плагина",
 		"INVALID_PLUGIN_PACKAGE": "Ошибка пакета плагина",
 		"UNSUPPORTED_PLUGIN_PACKAGE": "Для работы плагина необходима полная поддержка сервера",
 		"UNKNOWN_ERROR": "Неизвестная ошибка"
