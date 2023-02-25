@@ -1061,10 +1061,16 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 #rl-app #messageItem .readReceipt,
 #rl-app #messageItem .showImages {
     margin: 8px;
+    padding: 10px;
     color: var(--color-main-text);
     border: solid 1px var(--color-primary-element);
     background-color: var(--color-primary-light);
     border-radius: var(--border-radius-large);
+}
+
+#rl-app #messageItem .showImages>.btn,
+#rl-app #messageItem .showImages>.btn-group {
+    margin: 2px;
 }
 
 #rl-app #messageItem .readReceipt:hover {
