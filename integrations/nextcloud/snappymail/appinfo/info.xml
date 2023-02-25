@@ -39,7 +39,7 @@ There, click on the link to go to the SnappyMail admin panel.
 	<repository>https://github.com/the-djmaze/snappymail/tree/master/integrations/nextcloud</repository>
 	<bugs>https://github.com/the-djmaze/snappymail/issues</bugs>
 	<dependencies>
-		<php min-version="7.4" min-int-size="64" />
+		<php min-version="7.4" min-int-size="32" />
 		<lib>mbstring</lib>
 		<lib>zlib</lib>
 <!--
