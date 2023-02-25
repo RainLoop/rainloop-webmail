@@ -73,12 +73,6 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     }
 }
 
-#rl-app #V-AdminMenu nav,
-#rl-app #V-SettingsMenu nav.b-content,
-.b-folders .b-content {
-    padding: calc(var(--default-grid-baseline) * 2);
-}
-
 #rl-app .b-folders .b-content {
     top: 60px;
     bottom: 162px;
@@ -245,16 +239,26 @@ html.rl-left-panel-disabled #rl-app #rl-left {
  * side panel
  */
 
-#rl-app #V-AdminPane>.b-toolbar {
+#rl-app #V-AdminPane>.b-toolbar,
+#rl-app #V-SettingsMenu>.b-toolbar {
     top: 0;
     left: 0;
+    height: auto !important;
     padding-top: calc(var(--default-grid-baseline) * 2) !important;
+    padding-bottom: calc(var(--default-grid-baseline) * 2) !important;
     font-weight: bold;
+}
+
+#rl-app #V-AdminMenu nav,
+#rl-app #V-SettingsMenu nav,
+#rl-app .b-folders .b-content {
+    padding: calc(var(--default-grid-baseline) * 2);
 }
 
 #rl-app #V-AdminMenu nav a,
 #rl-app #V-AdminPane>.b-toolbar,
 #rl-app #V-SettingsMenu nav a,
+#rl-app #V-SettingsMenu>.b-toolbar,
 #rl-app .b-folders li a.selectable {
     margin: 2px;
     padding: 0 2em 0 15px;
@@ -267,7 +271,8 @@ html.rl-left-panel-disabled #rl-app #rl-left {
 
 #rl-app #V-AdminMenu nav a,
 #rl-app #V-AdminPane>.b-toolbar,
-#rl-app #V-SettingsMenu nav a {
+#rl-app #V-SettingsMenu nav a,
+#rl-app #V-SettingsMenu>.b-toolbar {
     height: 44px;
     min-height: 44px;
     line-height: 44px !important;
@@ -1049,6 +1054,10 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     padding: 2px 5px;
 }
 
+#rl-app #messageItem .bodySubHeader {
+    background-color: unset;
+}
+
 #rl-app #messageItem .readReceipt,
 #rl-app #messageItem .showImages {
     margin: 8px;
@@ -1305,15 +1314,12 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
  * settings 
  */
 
-#rl-app #rl-settings-subscreen {
+#rl-app #V-SettingsPane {
+    margin: 62px 0 8px 0;
+    height: calc(100% - 62px - 8px);
     background-color: unset;
     box-shadow: none;
     border: none;
-}
-
-#rl-app #V-SettingsPane #rl-settings-subscreen {
-    margin: 8px 0px;
-    height: calc(100% - 8px - 8px);
 }
 
 #rl-app #V-SettingsPane .btn-toolbar {
@@ -1376,9 +1382,12 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
  * admin settings 
  */
 
-#rl-app #V-AdminPane #rl-settings-subscreen {
+#rl-app #V-AdminPane {
     margin: 8px 0px;
     height: calc(100% - 8px - 8px);
+    background-color: unset;
+    box-shadow: none;
+    border: none;
 }
 
 #rl-app #V-Settings-Config th {
