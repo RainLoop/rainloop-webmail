@@ -1305,7 +1305,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
  * dark mails
  */
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   #rl-app .bodyText, .bodyText img {
     filter: invert(95%) hue-rotate(180deg);
   }
@@ -1313,7 +1313,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
   #rl-app .bodyText img {
       border-radius: 4px;
   }
-}
+} */
 
 /* TODO: Improve settings layout and theming */
 /*
