@@ -62,10 +62,17 @@ class HmailAliasesPlugin extends \RainLoop\Plugins\AbstractPlugin
                         }
                         
                         // ========vvv========= Update Rainloop Identity ========vvv=========
-                        $identity = \RainLoop\Model\Identity::NewInstanceFromAccount($oAccount);
+                        $identities = $this->Manager()->Actions()->GetIdentities($oAccount);
+                        if(empty($identities)){
+                            // I am assuming [0] is the "default" identity...
+                            $identity = \RainLoop\Model\Identity::NewInstanceFromAccount($oAccount);
+                            array_push($identities, $identity);
+                        }
+                        
+                        $identity = $identities[0];
                         $identity->FromJSON(array('Email' => $sEmail, 'Name' => $name));
                         // TODO Account::DoIdentityUpdate is possible if I knew how to use actoinParams
-                        $result = $this->Manager()->Actions()->SetIdentities($oAccount, array($identity));
+                        $result = $this->Manager()->Actions()->SetIdentities($oAccount, $identities);
                         $oLogger->Write('HMAILSERVER Identity Update Successful');
                         // ========^^^========= Update Rainloop Idnetity ========^^^=========
 						$bResult = true;
