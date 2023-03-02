@@ -23,100 +23,77 @@ class HmailAliasesPlugin extends \RainLoop\Plugins\AbstractPlugin
     */
     public function loginPostLoginProvide(\RainLoop\Model\Account &$oAccount)
     {
-	$oProvider = new HmailserverChangePasswordDriver();
-	$oLogger($this->Manager()->Actions()->Logger());
-	$sLogin = (string) $this->Config()->Get('plugin', 'login', '');
-	$sPassword = (string) $this->Config()->Get('plugin', 'password', '');
-	$bResult = false;
+        // Get Logger
+		$oLogger = $this->Manager()->Actions()->Logger();
+        // Load values from configuration
+		$sLogin = (string) $this->Config()->Get('plugin', 'login', '');
+		$sPassword = (string) $this->Config()->Get('plugin', 'password', '');
+        // prime result value
+		$bResult = false;
 
-	try
-	{
-		$oHmailApp = new COM("hMailServer.Application");
-		$oHmailApp->Connect();
-
-		if ($oHmailApp->Authenticate($sLogin, $sPassword))
+		try
 		{
-			$sEmail = $oHmailAccount->Email();
-			$sDomain = \MailSo\Base\Utils::GetDomainFromEmail($sEmail);
+            // Create a connection with the hMailServer
+			$oHmailApp = new COM("hMailServer.Application");
+			$oHmailApp->Connect();
 
-			$oHmailDomain = $oHmailApp->Domains->ItemByName($sDomain);
-			if ($oHmailDomain)
+            //$oLogger->Write("Connected");
+			if ($oHmailApp->Authenticate($sLogin, $sPassword))
 			{
-				$oHmailAccount = $oHmailDomain->Accounts->ItemByAddress($sEmail);
-				if ($oHmailAccount)
+                //$oLogger->Write("Authenticated");
+				$sEmail = $oAccount->Email();
+                //$oLogger->Write("Using ". $sEmail);
+				$sDomain = \MailSo\Base\Utils::GetDomainFromEmail($sEmail);
+                //$oLogger->Write("Searching for domain ".$sDomain);
+
+				$oHmailDomain = $oHmailApp->Domains->ItemByName($sDomain);
+				if ($oHmailDomain)
 				{
-		// Get account details for alias
-
-		$firstName = $oHmailAccount->PersonFirstName;
-		$lastName = $oHmailAccount->PersonLastName;
-		if ($firstName == "" && $lastName == "") {
-		    $name = "";
-		} else {
-		    $name = $firstName." ".$lastName;
-		}
-
-		// ========vvv========= Update Rainloop Idnetity ========vvv=========
-
-		$datadir = \trim($this->Config()->Get('plugin', 'rainloopDatalocation', ''));
-		if ($datadir != ""){
-		    $userpath = $datadir.'data/_data_/_default_/storage/cfg/'.substr($oAccount->Email(), 0, 2).'/'.$oAccount->Email().'/identities';
-		} else {
-		    $userpath = APP_INDEX_ROOT_PATH.'_data_/_default_/storage/cfg/'.substr($oAccount->Email(), 0, 2).'/'.$oAccount->Email().'/identities';
-		}
-
-		$newidentitiesobj = array();
-
-		//Get existing settings. If not a alias created by hmail. Transfer settings to the new array.
-		$identities = file_get_contents($userpath, true);
-		if ($identities != "") {
-		    $identities = json_decode($identities, true);
-		    error_log(print_r($identities, true));
-		    foreach ($identities as $row) {
-			if (strpos($row['Id'], 'HMAIL') === false) {
-			    array_push($newidentitiesobj, $row);
-			}
-		    }
-		}
-
-		$obj = array();
-		$obj['Id'] = "HMAIL".base64_encode($sEmail);
-		$obj['Email'] = $sEmail;
-		$obj['Name'] = $name;
-		$obj['ReplyTo'] = "";
-		$obj['Bcc'] = "";
-		$obj['Signature'] = "";
-		$obj['SignatureInsertBefore'] = false;
-		array_push($newidentitiesobj, $obj);
-
-		file_put_contents($userpath, json_encode($newidentitiesobj));
-		// ========^^^========= Update Rainloop Idnetity ========^^^=========
-
-					$bResult = true;
+					$oHmailAccount = $oHmailDomain->Accounts->ItemByAddress($sEmail);
+					if ($oHmailAccount)
+					{
+                        // Get account details for alias
+                        $firstName = $oHmailAccount->PersonFirstName;
+                        $lastName = $oHmailAccount->PersonLastName;
+                        if ($firstName == "" && $lastName == "") {
+                            $name = "";
+                        } else {
+                            $name = $firstName." ".$lastName;
+                        }
+                        
+                        // ========vvv========= Update Rainloop Identity ========vvv=========
+                        $identity = \RainLoop\Model\Identity::NewInstanceFromAccount($oAccount);
+                        $identity->FromJSON(array('Email' => $sEmail, 'Name' => $name));
+                        // TODO Account::DoIdentityUpdate is possible if I knew how to use actoinParams
+                        $result = $this->Manager()->Actions()->SetIdentities($oAccount, array($identity));
+                        $oLogger->Write('HMAILSERVER Identity Update Successful');
+                        // ========^^^========= Update Rainloop Idnetity ========^^^=========
+						$bResult = true;
+					}
+					else
+					{
+						$oLogger->Write('HMAILSERVER: Unknown account ('.$sEmail.')', \MailSo\Log\Enumerations\Type::ERROR);
+					}
 				}
 				else
 				{
-					$this->oLogger->Write('HMAILSERVER: Unknown account ('.$sEmail.')', \MailSo\Log\Enumerations\Type::ERROR);
+					$oLogger->Write('HMAILSERVER: Unknown domain ('.$sDomain.')', \MailSo\Log\Enumerations\Type::ERROR);
 				}
 			}
 			else
 			{
-				$this->oLogger->Write('HMAILSERVER: Unknown domain ('.$sDomain.')', \MailSo\Log\Enumerations\Type::ERROR);
+				$oLogger->Write('HMAILSERVER: Auth error', \MailSo\Log\Enumerations\Type::ERROR);
 			}
 		}
-		else
+		catch (\Exception $oException)
 		{
-			$this->oLogger->Write('HMAILSERVER: Auth error', \MailSo\Log\Enumerations\Type::ERROR);
+			if ($oLogger)
+			{
+				$oLogger->WriteException($oException);
+			}
 		}
-	}
-	catch (\Exception $oException)
-	{
-		if ($this->oLogger)
-		{
-			$this->oLogger->WriteException($oException);
-		}
-	}
 
-	return $bResult;
+		return $bResult;
     }
 
     /**
@@ -129,10 +106,7 @@ class HmailAliasesPlugin extends \RainLoop\Plugins\AbstractPlugin
 			->SetDefaultValue('Administrator'),
 		  \RainLoop\Plugins\Property::NewInstance('password')->SetLabel('HmailServer Admin Password')
 			->SetType(\RainLoop\Enumerations\PluginPropertyType::PASSWORD)
-			->SetDefaultValue(''),
-          \RainLoop\Plugins\Property::NewInstance('rainloopDatalocation')->SetLabel('Data folder location')
-            ->SetDefaultValue('')
-            ->SetDescription('Incase of custom data directory location. Eg. nextcloud/owncloud version (Leave blank for default)')
+			->SetDefaultValue('')
         );
     }
 }
