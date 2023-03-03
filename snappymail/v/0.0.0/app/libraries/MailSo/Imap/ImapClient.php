@@ -315,6 +315,9 @@ class ImapClient extends \MailSo\Net\NetClient
 			if ($this->Settings->disable_list_status) {
 				$aList = \array_diff($aList, ['LIST-STATUS']);
 			}
+			if (8 > PHP_INT_SIZE) {
+				$aList = \array_diff($aList, ['CONDSTORE']);
+			}
 		}
 		$this->aCapabilityItems = $aList;
 	}
