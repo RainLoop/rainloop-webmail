@@ -211,7 +211,7 @@ class SquireUI
 						cmd: () => {
 							let node = squire.getSelectionClosest('IMG'),
 								src = prompt("Image", node?.src || "https://");
-							src.length ? squire.insertImage(src) : (node && squire.detach(node));
+							src?.length ? squire.insertImage(src) : (node && squire.detach(node));
 						},
 						hint: 'Image URL'
 					},
