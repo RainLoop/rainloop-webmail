@@ -865,9 +865,9 @@ export class ComposePopupView extends AbstractViewPopup {
 
 			// https://github.com/the-djmaze/snappymail/issues/491
 			tpl.innerHTML = message.bodyAsHTML();
-			tpl.content.querySelectorAll('img').forEach(img =>
-				img.dataset.xSrcCid || img.dataset.xSrc || img.replaceWith(img.alt || img.title)
-			);
+			tpl.content.querySelectorAll('img').forEach(img => {
+				img.src || img.dataset.xSrcCid || img.dataset.xSrc || img.replaceWith(img.alt || img.title)
+			});
 			sText = tpl.innerHTML.trim();
 
 			switch (msgComposeType) {
