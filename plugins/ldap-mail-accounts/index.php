@@ -32,8 +32,30 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 	public function Init(): void
 	{
 		$this->addHook("login.success", 'AddAdditionalLdapMailAccounts');
-		$this->addHook('imap.before-login', 'MapImapCredentialsByLDAP');
-		$this->addHook('smtp.before-login', 'MapSmtpCredentialsByLDAP');
+		//$this->addHook('imap.before-login', 'MapImapCredentialsByLDAP');
+		//$this->addHook('smtp.before-login', 'MapSmtpCredentialsByLDAP');
+		$this->addHook('login.credentials', 'overwriteMainAccountEmail');
+	}
+
+	// Function gets called by RainLoop/Actions/UserAuth.php
+	/**
+	 * Overwrite the MainAccount mail address by looking up the new one in the ldap directory
+	 *
+	 * @param string &$sEmail
+	 * @param string &$sLogin
+	 */
+	public function overwriteMainAccountEmail(&$sEmail, &$sLogin)
+	{
+		$this->Manager()->Actions()->Logger()->Write("Login DATA: login: $sLogin email: $sEmail", \LOG_WARNING, "LDAP MAIL ACCOUNTS PLUGIN");
+
+		// Set up config
+		$config = LdapMailAccountsConfig::MakeConfig($this->Config());
+
+		$oldapMailAccounts = new LdapMailAccounts($config, $this->Manager()->Actions()->Logger());
+
+		$oldapMailAccounts->overwriteEmail($sEmail, $sLogin);
+
+		$this->Manager()->Actions()->Logger()->Write("Login DATA: login: $sLogin email: $sEmail", \LOG_WARNING, "LDAP MAIL ACCOUNTS PLUGIN");
 	}
 
 	// Function gets called by RainLoop/Actions/User.php
@@ -94,7 +116,8 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 				->SetLabel("Mail address field for main account")
 				->SetType(RainLoop\Enumerations\PluginPropertyType::STRING)
 				->SetDescription("The ldap field containing the mail address to use on the SnappyMail main account.
-					\nThe value found inside ldap will overwrite the mail address of the SnappyMail main account (the account the user logged in at SnappyMail)")
+					\nThe value found inside ldap will overwrite the mail address of the SnappyMail main account (the account the user logged in at SnappyMail)
+					\nThe mail address used at login will still be used to login to the servers.")
 				->SetDefaultValue("mail"),
 		]);	
 
