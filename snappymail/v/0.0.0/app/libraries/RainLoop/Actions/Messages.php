@@ -122,9 +122,8 @@ trait Messages
 
 				\rewind($rMessageStream);
 
-				$iNewUid = 0;
-				$this->MailClient()->MessageAppendStream(
-					$rMessageStream, $iMessageStreamSize, $sDraftFolder, array(MessageFlag::SEEN), $iNewUid
+				$iNewUid = $this->ImapClient()->MessageAppendStream(
+					$sDraftFolder, $rMessageStream, $iMessageStreamSize, array(MessageFlag::SEEN)
 				);
 
 				if (!empty($sMessageId) && (null === $iNewUid || 0 === $iNewUid)) {
@@ -213,8 +212,8 @@ trait Messages
 								$this->Plugins()->RunHook('filter.send-message-stream',
 									array($oAccount, &$rMessageStream, &$iMessageStreamSize));
 
-								$this->MailClient()->MessageAppendStream(
-									$rMessageStream, $iMessageStreamSize, $sSentFolder, array(MessageFlag::SEEN)
+								$this->ImapClient()->MessageAppendStream(
+									$sSentFolder, $rMessageStream, $iMessageStreamSize, array(MessageFlag::SEEN)
 								);
 							} else {
 								$rAppendMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
@@ -225,8 +224,8 @@ trait Messages
 								$this->Plugins()->RunHook('filter.send-message-stream',
 									array($oAccount, &$rAppendMessageStream, &$iAppendMessageStreamSize));
 
-								$this->MailClient()->MessageAppendStream(
-									$rAppendMessageStream, $iAppendMessageStreamSize, $sSentFolder, array(MessageFlag::SEEN)
+								$this->ImapClient()->MessageAppendStream(
+									$sSentFolder, $rAppendMessageStream, $iAppendMessageStreamSize, array(MessageFlag::SEEN)
 								);
 
 								if (\is_resource($rAppendMessageStream)) {

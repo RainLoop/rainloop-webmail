@@ -37,7 +37,7 @@ trait Folders
 			if ($this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $_FILES['appendFile']['tmp_name'])) {
 				$iMessageStreamSize = $this->FilesProvider()->FileSize($oAccount, $sSavedName);
 				$rMessageStream = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
-				$this->MailClient()->MessageAppendStream($rMessageStream, $iMessageStreamSize, $sFolderFullName);
+				$this->ImapClient()->MessageAppendStream($sFolderFullName, $rMessageStream, $iMessageStreamSize);
 				$this->FilesProvider()->Clear($oAccount, $sSavedName);
 				return $this->TrueResponse();
 			}

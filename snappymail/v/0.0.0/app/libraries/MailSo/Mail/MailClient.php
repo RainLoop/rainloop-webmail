@@ -258,23 +258,7 @@ class MailClient
 		return ($aFetchResponse && 1 === \count($aFetchResponse));
 	}
 
-	/**
-	 * @param resource $rMessageStream
-	 */
-	public function MessageAppendStream($rMessageStream, int $iMessageStreamSize, string $sFolderToSave, array $aAppendFlags = null, int &$iUid = null) : self
-	{
-		if (!\is_resource($rMessageStream) || !\strlen($sFolderToSave))
-		{
-			throw new \InvalidArgumentException;
-		}
-
-		$iUid = $this->oImapClient->MessageAppendStream(
-			$sFolderToSave, $rMessageStream, $iMessageStreamSize, $aAppendFlags);
-
-		return $this;
-	}
-
-	public function MessageAppendFile(string $sMessageFileName, string $sFolderToSave, array $aAppendFlags = null, int &$iUid = null) : self
+	public function MessageAppendFile(string $sMessageFileName, string $sFolderToSave, array $aAppendFlags = null) : int
 	{
 		if (!\is_file($sMessageFileName) || !\is_readable($sMessageFileName)) {
 			throw new \InvalidArgumentException;
@@ -283,13 +267,11 @@ class MailClient
 		$iMessageStreamSize = \filesize($sMessageFileName);
 		$rMessageStream = \fopen($sMessageFileName, 'rb');
 
-		$this->MessageAppendStream($rMessageStream, $iMessageStreamSize, $sFolderToSave, $aAppendFlags, $iUid);
+		$iUid = $this->oImapClient->MessageAppendStream($sFolderToSave, $rMessageStream, $iMessageStreamSize, $aAppendFlags);
 
-		if (\is_resource($rMessageStream)) {
-			\fclose($rMessageStream);
-		}
+		\fclose($rMessageStream);
 
-		return $this;
+		return $iUid;
 	}
 
 	/**

@@ -135,15 +135,19 @@ trait Messages
 	/**
 	 * Appends message to specified folder
 	 *
-	 * @param resource $rMessageAppendStream
+	 * @param resource $rMessageStream
 	 *
 	 * @throws \InvalidArgumentException
 	 * @throws \MailSo\RuntimeException
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function MessageAppendStream(string $sFolderName, $rMessageAppendStream, int $iStreamSize, array $aFlagsList = null, int $iDateTime = 0) : ?int
+	public function MessageAppendStream(string $sFolderName, $rMessageStream, int $iStreamSize, array $aFlagsList = null, int $iDateTime = 0) : ?int
 	{
+		if (!\is_resource($rMessageStream) || !\strlen($sFolderName) || 1 > $iStreamSize) {
+			throw new \InvalidArgumentException;
+		}
+
 		$aParams = array(
 			$this->EscapeFolderName($sFolderName),
 			$aFlagsList
@@ -162,7 +166,7 @@ trait Messages
 
 		$this->SendRequestGetResponse('APPEND', $aParams);
 
-		return $this->writeMessageStream($rMessageAppendStream);
+		return $this->writeMessageStream($rMessageStream);
 	}
 
 	private function writeMessageStream($rMessageStream) : ?int
