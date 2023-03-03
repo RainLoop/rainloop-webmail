@@ -39,7 +39,7 @@ class Folder implements \JsonSerializable
 		if (!\strlen($sFullName)) {
 			throw new \InvalidArgumentException;
 		}
-		$this->FolderName = $sFullName;
+		$this->FullName = $sFullName;
 		$this->setDelimiter($sDelimiter);
 		$this->setFlags($aFlags);
 /*
@@ -68,17 +68,12 @@ class Folder implements \JsonSerializable
 
 	public function Name() : string
 	{
-		$sNameRaw = $this->FolderName;
+		$sNameRaw = $this->FullName;
 		if ($this->sDelimiter) {
 			$aNames = \explode($this->sDelimiter, $sNameRaw);
 			return \end($aNames);
 		}
 		return $sNameRaw;
-	}
-
-	public function FullName() : string
-	{
-		return $this->FolderName;
 	}
 
 	public function Delimiter() : ?string
@@ -91,14 +86,10 @@ class Folder implements \JsonSerializable
 		return $this->aFlagsLowerCase;
 	}
 
-	public function Exists() : bool
-	{
-		return !\in_array('\\nonexistent', $this->aFlagsLowerCase);
-	}
-
 	public function Selectable() : bool
 	{
-		return !\in_array('\\noselect', $this->aFlagsLowerCase) && $this->Exists();
+		return !\in_array('\\noselect', $this->aFlagsLowerCase)
+			&& !\in_array('\\nonexistent', $this->aFlagsLowerCase);
 	}
 
 	public function IsSubscribed() : bool
@@ -108,7 +99,7 @@ class Folder implements \JsonSerializable
 
 	public function IsInbox() : bool
 	{
-		return 'INBOX' === \strtoupper($this->FolderName) || \in_array('\\inbox', $this->aFlagsLowerCase);
+		return 'INBOX' === \strtoupper($this->FullName) || \in_array('\\inbox', $this->aFlagsLowerCase);
 	}
 
 	public function SetMetadata(string $sName, string $sData) : void
@@ -150,7 +141,7 @@ class Folder implements \JsonSerializable
 			if ($match) {
 				$role = \array_shift($match);
 			}
-			if (!$role && 'INBOX' === \strtoupper($this->FolderName)) {
+			if (!$role && 'INBOX' === \strtoupper($this->FullName)) {
 				return 'inbox';
 			}
 		}
@@ -179,17 +170,14 @@ class Folder implements \JsonSerializable
 /*
 		if ($this->ImapClient->hasCapability('ACL') || $this->ImapClient->CapabilityValue('RIGHTS')) {
 			// MailSo\Imap\Responses\ACL
-			$rights = $this->ImapClient->FolderMyRights($this->FolderName);
+			$rights = $this->ImapClient->FolderMyRights($this->FullName);
 		}
 */
 		return array(
 			'@Object' => 'Object/Folder',
 			'name' => $this->Name(),
-			'fullName' => $this->FolderName,
+			'fullName' => $this->FullName,
 			'delimiter' => (string) $this->sDelimiter,
-			'isSubscribed' => $this->IsSubscribed(),
-			'exists' => $this->Exists(),
-			'selectable' => $this->Selectable(),
 			'flags' => $this->aFlagsLowerCase,
 //			'extended' => $aExtended,
 //			'permanentFlags' => $this->PermanentFlags,

@@ -227,8 +227,6 @@ export class FolderCollectionModel extends AbstractCollectionModel
 										name: name,
 										fullName: parentName,
 										delimiter: delimiter,
-										exists: false,
-										isSubscribed: false,
 										flags: ['\\nonexistent']
 									});
 									setFolder(pfolder);
@@ -379,6 +377,8 @@ export class FolderModel extends AbstractModel {
 
 			isFlagged: () => FolderUserStore.currentFolder() === this
 				&& MessagelistUserStore.listSearch().includes('flagged'),
+
+//			isSubscribed: () => this.flags().includes('\\subscribed'),
 
 			hasVisibleSubfolders: () => !!this.subFolders().find(folder => folder.visible()),
 
@@ -534,6 +534,10 @@ export class FolderModel extends AbstractModel {
 			folder.deep = path.length - 1;
 			path.pop();
 			folder.parentName = path.join(folder.delimiter);
+
+			folder.isSubscribed(folder.flags.includes('\\subscribed'));
+			folder.exists = !folder.flags.includes('\\nonexistent');
+			folder.selectable(folder.exists && !folder.flags.includes('\\noselect'));
 
 			type && 'mail' != type && folder.kolabType(type);
 		}

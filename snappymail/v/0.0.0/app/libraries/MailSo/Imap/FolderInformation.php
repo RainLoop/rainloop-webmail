@@ -33,9 +33,9 @@ class FolderInformation implements \JsonSerializable
 	 */
 	public array $PermanentFlags = array();
 
-	function __construct(string $sFolderName, bool $bIsWritable)
+	function __construct(string $sFullName, bool $bIsWritable)
 	{
-		$this->FolderName = $sFolderName;
+		$this->FullName = $sFullName;
 		$this->IsWritable = $bIsWritable;
 	}
 
@@ -56,7 +56,7 @@ class FolderInformation implements \JsonSerializable
 	{
 		$result = array(
 			'id' => $this->MAILBOXID,
-			'name' => $this->FolderName,
+			'name' => $this->FullName,
 			'flags' => $this->Flags,
 			'permanentFlags' => $this->PermanentFlags,
 			'uidNext' => $this->UIDNEXT,

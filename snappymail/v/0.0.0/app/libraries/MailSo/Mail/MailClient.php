@@ -11,6 +11,7 @@
 
 namespace MailSo\Mail;
 
+use MailSo\Imap\FolderCollection;
 use MailSo\Imap\FolderInformation;
 use MailSo\Imap\Enumerations\FetchType;
 use MailSo\Imap\Enumerations\MessageFlag;
@@ -794,44 +795,31 @@ class MailClient
 
 	public function Folders(string $sParent, string $sListPattern, bool $bUseListSubscribeStatus) : ?FolderCollection
 	{
-		$aImapSubscribedFoldersHelper = null;
-		if ($this->oImapClient->hasCapability('LIST-EXTENDED')) {
-			$bUseListSubscribeStatus = false;
-		} else if ($bUseListSubscribeStatus) {
+//		$this->oImapClient->Settings->disable_list_status
+		$oFolderCollection = $this->oImapClient->FolderStatusList($sParent, $sListPattern);
+		if (!$oFolderCollection->count()) {
+			return null;
+		}
+
+		if ($bUseListSubscribeStatus && !$this->oImapClient->hasCapability('LIST-EXTENDED')) {
 //			$this->oLogger && $this->oLogger->Write('RFC5258 not supported, using LSUB');
 //			\SnappyMail\Log::warning('IMAP', 'RFC5258 not supported, using LSUB');
 			try
 			{
-				$aSubscribedFolders = $this->oImapClient->FolderSubscribeList($sParent, $sListPattern);
-				$aImapSubscribedFoldersHelper = array();
-				foreach ($aSubscribedFolders as /* @var $oImapFolder \MailSo\Imap\Folder */ $oImapFolder) {
-					$aImapSubscribedFoldersHelper[] = $oImapFolder->FullName();
+				$oSubscribedFolders = $this->oImapClient->FolderSubscribeList($sParent, $sListPattern);
+				foreach ($oSubscribedFolders as /* @var $oImapFolder \MailSo\Imap\Folder */ $oImapFolder) {
+					isset($oFolderCollection[$oImapFolder->FullName])
+					&& $oFolderCollection[$oImapFolder->FullName]->setSubscribed();
 				}
 			}
 			catch (\Throwable $oException)
 			{
 				\SnappyMail\Log::error('IMAP', 'FolderSubscribeList: ' . $oException->getMessage());
-			}
-		}
-
-//		$this->oImapClient->Settings->disable_list_status
-		$aFolders = $this->oImapClient->FolderStatusList($sParent, $sListPattern);
-		if (!$aFolders) {
-			return null;
-		}
-
-		if ($bUseListSubscribeStatus) {
-			foreach ($aFolders as $sFullName => /* @var $oImapFolder \MailSo\Imap\Folder */ $oImapFolder) {
-				if (null === $aImapSubscribedFoldersHelper || \in_array($sFullName, $aImapSubscribedFoldersHelper)) {
+				foreach ($oFolderCollection as /* @var $oImapFolder \MailSo\Imap\Folder */ $oImapFolder) {
 					$oImapFolder->setSubscribed();
 				}
 			}
 		}
-
-		$oFolderCollection = new FolderCollection;
-//		$iOptimizationLimit = $this->oImapClient->Settings->folder_list_limit;
-//		$oFolderCollection->Optimized = 10 < $iOptimizationLimit && \count($aFolders) > $iOptimizationLimit;
-		$oFolderCollection->exchangeArray(\array_values($aFolders));
 
 		return $oFolderCollection;
 	}
@@ -930,23 +918,22 @@ class MailClient
 			throw new \InvalidArgumentException;
 		}
 
-		$aSubscribeFolders = array();
+		$oSubscribedFolders = array();
 		if ($bSubscribe) {
-			$aSubscribeFolders = $this->oImapClient->FolderSubscribeList($sPrevFolderFullName, '*');
-			foreach ($aSubscribeFolders as /* @var $oFolder \MailSo\Imap\Folder */ $oFolder) {
-				$this->oImapClient->FolderUnsubscribe($oFolder->FullName());
+			$oSubscribedFolders = $this->oImapClient->FolderSubscribeList($sPrevFolderFullName, '*');
+			foreach ($oSubscribedFolders as /* @var $oFolder \MailSo\Imap\Folder */ $oFolder) {
+				$this->oImapClient->FolderUnsubscribe($oFolder->FullName);
 			}
 		}
 
 		$this->oImapClient->FolderRename($sPrevFolderFullName, $sNewFolderFullName);
 
-		foreach ($aSubscribeFolders as /* @var $oFolder \MailSo\Imap\Folder */ $oFolder) {
-			$sFolderFullNameForResubscribe = $oFolder->FullName();
+		foreach ($oSubscribedFolders as /* @var $oFolder \MailSo\Imap\Folder */ $oFolder) {
+			$sFolderFullNameForResubscribe = $oFolder->FullName;
 			if (\str_starts_with($sFolderFullNameForResubscribe, $sPrevFolderFullName)) {
-				$sNewFolderFullNameForResubscribe = $sNewFolderFullName.
-					\substr($sFolderFullNameForResubscribe, \strlen($sPrevFolderFullName));
-
-				$this->oImapClient->FolderSubscribe($sNewFolderFullNameForResubscribe);
+				$this->oImapClient->FolderSubscribe(
+					$sNewFolderFullName . \substr($sFolderFullNameForResubscribe, \strlen($sPrevFolderFullName))
+				);
 			}
 		}
 

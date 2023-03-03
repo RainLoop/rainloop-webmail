@@ -22,7 +22,7 @@ namespace MailSo\Imap\Traits;
  */
 trait Status
 {
-	public string $FolderName;
+	public string $FullName;
 
 	public bool $hasStatus = false;
 
@@ -102,7 +102,7 @@ trait Status
 			return null;
 		}
 		return \md5('FolderHash/'. \implode('-', [
-				$this->FolderName,
+				$this->FullName,
 				$this->MESSAGES,
 				$this->UIDNEXT,
 				$this->UIDVALIDITY,

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace MailSo\Mail;
+namespace MailSo\Imap;
 
 /**
  * @category MailSo
@@ -21,14 +21,8 @@ class FolderCollection extends \MailSo\Base\Collection
 
 	public function append($oFolder, bool $bToTop = false) : void
 	{
-		assert($oFolder instanceof \MailSo\Imap\Folder);
+		assert($oFolder instanceof Folder);
 		parent::append($oFolder, $bToTop);
-	}
-
-	public function FindDelimiter() : string
-	{
-		$oFolder = $this['INBOX'] ?? $this[0] ?? null;
-		return $oFolder ? $oFolder->Delimiter() : '/';
 	}
 
 	#[\ReturnTypeWillChange]
@@ -36,7 +30,7 @@ class FolderCollection extends \MailSo\Base\Collection
 	{
 		return array(
 			'@Object' => 'Collection/FolderCollection',
-			'@Collection' => $this->getArrayCopy(),
+			'@Collection' => \array_values($this->getArrayCopy()),
 //			'optimized' => $this->Optimized
 		);
 	}

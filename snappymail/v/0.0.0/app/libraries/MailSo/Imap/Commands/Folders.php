@@ -13,6 +13,7 @@
 namespace MailSo\Imap\Commands;
 
 use MailSo\Imap\Folder;
+use MailSo\Imap\FolderCollection;
 use MailSo\Imap\FolderInformation;
 use MailSo\Imap\SequenceSet;
 use MailSo\Imap\Enumerations\FolderStatus;
@@ -171,7 +172,7 @@ trait Folders
 		$oFolderInfo = $this->oCurrentFolderInfo;
 		$bReselect = false;
 		$bWritable = false;
-		if ($oFolderInfo && $sFolderName === $oFolderInfo->FolderName) {
+		if ($oFolderInfo && $sFolderName === $oFolderInfo->FullName) {
 			if ($oFolderInfo->hasStatus) {
 				return $oFolderInfo;
 			}
@@ -351,7 +352,7 @@ trait Folders
 	{
 		if (!$bForceReselect
 		  && $this->oCurrentFolderInfo
-		  && $sFolderName === $this->oCurrentFolderInfo->FolderName
+		  && $sFolderName === $this->oCurrentFolderInfo->FullName
 		  && ($bIsWritable === $this->oCurrentFolderInfo->IsWritable || $this->oCurrentFolderInfo->IsWritable)
 		) {
 			return $this->oCurrentFolderInfo;
@@ -444,7 +445,7 @@ trait Folders
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function FolderList(string $sParentFolderName, string $sListPattern, bool $bIsSubscribeList = false, bool $bUseListStatus = false) : array
+	public function FolderList(string $sParentFolderName, string $sListPattern, bool $bIsSubscribeList = false, bool $bUseListStatus = false) : FolderCollection
 	{
 		$sCmd = 'LIST';
 
@@ -504,16 +505,17 @@ trait Folders
 		$aMetadata = $bMetadata ? $this->getAllMetadata() : null;
 
 		$this->SendRequest($sCmd, $aParameters);
-		$aReturn = array();
+		$aFolders = array();
+		$oFolderCollection = new FolderCollection;
 		$sDelimiter = '';
 		$bInbox = false;
 		foreach ($this->yieldUntaggedResponses() as $oResponse) {
 			if ('STATUS' === $oResponse->StatusOrIndex && isset($oResponse->ResponseList[2])) {
 				$sFullName = $this->toUTF8($oResponse->ResponseList[2]);
-				if (!isset($aReturn[$sFullName])) {
-					$aReturn[$sFullName] = new Folder($sFullName);
+				if (!isset($oFolderCollection[$sFullName])) {
+					$oFolderCollection[$sFullName] = new Folder($sFullName);
 				}
-				$aReturn[$sFullName]->setStatusFromResponse($oResponse);
+				$oFolderCollection[$sFullName]->setStatusFromResponse($oResponse);
 			}
 			else if ($sCmd === $oResponse->StatusOrIndex && 5 === \count($oResponse->ResponseList)) {
 				try
@@ -527,18 +529,16 @@ trait Folders
 					 * $oResponse->ResponseList[3] = Delimiter
 					 * $oResponse->ResponseList[4] = FullName
 					 */
-					if (isset($aReturn[$sFullName])) {
-						$oFolder = $aReturn[$sFullName];
+					if (isset($oFolderCollection[$sFullName])) {
+						$oFolder = $oFolderCollection[$sFullName];
 						$oFolder->setDelimiter($oResponse->ResponseList[3]);
 						$oFolder->setFlags($oResponse->ResponseList[2]);
 					} else {
 						$oFolder = new Folder($sFullName, $oResponse->ResponseList[3], $oResponse->ResponseList[2]);
-						$aReturn[$sFullName] = $oFolder;
+						$oFolderCollection[$sFullName] = $oFolder;
 					}
 
-					if ($oFolder->IsInbox()) {
-						$bInbox = true;
-					}
+					$bInbox = $bInbox || $oFolder->IsInbox();
 
 					if (!$sDelimiter) {
 						$sDelimiter = $oFolder->Delimiter();
@@ -547,8 +547,6 @@ trait Folders
 					if (isset($aMetadata[$oResponse->ResponseList[4]])) {
 						$oFolder->SetAllMetadata($aMetadata[$oResponse->ResponseList[4]]);
 					}
-
-					$aReturn[$sFullName] = $oFolder;
 				}
 				catch (\Throwable $oException)
 				{
@@ -557,13 +555,16 @@ trait Folders
 			}
 		}
 
+//		$iOptimizationLimit = $this->Settings->folder_list_limit;
+//		$oFolderCollection->Optimized = 10 < $iOptimizationLimit && $oFolderCollection->count() > $iOptimizationLimit;
+
 		// RFC 5464
-		if ($bMetadata && !$aMetadata /*&& 50 < \count($aReturn)*/) {
-			foreach ($aReturn as $oFolder) {
-//				if (2 > \substr_count($oFolder->FullName(), $oFolder->Delimiter()))
+		if ($bMetadata && !$aMetadata /*&& 50 < $oFolderCollection->count()*/) {
+			foreach ($oFolderCollection as $oFolder) {
+//				if (2 > \substr_count($oFolder->FullName, $oFolder->Delimiter()))
 				try {
 					$oFolder->SetAllMetadata(
-						$this->getMetadata($oFolder->FullName(), ['/shared', '/private'], ['DEPTH'=>'infinity'])
+						$this->getMetadata($oFolder->FullName, ['/shared', '/private'], ['DEPTH'=>'infinity'])
 					);
 				} catch (\Throwable $oException) {
 					// Ignore error
@@ -571,11 +572,11 @@ trait Folders
 			}
 		}
 
-		if (!$bInbox && !$sParentFolderName && !isset($aReturn['INBOX'])) {
-			$aReturn['INBOX'] = new Folder('INBOX', $sDelimiter);
+		if (!$bInbox && !$sParentFolderName && !isset($oFolderCollection['INBOX'])) {
+			$oFolderCollection['INBOX'] = new Folder('INBOX', $sDelimiter);
 		}
 
-		return $aReturn;
+		return $oFolderCollection;
 	}
 
 	/**
@@ -583,7 +584,7 @@ trait Folders
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function FolderSubscribeList(string $sParentFolderName, string $sListPattern) : array
+	public function FolderSubscribeList(string $sParentFolderName, string $sListPattern) : FolderCollection
 	{
 		return $this->FolderList($sParentFolderName, $sListPattern, true);
 	}
@@ -593,7 +594,7 @@ trait Folders
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function FolderStatusList(string $sParentFolderName, string $sListPattern) : array
+	public function FolderStatusList(string $sParentFolderName, string $sListPattern) : FolderCollection
 	{
 		return $this->FolderList($sParentFolderName, $sListPattern, false, true);
 	}

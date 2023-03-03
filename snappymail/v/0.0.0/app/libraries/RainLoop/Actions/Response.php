@@ -204,7 +204,7 @@ trait Response
 				);
 				$this->aCheckableFolder = \is_array($aCheckable) ? $aCheckable : array();
 			}
-			$aResult['checkable'] = \in_array($mResponse->FullName(), $this->aCheckableFolder);
+			$aResult['checkable'] = \in_array($mResponse->FullName, $this->aCheckableFolder);
 
 			return $aResult;
 		}
@@ -216,7 +216,7 @@ trait Response
 				return \array_slice($mResult['@Collection'], 0, 100);
 			}
 			if ($mResponse instanceof \MailSo\Mail\AttachmentCollection
-			 || $mResponse instanceof \MailSo\Mail\FolderCollection
+			 || $mResponse instanceof \MailSo\Imap\FolderCollection
 			 || $mResponse instanceof \MailSo\Mail\MessageCollection
 			) {
 				return $mResult;
