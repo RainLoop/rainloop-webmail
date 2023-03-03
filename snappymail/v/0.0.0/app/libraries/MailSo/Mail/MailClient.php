@@ -603,6 +603,8 @@ class MailClient
 			}
 		}
 
+		$this->oImapClient->FolderExamine($sFolderName);
+
 		$aResultUids = [];
 		if ($bUseSort) {
 			$aSortTypes = [];

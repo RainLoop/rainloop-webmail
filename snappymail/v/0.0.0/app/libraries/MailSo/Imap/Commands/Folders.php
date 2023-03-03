@@ -172,6 +172,10 @@ trait Folders
 		$bReselect = false;
 		$bWritable = false;
 		if ($oFolderInfo && $sFolderName === $oFolderInfo->FolderName) {
+			if ($oFolderInfo->hasStatus) {
+				return $oFolderInfo;
+			}
+
 			/**
 			 * There's a long standing IMAP CLIENTBUG where STATUS command is executed
 			 * after SELECT/EXAMINE on same folder (it should not).
@@ -196,19 +200,20 @@ trait Folders
 
 		if ($bReselect || $bSelect) {
 			// Don't use FolderExamine, else PERMANENTFLAGS is empty in Dovecot
-			$oFolderInformation = $this->selectOrExamineFolder($sFolderName, $bSelect || $bWritable, false);
-			$oFolderInformation->MESSAGES = \max(0, $oFolderInformation->MESSAGES, $oInfo->MESSAGES);
+			$oFolderInfo = $this->selectOrExamineFolder($sFolderName, $bSelect || $bWritable, false);
+			$oFolderInfo->MESSAGES = \max(0, $oFolderInfo->MESSAGES, $oInfo->MESSAGES);
 			// SELECT or EXAMINE command then UNSEEN is the message sequence number of the first unseen message.
 			// And deprecated in IMAP4rev2, so we set it to the amount of unseen messages
-			$oFolderInformation->UNSEEN = \max(0, $oInfo->UNSEEN);
-			$oFolderInformation->UIDNEXT = \max(0, $oFolderInformation->UIDNEXT, $oInfo->UIDNEXT);
-			$oFolderInformation->UIDVALIDITY = \max(0, $oFolderInformation->UIDVALIDITY, $oInfo->UIDVALIDITY);
-			$oFolderInformation->HIGHESTMODSEQ = \max(0, $oInfo->HIGHESTMODSEQ);
-			$oFolderInformation->APPENDLIMIT = \max(0, $oFolderInformation->APPENDLIMIT, $oInfo->APPENDLIMIT);
-			$oFolderInformation->MAILBOXID = $oFolderInformation->MAILBOXID ?: $oInfo->MAILBOXID;
-//			$oFolderInformation->SIZE = \max($oFolderInformation->SIZE, $oInfo->SIZE);
-//			$oFolderInformation->RECENT = \max(0, $oFolderInformation->RECENT, $oInfo->RECENT);
-			return $oFolderInformation;
+			$oFolderInfo->UNSEEN = \max(0, $oInfo->UNSEEN);
+			$oFolderInfo->UIDNEXT = \max(0, $oFolderInfo->UIDNEXT, $oInfo->UIDNEXT);
+			$oFolderInfo->UIDVALIDITY = \max(0, $oFolderInfo->UIDVALIDITY, $oInfo->UIDVALIDITY);
+			$oFolderInfo->HIGHESTMODSEQ = \max(0, $oInfo->HIGHESTMODSEQ);
+			$oFolderInfo->APPENDLIMIT = \max(0, $oFolderInfo->APPENDLIMIT, $oInfo->APPENDLIMIT);
+			$oFolderInfo->MAILBOXID = $oFolderInfo->MAILBOXID ?: $oInfo->MAILBOXID;
+//			$oFolderInfo->SIZE = \max($oFolderInfo->SIZE, $oInfo->SIZE);
+//			$oFolderInfo->RECENT = \max(0, $oFolderInfo->RECENT, $oInfo->RECENT);
+			$oFolderInfo->hasStatus = $oInfo->hasStatus;
+			return $oFolderInfo;
 		}
 
 		return $oInfo;
@@ -258,19 +263,16 @@ trait Folders
 		if ($this->IsSelected()) {
 			if ($this->hasCapability('UNSELECT')) {
 				$this->SendRequestGetResponse('UNSELECT');
-				$this->oCurrentFolderInfo = null;
 			} else {
 				try {
 					$this->SendRequestGetResponse('SELECT', ['""']);
 					// * OK [CLOSED] Previous mailbox closed.
 					// 3 NO [CANNOT] Invalid mailbox name: Name is empty
 				} catch (\MailSo\Imap\Exceptions\NegativeResponseException $oException) {
-					if ('NO' === $oException->GetResponseStatus()) {
-						$this->oCurrentFolderInfo = null;
-					}
 				}
 			}
 		}
+		$this->oCurrentFolderInfo = null;
 	}
 
 	/**
@@ -315,9 +317,9 @@ trait Folders
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function FolderSelect(string $sFolderName, bool $bReSelectSameFolders = false) : FolderInformation
+	public function FolderSelect(string $sFolderName, bool $bForceReselect = false) : FolderInformation
 	{
-		return $this->selectOrExamineFolder($sFolderName, true, $bReSelectSameFolders);
+		return $this->selectOrExamineFolder($sFolderName, true, $bForceReselect);
 	}
 
 	/**
@@ -331,9 +333,9 @@ trait Folders
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function FolderExamine(string $sFolderName, bool $bReSelectSameFolders = false) : FolderInformation
+	public function FolderExamine(string $sFolderName, bool $bForceReselect = false) : FolderInformation
 	{
-		return $this->selectOrExamineFolder($sFolderName, $this->Settings->force_select, $bReSelectSameFolders);
+		return $this->selectOrExamineFolder($sFolderName, $this->Settings->force_select, $bForceReselect);
 	}
 
 	/**
@@ -345,9 +347,9 @@ trait Folders
 	 * REQUIRED IMAP4rev2 untagged responses:  FLAGS, EXISTS, LIST
 	 * REQUIRED IMAP4rev2 OK untagged responses:  PERMANENTFLAGS, UIDNEXT, UIDVALIDITY
 	 */
-	protected function selectOrExamineFolder(string $sFolderName, bool $bIsWritable, bool $bReSelectSameFolders) : FolderInformation
+	protected function selectOrExamineFolder(string $sFolderName, bool $bIsWritable, bool $bForceReselect) : FolderInformation
 	{
-		if (!$bReSelectSameFolders
+		if (!$bForceReselect
 		  && $this->oCurrentFolderInfo
 		  && $sFolderName === $this->oCurrentFolderInfo->FolderName
 		  && ($bIsWritable === $this->oCurrentFolderInfo->IsWritable || $this->oCurrentFolderInfo->IsWritable)

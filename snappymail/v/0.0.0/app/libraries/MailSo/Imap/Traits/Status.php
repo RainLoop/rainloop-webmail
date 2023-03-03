@@ -24,6 +24,8 @@ trait Status
 {
 	public string $FolderName;
 
+	public bool $hasStatus = false;
+
 	public
 		/**
 		 * The number of messages in the mailbox.
@@ -110,7 +112,7 @@ trait Status
 		]));
 	}
 
-	public function setStatus(string $name, $value) : bool
+	private function setStatus(string $name, $value) : bool
 	{
 		if ('EXISTS' === $name) {
 			$name = 'MESSAGES';
@@ -165,6 +167,7 @@ trait Status
 						$oResponse->ResponseList[3][$i+1]
 					);
 				}
+				$this->hasStatus = $bResult;
 			}
 			// SELECT or EXAMINE command
 			else if (\is_numeric($oResponse->ResponseList[1]) && \is_string($oResponse->ResponseList[2])) {
