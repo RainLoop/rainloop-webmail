@@ -2215,7 +2215,6 @@ class ImapClient extends \MailSo\Net\NetClient
 			else
 			{
 				$iBufferEndIndex = \strlen($this->sResponseBuffer) - 3;
-				$this->bResponseBufferChanged = false;
 
 				if ($iPos > $iBufferEndIndex)
 				{

@@ -79,7 +79,6 @@ class Manager
 		$this->aTemplates = array();
 		$this->aAdminTemplates = array();
 
-		$this->aAjaxFilters = array();
 		$this->aAdditionalAjax = array();
 		$this->aProcessTemplate = array();
 
