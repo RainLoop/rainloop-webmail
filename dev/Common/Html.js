@@ -266,7 +266,7 @@ export const
 
 		tmpl.innerHTML = html
 			// Strip Microsoft comments
-			.replace(/<!--\[if[\s\S]*?endif\]-->/gi, '')
+			.replace(/<!--\[if[\s\S]*?-->/gi, '')
 //			.replace(/<pre[^>]*>[\s\S]*?<\/pre>/gi, pre => pre.replace(/\n/g, '\n<br>'))
 			// Not supported by <template> element
 //			.replace(/<!doctype[^>]*>/gi, '')
