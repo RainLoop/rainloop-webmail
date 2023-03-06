@@ -29,9 +29,7 @@ ko.observable = initialValue => {
     ko.subscribable['fn'].init(observable);
 
     // Inherit from 'observable'
-    Object.setPrototypeOf(observable, observableFn);
-
-    return observable;
+    return Object.setPrototypeOf(observable, observableFn);
 }
 
 // Define prototype for observables

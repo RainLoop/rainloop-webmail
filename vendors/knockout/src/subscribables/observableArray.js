@@ -4,12 +4,12 @@ ko.observableArray = initialValues => {
     if (typeof initialValues != 'object' || !('length' in initialValues))
         throw new Error("The argument passed when initializing an observable array must be an array, or null, or undefined.");
 
-    var result = ko.observable(initialValues);
-    Object.setPrototypeOf(result, ko.observableArray['fn']);
-    return result.extend({'trackArrayChanges':true});
+    return Object.setPrototypeOf(ko.observable(initialValues), ko.observableArray['fn']).extend({'trackArrayChanges':true});
 };
 
-ko.observableArray['fn'] = {
+// Note that for browsers that don't support proto assignment, the
+// inheritance chain is created manually in the ko.observableArray constructor
+ko.observableArray['fn'] = Object.setPrototypeOf({
     'remove': function (valueOrPredicate) {
         var underlyingArray = this.peek();
         var removed = false;
@@ -29,11 +29,7 @@ ko.observableArray['fn'] = {
         }
         removed && this.valueHasMutated();
     }
-};
-
-// Note that for browsers that don't support proto assignment, the
-// inheritance chain is created manually in the ko.observableArray constructor
-Object.setPrototypeOf(ko.observableArray['fn'], ko.observable['fn']);
+}, ko.observable['fn']);
 
 // Populate ko.observableArray.fn with native arrays functions
 Object.getOwnPropertyNames(Array.prototype).forEach(methodName => {
