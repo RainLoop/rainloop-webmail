@@ -465,6 +465,29 @@ class Message implements \JsonSerializable
 		return $oMessage;
 	}
 
+	public function ETag(string $sClientHash) : string
+	{
+		return \md5('MessageHash/' . \implode('/', [
+			$this->sFolder,
+			$this->Uid,
+			\implode(',', $this->getFlags()),
+//			\implode(',', $this->aThreads),
+			$sClientHash
+		]));
+	}
+
+	// https://datatracker.ietf.org/doc/html/rfc5788#section-3.4.1
+	// Thunderbird $label1 is same as $Important?
+	// Thunderbird $label4 is same as $todo?
+	protected function getFlags() : array
+	{
+		return \array_unique(\str_replace(
+			['$readreceipt', '$replied',  /* 'junk',  'nonjunk',  '$queued',        '$sent',      'sent'*/],
+			['$mdnsent',     '\\answered',/* '$junk', '$notjunk', '$submitpending', '$submitted', '$submitted'*/],
+			$this->aFlagsLowerCase
+		));
+	}
+
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
@@ -476,15 +499,6 @@ class Message implements \JsonSerializable
 			$this->aFlagsLowerCase
 		), true);
 */
-		// https://datatracker.ietf.org/doc/html/rfc5788#section-3.4.1
-		// Thunderbird $label1 is same as $Important?
-		// Thunderbird $label4 is same as $todo?
-		$aFlags = \array_unique(\str_replace(
-			['$readreceipt', '$replied',  /* 'junk',  'nonjunk',  '$queued',        '$sent',      'sent'*/],
-			['$mdnsent',     '\\answered',/* '$junk', '$notjunk', '$submitpending', '$submitted', '$submitted'*/],
-			$this->aFlagsLowerCase
-		));
-
 		$aAutocrypt = [];
 		if ($this->sAutocrypt) {
 			foreach (\explode(';', $this->sAutocrypt) as $entry) {
@@ -527,7 +541,7 @@ class Message implements \JsonSerializable
 			'dkim' => $this->DKIM,
 			'dmarc' => $this->DMARC,
 
-			'flags' => $aFlags,
+			'flags' => $this->getFlags(),
 
 			'inReplyTo' => $this->InReplyTo,
 

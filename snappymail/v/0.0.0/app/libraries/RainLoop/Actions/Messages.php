@@ -406,15 +406,12 @@ trait Messages
 	{
 		$sRawKey = (string) $this->GetActionParam('RawKey', '');
 
-		$sFolder = '';
-		$iUid = 0;
-
 		$aValues = \json_decode(\MailSo\Base\Utils::UrlSafeBase64Decode($sRawKey), true);
 		if ($aValues && 2 <= \count($aValues)) {
 			$sFolder = (string) $aValues[0];
 			$iUid = (int) $aValues[1];
-
-			$this->verifyCacheByKey($sRawKey);
+//			$useThreads = !empty($aValues[2]);
+//			$accountHash = $aValues[3];
 		} else {
 			$sFolder = $this->GetActionParam('folder', '');
 			$iUid = (int) $this->GetActionParam('uid', 0);
@@ -432,9 +429,10 @@ trait Messages
 		}
 
 		if ($oMessage) {
+			$ETag = $oMessage->ETag($this->ImapClient()->Hash());
+			$this->verifyCacheByKey($ETag);
 			$this->Plugins()->RunHook('filter.result-message', array($oMessage));
-
-			$this->cacheByKey($sRawKey);
+			$this->cacheByKey($ETag);
 		}
 
 		return $this->DefaultResponse($oMessage);
