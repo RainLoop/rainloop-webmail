@@ -1003,7 +1003,12 @@ class Actions
 			$oConfig = $this->oConfig;
 			$aResult = array(
 				'AdditionalAccounts'   => (bool) $oConfig->Get('webmail', 'allow_additional_accounts', false),
-				'AttachmentThumbnails' => (bool) $oConfig->Get('interface', 'show_attachment_thumbnail', true),
+				'AttachmentThumbnails' => (bool) $oConfig->Get('interface', 'show_attachment_thumbnail', true)
+					&& ($bAdmin
+						|| \extension_loaded('gd')
+						|| \extension_loaded('gmagick')
+						|| \extension_loaded('imagick')
+					),
 				'AttachmentsActions'   => (bool) $oConfig->Get('capa', 'attachments_actions', false),
 				'Contacts'             => (bool) $oConfig->Get('contacts', 'enable', false),
 				'DangerousActions'     => (bool) $oConfig->Get('capa', 'dangerous_actions', true),
@@ -1036,7 +1041,7 @@ class Actions
 		if ($sKey && $this->oConfig->Get('cache', 'enable', true) && $this->oConfig->Get('cache', 'http', true)) {
 			\MailSo\Base\Http::ServerUseCache(
 				$this->etag($sKey),
-				1382478804,
+				0, // issue with messages
 				$this->oConfig->Get('cache', 'http_expires', 3600)
 			);
 			return true;
@@ -1073,7 +1078,7 @@ class Actions
 		return $oAccount;
 	}
 
-	protected function encodeRawKey(?Model\Account $oAccount, array $aValues): string
+	public function encodeRawKey(?Model\Account $oAccount, array $aValues): string
 	{
 		return \SnappyMail\Crypt::EncryptUrlSafe($aValues, \sha1(APP_SALT . ($oAccount ? $oAccount->Hash() : '')));
 	}

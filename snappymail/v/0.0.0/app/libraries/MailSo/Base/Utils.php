@@ -18,6 +18,24 @@ namespace MailSo\Base;
 abstract class Utils
 {
 
+	public static function fileHasThumbnail(string $sFileName) : bool
+	{
+		static $aCache = array();
+
+		$sExt = static::GetFileExtension($sFileName);
+		if (isset($aCache[$sExt])) {
+			return $aCache[$sExt];
+		}
+
+		$aCache[$sExt] = (
+			\extension_loaded('gd')
+			|| \extension_loaded('gmagick')
+			|| \extension_loaded('imagick')
+		) && \in_array($sExt, ['png', 'gif', 'jpg', 'jpeg', 'webp']);
+
+		return $aCache[$sExt];
+	}
+
 	public static function NormalizeCharset(string $sEncoding, bool $bAsciAsUtf8 = false) : string
 	{
 		$sEncoding = \preg_replace('/^iso8/', 'iso-8', \strtolower($sEncoding));

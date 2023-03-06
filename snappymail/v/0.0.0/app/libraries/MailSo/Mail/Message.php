@@ -511,6 +511,7 @@ class Message implements \JsonSerializable
 			'@Object' => 'Object/Message',
 			'folder' => $this->sFolder,
 			'uid' => $this->Uid,
+			'hash' => \md5($this->sFolder . $this->Uid),
 			'subject' => \trim(Utils::Utf8Clear($this->sSubject)),
 			'encrypted' => 'multipart/encrypted' == $this->sContentType || $this->pgpEncrypted,
 			'messageId' => $this->sMessageId,

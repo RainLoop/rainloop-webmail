@@ -69,26 +69,6 @@ trait Response
 		]);
 	}
 
-	private function isFileHasThumbnail(string $sFileName) : bool
-	{
-		static $aCache = array();
-
-		$sExt = \MailSo\Base\Utils::GetFileExtension($sFileName);
-		if (isset($aCache[$sExt])) {
-			return $aCache[$sExt];
-		}
-
-		$bResult = (
-			\extension_loaded('gd')
-			|| \extension_loaded('gmagick')
-			|| \extension_loaded('imagick')
-		) && \in_array($sExt, ['png', 'gif', 'jpg', 'jpeg']);
-
-		$aCache[$sExt] = $bResult;
-
-		return $bResult;
-	}
-
 	/**
 	 * @param mixed $mResponse
 	 *
@@ -112,80 +92,64 @@ trait Response
 		}
 
 		if ($mResponse instanceof \MailSo\Mail\Message) {
-			$mResult = $mResponse->jsonSerialize();
+			$aResult = $mResponse->jsonSerialize();
 
 			$oAccount = $this->getAccountFromToken();
 
-			if (!$mResult['dateTimeStampInUTC'] || $this->Config()->Get('labs', 'date_from_headers', true)) {
+			if (!$aResult['dateTimeStampInUTC'] || $this->Config()->Get('labs', 'date_from_headers', true)) {
 				$iDateTimeStampInUTC = $mResponse->HeaderTimeStampInUTC;
 				if ($iDateTimeStampInUTC) {
-					$mResult['dateTimeStampInUTC'] = $iDateTimeStampInUTC;
+					$aResult['dateTimeStampInUTC'] = $iDateTimeStampInUTC;
 				}
 			}
 
 			// \MailSo\Mime\EmailCollection
 			foreach (['replyTo','from','to','cc','bcc','sender','deliveredTo'] as $prop) {
-				$mResult[$prop] = $this->responseObject($mResult[$prop], $prop);
+				$aResult[$prop] = $this->responseObject($aResult[$prop], $prop);
 			}
 
-			$sSubject = $mResult['subject'];
-			$mResult['hash'] = \md5($mResult['folder'].$mResult['uid']);
-			$mResult['requestHash'] = $this->encodeRawKey($oAccount, array(
-				'folder' => $mResult['folder'],
-				'uid' => $mResult['uid'],
+			$sSubject = $aResult['subject'];
+			$aResult['requestHash'] = $this->encodeRawKey($oAccount, array(
+				'folder' => $aResult['folder'],
+				'uid' => $aResult['uid'],
 				'mimeType' => 'message/rfc822',
-				'fileName' => (\strlen($sSubject) ? \MailSo\Base\Utils::SecureFileName($sSubject) : 'message-'.$mResult['uid']) . '.eml'
+				'fileName' => (\strlen($sSubject) ? \MailSo\Base\Utils::SecureFileName($sSubject) : 'message-'.$aResult['uid']) . '.eml'
 			));
 
-			$mResult['attachments'] = $this->responseObject($mResponse->Attachments, 'attachments');
-
 			if (!$sParent) {
-				$mResult['draftInfo'] = $mResponse->DraftInfo;
-				$mResult['unsubsribeLinks'] = $mResponse->UnsubsribeLinks;
-				$mResult['references'] = $mResponse->References;
+				$aResult['draftInfo'] = $mResponse->DraftInfo;
+				$aResult['unsubsribeLinks'] = $mResponse->UnsubsribeLinks;
+				$aResult['references'] = $mResponse->References;
 
-				$mResult['html'] = $mResponse->Html();
-				$mResult['plain'] = $mResponse->Plain();
+				$aResult['html'] = $mResponse->Html();
+				$aResult['plain'] = $mResponse->Plain();
 
 //				$this->GetCapa(Capa::OPEN_PGP) || $this->GetCapa(Capa::GNUPG)
-				$mResult['pgpSigned'] = $mResponse->pgpSigned;
-				$mResult['pgpEncrypted'] = $mResponse->pgpEncrypted;
+				$aResult['pgpSigned'] = $mResponse->pgpSigned;
+				$aResult['pgpEncrypted'] = $mResponse->pgpEncrypted;
 
-				$mResult['readReceipt'] = $mResponse->ReadReceipt;
-				if (\strlen($mResult['readReceipt']) && !\in_array('$forwarded', $mResult['flags'])) {
-					// \in_array('$mdnsent', $mResult['flags'])
-					if (\strlen($mResult['readReceipt'])) {
+				$aResult['readReceipt'] = $mResponse->ReadReceipt;
+				if (\strlen($aResult['readReceipt']) && !\in_array('$forwarded', $aResult['flags'])) {
+					// \in_array('$mdnsent', $aResult['flags'])
+					if (\strlen($aResult['readReceipt'])) {
 						try
 						{
-							$oReadReceipt = \MailSo\Mime\Email::Parse($mResult['readReceipt']);
+							$oReadReceipt = \MailSo\Mime\Email::Parse($aResult['readReceipt']);
 							if (!$oReadReceipt) {
-								$mResult['readReceipt'] = '';
+								$aResult['readReceipt'] = '';
 							}
 						}
 						catch (\Throwable $oException) { unset($oException); }
 					}
 
-					if (\strlen($mResult['readReceipt']) && '1' === $this->Cacher($oAccount)->Get(
-						\RainLoop\KeyPathHelper::ReadReceiptCache($oAccount->Email(), $mResult['folder'], $mResult['uid']), '0'))
+					if (\strlen($aResult['readReceipt']) && '1' === $this->Cacher($oAccount)->Get(
+						\RainLoop\KeyPathHelper::ReadReceiptCache($oAccount->Email(), $aResult['folder'], $aResult['uid']), '0'))
 					{
-						$mResult['readReceipt'] = '';
+						$aResult['readReceipt'] = '';
 					}
 				}
 			}
-			return $mResult;
-		}
-
-		if ($mResponse instanceof \MailSo\Mail\Attachment) {
-			$mResult = $mResponse->jsonSerialize();
-			$mResult['isThumbnail'] = $this->GetCapa(Capa::ATTACHMENT_THUMBNAILS) && $this->isFileHasThumbnail($mResult['fileName']);
-			$mResult['download'] = $this->encodeRawKey($this->getAccountFromToken(), array(
-				'folder' => $mResult['folder'],
-				'uid' => $mResult['uid'],
-				'mimeIndex' => $mResult['mimeIndex'],
-				'mimeType' => $mResult['mimeType'],
-				'fileName' => $mResult['fileName']
-			));
-			return $mResult;
+			return $aResult;
 		}
 
 		if ($mResponse instanceof \MailSo\Imap\Folder) {
@@ -207,21 +171,6 @@ trait Response
 			$aResult['checkable'] = \in_array($mResponse->FullName, $this->aCheckableFolder);
 
 			return $aResult;
-		}
-
-		if ($mResponse instanceof \MailSo\Base\Collection) {
-			$mResult = $mResponse->jsonSerialize();
-			$mResult['@Collection'] = $this->responseObject($mResult['@Collection'], 'Collection');
-			if ($mResponse instanceof \MailSo\Mail\EmailCollection) {
-				return \array_slice($mResult['@Collection'], 0, 100);
-			}
-			if ($mResponse instanceof \MailSo\Mail\AttachmentCollection
-			 || $mResponse instanceof \MailSo\Imap\FolderCollection
-			 || $mResponse instanceof \MailSo\Mail\MessageCollection
-			) {
-				return $mResult;
-			}
-			return $mResult['@Collection'];
 		}
 
 		return $mResponse;

@@ -164,4 +164,11 @@ class EmailCollection extends \MailSo\Base\Collection
 			catch (\InvalidArgumentException $oException) {}
 		}
 	}
+
+	#[\ReturnTypeWillChange]
+	public function jsonSerialize()
+	{
+		return \array_slice($this->getArrayCopy(), 0, 100);
+	}
+
 }
