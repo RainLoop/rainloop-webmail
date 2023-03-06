@@ -30,8 +30,6 @@ import { SMAudio } from 'Common/Audio';
 
 import { i18n } from 'Common/Translator';
 
-import { MessageFlagsCache } from 'Common/Cache';
-
 import { AppUserStore } from 'Stores/User/App';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import { AccountUserStore } from 'Stores/User/Account';
@@ -516,8 +514,6 @@ export class MailMessageView extends AbstractViewRight {
 				if (!iError) {
 					oMessage.flags.push('$mdnsent');
 //					oMessage.flags.valueHasMutated();
-					MessageFlagsCache.store(oMessage);
-					MessagelistUserStore.reloadFlagsAndCachedMessage();
 				}
 			}, {
 				messageFolder: oMessage.folder,

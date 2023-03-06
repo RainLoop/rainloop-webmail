@@ -1,4 +1,3 @@
-import { MessageFlagsCache } from 'Common/Cache';
 import { Notifications } from 'Common/Enums';
 import { MessageSetAction, ComposeType/*, FolderType*/ } from 'Common/EnumsUser';
 import { doc, createElement, elementById, dropdowns, dropdownVisibility, SettingsGet, leftPanelDisabled } from 'Common/Globals';
@@ -313,8 +312,6 @@ populateMessageBody = (oMessage, popup) => {
 						oMessage.body.remove();
 */
 						viewMessage(oMessage, popup);
-
-						MessageFlagsCache.initMessage(oMessage);
 					}
 				}
 				popup || MessageUserStore.loading(false);

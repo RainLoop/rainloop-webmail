@@ -2,10 +2,6 @@ import { AbstractCollectionModel } from 'Model/AbstractCollection';
 import { MessageModel } from 'Model/Message';
 import { MessageUserStore } from 'Stores/User/Message';
 
-import {
-	MessageFlagsCache
-} from 'Common/Cache';
-
 'use strict';
 
 export class MessageCollectionModel extends AbstractCollectionModel
@@ -30,7 +26,7 @@ export class MessageCollectionModel extends AbstractCollectionModel
 	 * @param {?Object} json
 	 * @returns {MessageCollectionModel}
 	 */
-	static reviveFromJson(object, cached) {
+	static reviveFromJson(object/*, cached*/) {
 		let msg = MessageUserStore.message();
 		return super.reviveFromJson(object, message => {
 			// If message is currently viewed, use that.
@@ -38,7 +34,6 @@ export class MessageCollectionModel extends AbstractCollectionModel
 			message = (msg && msg.hash === message.hash) ? msg : MessageModel.reviveFromJson(message);
 			if (message) {
 				message.deleted(false);
-				cached ? MessageFlagsCache.initMessage(message) : MessageFlagsCache.store(message);
 				return message;
 			}
 		});

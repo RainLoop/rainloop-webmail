@@ -24,10 +24,7 @@ import { i18n } from 'Common/Translator';
 
 import { dropFilesInFolder } from 'Common/Folders';
 
-import {
-	getFolderFromCacheList,
-	MessageFlagsCache
-} from 'Common/Cache';
+import { getFolderFromCacheList } from 'Common/Cache';
 
 import { AppUserStore } from 'Stores/User/App';
 import { SettingsUserStore } from 'Stores/User/Settings';
@@ -476,15 +473,11 @@ export class MailMessageList extends AbstractViewRight {
 					folder.unreadEmails(0);
 				}
 
-				MessageFlagsCache.clearFolder(sFolderFullName);
-
 				Remote.request('MessageSetSeenToAll', null, {
 					folder: sFolderFullName,
 					setAction: 1,
 					threadUids: uids.join(',')
 				});
-
-				MessagelistUserStore.reloadFlagsAndCachedMessage();
 			}
 		}
 	}

@@ -3,7 +3,7 @@ import { AbstractCollectionModel } from 'Model/AbstractCollection';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { isArray, getKeyByValue, forEachObjectEntry, b64EncodeJSONSafe } from 'Common/Utils';
 import { ClientSideKeyNameExpandedFolders, FolderType, FolderMetadataKeys } from 'Common/EnumsUser';
-import { getFolderFromCacheList, setFolder, setFolderInboxName, removeFolderFromCacheList } from 'Common/Cache';
+import { clearCache, getFolderFromCacheList, setFolder, setFolderInboxName, removeFolderFromCacheList } from 'Common/Cache';
 import { Settings, SettingsGet, fireEvent } from 'Common/Globals';
 import { Notifications } from 'Common/Enums';
 
@@ -92,6 +92,7 @@ export const
 		Remote.abort('Folders')
 			.post('Folders', FolderUserStore.foldersLoading)
 			.then(data => {
+				clearCache();
 				FolderCollectionModel.reviveFromJson(data.Result)?.storeIt();
 				fCallback?.(true);
 				// Repeat every 15 minutes?

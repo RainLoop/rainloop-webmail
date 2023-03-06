@@ -16,7 +16,6 @@ import { fireEvent, stopEvent, SettingsCapa, registerShortcut } from 'Common/Glo
 
 import Remote from 'Remote/User/Fetch';
 import { getNotification } from 'Common/Translator';
-//import { clearCache } from 'Common/Cache';
 //import { koComputable } from 'External/ko';
 import { addObservablesTo } from 'External/ko';
 
@@ -66,7 +65,6 @@ export class SystemDropDownUserView extends AbstractViewRight {
 					} else {
 /*						// Not working yet
 						forEachObjectEntry(oData.Result, (key, value) => rl.settings.set(key, value));
-						clearCache();
 //						MessageUserStore.message();
 //						MessageUserStore.purgeCache();
 						MessagelistUserStore([]);

@@ -1,6 +1,5 @@
 import { isArray, arrayLength } from 'Common/Utils';
 import {
-	MessageFlagsCache,
 	setFolderETag,
 	getFolderInboxName,
 	getFolderFromCacheList
@@ -112,8 +111,8 @@ folderInformation = (folder, list) => {
 
 		if (arrayLength(list)) {
 			list.forEach(messageListItem => {
-				MessageFlagsCache.getFor(folder, messageListItem.uid) || uids.push(messageListItem.uid);
-				messageListItem.threads.forEach(uid => MessageFlagsCache.getFor(folder, uid) || uids.push(uid));
+				uids.push(messageListItem.uid);
+				messageListItem.threads.forEach(uid => uids.push(uid));
 			});
 			count = uids.length;
 		}
@@ -134,16 +133,6 @@ folderInformation = (folder, list) => {
 						folderFromCache.totalEmails(result.totalEmails);
 						folderFromCache.unreadEmails(result.unreadEmails);
 
-						unreadCountChange && MessageFlagsCache.clearFolder(folderFromCache.fullName);
-
-						if (result.messagesFlags.length) {
-							result.messagesFlags.forEach(message =>
-								MessageFlagsCache.setFor(folderFromCache.fullName, message.uid.toString(), message.flags)
-							);
-
-							MessagelistUserStore.reloadFlagsAndCachedMessage();
-						}
-
 						MessagelistUserStore.notifyNewMessages(folderFromCache.fullName, result.newMessages);
 
 						if (!oldHash || unreadCountChange || result.etag !== oldHash) {
@@ -163,8 +152,6 @@ folderInformation = (folder, list) => {
 				flagsUids: uids,
 				uidNext: getFolderFromCacheList(folder)?.uidNext || 0 // Used to check for new messages
 			});
-		} else if (SettingsUserStore.useThreads()) {
-			MessagelistUserStore.reloadFlagsAndCachedMessage();
 		}
 	}
 },
@@ -190,8 +177,6 @@ folderInformationMultiply = (boot = false) => {
 						folder.etag = item.etag;
 						folder.totalEmails(item.totalEmails);
 						folder.unreadEmails(item.unreadEmails);
-
-						unreadCountChange && MessageFlagsCache.clearFolder(folder.fullName);
 
 						if (!oldHash || item.etag !== oldHash) {
 							if (folder.fullName === FolderUserStore.currentFolderFullName()) {

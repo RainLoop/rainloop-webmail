@@ -19,7 +19,7 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { folderInformation, messagesDeleteHelper } from 'Common/Folders';
 import { serverRequest } from 'Common/Links';
 import { i18n, getNotification, getUploadErrorDescByCode, timestampToString } from 'Common/Translator';
-import { MessageFlagsCache, setFolderETag } from 'Common/Cache';
+import { setFolderETag } from 'Common/Cache';
 import { SettingsCapa, SettingsGet, elementById, addShortcut, createElement } from 'Common/Globals';
 //import { exitFullscreen, isFullscreen, toggleFullscreen } from 'Common/Fullscreen';
 
@@ -440,17 +440,16 @@ export class ComposePopupView extends AbstractViewPopup {
 			} else try {
 				this.sendError(false);
 				this.sending(true);
-
+/*
 				if (3 === arrayLength(this.aDraftInfo)) {
 					const flagsCache = MessageFlagsCache.getFor(this.aDraftInfo[2], this.aDraftInfo[1]);
 					if (isArray(flagsCache)) {
 						flagsCache.push(('forward' === this.aDraftInfo[0]) ? '$forwarded' : '\\answered');
 						MessageFlagsCache.setFor(this.aDraftInfo[2], this.aDraftInfo[1], flagsCache);
-						MessagelistUserStore.reloadFlagsAndCachedMessage();
 						setFolderETag(this.aDraftInfo[2], '');
 					}
 				}
-
+*/
 				sSentFolder = UNUSED_OPTION_VALUE === sSentFolder ? '' : sSentFolder;
 
 				this.getMessageRequestParams(sSentFolder).then(params => {

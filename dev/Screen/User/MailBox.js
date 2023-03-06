@@ -2,7 +2,7 @@ import { Scope } from 'Common/Enums';
 import { doc, createElement, Settings } from 'Common/Globals';
 import { pString, pInt } from 'Common/Utils';
 import { moveAction } from 'Common/UtilsUser';
-import { getFolderFromCacheList, getFolderFullName, getFolderInboxName } from 'Common/Cache';
+import { getFolderFromHashMap, getFolderInboxName } from 'Common/Cache';
 import { i18n, initOnStartOrLangChange } from 'Common/Translator';
 
 import { AppUserStore } from 'Stores/User/App';
@@ -67,7 +67,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 	 * @returns {void}
 	 */
 	onRoute(folderHash, page, search, messageUid) {
-		const folder = getFolderFromCacheList(getFolderFullName(folderHash.replace(/~([\d]+)$/, '')));
+		const folder = getFolderFromHashMap(folderHash.replace(/~([\d]+)$/, ''));
 		if (folder) {
 			FolderUserStore.currentFolder(folder);
 			MessagelistUserStore.page(1 > page ? 1 : page);

@@ -21,7 +21,6 @@ import PreviewHTML from 'Html/PreviewMessage.html';
 
 import { LanguageStore } from 'Stores/Language';
 
-//import { MessageFlagsCache } from 'Common/Cache';
 import Remote from 'Remote/User/Fetch';
 
 const
@@ -34,7 +33,6 @@ const
 		Remote.request('MessageSetKeyword', iError => {
 			if (!iError) {
 				isSet ? flags.remove(lower) : flags.push(lower);
-//				MessageFlagsCache.setFor(message.folder, message.uid, flags());
 			}
 		}, {
 			folder: message.folder,

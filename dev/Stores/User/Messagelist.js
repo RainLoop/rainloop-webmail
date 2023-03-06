@@ -4,14 +4,13 @@ import { SMAudio } from 'Common/Audio';
 import { Notifications } from 'Common/Enums';
 import { MessageSetAction } from 'Common/EnumsUser';
 import { $htmlCL } from 'Common/Globals';
-import { arrayLength, pInt, pString } from 'Common/Utils';
+import { arrayLength, pString } from 'Common/Utils';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import {
 	getFolderInboxName,
 	getFolderFromCacheList,
-	setFolderETag,
-	MessageFlagsCache
+	setFolderETag
 } from 'Common/Cache';
 
 import { mailBox } from 'Common/Links';
@@ -221,9 +220,6 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 						}
 
 						if (null != folderInfo.unreadEmails) {
-							if (pInt(folder.unreadEmails()) !== pInt(folderInfo.unreadEmails)) {
-								MessageFlagsCache.clearFolder(folder.fullName);
-							}
 							folder.unreadEmails(folderInfo.unreadEmails);
 						}
 
@@ -307,22 +303,38 @@ MessagelistUserStore.setAction = (sFolderFullName, iSetAction, messages) => {
 	messages = messages || MessagelistUserStore.listChecked();
 
 	let folder,
-		alreadyUnread = 0,
-		rootUids = messages.map(oMessage => oMessage?.uid).validUnique(),
-		length = rootUids.length;
+		rootUids = [],
+		length;
+
+	if (iSetAction == MessageSetAction.SetSeen) {
+		messages.forEach(oMessage =>
+			oMessage.isUnseen() && rootUids.push(oMessage.uid) && oMessage.flags.push('\\seen')
+		);
+	} else if (iSetAction == MessageSetAction.UnsetSeen) {
+		messages.forEach(oMessage =>
+			!oMessage.isUnseen() && rootUids.push(oMessage.uid) && oMessage.flags.remove('\\seen')
+		);
+	} else if (iSetAction == MessageSetAction.SetFlag) {
+		messages.forEach(oMessage =>
+			!oMessage.isFlagged() && rootUids.push(oMessage.uid) && oMessage.flags.push('\\flagged')
+		);
+	} else if (iSetAction == MessageSetAction.UnsetFlag) {
+		messages.forEach(oMessage =>
+			oMessage.isFlagged() && rootUids.push(oMessage.uid) && oMessage.flags.remove('\\flagged')
+		);
+	}
+	rootUids = rootUids.validUnique();
+	length = rootUids.length;
 
 	if (sFolderFullName && length) {
-		rootUids.forEach(sSubUid =>
-			alreadyUnread += MessageFlagsCache.storeBySetAction(sFolderFullName, sSubUid, iSetAction)
-		);
 		switch (iSetAction) {
 			case MessageSetAction.SetSeen:
-				length = 0;
+				length = -length;
 				// fallthrough is intentionally
 			case MessageSetAction.UnsetSeen:
 				folder = getFolderFromCacheList(sFolderFullName);
 				if (folder) {
-					folder.unreadEmails(Math.max(0, folder.unreadEmails() - alreadyUnread + length));
+					folder.unreadEmails(Math.max(0, folder.unreadEmails() + length));
 				}
 				Remote.request('MessageSetSeen', null, {
 					folder: sFolderFullName,
@@ -341,8 +353,6 @@ MessagelistUserStore.setAction = (sFolderFullName, iSetAction, messages) => {
 				break;
 			// no default
 		}
-
-		MessagelistUserStore.reloadFlagsAndCachedMessage();
 	}
 };
 
@@ -454,9 +464,4 @@ MessagelistUserStore.removeMessagesFromList = (
 			)
 		);
 	}
-},
-
-MessagelistUserStore.reloadFlagsAndCachedMessage = () => {
-	MessagelistUserStore.forEach(message => MessageFlagsCache.initMessage(message));
-	MessageFlagsCache.initMessage(MessageUserStore.message());
 };
