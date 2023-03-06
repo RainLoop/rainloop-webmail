@@ -191,7 +191,7 @@ trait Response
 		if ($mResponse instanceof \MailSo\Imap\Folder) {
 			$aResult = $mResponse->jsonSerialize();
 
-			$sHash = $mResponse->Hash($this->ImapClient()->Hash());
+			$sHash = $mResponse->ETag($this->ImapClient()->Hash());
 			if ($sHash) {
 				$aResult['etag'] = $sHash;
 			}

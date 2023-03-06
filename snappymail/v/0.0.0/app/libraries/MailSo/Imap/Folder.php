@@ -148,9 +148,9 @@ class Folder implements \JsonSerializable
 		return $role ? \ltrim($role, '\\') : null;
 	}
 
-	public function Hash(string $sClientHash) : ?string
+	public function ETag(string $sClientHash) : ?string
 	{
-		return $this->getETag($sClientHash);
+		return $this->Selectable() ? $this->getETag($sClientHash) : null;
 	}
 
 	#[\ReturnTypeWillChange]
@@ -163,7 +163,7 @@ class Folder implements \JsonSerializable
 				'totalEmails' => (int) $this->MESSAGES,
 				'unreadEmails' => (int) $this->UNSEEN,
 				'uidNext' => (int) $this->UIDNEXT,
-//				'etag' => $this->Hash($this->ImapClient()->Hash())
+//				'etag' => $this->ETag($this->ImapClient()->Hash())
 			);
 		}
 */
