@@ -63,7 +63,7 @@ abstract class Account implements \JsonSerializable
 	{
 		return \sha1(\implode(APP_SALT, [
 			$this->sEmail,
-			APP_VERSION
+			$this->sLogin,
 //			\json_encode($this->Domain()),
 //			$this->sPassword
 		]));

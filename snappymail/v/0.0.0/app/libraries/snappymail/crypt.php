@@ -49,7 +49,7 @@ abstract class Crypt
 			if (empty($_COOKIE['smctoken'])) {
 				throw new \RuntimeException('Missing smctoken');
 			}
-			$key = $_COOKIE['smctoken'];
+			$key = $_COOKIE['smctoken'] . APP_VERSION;
 		}
 		return \sha1($key . APP_SALT, true);
 	}
