@@ -317,7 +317,7 @@ export class MessageModel extends AbstractModel {
 				body.innerHTML = plainToHtml(
 					(this.plain()
 						? this.plain()
-							.replace(/-----BEGIN PGP (SIGNED MESSAGE-----(\r?\n[a-z][^\r\n]+)+|SIGNATURE-----[\s\S]*)/, '')
+							.replace(/-----BEGIN PGP (SIGNED MESSAGE-----(\r?\n[^\r\n]+)+|SIGNATURE-----[\s\S]*)/sg, '')
 							.trim()
 						: htmlToPlain(body.innerHTML)
 					)
