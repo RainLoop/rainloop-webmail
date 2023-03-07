@@ -163,7 +163,7 @@ class Folder implements \JsonSerializable
 				'totalEmails' => (int) $this->MESSAGES,
 				'unreadEmails' => (int) $this->UNSEEN,
 				'uidNext' => (int) $this->UIDNEXT,
-//				'etag' => $this->ETag($this->ImapClient()->Hash())
+//				'etag' => $this->ETag($this->getAccountFromToken()->IncLogin())
 			);
 		}
 */

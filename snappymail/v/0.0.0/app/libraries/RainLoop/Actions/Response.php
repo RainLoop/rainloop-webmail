@@ -155,7 +155,7 @@ trait Response
 		if ($mResponse instanceof \MailSo\Imap\Folder) {
 			$aResult = $mResponse->jsonSerialize();
 
-			$sHash = $mResponse->ETag($this->ImapClient()->Hash());
+			$sHash = $mResponse->ETag($this->getAccountFromToken()->IncLogin());
 			if ($sHash) {
 				$aResult['etag'] = $sHash;
 			}
