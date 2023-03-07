@@ -283,7 +283,6 @@ export class MailMessageView extends AbstractViewRight {
 			}
 
 			if (eqs(event, '.attachmentsPlace .showPreview')) {
-				stopEvent(event);
 				return;
 			}
 
