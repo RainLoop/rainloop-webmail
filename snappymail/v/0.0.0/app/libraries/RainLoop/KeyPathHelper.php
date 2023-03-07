@@ -4,12 +4,6 @@ namespace RainLoop;
 
 class KeyPathHelper
 {
-
-	static public function PublicFile(string $sHash) : string
-	{
-		return '/Public/Files/'.\sha1($sHash).'/Data/';
-	}
-
 	static public function SsoCacherKey(string $sSsoHash) : string
 	{
 		return '/Sso/Data/'.$sSsoHash.'/Login/';
@@ -28,11 +22,6 @@ class KeyPathHelper
 	static public function LangCache(string $sLanguage, bool $bAdmim, string $sPluginsHash) : string
 	{
 		return '/LangCache/'.$sPluginsHash.'/'.$sLanguage.'/'.($bAdmim ? 'Admin' : 'App').'/'.APP_VERSION.'/';
-	}
-
-	static public function TemplatesCache(bool $bAdmin, string $sPluginsHash) : string
-	{
-		return '/TemplatesCache/'.$sPluginsHash.'/'.($bAdmin ? 'Admin' : 'App').'/'.APP_VERSION.'/';
 	}
 
 	static public function PluginsJsCache(string $sPluginsHash) : string
