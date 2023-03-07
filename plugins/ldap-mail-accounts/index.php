@@ -32,8 +32,6 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 	public function Init(): void
 	{
 		$this->addHook("login.success", 'AddAdditionalLdapMailAccounts');
-		//$this->addHook('imap.before-login', 'MapImapCredentialsByLDAP');
-		//$this->addHook('smtp.before-login', 'MapSmtpCredentialsByLDAP');
 		$this->addHook('login.credentials', 'overwriteMainAccountEmail');
 	}
 
@@ -46,16 +44,18 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 	 */
 	public function overwriteMainAccountEmail(&$sEmail, &$sLogin)
 	{
-		$this->Manager()->Actions()->Logger()->Write("Login DATA: login: $sLogin email: $sEmail", \LOG_WARNING, "LDAP MAIL ACCOUNTS PLUGIN");
+$this->Manager()->Actions()->Logger()->Write("Login DATA: login: $sLogin email: $sEmail", \LOG_WARNING, "LDAP MAIL ACCOUNTS PLUGIN");
 
-		// Set up config
-		$config = LdapMailAccountsConfig::MakeConfig($this->Config());
+	// Set up config
+	$config = LdapMailAccountsConfig::MakeConfig($this->Config());
 
-		$oldapMailAccounts = new LdapMailAccounts($config, $this->Manager()->Actions()->Logger());
+		if ($config->bool_overwrite_mail_address_main_account)
+		{
+			$oldapMailAccounts = new LdapMailAccounts($config, $this->Manager()->Actions()->Logger());
+			$oldapMailAccounts->overwriteEmail($sEmail, $sLogin);
+		}
 
-		$oldapMailAccounts->overwriteEmail($sEmail, $sLogin);
-
-		$this->Manager()->Actions()->Logger()->Write("Login DATA: login: $sLogin email: $sEmail", \LOG_WARNING, "LDAP MAIL ACCOUNTS PLUGIN");
+$this->Manager()->Actions()->Logger()->Write("Login DATA: login: $sLogin email: $sEmail", \LOG_WARNING, "LDAP MAIL ACCOUNTS PLUGIN");
 	}
 
 	// Function gets called by RainLoop/Actions/User.php
@@ -68,37 +68,8 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 	{
 		// Set up config
 		$config = LdapMailAccountsConfig::MakeConfig($this->Config());
-
 		$oldapMailAccounts = new LdapMailAccounts($config, $this->Manager()->Actions()->Logger());
-
 		$oldapMailAccounts->AddLdapMailAccounts($oAccount);
-	}
-
-	// Function gets called by Account.php
-	/**
-	 * Overwrite the mailaddress of the account with the one found in LDAP by this plugin at IMAP login
-	 *
-	 * @param Account $oAccount
-	 * @param ImapClient $oImapClient
-	 * @param \MailSo\Imap\Settings $oSettings
-	 */
-	public function MapImapCredentialsByLDAP(\RainLoop\Model\Account $oAccount, \MailSo\Imap\ImapClient $oImapClient, \MailSo\Imap\Settings $oSettings)
-	{
-		//$oSettings->Login = $oAccount->IncLogin();
-		//$this->Manager()->Actions()->Logger()->Write("E-Mail address: $oSettings->Login", \LOG_WARNING, "LDAP MAIL ACCOUNTS PLUGIN");
-	}
-
-	// Function gets called by Account.php
-	/**
-	 * Overwrite the mailaddress of the account with the one found in LDAP by this plugin at SMTP login
-	 *
-	 * @param Account $oAccount
-	 * @param SmtpClient $oSmtpClient
-	 * @param \MailSo\Smtp\Settings $oSettings
-	 */
-	public function MapSmtpCredentialsByLDAP(\RainLoop\Model\Account $oAccount, \MailSo\Smtp\SmtpClient $oSmtpClient, \MailSo\Smtp\Settings $oSettings)
-	{
-
 	}
 
 	/**
