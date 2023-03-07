@@ -59,20 +59,10 @@ class Attachment implements \JsonSerializable
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
-		$aResult = \array_merge([
+		return \array_merge([
 			'@Object' => 'Object/Attachment',
 			'folder' => $this->sFolder,
 			'uid' => $this->iUid
 		], $this->oBodyStructure->jsonSerialize());
-		$aResult['isThumbnail'] = \MailSo\Base\Utils::fileHasThumbnail($aResult['fileName']);
-		$oActions = \RainLoop\Api::Actions();
-		$aResult['download'] = $oActions->encodeRawKey(array(
-			'folder' => $aResult['folder'],
-			'uid' => $aResult['uid'],
-			'mimeIndex' => $aResult['mimeIndex'],
-			'mimeType' => $aResult['mimeType'],
-			'fileName' => $aResult['fileName']
-		));
-		return $aResult;
 	}
 }

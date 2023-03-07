@@ -1080,13 +1080,19 @@ class Actions
 
 	public function encodeRawKey(array $aValues): string
 	{
-		return \SnappyMail\Crypt::EncryptUrlSafe($aValues, \sha1(APP_SALT . $this->getAccountFromToken()->Hash()));
+		$aValues['accountHash'] = $this->getAccountFromToken()->Hash();
+		return \MailSo\Base\Utils::UrlSafeBase64Encode(\json_encode($aValues));
 	}
 
 	protected function decodeRawKey(string $sRawKey): array
 	{
 		return empty($sRawKey) ? []
-			: (\SnappyMail\Crypt::DecryptUrlSafe($sRawKey, \sha1(APP_SALT . $this->getAccountFromToken()->Hash())) ?: []);
+			: (\json_decode(\MailSo\Base\Utils::UrlSafeBase64Decode($sRawKey), true) ?: []);
+/*
+		if (empty($aValues['accountHash']) || $aValues['accountHash'] !== $oAccount->Hash()) {
+			return [];
+		}
+*/
 	}
 
 	public function StaticCache(): string

@@ -94,8 +94,6 @@ trait Response
 		if ($mResponse instanceof \MailSo\Mail\Message) {
 			$aResult = $mResponse->jsonSerialize();
 
-			$oAccount = $this->getAccountFromToken();
-
 			if (!$aResult['dateTimeStampInUTC'] || $this->Config()->Get('labs', 'date_from_headers', true)) {
 				$iDateTimeStampInUTC = $mResponse->HeaderTimeStampInUTC;
 				if ($iDateTimeStampInUTC) {
@@ -103,20 +101,9 @@ trait Response
 				}
 			}
 
-			// \MailSo\Mime\EmailCollection
-			foreach (['replyTo','from','to','cc','bcc','sender','deliveredTo'] as $prop) {
-				$aResult[$prop] = $this->responseObject($aResult[$prop], $prop);
-			}
-
-			$sSubject = $aResult['subject'];
-			$aResult['requestHash'] = $this->encodeRawKey(array(
-				'folder' => $aResult['folder'],
-				'uid' => $aResult['uid'],
-				'mimeType' => 'message/rfc822',
-				'fileName' => (\strlen($sSubject) ? \MailSo\Base\Utils::SecureFileName($sSubject) : 'message-'.$aResult['uid']) . '.eml'
-			));
-
 			if (!$sParent) {
+				$oAccount = $this->getAccountFromToken();
+
 				$aResult['draftInfo'] = $mResponse->DraftInfo;
 				$aResult['unsubsribeLinks'] = $mResponse->UnsubsribeLinks;
 				$aResult['references'] = $mResponse->References;

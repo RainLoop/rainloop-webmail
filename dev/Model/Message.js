@@ -5,7 +5,7 @@ import { i18n } from 'Common/Translator';
 
 import { doc, SettingsGet } from 'Common/Globals';
 import { encodeHtml, plainToHtml, htmlToPlain, cleanHtml } from 'Common/Html';
-import { forEachObjectEntry } from 'Common/Utils';
+import { forEachObjectEntry, b64EncodeJSONSafe } from 'Common/Utils';
 import { serverRequestRaw, proxy } from 'Common/Links';
 import { addObservablesTo, addComputablesTo } from 'External/ko';
 
@@ -59,7 +59,6 @@ export class MessageModel extends AbstractModel {
 		this.folder = '';
 		this.uid = 0;
 		this.hash = '';
-		this.requestHash = '';
 		this.from = new EmailCollectionModel;
 		this.to = new EmailCollectionModel;
 		this.cc = new EmailCollectionModel;
@@ -175,6 +174,16 @@ export class MessageModel extends AbstractModel {
 				}
 				return options;
 			}
+		});
+	}
+
+	get requestHash() {
+		return b64EncodeJSONSafe({
+			folder: this.folder,
+			uid: this.uid,
+			mimeType: 'message/rfc822',
+			fileName: (this.subject() || 'message-' + this.hash) + '.eml',
+			accountHash: SettingsGet('accountHash')
 		});
 	}
 

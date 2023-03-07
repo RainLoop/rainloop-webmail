@@ -9,21 +9,28 @@ trait Raw
 	 */
 	public function RawViewAsPlain() : bool
 	{
-		$oAccount = $this->initMailClientConnection();
-
-		$aValues = $this->decodeRawKey((string) $this->GetActionParam('RawKey', ''));
-
-		$sFolder = isset($aValues['folder']) ? (string) $aValues['folder'] : '';
-		$iUid = isset($aValues['uid']) ? (int) $aValues['uid'] : 0;
-		$sMimeIndex = isset($aValues['mimeIndex']) ? (string) $aValues['mimeIndex'] : '';
-
-		\header('Content-Type: text/plain');
-
-		return $this->MailClient()->MessageMimeStream(function ($rResource) {
-			if (\is_resource($rResource)) {
-				\MailSo\Base\Utils::FpassthruWithTimeLimitReset($rResource);
-			}
-		}, $sFolder, $iUid, $sMimeIndex);
+		$oAccount = $this->getAccountFromToken();
+		$sRawKey = $this->GetActionParam('RawKey', '');
+		$aValues = $this->decodeRawKey($sRawKey);
+		if (!empty($aValues['folder']) && !empty($aValues['uid'])
+		 && !empty($aValues['accountHash']) && $aValues['accountHash'] === $oAccount->Hash()
+		) {
+			$this->verifyCacheByKey($sRawKey);
+			$this->initMailClientConnection();
+			\header('Content-Type: text/plain');
+			return $this->MailClient()->MessageMimeStream(
+				function ($rResource) use ($sRawKey) {
+					if (\is_resource($rResource)) {
+						$this->cacheByKey($sRawKey);
+						\MailSo\Base\Utils::FpassthruWithTimeLimitReset($rResource);
+					}
+				},
+				(string) $aValues['folder'],
+				(int) $aValues['uid'],
+				isset($aValues['mimeIndex']) ? (string) $aValues['mimeIndex'] : ''
+			);
+		}
+		return false;
 	}
 
 	public function RawDownload() : bool
@@ -69,71 +76,36 @@ trait Raw
 		return false;
 	}
 
-	public function RawPublic() : bool
-	{
-		$sRawKey = (string) $this->GetActionParam('RawKey', '');
-		$this->verifyCacheByKey($sRawKey);
-
-		$sHash = $sRawKey;
-		$sData = '';
-
-		if (!empty($sHash)) {
-			$sData = $this->StorageProvider()->Get(null,
-				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-				\RainLoop\KeyPathHelper::PublicFile($sHash)
-			);
-		}
-
-		$aMatch = array();
-		if (!empty($sData) && 0 === \strpos($sData, 'data:') &&
-			\preg_match('/^data:([^:]+):/', $sData, $aMatch) && !empty($aMatch[1]))
-		{
-			$sContentType = \trim($aMatch[1]);
-			if (\in_array($sContentType, array('image/png', 'image/jpg', 'image/jpeg'))) {
-				$this->cacheByKey($sRawKey);
-
-				\header('Content-Type: '.$sContentType);
-				echo \preg_replace('/^data:[^:]+:/', '', $sData);
-				unset($sData);
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
+	/**
+	 * Message, Message Attachment or Zip
+	 */
 	private function rawSmart(bool $bDownload, bool $bThumbnail = false) : bool
 	{
 		$sRawKey = (string) $this->GetActionParam('RawKey', '');
 
 		$oAccount = $this->getAccountFromToken();
 		$aValues = $this->decodeRawKey($sRawKey);
+		if (empty($aValues['accountHash']) || $aValues['accountHash'] !== $oAccount->Hash()) {
+			return false;
+		}
 
 		$sRange = \MailSo\Base\Http::GetHeader('Range');
-
 		$aMatch = array();
 		$sRangeStart = $sRangeEnd = '';
 		$bIsRangeRequest = false;
-
 		if (!empty($sRange) && 'bytes=0-' !== \strtolower($sRange)
 		 && \preg_match('/^bytes=([0-9]+)-([0-9]*)/i', \trim($sRange), $aMatch))
 		{
 			$sRangeStart = $aMatch[1];
 			$sRangeEnd = $aMatch[2];
-
 			$bIsRangeRequest = true;
 		}
 
-		$sFolder = isset($aValues['folder']) ? (string) $aValues['folder'] : '';
-		$iUid = isset($aValues['uid']) ? (int) $aValues['uid'] : 0;
 		$sMimeIndex = isset($aValues['mimeIndex']) ? (string) $aValues['mimeIndex'] : '';
-
 		$sContentTypeIn = isset($aValues['mimeType']) ? (string) $aValues['mimeType'] : '';
 		$sFileNameIn = isset($aValues['fileName']) ? (string) $aValues['fileName'] : '';
-		$sFileHashIn = isset($aValues['fileHash']) ? (string) $aValues['fileHash'] : '';
 
-		if (!empty($sFileHashIn)) {
+		if (!empty($aValues['fileHash'])) {
 			$this->verifyCacheByKey($sRawKey);
 
 			// https://github.com/the-djmaze/snappymail/issues/144
@@ -147,7 +119,7 @@ trait Raw
 
 			$sFileNameOut = $this->MainClearFileName($sFileNameIn, $sContentTypeIn, $sMimeIndex);
 
-			$rResource = $this->FilesProvider()->GetFile($oAccount, $sFileHashIn);
+			$rResource = $this->FilesProvider()->GetFile($oAccount, (string) $aValues['fileHash']);
 			if (\is_resource($rResource)) {
 				\header('Content-Type: '.$sContentTypeOut);
 				\header('Content-Disposition: attachment; '.
@@ -162,10 +134,14 @@ trait Raw
 
 			return false;
 		}
-		else if (!empty($sFolder) && 0 < $iUid)
-		{
-			$this->verifyCacheByKey($sRawKey);
+
+		$sFolder = isset($aValues['folder']) ? (string) $aValues['folder'] : '';
+		$iUid = isset($aValues['uid']) ? (int) $aValues['uid'] : 0;
+		if (empty($sFolder) || 1 > $iUid) {
+			return false;
 		}
+
+		$this->verifyCacheByKey($sRawKey);
 
 		$this->initMailClientConnection();
 
