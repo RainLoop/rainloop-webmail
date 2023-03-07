@@ -11,10 +11,7 @@ trait Raw
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		$aValues = $this->decodeRawKey(
-			$oAccount,
-			(string) $this->GetActionParam('RawKey', '')
-		);
+		$aValues = $this->decodeRawKey((string) $this->GetActionParam('RawKey', ''));
 
 		$sFolder = isset($aValues['folder']) ? (string) $aValues['folder'] : '';
 		$iUid = isset($aValues['uid']) ? (int) $aValues['uid'] : 0;
@@ -111,7 +108,7 @@ trait Raw
 		$sRawKey = (string) $this->GetActionParam('RawKey', '');
 
 		$oAccount = $this->getAccountFromToken();
-		$aValues = $this->decodeRawKey($oAccount, $sRawKey);
+		$aValues = $this->decodeRawKey($sRawKey);
 
 		$sRange = \MailSo\Base\Http::GetHeader('Range');
 

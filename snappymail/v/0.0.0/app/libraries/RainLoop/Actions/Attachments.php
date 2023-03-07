@@ -108,7 +108,7 @@ trait Attachments
 
 					if (!$bError) {
 						$mResult = array(
-							'fileHash' => $this->encodeRawKey($oAccount, array(
+							'fileHash' => $this->encodeRawKey(array(
 								'fileName' => ($sFilename ?: ($sFolder ? 'messages' : 'attachments')) . \date('-YmdHis') . '.zip',
 								'mimeType' => 'application/zip',
 								'fileHash' => $sZipHash
@@ -134,7 +134,7 @@ trait Attachments
 
 	private function getMimeFileByHash(\RainLoop\Model\Account $oAccount, string $sHash) : array
 	{
-		$aValues = $this->decodeRawKey($oAccount, $sHash);
+		$aValues = $this->decodeRawKey($sHash);
 
 		$sFolder = isset($aValues['folder']) ? (string) $aValues['folder'] : '';
 		$iUid = isset($aValues['uid']) ? (int) $aValues['uid'] : 0;

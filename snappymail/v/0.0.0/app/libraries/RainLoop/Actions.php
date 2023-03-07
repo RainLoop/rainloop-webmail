@@ -1054,7 +1054,7 @@ class Actions
 	{
 		if ($sKey && $this->oConfig->Get('cache', 'enable', true) && $this->oConfig->Get('cache', 'http', true)) {
 			\MailSo\Base\Http::checkETag($this->etag($sKey));
-//			\MailSo\Base\Http::checkLastModified(1382478804);
+//			\MailSo\Base\Http::checkLastModified(0);
 		}
 	}
 
@@ -1078,15 +1078,15 @@ class Actions
 		return $oAccount;
 	}
 
-	public function encodeRawKey(?Model\Account $oAccount, array $aValues): string
+	public function encodeRawKey(array $aValues): string
 	{
-		return \SnappyMail\Crypt::EncryptUrlSafe($aValues, \sha1(APP_SALT . ($oAccount ? $oAccount->Hash() : '')));
+		return \SnappyMail\Crypt::EncryptUrlSafe($aValues, \sha1(APP_SALT . $this->getAccountFromToken()->Hash()));
 	}
 
-	protected function decodeRawKey(?Model\Account $oAccount, string $sRawKey): array
+	protected function decodeRawKey(string $sRawKey): array
 	{
 		return empty($sRawKey) ? []
-			: (\SnappyMail\Crypt::DecryptUrlSafe($sRawKey, \sha1(APP_SALT . ($oAccount ? $oAccount->Hash() : ''))) ?: []);
+			: (\SnappyMail\Crypt::DecryptUrlSafe($sRawKey, \sha1(APP_SALT . $this->getAccountFromToken()->Hash())) ?: []);
 	}
 
 	public function StaticCache(): string

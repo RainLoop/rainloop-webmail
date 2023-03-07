@@ -575,7 +575,7 @@ trait Messages
 				$oFilesProvider = $this->FilesProvider();
 				foreach ($aAttachments as $mIndex => $sAttachment) {
 					$aAttachments[$mIndex] = false;
-					if ($aValues = $this->decodeRawKey($oAccount, $sAttachment)) {
+					if ($aValues = $this->decodeRawKey($sAttachment)) {
 						$sFolder = isset($aValues['folder']) ? (string) $aValues['folder'] : '';
 						$iUid = isset($aValues['uid']) ? (int) $aValues['uid'] : 0;
 						$sMimeIndex = isset($aValues['mimeIndex']) ? (string) $aValues['mimeIndex'] : '';

@@ -109,7 +109,7 @@ trait Response
 			}
 
 			$sSubject = $aResult['subject'];
-			$aResult['requestHash'] = $this->encodeRawKey($oAccount, array(
+			$aResult['requestHash'] = $this->encodeRawKey(array(
 				'folder' => $aResult['folder'],
 				'uid' => $aResult['uid'],
 				'mimeType' => 'message/rfc822',

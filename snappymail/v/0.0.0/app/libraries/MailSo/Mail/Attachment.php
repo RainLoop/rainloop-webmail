@@ -66,7 +66,7 @@ class Attachment implements \JsonSerializable
 		], $this->oBodyStructure->jsonSerialize());
 		$aResult['isThumbnail'] = \MailSo\Base\Utils::fileHasThumbnail($aResult['fileName']);
 		$oActions = \RainLoop\Api::Actions();
-		$aResult['download'] = $oActions->encodeRawKey($oActions->getAccountFromToken(), array(
+		$aResult['download'] = $oActions->encodeRawKey(array(
 			'folder' => $aResult['folder'],
 			'uid' => $aResult['uid'],
 			'mimeIndex' => $aResult['mimeIndex'],
