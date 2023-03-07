@@ -139,11 +139,14 @@ $this->Manager()->Actions()->Logger()->Write("Login DATA: login: $sLogin email: 
 				->SetDefaultValue("uid=#USERNAME#"),
 
 			\RainLoop\Plugins\Property::NewInstance(LdapMailAccountsConfig::CONFIG_FIELD_USERNAME)
-				->SetLabel("Username field of additional account")
+				->SetLabel("Username field")
 				->SetType(RainLoop\Enumerations\PluginPropertyType::STRING)
-				->SetDescription("The field containing the username of the found additional mail account.
-					\nThis username gets used by SnappyMail to login to the additional mail account.
-					\nIf this field contains an email address, only the local-part before the @ is used.")
+				->SetDescription("Used when searching for additional accounts or when overwriting the mail address of the main account.
+					\nThe field containing the username of the mail account.
+					\nWhen looking up additional accounts:
+					\nIf this field contains an email address, only the local-part before the @ is used. The domain part is retrieved configuring the field below. This username gets used by SnappyMail to login to the additional mail account
+					\nWhen overwriting the main account mail address:
+					\nThe username from SnappyMail login gets used to search an LDAP entry containig a field with the same username.")
 				->SetDefaultValue("uid"),
 
 			\RainLoop\Plugins\Property::NewInstance(LdapMailAccountsConfig::CONFIG_FIELD_MAIL_DOMAIN)

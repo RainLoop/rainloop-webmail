@@ -62,7 +62,7 @@ class LdapMailAccounts
 		try {
 			$this->EnsureBound();
 		} catch (LdapMailAccountsException $e) {
-			return false; // exceptions are only thrown from the handleerror function that does logging already
+			return false; // exceptions are only thrown from the handle error function that does logging already
 		}
 
 		// Try to get account information. IncLogin() returns the username of the user
@@ -96,7 +96,7 @@ class LdapMailAccounts
 			);
 		}
 		catch (LdapMailAccountsException $e) {
-			return false; // exceptions are only thrown from the handleerror function that does logging already
+			return false; // exceptions are only thrown from the handle error function that does logging already
 		}
 		if (count($mailAddressResults) < 1) {
 			$this->logger->Write("Could not find user $username in LDAP! Overwriting of main mail address not possible.", \LOG_NOTICE, self::LOG_KEY);
@@ -128,7 +128,7 @@ class LdapMailAccounts
 		try {
 			$this->EnsureBound();
 		} catch (LdapMailAccountsException $e) {
-			return false; // exceptions are only thrown from the handleerror function that does logging already
+			return false; // exceptions are only thrown from the handle error function that does logging already
 		}
 
 		// Try to get account information. IncLogin() returns the username of the user
@@ -157,7 +157,7 @@ class LdapMailAccounts
 			);
 		}
 		catch (LdapMailAccountsException $e) {
-			return false; // exceptions are only thrown from the handleerror function that does logging already
+			return false; // exceptions are only thrown from the handle error function that does logging already
 		}
 		if (count($mailAddressResults) < 1) {
 			$this->logger->Write("Could not find user $username", \LOG_NOTICE, self::LOG_KEY);
