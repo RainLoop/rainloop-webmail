@@ -137,9 +137,9 @@ abstract class HtmlUtils
 			$oElement->removeAttribute('data-x-src');
 		}
 
+		// style attribute images
 		foreach ($xpath->query('//*[@data-x-style-url]') as $oElement) {
-			// style attribute images
-			$aCid = \array_merge($aCid, \json_decode($oElement->getAttribute('data-x-style-url'), true));
+			$aCid = \json_decode($oElement->getAttribute('data-x-style-url'), true);
 			$oElement->removeAttribute('data-x-style-url');
 			if ($aCid) {
 				foreach ($aCid as $sCidName => $sCid) {
