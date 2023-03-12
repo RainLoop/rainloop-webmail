@@ -69,7 +69,7 @@
 		"LABEL_STORAGE_USER": "用户",
 		"LABEL_STORAGE_PASSWORD": "密码",
 		"ALERT_NOTICE": "提示!",
-		"SUGGESTIONS_LIMIT": "Suggestions limit",
+		"SUGGESTIONS_LIMIT": "建议数量上限",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "如果有大量的活跃用户，请不要选择此数据库类型。",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "您的系统不支持联系人\n<br>\n您需要在您的服务器上安装或启用<strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> 组件。\n"
 	},
