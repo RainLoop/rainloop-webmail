@@ -3470,21 +3470,16 @@ class Squire
 			return this;
 		}
 		let lines = plainText.split(/\r?\n/),
-			closeBlock  = '</' + blockTag + '>',
-			openBlock = '<' + blockTag + '>',
-			i = lines.length,
-			line;
+			closeBlock = '</' + blockTag + '>',
+			openBlock = '<' + blockTag + '>';
 
-		while (i--) {
-			line = escapeHTML(lines[i]).replace(/ (?=)/g, '&nbsp;');
+		lines.forEach((line, i) => {
+			line = escapeHTML(line).replace(/ (?=(?: |$))/g, NBSP);
 			// We don't wrap the first line in the block, so if it gets inserted
 			// into a blank line it keeps that line's formatting.
 			// Wrap each line in <div></div>
-			if (i) {
-				line = openBlock + (line || '<BR>') + closeBlock;
-			}
-			lines[i] = line;
-		}
+			lines[i] = i ? openBlock + (line || '<BR>') + closeBlock : line;
+		});
 		return this.insertHTML(lines.join(''), isPaste);
 	}
 
