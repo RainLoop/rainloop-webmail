@@ -151,26 +151,17 @@ trait Folders
 		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
 		$aCheckableFolder = \json_decode($oSettingsLocal->GetConf('CheckableFolder', '[]'));
-
 		if (!\is_array($aCheckableFolder)) {
 			$aCheckableFolder = array();
 		}
 
 		if (!empty($this->GetActionParam('checkable', '0'))) {
 			$aCheckableFolder[] = $sFolderFullName;
-		} else {
-			$aCheckableFolderNew = array();
-			foreach ($aCheckableFolder as $sFolder) {
-				if ($sFolder !== $sFolderFullName) {
-					$aCheckableFolderNew[] = $sFolder;
-				}
-			}
-			$aCheckableFolder = $aCheckableFolderNew;
+		} else if (($key = \array_search($sFolderFullName, $aCheckableFolder)) !== false) {
+			\array_splice($aCheckableFolder, $key, 1);
 		}
 
-		$aCheckableFolder = \array_unique($aCheckableFolder);
-
-		$oSettingsLocal->SetConf('CheckableFolder', \json_encode($aCheckableFolder));
+		$oSettingsLocal->SetConf('CheckableFolder', \json_encode(\array_unique($aCheckableFolder)));
 
 		return $this->DefaultResponse($this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
 	}
