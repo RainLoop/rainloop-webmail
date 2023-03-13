@@ -36,16 +36,20 @@ abstract class AbstractConfig implements \ArrayAccess, \JsonSerializable
 	public function offsetExists($offset) : bool
 	{
 	}
+
+	#[\ReturnTypeWillChange]
 	public function offsetGet($offset)
 	{
 		$offset = \explode('/', $offset, 2);
 		$this->Get($offset[0], $offset[1]);
 	}
+
 	public function offsetSet($offset, $value) : void
 	{
 		$offset = \explode('/', $offset, 2);
 		$this->Set($offset[0], $offset[1], $value);
 	}
+
 	public function offsetUnset($offset) : void
 	{
 	}
