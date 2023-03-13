@@ -93,47 +93,13 @@ trait Response
 
 		if ($mResponse instanceof \MailSo\Mail\Message) {
 			$aResult = $mResponse->jsonSerialize();
-
-			if (!$aResult['dateTimeStampInUTC'] || $this->Config()->Get('labs', 'date_from_headers', true)) {
-				$iDateTimeStampInUTC = $mResponse->HeaderTimeStampInUTC;
-				if ($iDateTimeStampInUTC) {
-					$aResult['dateTimeStampInUTC'] = $iDateTimeStampInUTC;
-				}
+			if (!$this->Config()->Get('labs', 'date_from_headers', true) && $aResult['internalTimestamp']) {
+				$aResult['dateTimestamp'] = $aResult['internalTimestamp'];
 			}
-
-			if (!$sParent) {
+			if (!$sParent && \strlen($aResult['readReceipt']) && !\in_array('$forwarded', $aResult['flags'])) {
 				$oAccount = $this->getAccountFromToken();
-
-				$aResult['draftInfo'] = $mResponse->DraftInfo;
-				$aResult['unsubsribeLinks'] = $mResponse->UnsubsribeLinks;
-				$aResult['references'] = $mResponse->References;
-
-				$aResult['html'] = $mResponse->Html();
-				$aResult['plain'] = $mResponse->Plain();
-
-//				$this->GetCapa(Capa::OPEN_PGP) || $this->GetCapa(Capa::GNUPG)
-				$aResult['pgpSigned'] = $mResponse->pgpSigned;
-				$aResult['pgpEncrypted'] = $mResponse->pgpEncrypted;
-
-				$aResult['readReceipt'] = $mResponse->ReadReceipt;
-				if (\strlen($aResult['readReceipt']) && !\in_array('$forwarded', $aResult['flags'])) {
-					// \in_array('$mdnsent', $aResult['flags'])
-					if (\strlen($aResult['readReceipt'])) {
-						try
-						{
-							$oReadReceipt = \MailSo\Mime\Email::Parse($aResult['readReceipt']);
-							if (!$oReadReceipt) {
-								$aResult['readReceipt'] = '';
-							}
-						}
-						catch (\Throwable $oException) { unset($oException); }
-					}
-
-					if (\strlen($aResult['readReceipt']) && '1' === $this->Cacher($oAccount)->Get(
-						\RainLoop\KeyPathHelper::ReadReceiptCache($oAccount->Email(), $aResult['folder'], $aResult['uid']), '0'))
-					{
-						$aResult['readReceipt'] = '';
-					}
+				if ('1' === $this->Cacher($oAccount)->Get(\RainLoop\KeyPathHelper::ReadReceiptCache($oAccount->Email(), $aResult['folder'], $aResult['uid']), '0')) {
+					$aResult['readReceipt'] = '';
 				}
 			}
 			return $aResult;

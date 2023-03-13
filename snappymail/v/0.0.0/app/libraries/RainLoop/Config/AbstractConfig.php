@@ -2,7 +2,7 @@
 
 namespace RainLoop\Config;
 
-abstract class AbstractConfig implements \JsonSerializable
+abstract class AbstractConfig implements \ArrayAccess, \JsonSerializable
 {
 	private string $sFile;
 
@@ -31,6 +31,23 @@ abstract class AbstractConfig implements \JsonSerializable
 
 		$this->bUseApcCache = defined('APP_USE_APCU_CACHE') && APP_USE_APCU_CACHE &&
 			\MailSo\Base\Utils::FunctionsCallable(array('apcu_fetch', 'apcu_store'));
+	}
+
+	public function offsetExists($offset) : bool
+	{
+	}
+	public function offsetGet($offset)
+	{
+		$offset = \explode('/', $offset, 2);
+		$this->Get($offset[0], $offset[1]);
+	}
+	public function offsetSet($offset, $value) : void
+	{
+		$offset = \explode('/', $offset, 2);
+		$this->Set($offset[0], $offset[1], $value);
+	}
+	public function offsetUnset($offset) : void
+	{
 	}
 
 	protected abstract function defaultValues() : array;

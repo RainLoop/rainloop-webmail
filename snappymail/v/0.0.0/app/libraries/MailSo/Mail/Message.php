@@ -48,7 +48,7 @@ class Message implements \JsonSerializable
 		$iSize = 0,
 		$SpamScore = 0,
 		$iInternalTimeStampInUTC = 0,
-		$HeaderTimeStampInUTC = 0,
+		$iHeaderTimeStampInUTC = 0,
 		$iPriority = \MailSo\Mime\Enumerations\MessagePriority::NORMAL;
 
 	private bool
@@ -107,24 +107,9 @@ class Message implements \JsonSerializable
 		return $this->Uid;
 	}
 
-	public function HeaderTimeStampInUTC() : int
-	{
-		return $this->HeaderTimeStampInUTC;
-	}
-
 	public function Attachments() : ?AttachmentCollection
 	{
 		return $this->Attachments;
-	}
-
-	public function Plain() : string
-	{
-		return $this->sPlain;
-	}
-
-	public function Html() : string
-	{
-		return $this->sHtml;
 	}
 
 	private function setSpamScore($value) : void
@@ -200,7 +185,7 @@ class Message implements \JsonSerializable
 			$oMessage->References = Utils::StripSpaces(
 				$oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::REFERENCES));
 
-			$oMessage->HeaderTimeStampInUTC = \MailSo\Base\DateTimeHelper::ParseRFC2822DateString(
+			$oMessage->iHeaderTimeStampInUTC = \MailSo\Base\DateTimeHelper::ParseRFC2822DateString(
 				$oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::DATE)
 			);
 
@@ -507,6 +492,21 @@ class Message implements \JsonSerializable
 			}
 		}
 
+		$aFlags = $this->getFlags();
+		$sReadReceipt = $this->ReadReceipt;
+		if (\strlen($sReadReceipt) && !\in_array('$forwarded', $aFlags)) {
+			try
+			{
+				if (!\MailSo\Mime\Email::Parse($sReadReceipt)) {
+					$sReadReceipt = '';
+				}
+			}
+			catch (\Throwable $oException)
+			{
+				$sReadReceipt = '';
+			}
+		}
+
 		$result = array(
 			'@Object' => 'Object/Message',
 			'folder' => $this->sFolder,
@@ -520,7 +520,8 @@ class Message implements \JsonSerializable
 			'isSpam' => $this->bIsSpam,
 			'hasVirus' => $this->bHasVirus,
 //			'virusScanned' => $this->sVirusScanned,
-			'dateTimeStampInUTC' => $this->iInternalTimeStampInUTC,
+			'dateTimestamp' => $this->iHeaderTimeStampInUTC ?: $this->iInternalTimeStampInUTC,
+			'internalTimestamp' => $this->iInternalTimeStampInUTC,
 
 			// \MailSo\Mime\EmailCollection
 			'from' => $this->oFrom,
@@ -532,8 +533,7 @@ class Message implements \JsonSerializable
 			'deliveredTo' => $this->oDeliveredTo,
 
 			'priority' => $this->iPriority,
-			'unsubsribeLinks' => $this->UnsubsribeLinks,
-			'readReceipt' => '',
+			'readReceipt' => $sReadReceipt,
 			'autocrypt' => $aAutocrypt ?: null,
 
 			'attachments' => $this->Attachments,
@@ -542,7 +542,7 @@ class Message implements \JsonSerializable
 			'dkim' => $this->DKIM,
 			'dmarc' => $this->DMARC,
 
-			'flags' => $this->getFlags(),
+			'flags' => $aFlags,
 
 			'inReplyTo' => $this->InReplyTo,
 
@@ -554,6 +554,27 @@ class Message implements \JsonSerializable
 //			'keywords' => $keywords,
 			'size' => $this->iSize
 		);
+
+		if ($this->DraftInfo) {
+			$result['draftInfo'] = $this->DraftInfo;
+		}
+		if ($this->UnsubsribeLinks) {
+			$result['unsubsribeLinks'] = $this->UnsubsribeLinks;
+		}
+		if ($this->References) {
+			$result['references'] = $this->References;
+		}
+		if ($this->sHtml || $this->sPlain) {
+			$result['html'] = $this->sHtml;
+			$result['plain'] = $this->sPlain;
+		}
+//		$this->GetCapa(Capa::OPEN_PGP) || $this->GetCapa(Capa::GNUPG)
+		if ($this->pgpSigned) {
+			$result['pgpSigned'] = $this->pgpSigned;
+		}
+		if ($this->pgpEncrypted) {
+			$result['pgpEncrypted'] = $this->pgpEncrypted;
+		}
 
 		if ($this->aThreads) {
 			$result['threads'] = $this->aThreads;

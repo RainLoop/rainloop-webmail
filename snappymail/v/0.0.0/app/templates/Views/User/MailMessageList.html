@@ -141,7 +141,7 @@
 						<i data-bind="css: attachmentIconClass"></i>
 					</div>
 					<div class="sizeParent actionHandle" data-bind="text: friendlySize()"></div>
-					<time class="actionHandle" data-bind="attr:{'data-moment-format':$root.timeFormat()}, moment: dateTimeStampInUTC"></time>
+					<time class="actionHandle" data-bind="attr:{'data-moment-format':$root.timeFormat()}, moment: dateTimestamp"></time>
 				</div>
 			</div>
 			<!-- /ko -->
@@ -161,7 +161,7 @@
 						<i data-bind="css: attachmentIconClass"></i>
 					</div>
 					<div class="sizeParent actionHandle" data-bind="text: friendlySize()"></div>
-					<time class="actionHandle" data-moment-format="AUTO" data-bind="moment: dateTimeStampInUTC"></time>
+					<time class="actionHandle" data-moment-format="AUTO" data-bind="moment: dateTimestamp"></time>
 				</div>
 			</div>
 		</div>

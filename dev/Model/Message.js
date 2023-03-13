@@ -85,7 +85,8 @@ export class MessageModel extends AbstractModel {
 			spamResult: '',
 			isSpam: false,
 			hasVirus: null, // or boolean when scanned
-			dateTimeStampInUTC: 0,
+			dateTimestamp: 0,
+			internalTimestamp: 0,
 			priority: MessagePriority.Normal,
 
 			senderEmailsString: '',
@@ -341,7 +342,7 @@ export class MessageModel extends AbstractModel {
 
 	viewPopupMessage(print) {
 		const
-			timeStampInUTC = this.dateTimeStampInUTC() || 0,
+			timeStampInUTC = this.dateTimestamp() || 0,
 			ccLine = this.cc.toString(),
 			bccLine = this.bcc.toString(),
 			m = 0 < timeStampInUTC ? new Date(timeStampInUTC * 1000) : null,

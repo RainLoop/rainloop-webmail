@@ -172,7 +172,7 @@ export class MailMessageList extends AbstractViewRight {
 						rtf = Intl.RelativeTimeFormat
 							? new Intl.RelativeTimeFormat(doc.documentElement.lang, { numeric: "auto" }) : 0;
 					MessagelistUserStore.forEach(msg => {
-						let dt = (new Date(msg.dateTimeStampInUTC() * 1000)),
+						let dt = (new Date(msg.dateTimestamp() * 1000)),
 							date,
 							ymd = Ymd(dt);
 						if (!current || ymd != current.id) {

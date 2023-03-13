@@ -155,12 +155,12 @@
 						<td data-i18n="GLOBAL/REPLY_TO"></td>
 						<td data-bind="text: replyTo"></td>
 					</tr>
-					<tr data-bind="visible: dateTimeStampInUTC">
+					<tr data-bind="visible: dateTimestamp">
 						<td data-i18n="MESSAGE/LABEL_DATE"></td>
 						<td>
-							<time data-moment-format="FULL" data-bind="moment: dateTimeStampInUTC"></time>
+							<time data-moment-format="FULL" data-bind="moment: dateTimestamp"></time>
 							&nbsp;
-							(<time data-moment-format="FROMNOW" data-bind="moment: dateTimeStampInUTC"></time>)
+							(<time data-moment-format="FROMNOW" data-bind="moment: dateTimestamp"></time>)
 						</td>
 					</tr>
 					<tr data-bind="visible: spamResult">
@@ -177,7 +177,7 @@
 		<div id="messageItem">
 			<div class="messageItemHeader" data-bind="if: message, i18nUpdate: message">
 				<div data-bind="hidden: showFullInfo">
-					<time class="date" data-moment-format="FULL" data-bind="visible: 0 < message().dateTimeStampInUTC(), moment: message().dateTimeStampInUTC()"></time>
+					<time class="date" data-moment-format="FULL" data-bind="visible: 0 < message().dateTimestamp(), moment: message().dateTimestamp()"></time>
 					<div class="informationShortWrp">
 						<div class="informationShort" data-bind="visible: message().to.length">
 							<span data-i18n="GLOBAL/TO"></span>:
