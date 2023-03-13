@@ -4,6 +4,9 @@ ko.utils = {
     objectForEach: (obj, action) => obj && Object.entries(obj).forEach(prop => action(prop[0], prop[1])),
 
     emptyDomNode: domNode => [...domNode.childNodes].forEach(child => ko.removeNode(child)),
+//    emptyDomNode: domNode => {while (domNode.lastChild) ko.removeNode(domNode.lastChild)},
+    // Safari 14+
+//    emptyDomNode: domNode => domNode.replaceChildren(),
 
     moveCleanedNodesToContainerElement: nodes => {
         // Ensure it's a real array, as we're about to reparent the nodes and
