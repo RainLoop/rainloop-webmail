@@ -55,11 +55,6 @@ abstract class NetClient
 		return $this->sConnectedHost;
 	}
 
-	public function GetConnectedPort() : int
-	{
-		return $this->Settings->port;
-	}
-
 	public function SetTimeOuts(int $iConnectTimeOut = 10) : void
 	{
 		$this->iConnectTimeOut = \max(5, $iConnectTimeOut);

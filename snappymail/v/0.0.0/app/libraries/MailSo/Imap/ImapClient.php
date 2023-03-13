@@ -55,8 +55,8 @@ class ImapClient extends \MailSo\Net\NetClient
 	{
 		return \md5('ImapClientHash/'.
 			$this->Settings->Login . '@' .
-			$this->GetConnectedHost() . ':' .
-			$this->GetConnectedPort()
+			$this->Settings->host . ':' .
+			$this->Settings->port
 		);
 	}
 
@@ -218,8 +218,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 			$this->setCapabilities($oResponse);
 
-			if (\strlen($sProxyAuthUser))
-			{
+			if (\strlen($sProxyAuthUser)) {
 				$this->SendRequestGetResponse('PROXYAUTH', array($this->EscapeString($sProxyAuthUser)));
 			}
 /*
