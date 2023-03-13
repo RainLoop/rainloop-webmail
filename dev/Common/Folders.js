@@ -121,7 +121,7 @@ folderInformation = (folder, list) => {
 			Remote.request('FolderInformation', (iError, data) => {
 				if (!iError && data.Result) {
 					const result = data.Result,
-						folderFromCache = getFolderFromCacheList(result.folder);
+						folderFromCache = getFolderFromCacheList(result.name);
 					if (folderFromCache) {
 						const oldHash = folderFromCache.etag,
 							unreadCountChange = (folderFromCache.unreadEmails() !== result.unreadEmails);
@@ -167,7 +167,6 @@ folderInformationMultiply = (boot = false) => {
 				const utc = Date.now();
 				oData.Result.forEach(item => {
 					const folder = getFolderFromCacheList(item.name);
-
 					if (folder) {
 						const oldHash = folder.etag,
 							unreadCountChange = folder.unreadEmails() !== item.unreadEmails;

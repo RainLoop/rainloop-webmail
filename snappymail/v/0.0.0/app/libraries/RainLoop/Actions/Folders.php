@@ -302,23 +302,13 @@ trait Folders
 
 			$aFolders = \array_unique($aFolders);
 			foreach ($aFolders as $sFolder) {
-				if (\strlen($sFolder) && 'INBOX' !== \strtoupper($sFolder)) {
-					try
-					{
-						$aInboxInformation = $this->MailClient()->FolderInformation($sFolder);
-						if (isset($aInboxInformation['folder'])) {
-							$aResult[] = [
-								'name' => $aInboxInformation['folder'],
-								'etag' => $aInboxInformation['etag'],
-								'totalEmails' => $aInboxInformation['totalEmails'],
-								'unreadEmails' => $aInboxInformation['unreadEmails'],
-							];
-						}
-					}
-					catch (\Throwable $oException)
-					{
-						$this->Logger()->WriteException($oException);
-					}
+				try
+				{
+					$aResult[] = $this->MailClient()->FolderInformation($sFolder);
+				}
+				catch (\Throwable $oException)
+				{
+					$this->Logger()->WriteException($oException);
 				}
 			}
 		}

@@ -50,8 +50,6 @@ class FolderInformation implements \JsonSerializable
 		$result = array(
 			'id' => $this->MAILBOXID,
 			'name' => $this->FullName,
-			'flags' => $this->Flags,
-			'permanentFlags' => $this->PermanentFlags,
 			'uidNext' => $this->UIDNEXT,
 			'uidValidity' => $this->UIDVALIDITY
 		);
@@ -70,6 +68,12 @@ class FolderInformation implements \JsonSerializable
 		}
 		if ($this->etag) {
 			$result['etag'] = $this->etag;
+		}
+		if ($this->Flags) {
+			$result['flags'] = $this->Flags;
+		}
+		if ($this->PermanentFlags) {
+			$result['permanentFlags'] = $this->PermanentFlags;
 		}
 		return $result;
 	}

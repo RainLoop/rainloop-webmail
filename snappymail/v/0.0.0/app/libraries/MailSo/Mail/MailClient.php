@@ -330,45 +330,38 @@ class MailClient
 	 */
 	public function FolderInformation(string $sFolderName, int $iPrevUidNext = 0, SequenceSet $oRange = null) : array
 	{
-		$aFlags = array();
-		if ($oRange && \count($oRange)) {
-//			$oInfo = $this->oImapClient->FolderExamine($sFolderName);
-			$oInfo = $this->oImapClient->FolderStatusAndSelect($sFolderName);
-			$aFetchResponse = $this->oImapClient->Fetch(array(
-				FetchType::UID,
-				FetchType::FLAGS
-			), (string) $oRange, $oRange->UID);
-			foreach ($aFetchResponse as $oFetchResponse) {
-				$iUid = (int) $oFetchResponse->GetFetchValue(FetchType::UID);
-				$aLowerFlags = \array_map('mb_strtolower', \array_map('\\MailSo\\Base\\Utils::Utf7ModifiedToUtf8', $oFetchResponse->GetFetchValue(FetchType::FLAGS)));
-				$aFlags[] = array(
-					'uid' => $iUid,
-					'flags' => $aLowerFlags
-				);
+		if ($oRange) {
+//			$aInfo = $this->oImapClient->FolderExamine($sFolderName)->jsonSerialize();
+			$aInfo = $this->oImapClient->FolderStatusAndSelect($sFolderName)->jsonSerialize();
+			$aInfo['messagesFlags'] = array();
+			if (\count($oRange)) {
+				$aFetchResponse = $this->oImapClient->Fetch(array(
+					FetchType::UID,
+					FetchType::FLAGS
+				), (string) $oRange, $oRange->UID);
+				foreach ($aFetchResponse as $oFetchResponse) {
+					$iUid = (int) $oFetchResponse->GetFetchValue(FetchType::UID);
+					$aLowerFlags = \array_map('mb_strtolower', \array_map('\\MailSo\\Base\\Utils::Utf7ModifiedToUtf8', $oFetchResponse->GetFetchValue(FetchType::FLAGS)));
+					$aInfo['messagesFlags'][] = array(
+						'uid' => $iUid,
+						'flags' => $aLowerFlags
+					);
+				}
 			}
 		} else {
-			$oInfo = $this->oImapClient->FolderStatus($sFolderName);
+			$aInfo = $this->oImapClient->FolderStatus($sFolderName)->jsonSerialize();
 		}
 
-		return array(
-			'folder' => $sFolderName,
-			'totalEmails' => $oInfo->MESSAGES,
-			'unreadEmails' => $oInfo->UNSEEN,
-			'uidNext' => $oInfo->UIDNEXT,
-			'uidValidity' => $oInfo->UIDVALIDITY,
-			'highestModSeq' => $oInfo->HIGHESTMODSEQ,
-			'appendLimit' => $oInfo->APPENDLIMIT ?: $this->oImapClient->AppendLimit(),
-			'mailboxId' => $oInfo->MAILBOXID ?: '',
-//			'flags' => $oInfo->Flags,
-//			'permanentFlags' => $oInfo->PermanentFlags,
-			'etag' => $oInfo->etag,
-			'messagesFlags' => $aFlags,
-			'newMessages' => $this->getFolderNextMessageInformation(
+		if ($iPrevUidNext) {
+			$aInfo['newMessages'] = $this->getFolderNextMessageInformation(
 				$sFolderName,
 				$iPrevUidNext,
-				\intval($oInfo->UIDNEXT)
-			)
-		);
+				\intval($aInfo['uidNext'])
+			);
+		}
+
+//		$aInfo['appendLimit'] = $aInfo['appendLimit'] ?: $this->oImapClient->AppendLimit();
+		return $aInfo;
 	}
 
 	/**
