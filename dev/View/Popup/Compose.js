@@ -440,16 +440,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			} else try {
 				this.sendError(false);
 				this.sending(true);
-/*
-				if (3 === arrayLength(this.aDraftInfo)) {
-					const flagsCache = MessageFlagsCache.getFor(this.aDraftInfo[2], this.aDraftInfo[1]);
-					if (isArray(flagsCache)) {
-						flagsCache.push(('forward' === this.aDraftInfo[0]) ? '$forwarded' : '\\answered');
-						MessageFlagsCache.setFor(this.aDraftInfo[2], this.aDraftInfo[1], flagsCache);
-						setFolderETag(this.aDraftInfo[2], '');
-					}
-				}
-*/
+
 				sSentFolder = UNUSED_OPTION_VALUE === sSentFolder ? '' : sSentFolder;
 
 				this.getMessageRequestParams(sSentFolder).then(params => {
@@ -470,6 +461,10 @@ export class ComposePopupView extends AbstractViewPopup {
 							}
 							setFolderETag(this.draftsFolder(), '');
 							setFolderETag(sSentFolder, '');
+							if (3 === arrayLength(this.aDraftInfo)) {
+								const folder = this.aDraftInfo[2];
+								setFolderETag(folder, '');
+							}
 							reloadDraftFolder();
 						},
 						params,
