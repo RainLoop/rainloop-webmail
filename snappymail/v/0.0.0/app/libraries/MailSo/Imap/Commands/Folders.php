@@ -424,7 +424,8 @@ trait Folders
 				else if (\count($oResponse->ResponseList) > 2
 				 && 'FLAGS' === $oResponse->ResponseList[1]
 				 && \is_array($oResponse->ResponseList[2])) {
-					$oResult->Flags = \array_map('\\MailSo\\Base\\Utils::Utf7ModifiedToUtf8', $oResponse->ResponseList[2]);
+					// These could be not permanent, so we don't use them
+//					$oResult->Flags = \array_map('\\MailSo\\Base\\Utils::Utf7ModifiedToUtf8', $oResponse->ResponseList[2]);
 				}
 			}
 		}
@@ -529,14 +530,14 @@ trait Folders
 					/**
 					 * $oResponse->ResponseList[0] = *
 					 * $oResponse->ResponseList[1] = LIST (all) | LSUB (subscribed)
-					 * $oResponse->ResponseList[2] = Flags
+					 * $oResponse->ResponseList[2] = Attribute flags
 					 * $oResponse->ResponseList[3] = Delimiter
 					 * $oResponse->ResponseList[4] = FullName
 					 */
 					if (isset($oFolderCollection[$sFullName])) {
 						$oFolder = $oFolderCollection[$sFullName];
 						$oFolder->setDelimiter($oResponse->ResponseList[3]);
-						$oFolder->setFlags($oResponse->ResponseList[2]);
+						$oFolder->setAttributes($oResponse->ResponseList[2]);
 					} else {
 						$oFolder = new Folder($sFullName, $oResponse->ResponseList[3], $oResponse->ResponseList[2]);
 						$oFolderCollection[$sFullName] = $oFolder;

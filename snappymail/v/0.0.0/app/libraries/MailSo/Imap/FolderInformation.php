@@ -23,11 +23,14 @@ class FolderInformation implements \JsonSerializable
 
 	/**
 	 * Message flags
+	 * https://www.rfc-editor.org/rfc/rfc3501#section-7.2.6
+	 * These could be not permanent so we don't use them
 	 */
 	public array $Flags = array();
 
 	/**
 	 * NOTE: Empty when FolderExamine is used
+	 * https://www.rfc-editor.org/rfc/rfc3501#page-64
 	 */
 	public array $PermanentFlags = array();
 
@@ -39,9 +42,9 @@ class FolderInformation implements \JsonSerializable
 
 	public function IsFlagSupported(string $sFlag) : bool
 	{
-		return \in_array('\\*', $this->PermanentFlags) ||
-			\in_array($sFlag, $this->PermanentFlags) ||
-			\in_array($sFlag, $this->Flags);
+		return \in_array('\\*', $this->PermanentFlags)
+			|| \in_array($sFlag, $this->PermanentFlags);
+//			|| \in_array($sFlag, $this->Flags);
 	}
 
 	#[\ReturnTypeWillChange]
@@ -69,9 +72,11 @@ class FolderInformation implements \JsonSerializable
 		if ($this->etag) {
 			$result['etag'] = $this->etag;
 		}
+/*
 		if ($this->Flags) {
 			$result['flags'] = $this->Flags;
 		}
+*/
 		if ($this->PermanentFlags) {
 			$result['permanentFlags'] = $this->PermanentFlags;
 		}

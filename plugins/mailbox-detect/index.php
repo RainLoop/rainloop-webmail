@@ -9,9 +9,9 @@ class MailboxDetectPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'MailboxDetect',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '2.5',
-		RELEASE  = '2023-02-21',
-		REQUIRED = '2.26.3',
+		VERSION  = '2.6',
+		RELEASE  = '2023-03-13',
+		REQUIRED = '2.27.0',
 		CATEGORY = 'General',
 		LICENSE  = 'MIT',
 		DESCRIPTION = 'Autodetect system folders and/or create them when needed';
@@ -74,13 +74,13 @@ class MailboxDetectPlugin extends \RainLoop\Plugins\AbstractPlugin
 				$sDelimiter || ($sDelimiter = $folder['delimiter']);
 				if ($folder['role']) {
 					$roles[$folder['role']] = true;
-				} else if (\in_array('\\sentmail', $folder['flags'])) {
+				} else if (\in_array('\\sentmail', $folder['attributes'])) {
 					$found['sent'][] = $i;
-				} else if (\in_array('\\spam', $folder['flags'])) {
+				} else if (\in_array('\\spam', $folder['attributes'])) {
 					$found['junk'][] = $i;
-				} else if (\in_array('\\bin', $folder['flags'])) {
+				} else if (\in_array('\\bin', $folder['attributes'])) {
 					$found['trash'][] = $i;
-				} else if (\in_array('\\starred', $folder['flags'])) {
+				} else if (\in_array('\\starred', $folder['attributes'])) {
 					$found['flagged'][] = $i;
 				} else {
 					// Kolab

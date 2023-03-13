@@ -85,7 +85,7 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 							folder: folderToRemove.fullName
 						}).then(
 							() => {
-//								folderToRemove.flags.push('\\nonexistent');
+//								folderToRemove.attributes.push('\\nonexistent');
 								folderToRemove.selectable(false);
 //								folderToRemove.isSubscribed(false);
 //								folderToRemove.checkable(false);

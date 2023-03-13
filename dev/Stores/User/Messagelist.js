@@ -223,8 +223,7 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 							folder.unreadEmails(folderInfo.unreadEmails);
 						}
 
-						folder.flags(folderInfo.flags);
-						let flags = folderInfo.permanentFlags;
+						let flags = folderInfo.permanentFlags || [];
 						if (flags.includes('\\*')) {
 							let i = 6;
 							while (--i) {

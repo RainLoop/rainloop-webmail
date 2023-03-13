@@ -169,22 +169,22 @@ export class FolderCollectionModel extends AbstractCollectionModel
 						break;
 				}
 				// Flags
-				if (oFolder.flags.includes('\\sentmail')) {
+				if (oFolder.attributes.includes('\\sentmail')) {
 					role = 'sent';
 				}
-				if (oFolder.flags.includes('\\spam')) {
+				if (oFolder.attributes.includes('\\spam')) {
 					role = 'junk';
 				}
-				if (oFolder.flags.includes('\\bin')) {
+				if (oFolder.attributes.includes('\\bin')) {
 					role = 'trash';
 				}
-				if (oFolder.flags.includes('\\important')) {
+				if (oFolder.attributes.includes('\\important')) {
 					role = 'important';
 				}
-				if (oFolder.flags.includes('\\starred')) {
+				if (oFolder.attributes.includes('\\starred')) {
 					role = 'flagged';
 				}
-				if (oFolder.flags.includes('\\all') || oFolder.flags.includes('\\allmail')) {
+				if (oFolder.attributes.includes('\\all') || oFolder.flags.includes('\\allmail')) {
 					role = 'all';
 				}
 			}
@@ -228,7 +228,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 										name: name,
 										fullName: parentName,
 										delimiter: delimiter,
-										flags: ['\\nonexistent']
+										attributes: ['\\nonexistent']
 									});
 									setFolder(pfolder);
 									result.splice(i, 0, pfolder);
@@ -330,7 +330,8 @@ export class FolderModel extends AbstractModel {
 			tagsAllowed: false
 		});
 
-		this.flags = ko.observableArray();
+		this.attributes = ko.observableArray();
+		// For messages
 		this.permanentFlags = ko.observableArray();
 
 		this.addSubscribables({
@@ -379,7 +380,7 @@ export class FolderModel extends AbstractModel {
 			isFlagged: () => FolderUserStore.currentFolder() === this
 				&& MessagelistUserStore.listSearch().includes('flagged'),
 
-//			isSubscribed: () => this.flags().includes('\\subscribed'),
+//			isSubscribed: () => this.attributes().includes('\\subscribed'),
 
 			hasVisibleSubfolders: () => !!this.subFolders().find(folder => folder.visible()),
 
@@ -536,9 +537,9 @@ export class FolderModel extends AbstractModel {
 			path.pop();
 			folder.parentName = path.join(folder.delimiter);
 
-			folder.isSubscribed(folder.flags.includes('\\subscribed'));
-			folder.exists = !folder.flags.includes('\\nonexistent');
-			folder.selectable(folder.exists && !folder.flags.includes('\\noselect'));
+			folder.isSubscribed(folder.attributes.includes('\\subscribed'));
+			folder.exists = !folder.attributes.includes('\\nonexistent');
+			folder.selectable(folder.exists && !folder.attributes.includes('\\noselect'));
 
 			type && 'mail' != type && folder.kolabType(type);
 		}
