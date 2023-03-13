@@ -184,8 +184,9 @@ abstract class Service
 
 			$sCacheFileName = '';
 			if ($oConfig->Get('cache', 'system_data', true)) {
-				$sCacheFileName = 'TMPL:' . $sLanguage . \sha1(
+				$sCacheFileName = 'TMPL:' . \sha1(
 					Utils::jsonEncode(array(
+						$sLanguage,
 						$oConfig->Get('cache', 'index', ''),
 						$oActions->Plugins()->Hash(),
 						$sAppJsMin,

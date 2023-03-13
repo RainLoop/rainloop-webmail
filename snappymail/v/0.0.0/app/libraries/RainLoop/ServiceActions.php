@@ -380,7 +380,6 @@ class ServiceActions
 
 	public function ServiceLang() : string
 	{
-//		sleep(2);
 		$sResult = '';
 		\header('Content-Type: application/javascript; charset=utf-8');
 
@@ -389,27 +388,22 @@ class ServiceActions
 			$sLanguage = $this->oActions->ValidateLanguage($this->aPaths[3], '', $bAdmin);
 
 			$bCacheEnabled = $this->Config()->Get('cache', 'system_data', true);
-			if (!empty($sLanguage) && $bCacheEnabled) {
-				$this->oActions->verifyCacheByKey($this->sQuery);
-			}
-
 			$sCacheFileName = '';
 			if ($bCacheEnabled) {
-				$sCacheFileName = KeyPathHelper::LangCache(
-					$sLanguage, $bAdmin, $this->oActions->Plugins()->Hash());
-
+				$sCacheFileName = KeyPathHelper::LangCache($sLanguage, $bAdmin, $this->oActions->Plugins()->Hash());
+				$this->oActions->verifyCacheByKey(\md5($sCacheFileName));
 				$sResult = $this->Cacher()->Get($sCacheFileName);
 			}
 
 			if (!\strlen($sResult)) {
 				$sResult = $this->oActions->compileLanguage($sLanguage, $bAdmin);
-				if ($bCacheEnabled && \strlen($sCacheFileName)) {
+				if ($sCacheFileName) {
 					$this->Cacher()->Set($sCacheFileName, $sResult);
 				}
 			}
 
-			if ($bCacheEnabled) {
-				$this->oActions->cacheByKey($this->sQuery);
+			if ($sCacheFileName) {
+				$this->oActions->cacheByKey(\md5($sCacheFileName));
 			}
 		}
 
@@ -427,13 +421,10 @@ class ServiceActions
 		$sMinify = ($bAppDebug || $this->Config()->Get('debug', 'javascript', false)) ? '' : 'min';
 
 		$bCacheEnabled = !$bAppDebug && $this->Config()->Get('cache', 'system_data', true);
-		if ($bCacheEnabled) {
-			$this->oActions->verifyCacheByKey($this->sQuery . $sMinify);
-		}
-
 		$sCacheFileName = '';
 		if ($bCacheEnabled) {
 			$sCacheFileName = KeyPathHelper::PluginsJsCache($this->oActions->Plugins()->Hash()) . $sMinify;
+			$this->oActions->verifyCacheByKey(\md5($sCacheFileName));
 			$sResult = $this->Cacher()->Get($sCacheFileName);
 		}
 
@@ -444,8 +435,8 @@ class ServiceActions
 			}
 		}
 
-		if ($bCacheEnabled) {
-			$this->oActions->cacheByKey($this->sQuery . $sMinify);
+		if ($sCacheFileName) {
+			$this->oActions->cacheByKey(\md5($sCacheFileName));
 		}
 
 		return $sResult;
@@ -471,13 +462,10 @@ class ServiceActions
 			$sMinify = ($bAppDebug || $this->Config()->Get('debug', 'css', false)) ? '' : 'min';
 
 			$bCacheEnabled = !$bAppDebug && $this->Config()->Get('cache', 'system_data', true);
-			if ($bCacheEnabled) {
-				$this->oActions->verifyCacheByKey($this->sQuery . $sMinify);
-			}
-
 			$sCacheFileName = '';
 			if ($bCacheEnabled) {
 				$sCacheFileName = KeyPathHelper::CssCache($sTheme, $this->oActions->Plugins()->Hash()) . $sMinify;
+				$this->oActions->verifyCacheByKey(\md5($sCacheFileName . ($bJson ? 1 : 0)));
 				$sResult = $this->Cacher()->Get($sCacheFileName);
 			}
 
@@ -495,8 +483,8 @@ class ServiceActions
 				}
 			}
 
-			if ($bCacheEnabled) {
-				$this->oActions->cacheByKey($this->sQuery . $sMinify);
+			if ($sCacheFileName) {
+				$this->oActions->cacheByKey(\md5($sCacheFileName . ($bJson ? 1 : 0 )));
 			}
 		}
 

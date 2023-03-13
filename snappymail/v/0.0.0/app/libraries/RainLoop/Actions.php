@@ -892,7 +892,7 @@ class Actions
 		$aResult['userLanguage'] = $this->ValidateLanguage($UserLanguageRaw, '', false, true);
 
 		$aResult['PluginsLink'] = $this->oPlugins->HaveJs($bAdmin)
-			? 'Plugins/0/' . ($bAdmin ? 'Admin' : 'User') . '/' . $this->StaticCache() . '/'
+			? 'Plugins/0/' . ($bAdmin ? 'Admin' : 'User') . '/' . $this->etag($this->oPlugins->Hash()) . '/'
 			: '';
 
 		$bAppJsDebug = $this->oConfig->Get('debug', 'javascript', false)
@@ -1033,7 +1033,8 @@ class Actions
 
 	public function etag(string $sKey): string
 	{
-		return \md5($sKey . $this->oConfig->Get('cache', 'index', ''));
+//		if ($sKey && $this->oConfig->Get('cache', 'enable', true) && $this->oConfig->Get('cache', 'http', true)) {
+		return \md5($sKey . $this->oConfig->Get('cache', 'index', '') . APP_VERSION);
 	}
 
 	public function cacheByKey(string $sKey): bool
@@ -1093,15 +1094,6 @@ class Actions
 			return [];
 		}
 */
-	}
-
-	public function StaticCache(): string
-	{
-		static $sCache = null;
-		if (!$sCache) {
-			$sCache = \md5(APP_VERSION . $this->oPlugins->Hash());
-		}
-		return $sCache;
 	}
 
 	public function SetActionParams(array $aCurrentActionParams, string $sMethodName = ''): self
