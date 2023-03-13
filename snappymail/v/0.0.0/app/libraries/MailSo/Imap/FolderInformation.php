@@ -19,8 +19,6 @@ class FolderInformation implements \JsonSerializable
 {
 	use Traits\Status;
 
-	public string $etag = '';
-
 	public bool $IsWritable;
 
 	/**
@@ -37,11 +35,6 @@ class FolderInformation implements \JsonSerializable
 	{
 		$this->FullName = $sFullName;
 		$this->IsWritable = $bIsWritable;
-	}
-
-	public function generateETag(ImapClient $oImapClient) : void
-	{
-		$this->etag = $this->getETag($oImapClient->Hash());
 	}
 
 	public function IsFlagSupported(string $sFlag) : bool
@@ -75,7 +68,7 @@ class FolderInformation implements \JsonSerializable
 		if (isset($this->SIZE)) {
 			$result['size'] = $this->SIZE;
 		}
-		if (isset($this->etag)) {
+		if ($this->etag) {
 			$result['etag'] = $this->etag;
 		}
 		return $result;

@@ -87,24 +87,25 @@ trait Status
 	 */
 	public ?int $SIZE = null;
 
-	public function getETag(string $sClientHash) : ?string
+	public ?string $etag = null;
+	public function generateETag(\MailSo\Imap\ImapClient $oImapClient) : void
 	{
 		if (!$this->hasStatus) {
 			// UNSEEN undefined when only SELECT/EXAMINE is used
 			\error_log("STATUS missing " . \print_r($this,true));
-			return null;
+			return;
 		}
 		if (!isset($this->MESSAGES, $this->UIDNEXT)) {
-			return null;
+			return;
 		}
-		return \md5('FolderHash/'. \implode('-', [
-				$this->FullName,
-				$this->MESSAGES,
-				$this->UIDNEXT,
-				$this->UIDVALIDITY,
-				$this->UNSEEN,
-				$this->HIGHESTMODSEQ,
-				$sClientHash
+		$this->etag = \md5('FolderHash/'. \implode('-', [
+			$this->FullName,
+			$this->MESSAGES,
+			$this->UIDNEXT,
+			$this->UIDVALIDITY,
+			$this->UNSEEN,
+			$this->HIGHESTMODSEQ,
+			$oImapClient->Hash()
 		]));
 	}
 

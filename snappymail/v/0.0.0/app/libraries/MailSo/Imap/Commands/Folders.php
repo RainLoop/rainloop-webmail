@@ -214,9 +214,11 @@ trait Folders
 //			$oFolderInfo->SIZE = \max($oFolderInfo->SIZE, $oInfo->SIZE);
 //			$oFolderInfo->RECENT = \max(0, $oFolderInfo->RECENT, $oInfo->RECENT);
 			$oFolderInfo->hasStatus = $oInfo->hasStatus;
+			$oFolderInfo->generateETag($this);
 			return $oFolderInfo;
 		}
 
+		$oInfo->generateETag($this);
 		return $oInfo;
 	}
 
@@ -436,6 +438,7 @@ trait Folders
 		}
 */
 		$this->oCurrentFolderInfo = $oResult;
+		$oResult->generateETag($this);
 
 		return $oResult;
 	}
@@ -516,6 +519,7 @@ trait Folders
 					$oFolderCollection[$sFullName] = new Folder($sFullName);
 				}
 				$oFolderCollection[$sFullName]->setStatusFromResponse($oResponse);
+				$oFolderCollection[$sFullName]->generateETag($this);
 			}
 			else if ($sCmd === $oResponse->StatusOrIndex && 5 === \count($oResponse->ResponseList)) {
 				try

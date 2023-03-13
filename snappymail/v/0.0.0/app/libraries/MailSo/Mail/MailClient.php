@@ -361,7 +361,7 @@ class MailClient
 			'mailboxId' => $oInfo->MAILBOXID ?: '',
 //			'flags' => $oInfo->Flags,
 //			'permanentFlags' => $oInfo->PermanentFlags,
-			'etag' => $oInfo->getETag($this->oImapClient->Hash()),
+			'etag' => $oInfo->etag,
 			'messagesFlags' => $aFlags,
 			'newMessages' => $this->getFolderNextMessageInformation(
 				$sFolderName,
@@ -379,8 +379,8 @@ class MailClient
 	 */
 	public function FolderHash(string $sFolderName) : string
 	{
-		return $this->oImapClient->FolderStatus($sFolderName)->getETag($this->oImapClient->Hash());
-//		return $this->oImapClient->FolderStatusAndSelect($sFolderName)->getETag($this->oImapClient->Hash());
+		return $this->oImapClient->FolderStatus($sFolderName)->etag;
+//		return $this->oImapClient->FolderStatusAndSelect($sFolderName)->etag;
 	}
 
 	/**
@@ -653,8 +653,6 @@ class MailClient
 		if ($oParams->iThreadUid && !$bUseThreads) {
 			throw new \InvalidArgumentException('THREAD not supported');
 		}
-
-		$oInfo->generateETag($this->oImapClient);
 
 		if (!$oParams->iThreadUid) {
 			$oMessageCollection->NewMessages = $this->getFolderNextMessageInformation(

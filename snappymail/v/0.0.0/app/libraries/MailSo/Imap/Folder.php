@@ -148,32 +148,16 @@ class Folder implements \JsonSerializable
 		return $role ? \ltrim($role, '\\') : null;
 	}
 
-	public function ETag(string $sClientHash) : ?string
-	{
-		return $this->Selectable() ? $this->getETag($sClientHash) : null;
-	}
-
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
-/*
-		$aExtended = null;
-		if (isset($this->MESSAGES, $this->UNSEEN, $this->UIDNEXT)) {
-			$aExtended = array(
-				'totalEmails' => (int) $this->MESSAGES,
-				'unreadEmails' => (int) $this->UNSEEN,
-				'uidNext' => (int) $this->UIDNEXT,
-//				'etag' => $this->ETag($this->getAccountFromToken()->IncLogin())
-			);
-		}
-*/
 /*
 		if ($this->ImapClient->hasCapability('ACL') || $this->ImapClient->CapabilityValue('RIGHTS')) {
 			// MailSo\Imap\Responses\ACL
 			$rights = $this->ImapClient->FolderMyRights($this->FullName);
 		}
 */
-		return array(
+		$result = array(
 			'@Object' => 'Object/Folder',
 			'name' => $this->Name(),
 			'fullName' => $this->FullName,
@@ -202,5 +186,9 @@ class Folder implements \JsonSerializable
 			]
 */
 		);
+		if ($this->etag) {
+			$result['etag'] = $this->etag;
+		}
+		return $result;
 	}
 }
