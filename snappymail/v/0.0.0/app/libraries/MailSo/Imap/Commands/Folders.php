@@ -412,9 +412,9 @@ trait Folders
 							$oResult->PermanentFlags = \array_map('\\MailSo\\Base\\Utils::Utf7ModifiedToUtf8', $oResponse->OptionalResponse[1]);
 						}
 					} else if ('READ-ONLY' === $key) {
-//						$oResult->IsWritable = false;
+						$oResult->IsWritable = false;
 					} else if ('READ-WRITE' === $key) {
-//						$oResult->IsWritable = true;
+						$oResult->IsWritable = true;
 					} else if ('NOMODSEQ' === $key) {
 						// https://datatracker.ietf.org/doc/html/rfc4551#section-3.1.2
 					}
@@ -439,7 +439,6 @@ trait Folders
 		}
 */
 		$this->oCurrentFolderInfo = $oResult;
-		$oResult->generateETag($this);
 
 		return $oResult;
 	}
