@@ -389,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Không phân màn hình",
 		"LAYOUT_VERTICAL_SPLIT": "Phân dọc màn hình",
 		"LAYOUT_HORIZONTAL_SPLIT": "Phân ngang màn hình",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Chỉnh dạng văn bản mặc định",
 		"EDITOR_HTML": "Dạng Html",
 		"EDITOR_PLAIN": "Dạng chữ viết thường",

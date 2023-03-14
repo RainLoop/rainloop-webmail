@@ -389,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Χωρίς χώρισμα",
 		"LAYOUT_VERTICAL_SPLIT": "Κάθετο χώρισμα",
 		"LAYOUT_HORIZONTAL_SPLIT": "Οριζόντιο χώρισμα",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Προεπιλεγμένος συντάκτης κειμένου",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "Απλό",

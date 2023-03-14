@@ -389,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Skaidymo nėra",
 		"LAYOUT_VERTICAL_SPLIT": "Vertikalus skaidymas",
 		"LAYOUT_HORIZONTAL_SPLIT": "Horizontalus skaidymas",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Numatytas teksto redaktorius",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "Paprastas",

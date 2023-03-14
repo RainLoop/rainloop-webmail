@@ -26,6 +26,7 @@ export const SettingsUserStore = new class {
 			simpleAttachmentsList: 0,
 			useCheckboxesInList: 1,
 			listGrouped: 0,
+			showNextMessage: 0,
 			allowDraftAutosave: 1,
 			useThreads: 0,
 			replySameFolder: 0,
@@ -95,6 +96,7 @@ export const SettingsUserStore = new class {
 		self.simpleAttachmentsList(SettingsGet('simpleAttachmentsList'));
 		self.useCheckboxesInList(SettingsGet('UseCheckboxesInList'));
 		self.listGrouped(SettingsGet('listGrouped'));
+		self.showNextMessage(SettingsGet('showNextMessage'));
 		self.allowDraftAutosave(SettingsGet('AllowDraftAutosave'));
 		self.useThreads(SettingsGet('UseThreads'));
 		self.replySameFolder(SettingsGet('ReplySameFolder'));

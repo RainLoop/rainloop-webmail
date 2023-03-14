@@ -389,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Ingen deling",
 		"LAYOUT_VERTICAL_SPLIT": "Vertikal deling",
 		"LAYOUT_HORIZONTAL_SPLIT": "Horisontal deling",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Standard tekstbehandler",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Ren tekst",

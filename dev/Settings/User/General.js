@@ -45,7 +45,8 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		 'editorDefaultType', 'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt',
 		 'viewHTML', 'viewImages', 'viewImagesWhitelist', 'removeColors', 'allowStyles', 'allowDraftAutosave',
 		 'hideDeleted', 'listInlineAttachments', 'simpleAttachmentsList', 'collapseBlockquotes', 'maxBlockquotesLevel',
-		 'useCheckboxesInList', 'listGrouped', 'useThreads', 'replySameFolder', 'msgDefaultAction', 'allowSpellcheck'
+		 'useCheckboxesInList', 'listGrouped', 'useThreads', 'replySameFolder', 'msgDefaultAction', 'allowSpellcheck',
+		 'showNextMessage'
 		].forEach(name => this[name] = SettingsUserStore[name]);
 
 		this.allowLanguagesOnSettings = !!SettingsGet('allowLanguagesOnSettings');
@@ -104,7 +105,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.addSettings(['ViewHTML', 'ViewImages', 'ViewImagesWhitelist', 'HideDeleted', 'RemoveColors', 'AllowStyles',
 			'ListInlineAttachments', 'simpleAttachmentsList', 'UseCheckboxesInList', 'listGrouped', 'ReplySameFolder',
 			'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt', 'allowSpellcheck',
-			'DesktopNotifications', 'SoundNotification', 'CollapseBlockquotes', 'AllowDraftAutosave']);
+			'DesktopNotifications', 'SoundNotification', 'CollapseBlockquotes', 'AllowDraftAutosave', 'showNextMessage']);
 
 		const fReloadLanguageHelper = (saveSettingsStep) => () => {
 				this.languageTrigger(saveSettingsStep);

@@ -389,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "No Split",
 		"LAYOUT_VERTICAL_SPLIT": "Vertical Split",
 		"LAYOUT_HORIZONTAL_SPLIT": "Horizontal Split",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Редактор тексту за змовчуванням",
 		"EDITOR_HTML": "Форматований",
 		"EDITOR_PLAIN": "Простий",

@@ -389,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "分割しない",
 		"LAYOUT_VERTICAL_SPLIT": "縦に分割",
 		"LAYOUT_HORIZONTAL_SPLIT": "横に分割",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "メール形式",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "プレーンテキスト",

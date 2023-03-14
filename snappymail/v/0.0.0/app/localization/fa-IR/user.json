@@ -389,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "بدون تقسیم",
 		"LAYOUT_VERTICAL_SPLIT": "تقسیم عمودی",
 		"LAYOUT_HORIZONTAL_SPLIT": "تقسیم افقی",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "ویرایشگر پیش‌فرض",
 		"EDITOR_HTML": "تحت فرمت Html",
 		"EDITOR_PLAIN": "ساده",

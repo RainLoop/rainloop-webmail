@@ -389,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Brez razdelitve",
 		"LAYOUT_VERTICAL_SPLIT": "Navpično razdeljeno",
 		"LAYOUT_HORIZONTAL_SPLIT": "Vodoravno razdeljeno",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Privzeta vrsta besedila",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Navadno besedilo",

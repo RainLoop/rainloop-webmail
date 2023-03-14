@@ -389,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "不分隔",
 		"LAYOUT_VERTICAL_SPLIT": "垂直分隔",
 		"LAYOUT_HORIZONTAL_SPLIT": "水平分隔",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "默认文本编辑器",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "纯文本",

@@ -389,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Sem divisão",
 		"LAYOUT_VERTICAL_SPLIT": "Divisão Vertical",
 		"LAYOUT_HORIZONTAL_SPLIT": "Divisão Horizontal",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Editor de texto padrão",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "Texto Simples",

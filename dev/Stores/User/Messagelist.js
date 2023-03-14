@@ -3,7 +3,7 @@ import { koComputable, addObservablesTo, addComputablesTo } from 'External/ko';
 import { SMAudio } from 'Common/Audio';
 import { Notifications } from 'Common/Enums';
 import { MessageSetAction } from 'Common/EnumsUser';
-import { $htmlCL } from 'Common/Globals';
+import { $htmlCL, fireEvent } from 'Common/Globals';
 import { arrayLength, pString } from 'Common/Utils';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
@@ -412,6 +412,18 @@ MessagelistUserStore.removeMessagesFromList = (
 			messages.forEach(item => item.checked(false));
 		} else {
 			MessagelistUserStore.isIncomplete(true);
+
+			// Select next email https://github.com/the-djmaze/snappymail/issues/968
+			if (currentMessage && 1 == messages.length && SettingsUserStore.showNextMessage()) {
+				let next = MessagelistUserStore.indexOf(currentMessage) + 1;
+				if (0 < next && (next = MessagelistUserStore()[next])) {
+					currentMessage = null;
+					fireEvent('mailbox.message.show', {
+						folder: next.folder,
+						uid: next.uid
+					});
+				}
+			}
 
 			messages.forEach(item => {
 				if (currentMessage && currentMessage.hash === item.hash) {

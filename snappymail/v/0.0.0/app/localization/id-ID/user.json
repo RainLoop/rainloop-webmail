@@ -389,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Tanpa pemisah",
 		"LAYOUT_VERTICAL_SPLIT": "Pemisah vertikal",
 		"LAYOUT_HORIZONTAL_SPLIT": "Pemisah horizontal",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Editor teks bawaan",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "Polos",

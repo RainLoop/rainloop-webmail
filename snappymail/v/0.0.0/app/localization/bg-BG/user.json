@@ -389,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Не разделяй",
 		"LAYOUT_VERTICAL_SPLIT": "Вертикално разделяне",
 		"LAYOUT_HORIZONTAL_SPLIT": "Хоризонтално разделяне",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Текстов редактор по подразбиране",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Чист текст",

@@ -389,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Одна панель",
 		"LAYOUT_VERTICAL_SPLIT": "Вертикальные панели",
 		"LAYOUT_HORIZONTAL_SPLIT": "Горизонтальные панели",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Редактор текста по умолчанию",
 		"EDITOR_HTML": "Форматированный",
 		"EDITOR_PLAIN": "Простой",

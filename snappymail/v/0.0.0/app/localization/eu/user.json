@@ -389,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Zatitu gabe",
 		"LAYOUT_VERTICAL_SPLIT": "Zatiketa bertikala",
 		"LAYOUT_HORIZONTAL_SPLIT": "Zatiketa horizontala",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Berezko testu editorea",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "Formaturik gabea",

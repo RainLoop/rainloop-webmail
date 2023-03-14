@@ -389,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Del ikke",
 		"LAYOUT_VERTICAL_SPLIT": "Del lodret",
 		"LAYOUT_HORIZONTAL_SPLIT": "Del vandret",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Standard tekst program",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "Plain",

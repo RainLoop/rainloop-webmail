@@ -389,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Utan delad vy",
 		"LAYOUT_VERTICAL_SPLIT": "Vertikalt delad vy",
 		"LAYOUT_HORIZONTAL_SPLIT": "Horisontellt delad vy",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Textredigerare",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Oformaterad text",

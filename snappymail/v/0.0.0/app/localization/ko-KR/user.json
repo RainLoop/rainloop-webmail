@@ -389,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "분할 해제",
 		"LAYOUT_VERTICAL_SPLIT": "세로 분할",
 		"LAYOUT_HORIZONTAL_SPLIT": "가로 분할",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "기본 텍스트 편집기",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "평문",

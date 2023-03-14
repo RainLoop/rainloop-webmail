@@ -389,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Geen splitsing",
 		"LAYOUT_VERTICAL_SPLIT": "Verticale splitsing",
 		"LAYOUT_HORIZONTAL_SPLIT": "Horizontale splitsing",
+		"SHOW_NEXT_MESSAGE": "Toon volgende bericht bij verplaatsen huidige bericht",
 		"EDITOR": "Standaard tekst editor",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Platte tekst",
