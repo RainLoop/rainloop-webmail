@@ -111,6 +111,7 @@ abstract class HtmlUtils
 		}
 
 		$xpath = new \DomXpath($oDoc);
+
 		foreach ($xpath->query('//*[@data-x-src-broken]') as $oElement) {
 			if (isset($oElement->parentNode)) {
 				@$oElement->parentNode->removeChild($oElement);
@@ -175,7 +176,7 @@ abstract class HtmlUtils
 		}
 
 		$sIdRight = \md5(\microtime());
-		$aNodes = $oBody->getElementsByTagName('IMG');
+		$aNodes = $oBody->getElementsByTagName('img');
 		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement) {
 			$sSrc = $oElement->getAttribute('src');
 			if ('data:image/' === \strtolower(\substr($sSrc, 0, 11))) {
