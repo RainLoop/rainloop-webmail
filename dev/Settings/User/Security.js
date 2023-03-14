@@ -10,12 +10,12 @@ import { SettingsUserStore } from 'Stores/User/Settings';
 import { GnuPGUserStore } from 'Stores/User/GnuPG';
 import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
 
-import Remote from 'Remote/User/Fetch';
-
 import { showScreenPopup } from 'Knoin/Knoin';
 
 import { OpenPgpImportPopupView } from 'View/Popup/OpenPgpImport';
 import { OpenPgpGeneratePopupView } from 'View/Popup/OpenPgpGenerate';
+
+//import Remote from 'Remote/User/Fetch';
 
 export class UserSettingsSecurity extends AbstractViewSettings {
 	constructor() {
@@ -46,10 +46,6 @@ export class UserSettingsSecurity extends AbstractViewSettings {
 		this.canOpenPGP = SettingsCapa('OpenPGP');
 		this.canGnuPG = GnuPGUserStore.isSupported();
 		this.canMailvelope = !!window.mailvelope;
-
-		this.allowDraftAutosave = SettingsUserStore.allowDraftAutosave;
-
-		this.allowDraftAutosave.subscribe(value => Remote.saveSetting('AllowDraftAutosave', value))
 	}
 
 	addOpenPgpKey() {
@@ -66,5 +62,11 @@ export class UserSettingsSecurity extends AbstractViewSettings {
 		 * The iframe will be injected into the container identified by selector.
 		 */
 		window.mailvelope && mailvelope.createSettingsContainer('#mailvelope-settings'/*[, keyring], options*/);
+		/**
+		 * https://github.com/the-djmaze/snappymail/issues/973
+		Remote.request('GetStoredPGPKeys', (iError, data) => {
+			console.dir([iError, data]);
+		});
+		*/
 	}
 }

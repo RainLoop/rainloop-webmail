@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Dodaj račun"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobilna različica",
-		"BUTTON_DESKTOP_VERSION": "Namizna različica"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Napredno iskanje",
 		"TEXT": "Besedilo",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "Pozor! Priloge niso bile vse naložene.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Priloge še niso bile naložene v celoti.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Samodejno shrani osnutek",
 		"BUTTON_REQUEST_READ_RECEIPT": "Zahtevaj potrdilo o branju",
 		"BUTTON_MARK_AS_IMPORTANT": "Označi kot pomembno",
 		"BUTTON_REQUEST_DSN": "Zahtevaj potrdilo o dostavi",
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Želite zapreti to okno?",
 		"DESC_WANT_DELETE_MESSAGES": "Želite izbrisati sporočilo\/-a?"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Brez razdelitve",
 		"LAYOUT_VERTICAL_SPLIT": "Navpično razdeljeno",
 		"LAYOUT_HORIZONTAL_SPLIT": "Vodoravno razdeljeno",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Privzeta vrsta besedila",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Navadno besedilo",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Generiraj ključe",
 		"TITLE_PRIVATE": "Zasebni",
 		"TITLE_PUBLIC": "Javni",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Samodejno shrani osnutek",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

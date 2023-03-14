@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "ضفّ حساب"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobile version",
-		"BUTTON_DESKTOP_VERSION": "Desktop version"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "البحث المطور",
 		"TEXT": "النص",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "تحذير! لم يتم إرفاق جميع المرفقات",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "لم تنتهي عملية الإرفاق بعد",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "اطلب اعلاماً بالقراءة",
 		"BUTTON_MARK_AS_IMPORTANT": "تحديده كـ هام",
 		"BUTTON_REQUEST_DSN": "اطلب اعلاماً بايصال البريد",
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "هل أنت متأكد من رغبتك باغلاق هذه النافذة؟",
 		"DESC_WANT_DELETE_MESSAGES": "هل أنت متأكد من رغبتك بحذف هذه الرسائل؟"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "بدون إنقسام",
 		"LAYOUT_VERTICAL_SPLIT": "إنقسام عمودي",
 		"LAYOUT_HORIZONTAL_SPLIT": "إنقسام أفقي",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "المحرر النصي الأساسي",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "عادي",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": " توليد مفتاح",
 		"TITLE_PRIVATE": "خاص",
 		"TITLE_PUBLIC": "عام",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

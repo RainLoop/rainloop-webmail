@@ -14,31 +14,35 @@ trait Folders
 	 * Appends uploaded rfc822 message to mailbox
 	 * @throws \MailSo\RuntimeException
 	 */
-	public function Append(): bool
+	public function DoFolderAppend(): array
 	{
 		$oAccount = $this->initMailClientConnection();
 
 		$sFolderFullName = $this->GetActionParam('folder', '');
 
-		if ($oAccount
-		 && !empty($sFolderFullName)
-		 && !empty($_FILES['appendFile'])
-		 && \is_uploaded_file($_FILES['appendFile']['tmp_name'])
-		 && \UPLOAD_ERR_OK == $_FILES['appendFile']['error']
-		 && $this->oConfig->Get('labs', 'allow_message_append', false)
-		) {
+		if (!$this->oConfig->Get('labs', 'allow_message_append', false)) {
+			return $this->FalseResponse(999, 'Permission denied');
+		}
+
+		if (empty($_FILES['appendFile'])) {
+			return $this->FalseResponse(999, 'No file');
+		}
+
+		if (\UPLOAD_ERR_OK != $_FILES['appendFile']['error']) {
+			return $this->FalseResponse($iErrorCode, \RainLoop\Enumerations\UploadError::getMessage($iErrorCode));
+		}
+
+		if ($oAccount && !empty($sFolderFullName) && \is_uploaded_file($_FILES['appendFile']['tmp_name'])) {
 			$sSavedName = 'append-post-' . \md5($sFolderFullName . $_FILES['appendFile']['name'] . $_FILES['appendFile']['tmp_name']);
 			if ($this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $_FILES['appendFile']['tmp_name'])) {
 				$iMessageStreamSize = $this->FilesProvider()->FileSize($oAccount, $sSavedName);
 				$rMessageStream = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
-
-				$this->MailClient()->MessageAppendStream($rMessageStream, $iMessageStreamSize, $sFolderFullName);
-
+				$this->ImapClient()->MessageAppendStream($sFolderFullName, $rMessageStream, $iMessageStreamSize);
 				$this->FilesProvider()->Clear($oAccount, $sSavedName);
+				return $this->TrueResponse();
 			}
 		}
-
-		return $this->TrueResponse();
+		return $this->FalseResponse(999);
 	}
 
 	public function DoFolders() : array
@@ -57,14 +61,14 @@ trait Folders
 			$aQuota = null;
 			if ($this->GetCapa(Capa::QUOTA)) {
 				try {
-//					$aQuota = $this->MailClient()->Quota();
-					$aQuota = $this->MailClient()->QuotaRoot();
+//					$aQuota = $this->ImapClient()->Quota();
+					$aQuota = $this->ImapClient()->QuotaRoot();
 				} catch (\Throwable $oException) {
 					// ignore
 				}
 			}
 
-			$aCapabilities = \array_values(\array_filter($this->MailClient()->Capability(), function ($item) {
+			$aCapabilities = \array_values(\array_filter($this->ImapClient()->Capability(), function ($item) {
 				return !\preg_match('/^(IMAP|AUTH|LOGIN|SASL)/', $item);
 			}));
 
@@ -73,7 +77,7 @@ trait Folders
 				array(
 					'quotaUsage' => $aQuota ? $aQuota[0] * 1024 : null,
 					'quotaLimit' => $aQuota ? $aQuota[1] * 1024 : null,
-					'namespace' => $this->MailClient()->GetPersonalNamespace(),
+					'namespace' => $this->ImapClient()->GetPersonalNamespace(),
 					'capabilities' => $aCapabilities
 				)
 			);
@@ -109,7 +113,7 @@ trait Folders
 		$sFolderFullName = $this->GetActionParam('folder');
 		$sMetadataKey = $this->GetActionParam('key');
 		if ($sFolderFullName && $sMetadataKey) {
-			$this->MailClient()->FolderSetMetadata($sFolderFullName, [
+			$this->ImapClient()->FolderSetMetadata($sFolderFullName, [
 				$sMetadataKey => $this->GetActionParam('value') ?: null
 			]);
 		}
@@ -125,7 +129,7 @@ trait Folders
 
 		try
 		{
-			$this->MailClient()->{$bSubscribe ? 'FolderSubscribe' : 'FolderUnsubscribe'}($sFolderFullName);
+			$this->ImapClient()->{$bSubscribe ? 'FolderSubscribe' : 'FolderUnsubscribe'}($sFolderFullName);
 		}
 		catch (\Throwable $oException)
 		{
@@ -147,26 +151,17 @@ trait Folders
 		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
 		$aCheckableFolder = \json_decode($oSettingsLocal->GetConf('CheckableFolder', '[]'));
-
 		if (!\is_array($aCheckableFolder)) {
 			$aCheckableFolder = array();
 		}
 
 		if (!empty($this->GetActionParam('checkable', '0'))) {
 			$aCheckableFolder[] = $sFolderFullName;
-		} else {
-			$aCheckableFolderNew = array();
-			foreach ($aCheckableFolder as $sFolder) {
-				if ($sFolder !== $sFolderFullName) {
-					$aCheckableFolderNew[] = $sFolder;
-				}
-			}
-			$aCheckableFolder = $aCheckableFolderNew;
+		} else if (($key = \array_search($sFolderFullName, $aCheckableFolder)) !== false) {
+			\array_splice($aCheckableFolder, $key, 1);
 		}
 
-		$aCheckableFolder = \array_unique($aCheckableFolder);
-
-		$oSettingsLocal->SetConf('CheckableFolder', \json_encode($aCheckableFolder));
+		$oSettingsLocal->SetConf('CheckableFolder', \json_encode(\array_unique($aCheckableFolder)));
 
 		return $this->DefaultResponse($this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
 	}
@@ -231,7 +226,7 @@ trait Folders
 
 		try
 		{
-			$this->MailClient()->FolderDelete($this->GetActionParam('folder', ''));
+			$this->ImapClient()->FolderDelete($this->GetActionParam('folder', ''));
 		}
 		catch (\MailSo\Mail\Exceptions\NonEmptyFolder $oException)
 		{
@@ -254,7 +249,7 @@ trait Folders
 
 		try
 		{
-			$this->MailClient()->FolderClear($this->GetActionParam('folder', ''));
+			$this->ImapClient()->FolderClear($this->GetActionParam('folder', ''));
 		}
 		catch (\Throwable $oException)
 		{
@@ -298,23 +293,13 @@ trait Folders
 
 			$aFolders = \array_unique($aFolders);
 			foreach ($aFolders as $sFolder) {
-				if (\strlen($sFolder) && 'INBOX' !== \strtoupper($sFolder)) {
-					try
-					{
-						$aInboxInformation = $this->MailClient()->FolderInformation($sFolder);
-						if (isset($aInboxInformation['folder'])) {
-							$aResult[] = [
-								'folder' => $aInboxInformation['folder'],
-								'hash' => $aInboxInformation['hash'],
-								'totalEmails' => $aInboxInformation['totalEmails'],
-								'unreadEmails' => $aInboxInformation['unreadEmails'],
-							];
-						}
-					}
-					catch (\Throwable $oException)
-					{
-						$this->Logger()->WriteException($oException);
-					}
+				try
+				{
+					$aResult[] = $this->MailClient()->FolderInformation($sFolder);
+				}
+				catch (\Throwable $oException)
+				{
+					$this->Logger()->WriteException($oException);
 				}
 			}
 		}
@@ -328,11 +313,11 @@ trait Folders
 
 		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
-		$oSettingsLocal->SetConf('SentFolder', $this->GetActionParam('Sent', ''));
-		$oSettingsLocal->SetConf('DraftFolder', $this->GetActionParam('Drafts', ''));
-		$oSettingsLocal->SetConf('SpamFolder', $this->GetActionParam('Spam', ''));
-		$oSettingsLocal->SetConf('TrashFolder', $this->GetActionParam('Trash', ''));
-		$oSettingsLocal->SetConf('ArchiveFolder', $this->GetActionParam('Archive', ''));
+		$oSettingsLocal->SetConf('SentFolder', $this->GetActionParam('sent', ''));
+		$oSettingsLocal->SetConf('DraftsFolder', $this->GetActionParam('drafts', ''));
+		$oSettingsLocal->SetConf('JunkFolder', $this->GetActionParam('junk', ''));
+		$oSettingsLocal->SetConf('TrashFolder', $this->GetActionParam('trash', ''));
+		$oSettingsLocal->SetConf('ArchiveFolder', $this->GetActionParam('archive', ''));
 
 		return $this->DefaultResponse($this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
 	}

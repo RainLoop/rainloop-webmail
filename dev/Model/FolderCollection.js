@@ -3,8 +3,9 @@ import { AbstractCollectionModel } from 'Model/AbstractCollection';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { isArray, getKeyByValue, forEachObjectEntry, b64EncodeJSONSafe } from 'Common/Utils';
 import { ClientSideKeyNameExpandedFolders, FolderType, FolderMetadataKeys } from 'Common/EnumsUser';
-import { getFolderFromCacheList, setFolder, setFolderInboxName } from 'Common/Cache';
+import { clearCache, getFolderFromCacheList, setFolder, setFolderInboxName, removeFolderFromCacheList } from 'Common/Cache';
 import { Settings, SettingsGet, fireEvent } from 'Common/Globals';
+import { Notifications } from 'Common/Enums';
 
 import * as Local from 'Storage/Client';
 
@@ -14,7 +15,7 @@ import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
 import { sortFolders } from 'Common/Folders';
-import { i18n, translateTrigger } from 'Common/Translator';
+import { i18n, translateTrigger, getNotification } from 'Common/Translator';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
@@ -91,6 +92,7 @@ export const
 		Remote.abort('Folders')
 			.post('Folders', FolderUserStore.foldersLoading)
 			.then(data => {
+				clearCache();
 				FolderCollectionModel.reviveFromJson(data.Result)?.storeIt();
 				fCallback?.(true);
 				// Repeat every 15 minutes?
@@ -127,8 +129,8 @@ export class FolderCollectionModel extends AbstractCollectionModel
 			let oCacheFolder = getFolderFromCacheList(oFolder.fullName);
 			if (oCacheFolder) {
 //				oCacheFolder.revivePropertiesFromJson(oFolder);
-				if (oFolder.hash) {
-					oCacheFolder.hash = oFolder.hash;
+				if (oFolder.etag) {
+					oCacheFolder.etag = oFolder.etag;
 				}
 				if (null != oFolder.totalEmails) {
 					oCacheFolder.totalEmails(oFolder.totalEmails);
@@ -167,22 +169,22 @@ export class FolderCollectionModel extends AbstractCollectionModel
 						break;
 				}
 				// Flags
-				if (oFolder.flags.includes('\\sentmail')) {
+				if (oFolder.attributes.includes('\\sentmail')) {
 					role = 'sent';
 				}
-				if (oFolder.flags.includes('\\spam')) {
+				if (oFolder.attributes.includes('\\spam')) {
 					role = 'junk';
 				}
-				if (oFolder.flags.includes('\\bin')) {
+				if (oFolder.attributes.includes('\\bin')) {
 					role = 'trash';
 				}
-				if (oFolder.flags.includes('\\important')) {
+				if (oFolder.attributes.includes('\\important')) {
 					role = 'important';
 				}
-				if (oFolder.flags.includes('\\starred')) {
+				if (oFolder.attributes.includes('\\starred')) {
 					role = 'flagged';
 				}
-				if (oFolder.flags.includes('\\all') || oFolder.flags.includes('\\allmail')) {
+				if (oFolder.attributes.includes('\\all') || oFolder.flags.includes('\\allmail')) {
 					role = 'all';
 				}
 			}
@@ -226,9 +228,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 										name: name,
 										fullName: parentName,
 										delimiter: delimiter,
-										exists: false,
-										isSubscribed: false,
-										flags: ['\\nonexistent']
+										attributes: ['\\nonexistent']
 									});
 									setFolder(pfolder);
 									result.splice(i, 0, pfolder);
@@ -300,7 +300,7 @@ export class FolderModel extends AbstractModel {
 
 		this.exists = true;
 
-		this.hash = '';
+		this.etag = '';
 		this.id = 0;
 		this.uidNext = 0;
 
@@ -330,7 +330,8 @@ export class FolderModel extends AbstractModel {
 			tagsAllowed: false
 		});
 
-		this.flags = ko.observableArray();
+		this.attributes = ko.observableArray();
+		// For messages
 		this.permanentFlags = ko.observableArray();
 
 		this.addSubscribables({
@@ -378,6 +379,8 @@ export class FolderModel extends AbstractModel {
 
 			isFlagged: () => FolderUserStore.currentFolder() === this
 				&& MessagelistUserStore.listSearch().includes('flagged'),
+
+//			isSubscribed: () => this.attributes().includes('\\subscribed'),
 
 			hasVisibleSubfolders: () => !!this.subFolders().find(folder => folder.visible()),
 
@@ -465,6 +468,49 @@ export class FolderModel extends AbstractModel {
 		});
 	}
 
+	edit() {
+		this.canBeEdited() && this.editing(true);
+	}
+
+	unedit() {
+		this.editing(false);
+	}
+
+	rename() {
+		const folder = this,
+			nameToEdit = folder.nameForEdit().trim();
+		if (nameToEdit && folder.name() !== nameToEdit) {
+			Remote.abort('Folders').post('FolderRename', FolderUserStore.foldersRenaming, {
+					folder: folder.fullName,
+					newFolderName: nameToEdit,
+					subscribe: folder.isSubscribed() ? 1 : 0
+				})
+				.then(data => {
+					folder.name(nameToEdit/*data.name*/);
+					if (folder.subFolders.length) {
+						Remote.setTrigger(FolderUserStore.foldersLoading, true);
+//						clearTimeout(Remote.foldersTimeout);
+//						Remote.foldersTimeout = setTimeout(loadFolders, 500);
+						setTimeout(loadFolders, 500);
+						// TODO: rename all subfolders with folder.delimiter to prevent reload?
+					} else {
+						removeFolderFromCacheList(folder.fullName);
+						folder.fullName = data.Result.fullName;
+						setFolder(folder);
+						const parent = getFolderFromCacheList(folder.parentName);
+						sortFolders(parent ? parent.subFolders : FolderUserStore.folderList);
+					}
+				})
+				.catch(error => {
+					FolderUserStore.folderListError(
+						getNotification(error.code, '', Notifications.CantRenameFolder)
+						+ '.\n' + error.message);
+				});
+		}
+
+		folder.editing(false);
+	}
+
 	/**
 	 * For url safe '/#/mailbox/...' path
 	 */
@@ -490,6 +536,10 @@ export class FolderModel extends AbstractModel {
 			folder.deep = path.length - 1;
 			path.pop();
 			folder.parentName = path.join(folder.delimiter);
+
+			folder.isSubscribed(folder.attributes.includes('\\subscribed'));
+			folder.exists = !folder.attributes.includes('\\nonexistent');
+			folder.selectable(folder.exists && !folder.attributes.includes('\\noselect'));
 
 			type && 'mail' != type && folder.kolabType(type);
 		}

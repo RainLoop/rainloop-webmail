@@ -78,6 +78,10 @@ class SieveClient extends \MailSo\Net\NetClient
 	 */
 	public function Login(Settings $oSettings) : self
 	{
+		if ($this->bIsLoggined) {
+			return $this;
+		}
+
 		$sLogin = $oSettings->Login;
 		$sPassword = $oSettings->Password;
 		$sLoginAuthKey = '';

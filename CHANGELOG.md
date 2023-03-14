@@ -1,3 +1,104 @@
+## 2.26.4 – 2023-02-24
+
+## Added
+- Add CSP frame-ancestors for
+  [#537](https://github.com/the-djmaze/snappymail/pull/537)
+
+## Changed
+- Reduce/simplify CSS footprint
+- Use the System/Browser font by default by @HeySora
+  [#988](https://github.com/the-djmaze/snappymail/pull/988)
+- Make layout fully responsive using matchMedia('(max-width: 799px)')
+- Move brotli and gzip compress option to application.ini
+- After page refreshes in background whilst editing a draft, the space bar stops working
+  [#860](https://github.com/the-djmaze/snappymail/pull/860)
+- Updated Portuguese by @ner00
+  [#984](https://github.com/the-djmaze/snappymail/pull/984)
+- Updated French by @hguilbert
+  [#985](https://github.com/the-djmaze/snappymail/pull/985)
+
+## Fixed
+- unset border-box for message body
+  [#990](https://github.com/the-djmaze/snappymail/pull/990)
+- Unread email count badge shows -1
+  [#989](https://github.com/the-djmaze/snappymail/pull/989)
+- unicode mailto: addresses not decoded
+- Unicode email/url address matching
+  [#955](https://github.com/the-djmaze/snappymail/pull/955)
+- Invalid Token if run in IFrame
+  [#537](https://github.com/the-djmaze/snappymail/pull/537)
+
+### Removed
+- rl.initData
+
+
+## 2.26.3 – 2023-02-21
+
+## Added
+- Translate "Are you sure you want to exit?"
+- stderr as Logger
+
+## Changed
+- Moved rl.fetch and rl.fetchJSON to boot.js so that AppData can be fetched as JSON
+- Many AppData properties to JavaScript camelCase
+- Cleanup Identity handling
+- Merge GnuPG and OpenPGP.js passphrases
+
+## Fixed
+- Notification enum conflicts with window.Notification
+- language selector didn't show current language in green
+- Threads indicator got lost with new message cache handling
+- messagesBodiesDom never cached previous messages
+- Nextcloud File picker doesn't insert multiple links
+  [#981](https://github.com/the-djmaze/snappymail/pull/981)
+- Call to protected method RainLoop\Enumerations\UploadError::getUserMessage()
+  [#982](https://github.com/the-djmaze/snappymail/pull/982)
+- Issue with the top logo and text of a certain e-mail
+  [#953](https://github.com/the-djmaze/snappymail/pull/953)
+- Facebook logo missing from emails sent out by it
+  [#954](https://github.com/the-djmaze/snappymail/pull/954)
+
+### Removed
+- Unused Squire code
+
+
+
+## 2.26.2 – 2023-02-17
+
+## Added
+- Remove CSS white-space from messages to prevent annoying side scrolling
+- Show error when trying to send empty message
+  [#974](https://github.com/the-djmaze/snappymail/pull/974)
+- max_sys_loadavg as setting
+  [#971](https://github.com/the-djmaze/snappymail/pull/971)
+
+## Changed
+- Speedup and improved cleanHtml() and cleanCSS() handling
+- Better handling of upload .eml files to a mailbox
+- Rename Folder Hash to ETag as it is the more obvious name
+- Moved AllowDraftAutosave option from Settings -> Security to Settings -> General -> Compose
+- SmtpClient->Connect() use $oSettings->Ehlo
+- Improved handling of `<style>` elements in messages
+- French updated by @hguilbert
+
+## Fixed
+- Remove SVG elements properly from messages
+  [#972](https://github.com/the-djmaze/snappymail/pull/972)
+- Sending large HTML messages slow/fail
+  [#962](https://github.com/the-djmaze/snappymail/pull/962)
+- Nextcloud login failed
+  [#969](https://github.com/the-djmaze/snappymail/pull/969)
+- DoMessageList() hash check was incorrect
+- "Move to folder" button overlays folder sidebar on mobile
+  [#961](https://github.com/the-djmaze/snappymail/pull/961)
+- Spanish translation SPAM and NOT SPAM strings are reversed
+  [#964](https://github.com/the-djmaze/snappymail/pull/964)
+- Can't open Thunderbird PGP keys from decrypted message
+  [#958](https://github.com/the-djmaze/snappymail/pull/958)
+- Can't close Sieve dialog
+  [#960](https://github.com/the-djmaze/snappymail/pull/960)
+
+
 ## 2.26.1 – 2023-02-14
 
 ## Added

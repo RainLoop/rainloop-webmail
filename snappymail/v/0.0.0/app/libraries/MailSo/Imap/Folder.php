@@ -24,7 +24,7 @@ class Folder implements \JsonSerializable
 
 	private ?string $sDelimiter;
 
-	private array $aFlagsLowerCase;
+	private array $aAttributes;
 
 	/**
 	 * RFC 5464
@@ -34,31 +34,31 @@ class Folder implements \JsonSerializable
 	/**
 	 * @throws \InvalidArgumentException
 	 */
-	function __construct(string $sFullName, string $sDelimiter = null, array $aFlags = array())
+	function __construct(string $sFullName, string $sDelimiter = null, array $aAttributes = array())
 	{
 		if (!\strlen($sFullName)) {
 			throw new \InvalidArgumentException;
 		}
-		$this->FolderName = $sFullName;
+		$this->FullName = $sFullName;
 		$this->setDelimiter($sDelimiter);
-		$this->setFlags($aFlags);
+		$this->setAttributes($aAttributes);
 /*
 		// RFC 5738
-		if (\in_array('\\noutf8', $this->aFlagsLowerCase)) {
+		if (\in_array('\\noutf8', $this->aAttributes)) {
 		}
-		if (\in_array('\\utf8only', $this->aFlagsLowerCase)) {
+		if (\in_array('\\utf8only', $this->aAttributes)) {
 		}
 */
 	}
 
-	public function setFlags(array $aFlags) : void
+	public function setAttributes(array $aAttributes) : void
 	{
-		$this->aFlagsLowerCase = \array_map('mb_strtolower', $aFlags);
+		$this->aAttributes = \array_map('mb_strtolower', $aAttributes);
 	}
 
 	public function setSubscribed() : void
 	{
-		$this->aFlagsLowerCase = \array_unique(\array_merge($this->aFlagsLowerCase, ['\\subscribed']));
+		$this->aAttributes = \array_unique(\array_merge($this->aAttributes, ['\\subscribed']));
 	}
 
 	public function setDelimiter(?string $sDelimiter) : void
@@ -68,7 +68,7 @@ class Folder implements \JsonSerializable
 
 	public function Name() : string
 	{
-		$sNameRaw = $this->FolderName;
+		$sNameRaw = $this->FullName;
 		if ($this->sDelimiter) {
 			$aNames = \explode($this->sDelimiter, $sNameRaw);
 			return \end($aNames);
@@ -76,39 +76,25 @@ class Folder implements \JsonSerializable
 		return $sNameRaw;
 	}
 
-	public function FullName() : string
-	{
-		return $this->FolderName;
-	}
-
 	public function Delimiter() : ?string
 	{
 		return $this->sDelimiter;
 	}
 
-	public function FlagsLowerCase() : array
-	{
-		return $this->aFlagsLowerCase;
-	}
-
-	public function Exists() : bool
-	{
-		return !\in_array('\\nonexistent', $this->aFlagsLowerCase);
-	}
-
 	public function Selectable() : bool
 	{
-		return !\in_array('\\noselect', $this->aFlagsLowerCase) && $this->Exists();
+		return !\in_array('\\noselect', $this->aAttributes)
+			&& !\in_array('\\nonexistent', $this->aAttributes);
 	}
 
 	public function IsSubscribed() : bool
 	{
-		return \in_array('\\subscribed', $this->aFlagsLowerCase);
+		return \in_array('\\subscribed', $this->aAttributes);
 	}
 
 	public function IsInbox() : bool
 	{
-		return 'INBOX' === \strtoupper($this->FolderName) || \in_array('\\inbox', $this->aFlagsLowerCase);
+		return 'INBOX' === \strtoupper($this->FullName) || \in_array('\\inbox', $this->aAttributes);
 	}
 
 	public function SetMetadata(string $sName, string $sData) : void
@@ -146,53 +132,32 @@ class Folder implements \JsonSerializable
 				'\\junk',      // '\\spam'
 				'\\sent',      // '\\sentmail'
 				'\\trash',     // '\\bin'
-			], $this->aFlagsLowerCase);
+			], $this->aAttributes);
 			if ($match) {
 				$role = \array_shift($match);
 			}
-			if (!$role && 'INBOX' === \strtoupper($this->FolderName)) {
+			if (!$role && 'INBOX' === \strtoupper($this->FullName)) {
 				return 'inbox';
 			}
 		}
 		return $role ? \ltrim($role, '\\') : null;
 	}
 
-	public function Hash(string $sClientHash) : ?string
-	{
-		return $this->getHash($sClientHash);
-	}
-
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
 /*
-		$aExtended = null;
-		if (isset($this->MESSAGES, $this->UNSEEN, $this->UIDNEXT)) {
-			$aExtended = array(
-				'totalEmails' => (int) $this->MESSAGES,
-				'unreadEmails' => (int) $this->UNSEEN,
-				'uidNext' => (int) $this->UIDNEXT,
-//				'hash' => $this->Hash($this->ImapClient()->Hash())
-			);
-		}
-*/
-/*
 		if ($this->ImapClient->hasCapability('ACL') || $this->ImapClient->CapabilityValue('RIGHTS')) {
 			// MailSo\Imap\Responses\ACL
-			$rights = $this->ImapClient->FolderMyRights($this->FolderName);
+			$rights = $this->ImapClient->FolderMyRights($this->FullName);
 		}
 */
-		return array(
+		$result = array(
 			'@Object' => 'Object/Folder',
 			'name' => $this->Name(),
-			'fullName' => $this->FolderName,
+			'fullName' => $this->FullName,
 			'delimiter' => (string) $this->sDelimiter,
-			'isSubscribed' => $this->IsSubscribed(),
-			'exists' => $this->Exists(),
-			'selectable' => $this->Selectable(),
-			'flags' => $this->aFlagsLowerCase,
-//			'extended' => $aExtended,
-//			'permanentFlags' => $this->PermanentFlags,
+			'attributes' => $this->aAttributes,
 			'metadata' => $this->aMetadata,
 			'uidNext' => $this->UIDNEXT,
 			// https://datatracker.ietf.org/doc/html/rfc8621#section-2
@@ -214,5 +179,9 @@ class Folder implements \JsonSerializable
 			]
 */
 		);
+		if ($this->etag) {
+			$result['etag'] = $this->etag;
+		}
+		return $result;
 	}
 }

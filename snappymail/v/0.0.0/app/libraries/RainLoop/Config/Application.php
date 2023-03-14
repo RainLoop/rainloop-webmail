@@ -18,6 +18,16 @@ class Application extends \RainLoop\Config\AbstractConfig
 	{
 		$bResult = parent::Load();
 
+		$max = \floatval($this->Get('security', 'max_sys_getloadavg', 0));
+		if ($max && \is_callable('sys_getloadavg')) {
+			$load = \sys_getloadavg();
+			if ($load && $load[0] > $max) {
+				\header('HTTP/1.1 503 Service Unavailable', true, 503);
+				\header('Retry-After: 120');
+				exit("Mailserver too busy ({$load[0]}). Please try again later.");
+			}
+		}
+
 		$this->aReplaceEnv = null;
 		if ((isset($_ENV) && \is_array($_ENV) && \count($_ENV)) ||
 			(isset($_SERVER) && \is_array($_SERVER) && \count($_SERVER)))
@@ -161,7 +171,10 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'message_read_delay'          => array(5, 'Mark message read after N seconds'),
 
 				'attachment_size_limit'       => array(\min($upload_max_filesize, 25), 'File size limit (MB) for file upload on compose screen
-0 for unlimited.')
+0 for unlimited.'),
+
+				'compress_output' => array(false, 'brotli or gzip compress the output.
+Warning: only enable when server does not do this, else double compression errors occur')
 			),
 
 			'interface' => array(
@@ -194,6 +207,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 				'force_https'             => array(false),
 				'hide_x_mailer_header'    => array(true),
+				'max_sys_getloadavg'      => array(0.0, 'https://en.m.wikipedia.org/wiki/Load_(computing)'),
 				'content_security_policy' => array('', 'For example to allow all images use "img-src https:". More info at https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy#directives'),
 				'csp_report'              => array(false, 'Report CSP errors to PHP and/or SnappyMail Log'),
 				'encrypt_cipher'          => array('aes-256-cbc-hmac-sha1', 'A valid cipher method from https://php.net/openssl_get_cipher_methods'),
@@ -329,7 +343,8 @@ Examples:
   filename = "log-{date:Y-m-d}.txt"
   filename = "{date:Y-m-d}/{user:domain}/{user:email}_{user:uid}.log"
   filename = "{user:email}-{date:Y-m-d}.txt"
-  filename = "syslog"'),
+  filename = "syslog"
+  filename = "stderr"'),
 
 				'auth_logging' => array(false, 'Enable auth logging in a separate file (for fail2ban)'),
 				'auth_logging_filename' => array('fail2ban/auth-{date:Y-m-d}.txt'),
@@ -381,8 +396,6 @@ Enables caching in the system'),
 				'allow_message_append' => array(false),
 				'login_fault_delay' => array(5, 'When login fails, wait N seconds before responding'),
 				'log_ajax_response_write_limit' => array(300),
-				'allow_html_editor_biti_buttons' => array(false),
-				'allow_ctrl_enter_on_compose' => array(true),
 				'smtp_show_server_errors' => array(false),
 				'sieve_auth_plain_initial' => array(true),
 				'sieve_allow_fileinto_inbox' => array(false),

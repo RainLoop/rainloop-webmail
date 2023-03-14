@@ -1,7 +1,7 @@
-<nav class="b-content" data-bind="foreach: menu">
+<div class="b-toolbar btn-toolbar">
+	<a class="btn btn-thin fontastic toggleLeft" data-bind="click: toggleLeftPanel, text: leftPanelDisabled() ? '❯' : '❮'"></a>
+	<a class="btn" data-bind="click: backToInbox" data-icon="⬅" data-i18n="GLOBAL/BACK"></a>
+</div>
+<nav data-bind="foreach: menu">
 	<a data-bind="css: {'selected': selected }, attr: { 'href': $root.link(route), 'data-i18n': label }"></a>
 </nav>
-<div class="b-content show-on-panel-disabled" data-bind="click: toggleLeftPanel"></div>
-<div class="b-footer">
-	<a class="btn fontastic" data-bind="click: toggleLeftPanel, text: leftPanelDisabled() ? '❯' : '❮'"></a>
-</div>

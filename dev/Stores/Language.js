@@ -11,8 +11,8 @@ export const LanguageStore = {
 	populate: function() {
 		const aLanguages = Settings.app('languages');
 		this.languages(isArray(aLanguages) ? aLanguages : []);
-		this.language(SettingsGet('Language'));
-		this.userLanguage(SettingsGet('UserLanguage'));
+		this.language(SettingsGet('language'));
+		this.userLanguage(SettingsGet('userLanguage'));
 		this.hourCycle(SettingsGet('hourCycle'));
 	}
 }

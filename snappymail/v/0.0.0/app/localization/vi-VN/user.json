@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Thêm tài khoản"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Phiên bản điện thoại",
-		"BUTTON_DESKTOP_VERSION": "Phiên bản máy tính"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Tìm kiếm nâng cao",
 		"TEXT": "Nội dung trong mail",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "Cảnh báo! Các tập tin đính kèm chưa được tải lên hết.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Các tập tin đính kèm chưa được tải lên hết.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Tự động lưu nháp",
 		"BUTTON_REQUEST_READ_RECEIPT": "Yêu cầu thông báo khi người nhận đã đọc thư",
 		"BUTTON_MARK_AS_IMPORTANT": "Đánh dấu thư quan trọng",
 		"BUTTON_REQUEST_DSN": "Yêu cầu thông báo thư đã gửi thành công",
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Bạn có chắc muốn đóng bảng này chứ?",
 		"DESC_WANT_DELETE_MESSAGES": "Bạn có chắc muốn xóa thư này chứ?"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Không phân màn hình",
 		"LAYOUT_VERTICAL_SPLIT": "Phân dọc màn hình",
 		"LAYOUT_HORIZONTAL_SPLIT": "Phân ngang màn hình",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Chỉnh dạng văn bản mặc định",
 		"EDITOR_HTML": "Dạng Html",
 		"EDITOR_PLAIN": "Dạng chữ viết thường",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Tạo một đôi mật mã",
 		"TITLE_PRIVATE": "Mã lưu riêng",
 		"TITLE_PUBLIC": "Mã chia sẻ công cộng",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Tự động lưu nháp",
 		"GET_MAILVELOPE": "Tải về tiện ích trình duyệt cài thêm tên Mailvelope."
 	},
 	"SHORTCUTS_HELP": {

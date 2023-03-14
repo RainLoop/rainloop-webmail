@@ -63,7 +63,7 @@ abstract class Account implements \JsonSerializable
 	{
 		return \sha1(\implode(APP_SALT, [
 			$this->sEmail,
-			APP_VERSION
+			$this->sLogin,
 //			\json_encode($this->Domain()),
 //			$this->sPassword
 		]));
@@ -235,7 +235,7 @@ abstract class Account implements \JsonSerializable
 		$oPlugins->RunHook('imap.after-connect', array($this, $oImapClient, $oSettings));
 
 		$oSettings->Password = $this->IncPassword();
-		return $this->netClientLogin($oImapClient, $oPlugins, $oSettings);
+		return $this->netClientLogin($oImapClient, $oPlugins);
 	}
 
 	public function SmtpConnectAndLogin(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Smtp\SmtpClient $oSmtpClient) : bool
@@ -251,7 +251,7 @@ abstract class Account implements \JsonSerializable
 			$oSettings->useAuth = false;
 			return true;
 		}
-		$oSmtpClient->Connect($oSettings, $oSettings->Ehlo);
+		$oSmtpClient->Connect($oSettings);
 		$oPlugins->RunHook('smtp.after-connect', array($this, $oSmtpClient, $oSettings));
 /*
 		if ($this->oDomain->OutAskCredentials() && !($this->sSmtpPassword && $this->sSmtpLogin)) {
@@ -259,7 +259,7 @@ abstract class Account implements \JsonSerializable
 		}
 */
 		$oSettings->Password = $this->sSmtpPassword ?: $this->sPassword;
-		return $this->netClientLogin($oSmtpClient, $oPlugins, $oSettings);
+		return $this->netClientLogin($oSmtpClient, $oPlugins);
 	}
 
 	public function SieveConnectAndLogin(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Sieve\SieveClient $oSieveClient, \RainLoop\Config\Application $oConfig)
@@ -274,10 +274,10 @@ abstract class Account implements \JsonSerializable
 		$oPlugins->RunHook('sieve.after-connect', array($this, $oSieveClient, $oSettings));
 
 		$oSettings->Password = $this->IncPassword();
-		return $this->netClientLogin($oSieveClient, $oPlugins, $oSettings);
+		return $this->netClientLogin($oSieveClient, $oPlugins);
 	}
 
-	private function netClientLogin(\MailSo\Net\NetClient $oClient, \RainLoop\Plugins\Manager $oPlugins, \MailSo\Net\ConnectSettings $oSettings) : bool
+	private function netClientLogin(\MailSo\Net\NetClient $oClient, \RainLoop\Plugins\Manager $oPlugins) : bool
 	{
 /*
 		$encrypted = !empty(\stream_get_meta_data($oClient->ConnectionResource())['crypto']);
@@ -288,6 +288,7 @@ abstract class Account implements \JsonSerializable
 			[cipher_version] => TLSv1.3
 		)
 */
+		$oSettings = $oClient->Settings;
 		$oSettings->ProxyAuthUser = $this->sProxyAuthUser;
 		$oSettings->ProxyAuthPassword = $this->sProxyAuthPassword;
 

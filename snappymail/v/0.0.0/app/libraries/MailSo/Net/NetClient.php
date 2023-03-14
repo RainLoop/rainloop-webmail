@@ -55,11 +55,6 @@ abstract class NetClient
 		return $this->sConnectedHost;
 	}
 
-	public function GetConnectedPort() : int
-	{
-		return $this->Settings->port;
-	}
-
 	public function SetTimeOuts(int $iConnectTimeOut = 10) : void
 	{
 		$this->iConnectTimeOut = \max(5, $iConnectTimeOut);
@@ -93,6 +88,7 @@ abstract class NetClient
 
 		if ($this->IsConnected()) {
 			$this->writeLogException(new Exceptions\SocketAlreadyConnectedException, \LOG_ERR, false);
+//			$this->Disconnect();
 			return;
 		}
 
@@ -202,6 +198,7 @@ abstract class NetClient
 		}
 	}
 
+//	abstract public function Login(ConnectSettings $oSettings) : self;
 	abstract public function Logout() : void;
 
 	public function IsConnected(bool $bThrowExceptionOnFalse = false) : bool

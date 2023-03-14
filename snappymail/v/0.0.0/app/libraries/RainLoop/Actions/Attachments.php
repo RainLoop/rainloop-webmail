@@ -14,6 +14,7 @@ trait Attachments
 	{
 		$sAction = $this->GetActionParam('target', '');
 		$sFolder = $this->GetActionParam('folder', '');
+		$sFilename = \MailSo\Base\Utils::SecureFileName($this->GetActionParam('filename', ''));
 		$aHashes = $this->GetActionParam('hashes', null);
 		$oFilesProvider = $this->FilesProvider();
 		if (empty($sAction) || !$this->GetCapa(Capa::ATTACHMENTS_ACTIONS) || !$oFilesProvider || !$oFilesProvider->IsActive()) {
@@ -107,8 +108,8 @@ trait Attachments
 
 					if (!$bError) {
 						$mResult = array(
-							'fileHash' => $this->encodeRawKey($oAccount, array(
-								'fileName' => ($sFolder ? 'messages' : 'attachments') . \date('-YmdHis') . '.zip',
+							'fileHash' => $this->encodeRawKey(array(
+								'fileName' => ($sFilename ?: ($sFolder ? 'messages' : 'attachments')) . \date('-YmdHis') . '.zip',
 								'mimeType' => 'application/zip',
 								'fileHash' => $sZipHash
 							))
@@ -133,7 +134,7 @@ trait Attachments
 
 	private function getMimeFileByHash(\RainLoop\Model\Account $oAccount, string $sHash) : array
 	{
-		$aValues = $this->decodeRawKey($oAccount, $sHash);
+		$aValues = $this->decodeRawKey($sHash);
 
 		$sFolder = isset($aValues['folder']) ? (string) $aValues['folder'] : '';
 		$iUid = isset($aValues['uid']) ? (int) $aValues['uid'] : 0;

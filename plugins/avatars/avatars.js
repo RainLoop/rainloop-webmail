@@ -32,8 +32,6 @@
 		</svg>`;
 	};
 
-	let isMobile;
-
 	const
 		size = 50,
 		getEl = id => document.getElementById(id),
@@ -63,11 +61,11 @@
 			.slice(0,2)
 			.toUpperCase(),
 		setIdenticon = (from, fn) => hash(from.email).then(hash =>
-			fn('data:image/svg+xml;base64,' + btoa(window.identiconSvg(
+			fn('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(window.identiconSvg(
 				hash,
 				fromChars(from),
 				window.getComputedStyle(getEl('rl-app'), null).getPropertyValue('font-family')
-			)))
+			)))))
 		),
 		addQueue = (msg, fn) => {
 			msg.from?.[0] && setIdenticon(msg.from[0], fn);
@@ -171,11 +169,9 @@
 						fn = url=>{element.src = url};
 					if (url) {
 						fn(url);
-					} else if (msg.avatar || isMobile()) {
+					} else if (msg.avatar) {
 						if (msg.avatar?.startsWith('data:')) {
 							fn(msg.avatar);
-						} else if (isMobile()) {
-							setIdenticon(from, fn);
 						} else {
 							element.onerror = () => setIdenticon(from, fn);
 							fn(`?Avatar/${'pass' == from.dkimStatus ? 1 : 0}/${msg.avatar}`);
@@ -231,7 +227,6 @@
 		}
 
 		if ('MailMessageList' === e.detail.viewModelTemplateID) {
-			isMobile = e.detail.isMobile;
 			getEl('MailMessageList').content.querySelectorAll('.messageCheckbox')
 				.forEach(el => el.append(Element.fromHTML(`<img class="fromPic" data-bind="fromPic:$data" loading="lazy">`)));
 		}

@@ -1,17 +1,16 @@
 import { koComputable, addObservablesTo, addComputablesTo } from 'External/ko';
 
 import { SMAudio } from 'Common/Audio';
-import { Notification } from 'Common/Enums';
+import { Notifications } from 'Common/Enums';
 import { MessageSetAction } from 'Common/EnumsUser';
-import { $htmlCL } from 'Common/Globals';
-import { arrayLength, pInt, pString } from 'Common/Utils';
+import { $htmlCL, fireEvent } from 'Common/Globals';
+import { arrayLength, pString } from 'Common/Utils';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import {
 	getFolderInboxName,
 	getFolderFromCacheList,
-	setFolderHash,
-	MessageFlagsCache
+	setFolderETag
 } from 'Common/Cache';
 
 import { mailBox } from 'Common/Links';
@@ -174,7 +173,7 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 	let iOffset = (MessagelistUserStore.page() - 1) * SettingsUserStore.messagesPerPage();
 
 	if (bDropCurrentFolderCache) {
-		setFolderHash(FolderUserStore.currentFolderFullName(), '');
+		setFolderETag(FolderUserStore.currentFolderFullName(), '');
 	}
 
 	if (bDropPagePosition) {
@@ -198,7 +197,7 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 			let error = '';
 			if (iError) {
 				error = getNotification(iError);
-				if (Notification.RequestAborted !== iError) {
+				if (Notifications.RequestAborted !== iError) {
 					MessagelistUserStore([]);
 				}
 			} else {
@@ -207,27 +206,24 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 					error = '';
 
 					const
-						folder = getFolderFromCacheList(collection.folder),
-						folderInfo = collection.folderInfo;
+						folderInfo = collection.folder,
+						folder = getFolderFromCacheList(folderInfo.name);
+					collection.folder = folderInfo.name;
 					if (folder && !bCached) {
 //						folder.revivePropertiesFromJson(result);
 						folder.expires = Date.now();
 						folder.uidNext = folderInfo.uidNext;
-						folder.hash = collection.folderHash;
+						folder.etag = folderInfo.etag;
 
 						if (null != folderInfo.totalEmails) {
 							folder.totalEmails(folderInfo.totalEmails);
 						}
 
 						if (null != folderInfo.unreadEmails) {
-							if (pInt(folder.unreadEmails()) !== pInt(folderInfo.unreadEmails)) {
-								MessageFlagsCache.clearFolder(folder.fullName);
-							}
 							folder.unreadEmails(folderInfo.unreadEmails);
 						}
 
-						folder.flags(folderInfo.flags);
-						let flags = folderInfo.permanentFlags;
+						let flags = folderInfo.permanentFlags || [];
 						if (flags.includes('\\*')) {
 							let i = 6;
 							while (--i) {
@@ -251,14 +247,14 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 					MessagelistUserStore.threadUid(collection.threadUid);
 
 					MessagelistUserStore.endHash(
-						collection.folder +
+						folderInfo.name +
 						'|' + collection.search +
 						'|' + MessagelistUserStore.threadUid() +
 						'|' + MessagelistUserStore.page()
 					);
 					MessagelistUserStore.endThreadUid(collection.threadUid);
 					const message = MessageUserStore.message();
-					if (message && collection.folder !== message.folder) {
+					if (message && folderInfo.name !== message.folder) {
 						MessageUserStore.message(null);
 					}
 
@@ -280,7 +276,7 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 				} else {
 					MessagelistUserStore.count(0);
 					MessagelistUserStore([]);
-					error = getNotification(Notification.CantGetMessageList);
+					error = getNotification(Notifications.CantGetMessageList);
 				}
 				MessagelistUserStore.error(error);
 			}
@@ -306,22 +302,38 @@ MessagelistUserStore.setAction = (sFolderFullName, iSetAction, messages) => {
 	messages = messages || MessagelistUserStore.listChecked();
 
 	let folder,
-		alreadyUnread = 0,
-		rootUids = messages.map(oMessage => oMessage?.uid).validUnique(),
-		length = rootUids.length;
+		rootUids = [],
+		length;
+
+	if (iSetAction == MessageSetAction.SetSeen) {
+		messages.forEach(oMessage =>
+			oMessage.isUnseen() && rootUids.push(oMessage.uid) && oMessage.flags.push('\\seen')
+		);
+	} else if (iSetAction == MessageSetAction.UnsetSeen) {
+		messages.forEach(oMessage =>
+			!oMessage.isUnseen() && rootUids.push(oMessage.uid) && oMessage.flags.remove('\\seen')
+		);
+	} else if (iSetAction == MessageSetAction.SetFlag) {
+		messages.forEach(oMessage =>
+			!oMessage.isFlagged() && rootUids.push(oMessage.uid) && oMessage.flags.push('\\flagged')
+		);
+	} else if (iSetAction == MessageSetAction.UnsetFlag) {
+		messages.forEach(oMessage =>
+			oMessage.isFlagged() && rootUids.push(oMessage.uid) && oMessage.flags.remove('\\flagged')
+		);
+	}
+	rootUids = rootUids.validUnique();
+	length = rootUids.length;
 
 	if (sFolderFullName && length) {
-		rootUids.forEach(sSubUid =>
-			alreadyUnread += MessageFlagsCache.storeBySetAction(sFolderFullName, sSubUid, iSetAction)
-		);
 		switch (iSetAction) {
 			case MessageSetAction.SetSeen:
-				length = 0;
+				length = -length;
 				// fallthrough is intentionally
 			case MessageSetAction.UnsetSeen:
 				folder = getFolderFromCacheList(sFolderFullName);
 				if (folder) {
-					folder.unreadEmails(folder.unreadEmails() - alreadyUnread + length);
+					folder.unreadEmails(Math.max(0, folder.unreadEmails() + length));
 				}
 				Remote.request('MessageSetSeen', null, {
 					folder: sFolderFullName,
@@ -340,8 +352,6 @@ MessagelistUserStore.setAction = (sFolderFullName, iSetAction, messages) => {
 				break;
 			// no default
 		}
-
-		MessagelistUserStore.reloadFlagsAndCachedMessage();
 	}
 };
 
@@ -370,22 +380,20 @@ MessagelistUserStore.removeMessagesFromList = (
 	messages.forEach(item => item?.isUnseen() && ++unseenCount);
 
 	if (fromFolder) {
-		fromFolder.hash = '';
+		fromFolder.etag = '';
 		if (!copy) {
 			fromFolder.totalEmails(
 				0 <= fromFolder.totalEmails() - oUids.size ? fromFolder.totalEmails() - oUids.size : 0
 			);
 
 			if (0 < unseenCount) {
-				fromFolder.unreadEmails(
-					0 <= fromFolder.unreadEmails() - unseenCount ? fromFolder.unreadEmails() - unseenCount : 0
-				);
+				fromFolder.unreadEmails(Math.max(0, fromFolder.unreadEmails() - unseenCount));
 			}
 		}
 	}
 
 	if (toFolder) {
-		toFolder.hash = '';
+		toFolder.etag = '';
 
 		if (trashFolder === toFolder.fullName || spamFolder === toFolder.fullName) {
 			unseenCount = 0;
@@ -404,6 +412,18 @@ MessagelistUserStore.removeMessagesFromList = (
 			messages.forEach(item => item.checked(false));
 		} else {
 			MessagelistUserStore.isIncomplete(true);
+
+			// Select next email https://github.com/the-djmaze/snappymail/issues/968
+			if (currentMessage && 1 == messages.length && SettingsUserStore.showNextMessage()) {
+				let next = MessagelistUserStore.indexOf(currentMessage) + 1;
+				if (0 < next && (next = MessagelistUserStore()[next])) {
+					currentMessage = null;
+					fireEvent('mailbox.message.show', {
+						folder: next.folder,
+						uid: next.uid
+					});
+				}
+			}
 
 			messages.forEach(item => {
 				if (currentMessage && currentMessage.hash === item.hash) {
@@ -455,9 +475,4 @@ MessagelistUserStore.removeMessagesFromList = (
 			)
 		);
 	}
-},
-
-MessagelistUserStore.reloadFlagsAndCachedMessage = () => {
-	MessagelistUserStore.forEach(message => MessageFlagsCache.initMessage(message));
-	MessageFlagsCache.initMessage(MessageUserStore.message());
 };

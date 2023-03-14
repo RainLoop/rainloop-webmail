@@ -6,9 +6,9 @@ class LoginExternalPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Login External',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.1',
-		RELEASE  = '2022-12-24',
-		REQUIRED = '2.21.0',
+		VERSION  = '1.2',
+		RELEASE  = '2023-03-14',
+		REQUIRED = '2.27.0',
 		CATEGORY = 'Login',
 		LICENSE  = 'MIT',
 		DESCRIPTION = 'Login with $_POST["Email"] and $_POST["Password"] from anywhere';
@@ -60,7 +60,7 @@ class LoginExternalPlugin extends \RainLoop\Plugins\AbstractPlugin
 			}
 			echo \json_encode($aResult);
 		} else {
-			$oActions->Location('./');
+			\MailSo\Base\Http::Location('./');
 		}
 		return true;
 	}

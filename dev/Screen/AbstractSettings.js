@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { pString } from 'Common/Utils';
 import { settings } from 'Common/Links';
-import { createElement, elementById } from 'Common/Globals';
+import { createElement/*, elementById*/ } from 'Common/Globals';
 
 import { AbstractScreen } from 'Knoin/AbstractScreen';
 import { i18nToNodes } from 'Common/Translator';
@@ -29,7 +29,8 @@ export class AbstractSettingsScreen extends AbstractScreen {
 			);
 
 		if (RoutedSettingsViewModel) {
-			const vmPlace = elementById('rl-settings-subscreen');
+//			const vmPlace = elementById('V-SettingsPane') || elementById('V-AdminPane);
+			const vmPlace = this.viewModels[1].__dom;
 			if (RoutedSettingsViewModel.__vm) {
 				settingsScreen = RoutedSettingsViewModel.__vm;
 			} else if (vmPlace) {

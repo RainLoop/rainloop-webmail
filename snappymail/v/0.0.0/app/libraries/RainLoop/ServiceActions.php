@@ -77,7 +77,9 @@ class ServiceActions
 		$aResponse = null;
 		$oException = null;
 
-		$_POST = \json_decode(\file_get_contents('php://input'), true);
+		if (empty($_POST) || (!empty($_SERVER['CONTENT_TYPE']) && \str_contains($_SERVER['CONTENT_TYPE'], 'application/json'))) {
+			$_POST = \json_decode(\file_get_contents('php://input'), true);
+		}
 
 		$sAction = $_POST['Action'] ?? '';
 		if (empty($sAction) && $this->oHttp->IsGet() && !empty($this->aPaths[2])) {
@@ -195,40 +197,6 @@ class ServiceActions
 		return $sResult;
 	}
 
-	public function ServiceAppend() : string
-	{
-		\ob_start();
-		$bResponse = false;
-		$oException = null;
-		try
-		{
-			if (\method_exists($this->oActions, 'Append') && \is_callable(array($this->oActions, 'Append'))) {
-				isset($_POST) && $this->oActions->SetActionParams($_POST, 'Append');
-				$bResponse = $this->oActions->Append();
-			}
-		}
-		catch (\Throwable $oException)
-		{
-			$bResponse = false;
-		}
-
-		\header('Content-Type: text/plain; charset=utf-8');
-		$sResult = true === $bResponse ? '1' : '0';
-
-		$sObResult = \ob_get_clean();
-		if (\strlen($sObResult)) {
-			$this->Logger()->Write($sObResult, \LOG_ERR, 'OB-DATA');
-		}
-
-		if ($oException) {
-			$this->Logger()->WriteException($oException, \LOG_ERR);
-		}
-
-		$this->Logger()->Write($sResult, \LOG_INFO, 'APPEND');
-
-		return $sResult;
-	}
-
 	private function privateUpload(string $sAction, int $iSizeLimit = 0) : string
 	{
 		$oConfig = $this->Config();
@@ -239,10 +207,8 @@ class ServiceActions
 		{
 			$aFile = null;
 			$sInputName = 'uploader';
-			$iError = Enumerations\UploadError::UNKNOWN;
 			$iSizeLimit = (0 < $iSizeLimit ? $iSizeLimit : ((int) $oConfig->Get('webmail', 'attachment_size_limit', 0))) * 1024 * 1024;
 
-			$iError = UPLOAD_ERR_OK;
 			$_FILES = isset($_FILES) ? $_FILES : null;
 			if (isset($_FILES[$sInputName], $_FILES[$sInputName]['name'], $_FILES[$sInputName]['tmp_name'], $_FILES[$sInputName]['size'])) {
 				$iError = (isset($_FILES[$sInputName]['error'])) ? (int) $_FILES[$sInputName]['error'] : UPLOAD_ERR_OK;
@@ -414,7 +380,6 @@ class ServiceActions
 
 	public function ServiceLang() : string
 	{
-//		sleep(2);
 		$sResult = '';
 		\header('Content-Type: application/javascript; charset=utf-8');
 
@@ -423,27 +388,22 @@ class ServiceActions
 			$sLanguage = $this->oActions->ValidateLanguage($this->aPaths[3], '', $bAdmin);
 
 			$bCacheEnabled = $this->Config()->Get('cache', 'system_data', true);
-			if (!empty($sLanguage) && $bCacheEnabled) {
-				$this->oActions->verifyCacheByKey($this->sQuery);
-			}
-
 			$sCacheFileName = '';
 			if ($bCacheEnabled) {
-				$sCacheFileName = KeyPathHelper::LangCache(
-					$sLanguage, $bAdmin, $this->oActions->Plugins()->Hash());
-
+				$sCacheFileName = KeyPathHelper::LangCache($sLanguage, $bAdmin, $this->oActions->Plugins()->Hash());
+				$this->oActions->verifyCacheByKey(\md5($sCacheFileName));
 				$sResult = $this->Cacher()->Get($sCacheFileName);
 			}
 
 			if (!\strlen($sResult)) {
 				$sResult = $this->oActions->compileLanguage($sLanguage, $bAdmin);
-				if ($bCacheEnabled && \strlen($sCacheFileName)) {
+				if ($sCacheFileName) {
 					$this->Cacher()->Set($sCacheFileName, $sResult);
 				}
 			}
 
-			if ($bCacheEnabled) {
-				$this->oActions->cacheByKey($this->sQuery);
+			if ($sCacheFileName) {
+				$this->oActions->cacheByKey(\md5($sCacheFileName));
 			}
 		}
 
@@ -461,13 +421,10 @@ class ServiceActions
 		$sMinify = ($bAppDebug || $this->Config()->Get('debug', 'javascript', false)) ? '' : 'min';
 
 		$bCacheEnabled = !$bAppDebug && $this->Config()->Get('cache', 'system_data', true);
-		if ($bCacheEnabled) {
-			$this->oActions->verifyCacheByKey($this->sQuery . $sMinify);
-		}
-
 		$sCacheFileName = '';
 		if ($bCacheEnabled) {
 			$sCacheFileName = KeyPathHelper::PluginsJsCache($this->oActions->Plugins()->Hash()) . $sMinify;
+			$this->oActions->verifyCacheByKey(\md5($sCacheFileName));
 			$sResult = $this->Cacher()->Get($sCacheFileName);
 		}
 
@@ -478,8 +435,8 @@ class ServiceActions
 			}
 		}
 
-		if ($bCacheEnabled) {
-			$this->oActions->cacheByKey($this->sQuery . $sMinify);
+		if ($sCacheFileName) {
+			$this->oActions->cacheByKey(\md5($sCacheFileName));
 		}
 
 		return $sResult;
@@ -505,13 +462,10 @@ class ServiceActions
 			$sMinify = ($bAppDebug || $this->Config()->Get('debug', 'css', false)) ? '' : 'min';
 
 			$bCacheEnabled = !$bAppDebug && $this->Config()->Get('cache', 'system_data', true);
-			if ($bCacheEnabled) {
-				$this->oActions->verifyCacheByKey($this->sQuery . $sMinify);
-			}
-
 			$sCacheFileName = '';
 			if ($bCacheEnabled) {
 				$sCacheFileName = KeyPathHelper::CssCache($sTheme, $this->oActions->Plugins()->Hash()) . $sMinify;
+				$this->oActions->verifyCacheByKey(\md5($sCacheFileName . ($bJson ? 1 : 0)));
 				$sResult = $this->Cacher()->Get($sCacheFileName);
 			}
 
@@ -529,8 +483,8 @@ class ServiceActions
 				}
 			}
 
-			if ($bCacheEnabled) {
-				$this->oActions->cacheByKey($this->sQuery . $sMinify);
+			if ($sCacheFileName) {
+				$this->oActions->cacheByKey(\md5($sCacheFileName . ($bJson ? 1 : 0 )));
 			}
 		}
 
@@ -561,7 +515,7 @@ class ServiceActions
 				))
 			);
 		}
-		$this->oActions->Location('./');
+		\MailSo\Base\Http::Location('./');
 		return '';
 	}
 
@@ -612,14 +566,14 @@ class ServiceActions
 
 							$oSettings = $this->SettingsProvider()->Load($oAccount);
 							if ($oSettings) {
-								$sLanguage = isset($aAdditionalOptions['Language']) ?
-									$aAdditionalOptions['Language'] : '';
+								$sLanguage = isset($aAdditionalOptions['language']) ?
+									$aAdditionalOptions['language'] : '';
 
 								if ($sLanguage) {
 									$sLanguage = $this->oActions->ValidateLanguage($sLanguage);
-									if ($sLanguage !== $oSettings->GetConf('Language', '')) {
+									if ($sLanguage !== $oSettings->GetConf('language', '')) {
 										$bNeedToSettings = true;
-										$oSettings->SetConf('Language', $sLanguage);
+										$oSettings->SetConf('language', $sLanguage);
 									}
 								}
 							}
@@ -641,7 +595,7 @@ class ServiceActions
 			}
 		}
 
-		$this->oActions->Location('./');
+		\MailSo\Base\Http::Location('./');
 		return '';
 	}
 
@@ -665,18 +619,16 @@ class ServiceActions
 
 	private function localAppData(bool $bAdmin = false) : string
 	{
-		\header('Content-Type: application/javascript; charset=utf-8');
+		\header('Content-Type: application/json; charset=utf-8');
 		$this->oHttp->ServerNoCache();
 		try {
-			$sResult = 'rl.initData('
-				. Utils::jsonEncode($this->oActions->AppData($bAdmin))
-				. ');';
-
+			$sResult = Utils::jsonEncode($this->oActions->AppData($bAdmin));
 			$this->Logger()->Write($sResult, \LOG_INFO, 'APPDATA');
-
 			return $sResult;
-		} catch (\Throwable $e) {
-			return 'alert(' . \json_encode('ERROR: ' . $e->getMessage()) . ');';
+		} catch (\Throwable $oException) {
+			$this->Logger()->WriteExceptionShort($oException);
+			\MailSo\Base\Http::StatusHeader(500);
+			return $oException->getMessage();
 		}
 	}
 

@@ -5,7 +5,7 @@ import { i18n } from 'Common/Translator';
 
 import { doc, SettingsGet } from 'Common/Globals';
 import { encodeHtml, plainToHtml, htmlToPlain, cleanHtml } from 'Common/Html';
-import { forEachObjectEntry } from 'Common/Utils';
+import { forEachObjectEntry, b64EncodeJSONSafe } from 'Common/Utils';
 import { serverRequestRaw, proxy } from 'Common/Links';
 import { addObservablesTo, addComputablesTo } from 'External/ko';
 
@@ -21,7 +21,6 @@ import PreviewHTML from 'Html/PreviewMessage.html';
 
 import { LanguageStore } from 'Stores/Language';
 
-//import { MessageFlagsCache } from 'Common/Cache';
 import Remote from 'Remote/User/Fetch';
 
 const
@@ -34,7 +33,6 @@ const
 		Remote.request('MessageSetKeyword', iError => {
 			if (!iError) {
 				isSet ? flags.remove(lower) : flags.push(lower);
-//				MessageFlagsCache.setFor(message.folder, message.uid, flags());
 			}
 		}, {
 			folder: message.folder,
@@ -61,7 +59,6 @@ export class MessageModel extends AbstractModel {
 		this.folder = '';
 		this.uid = 0;
 		this.hash = '';
-		this.requestHash = '';
 		this.from = new EmailCollectionModel;
 		this.to = new EmailCollectionModel;
 		this.cc = new EmailCollectionModel;
@@ -88,7 +85,8 @@ export class MessageModel extends AbstractModel {
 			spamResult: '',
 			isSpam: false,
 			hasVirus: null, // or boolean when scanned
-			dateTimeStampInUTC: 0,
+			dateTimestamp: 0,
+			internalTimestamp: 0,
 			priority: MessagePriority.Normal,
 
 			senderEmailsString: '',
@@ -177,6 +175,16 @@ export class MessageModel extends AbstractModel {
 				}
 				return options;
 			}
+		});
+	}
+
+	get requestHash() {
+		return b64EncodeJSONSafe({
+			folder: this.folder,
+			uid: this.uid,
+			mimeType: 'message/rfc822',
+			fileName: (this.subject() || 'message-' + this.hash) + '.eml',
+			accountHash: SettingsGet('accountHash')
 		});
 	}
 
@@ -290,54 +298,51 @@ export class MessageModel extends AbstractModel {
 		return [[...toResult.values()], [...ccResult.values()]];
 	}
 
-	viewHtml() {
+	viewBody(html) {
 		const body = this.body;
-		if (body && this.html()) {
-			let result = msgHtml(this);
-			this.hasExternals(result.hasExternals);
-			this.hasImages(body.rlHasImages = !!result.hasExternals);
-
-			body.innerHTML = result.html;
-
-			body.classList.toggle('html', 1);
-			body.classList.toggle('plain', 0);
-
-			if (!this.isSpam() && FolderUserStore.spamFolder() != this.folder) {
-				if ('always' === SettingsUserStore.viewImages()) {
-					this.showExternalImages();
+		if (body) {
+			if (html) {
+				let result = msgHtml(this);
+				this.hasExternals(result.hasExternals);
+				this.hasImages(!!result.hasExternals);
+				body.innerHTML = result.html;
+				if (!this.isSpam() && FolderUserStore.spamFolder() != this.folder) {
+					if ('always' === SettingsUserStore.viewImages()) {
+						this.showExternalImages();
+					}
+					if ('match' === SettingsUserStore.viewImages()) {
+						this.showExternalImages(1);
+					}
 				}
-				if ('match' === SettingsUserStore.viewImages()) {
-					this.showExternalImages(1);
-				}
+			} else {
+				body.innerHTML = plainToHtml(
+					(this.plain()
+						? this.plain()
+							.replace(/-----BEGIN PGP (SIGNED MESSAGE-----(\r?\n[^\r\n]+)+|SIGNATURE-----[\s\S]*)/sg, '')
+							.trim()
+						: htmlToPlain(body.innerHTML)
+					)
+				);
+				this.hasImages(false);
 			}
-
-			this.isHtml(true);
+			body.classList.toggle('html', html);
+			body.classList.toggle('plain', !html);
+			this.isHtml(html);
 			return true;
 		}
 	}
 
+	viewHtml() {
+		return this.html() && this.viewBody(true);
+	}
+
 	viewPlain() {
-		const body = this.body;
-		if (body) {
-			body.classList.toggle('html', 0);
-			body.classList.toggle('plain', 1);
-			body.innerHTML = plainToHtml(
-				(this.plain()
-					? this.plain()
-						.replace(/-----BEGIN PGP (SIGNED MESSAGE-----(\r?\n[a-z][^\r\n]+)+|SIGNATURE-----[\s\S]*)/, '')
-						.trim()
-					: htmlToPlain(body.innerHTML)
-				)
-			);
-			this.isHtml(false);
-			this.hasImages(false);
-			return true;
-		}
+		return this.viewBody(false);
 	}
 
 	viewPopupMessage(print) {
 		const
-			timeStampInUTC = this.dateTimeStampInUTC() || 0,
+			timeStampInUTC = this.dateTimestamp() || 0,
 			ccLine = this.cc.toString(),
 			bccLine = this.bcc.toString(),
 			m = 0 < timeStampInUTC ? new Date(timeStampInUTC * 1000) : null,
@@ -430,7 +435,7 @@ export class MessageModel extends AbstractModel {
 					hasImages = true;
 				},
 				attr = 'data-x-src',
-				src, useProxy = !!SettingsGet('UseLocalProxyForExternalImages');
+				src, useProxy = !!SettingsGet('useLocalProxyForExternalImages');
 			body.querySelectorAll('img[' + attr + ']').forEach(node => {
 				src = node.getAttribute(attr);
 				if (isValid(src)) {
@@ -447,7 +452,6 @@ export class MessageModel extends AbstractModel {
 			});
 
 			this.hasImages(hasImages);
-			body.rlHasImages = hasImages;
 		}
 	}
 

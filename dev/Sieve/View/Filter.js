@@ -84,7 +84,7 @@ export class FilterPopupView extends rl.pluginPopupView {
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 		this.folderSelectList = koComputable(() =>
 			folderListOptionsBuilder(
-				[rl.settings.get('SieveAllowFileintoInbox') ? '' : 'INBOX'],
+				[rl.settings.get('sieveAllowFileintoInbox') ? '' : 'INBOX'],
 				[['', '']],
 				item => item?.localName() || ''
 			)

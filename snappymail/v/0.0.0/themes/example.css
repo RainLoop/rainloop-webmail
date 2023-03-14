@@ -14,6 +14,8 @@
 	--border-radius: 5px;
 	--hr-color: #eee;
 
+	--panel-bg-clr: #fff;
+
 	--warning-clr: #c09853;
 	--warning-bg-clr: #fcf8e3;
 	--warning-border-clr: #fbeed5;
@@ -62,18 +64,15 @@
 	--unread-count-bg-color: #333;
 
 	/* SETTINGS */
-	--settings-bg-clr: #fff;
 	--settings-menu-color: #333;
 	--settings-menu-selected-color: #eee;
 	--settings-menu-selected-bg-color: #333;
 	--settings-menu-hover-color: #eee;
 	--settings-menu-hover-bg-color: #333;
 
-	/* MESSAGE LIST */
+	/* MESSAGES */
 	--message-list-toolbar-bg-color: #eee;
-
-	/* MESSAGE */
-	--message-bg-color: #fff;
+	--message-header-bg-clr: #f8f8f8;
 
 	/* DIALOGS */
 	--dialog-clr: #333;

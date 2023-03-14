@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Bæta við aðgangi"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Farsímaútgáfa",
-		"BUTTON_DESKTOP_VERSION": "Vinnutölvuútgáfa"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Ítarleg leit",
 		"TEXT": "Texti",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "Aðvörun! Ekki er búið að senda inn öll viðhengi.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Ekki er búið að senda inn öll viðhengi.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Vista drög sjálfkrafa",
 		"BUTTON_REQUEST_READ_RECEIPT": "Biðja um staðfestingu á lestri",
 		"BUTTON_MARK_AS_IMPORTANT": "Merkja sem mikilvægt",
 		"BUTTON_REQUEST_DSN": "Biðja um staðfestingu á afhendingu",
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Ertu viss um að þú viljir loka þessum glugga?",
 		"DESC_WANT_DELETE_MESSAGES": "Ertu viss um að þú viljir eyða skeytunum?"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Ekki klofið",
 		"LAYOUT_VERTICAL_SPLIT": "Klofið lóðrétt",
 		"LAYOUT_HORIZONTAL_SPLIT": "Klofið lárétt",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Sjálfgefinn textaritill",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Venjulegt",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Búa til lykla",
 		"TITLE_PRIVATE": "Einkalykill",
 		"TITLE_PUBLIC": "Dreifilykill",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Vista drög sjálfkrafa",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

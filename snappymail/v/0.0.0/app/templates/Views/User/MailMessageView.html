@@ -30,8 +30,7 @@
 	<div class="b-message-view-desc" data-i18n="MESSAGE/MESSAGE_VIEW_DESC" data-bind="visible: !message() && '' === messageError() && !hasCheckedMessages()">
 	</div>
 
-	<!-- ko if: message -->
-	<div class="b-message" data-bind="i18nUpdate: message, css: message()?.lineAsCss(0)">
+	<div class="b-message" data-bind="visible: message, i18nUpdate: message, css: message()?.lineAsCss(0)">
 		<div class="message-fixed-button-toolbar">
 			<a class="btn btn-success buttonEdit fontastic hide-mobile" data-bind="visible: isDraftFolder(), command: editCommand">🖉</a>
 			<div class="btn-group" style="margin-right: -8px; display: inline;">
@@ -121,7 +120,7 @@
 			</div>
 		</div>
 
-		<div class="messageItemHeader">
+		<div class="messageItemHeader" data-bind="if: message, i18nUpdate: message">
 			<div class="subjectParent">
 				<span class="infoParent g-ui-user-select-none fontastic" data-bind="click: toggleFullInfo">ℹ</span>
 				<span class="flagParent g-ui-user-select-none flagOff fontastic" data-bind="text: message().isFlagged() ? '★' : '☆', css: {'flagOn': message().isFlagged(), 'flagOff': !message().isFlagged()}"></span>
@@ -156,12 +155,12 @@
 						<td data-i18n="GLOBAL/REPLY_TO"></td>
 						<td data-bind="text: replyTo"></td>
 					</tr>
-					<tr data-bind="visible: dateTimeStampInUTC">
+					<tr data-bind="visible: dateTimestamp">
 						<td data-i18n="MESSAGE/LABEL_DATE"></td>
 						<td>
-							<time data-moment-format="FULL" data-bind="moment: dateTimeStampInUTC"></time>
+							<time data-moment-format="FULL" data-bind="moment: dateTimestamp"></time>
 							&nbsp;
-							(<time data-moment-format="FROMNOW" data-bind="moment: dateTimeStampInUTC"></time>)
+							(<time data-moment-format="FROMNOW" data-bind="moment: dateTimestamp"></time>)
 						</td>
 					</tr>
 					<tr data-bind="visible: spamResult">
@@ -176,9 +175,9 @@
 			</div>
 		</div>
 		<div id="messageItem">
-			<div class="messageItemHeader">
+			<div class="messageItemHeader" data-bind="if: message, i18nUpdate: message">
 				<div data-bind="hidden: showFullInfo">
-					<time class="date" data-moment-format="FULL" data-bind="visible: 0 < message().dateTimeStampInUTC(), moment: message().dateTimeStampInUTC()"></time>
+					<time class="date" data-moment-format="FULL" data-bind="visible: 0 < message().dateTimestamp(), moment: message().dateTimestamp()"></time>
 					<div class="informationShortWrp">
 						<div class="informationShort" data-bind="visible: message().to.length">
 							<span data-i18n="GLOBAL/TO"></span>:
@@ -223,7 +222,7 @@
 				</div>
 
 				<div data-bind="hidden: messageLoadingThrottle">
-					<div class="bodySubHeader">
+					<div class="bodySubHeader" data-bind="if: message, i18nUpdate: message">
 						<div class="readReceipt" data-bind="visible: askReadReceipt, click: readReceipt"
 							data-icon="✉" data-i18n="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></div>
 						<details class="attachmentsPlace" data-bind="visible: hasAttachments, css: {'selection-mode' : showAttachmentControls}">
@@ -264,20 +263,17 @@
 								</li>
 							</ul>
 							<!-- /ko -->
-							<i class="fontastic controls-handle" data-bind="visible: allowAttachmentControls(), click: toggleAttachmentControls">⚙</i>
+							<i class="fontastic controls-handle" data-bind="visible: allowAttachmentControls, click: toggleAttachmentControls">⚙</i>
+							<div class="attachmentsControls" data-bind="visible: showAttachmentControls">
+								<span data-bind="visible: downloadAsZipAllowed">
+									<i class="fontastic iconcolor-red" data-bind="visible: downloadAsZipError">✖</i>
+									<i class="icon-file-archive" data-bind="visible: !downloadAsZipError(),
+										css: {'icon-file-archive': !downloadAsZipLoading(), 'icon-spinner': downloadAsZipLoading()}"></i>
+									<span class="g-ui-link" data-bind="click: downloadAsZip"
+										data-i18n="MESSAGE/LINK_DOWNLOAD_AS_ZIP"></span>
+								</span>
+							</div>
 						</details>
-
-						<div class="attachmentsControls"
-							data-bind="visible: showAttachmentControls() && hasAttachments()">
-
-							<span data-bind="visible: downloadAsZipAllowed">
-								<i class="fontastic iconcolor-red" data-bind="visible: downloadAsZipError">✖</i>
-								<i class="icon-file-archive" data-bind="visible: !downloadAsZipError(),
-									css: {'icon-file-archive': !downloadAsZipLoading(), 'icon-spinner': downloadAsZipLoading()}"></i>
-								<span class="g-ui-link" data-bind="click: downloadAsZip"
-									data-i18n="MESSAGE/LINK_DOWNLOAD_AS_ZIP"></span>
-							</span>
-						</div>
 
 						<div class="btn-toolbar showImages" data-bind="visible: message().hasImages()">
 							<div class="btn" data-bind="click: showImages" data-icon="🖼" data-i18n="MESSAGE/BUTTON_SHOW_IMAGES"></div>
@@ -292,21 +288,24 @@
 								</menu>
 							</div>
 						</div>
+
+						<div data-bind="visible: message().pgpEncrypted()">
+							<div class="openpgp-control encrypted" data-bind="css: {'success': message().pgpDecrypted()}">
+								<span data-icon="🔒" data-i18n="OPENPGP/ENCRYPTED_MESSAGE"></span>
+								<button class="btn" data-bind="visible: pgpSupported, click: pgpDecrypt" data-i18n="OPENPGP/BUTTON_DECRYPT"></button>
+							</div>
+						</div>
+						<div data-bind="visible: message().pgpSigned()">
+							<div class="openpgp-control signed" data-bind="css: {'success': message().pgpVerified() && message().pgpVerified().success, 'error': message().pgpVerified() && !message().pgpVerified().success}">
+								<span data-icon="✍" data-i18n="OPENPGP/SIGNED_MESSAGE"></span>
+								<button class="btn" data-bind="visible: pgpSupported, click: pgpVerify" data-i18n="OPENPGP/BUTTON_VERIFY"></button>
+							</div>
+						</div>
 					</div>
 
-					<div class="openpgp-control encrypted" data-bind="visible: message().pgpEncrypted(), css: {'success': message().pgpDecrypted()}">
-						<span data-icon="🔒" data-i18n="OPENPGP/ENCRYPTED_MESSAGE"></span>
-						<button class="btn" data-bind="visible: pgpSupported, click: pgpDecrypt" data-i18n="OPENPGP/BUTTON_DECRYPT"></button>
-					</div>
-					<div class="openpgp-control signed" data-bind="visible: message().pgpSigned(), css: {'success': message().pgpVerified() && message().pgpVerified().success, 'error': message().pgpVerified() && !message().pgpVerified().success}">
-						<span data-icon="✍" data-i18n="OPENPGP/SIGNED_MESSAGE"></span>
-						<button class="btn" data-bind="visible: pgpSupported, click: pgpVerify" data-i18n="OPENPGP/BUTTON_VERIFY"></button>
-					</div>
-
-					<div class="bodyText" data-bind="initDom: messagesBodiesDom"></div>
+					<div class="bodyText"></div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<!-- /ko -->
 </div>

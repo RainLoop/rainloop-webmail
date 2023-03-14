@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Dodaj konto"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Wersja mobilna",
-		"BUTTON_DESKTOP_VERSION": "Wersja desktopowa"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Wyszukiwanie zaawansowane",
 		"TEXT": "Tekst",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "Ostrzeżenie! Nie wszystkie załączniki zostały przesłane na serwer.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Jeszcze nie wszystkie załączniki zostały przesłane na serwer.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatycznie zapisuj szkic",
 		"BUTTON_REQUEST_READ_RECEIPT": "Żądaj potwierdzenia przeczytania wiadomości",
 		"BUTTON_MARK_AS_IMPORTANT": "Oznacz jako ważną",
 		"BUTTON_REQUEST_DSN": "Żądaj potwierdzenia dostarczenia wiadomości",
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Na pewno chcesz zamknąć to okno?",
 		"DESC_WANT_DELETE_MESSAGES": "Na pewno chcesz usunąć wiadomość(-ci)?"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "bez podziału",
 		"LAYOUT_VERTICAL_SPLIT": "podział w pionie",
 		"LAYOUT_HORIZONTAL_SPLIT": "podział w poziomie",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Format wiadomości",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "zwykły tekst",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Generuj klucz",
 		"TITLE_PRIVATE": "Prywatny",
 		"TITLE_PUBLIC": "Publiczny",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatycznie zapisuj szkic",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

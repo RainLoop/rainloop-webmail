@@ -9,9 +9,8 @@ use MailSo\Mime\Enumerations\Header;
 
 class Sync
 {
-	public
-		$oImapSource,
-		$oImapTarget;
+	public \MailSo\Imap\ImapClient $oImapSource;
+	public \MailSo\Imap\ImapClient $oImapTarget;
 
 	function import(string $sTargetRootFolderName = '')
 	{

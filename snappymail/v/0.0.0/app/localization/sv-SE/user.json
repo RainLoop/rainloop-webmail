@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Lägg till konto"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobilversion",
-		"BUTTON_DESKTOP_VERSION": "Datorversion"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Avancerad sök",
 		"TEXT": "Text",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "Varning! Inte alla bilagor har överförts.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Alla bilagor är inte uppladddade än",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Spara utkast automatiskt",
 		"BUTTON_REQUEST_READ_RECEIPT": "Begär mottagningskvitto",
 		"BUTTON_MARK_AS_IMPORTANT": "Markera som viktigt",
 		"BUTTON_REQUEST_DSN": "Begär ett leveranskvitto",
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Vill du stänga detta fönster?",
 		"DESC_WANT_DELETE_MESSAGES": "Är du säker att du vill ta bort meddelandet?"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Utan delad vy",
 		"LAYOUT_VERTICAL_SPLIT": "Vertikalt delad vy",
 		"LAYOUT_HORIZONTAL_SPLIT": "Horisontellt delad vy",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Textredigerare",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Oformaterad text",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Skapa nycklar",
 		"TITLE_PRIVATE": "Privat",
 		"TITLE_PUBLIC": "Publik",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Spara utkast automatiskt",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

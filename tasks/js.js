@@ -10,8 +10,7 @@ const concat = require('gulp-concat'),
 	eslint = require('gulp-eslint'),
 	cache = require('gulp-cached'),
 	expect = require('gulp-expect-file'),
-	size = require('gulp-size'),
-	gutil = require('gulp-util');
+	size = require('gulp-size');
 
 const { config } = require('./config');
 const { del, getHead } = require('./common');
@@ -59,8 +58,7 @@ const jsSieve = async () =>
 //		.pipe(sourcemaps.write('.'))
 		.pipe(header(getHead() + '\n'))
 		.pipe(eol('\n', true))
-		.pipe(gulp.dest(config.paths.staticJS))
-		.on('error', gutil.log);
+		.pipe(gulp.dest(config.paths.staticJS));
 
 // app
 const jsApp = async () =>
@@ -68,16 +66,14 @@ const jsApp = async () =>
 //		.pipe(sourcemaps.write('.'))
 		.pipe(header(getHead() + '\n'))
 		.pipe(eol('\n', true))
-		.pipe(gulp.dest(config.paths.staticJS))
-		.on('error', gutil.log);
+		.pipe(gulp.dest(config.paths.staticJS));
 
 const jsAdmin = async () =>
 	(await rollupJS(config.paths.js.admin.name))
 //		.pipe(sourcemaps.write('.'))
 		.pipe(header(getHead() + '\n'))
 		.pipe(eol('\n', true))
-		.pipe(gulp.dest(config.paths.staticJS))
-		.on('error', gutil.log);
+		.pipe(gulp.dest(config.paths.staticJS));
 
 const jsMin = () =>
 	gulp
@@ -118,8 +114,7 @@ const jsMin = () =>
 				showTotal: false
 			})
 		)
-		.pipe(gulp.dest(config.paths.staticMinJS))
-		.on('error', gutil.log);
+		.pipe(gulp.dest(config.paths.staticMinJS));
 
 const jsLint = () =>
 	gulp

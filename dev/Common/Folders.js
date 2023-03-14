@@ -1,7 +1,6 @@
 import { isArray, arrayLength } from 'Common/Utils';
 import {
-	MessageFlagsCache,
-	setFolderHash,
+	setFolderETag,
 	getFolderInboxName,
 	getFolderFromCacheList
 } from 'Common/Cache';
@@ -9,8 +8,6 @@ import { SettingsUserStore } from 'Stores/User/Settings';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { getNotification } from 'Common/Translator';
-import { Settings } from 'Common/Globals';
-import { serverRequest } from 'Common/Links';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -114,8 +111,8 @@ folderInformation = (folder, list) => {
 
 		if (arrayLength(list)) {
 			list.forEach(messageListItem => {
-				MessageFlagsCache.getFor(folder, messageListItem.uid) || uids.push(messageListItem.uid);
-				messageListItem.threads.forEach(uid => MessageFlagsCache.getFor(folder, uid) || uids.push(uid));
+				uids.push(messageListItem.uid);
+				messageListItem.threads.forEach(uid => uids.push(uid));
 			});
 			count = uids.length;
 		}
@@ -124,31 +121,21 @@ folderInformation = (folder, list) => {
 			Remote.request('FolderInformation', (iError, data) => {
 				if (!iError && data.Result) {
 					const result = data.Result,
-						folderFromCache = getFolderFromCacheList(result.folder);
+						folderFromCache = getFolderFromCacheList(result.name);
 					if (folderFromCache) {
-						const oldHash = folderFromCache.hash,
+						const oldHash = folderFromCache.etag,
 							unreadCountChange = (folderFromCache.unreadEmails() !== result.unreadEmails);
 
 //						folderFromCache.revivePropertiesFromJson(result);
 						folderFromCache.expires = Date.now();
 						folderFromCache.uidNext = result.uidNext;
-						folderFromCache.hash = result.hash;
+						folderFromCache.etag = result.etag;
 						folderFromCache.totalEmails(result.totalEmails);
 						folderFromCache.unreadEmails(result.unreadEmails);
 
-						unreadCountChange && MessageFlagsCache.clearFolder(folderFromCache.fullName);
-
-						if (result.messagesFlags.length) {
-							result.messagesFlags.forEach(message =>
-								MessageFlagsCache.setFor(folderFromCache.fullName, message.uid.toString(), message.flags)
-							);
-
-							MessagelistUserStore.reloadFlagsAndCachedMessage();
-						}
-
 						MessagelistUserStore.notifyNewMessages(folderFromCache.fullName, result.newMessages);
 
-						if (!oldHash || unreadCountChange || result.hash !== oldHash) {
+						if (!oldHash || unreadCountChange || result.etag !== oldHash) {
 							if (folderFromCache.fullName === FolderUserStore.currentFolderFullName()) {
 								MessagelistUserStore.reload();
 /*
@@ -165,8 +152,6 @@ folderInformation = (folder, list) => {
 				flagsUids: uids,
 				uidNext: getFolderFromCacheList(folder)?.uidNext || 0 // Used to check for new messages
 			});
-		} else if (SettingsUserStore.useThreads()) {
-			MessagelistUserStore.reloadFlagsAndCachedMessage();
 		}
 	}
 },
@@ -181,21 +166,18 @@ folderInformationMultiply = (boot = false) => {
 			if (!iError && arrayLength(oData.Result)) {
 				const utc = Date.now();
 				oData.Result.forEach(item => {
-					const folder = getFolderFromCacheList(item.folder);
-
+					const folder = getFolderFromCacheList(item.name);
 					if (folder) {
-						const oldHash = folder.hash,
+						const oldHash = folder.etag,
 							unreadCountChange = folder.unreadEmails() !== item.unreadEmails;
 
 //						folder.revivePropertiesFromJson(item);
 						folder.expires = utc;
-						folder.hash = item.hash;
+						folder.etag = item.etag;
 						folder.totalEmails(item.totalEmails);
 						folder.unreadEmails(item.unreadEmails);
 
-						unreadCountChange && MessageFlagsCache.clearFolder(folder.fullName);
-
-						if (!oldHash || item.hash !== oldHash) {
+						if (!oldHash || item.etag !== oldHash) {
 							if (folder.fullName === FolderUserStore.currentFolderFullName()) {
 								MessagelistUserStore.reload();
 							}
@@ -217,13 +199,13 @@ folderInformationMultiply = (boot = false) => {
 
 moveOrDeleteResponseHelper = (iError, oData) => {
 	if (iError) {
-		setFolderHash(FolderUserStore.currentFolderFullName(), '');
+		setFolderETag(FolderUserStore.currentFolderFullName(), '');
 		alert(getNotification(iError));
 	} else if (FolderUserStore.currentFolder()) {
 		if (2 === arrayLength(oData.Result)) {
-			setFolderHash(oData.Result[0], oData.Result[1]);
+			setFolderETag(oData.Result[0], oData.Result[1]);
 		} else {
-			setFolderHash(FolderUserStore.currentFolderFullName(), '');
+			setFolderETag(FolderUserStore.currentFolderFullName(), '');
 		}
 		MessagelistUserStore.reload(!MessagelistUserStore.length);
 	}
@@ -286,28 +268,20 @@ moveMessagesToFolder = (sFromFolderFullName, oUids, sToFolderFullName, bCopy) =>
 },
 
 dropFilesInFolder = (sFolderFullName, files) => {
-	let count = 0,
-		fn = () => 0 == --count
-			&& FolderUserStore.currentFolderFullName() == sFolderFullName
-			&& MessagelistUserStore.reload(true, true);
+	let count = files.length;
 	for (const file of files) {
 		if ('message/rfc822' === file.type) {
-			++count;
 			let data = new FormData;
 			data.append('folder', sFolderFullName);
 			data.append('appendFile', file);
-			data.XToken = Settings.app('token');
-			fetch(serverRequest('Append'), {
-				method: 'POST',
-				mode: 'same-origin',
-				cache: 'no-cache',
-				redirect: 'error',
-				referrerPolicy: 'no-referrer',
-				credentials: 'same-origin',
-				body: data
-			})
-			.then(fn)
-			.catch(fn);
+			Remote.request('FolderAppend', (iError, data)=>{
+				iError && console.error(data.ErrorMessage);
+				0 == --count
+				&& FolderUserStore.currentFolderFullName() == sFolderFullName
+				&& MessagelistUserStore.reload(true, true);
+			}, data);
+		} else {
+			--count;
 		}
 	}
 };

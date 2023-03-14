@@ -1,9 +1,9 @@
 import ko from 'ko';
 
 import { Scope } from 'Common/Enums';
-import { addShortcut } from 'Common/Globals';
+import { addShortcut, stopEvent } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
-//import { setFolderHash } from 'Common/Cache';
+//import { setFolderETag } from 'Common/Cache';
 import { addComputablesTo } from 'External/ko';
 
 import { AppUserStore } from 'Stores/User/App';
@@ -80,8 +80,7 @@ export class MailFolderList extends AbstractViewLeft {
 					setExpandedFolder(folder.fullName, collapsed);
 
 					folder.collapsed(!collapsed);
-					event.preventDefault();
-					event.stopPropagation();
+					stopEvent(event);
 					return;
 				}
 			}
@@ -105,7 +104,7 @@ export class MailFolderList extends AbstractViewLeft {
 						}
 /*
 						if (folder.fullName === FolderUserStore.currentFolderFullName()) {
-							setFolderHash(folder.fullName, '');
+							setFolderETag(folder.fullName, '');
 						}
 */
 						let search = '';
@@ -173,15 +172,6 @@ export class MailFolderList extends AbstractViewLeft {
 			AppUserStore.focusedState(Scope.MessageList);
 			moveAction(false);
 			return false;
-		});
-
-		AppUserStore.focusedState.subscribe(value => {
-			let el = qs('li a.focused');
-			el?.classList.remove('focused');
-			if (Scope.FolderList === value) {
-				el = qs('li a.selected');
-				el?.classList.add('focused');
-			}
 		});
 	}
 

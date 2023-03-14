@@ -26,6 +26,7 @@ export const SettingsUserStore = new class {
 			simpleAttachmentsList: 0,
 			useCheckboxesInList: 1,
 			listGrouped: 0,
+			showNextMessage: 0,
 			allowDraftAutosave: 1,
 			useThreads: 0,
 			replySameFolder: 0,
@@ -49,13 +50,12 @@ export const SettingsUserStore = new class {
 
 		self.init();
 
-		self.usePreviewPane = koComputable(() => Layout.NoPreview !== self.layout() && !ThemeStore.isMobile());
+		self.usePreviewPane = koComputable(() => self.layout() && !ThemeStore.isMobile());
 
 		const toggleLayout = () => {
-			const value = ThemeStore.isMobile() ? Layout.NoPreview : self.layout();
-			$htmlCL.toggle('rl-no-preview-pane', Layout.NoPreview === value);
-			$htmlCL.toggle('rl-side-preview-pane', Layout.SidePreview === value);
-			$htmlCL.toggle('rl-bottom-preview-pane', Layout.BottomPreview === value);
+			const value = ThemeStore.isMobile() ? 0 : self.layout();
+			$htmlCL.toggle('sm-msgView-side', Layout.SidePreview === value);
+			$htmlCL.toggle('sm-msgView-bottom', Layout.BottomPreview === value);
 			fireEvent('rl-layout', value);
 		};
 		self.layout.subscribe(toggleLayout);
@@ -65,7 +65,7 @@ export const SettingsUserStore = new class {
 		let iAutoLogoutTimer;
 		self.delayLogout = (() => {
 			clearTimeout(iAutoLogoutTimer);
-			if (0 < self.autoLogout() && !SettingsGet('AccountSignMe')) {
+			if (0 < self.autoLogout() && !SettingsGet('accountSignMe')) {
 				iAutoLogoutTimer = setTimeout(
 					rl.app.logout,
 					self.autoLogout() * 60000
@@ -96,6 +96,7 @@ export const SettingsUserStore = new class {
 		self.simpleAttachmentsList(SettingsGet('simpleAttachmentsList'));
 		self.useCheckboxesInList(SettingsGet('UseCheckboxesInList'));
 		self.listGrouped(SettingsGet('listGrouped'));
+		self.showNextMessage(SettingsGet('showNextMessage'));
 		self.allowDraftAutosave(SettingsGet('AllowDraftAutosave'));
 		self.useThreads(SettingsGet('UseThreads'));
 		self.replySameFolder(SettingsGet('ReplySameFolder'));

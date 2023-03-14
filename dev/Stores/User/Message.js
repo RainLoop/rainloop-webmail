@@ -30,25 +30,21 @@ export const MessageUserStore = new class {
 					AppUserStore.focusedState(Scope.MessageList);
 					exitFullscreen();
 				}
-				this.hideMessageBodies();
+				[...(this.bodiesDom()?.children || [])].forEach(el => el.hidden = true);
 			},
 		});
 
-		this.purgeMessageBodyCache = this.purgeMessageBodyCache.throttle(30000);
+		this.purgeCache = this.purgeCache.throttle(30000);
 	}
 
-	purgeMessageBodyCache() {
-		const messagesDom = this.bodiesDom(),
-			children = messagesDom?.children;
-		if (children) {
-			while (15 < children.length) {
-				children[0].remove();
+	purgeCache(all) {
+		const children = this.bodiesDom()?.children || [];
+		let i = Math.max(0, children.length - (all ? 0 : 15));
+		while (i--) {
+			children[i].remove();
+			if (children[i].message) {
+				children[i].message.body = null;
 			}
 		}
-	}
-
-	hideMessageBodies() {
-		const messagesDom = this.bodiesDom();
-		messagesDom && Array.from(messagesDom.children).forEach(el => el.hidden = true);
 	}
 };

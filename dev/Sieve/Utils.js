@@ -25,13 +25,13 @@ export const
 		arr.map(item => item.toString?.() || item).join(separator),
 /*
 	getNotificationMessage = code => {
-		let key = getKeyByValue(Notification, code);
+		let key = getKeyByValue(Notifications, code);
 		return key ? I18N_DATA.NOTIFICATIONS[i18nKey(key).replace('_NOTIFICATION', '_ERROR')] : '';
 		rl.i18n('NOTIFICATIONS/')
 	},
 	getNotification = (code, message = '', defCode = 0) => {
 		code = parseInt(code, 10) || 0;
-		if (Notification.ClientViewError === code && message) {
+		if (Notifications.ClientViewError === code && message) {
 			return message;
 		}
 

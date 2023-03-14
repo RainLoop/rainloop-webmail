@@ -12,15 +12,16 @@
 /*	transition: width 0.3s ease-out;*/
 	width: @rlLeftWidth;
 	z-index: 0;
+
+	.b-toolbar {
+		padding: 10px 0 10px @rlLowMargin;
+	}
 }
 
 #rl-right:not([hidden]) {
 	display: flex;
 	flex-grow: 1;
 	width: 20%;
-}
-.rl-bottom-preview-pane #rl-right {
-	flex-direction: column;
 }
 
 /*
@@ -41,45 +42,10 @@
 }
 */
 
-.resizer {
-	background: #aaa;
-	background: rgba(255,255,255,0.5);
-	display: none;
-	opacity: 0;
-	position: absolute;
-	z-index: 102;
-}
-.resizer:hover {
-	opacity: 1;
-}
-
 html:not(.rl-left-panel-disabled) #rl-left {
 	resize: horizontal; overflow: auto;
 	min-width: 155px;
 	max-width: 350px;
-}
-
-#rl-left > .resizer,
-.rl-side-preview-pane #V-MailMessageList .resizer {
-	cursor: ew-resize;
-	cursor: col-resize;
-	right: 0;
-	top: 0;
-	bottom: 0;
-	width: 5px;
-}
-.rl-bottom-preview-pane #V-MailMessageList .resizer {
-	cursor: ns-resize;
-	cursor: row-resize;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	height: 5px;
-}
-
-html:not(.rl-left-panel-disabled) #rl-left > .resizer,
-#V-MailMessageList .resizer {
-	display: block;
 }
 
 #top-system-dropdown-id::after,
@@ -140,32 +106,6 @@ html:not(.rl-left-panel-disabled) #rl-left > .resizer,
 	margin-right: 8px;
 }
 
-/* desktop */
-@media screen and (min-width: 1000px) {
-}
-
-/* desktop-large */
-@media screen and (min-width: 1401px) {
-	#rl-left {
-		width: @rlLeftWidth + 20;
-	}
-}
-
-/* mobile and tablet */
-@media screen and (max-width: 999px) {
-	#rl-left {
-		width: 155px;
-	}
-
-	#rl-settings-subscreen {
-		padding: 10px;
-	}
-
-	.dropdown-menu a {
-		line-height: 2.5;
-	}
-}
-
 html:not(.rl-ctrl-key-pressed) .visible-on-ctrl-btn,
 html.rl-ctrl-key-pressed .hidden-on-ctrl-btn,
 .show-on-panel-disabled {
@@ -191,32 +131,6 @@ html.rl-left-panel-disabled {
 	}
 }
 
-html.rl-mobile #rl-left > .resizer,
-html.rl-no-preview-pane #rl-right .resizer {
-	display: none !important;
-}
-
-html.rl-mobile {
-	#rl-left {
-		background: var(--main-bg-color, #aaa);
-		border-right: 1px solid var(--border-color, #ddd);
-		position: fixed;
-		left: 0;
-		top: 0;
-		bottom: 0;
-		width: 50vw;
-		z-index: 3;
-	}
-	&.rl-left-panel-disabled #rl-left {
-		display: none;
-	}
-}
-
-html.rl-mobile .hide-mobile,
-html:not(.rl-mobile) .show-mobile {
-	display: none !important;
-}
-
 .e-paginator {
 
 	a {
@@ -235,5 +149,87 @@ html:not(.rl-mobile) .show-mobile {
 			font-size: 25px;
 			cursor: default;
 		}
+	}
+}
+
+.resizer {
+	display: none;
+}
+
+@media screen and (max-width: @maxMobileWidth) {
+	#rl-app {
+		#V-SettingsPane {
+			margin-right: 0;
+			padding: 10px;
+		}
+	}
+
+	#rl-left {
+		background: var(--main-bg-color, #aaa);
+		border-right: 1px solid var(--border-color, #ddd);
+		position: fixed;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 50vw;
+		z-index: 3;
+	}
+	.rl-left-panel-disabled #rl-left {
+		display: none;
+	}
+
+	.dropdown-menu a {
+		line-height: 2.5;
+	}
+
+	.hide-mobile {
+		display: none !important;
+	}
+}
+
+/* desktop */
+@media screen and (min-width: @maxMobileWidth + 1px) {
+	.toggleLeft,
+	#V-MailMessageList .buttonCompose {
+		display: none !important;
+	}
+
+	.sm-msgView-bottom #rl-right {
+		flex-direction: column;
+	}
+
+	.resizer {
+		background: #aaa;
+		background: rgba(255,255,255,0.5);
+		opacity: 0;
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		z-index: 102;
+	}
+	.resizer:hover {
+		opacity: 1;
+	}
+	html:not(.rl-left-panel-disabled) #rl-left > .resizer,
+	.sm-msgView-side #V-MailMessageList .resizer {
+		cursor: ew-resize;
+		cursor: col-resize;
+		display: block;
+		top: 0;
+		width: 5px;
+	}
+	.sm-msgView-bottom #V-MailMessageList .resizer {
+		cursor: ns-resize;
+		cursor: row-resize;
+		display: block;
+		left: 0;
+		height: 5px;
+	}
+}
+
+/* desktop-large */
+@media screen and (min-width: 1401px) {
+	#rl-left {
+		width: @rlLeftWidth + 20;
 	}
 }

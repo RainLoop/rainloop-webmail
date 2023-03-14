@@ -33,10 +33,22 @@
 .alert-error {
   background-color: var(--error-bg-clr, #f2dede);
   border-color: var(--error-border-clr, #eed3d7);
-  color: var(--error-clr, #b94a48);
 }
 .alert-info {
   background-color: var(--info-bg-clr, #d9edf7);
   border-color: var(--info-border-clr, #bce8f1);
+}
+
+.alert a:not(.close) {
+  text-decoration: underline;
+}
+
+.alert-info,
+.alert.alert-info a:not(.close) {
   color: var(--info-clr, #3a87ad);
+}
+
+.alert-error,
+.alert.alert-error a:not(.close) {
+  color: var(--error-clr, #b94a48);
 }

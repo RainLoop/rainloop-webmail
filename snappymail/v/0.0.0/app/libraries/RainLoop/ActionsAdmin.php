@@ -48,11 +48,11 @@ class ActionsAdmin extends Actions
 
 		$self = $this;
 
-		$this->setConfigFromParams($oConfig, 'Language', 'webmail', 'language', 'string', function ($sLanguage) use ($self) {
+		$this->setConfigFromParams($oConfig, 'language', 'webmail', 'language', 'string', function ($sLanguage) use ($self) {
 			return $self->ValidateLanguage($sLanguage, '', false);
 		});
 
-		$this->setConfigFromParams($oConfig, 'LanguageAdmin', 'webmail', 'language_admin', 'string', function ($sLanguage) use ($self) {
+		$this->setConfigFromParams($oConfig, 'languageAdmin', 'webmail', 'language_admin', 'string', function ($sLanguage) use ($self) {
 			return $self->ValidateLanguage($sLanguage, '', true);
 		});
 
@@ -60,22 +60,21 @@ class ActionsAdmin extends Actions
 			return $self->ValidateTheme($sTheme);
 		});
 
-		$this->setConfigFromParams($oConfig, 'UseLocalProxyForExternalImages', 'labs', 'use_local_proxy_for_external_images', 'bool');
+		$this->setConfigFromParams($oConfig, 'useLocalProxyForExternalImages', 'labs', 'use_local_proxy_for_external_images', 'bool');
 
-		$this->setConfigFromParams($oConfig, 'AllowLanguagesOnSettings', 'webmail', 'allow_languages_on_settings', 'bool');
-		$this->setConfigFromParams($oConfig, 'AllowLanguagesOnLogin', 'login', 'allow_languages_on_login', 'bool');
-		$this->setConfigFromParams($oConfig, 'AttachmentLimit', 'webmail', 'attachment_size_limit', 'int');
+		$this->setConfigFromParams($oConfig, 'allowLanguagesOnSettings', 'webmail', 'allow_languages_on_settings', 'bool');
+		$this->setConfigFromParams($oConfig, 'allowLanguagesOnLogin', 'login', 'allow_languages_on_login', 'bool');
+		$this->setConfigFromParams($oConfig, 'attachmentLimit', 'webmail', 'attachment_size_limit', 'int');
 
-		$this->setConfigFromParams($oConfig, 'LoginDefaultDomain', 'login', 'default_domain', 'string');
+		$this->setConfigFromParams($oConfig, 'loginDefaultDomain', 'login', 'default_domain', 'string');
 
-		$this->setConfigFromParams($oConfig, 'ContactsEnable', 'contacts', 'enable', 'bool');
-		$this->setConfigFromParams($oConfig, 'ContactsSync', 'contacts', 'allow_sync', 'bool');
-		$this->setConfigFromParams($oConfig, 'ContactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
-		$this->setConfigFromParams($oConfig, 'ContactsPdoUser', 'contacts', 'pdo_user', 'string');
-		$this->setConfigFromParams($oConfig, 'ContactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
-		$this->setConfigFromParams($oConfig, 'ContactsSuggestionsLimit', 'contacts', 'suggestions_limit', 'int');
-
-		$this->setConfigFromParams($oConfig, 'ContactsPdoType', 'contacts', 'type', 'string', function ($sType) use ($self) {
+		$this->setConfigFromParams($oConfig, 'contactsEnable', 'contacts', 'enable', 'bool');
+		$this->setConfigFromParams($oConfig, 'contactsSync', 'contacts', 'allow_sync', 'bool');
+		$this->setConfigFromParams($oConfig, 'contactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
+		$this->setConfigFromParams($oConfig, 'contactsPdoUser', 'contacts', 'pdo_user', 'string');
+		$this->setConfigFromParams($oConfig, 'contactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
+		$this->setConfigFromParams($oConfig, 'contactsSuggestionsLimit', 'contacts', 'suggestions_limit', 'int');
+		$this->setConfigFromParams($oConfig, 'contactsPdoType', 'contacts', 'type', 'string', function ($sType) use ($self) {
 			return Providers\AddressBook\PdoAddressBook::validPdoType($sType);
 		});
 
@@ -86,14 +85,14 @@ class ActionsAdmin extends Actions
 		$this->setConfigFromParams($oConfig, 'CapaUserBackground', 'webmail', 'allow_user_background', 'bool');
 		$this->setConfigFromParams($oConfig, 'CapaOpenPGP', 'security', 'openpgp', 'bool');
 
-		$this->setConfigFromParams($oConfig, 'DetermineUserLanguage', 'login', 'determine_user_language', 'bool');
-		$this->setConfigFromParams($oConfig, 'DetermineUserDomain', 'login', 'determine_user_domain', 'bool');
+		$this->setConfigFromParams($oConfig, 'determineUserLanguage', 'login', 'determine_user_language', 'bool');
+		$this->setConfigFromParams($oConfig, 'determineUserDomain', 'login', 'determine_user_domain', 'bool');
 
-		$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
-		$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
-		$this->setConfigFromParams($oConfig, 'FaviconUrl', 'webmail', 'favicon_url', 'string');
+		$this->setConfigFromParams($oConfig, 'title', 'webmail', 'title', 'string');
+		$this->setConfigFromParams($oConfig, 'loadingDescription', 'webmail', 'loading_description', 'string');
+		$this->setConfigFromParams($oConfig, 'faviconUrl', 'webmail', 'favicon_url', 'string');
 
-		$this->setConfigFromParams($oConfig, 'EnabledPlugins', 'plugins', 'enable', 'bool');
+		$this->setConfigFromParams($oConfig, 'pluginsEnable', 'plugins', 'enable', 'bool');
 
 		return $this->DefaultResponse($oConfig->Save());
 	}
@@ -142,10 +141,10 @@ class ActionsAdmin extends Actions
 		$this->IsAdminLoggined();
 
 		$oConfig = $this->Config();
-		$this->setConfigFromParams($oConfig, 'ContactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
-		$this->setConfigFromParams($oConfig, 'ContactsPdoUser', 'contacts', 'pdo_user', 'string');
-		$this->setConfigFromParams($oConfig, 'ContactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
-		$this->setConfigFromParams($oConfig, 'ContactsPdoType', 'contacts', 'type', 'string', function ($sType) {
+		$this->setConfigFromParams($oConfig, 'contactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
+		$this->setConfigFromParams($oConfig, 'contactsPdoUser', 'contacts', 'pdo_user', 'string');
+		$this->setConfigFromParams($oConfig, 'contactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
+		$this->setConfigFromParams($oConfig, 'contactsPdoType', 'contacts', 'type', 'string', function ($sType) {
 			return Providers\AddressBook\PdoAddressBook::validPdoType($sType);
 		});
 
@@ -205,40 +204,6 @@ class ActionsAdmin extends Actions
 			: false);
 	}
 
-	public function DoAdminPHPExtensions() : array
-	{
-		$aResult = [
-			[
-				'name' => 'PHP ' . PHP_VERSION,
-				'loaded' => true,
-				'version' => PHP_VERSION
-			],
-			[
-				'name' => 'PHP 64bit',
-				'loaded' => PHP_INT_SIZE == 8,
-				'version' => PHP_INT_SIZE
-			]
-		];
-		foreach (['APCu', 'cURL','GnuPG','GD','Gmagick','Imagick','iconv','intl','LDAP','OpenSSL','pdo_mysql','pdo_pgsql','pdo_sqlite','redis','Sodium','Tidy','uuid','XXTEA','Zip'] as $name) {
-			$aResult[] = [
-				'name' => ('OpenSSL' === $name && \defined('OPENSSL_VERSION_TEXT')) ? OPENSSL_VERSION_TEXT : $name,
-				'loaded' => \extension_loaded(\strtolower($name)),
-				'version' => \phpversion($name)
-			];
-		}
-		$aResult[] = [
-			'name' => 'Fileinfo',
-			'loaded' => \class_exists('finfo'),
-			'version' => \phpversion('fileinfo')
-		];
-		$aResult[] = [
-			'name' => 'Phar',
-			'loaded' => \class_exists('PharData'),
-			'version' => \phpversion('phar')
-		];
-		return $this->DefaultResponse($aResult);
-	}
-
 	// /?admin/Backup
 	public function DoAdminBackup() : void
 	{
@@ -261,7 +226,7 @@ class ActionsAdmin extends Actions
 		exit;
 	}
 
-	public function DoAdminUpdateInfo() : array
+	public function DoAdminInfo() : array
 	{
 		$this->IsAdminLoggined();
 
@@ -294,13 +259,50 @@ class ActionsAdmin extends Actions
 			$aWarnings[] = 'Can not edit: ' . APP_INDEX_ROOT_PATH . 'index.php';
 		}
 
-		return $this->DefaultResponse(array(
-			 'updatable' => \SnappyMail\Repository::canUpdateCore(),
-			 'warning' => $bShowWarning,
-			 'version' => $sVersion,
-			 'versionCompare' => \version_compare(APP_VERSION, $sVersion),
-			 'warnings' => $aWarnings
-		));
+		$aResult = [
+			'system' => [
+				'load' => \is_callable('sys_getloadavg') ? \sys_getloadavg() : null
+			],
+			'core' => [
+				 'updatable' => \SnappyMail\Repository::canUpdateCore(),
+				 'warning' => $bShowWarning,
+				 'version' => $sVersion,
+				 'versionCompare' => \version_compare(APP_VERSION, $sVersion),
+				 'warnings' => $aWarnings
+			],
+			'php' => [
+				[
+					'name' => 'PHP ' . PHP_VERSION,
+					'loaded' => true,
+					'version' => PHP_VERSION
+				],
+				[
+					'name' => 'PHP 64bit',
+					'loaded' => PHP_INT_SIZE == 8,
+					'version' => PHP_INT_SIZE
+				]
+			]
+		];
+
+		foreach (['APCu', 'cURL','GnuPG','GD','Gmagick','Imagick','iconv','intl','LDAP','OpenSSL','pdo_mysql','pdo_pgsql','pdo_sqlite','redis','Sodium','Tidy','uuid','XXTEA','Zip'] as $name) {
+			$aResult['php'][] = [
+				'name' => ('OpenSSL' === $name && \defined('OPENSSL_VERSION_TEXT')) ? OPENSSL_VERSION_TEXT : $name,
+				'loaded' => \extension_loaded(\strtolower($name)),
+				'version' => \phpversion($name)
+			];
+		}
+		$aResult['php'][] = [
+			'name' => 'Fileinfo',
+			'loaded' => \class_exists('finfo'),
+			'version' => \phpversion('fileinfo')
+		];
+		$aResult['php'][] = [
+			'name' => 'Phar',
+			'loaded' => \class_exists('PharData'),
+			'version' => \phpversion('phar')
+		];
+
+		return $this->DefaultResponse($aResult);
 	}
 
 	public function DoAdminUpgradeCore() : array

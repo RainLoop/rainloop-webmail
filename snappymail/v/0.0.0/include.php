@@ -3,16 +3,6 @@ if (defined('APP_VERSION_ROOT_PATH')) {
 	return;
 }
 
-if (function_exists('sys_getloadavg')) {
-	$load = sys_getloadavg();
-	if ($load && $load[0] > 95) {
-		header('HTTP/1.1 503 Service Unavailable');
-		header('Retry-After: 120');
-		exit('Mailserver too busy. Please try again later.');
-	}
-	unset($load);
-}
-
 // PHP 8
 if (!function_exists('str_contains')) {
 	function str_contains(string $haystack, string $needle) : bool
@@ -144,28 +134,11 @@ if (isset($_SERVER['HTTPS'])) {
 	header('Strict-Transport-Security: max-age=31536000');
 }
 
-// See https://github.com/kjdev/php-ext-brotli
-if (!ini_get('zlib.output_compression') && !ini_get('brotli.output_compression')) {
-	if (defined('USE_BROTLI') && is_callable('brotli_compress_add') && false !== stripos($_SERVER['HTTP_ACCEPT_ENCODING'], 'br')) {
-		ob_start(function(string $buffer, int $phase){
-			static $resource;
-			if ($phase & PHP_OUTPUT_HANDLER_START) {
-				header('Content-Encoding: br');
-				$resource = brotli_compress_init(/*int $quality = 11, int $mode = BROTLI_GENERIC*/);
-			}
-			return brotli_compress_add($resource, $buffer, ($phase & PHP_OUTPUT_HANDLER_FINAL) ? BROTLI_FINISH : BROTLI_PROCESS);
-		});
-	} else if (defined('USE_GZIP')) {
-		ob_start('ob_gzhandler');
-	}
-}
-
 // cPanel https://github.com/the-djmaze/snappymail/issues/697
 if (!empty($_ENV['CPANEL']) && !is_dir(APP_PLUGINS_PATH.'login-remote')) {
 	require __DIR__ . '/cpanel.php';
 }
 
-if (class_exists('RainLoop\\Api') && empty($_ENV['SNAPPYMAIL_INCLUDE_AS_API'])) {
+if (empty($_ENV['SNAPPYMAIL_INCLUDE_AS_API'])) {
 	RainLoop\Service::Handle();
-	exit;
 }

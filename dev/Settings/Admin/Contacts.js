@@ -13,16 +13,16 @@ export class AdminSettingsContacts extends AbstractViewSettings {
 		super();
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 
-		this.addSetting('ContactsPdoDsn');
-		this.addSetting('ContactsPdoUser');
-		this.addSetting('ContactsPdoPassword');
-		this.addSetting('ContactsPdoType', () => {
+		this.addSetting('contactsPdoDsn');
+		this.addSetting('contactsPdoUser');
+		this.addSetting('contactsPdoPassword');
+		this.addSetting('contactsPdoType', () => {
 			this.testContactsSuccess(false);
 			this.testContactsError(false);
 			this.testContactsErrorMessage('');
 		});
 
-		this.addSettings(['ContactsEnable','ContactsSync']);
+		this.addSettings(['contactsEnable','contactsSync']);
 
 		addObservablesTo(this, {
 			testing: false,
@@ -31,7 +31,7 @@ export class AdminSettingsContacts extends AbstractViewSettings {
 			testContactsErrorMessage: ''
 		});
 
-		this.addSetting('ContactsSuggestionsLimit');
+		this.addSetting('contactsSuggestionsLimit');
 
 		const supportedTypes = SettingsGet('supportedPdoDrivers') || [],
 			types = [{
@@ -92,10 +92,10 @@ export class AdminSettingsContacts extends AbstractViewSettings {
 
 				this.testing(false);
 			}, {
-				ContactsPdoType: this.contactsPdoType(),
-				ContactsPdoDsn: this.contactsPdoDsn(),
-				ContactsPdoUser: this.contactsPdoUser(),
-				ContactsPdoPassword: this.contactsPdoPassword()
+				contactsPdoType: this.contactsPdoType(),
+				contactsPdoDsn: this.contactsPdoDsn(),
+				contactsPdoUser: this.contactsPdoUser(),
+				contactsPdoPassword: this.contactsPdoPassword()
 			}
 		);
 	}

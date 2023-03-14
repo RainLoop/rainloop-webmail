@@ -130,13 +130,14 @@ abstract class Upgrade
 			if (!$aData) {
 				$aData = static::DecodeKeyValues($sData);
 				if ($aData) {
-					$oActions->setContactsSyncData($oAccount, $aData);
-					return array(
+					$aData = array(
 						'Mode' => empty($aData['Enable']) ? 0 : 1,
 						'Url' => isset($aData['Url']) ? \trim($aData['Url']) : '',
 						'User' => isset($aData['User']) ? \trim($aData['User']) : '',
 						'Password' => isset($aData['Password']) ? $aData['Password'] : ''
 					);
+					$oActions->setContactsSyncData($oAccount, $aData);
+					return $aData;
 				}
 			}
 		}

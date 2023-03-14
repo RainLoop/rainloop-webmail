@@ -45,7 +45,7 @@
 		padding-top: 50px;
 		text-align: center;
 		font-size: 24px;
-		color: #666;
+		opacity: 0.5;
 		text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 	}
 
@@ -131,18 +131,20 @@
 		top: 5px;
 		bottom: 5px;
 
-		border: 2px #777 dashed;
+		border: 2px var(--border-color, #ddd) dashed;
 		z-index: 300;
 
 		line-height: 119px;
 		text-align: center;
-		background-color: #efefef;
+		background-color: var(--dialog-bg-clr, #fff);
 		font-size: 24px;
 
 		border-radius: 10px;
 
+		opacity: 0.9;
 		&.dragAndDropOver {
-			background-color: #fff;
+			border-color: var(--main-color, #fff);
+			opacity: 1;
 		}
 	}
 }

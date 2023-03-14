@@ -3,7 +3,7 @@ import { forEachObjectEntry, pInt } from 'Common/Utils';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
 const
-	tpl = createElement('template'),
+	tmpl = createElement('template'),
 	htmlre = /[&<>"']/g,
 	httpre = /^(https?:)?\/\//i,
 	htmlmap = {
@@ -14,10 +14,18 @@ const
 		"'": '&#x27;'
 	},
 
+	disallowedTags = [
+		'svg','script','title','link','base','meta',
+		'input','output','select','button','textarea',
+		'bgsound','keygen','source','object','embed','applet','iframe','frame','frameset','video','audio','area','map'
+		// not supported by <template> element
+//		,'html','head','body'
+	].join(','),
+
 	blockquoteSwitcher = () => {
 		SettingsUserStore.collapseBlockquotes() &&
-//		tpl.content.querySelectorAll('blockquote').forEach(node => {
-		[...tpl.content.querySelectorAll('blockquote')].reverse().forEach(node => {
+//		tmpl.content.querySelectorAll('blockquote').forEach(node => {
+		[...tmpl.content.querySelectorAll('blockquote')].reverse().forEach(node => {
 			const el = createElement('details', {class:'sm-bq-switcher'});
 			el.innerHTML = '<summary>•••</summary>';
 			node.replaceWith(el);
@@ -27,11 +35,11 @@ const
 
 	replaceWithChildren = node => node.replaceWith(...[...node.childNodes]),
 
-	url = /(^|\s|\n|\/?>)(https?:\/\/[-A-Z0-9+&#/%?=()~_|!:,.;]*[-A-Z0-9+&#/%=~()_|])/gi,
+	urlRegExp = /https?:\/\/[^\p{C}\p{Z}]+[^\p{C}\p{Z}.]/gu,
 	// eslint-disable-next-line max-len
-	email = /(^|\s|\n|\/?>)((?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x21\x23-\x5b\x5d-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x21-\x5a\x53-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])+)\]))/gi,
+	email = /(^|\r|\n|\p{C}\p{Z})((?:[^"(),.:;<>@[\]\\\p{C}\p{Z}]+(?:\.[^"(),.:;<>@[\]\\\p{C}\p{Z}]+)*|"(?:\\?[^"\\\p{C}\p{Z}])*")@[^@\p{C}\p{Z}]+[^@\p{C}\p{Z}.])/gui,
 	// rfc3966
-	tel = /(^|\s|\n|\/?>)(tel:(\+[0-9().-]+|[0-9*#().-]+(;phone-context=\+[0-9+().-]+)?))/g,
+	tel = /(tel:(\+[0-9().-]+|[0-9*#().-]+(;phone-context=\+[0-9+().-]+)?))/g,
 
 	// Strip tracking
 	/** TODO: implement other url strippers like from
@@ -89,6 +97,13 @@ const
 		}
 		return url;
 	},
+
+	cleanCSS = source =>
+		source.trim().replace(/-(ms|webkit)-[^;]+(;|$)/g, '')
+			.replace(/white-space[^;]+(;|$)/g, '')
+			// Drop Microsoft Office style properties
+//			.replace(/mso-[^:;]+:[^;]+/gi, '')
+	,
 
 	/*
 		Parses given css string, and returns css object
@@ -161,7 +176,7 @@ const
 					// we have standard css
 					css.push({
 						selector: selector,
-						rules: arr[6]
+						rules: cleanCSS(arr[6])
 					});
 				}
 			}
@@ -239,13 +254,6 @@ export const
 				// td
 				'colspan', 'rowspan', 'headers'
 			],
-			disallowedTags = [
-				'SVG','SCRIPT','TITLE','LINK','BASE','META',
-				'INPUT','OUTPUT','SELECT','BUTTON','TEXTAREA',
-				'BGSOUND','KEYGEN','SOURCE','OBJECT','EMBED','APPLET','IFRAME','FRAME','FRAMESET','VIDEO','AUDIO','AREA','MAP'
-				// Not supported by <template> element
-//				,'HTML','HEAD','BODY'
-			],
 			nonEmptyTags = [
 				'A','B','EM','I','SPAN','STRONG'
 			];
@@ -256,9 +264,9 @@ export const
 			msgId = 0;
 		}
 
-		tpl.innerHTML = html
+		tmpl.innerHTML = html
 			// Strip Microsoft comments
-			.replace(/<!--\[if[\s\S]*?endif\]-->/gi, '')
+			.replace(/<!--\[if[\s\S]*?-->/gi, '')
 //			.replace(/<pre[^>]*>[\s\S]*?<\/pre>/gi, pre => pre.replace(/\n/g, '\n<br>'))
 			// Not supported by <template> element
 //			.replace(/<!doctype[^>]*>/gi, '')
@@ -274,16 +282,17 @@ export const
 
 		// \MailSo\Base\HtmlUtils::ClearComments()
 		// https://github.com/the-djmaze/snappymail/issues/187
-		const nodeIterator = document.createNodeIterator(tpl.content, NodeFilter.SHOW_COMMENT);
+		const nodeIterator = document.createNodeIterator(tmpl.content, NodeFilter.SHOW_COMMENT);
 		while (nodeIterator.nextNode()) {
 			nodeIterator.referenceNode.remove();
 		}
 
-		if (0 < bqLevel) {
-			tpl.content.querySelectorAll(new Array(1 + bqLevel).fill('blockquote').join(' ')).forEach(node => node.remove());
-		}
+		tmpl.content.querySelectorAll(
+			disallowedTags
+			+ (0 < bqLevel ? ',' + (new Array(1 + bqLevel).fill('blockquote').join(' ')) : '')
+		).forEach(oElement => oElement.remove());
 
-		tpl.content.querySelectorAll('*').forEach(oElement => {
+		[...tmpl.content.querySelectorAll('*')].forEach(oElement => {
 			const name = oElement.tagName,
 				oStyle = oElement.style;
 
@@ -303,8 +312,7 @@ export const
 			}
 
 			// \MailSo\Base\HtmlUtils::ClearTags()
-			if (disallowedTags.includes(name)
-			 || 'none' == oStyle.display
+			if ('none' == oStyle.display
 			 || 'hidden' == oStyle.visibility
 //			 || (oStyle.lineHeight && 1 > parseFloat(oStyle.lineHeight)
 //			 || (oStyle.maxHeight && 1 > parseFloat(oStyle.maxHeight)
@@ -320,15 +328,16 @@ export const
 				hasAttribute = name => oElement.hasAttribute(name),
 				getAttribute = name => hasAttribute(name) ? oElement.getAttribute(name).trim() : '',
 				setAttribute = (name, value) => oElement.setAttribute(name, value),
-				delAttribute = name => oElement.removeAttribute(name);
+				delAttribute = name => {
+					let value = getAttribute(name);
+					oElement.removeAttribute(name);
+					return value;
+				};
 
 			if ('mail-body' === className) {
-				forEachObjectEntry(tasks, (name, cb) => {
-					if (hasAttribute(name)) {
-						cb(getAttribute(name), oElement);
-						delAttribute(name);
-					}
-				});
+				forEachObjectEntry(tasks, (name, cb) =>
+					hasAttribute(name) && cb(delAttribute(name), oElement)
+				);
 			} else if (msgId && className) {
 				oElement.className = className.replace(/(^|\s+)/g, '$1msg-');
 			}
@@ -350,21 +359,21 @@ export const
 			if (!oStyle.backgroundImage) {
 				if ('TD' !== name && 'TH' !== name) {
 					// Make width responsive
-					if (hasAttribute('width')) {
-						value = getAttribute('width');
+					if (hasAttribute('width') && !oStyle.width) {
+						value = delAttribute('width');
 						oStyle.width = value.includes('%') ? value : value + 'px';
-						delAttribute('width');
 					}
-					value = oStyle.removeProperty('width');
-					if (parseInt(value,10) && !oStyle.maxWidth) {
+					value = oStyle.width;
+					if (100 < parseInt(value,10) && !oStyle.maxWidth) {
 						oStyle.maxWidth = value;
 						oStyle.width = '100%';
+					} else if (!value?.includes('%')) {
+						oStyle.removeProperty('width');
 					}
 					// Make height responsive
 					if (hasAttribute('height')) {
-						value = getAttribute('height');
+						value = delAttribute('height');
 						oStyle.height = value.includes('%') ? value : value + 'px';
-						delAttribute('height');
 					}
 					value = oStyle.removeProperty('height');
 					if (value && !oStyle.maxHeight) {
@@ -402,8 +411,7 @@ export const
 
 			let skipStyle = false;
 			if (hasAttribute('src')) {
-				value = stripTracking(getAttribute('src'));
-				delAttribute('src');
+				value = stripTracking(delAttribute('src'));
 
 				if ('IMG' === name) {
 					oElement.loading = 'lazy';
@@ -464,18 +472,15 @@ export const
 			}
 
 			if (hasAttribute('background')) {
-				oStyle.backgroundImage = 'url("' + getAttribute('background') + '")';
-				delAttribute('background');
+				oStyle.backgroundImage = 'url("' + delAttribute('background') + '")';
 			}
 
 			if (hasAttribute('bgcolor')) {
-				oStyle.backgroundColor = getAttribute('bgcolor');
-				delAttribute('bgcolor');
+				oStyle.backgroundColor = delAttribute('bgcolor');
 			}
 
 			if (hasAttribute('color')) {
-				oStyle.color = getAttribute('color');
-				delAttribute('color');
+				oStyle.color = delAttribute('color');
 			}
 
 			if (!skipStyle) {
@@ -540,8 +545,7 @@ export const
 					oStyle.removeProperty('color');
 				}
 
-				// Drop Microsoft Office style properties
-//				oStyle.cssText = oStyle.cssText.replace(/mso-[^:;]+:[^;]+/gi, '');
+				oStyle.cssText = cleanCSS(oStyle.cssText);
 			}
 
 			if (debug && aAttrsForRemove.length) {
@@ -551,8 +555,8 @@ export const
 
 		blockquoteSwitcher();
 
-//		return tpl.content.firstChild;
-		result.html = tpl.innerHTML.trim();
+//		return tmpl.content.firstChild;
+		result.html = tmpl.innerHTML.trim();
 		return result;
 	},
 
@@ -563,7 +567,7 @@ export const
 	htmlToPlain = html => {
 		const
 			hr = '⎯'.repeat(64),
-			forEach = (selector, fn) => tpl.content.querySelectorAll(selector).forEach(fn),
+			forEach = (selector, fn) => tmpl.content.querySelectorAll(selector).forEach(fn),
 			blockquotes = node => {
 				let bq;
 				while ((bq = node.querySelector('blockquote'))) {
@@ -591,7 +595,7 @@ export const
 			html = html.replace(/\n*<\/(div|tr)(\s[\s\S]*?)?>\n*/gi, '\n');
 		}
 
-		tpl.innerHTML = html
+		tmpl.innerHTML = html
 			.replace(/<t[dh](\s[\s\S]*?)?>/gi, '\t')
 			.replace(/<\/tr(\s[\s\S]*?)?>/gi, '\n');
 
@@ -641,16 +645,16 @@ export const
 		forEach('i,em', i => i.replaceWith(`*${i.textContent}*`));
 
 		// Convert line-breaks
-		tpl.innerHTML = tpl.innerHTML
+		tmpl.innerHTML = tmpl.innerHTML
 			.replace(/\n{3,}/gm, '\n\n')
 			.replace(/\n<br[^>]*>/g, '\n')
 			.replace(/<br[^>]*>\n/g, '\n');
 		forEach('br', br => br.replaceWith('\n'));
 
 		// Blockquotes must be last
-		blockquotes(tpl.content);
+		blockquotes(tmpl.content);
 
-		return (tpl.content.textContent || '').trim();
+		return (tmpl.content.textContent || '').trim();
 	},
 
 	/**
@@ -704,22 +708,22 @@ export const
 			aText = aNextText;
 		} while (bDo);
 
-		tpl.innerHTML = aText.join('\n')
+		tmpl.innerHTML = aText.join('\n')
 			// .replace(/~~~\/blockquote~~~\n~~~blockquote~~~/g, '\n')
 			.replace(/&/g, '&amp;')
 			.replace(/>/g, '&gt;')
 			.replace(/</g, '&lt;')
-			.replace(url, (...m) => {
-				m[2] = stripTracking(m[2]);
-				return `${m[1]}<a href="${m[2]}" target="_blank">${m[2]}</a>`;
+			.replace(urlRegExp, (...m) => {
+				m[0] = stripTracking(m[0]);
+				return `<a href="${m[0]}" target="_blank">${m[0]}</a>`;
 			})
 			.replace(email, '$1<a href="mailto:$2">$2</a>')
-			.replace(tel, '$1<a href="$2">$2</a>')
+			.replace(tel, '<a href="$1">$1</a>')
 			.replace(/~~~blockquote~~~\s*/g, '<blockquote>')
 			.replace(/\s*~~~\/blockquote~~~/g, '</blockquote>')
 			.replace(/\n/g, '<br>');
 		blockquoteSwitcher();
-		return tpl.innerHTML.trim();
+		return tmpl.innerHTML.trim();
 	},
 
 	WYSIWYGS = ko.observableArray();

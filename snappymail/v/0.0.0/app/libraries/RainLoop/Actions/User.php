@@ -36,25 +36,30 @@ trait User
 	{
 		$sEmail = \MailSo\Base\Utils::Trim($this->GetActionParam('Email', ''));
 		$sPassword = $this->GetActionParam('Password', '');
-		$bSignMe = !empty($this->GetActionParam('SignMe', 0));
+		$bSignMe = !empty($this->GetActionParam('signMe', 0));
 
 		$this->Logger()->AddSecret($sPassword);
 
-		$oAccount = $this->LoginProcess($sEmail, $sPassword, $bSignMe);
+		try {
+			$oAccount = $this->LoginProcess($sEmail, $sPassword, $bSignMe);
+		} catch (\Throwable $oException) {
+			$this->loginErrorDelay();
+			throw $oException;
+		}
 
 		$this->SetAuthToken($oAccount);
 
 		$this->Plugins()->RunHook('login.success', array($oAccount));
 
-		$sLanguage = $this->GetActionParam('Language', '');
+		$sLanguage = $this->GetActionParam('language', '');
 		if ($oAccount && $sLanguage) {
 			$oSettings = $this->SettingsProvider()->Load($oAccount);
 			if ($oSettings) {
 				$sLanguage = $this->ValidateLanguage($sLanguage);
-				$sCurrentLanguage = $oSettings->GetConf('Language', '');
+				$sCurrentLanguage = $oSettings->GetConf('language', '');
 
 				if ($sCurrentLanguage !== $sLanguage) {
-					$oSettings->SetConf('Language', $sLanguage);
+					$oSettings->SetConf('language', $sLanguage);
 					$this->SettingsProvider()->Save($oAccount, $oSettings);
 				}
 			}
@@ -140,11 +145,11 @@ trait User
 		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
 		if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)) {
-			$this->setSettingsFromParams($oSettings, 'Language', 'string', function ($sLanguage) use ($self) {
+			$this->setSettingsFromParams($oSettings, 'language', 'string', function ($sLanguage) use ($self) {
 				return $self->ValidateLanguage($sLanguage);
 			});
 		} else {
-//			$oSettings->SetConf('Language', $this->ValidateLanguage($oConfig->Get('webmail', 'language', 'en')));
+//			$oSettings->SetConf('language', $this->ValidateLanguage($oConfig->Get('webmail', 'language', 'en')));
 		}
 		$this->setSettingsFromParams($oSettings, 'hourCycle', 'string');
 
@@ -196,6 +201,7 @@ trait User
 		$this->setSettingsFromParams($oSettings, 'AutoLogout', 'int');
 		$this->setSettingsFromParams($oSettings, 'MessageReadDelay', 'int');
 		$this->setSettingsFromParams($oSettings, 'MsgDefaultAction', 'int');
+		$this->setSettingsFromParams($oSettings, 'showNextMessage', 'bool');
 
 		$this->setSettingsFromParams($oSettings, 'Resizer4Width', 'int');
 		$this->setSettingsFromParams($oSettings, 'Resizer5Width', 'int');
@@ -223,7 +229,7 @@ trait User
 
 		try
 		{
-			$aQuota = $this->MailClient()->QuotaRoot();
+			$aQuota = $this->ImapClient()->QuotaRoot();
 		}
 		catch (\Throwable $oException)
 		{

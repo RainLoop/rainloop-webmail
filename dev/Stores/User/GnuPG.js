@@ -11,14 +11,15 @@ import { showScreenPopup } from 'Knoin/Knoin';
 import { OpenPgpKeyPopupView } from 'View/Popup/OpenPgpKey';
 import { AskPopupView } from 'View/Popup/Ask';
 
+import { Passphrases } from 'Storage/Passphrases';
+
 const
-	passphrases = new Map(),
 	askPassphrase = async (privateKey, btnTxt = 'LABEL_SIGN') => {
 		const key = privateKey.id,
-			pass = passphrases.has(key)
-				? {password:passphrases.get(key), remember:false}
+			pass = Passphrases.has(key)
+				? {password:Passphrases.get(key), remember:false}
 				: await AskPopupView.password('GnuPG key<br>' + key + ' ' + privateKey.emails[0], 'OPENPGP/'+btnTxt);
-		pass && pass.remember && passphrases.set(key, pass.password);
+		pass && pass.remember && Passphrases.set(key, pass.password);
 		return pass.password;
 	},
 
@@ -83,7 +84,7 @@ export const GnuPGUserStore = new class {
 											key.armor = oData.Result;
 											showScreenPopup(OpenPgpKeyPopupView, [key]);
 										} else {
-											passphrases.delete(key.id);
+											Passphrases.delete(key.id);
 										}
 									}, {
 										keyId: key.id,
@@ -198,7 +199,7 @@ export const GnuPGUserStore = new class {
 					if (result?.Result && false !== result.Result.data) {
 						return result.Result;
 					}
-					passphrases.delete(key.id);
+					Passphrases.delete(key.id);
 				}
 			}
 		}

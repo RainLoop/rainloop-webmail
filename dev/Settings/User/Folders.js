@@ -1,12 +1,11 @@
 import ko from 'ko';
 
-import { Notification } from 'Common/Enums';
+import { Notifications } from 'Common/Enums';
 import { FolderMetadataKeys } from 'Common/EnumsUser';
 import { getNotification } from 'Common/Translator';
 
-import { setFolder, getFolderFromCacheList, removeFolderFromCacheList } from 'Common/Cache';
+import { getFolderFromCacheList, removeFolderFromCacheList } from 'Common/Cache';
 import { defaultOptionsAfterRender } from 'Common/Utils';
-import { sortFolders } from 'Common/Folders';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 
 import { FolderUserStore } from 'Stores/User/Folder';
@@ -18,7 +17,6 @@ import { showScreenPopup } from 'Knoin/Knoin';
 
 import { FolderCreatePopupView } from 'View/Popup/FolderCreate';
 import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
-import { loadFolders } from 'Model/FolderCollection';
 
 const folderForDeletion = ko.observable(null).askDeleteHelper();
 
@@ -52,50 +50,8 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 
 		this.folderForDeletion = folderForDeletion;
 
-		this.folderForEdit = ko.observable(null).extend({ toggleSubscribeProperty: [this, 'editing'] });
-
 		SettingsUserStore.hideUnsubscribed.subscribe(value => Remote.saveSetting('HideUnsubscribed', value));
 		SettingsUserStore.unhideKolabFolders.subscribe(value => Remote.saveSetting('UnhideKolabFolders', value));
-	}
-
-	folderEditOnEnter(folder) {
-		const nameToEdit = folder?.nameForEdit().trim();
-		if (nameToEdit && folder.name() !== nameToEdit) {
-			Remote.abort('Folders').post('FolderRename', FolderUserStore.foldersRenaming, {
-					folder: folder.fullName,
-					newFolderName: nameToEdit,
-					subscribe: folder.isSubscribed() ? 1 : 0
-				})
-				.then(data => {
-					folder.name(nameToEdit/*data.name*/);
-					if (folder.subFolders.length) {
-						Remote.setTrigger(FolderUserStore.foldersLoading, true);
-//						clearTimeout(Remote.foldersTimeout);
-//						Remote.foldersTimeout = setTimeout(loadFolders, 500);
-						setTimeout(loadFolders, 500);
-						// TODO: rename all subfolders with folder.delimiter to prevent reload?
-					} else {
-						removeFolderFromCacheList(folder.fullName);
-						folder.fullName = data.Result.fullName;
-						setFolder(folder);
-						const parent = getFolderFromCacheList(folder.parentName);
-						sortFolders(parent ? parent.subFolders : FolderUserStore.folderList);
-					}
-				})
-				.catch(error => {
-					FolderUserStore.folderListError(
-						getNotification(error.code, '', Notification.CantRenameFolder)
-						+ '.\n' + error.message);
-				});
-		}
-
-//		this.folderForEdit(null);
-		folder.editing(false);
-	}
-
-	folderEditOnEsc(folder) {
-//		this.folderForEdit(null);
-		folder?.editing(false);
 	}
 
 	onShow() {
@@ -119,8 +75,8 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 		 && folderToRemove.askDelete()
 		) {
 			if (0 < folderToRemove.totalEmails()) {
-//				FolderUserStore.folderListError(getNotification(Notification.CantDeleteNonEmptyFolder));
-				folderToRemove.errorMsg(getNotification(Notification.CantDeleteNonEmptyFolder));
+//				FolderUserStore.folderListError(getNotification(Notifications.CantDeleteNonEmptyFolder));
+				folderToRemove.errorMsg(getNotification(Notifications.CantDeleteNonEmptyFolder));
 			} else {
 				folderForDeletion(null);
 
@@ -129,7 +85,7 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 							folder: folderToRemove.fullName
 						}).then(
 							() => {
-//								folderToRemove.flags.push('\\nonexistent');
+//								folderToRemove.attributes.push('\\nonexistent');
 								folderToRemove.selectable(false);
 //								folderToRemove.isSubscribed(false);
 //								folderToRemove.checkable(false);
@@ -141,7 +97,7 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 							},
 							error => {
 								FolderUserStore.folderListError(
-									getNotification(error.code, '', Notification.CantDeleteFolder)
+									getNotification(error.code, '', Notifications.CantDeleteFolder)
 									+ '.\n' + error.message
 								);
 							}

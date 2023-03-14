@@ -1,7 +1,7 @@
 import 'External/User/ko';
 
 import { SMAudio } from 'Common/Audio';
-import { isArray, pString, pInt } from 'Common/Utils';
+import { isArray, pInt } from 'Common/Utils';
 import { mailToHelper, setLayoutResizer, dropdownsDetectVisibility } from 'Common/UtilsUser';
 
 import {
@@ -156,22 +156,11 @@ export class AppUser extends AbstractApp {
 					? items.map(oValue => new AccountModel(oValue.email, oValue.name))
 					: []
 				);
-				AccountUserStore.unshift(new AccountModel(SettingsGet('MainEmail'), '', false));
+				AccountUserStore.unshift(new AccountModel(SettingsGet('mainEmail'), '', false));
 
 				items = oData.Result.Identities;
 				IdentityUserStore(isArray(items)
-					? items.map(identityData => {
-						const identity = new IdentityModel(
-							pString(identityData.Id),
-							pString(identityData.Email)
-						);
-						identity.name(pString(identityData.Name));
-						identity.replyTo(pString(identityData.ReplyTo));
-						identity.bcc(pString(identityData.Bcc));
-						identity.signature(pString(identityData.Signature));
-						identity.signatureInsertBefore(!!identityData.SignatureInsertBefore);
-						return identity;
-					})
+					? items.map(identityData => IdentityModel.reviveFromJson(identityData))
 					: []
 				);
 			}
@@ -193,18 +182,17 @@ export class AppUser extends AbstractApp {
 	bootstart() {
 		super.bootstart();
 
-		addEventListener('resize', () => leftPanelDisabled(ThemeStore.isMobile() || 1000 > innerWidth));
 		addEventListener('beforeunload', event => {
-			if (arePopupsVisible() || (ThemeStore.isMobile() && MessageUserStore.message())) {
+			if (arePopupsVisible() || (!SettingsUserStore.layout() && MessageUserStore.message())) {
 				event.preventDefault();
-				return event.returnValue = "Are you sure you want to exit?";
+				return event.returnValue = i18n('POPUPS_ASK/EXIT_ARE_YOU_SURE');
 			}
 		}, {capture: true});
 	}
 
 	refresh() {
 		ThemeStore.populate();
-		LanguageStore.language(SettingsGet('Language'));
+		LanguageStore.language(SettingsGet('language'));
 		changeTheme(SettingsGet('Theme'));
 		this.start();
 	}
@@ -263,18 +251,15 @@ export class AppUser extends AbstractApp {
 
 						PgpUserStore.init();
 
-						// When auto-login is active
-						try {
-							navigator.registerProtocolHandler?.(
-								'mailto',
-								location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
-								(SettingsGet('Title') || 'SnappyMail')
-							);
-						} catch (e) {
-							console.error(e);
-						}
+						setTimeout(() => mailToHelper(SettingsGet('mailToEmail')), 500);
 
-						setTimeout(() => mailToHelper(SettingsGet('MailToEmail')), 500);
+						// When auto-login is active
+						navigator.registerProtocolHandler?.(
+							'mailto',
+							location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
+							(SettingsGet('title') || 'SnappyMail')
+						);
+
 					} else {
 						this.logout();
 					}

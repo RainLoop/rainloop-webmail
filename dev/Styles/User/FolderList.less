@@ -7,6 +7,12 @@
 	height: 100%;
 }
 
+.focused .b-folders a.focused {
+	background-color: var(--folders-focused-bg-color, #333);
+	border-left-color: #fff;
+	color: var(--folders-focused-color, #eee);
+}
+
 .b-folders {
 	display: flex;
 	flex-direction: column;
@@ -38,7 +44,6 @@
 	}
 
 	.b-toolbar {
-		padding: 10px 0 10px @rlLowMargin;
 		color: #fff;
 	}
 
@@ -56,7 +61,6 @@
 
 	hr {
 		margin: 10px;
-		border-color: #999;
 	}
 
 	li {
@@ -101,20 +105,10 @@
 					background-color: var(--folders-selected-bg-color, #333);
 					color: var(--folders-selected-color, #eee);
 				}
-
-				&.focused {
-					background-color: var(--folders-focused-bg-color, #333);
-					color: var(--folders-focused-color, #eee);
-				}
 			}
 			&:not(.selectable) {
 				cursor: default;
 				font-style: italic;
-			}
-
-			&.focused {
-				background-color: #888;
-				border-left-color: #fff;
 			}
 
 			&.unread-sub {
@@ -213,24 +207,19 @@
 /**/
 }
 
-.btn {
-	&.buttonCompose {
-		max-height: 2em;
-		max-width: fit-content;
-		overflow: hidden;
-		width: calc(100% - 48px);
-	}
+#rl-left .buttonCompose {
+	max-height: 2em;
+	max-width: fit-content;
+	overflow: hidden;
+	width: calc(100% - 48px);
 }
 
 html.rl-left-panel-disabled {
-	.buttonComposeText{
+	.buttonComposeText,
+	.buttonContacts {
 		display: none;
 	}
-	.btn.buttonCompose {
+	#rl-left .buttonCompose {
 		width: auto;
-	}
-	.btn.buttonContacts {
-		margin-top: 10px !important;
-		margin-left: 0 !important;
 	}
 }

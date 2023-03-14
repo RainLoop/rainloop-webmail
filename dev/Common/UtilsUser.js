@@ -1,11 +1,9 @@
-import { MessageFlagsCache } from 'Common/Cache';
-import { Notification } from 'Common/Enums';
+import { Notifications } from 'Common/Enums';
 import { MessageSetAction, ComposeType/*, FolderType*/ } from 'Common/EnumsUser';
 import { doc, createElement, elementById, dropdowns, dropdownVisibility, SettingsGet, leftPanelDisabled } from 'Common/Globals';
 import { plainToHtml } from 'Common/Html';
 import { getNotification } from 'Common/Translator';
 import { EmailCollectionModel } from 'Model/EmailCollection';
-import { MessageModel } from 'Model/Message';
 import { MessageUserStore } from 'Stores/User/Message';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { SettingsUserStore } from 'Stores/User/Settings';
@@ -43,10 +41,11 @@ download = (link, name = "") => {
 	}
 },
 
-downloadZip = (hashes, onError, fTrigger, folder) => {
+downloadZip = (name, hashes, onError, fTrigger, folder) => {
 	if (hashes.length) {
 		let params = {
 			target: 'zip',
+			filename: name,
 			hashes: hashes
 		};
 		if (!onError) {
@@ -156,7 +155,7 @@ mailToHelper = mailToUrl => {
 		mailToUrl = mailToUrl.slice(7).split('?');
 
 		const
-			email = mailToUrl[0],
+			email = decodeURIComponent(mailToUrl[0]),
 			params = new URLSearchParams(mailToUrl[1]),
 			to = params.get('to'),
 			toEmailModel = value => EmailCollectionModel.fromString(value);
@@ -246,75 +245,78 @@ setLayoutResizer = (source, sClientSideKeyName, mode) =>
 	}
 },
 
+viewMessage = (oMessage, popup) => {
+	if (popup) {
+		oMessage.viewPopupMessage();
+	} else {
+		MessageUserStore.error('');
+		let id = 'rl-msg-' + oMessage.hash,
+			body = oMessage.body || elementById(id);
+		if (!body) {
+			body = createElement('div',{
+				id:id,
+				hidden:'',
+				class:'b-text-part'
+					+ (oMessage.pgpSigned() ? ' openpgp-signed' : '')
+					+ (oMessage.pgpEncrypted() ? ' openpgp-encrypted' : '')
+			});
+			MessageUserStore.purgeCache();
+		}
+
+		body.message = oMessage;
+		oMessage.body = body;
+
+		if (!SettingsUserStore.viewHTML() || !oMessage.viewHtml()) {
+			oMessage.viewPlain();
+		}
+
+		MessageUserStore.bodiesDom().append(body);
+
+		MessageUserStore.loading(false);
+		oMessage.body.hidden = false;
+
+		if (oMessage.isUnseen()) {
+			MessageUserStore.MessageSeenTimer = setTimeout(
+				() => MessagelistUserStore.setAction(oMessage.folder, MessageSetAction.SetSeen, [oMessage]),
+				SettingsUserStore.messageReadDelay() * 1000 // seconds
+			);
+		}
+	}
+},
+
 populateMessageBody = (oMessage, popup) => {
 	if (oMessage) {
 		popup || MessageUserStore.message(oMessage);
-		popup || MessageUserStore.loading(true);
-		Remote.message((iError, oData/*, bCached*/) => {
-			if (iError) {
-				if (Notification.RequestAborted !== iError && !popup) {
-					MessageUserStore.message(null);
-					MessageUserStore.error(getNotification(iError));
-				}
-			} else {
-				let json = oData?.Result;
-				if (json
-				 && MessageModel.validJson(json)
-				 && oMessage.hash === json.hash
-//				 && oMessage.folder === json.folder
-//				 && oMessage.uid == json.uid
-				 && oMessage.revivePropertiesFromJson(json)
-				) {
+		if (oMessage.body) {
+			viewMessage(oMessage, popup);
+		} else {
+			popup || MessageUserStore.loading(true);
+			Remote.message((iError, oData/*, bCached*/) => {
+				if (iError) {
+					if (Notifications.RequestAborted !== iError && !popup) {
+						MessageUserStore.message(null);
+						MessageUserStore.error(getNotification(iError));
+					}
+				} else {
+					let json = oData?.Result;
+					if (json
+					 && oMessage.hash === json.hash
+//					 && oMessage.folder === json.folder
+//					 && oMessage.uid == json.uid
+					 && oMessage.revivePropertiesFromJson(json)
+					) {
 /*
-					if (bCached) {
-						delete json.flags;
-					}
-*/
-					if (popup) {
-						oMessage.viewPopupMessage();
-					} else {
-						MessageUserStore.error('');
-						const messagesDom = MessageUserStore.bodiesDom();
-						if (messagesDom) {
-							let id = 'rl-msg-' + oMessage.hash,
-								body = elementById(id);
-							if (body) {
-								oMessage.body = body;
-								oMessage.isHtml(body.classList.contains('html'));
-								oMessage.hasImages(body.rlHasImages);
-							} else {
-								body = createElement('div',{
-									id:id,
-									hidden:'',
-									class:'b-text-part'
-										+ (oMessage.pgpSigned() ? ' openpgp-signed' : '')
-										+ (oMessage.pgpEncrypted() ? ' openpgp-encrypted' : '')
-								});
-								oMessage.body = body;
-								if (!SettingsUserStore.viewHTML() || !oMessage.viewHtml()) {
-									oMessage.viewPlain();
-								}
-
-								MessageUserStore.purgeMessageBodyCache();
-							}
-
-							messagesDom.append(body);
-
-							oMessage.body.hidden = false;
+						if (bCached) {
+							delete json.flags;
 						}
-					}
-
-					MessageFlagsCache.initMessage(oMessage);
-					if (oMessage.isUnseen()) {
-						MessageUserStore.MessageSeenTimer = setTimeout(
-							() => MessagelistUserStore.setAction(oMessage.folder, MessageSetAction.SetSeen, [oMessage]),
-							SettingsUserStore.messageReadDelay() * 1000 // seconds
-						);
+						oMessage.body.remove();
+*/
+						viewMessage(oMessage, popup);
 					}
 				}
-			}
-			popup || MessageUserStore.loading(false);
-		}, oMessage.folder, oMessage.uid);
+				popup || MessageUserStore.loading(false);
+			}, oMessage.folder, oMessage.uid);
+		}
 	}
 };
 

@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Aggiungi account"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Versione mobile",
-		"BUTTON_DESKTOP_VERSION": "Versione desktop"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Ricerca avanzata",
 		"TEXT": "Messaggio",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "Attenzione! Non tutti gli allegati sono stati caricati.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Non tutti gli allegati sono stati caricati al momento.",
 		"ALLOW_SPELLCHECK": "Abilita il controllo ortografico del browser",
+		"ALLOW_DRAFT_AUTOSAVE": "Salva automaticamente la bozza",
 		"BUTTON_REQUEST_READ_RECEIPT": "Richiedi conferma di lettura",
 		"BUTTON_MARK_AS_IMPORTANT": "Marca come importante",
 		"BUTTON_REQUEST_DSN": "Richiedi conferma del ricevimento",
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Sei sicuro di voler chiudere questa finestra?",
 		"DESC_WANT_DELETE_MESSAGES": "Sei sicuro di voler eliminare il messaggio?"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "A pagina intera",
 		"LAYOUT_VERTICAL_SPLIT": "Divisione verticale",
 		"LAYOUT_HORIZONTAL_SPLIT": "Divisione orizzontale",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Editor di testo predefinito",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Testo semplice",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Genera chiave",
 		"TITLE_PRIVATE": "Privata",
 		"TITLE_PUBLIC": "Pubblica",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Salva automaticamente la bozza",
 		"GET_MAILVELOPE": "Installa l'estensione browser Mailvelope."
 	},
 	"SHORTCUTS_HELP": {

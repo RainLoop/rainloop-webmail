@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "アカウントを追加"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "モバイル版",
-		"BUTTON_DESKTOP_VERSION": "デスクトップ版"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "高度な検索",
 		"TEXT": "キーワード",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "警告！すべての添付ファイルがアップロードされているわけではありません。",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "すべての添付ファイルがアップロードされているわけではありません。",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "下書きを自動的に保存する",
 		"BUTTON_REQUEST_READ_RECEIPT": "開封確認を要求する",
 		"BUTTON_MARK_AS_IMPORTANT": "重要フラグをつける",
 		"BUTTON_REQUEST_DSN": "配信確認を要求する",
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "このウインドウを閉じていいですか？",
 		"DESC_WANT_DELETE_MESSAGES": "メッセージを削除していいですか？"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "分割しない",
 		"LAYOUT_VERTICAL_SPLIT": "縦に分割",
 		"LAYOUT_HORIZONTAL_SPLIT": "横に分割",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "メール形式",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "プレーンテキスト",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "キーを生成",
 		"TITLE_PRIVATE": "プライベート",
 		"TITLE_PUBLIC": "パブリック",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "下書きを自動的に保存する",
 		"GET_MAILVELOPE": "Mailvelopeのブラウザアドオンを入手する"
 	},
 	"SHORTCUTS_HELP": {

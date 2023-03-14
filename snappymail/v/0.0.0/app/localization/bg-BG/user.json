@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Добави акаунт"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Мобилна версия",
-		"BUTTON_DESKTOP_VERSION": "Десктоп версия"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Разширено търсене",
 		"TEXT": "Текст",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "Внимание! Не всички прикачени файлове са качени.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Все още не са качени всички прикрепени файлове",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Автоматично запазване на чернова",
 		"BUTTON_REQUEST_READ_RECEIPT": "Поискайте разписка за прочитане на съобщението",
 		"BUTTON_MARK_AS_IMPORTANT": "Отбележи като важно",
 		"BUTTON_REQUEST_DSN": "Уведомяване при доставка",
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Сигурни ли сте, че желаете да затворите този прозорец?",
 		"DESC_WANT_DELETE_MESSAGES": "Сигурни ли сте, че желаете да изтриете съобщението\/съобщенията?"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Не разделяй",
 		"LAYOUT_VERTICAL_SPLIT": "Вертикално разделяне",
 		"LAYOUT_HORIZONTAL_SPLIT": "Хоризонтално разделяне",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Текстов редактор по подразбиране",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Чист текст",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Генерирай ключ",
 		"TITLE_PRIVATE": "Частен",
 		"TITLE_PUBLIC": "Публичен",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Автоматично запазване на чернова",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

@@ -195,7 +195,7 @@
 	}
 }
 
-html:not(rl-mobile) {
+@media screen and (min-width: @maxMobileWidth + 1px) {
 	.hideContactListCheckbox {
 		.checkboxItem {
 			visibility: hidden;
@@ -203,7 +203,7 @@ html:not(rl-mobile) {
 	}
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: @maxMobileWidth) {
 	#V-PopupsContacts {
 		width: 100%;
 	}

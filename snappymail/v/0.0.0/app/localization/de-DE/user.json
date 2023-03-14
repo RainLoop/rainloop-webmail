@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Konto hinzufügen"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobile Version",
-		"BUTTON_DESKTOP_VERSION": "Desktop Version"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Erweiterte Suche",
 		"TEXT": "Text",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "Warnung! Nicht alle Anhänge wurden hochgeladen.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Es wurden noch nicht alle Anhänge hochgeladen.",
 		"ALLOW_SPELLCHECK": "Rechtschreibprüfung durch den Browser zulassen",
+		"ALLOW_DRAFT_AUTOSAVE": "Entwurf automatisch speichern",
 		"BUTTON_REQUEST_READ_RECEIPT": "Empfangsbestätigung anfordern",
 		"BUTTON_MARK_AS_IMPORTANT": "Als Wichtig markieren",
 		"BUTTON_REQUEST_DSN": "Übermittlungsstatus anfordern",
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Sind Sie sicher, dass Sie dieses Fenster schließen möchten?",
 		"DESC_WANT_DELETE_MESSAGES": "Sind Sie sicher, dass Sie diese Nachricht(en) löschen möchten?"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Keine Aufteilung",
 		"LAYOUT_VERTICAL_SPLIT": "Vertikale Aufteilung",
 		"LAYOUT_HORIZONTAL_SPLIT": "Horizontale Aufteilung",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Standard-Texteditor",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Unformatierter Text",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Schlüssel generieren",
 		"TITLE_PRIVATE": "Privat",
 		"TITLE_PUBLIC": "Öffentlich",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Entwurf automatisch speichern",
 		"GET_MAILVELOPE": "Lade das Mailvelope Browser Addon herunter."
 	},
 	"SHORTCUTS_HELP": {

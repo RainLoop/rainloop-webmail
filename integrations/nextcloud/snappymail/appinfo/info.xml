@@ -3,7 +3,7 @@
 	<id>snappymail</id>
 	<name>SnappyMail</name>
 	<summary>SnappyMail Webmail</summary>
-	<version>2.26.1</version>
+	<version>2.26.4</version>
 	<licence>agpl</licence>
 	<author>SnappyMail, RainLoop Team, Nextgen-Networks, Tab Fitts, Nathan Kinkade, Pierre-Alain Bandinelli</author>
 	<description><![CDATA[**Simple, modern, lightweight & fast web-based email client.**
@@ -39,7 +39,7 @@ There, click on the link to go to the SnappyMail admin panel.
 	<repository>https://github.com/the-djmaze/snappymail/tree/master/integrations/nextcloud</repository>
 	<bugs>https://github.com/the-djmaze/snappymail/issues</bugs>
 	<dependencies>
-		<php min-version="7.4" min-int-size="64" />
+		<php min-version="7.4" min-int-size="32" />
 		<lib>mbstring</lib>
 		<lib>zlib</lib>
 <!--

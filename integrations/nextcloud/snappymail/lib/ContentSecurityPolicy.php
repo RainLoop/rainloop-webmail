@@ -16,7 +16,7 @@ class ContentSecurityPolicy extends \OCP\AppFramework\Http\ContentSecurityPolicy
 	function __construct() {
 		$CSP = \RainLoop\Api::getCSP();
 
-		$this->allowedScriptDomains = \array_unique(\array_merge($this->allowedScriptDomains, $CSP->script));
+		$this->allowedScriptDomains = \array_unique(\array_merge($this->allowedScriptDomains, $CSP->get('script-src')));
 		$this->allowedScriptDomains = \array_diff($this->allowedScriptDomains, ["'unsafe-inline'", "'unsafe-eval'"]);
 
 		// Nextcloud only sets 'strict-dynamic' when browserSupportsCspV3() ?
@@ -24,12 +24,12 @@ class ContentSecurityPolicy extends \OCP\AppFramework\Http\ContentSecurityPolicy
 			? $this->useStrictDynamic(true) // NC24+
 			: $this->addAllowedScriptDomain("'strict-dynamic'");
 
-		$this->allowedImageDomains = \array_unique(\array_merge($this->allowedImageDomains, $CSP->img));
+		$this->allowedImageDomains = \array_unique(\array_merge($this->allowedImageDomains, $CSP->get('img-src')));
 
-		$this->allowedStyleDomains = \array_unique(\array_merge($this->allowedStyleDomains, $CSP->style));
+		$this->allowedStyleDomains = \array_unique(\array_merge($this->allowedStyleDomains, $CSP->get('style-src')));
 		$this->allowedStyleDomains = \array_diff($this->allowedStyleDomains, ["'unsafe-inline'"]);
 
-		$this->allowedFrameDomains = \array_unique(\array_merge($this->allowedFrameDomains, $CSP->frame));
+		$this->allowedFrameDomains = \array_unique(\array_merge($this->allowedFrameDomains, $CSP->get('frame-src')));
 
 		$this->reportTo = \array_unique(\array_merge($this->reportTo, $CSP->report_to));
 	}

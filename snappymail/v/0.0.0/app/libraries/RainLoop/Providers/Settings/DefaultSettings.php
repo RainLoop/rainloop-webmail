@@ -26,11 +26,9 @@ class DefaultSettings implements ISettings
 				self::FILE_NAME
 		);
 
-		if (\is_string($sValue))
-		{
+		if (\is_string($sValue)) {
 			$aData = \json_decode($sValue, true);
-			if (\is_array($aData))
-			{
+			if (\is_array($aData)) {
 				return $aData;
 			}
 		}
@@ -38,14 +36,14 @@ class DefaultSettings implements ISettings
 		return array();
 	}
 
-	public function Save(\RainLoop\Model\Account $oAccount, array $aSettings) : bool
+	public function Save(\RainLoop\Model\Account $oAccount, \RainLoop\Settings $oSettings) : bool
 	{
 		return $this->oStorageProvider->Put($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 			$this->oStorageProvider->IsLocal() ?
 				self::FILE_NAME_LOCAL :
 				self::FILE_NAME,
-			\json_encode($aSettings));
+			\json_encode($oSettings));
 	}
 
 	public function Delete(\RainLoop\Model\Account $oAccount) : bool

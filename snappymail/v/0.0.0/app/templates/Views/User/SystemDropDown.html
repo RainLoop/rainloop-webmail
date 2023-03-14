@@ -4,10 +4,10 @@
 		<div class="playIcon"><div></div></div>
 		<i class="stopIcon fontastic">⏸</i>
 	</div>
-	<div class="accountPlace hide-mobile" data-bind="text: accountName(), title: accountEmail"></div>
 	<div class="btn-group dropdown" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: accountMenuDropdownTrigger">
 		<a id="top-system-dropdown-id" href="#" tabindex="-1" class="btn single btn-block dropdown-toggle">
-			<i style="vertical-align:middle" class="fontastic" data-bind="css: {'icon-spinner': accountsLoading()}">👤</i>
+			<span class="accountPlace hide-mobile" data-bind="text: accountName(), title: accountEmail"></span>
+			<i class="fontastic" data-bind="css: {'icon-spinner': accountsLoading()}">👤</i>
 <!--
 			<b data-bind="text: accountsUnreadCount, visible: 100 > accountsUnreadCount() && accountsUnreadCount()"></b>
 			<b data-bind="visible: 99 < accountsUnreadCount()">99+</b>
@@ -36,10 +36,6 @@
 				<a href="#" tabindex="-1" data-bind="click: settingsHelp" data-icon="🛈" data-i18n="GLOBAL/HELP"></a>
 			</li>
 			<li class="dividerbar" role="presentation">
-				<a href="#" tabindex="-1" data-bind="click: toggleLayout" data-icon="💻" class="show-mobile" data-i18n="MOBILE/BUTTON_DESKTOP_VERSION"></a>
-				<a href="#" tabindex="-1" data-bind="click: toggleLayout" data-icon="📱" class="hide-mobile" data-i18n="MOBILE/BUTTON_MOBILE_VERSION"></a>
-			</li>
-			<li role="presentation">
 				<a href="#" tabindex="-1" data-bind="click: logoutClick" data-icon="⏻" data-i18n="GLOBAL/LOGOUT"></a>
 			</li>
 		</menu>

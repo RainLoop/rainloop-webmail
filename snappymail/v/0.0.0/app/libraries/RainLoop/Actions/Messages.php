@@ -62,11 +62,12 @@ trait Messages
 		$oAccount = $this->initMailClientConnection();
 
 		if ($sHash) {
+//			$oInfo = $this->MailClient()->FolderHash($oParams->sFolderName);
 			$oInfo = $this->ImapClient()->FolderStatusAndSelect($oParams->sFolderName);
 			$aRequestHash = \explode('-', $sHash);
-			$sFolderHash = $oInfo->getHash($this->ImapClient()->Hash());
+			$sFolderHash = $oInfo->etag;
 			$sHash = $oParams->hash() . '-' . $sFolderHash;
-			if ($aRequestHash[0] == $sFolderHash) {
+			if ($aRequestHash[1] == $sFolderHash) {
 				$this->verifyCacheByKey($sHash);
 			}
 		}
@@ -121,9 +122,8 @@ trait Messages
 
 				\rewind($rMessageStream);
 
-				$iNewUid = 0;
-				$this->MailClient()->MessageAppendStream(
-					$rMessageStream, $iMessageStreamSize, $sDraftFolder, array(MessageFlag::SEEN), $iNewUid
+				$iNewUid = $this->ImapClient()->MessageAppendStream(
+					$sDraftFolder, $rMessageStream, $iMessageStreamSize, array(MessageFlag::SEEN)
 				);
 
 				if (!empty($sMessageId) && (null === $iNewUid || 0 === $iNewUid)) {
@@ -135,7 +135,7 @@ trait Messages
 				$sMessageFolder = $this->GetActionParam('messageFolder', '');
 				$iMessageUid = (int) $this->GetActionParam('messageUid', 0);
 				if (\strlen($sMessageFolder) && 0 < $iMessageUid) {
-					$this->MailClient()->MessageDelete($sMessageFolder, new SequenceSet($iMessageUid));
+					$this->ImapClient()->MessageDelete($sMessageFolder, new SequenceSet($iMessageUid));
 				}
 
 				if (null !== $iNewUid && 0 < $iNewUid) {
@@ -212,8 +212,8 @@ trait Messages
 								$this->Plugins()->RunHook('filter.send-message-stream',
 									array($oAccount, &$rMessageStream, &$iMessageStreamSize));
 
-								$this->MailClient()->MessageAppendStream(
-									$rMessageStream, $iMessageStreamSize, $sSentFolder, array(MessageFlag::SEEN)
+								$this->ImapClient()->MessageAppendStream(
+									$sSentFolder, $rMessageStream, $iMessageStreamSize, array(MessageFlag::SEEN)
 								);
 							} else {
 								$rAppendMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
@@ -224,8 +224,8 @@ trait Messages
 								$this->Plugins()->RunHook('filter.send-message-stream',
 									array($oAccount, &$rAppendMessageStream, &$iAppendMessageStreamSize));
 
-								$this->MailClient()->MessageAppendStream(
-									$rAppendMessageStream, $iAppendMessageStreamSize, $sSentFolder, array(MessageFlag::SEEN)
+								$this->ImapClient()->MessageAppendStream(
+									$sSentFolder, $rAppendMessageStream, $iAppendMessageStreamSize, array(MessageFlag::SEEN)
 								);
 
 								if (\is_resource($rAppendMessageStream)) {
@@ -250,7 +250,7 @@ trait Messages
 					if (\strlen($sDraftFolder) && 0 < $iDraftUid) {
 						try
 						{
-							$this->MailClient()->MessageDelete($sDraftFolder, new SequenceSet($iDraftUid));
+							$this->ImapClient()->MessageDelete($sDraftFolder, new SequenceSet($iDraftUid));
 						}
 						catch (\Throwable $oException)
 						{
@@ -406,15 +406,12 @@ trait Messages
 	{
 		$sRawKey = (string) $this->GetActionParam('RawKey', '');
 
-		$sFolder = '';
-		$iUid = 0;
-
 		$aValues = \json_decode(\MailSo\Base\Utils::UrlSafeBase64Decode($sRawKey), true);
 		if ($aValues && 2 <= \count($aValues)) {
 			$sFolder = (string) $aValues[0];
 			$iUid = (int) $aValues[1];
-
-			$this->verifyCacheByKey($sRawKey);
+//			$useThreads = !empty($aValues[2]);
+//			$accountHash = $aValues[3];
 		} else {
 			$sFolder = $this->GetActionParam('folder', '');
 			$iUid = (int) $this->GetActionParam('uid', 0);
@@ -432,9 +429,10 @@ trait Messages
 		}
 
 		if ($oMessage) {
+			$ETag = $oMessage->ETag($this->getAccountFromToken()->IncLogin());
+			$this->verifyCacheByKey($ETag);
 			$this->Plugins()->RunHook('filter.result-message', array($oMessage));
-
-			$this->cacheByKey($sRawKey);
+			$this->cacheByKey($ETag);
 		}
 
 		return $this->DefaultResponse($oMessage);
@@ -452,7 +450,7 @@ trait Messages
 
 		try
 		{
-			$this->MailClient()->MessageDelete($sFolder, new SequenceSet($aUids), true);
+			$this->ImapClient()->MessageDelete($sFolder, new SequenceSet($aUids), true);
 		}
 		catch (\Throwable $oException)
 		{
@@ -517,7 +515,7 @@ trait Messages
 
 		try
 		{
-			$this->MailClient()->MessageMove($sFromFolder, $sToFolder, $oUids);
+			$this->ImapClient()->MessageMove($sFromFolder, $sToFolder, $oUids);
 		}
 		catch (\Throwable $oException)
 		{
@@ -546,7 +544,7 @@ trait Messages
 
 		try
 		{
-			$this->MailClient()->MessageCopy(
+			$this->ImapClient()->MessageCopy(
 				$this->GetActionParam('fromFolder', ''),
 				$this->GetActionParam('toFolder', ''),
 				new SequenceSet(\explode(',', (string) $this->GetActionParam('uids', '')))
@@ -577,7 +575,7 @@ trait Messages
 				$oFilesProvider = $this->FilesProvider();
 				foreach ($aAttachments as $mIndex => $sAttachment) {
 					$aAttachments[$mIndex] = false;
-					if ($aValues = $this->decodeRawKey($oAccount, $sAttachment)) {
+					if ($aValues = $this->decodeRawKey($sAttachment)) {
 						$sFolder = isset($aValues['folder']) ? (string) $aValues['folder'] : '';
 						$iUid = isset($aValues['uid']) ? (int) $aValues['uid'] : 0;
 						$sMimeIndex = isset($aValues['mimeIndex']) ? (string) $aValues['mimeIndex'] : '';
@@ -651,7 +649,7 @@ trait Messages
 
 			$oAccount = $this->initMailClientConnection();
 
-			$oImapClient = $this->MailClient()->ImapClient();
+			$oImapClient = $this->ImapClient();
 			$oImapClient->FolderExamine($sFolderName);
 
 			$aParts = [

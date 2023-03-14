@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import {
-	Notification,
+	Notifications,
 	UploadErrorCode
 } from 'Common/Enums';
 
@@ -11,7 +11,7 @@ import {
 	FolderType
 } from 'Common/EnumsUser';
 
-import { pInt, isArray, arrayLength } from 'Common/Utils';
+import { pInt, isArray, arrayLength, b64Encode } from 'Common/Utils';
 import { encodeHtml, HtmlEditor, htmlToPlain } from 'Common/Html';
 import { koArrayWithDestroy, addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
 
@@ -19,8 +19,8 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { folderInformation, messagesDeleteHelper } from 'Common/Folders';
 import { serverRequest } from 'Common/Links';
 import { i18n, getNotification, getUploadErrorDescByCode, timestampToString } from 'Common/Translator';
-import { MessageFlagsCache, setFolderHash } from 'Common/Cache';
-import { Settings, SettingsCapa, SettingsGet, elementById, addShortcut, createElement } from 'Common/Globals';
+import { setFolderETag } from 'Common/Cache';
+import { SettingsCapa, SettingsGet, elementById, addShortcut, createElement } from 'Common/Globals';
 //import { exitFullscreen, isFullscreen, toggleFullscreen } from 'Common/Fullscreen';
 
 import { AppUserStore } from 'Stores/User/App';
@@ -57,7 +57,7 @@ const
 
 	tpl = createElement('template'),
 
-	base64_encode = text => btoa(unescape(encodeURIComponent(text))).match(/.{1,76}/g).join('\r\n'),
+	base64_encode = text => b64Encode(text).match(/.{1,76}/g).join('\r\n'),
 
 	getEmail = value => addressparser(value)[0]?.email || false,
 
@@ -72,7 +72,7 @@ const
 	reloadDraftFolder = () => {
 		const draftsFolder = FolderUserStore.draftsFolder();
 		if (draftsFolder && UNUSED_OPTION_VALUE !== draftsFolder) {
-			setFolderHash(draftsFolder, '');
+			setFolderETag(draftsFolder, '');
 			if (FolderUserStore.currentFolderFullName() === draftsFolder) {
 				MessagelistUserStore.reload(true);
 			} else {
@@ -441,16 +441,6 @@ export class ComposePopupView extends AbstractViewPopup {
 				this.sendError(false);
 				this.sending(true);
 
-				if (3 === arrayLength(this.aDraftInfo)) {
-					const flagsCache = MessageFlagsCache.getFor(this.aDraftInfo[2], this.aDraftInfo[1]);
-					if (isArray(flagsCache)) {
-						flagsCache.push(('forward' === this.aDraftInfo[0]) ? '$forwarded' : '\\answered');
-						MessageFlagsCache.setFor(this.aDraftInfo[2], this.aDraftInfo[1], flagsCache);
-						MessagelistUserStore.reloadFlagsAndCachedMessage();
-						setFolderHash(this.aDraftInfo[2], '');
-					}
-				}
-
 				sSentFolder = UNUSED_OPTION_VALUE === sSentFolder ? '' : sSentFolder;
 
 				this.getMessageRequestParams(sSentFolder).then(params => {
@@ -458,19 +448,23 @@ export class ComposePopupView extends AbstractViewPopup {
 						(iError, data) => {
 							this.sending(false);
 							if (iError) {
-								if (Notification.CantSaveMessage === iError) {
+								if (Notifications.CantSaveMessage === iError) {
 									this.sendSuccessButSaveError(true);
 									this.savedErrorDesc(i18n('COMPOSE/SAVED_ERROR_ON_SEND').trim());
 								} else {
 									this.sendError(true);
 									this.sendErrorDesc(getNotification(iError, data?.ErrorMessage)
-										|| getNotification(Notification.CantSendMessage));
+										|| getNotification(Notifications.CantSendMessage));
 								}
 							} else {
 								this.close();
 							}
-							setFolderHash(this.draftsFolder(), '');
-							setFolderHash(sSentFolder, '');
+							setFolderETag(this.draftsFolder(), '');
+							setFolderETag(sSentFolder, '');
+							if (3 === arrayLength(this.aDraftInfo)) {
+								const folder = this.aDraftInfo[2];
+								setFolderETag(folder, '');
+							}
 							reloadDraftFolder();
 						},
 						params,
@@ -492,57 +486,59 @@ export class ComposePopupView extends AbstractViewPopup {
 	}
 
 	saveCommand() {
-		if (FolderUserStore.draftsFolderNotEnabled()) {
-			showScreenPopup(FolderSystemPopupView, [FolderType.Drafts]);
-		} else {
-			this.savedError(false);
-			this.saving(true);
-			this.autosaveStart();
-			this.getMessageRequestParams(FolderUserStore.draftsFolder(), 1).then(params => {
-				Remote.request('SaveMessage',
-					(iError, oData) => {
-						let result = false;
+		if (!this.saving() && !this.sending()) {
+			if (FolderUserStore.draftsFolderNotEnabled()) {
+				showScreenPopup(FolderSystemPopupView, [FolderType.Drafts]);
+			} else {
+				this.savedError(false);
+				this.saving(true);
+				this.autosaveStart();
+				this.getMessageRequestParams(FolderUserStore.draftsFolder(), 1).then(params => {
+					Remote.request('SaveMessage',
+						(iError, oData) => {
+							let result = false;
 
-						this.saving(false);
+							this.saving(false);
 
-						if (!iError) {
-							if (oData.Result.folder && oData.Result.uid) {
-								result = true;
+							if (!iError) {
+								if (oData.Result.folder && oData.Result.uid) {
+									result = true;
 
-								if (this.bFromDraft) {
-									const message = MessageUserStore.message();
-									if (message && this.draftsFolder() === message.folder && this.draftUid() == message.uid) {
-										MessageUserStore.message(null);
+									if (this.bFromDraft) {
+										const message = MessageUserStore.message();
+										if (message && this.draftsFolder() === message.folder && this.draftUid() == message.uid) {
+											MessageUserStore.message(null);
+										}
 									}
+
+									this.draftsFolder(oData.Result.folder);
+									this.draftUid(oData.Result.uid);
+
+									this.savedTime(new Date);
+
+									if (this.bFromDraft) {
+										setFolderETag(this.draftsFolder(), '');
+									}
+									setFolderETag(FolderUserStore.draftsFolder(), '');
 								}
-
-								this.draftsFolder(oData.Result.folder);
-								this.draftUid(oData.Result.uid);
-
-								this.savedTime(new Date);
-
-								if (this.bFromDraft) {
-									setFolderHash(this.draftsFolder(), '');
-								}
-								setFolderHash(FolderUserStore.draftsFolder(), '');
 							}
-						}
 
-						if (!result) {
-							this.savedError(true);
-							this.savedErrorDesc(getNotification(Notification.CantSaveMessage));
-						}
+							if (!result) {
+								this.savedError(true);
+								this.savedErrorDesc(getNotification(Notifications.CantSaveMessage));
+							}
 
-						reloadDraftFolder();
-					},
-					params,
-					200000
-				);
-			}).catch(e => {
-				this.saving(false);
-				this.savedError(true);
-				this.savedErrorDesc(getNotification(Notification.CantSaveMessage) + ': ' + e);
-			});
+							reloadDraftFolder();
+						},
+						params,
+						200000
+					);
+				}).catch(e => {
+					this.saving(false);
+					this.savedError(true);
+					this.savedErrorDesc(getNotification(Notifications.CantSaveMessage) + ': ' + e);
+				});
+			}
 		}
 	}
 
@@ -569,12 +565,7 @@ export class ComposePopupView extends AbstractViewPopup {
 	skipCommand() {
 		ComposePopupView.inEdit(true);
 
-		if (
-			!this.saving() &&
-			!this.sending() &&
-			!FolderUserStore.draftsFolderNotEnabled() &&
-			SettingsUserStore.allowDraftAutosave()
-		) {
+		if (!FolderUserStore.draftsFolderNotEnabled() && SettingsUserStore.allowDraftAutosave()) {
 			this.saveCommand();
 		}
 
@@ -597,8 +588,6 @@ export class ComposePopupView extends AbstractViewPopup {
 				&& !FolderUserStore.draftsFolderNotEnabled()
 				&& SettingsUserStore.allowDraftAutosave()
 				&& !this.isEmptyForm(false)
-				&& !this.saving()
-				&& !this.sending()
 				&& !this.savedError()
 			) {
 				this.saveCommand();
@@ -617,7 +606,7 @@ export class ComposePopupView extends AbstractViewPopup {
 						data.Result.map(item => (item?.[0] ? (new EmailModel(item[0], item[1])).toLine() : null))
 						.filter(v => v)
 					);
-				} else if (Notification.RequestAborted !== iError) {
+				} else if (Notifications.RequestAborted !== iError) {
 					fResponse([]);
 				}
 			},
@@ -870,9 +859,9 @@ export class ComposePopupView extends AbstractViewPopup {
 
 			// https://github.com/the-djmaze/snappymail/issues/491
 			tpl.innerHTML = message.bodyAsHTML();
-			tpl.content.querySelectorAll('img').forEach(img =>
-				img.dataset.xSrcCid || img.dataset.xSrc || img.replaceWith(img.alt || img.title)
-			);
+			tpl.content.querySelectorAll('img').forEach(img => {
+				img.src || img.dataset.xSrcCid || img.dataset.xSrc || img.replaceWith(img.alt || img.title)
+			});
 			sText = tpl.innerHTML.trim();
 
 			switch (msgComposeType) {
@@ -1010,7 +999,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				clickElement: dom.querySelector('#composeUploadButton'),
 				dragAndDropElement: dom.querySelector('.b-attachment-place')
 			}),
-			attachmentSizeLimit = pInt(SettingsGet('AttachmentLimit'));
+			attachmentSizeLimit = pInt(SettingsGet('attachmentLimit'));
 
 		oJua
 			.on('onDragEnter', () => {
@@ -1124,12 +1113,12 @@ export class ComposePopupView extends AbstractViewPopup {
 			return false;
 		});
 
-		if (Settings.app('allowCtrlEnterOnCompose')) {
-			addShortcut('enter', 'meta', ScopeCompose, () => {
+		addShortcut('enter', 'meta', ScopeCompose, () => {
+//			if (SettingsUserStore.allowCtrlEnterOnCompose()) {
 				this.sendCommand();
 				return false;
-			});
-		}
+//			}
+		});
 		addShortcut('mailsend', '', ScopeCompose, () => {
 			this.sendCommand();
 			return false;
@@ -1297,7 +1286,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			 */
 			let text = this.oEditor.getData(),
 				encrypted = PgpUserStore.isEncrypted(text),
-				size = SettingsGet('PhpUploadSizes')['post_max_size'],
+				size = SettingsGet('phpUploadSizes')['post_max_size'],
 				quota = pInt(size);
 			switch (size.slice(-1)) {
 				case 'G': quota *= 1024; // fallthrough
@@ -1409,7 +1398,10 @@ export class ComposePopupView extends AbstractViewPopup {
 			encrypt = this.pgpEncrypt() && this.canPgpEncrypt(),
 			isHtml = this.oEditor.isHtml();
 
-		let Text = this.oEditor.getData();
+		let Text = this.oEditor.getData().trim();
+		if (!Text.length) {
+			throw 'Message body is empty';
+		}
 		if (isHtml) {
 			let l;
 			do {

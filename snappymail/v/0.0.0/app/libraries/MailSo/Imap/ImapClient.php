@@ -49,22 +49,15 @@ class ImapClient extends \MailSo\Net\NetClient
 
 	private bool $bIsLoggined = false;
 
-	private string $sLogginedUser = '';
-
 	private bool $UTF8 = false;
 
 	public function Hash() : string
 	{
 		return \md5('ImapClientHash/'.
-			$this->GetLogginedUser() . '@' .
-			$this->GetConnectedHost() . ':' .
-			$this->GetConnectedPort()
+			$this->Settings->Login . '@' .
+			$this->Settings->host . ':' .
+			$this->Settings->port
 		);
-	}
-
-	public function GetLogginedUser() : string
-	{
-		return $this->sLogginedUser;
 	}
 
 	/**
@@ -109,22 +102,25 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function Login(Settings $oSettings) : self
 	{
+		if ($this->bIsLoggined) {
+			return $this;
+		}
+
 		if (!empty($oSettings->ProxyAuthUser) && !empty($oSettings->ProxyAuthPassword)) {
-			$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($oSettings->ProxyAuthUser));
+			$sLogin = $oSettings->ProxyAuthUser;
 			$sPassword = $oSettings->ProxyAuthPassword;
 			$sProxyAuthUser = $oSettings->Login;
 		} else {
-			$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($oSettings->Login));
+			$sLogin = $oSettings->Login;
 			$sPassword = $oSettings->Password;
 			$sProxyAuthUser = '';
 		}
 
-		if (!\strlen($sLogin) || !\strlen($sPassword))
-		{
+		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sLogin));
+
+		if (!\strlen($sLogin) || !\strlen($sPassword)) {
 			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
 		}
-
-		$this->sLogginedUser = $sLogin;
 
 		$type = '';
 		foreach ($oSettings->SASLMechanisms as $sasl_type) {
@@ -222,8 +218,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 			$this->setCapabilities($oResponse);
 
-			if (\strlen($sProxyAuthUser))
-			{
+			if (\strlen($sProxyAuthUser)) {
 				$this->SendRequestGetResponse('PROXYAUTH', array($this->EscapeString($sProxyAuthUser)));
 			}
 /*
@@ -318,6 +313,9 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 			if ($this->Settings->disable_list_status) {
 				$aList = \array_diff($aList, ['LIST-STATUS']);
+			}
+			if (8 > PHP_INT_SIZE) {
+				$aList = \array_diff($aList, ['CONDSTORE']);
 			}
 		}
 		$this->aCapabilityItems = $aList;

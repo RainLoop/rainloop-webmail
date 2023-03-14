@@ -24,7 +24,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		const
 	//		folder = getFolderFromCacheList(params.folder.fullName),
 			folder = getFolderFromCacheList(params.folder),
-			folderHash = folder?.hash || '';
+			folderETag = folder?.etag || '';
 
 		params = Object.assign({
 			offset: 0,
@@ -40,8 +40,8 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		}
 
 		let sGetAdd = '';
-		if (folderHash) {
-			params.hash = folderHash + '-' + SettingsGet('AccountHash');
+		if (folderETag) {
+			params.hash = folderETag + '-' + SettingsGet('accountHash');
 			sGetAdd = 'MessageList/' + SUB_QUERY_PREFIX + '/' + b64EncodeJSONSafe(params);
 			params = {};
 		}
@@ -77,7 +77,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 						sFolderFullName,
 						iUid,
 						AppUserStore.threadsAllowed() && SettingsUserStore.useThreads() ? 1 : 0,
-						SettingsGet('AccountHash')
+						SettingsGet('accountHash')
 					])
 			);
 

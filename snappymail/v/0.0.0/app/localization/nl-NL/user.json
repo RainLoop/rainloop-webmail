@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Account toevoegen"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobiele versie",
-		"BUTTON_DESKTOP_VERSION": "Desktop versie"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Geavanceerd zoeken",
 		"TEXT": "Tekst",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "Waarschuwing! Nog niet alle bijlagen zijn klaar met uploaden",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Toevoegen van bijlage(n) is nog niet gereed",
 		"ALLOW_SPELLCHECK": "De browser spellingcontrole toestaan",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatisch opslaan as concept",
 		"BUTTON_REQUEST_READ_RECEIPT": "Leesbevestiging vragen",
 		"BUTTON_MARK_AS_IMPORTANT": "Markeer als belangrijk",
 		"BUTTON_REQUEST_DSN": "Ontvangstbevestiging vragen",
 		"BUTTON_REQUIRE_TLS": "Veilige bezorging vereisen"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Weet u zeker dat u dit venster wilt sluiten?",
 		"DESC_WANT_DELETE_MESSAGES": "Weet u zeker dat u dit\/deze bericht\/berichten wilt verwijderen?"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Geen splitsing",
 		"LAYOUT_VERTICAL_SPLIT": "Verticale splitsing",
 		"LAYOUT_HORIZONTAL_SPLIT": "Horizontale splitsing",
+		"SHOW_NEXT_MESSAGE": "Toon volgende bericht bij verplaatsen huidige bericht",
 		"EDITOR": "Standaard tekst editor",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Platte tekst",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Genereer sleutels",
 		"TITLE_PRIVATE": "Privé sleutel",
 		"TITLE_PUBLIC": "Publieke sleutel",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatisch opslaan as concept",
 		"GET_MAILVELOPE": "Verkrijg Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

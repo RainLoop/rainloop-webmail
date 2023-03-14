@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Pridať účet"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Verzia pre mobil",
-		"BUTTON_DESKTOP_VERSION": "Verzia pre desktop"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Rozšírené hľadanie",
 		"TEXT": "Text",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "Pozor! Nie všetky prílohy boli nahraté.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Nie všetky prílohy boli už nahraté na server.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automaticky uložiť koncept.",
 		"BUTTON_REQUEST_READ_RECEIPT": "Vyžiadať potvrdenie o prečítaní",
 		"BUTTON_MARK_AS_IMPORTANT": "Označiť ako dôležité",
 		"BUTTON_REQUEST_DSN": "Vyžiadať potvrdenie o doručení",
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Ste si istý že chcete zatvoriť toto okno?",
 		"DESC_WANT_DELETE_MESSAGES": "Ste si istý že chcete odstrániť tieto správy?"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "No Split",
 		"LAYOUT_VERTICAL_SPLIT": "Vertical Split",
 		"LAYOUT_HORIZONTAL_SPLIT": "Horizontal Split",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Predvolený editor správ",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "Text",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Generate Keys",
 		"TITLE_PRIVATE": "Private",
 		"TITLE_PUBLIC": "Public",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automaticky uložiť koncept.",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

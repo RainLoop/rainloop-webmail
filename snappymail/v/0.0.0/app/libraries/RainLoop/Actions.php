@@ -2,8 +2,6 @@
 
 namespace RainLoop;
 
-use RainLoop\Enumerations\UploadError;
-
 class Actions
 {
 	use Actions\Admin;
@@ -129,6 +127,8 @@ class Actions
 			$sLogFileName = $this->oConfig->Get('logs', 'filename', '');
 			if ('syslog' === $sLogFileName) {
 				$oDriver = new \MailSo\Log\Drivers\Syslog();
+			} else if ('stderr' === $sLogFileName) {
+				$oDriver = new \MailSo\Log\Drivers\StderrStream();
 			} else {
 				$sLogFileFullPath = \trim($this->oConfig->Get('logs', 'path', '')) ?: \APP_PRIVATE_DATA . 'logs';
 				\is_dir($sLogFileFullPath) || \mkdir($sLogFileFullPath, 0700, true);
@@ -245,8 +245,8 @@ class Actions
 	public function BootEnd(): void
 	{
 		try {
-			if ($this->MailClient()->IsLoggined()) {
-				$this->MailClient()->Disconnect();
+			if ($this->ImapClient()->IsLoggined()) {
+				$this->ImapClient()->Disconnect();
 			}
 		} catch (\Throwable $oException) {
 			unset($oException);
@@ -610,8 +610,8 @@ class Actions
 
 		$aResult = array(
 			'Auth' => false,
-			'Title' => $oConfig->Get('webmail', 'title', 'SnappyMail Webmail'),
-			'LoadingDescription' => $oConfig->Get('webmail', 'loading_description', 'SnappyMail'),
+			'title' => $oConfig->Get('webmail', 'title', 'SnappyMail Webmail'),
+			'loadingDescription' => $oConfig->Get('webmail', 'loading_description', 'SnappyMail'),
 			'Plugins' => array(),
 			'System' => \array_merge(
 				array(
@@ -626,7 +626,7 @@ class Actions
 					'adminAllowed' => (bool)$oConfig->Get('security', 'allow_admin_panel', true)
 				) : array()
 			),
-			'AllowLanguagesOnLogin' => (bool) $oConfig->Get('login', 'allow_languages_on_login', true)
+			'allowLanguagesOnLogin' => (bool) $oConfig->Get('login', 'allow_languages_on_login', true)
 		);
 
 		$sLanguage = $oConfig->Get('webmail', 'language', 'en');
@@ -635,32 +635,32 @@ class Actions
 		if ($bAdmin) {
 			$aResult['Auth'] = $this->IsAdminLoggined(false);
 			if ($aResult['Auth']) {
-				$aResult['AdminLogin'] = (string)$oConfig->Get('security', 'admin_login', '');
-				$aResult['AdminTOTP'] = (string)$oConfig->Get('security', 'admin_totp', '');
-				$aResult['EnabledPlugins'] = (bool)$oConfig->Get('plugins', 'enable', false);
+				$aResult['adminLogin'] = (string)$oConfig->Get('security', 'admin_login', '');
+				$aResult['adminTOTP'] = (string)$oConfig->Get('security', 'admin_totp', '');
+				$aResult['pluginsEnable'] = (bool)$oConfig->Get('plugins', 'enable', false);
 
-				$aResult['LoginDefaultDomain'] = $oConfig->Get('login', 'default_domain', '');
-				$aResult['DetermineUserLanguage'] = (bool)$oConfig->Get('login', 'determine_user_language', true);
-				$aResult['DetermineUserDomain'] = (bool)$oConfig->Get('login', 'determine_user_domain', false);
+				$aResult['loginDefaultDomain'] = $oConfig->Get('login', 'default_domain', '');
+				$aResult['determineUserLanguage'] = (bool)$oConfig->Get('login', 'determine_user_language', true);
+				$aResult['determineUserDomain'] = (bool)$oConfig->Get('login', 'determine_user_domain', false);
 
 				$aResult['supportedPdoDrivers'] = \RainLoop\Common\PdoAbstract::getAvailableDrivers();
 
-				$aResult['ContactsEnable'] = (bool)$oConfig->Get('contacts', 'enable', false);
-				$aResult['ContactsSync'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
-				$aResult['ContactsPdoType'] = Providers\AddressBook\PdoAddressBook::validPdoType($this->oConfig->Get('contacts', 'type', 'sqlite'));
-				$aResult['ContactsPdoDsn'] = (string)$oConfig->Get('contacts', 'pdo_dsn', '');
-				$aResult['ContactsPdoType'] = (string)$oConfig->Get('contacts', 'type', '');
-				$aResult['ContactsPdoUser'] = (string)$oConfig->Get('contacts', 'pdo_user', '');
-				$aResult['ContactsPdoPassword'] = static::APP_DUMMY;
-				$aResult['ContactsSuggestionsLimit'] = (int)$oConfig->Get('contacts', 'suggestions_limit', 20);
+				$aResult['contactsEnable'] = (bool)$oConfig->Get('contacts', 'enable', false);
+				$aResult['contactsSync'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
+				$aResult['contactsPdoType'] = Providers\AddressBook\PdoAddressBook::validPdoType($this->oConfig->Get('contacts', 'type', 'sqlite'));
+				$aResult['contactsPdoDsn'] = (string)$oConfig->Get('contacts', 'pdo_dsn', '');
+				$aResult['contactsPdoType'] = (string)$oConfig->Get('contacts', 'type', '');
+				$aResult['contactsPdoUser'] = (string)$oConfig->Get('contacts', 'pdo_user', '');
+				$aResult['contactsPdoPassword'] = static::APP_DUMMY;
+				$aResult['contactsSuggestionsLimit'] = (int)$oConfig->Get('contacts', 'suggestions_limit', 20);
 
-				$aResult['FaviconUrl'] = $oConfig->Get('webmail', 'favicon_url', '');
+				$aResult['faviconUrl'] = $oConfig->Get('webmail', 'favicon_url', '');
 
-				$aResult['WeakPassword'] = \is_file(APP_PRIVATE_DATA.'admin_password.txt');
+				$aResult['weakPassword'] = \is_file(APP_PRIVATE_DATA.'admin_password.txt');
 
 				$aResult['System']['languagesAdmin'] = \SnappyMail\L10n::getLanguages(true);
-				$aResult['LanguageAdmin'] = $this->ValidateLanguage($oConfig->Get('webmail', 'language_admin', 'en'), '', true);
-				$aResult['UserLanguageAdmin'] = $this->ValidateLanguage($UserLanguageRaw, '', true, true);
+				$aResult['languageAdmin'] = $this->ValidateLanguage($oConfig->Get('webmail', 'language_admin', 'en'), '', true);
+				$aResult['languageUsers'] = $this->ValidateLanguage($UserLanguageRaw, '', true, true);
 			} else {
 				$passfile = APP_PRIVATE_DATA.'admin_password.txt';
 				$sPassword = $oConfig->Get('security', 'admin_password', '');
@@ -678,12 +678,11 @@ class Actions
 				$aResult = \array_merge($aResult, [
 					'Auth' => true,
 					'Email' => \MailSo\Base\Utils::IdnToUtf8($oAccount->Email()),
-					'AccountHash' => $oAccount->Hash(),
-					'AccountSignMe' => isset($_COOKIE[self::AUTH_SIGN_ME_TOKEN_KEY]),
-					'MainEmail' => \MailSo\Base\Utils::IdnToUtf8($this->getMainAccountFromToken()->Email()),
-					'MailToEmail' => '',
+					'accountHash' => $oAccount->Hash(),
+					'accountSignMe' => isset($_COOKIE[self::AUTH_SIGN_ME_TOKEN_KEY]),
+					'mainEmail' => \MailSo\Base\Utils::IdnToUtf8($this->getMainAccountFromToken()->Email()),
 
-					'ContactsIsAllowed' => $this->AddressBookProvider($oAccount)->IsActive(),
+					'contactsAllowed' => $this->AddressBookProvider($oAccount)->IsActive(),
 
 					'ViewHTML' => (bool) $oConfig->Get('defaults', 'view_html', true),
 					'ViewImages' => 'ask',
@@ -704,6 +703,7 @@ class Actions
 					'Layout' => (int) $oConfig->Get('defaults', 'view_layout', Enumerations\Layout::SIDE_PREVIEW),
 					'EditorDefaultType' => \str_replace('Forced', '', $oConfig->Get('defaults', 'view_editor_type', '')),
 					'UseCheckboxesInList' => (bool) $oConfig->Get('defaults', 'view_use_checkboxes', true),
+					'showNextMessage' => false,
 					'AutoLogout' => (int) $oConfig->Get('defaults', 'autologout', 30),
 					'UseThreads' => (bool) $oConfig->Get('defaults', 'mail_use_threads', false),
 					'AllowDraftAutosave' => (bool) $oConfig->Get('defaults', 'allow_draft_autosave', true),
@@ -714,9 +714,7 @@ class Actions
 					'ShowUnreadCount' => false,
 					'UnhideKolabFolders' => false,
 					'CheckMailInterval' => 15,
-					'UserBackgroundName' => '',
-					'UserBackgroundHash' => '',
-					'SieveAllowFileintoInbox' => (bool)$oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false)
+					'sieveAllowFileintoInbox' => (bool)$oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false)
 				]);
 
 				$aAttachmentsActions = array();
@@ -727,8 +725,6 @@ class Actions
 				}
 				$aResult['System'] = \array_merge(
 					$aResult['System'], array(
-						'allowHtmlEditorBitiButtons' => (bool)$oConfig->Get('labs', 'allow_html_editor_biti_buttons', false),
-						'allowCtrlEnterOnCompose' => (bool)$oConfig->Get('labs', 'allow_ctrl_enter_on_compose', false),
 						'allowAppendMessage' => (bool)$oConfig->Get('labs', 'allow_message_append', false),
 						'folderSpecLimit' => (int)$oConfig->Get('labs', 'folders_spec_limit', 50),
 						'listPermanentFiltered' => '' !== \trim($oConfig->Get('imap', 'message_list_permanent_filter', '')),
@@ -737,7 +733,7 @@ class Actions
 					)
 				);
 
-				if ($aResult['ContactsIsAllowed'] && $oConfig->Get('contacts', 'allow_sync', false)) {
+				if ($aResult['contactsAllowed'] && $oConfig->Get('contacts', 'allow_sync', false)) {
 					$aData = $this->getContactsSyncData($oAccount) ?: [
 						'Mode' => 0,
 						'Url' => '',
@@ -745,6 +741,7 @@ class Actions
 					];
 					$aData['Password'] = empty($aData['Password']) ? '' : static::APP_DUMMY;
 					$aData['Interval'] = \max(20, \min(320, (int) $oConfig->Get('contacts', 'sync_interval', 20)));
+					unset($aData['PasswordHMAC']);
 					$aResult['ContactsSync'] = $aData;
 				}
 
@@ -754,15 +751,28 @@ class Actions
 
 					$mMailToData = Utils::DecodeKeyValuesQ($sToken);
 					if (!empty($mMailToData['MailTo']) && 'MailTo' === $mMailToData['MailTo'] && !empty($mMailToData['To'])) {
-						$aResult['MailToEmail'] = \MailSo\Base\Utils::IdnToUtf8($mMailToData['To']);
+						$aResult['mailToEmail'] = \MailSo\Base\Utils::IdnToUtf8($mMailToData['To']);
 					}
 				}
 
+				if ($oConfig->Get('login', 'determine_user_language', true)) {
+					$sLanguage = $this->ValidateLanguage($UserLanguageRaw, $sLanguage, false);
+				}
+
+				// MainAccount or AdditionalAccount
 				$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 				if ($oSettingsLocal instanceof Settings) {
+/*
+					foreach ($oSettingsLocal->toArray() as $key => $value) {
+						$aResult[\lcfirst($key)] = $value;
+					}
+					$aResult['junkFolder'] = $aResult['spamFolder'];
+					unset($aResult['checkableFolder']);
+					unset($aResult['theme']);
+*/
 					$aResult['SentFolder'] = (string)$oSettingsLocal->GetConf('SentFolder', '');
-					$aResult['DraftsFolder'] = (string)$oSettingsLocal->GetConf('DraftFolder', '');
-					$aResult['JunkFolder'] = (string)$oSettingsLocal->GetConf('SpamFolder', '');
+					$aResult['DraftsFolder'] = (string)$oSettingsLocal->GetConf('DraftsFolder', '');
+					$aResult['JunkFolder'] = (string)$oSettingsLocal->GetConf('JunkFolder', '');
 					$aResult['TrashFolder'] = (string)$oSettingsLocal->GetConf('TrashFolder', '');
 					$aResult['ArchiveFolder'] = (string)$oSettingsLocal->GetConf('ArchiveFolder', '');
 					$aResult['HideUnsubscribed'] = (bool)$oSettingsLocal->GetConf('HideUnsubscribed', $aResult['HideUnsubscribed']);
@@ -774,14 +784,16 @@ class Actions
 					$aResult['CheckMailInterval'] = (int)$oSettingsLocal->GetConf('CheckMailInterval', $aResult['CheckMailInterval']);
 				}
 
-				if ($oConfig->Get('login', 'determine_user_language', true)) {
-					$sLanguage = $this->ValidateLanguage($UserLanguageRaw, $sLanguage, false);
-				}
-
+				// MainAccount
 				$oSettings = $this->SettingsProvider()->Load($oAccount);
 				if ($oSettings instanceof Settings) {
+/*
+					foreach ($oSettings->toArray() as $key => $value) {
+						$aResult[\lcfirst($key)] = $value;
+					}
+*/
 					if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)) {
-						$sLanguage = (string) $oSettings->GetConf('Language', $sLanguage);
+						$sLanguage = (string) $oSettings->GetConf('language', $sLanguage);
 					}
 					$aResult['hourCycle'] = $oSettings->GetConf('hourCycle', '');
 
@@ -796,6 +808,7 @@ class Actions
 					$aResult['pgpSign'] = (bool) $oSettings->GetConf('pgpSign', false);
 					$aResult['pgpEncrypt'] = (bool) $oSettings->GetConf('pgpEncrypt', false);
 					$aResult['allowSpellcheck'] = (bool) $oSettings->GetConf('allowSpellcheck', false);
+//					$aResult['allowCtrlEnterOnCompose'] = (bool) $oSettings->GetConf('allowCtrlEnterOnCompose', true);
 
 					$aResult['ViewHTML'] = (bool)$oSettings->GetConf('ViewHTML', $aResult['ViewHTML']);
 					$show_images = (bool) $oSettings->GetConf('ShowImages', false);
@@ -816,6 +829,7 @@ class Actions
 					$aResult['NotificationSound'] = (string)$oSettings->GetConf('NotificationSound', $aResult['NotificationSound']);
 					$aResult['DesktopNotifications'] = (bool)$oSettings->GetConf('DesktopNotifications', $aResult['DesktopNotifications']);
 					$aResult['UseCheckboxesInList'] = (bool)$oSettings->GetConf('UseCheckboxesInList', $aResult['UseCheckboxesInList']);
+					$aResult['showNextMessage'] = (bool)$oSettings->GetConf('showNextMessage', $aResult['showNextMessage']);
 					$aResult['AllowDraftAutosave'] = (bool)$oSettings->GetConf('AllowDraftAutosave', $aResult['AllowDraftAutosave']);
 					$aResult['AutoLogout'] = (int)$oSettings->GetConf('AutoLogout', $aResult['AutoLogout']);
 					$aResult['Layout'] = (int)$oSettings->GetConf('Layout', $aResult['Layout']);
@@ -828,14 +842,14 @@ class Actions
 					$aResult['fontMono'] = $oSettings->GetConf('fontMono', '');
 
 					if ($this->GetCapa(Enumerations\Capa::USER_BACKGROUND)) {
-						$aResult['UserBackgroundName'] = (string)$oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
-						$aResult['UserBackgroundHash'] = (string)$oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
+						$aResult['userBackgroundName'] = (string)$oSettings->GetConf('UserBackgroundName', '');
+						$aResult['userBackgroundHash'] = (string)$oSettings->GetConf('UserBackgroundHash', '');
 					}
 				}
 
-				$aResult['NewMailSounds'] = [];
+				$aResult['newMailSounds'] = [];
 				foreach (\glob(APP_VERSION_ROOT_PATH.'static/sounds/*.mp3') as $file) {
-					$aResult['NewMailSounds'][] = \basename($file, '.mp3');
+					$aResult['newMailSounds'][] = \basename($file, '.mp3');
 				}
 			}
 			else {
@@ -851,13 +865,13 @@ class Actions
 					$aResult['DevPassword'] = '';
 				}
 
-				$aResult['SignMe'] = (string) $oConfig->Get('login', 'sign_me_auto', Enumerations\SignMeType::DEFAULT_OFF);
+				$aResult['signMe'] = (string) $oConfig->Get('login', 'sign_me_auto', Enumerations\SignMeType::DEFAULT_OFF);
 			}
 		}
 
 		if ($aResult['Auth']) {
-			$aResult['UseLocalProxyForExternalImages'] = (bool)$oConfig->Get('labs', 'use_local_proxy_for_external_images', false);
-			$aResult['AllowLanguagesOnSettings'] = (bool) $oConfig->Get('webmail', 'allow_languages_on_settings', true);
+			$aResult['useLocalProxyForExternalImages'] = (bool)$oConfig->Get('labs', 'use_local_proxy_for_external_images', false);
+			$aResult['allowLanguagesOnSettings'] = (bool) $oConfig->Get('webmail', 'allow_languages_on_settings', true);
 			$aResult['Capa'] = $this->Capa($bAdmin, $oAccount);
 			$value = \ini_get('upload_max_filesize');
 			$upload_max_filesize = \intval($value);
@@ -866,8 +880,8 @@ class Actions
 				case 'M': $upload_max_filesize *= 1024;
 				case 'K': $upload_max_filesize *= 1024;
 			}
-			$aResult['AttachmentLimit'] = \min($upload_max_filesize, ((int) $oConfig->Get('webmail', 'attachment_size_limit', 10)) * 1024 * 1024);
-			$aResult['PhpUploadSizes'] = array(
+			$aResult['attachmentLimit'] = \min($upload_max_filesize, ((int) $oConfig->Get('webmail', 'attachment_size_limit', 10)) * 1024 * 1024);
+			$aResult['phpUploadSizes'] = array(
 				'upload_max_filesize' => $value,
 				'post_max_size' => \ini_get('post_max_size')
 			);
@@ -876,11 +890,11 @@ class Actions
 
 		$aResult['Theme'] = $this->GetTheme($bAdmin);
 
-		$aResult['Language'] = $this->ValidateLanguage($sLanguage, '', false);
-		$aResult['UserLanguage'] = $this->ValidateLanguage($UserLanguageRaw, '', false, true);
+		$aResult['language'] = $this->ValidateLanguage($sLanguage, '', false);
+		$aResult['userLanguage'] = $this->ValidateLanguage($UserLanguageRaw, '', false, true);
 
 		$aResult['PluginsLink'] = $this->oPlugins->HaveJs($bAdmin)
-			? 'Plugins/0/' . ($bAdmin ? 'Admin' : 'User') . '/' . $this->StaticCache() . '/'
+			? 'Plugins/0/' . ($bAdmin ? 'Admin' : 'User') . '/' . $this->etag($this->oPlugins->Hash()) . '/'
 			: '';
 
 		$bAppJsDebug = $this->oConfig->Get('debug', 'javascript', false)
@@ -942,52 +956,6 @@ class Actions
 		return \MailSo\Base\Utils::SecureFileName(\MailSo\Base\Utils::Utf8Clear($sClearedFileName));
 	}
 
-	protected function getUploadErrorMessageByCode(int $iError, int &$iClientError): string
-	{
-		$sError = '';
-		$iClientError = UploadError::NORMAL;
-		switch ($iError) {
-			case UPLOAD_ERR_OK:
-				break;
-			case UPLOAD_ERR_INI_SIZE:
-			case UPLOAD_ERR_FORM_SIZE:
-			case UploadError::CONFIG_SIZE:
-			case UploadError::EMPTY_FILES_DATA:
-				$sError = 'File is too big';
-				$iClientError = UploadError::FILE_IS_TOO_BIG;
-				break;
-			case UPLOAD_ERR_PARTIAL:
-				$sError = 'File partially uploaded';
-				$iClientError = UploadError::FILE_PARTIALLY_UPLOADED;
-				break;
-			case UPLOAD_ERR_NO_FILE:
-				$sError = 'No file uploaded';
-				$iClientError = UploadError::FILE_NO_UPLOADED;
-				break;
-			case UPLOAD_ERR_NO_TMP_DIR:
-			case UPLOAD_ERR_CANT_WRITE:
-			case UPLOAD_ERR_EXTENSION:
-				$sError = 'Missing temp folder';
-				$iClientError = UploadError::MISSING_TEMP_FOLDER;
-				break;
-			case UploadError::ON_SAVING:
-				$sError = 'Error on saving file';
-				$iClientError = UploadError::FILE_ON_SAVING_ERROR;
-				break;
-			case UploadError::FILE_TYPE:
-				$sError = 'Invalid file type';
-				$iClientError = UploadError::FILE_TYPE;
-				break;
-			case UploadError::UNKNOWN:
-			default:
-				$sError = 'Unknown error';
-				$iClientError = UploadError::UNKNOWN;
-				break;
-		}
-
-		return $sError;
-	}
-
 	public function Upload(?array $aFile, int $iError): array
 	{
 		$oAccount = $this->getAccountFromToken();
@@ -1018,8 +986,8 @@ class Actions
 		}
 
 		if (UPLOAD_ERR_OK !== $iError) {
-			$iClientError = Enumerations\UploadError::NORMAL;
-			$sError = $this->getUploadErrorMessageByCode($iError, $iClientError);
+			$iClientError = 0;
+			$sError = Enumerations\UploadError::getUserMessage($iError, $iClientError);
 
 			if (!empty($sError)) {
 				$aResponse['ErrorCode'] = $iClientError;
@@ -1037,7 +1005,12 @@ class Actions
 			$oConfig = $this->oConfig;
 			$aResult = array(
 				'AdditionalAccounts'   => (bool) $oConfig->Get('webmail', 'allow_additional_accounts', false),
-				'AttachmentThumbnails' => (bool) $oConfig->Get('interface', 'show_attachment_thumbnail', true),
+				'AttachmentThumbnails' => (bool) $oConfig->Get('interface', 'show_attachment_thumbnail', true)
+					&& ($bAdmin
+						|| \extension_loaded('gd')
+						|| \extension_loaded('gmagick')
+						|| \extension_loaded('imagick')
+					),
 				'AttachmentsActions'   => (bool) $oConfig->Get('capa', 'attachments_actions', false),
 				'Contacts'             => (bool) $oConfig->Get('contacts', 'enable', false),
 				'DangerousActions'     => (bool) $oConfig->Get('capa', 'dangerous_actions', true),
@@ -1062,7 +1035,8 @@ class Actions
 
 	public function etag(string $sKey): string
 	{
-		return \md5($sKey . $this->oConfig->Get('cache', 'index', ''));
+//		if ($sKey && $this->oConfig->Get('cache', 'enable', true) && $this->oConfig->Get('cache', 'http', true)) {
+		return \md5($sKey . $this->oConfig->Get('cache', 'index', '') . APP_VERSION);
 	}
 
 	public function cacheByKey(string $sKey): bool
@@ -1070,7 +1044,7 @@ class Actions
 		if ($sKey && $this->oConfig->Get('cache', 'enable', true) && $this->oConfig->Get('cache', 'http', true)) {
 			\MailSo\Base\Http::ServerUseCache(
 				$this->etag($sKey),
-				1382478804,
+				0, // issue with messages
 				$this->oConfig->Get('cache', 'http_expires', 3600)
 			);
 			return true;
@@ -1083,7 +1057,7 @@ class Actions
 	{
 		if ($sKey && $this->oConfig->Get('cache', 'enable', true) && $this->oConfig->Get('cache', 'http', true)) {
 			\MailSo\Base\Http::checkETag($this->etag($sKey));
-//			\MailSo\Base\Http::checkLastModified(1382478804);
+//			\MailSo\Base\Http::checkLastModified(0);
 		}
 	}
 
@@ -1094,9 +1068,9 @@ class Actions
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->MailClient()->IsLoggined()) {
+		if (!$this->ImapClient()->IsLoggined()) {
 			try {
-				$oAccount->ImapConnectAndLogin($this->oPlugins, $this->MailClient()->ImapClient(), $this->oConfig);
+				$oAccount->ImapConnectAndLogin($this->oPlugins, $this->ImapClient(), $this->oConfig);
 			} catch (\MailSo\Net\Exceptions\ConnectionException $oException) {
 				throw new Exceptions\ClientException(Notifications::ConnectionError, $oException);
 			} catch (\Throwable $oException) {
@@ -1107,24 +1081,21 @@ class Actions
 		return $oAccount;
 	}
 
-	protected function encodeRawKey(?Model\Account $oAccount, array $aValues): string
+	public function encodeRawKey(array $aValues): string
 	{
-		return \SnappyMail\Crypt::EncryptUrlSafe($aValues, \sha1(APP_SALT . ($oAccount ? $oAccount->Hash() : '')));
+		$aValues['accountHash'] = $this->getAccountFromToken()->Hash();
+		return \MailSo\Base\Utils::UrlSafeBase64Encode(\json_encode($aValues));
 	}
 
-	protected function decodeRawKey(?Model\Account $oAccount, string $sRawKey): array
+	protected function decodeRawKey(string $sRawKey): array
 	{
 		return empty($sRawKey) ? []
-			: (\SnappyMail\Crypt::DecryptUrlSafe($sRawKey, \sha1(APP_SALT . ($oAccount ? $oAccount->Hash() : ''))) ?: []);
-	}
-
-	public function StaticCache(): string
-	{
-		static $sCache = null;
-		if (!$sCache) {
-			$sCache = \md5(APP_VERSION . $this->oPlugins->Hash());
+			: (\json_decode(\MailSo\Base\Utils::UrlSafeBase64Decode($sRawKey), true) ?: []);
+/*
+		if (empty($aValues['accountHash']) || $aValues['accountHash'] !== $oAccount->Hash()) {
+			return [];
 		}
-		return $sCache;
+*/
 	}
 
 	public function SetActionParams(array $aCurrentActionParams, string $sMethodName = ''): self
@@ -1157,10 +1128,10 @@ class Actions
 		return isset($this->aCurrentActionParams[$sKey]);
 	}
 
-	public function Location(string $sUrl): void
+	public function Location(string $sUrl, int $iStatus = 302): void
 	{
-		$this->oLogger->Write('Location: ' . $sUrl);
-		\header('Location: ' . $sUrl);
+		$this->oLogger->Write("{$iStatus} Location: {$sUrl}");
+		\MailSo\Base\Http::Location($sUrl, $iStatus);
 	}
 
 }

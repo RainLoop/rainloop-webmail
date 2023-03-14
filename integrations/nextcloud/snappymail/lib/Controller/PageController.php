@@ -38,6 +38,7 @@ class PageController extends Controller
 			]);
 			$csp = new ContentSecurityPolicy();
 			$csp->addAllowedFrameDomain("'self'");
+//			$csp->addAllowedFrameAncestorDomain("'self'");
 			$response->setContentSecurityPolicy($csp);
 			return $response;
 		}

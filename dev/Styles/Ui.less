@@ -1,5 +1,4 @@
 
-#rl-settings-subscreen,
 .g-ui-user-select-none {
 	user-select: none;
 	-webkit-touch-callout: none;
@@ -159,20 +158,7 @@ summary.legend {
 	padding: 0 9px;
 }
 
-.alert a:not(.close) {
-	text-decoration: underline;
-}
-
-.alert.alert-info a:not(.close) {
-	color: var(--info-clr, #3a87ad);
-}
-
-.alert.alert-error a:not(.close) {
-	color: var(--error-clr, #b94a48);
-}
-
-/* mobile and tablet */
-@media screen and (max-width: 999px) {
+@media screen and (max-width: @maxMobileWidth) {
 	.form-horizontal {
 		.control-group {
 			> label {

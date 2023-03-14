@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Ajouter un compte"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Version mobile",
-		"BUTTON_DESKTOP_VERSION": "Version grand écran"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Recherche avancée",
 		"TEXT": "Texte",
@@ -103,10 +99,10 @@
 		"EMPTY_LIST": "Liste vide.",
 		"EMPTY_SEARCH_LIST": "Aucun message ne correspond à votre recherche.",
 		"SEARCH_RESULT_FOR": "Résultats de recherche pour \"%SEARCH%\"",
-		"BACK_TO_MESSAGE_LIST": "retour à la liste des messages",
+		"BACK_TO_MESSAGE_LIST": "Retour à la liste des messages",
 		"PUT_MESSAGE_HERE": "Glisser un message ici pour l'afficher dans la liste",
-		"TODAY_AT": "aujourd'hui à %TIME%",
-		"YESTERDAY_AT": "hier à %TIME%",
+		"TODAY_AT": "Aujourd'hui à %TIME%",
+		"YESTERDAY_AT": "Hier à %TIME%",
 		"NEW_MESSAGE_NOTIFICATION": "Vous avez %COUNT% nouveaux messages !",
 		"QUOTA_SIZE": "Vous utilisez <strong>%SIZE% (%PROC%%)<\/strong> sur <strong>%LIMIT%<\/strong>",
 		"SORT": "Trier",
@@ -173,7 +169,7 @@
 	"CONTACTS": {
 		"TAB_CONTACT": "Contact",
 		"TAB_LOCATIONS": "Localisations",
-		"TAB_BUSINESS": "Professionel",
+		"TAB_BUSINESS": "professionnel",
 		"LABEL_ORGANIZATION": "Entreprise",
 		"LABEL_DEPARTMENT": "Service",
 		"LABEL_TITLE": "Titre",
@@ -211,7 +207,7 @@
 		"BUTTON_SYNC": "Synchronisation (CardDAV)"
 	},
 	"COMPOSE": {
-		"LINK_SHOW_INPUTS": "voir tous les champs",
+		"LINK_SHOW_INPUTS": "Voir tous les champs",
 		"BUTTON_SEND": "Envoyer",
 		"BUTTON_MINIMIZE": "Réduire",
 		"SAVED_TIME": "Enregistré à %TIME%",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "Attention ! Toutes les pièces jointes n'ont pas été téléchargées.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Toutes les pièces jointes n'ont pas encore été téléchargées",
 		"ALLOW_SPELLCHECK": "Activer le vérificateur d'orthographe du navigateur",
+		"ALLOW_DRAFT_AUTOSAVE": "Brouillon sauvegardé automatiquement",
 		"BUTTON_REQUEST_READ_RECEIPT": "Demander une confirmation de lecture",
 		"BUTTON_MARK_AS_IMPORTANT": "Marquer comme important",
 		"BUTTON_REQUEST_DSN": "Demander un accusé de réception",
 		"BUTTON_REQUIRE_TLS": "Exiger une livraison sécurisée"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Êtes-vous sûr de vouloir quitter ?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Êtes-vous sûr de vouloir fermer cette fenêtre ?",
 		"DESC_WANT_DELETE_MESSAGES": "Êtes-vous sûr de vouloir supprimer ce(s) message(s) ?"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Pas de séparation",
 		"LAYOUT_VERTICAL_SPLIT": "Séparation verticale",
 		"LAYOUT_HORIZONTAL_SPLIT": "Séparation horizontale",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Éditeur de texte par défaut",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Non-formaté",
@@ -403,7 +402,7 @@
 		"PREFER_HTML": "Préférer le HTML au texte brut",
 		"PREFER_HTML_INFO": "Les messages arrivent parfois dans les deux formats. Cette option contrôle si vous voulez que la partie HTML ou la partie texte brut soit affichée.",
 		"REMOVE_COLORS": "Supprimer les couleurs d'arrière-plan et de texte du message",
-		"ALLOW_STYLES": "Autoriser <style> CSS",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "Messages par page",
 		"CHECK_MAIL_INTERVAL": "Vérifier le messagerie à l'intervalle",
 		"MARK_MESSAGE_READ_AFTER": "Marquer le message comme lu après",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Générer les clés",
 		"TITLE_PRIVATE": "Privée",
 		"TITLE_PUBLIC": "Publique",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Brouillon sauvegardé automatiquement",
 		"GET_MAILVELOPE": "Obtenez le module complémentaire de navigateur Mailvelope"
 	},
 	"SHORTCUTS_HELP": {

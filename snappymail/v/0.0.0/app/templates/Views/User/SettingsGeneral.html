@@ -37,19 +37,39 @@
 		}"></div>
 	</div>
 	<div class="control-group">
-		<label data-i18n="SETTINGS_GENERAL/MESSAGE_PER_PAGE"></label>
-		<div>
-			<input type="number" min="10" max="50" step="1" class="span1" data-bind="textInput: messagesPerPage">
-			&nbsp;
-			<span data-bind="saveTrigger: messagesPerPageTrigger"></span>
-		</div>
-	</div>
-	<div class="control-group">
 		<label data-i18n="SETTINGS_GENERAL/CHECK_MAIL_INTERVAL"></label>
 		<div>
 			<input type="number" min="5" max="60" step="1" class="span1" data-bind="textInput: checkMailInterval">
 			<span data-i18n="SETTINGS_GENERAL/MINUTES"></span>
 			<span data-bind="saveTrigger: checkMailIntervalTrigger"></span>
+		</div>
+	</div>
+	<div class="control-group">
+		<div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_GENERAL/REPLY_SAME_FOLDER',
+					value: replySameFolder
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_GENERAL/SHOW_NEXT_MESSAGE',
+					value: showNextMessage
+				}
+			}"></div>
+		</div>
+	</div>
+
+	<div class="legend" data-i18n="SHORTCUTS_HELP/TAB_MESSAGE_LIST"></div>
+	<div class="control-group">
+		<label data-i18n="SETTINGS_GENERAL/MESSAGE_PER_PAGE"></label>
+		<div>
+			<input type="number" min="10" max="50" step="1" class="span1" data-bind="textInput: messagesPerPage">
+			&nbsp;
+			<span data-bind="saveTrigger: messagesPerPageTrigger"></span>
 		</div>
 	</div>
 	<div class="control-group">
@@ -82,13 +102,6 @@
 					value: useThreads
 				}
 			}"></div>
-			<div data-bind="component: {
-				name: 'Checkbox',
-				params: {
-					label: 'SETTINGS_GENERAL/REPLY_SAME_FOLDER',
-					value: replySameFolder
-				}
-			}"></div>
 		</div>
 	</div>
 
@@ -108,6 +121,13 @@
 	</div>
 	<div class="control-group">
 		<div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'COMPOSE/ALLOW_DRAFT_AUTOSAVE',
+					value: allowDraftAutosave
+				}
+			}"></div>
 			<div data-bind="component: {
 				name: 'Checkbox',
 				params: {

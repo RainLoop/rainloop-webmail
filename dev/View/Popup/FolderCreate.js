@@ -1,6 +1,6 @@
 import { koComputable, addObservablesTo } from 'External/ko';
 
-import { Notification } from 'Common/Enums';
+import { Notifications } from 'Common/Enums';
 import { defaultOptionsAfterRender } from 'Common/Utils';
 import { folderListOptionsBuilder, sortFolders } from 'Common/Folders';
 import { getNotification } from 'Common/Translator';
@@ -65,7 +65,7 @@ export class FolderCreatePopupView extends AbstractViewPopup {
 					},
 					error => {
 						FolderUserStore.folderListError(
-							getNotification(error.code, '', Notification.CantCreateFolder)
+							getNotification(error.code, '', Notifications.CantCreateFolder)
 							+ '.\n' + error.message);
 					}
 				);

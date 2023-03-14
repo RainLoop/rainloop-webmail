@@ -12,13 +12,10 @@ import { KeyboardShortcutsHelpPopupView } from 'View/Popup/KeyboardShortcutsHelp
 import { AccountPopupView } from 'View/Popup/Account';
 import { ContactsPopupView } from 'View/Popup/Contacts';
 
-import { doc, leftPanelDisabled, fireEvent, SettingsCapa, registerShortcut } from 'Common/Globals';
-
-import { ThemeStore } from 'Stores/Theme';
+import { fireEvent, stopEvent, SettingsCapa, registerShortcut } from 'Common/Globals';
 
 import Remote from 'Remote/User/Fetch';
 import { getNotification } from 'Common/Translator';
-//import { clearCache } from 'Common/Cache';
 //import { koComputable } from 'External/ko';
 import { addObservablesTo } from 'External/ko';
 
@@ -56,8 +53,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 		let email = account?.email;
 		if (email && 0 === event.button && AccountUserStore.email() != email) {
 			AccountUserStore.loading(true);
-			event.preventDefault();
-			event.stopPropagation();
+			stopEvent(event);
 			Remote.request('AccountSwitch',
 				(iError/*, oData*/) => {
 					if (iError) {
@@ -69,10 +65,8 @@ export class SystemDropDownUserView extends AbstractViewRight {
 					} else {
 /*						// Not working yet
 						forEachObjectEntry(oData.Result, (key, value) => rl.settings.set(key, value));
-						clearCache();
-//						MessageUserStore.setMessage();
-//						MessageUserStore.purgeMessageBodyCache();
-//						MessageUserStore.hideMessageBodies();
+//						MessageUserStore.message();
+//						MessageUserStore.purgeCache();
 						MessagelistUserStore([]);
 //						FolderUserStore.folderList([]);
 						loadFolders(value => {
@@ -111,14 +105,6 @@ export class SystemDropDownUserView extends AbstractViewRight {
 
 	contactsClick() {
 		this.allowContacts && showScreenPopup(ContactsPopupView);
-	}
-
-	toggleLayout()
-	{
-		const mobile = !ThemeStore.isMobile();
-		doc.cookie = 'rllayout=' + (mobile ? 'mobile' : 'desktop') + '; samesite=strict';
-		ThemeStore.isMobile(mobile);
-		leftPanelDisabled(mobile);
 	}
 
 	logoutClick() {

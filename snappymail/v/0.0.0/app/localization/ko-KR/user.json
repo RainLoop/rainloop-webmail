@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "계정 추가"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "모바일 버전",
-		"BUTTON_DESKTOP_VERSION": "데스크탑 버전"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "고급 검색",
 		"TEXT": "본문",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "경고! 모든 첨부파일이 업로드 되지 않습니다.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "첨부파일이 아직 업로드되지 않았습니다.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "작성 중인 메시지 자동 저장",
 		"BUTTON_REQUEST_READ_RECEIPT": "수신 확인 요청",
 		"BUTTON_MARK_AS_IMPORTANT": "중요 표시",
 		"BUTTON_REQUEST_DSN": "수신 확인 요청",
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "정말로 이 페이지를 닫으시겠습니까 ?",
 		"DESC_WANT_DELETE_MESSAGES": "정말로 선택한 메세지를 삭제하시겠습니까 ?"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "분할 해제",
 		"LAYOUT_VERTICAL_SPLIT": "세로 분할",
 		"LAYOUT_HORIZONTAL_SPLIT": "가로 분할",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "기본 텍스트 편집기",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "평문",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "키 생성",
 		"TITLE_PRIVATE": "비공개",
 		"TITLE_PUBLIC": "공개",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "작성 중인 메시지 자동 저장",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

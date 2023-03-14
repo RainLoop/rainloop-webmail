@@ -9,17 +9,15 @@ import { SettingsCapa, SettingsGet } from 'Common/Globals';
 import { GnuPGUserStore } from 'Stores/User/GnuPG';
 import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
 
+// https://mailvelope.github.io/mailvelope/Keyring.html
+let mailvelopeKeyring = null;
+
 export const
 	BEGIN_PGP_MESSAGE = '-----BEGIN PGP MESSAGE-----',
 //	BEGIN_PGP_SIGNATURE = '-----BEGIN PGP SIGNATURE-----',
 //	BEGIN_PGP_SIGNED = '-----BEGIN PGP SIGNED MESSAGE-----',
 
 	PgpUserStore = new class {
-		constructor() {
-			// https://mailvelope.github.io/mailvelope/Keyring.html
-			this.mailvelopeKeyring = null;
-		}
-
 		init() {
 			if (SettingsCapa('OpenPGP') && window.crypto && crypto.getRandomValues) {
 				rl.loadScript(SettingsGet('StaticLibsJs').replace('/libs.', '/openpgp.'))
@@ -38,7 +36,7 @@ export const
 			identifier = identifier || SettingsGet('Email');
 			if (window.mailvelope) {
 				const fn = keyring => {
-						this.mailvelopeKeyring = keyring;
+						mailvelopeKeyring = keyring;
 						console.log('mailvelope ready');
 					};
 				mailvelope.getKeyring().then(fn, err => {
@@ -79,8 +77,7 @@ export const
 
 		async mailvelopeHasPublicKeyForEmails(recipients) {
 			const
-				keyring = this.mailvelopeKeyring,
-				mailvelope = keyring && await keyring.validKeyForAddress(recipients)
+				mailvelope = mailvelopeKeyring && await mailvelopeKeyring.validKeyForAddress(recipients)
 					/*.then(LookupResult => Object.entries(LookupResult))*/,
 				entries = mailvelope && Object.entries(mailvelope);
 			return entries && entries.filter(value => value[1]).length === recipients.length;
@@ -104,8 +101,7 @@ export const
 		}
 
 		async getMailvelopePrivateKeyFor(email/*, sign*/) {
-			let keyring = this.mailvelopeKeyring;
-			if (keyring && await keyring.hasPrivateKey({email:email})) {
+			if (mailvelopeKeyring && await mailvelopeKeyring.hasPrivateKey({email:email})) {
 				return ['mailvelope', email];
 			}
 			return false;
@@ -145,46 +141,48 @@ export const
 			}
 
 			// Try Mailvelope (does not support inline images)
-			try {
-				let emails = [...message.from,...message.to,...message.cc].validUnique(),
-					i = emails.length;
-				while (i--) {
-					if (await this.getMailvelopePrivateKeyFor(emails[i].email)) {
-						/**
-						* https://mailvelope.github.io/mailvelope/Mailvelope.html#createEncryptedFormContainer
-						* Creates an iframe to display an encrypted form
-						*/
-	//					mailvelope.createEncryptedFormContainer('#mailvelope-form');
-						/**
-						* https://mailvelope.github.io/mailvelope/Mailvelope.html#createDisplayContainer
-						* Creates an iframe to display the decrypted content of the encrypted mail.
-						*/
-						const body = message.body;
-						body.textContent = '';
-						let result = await mailvelope.createDisplayContainer(
-							'#'+body.id,
-							armoredText,
-							this.mailvelopeKeyring,
-							{
-								senderAddress: sender
-								// emails[i].email
-							}
-						);
-						if (result) {
-							if (result.error?.message) {
-								if ('PWD_DIALOG_CANCEL' !== result.error.code) {
-									alert(result.error.code + ': ' + result.error.message);
+			if (mailvelopeKeyring) {
+				try {
+					let emails = [...message.from,...message.to,...message.cc].validUnique(),
+						i = emails.length;
+					while (i--) {
+						if (await this.getMailvelopePrivateKeyFor(emails[i].email)) {
+							/**
+							* https://mailvelope.github.io/mailvelope/Mailvelope.html#createEncryptedFormContainer
+							* Creates an iframe to display an encrypted form
+							*/
+		//					mailvelope.createEncryptedFormContainer('#mailvelope-form');
+							/**
+							* https://mailvelope.github.io/mailvelope/Mailvelope.html#createDisplayContainer
+							* Creates an iframe to display the decrypted content of the encrypted mail.
+							*/
+							const body = message.body;
+							body.textContent = '';
+							let result = await mailvelope.createDisplayContainer(
+								'#'+body.id,
+								armoredText,
+								mailvelopeKeyring,
+								{
+									senderAddress: sender
+									// emails[i].email
 								}
-							} else {
-								body.classList.add('mailvelope');
-								return true;
+							);
+							if (result) {
+								if (result.error?.message) {
+									if ('PWD_DIALOG_CANCEL' !== result.error.code) {
+										alert(result.error.code + ': ' + result.error.message);
+									}
+								} else {
+									body.classList.add('mailvelope');
+									return true;
+								}
 							}
+							break;
 						}
-						break;
 					}
+				} catch (err) {
+					console.error(err);
 				}
-			} catch (err) {
-				console.error(err);
 			}
 
 			// Now try GnuPG
@@ -217,19 +215,19 @@ export const
 		 * So far this is only the autocrypt header.
 		 */
 	/*
-		this.mailvelopeKeyring.additionalHeadersForOutgoingEmail(headers)
-		this.mailvelopeKeyring.addSyncHandler(syncHandlerObj)
-		this.mailvelopeKeyring.createKeyBackupContainer(selector, options)
-		this.mailvelopeKeyring.createKeyGenContainer(selector, {
+		mailvelopeKeyring.additionalHeadersForOutgoingEmail(headers)
+		mailvelopeKeyring.addSyncHandler(syncHandlerObj)
+		mailvelopeKeyring.createKeyBackupContainer(selector, options)
+		mailvelopeKeyring.createKeyGenContainer(selector, {
 	//		userIds: [],
 			keySize: 4096
 		})
 
-		this.mailvelopeKeyring.exportOwnPublicKey(emailAddr).then(<AsciiArmored, Error>)
-		this.mailvelopeKeyring.importPublicKey(armored)
+		mailvelopeKeyring.exportOwnPublicKey(emailAddr).then(<AsciiArmored, Error>)
+		mailvelopeKeyring.importPublicKey(armored)
 
 		// https://mailvelope.github.io/mailvelope/global.html#SyncHandlerObject
-		this.mailvelopeKeyring.addSyncHandler({
+		mailvelopeKeyring.addSyncHandler({
 			uploadSync
 			downloadSync
 			backup

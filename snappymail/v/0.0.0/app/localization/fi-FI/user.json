@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Lisää tili"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobiiliversio",
-		"BUTTON_DESKTOP_VERSION": "Työpöytäversio"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Tarkka haku",
 		"TEXT": "Teksti",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "Huom! Yhtään liitetiedostoa ei ole ladattu.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Kaikkia liitetiedostoja ei ole vielä ladattu.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "Pyydä kuittaus",
 		"BUTTON_MARK_AS_IMPORTANT": "Merkitse tärkeäksi",
 		"BUTTON_REQUEST_DSN": "Pyydä toimituskuittaus",
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Haluatko varmasti sulkea tämän ikkunan?",
 		"DESC_WANT_DELETE_MESSAGES": "Haluatko varmasti poistaa viestin\/viestit?"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Ei jakoa",
 		"LAYOUT_VERTICAL_SPLIT": "Pystysuora jako",
 		"LAYOUT_HORIZONTAL_SPLIT": "Vaakataso jako",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Oletus tekstieditori",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "Pelkkä teksti",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Luo avain",
 		"TITLE_PRIVATE": "Yksityinen",
 		"TITLE_PUBLIC": "Julkinen",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

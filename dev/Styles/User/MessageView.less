@@ -30,28 +30,14 @@
 	}
 }
 
-html.rl-no-preview-pane {
-	#rl-right:not(.message-selected) #V-MailMessageView {
-		display: none;
-	}
-}
-
 #V-MailMessageView .top-toolbar {
 	color: #fff;
 	padding: 10px 0;
-}
-html.rl-no-preview-pane #V-MailMessageView .top-toolbar {
-	padding-left: 1px;
-}
-html:not(.rl-mobile):not(.rl-no-preview-pane) #V-MailMessageView .top-toolbar {
-	visibility: hidden;
-}
-html.rl-bottom-preview-pane #V-MailMessageView .top-toolbar {
-	display: none;
+	visibility: visible;
 }
 
 .messageView {
-	background-color: #fff;
+	background-color: var(--panel-bg-clr, #fff);
 	border: 1px solid var(--border-color, #aaa);
 	border-radius: var(--border-radius, 5px);
 	height: calc(100% - 50px);
@@ -140,7 +126,7 @@ html.rl-bottom-preview-pane #V-MailMessageView .top-toolbar {
 
 	.messageItemHeader {
 
-		background-color: #f8f8f8;
+		background-color: var(--message-header-bg-clr, #eee);
 		border-bottom: 1px solid var(--border-color, #bbb);
 		border-radius: var(--border-radius, 5px) var(--border-radius, 5px) 0 0;
 		padding: 10px;
@@ -215,7 +201,6 @@ html.rl-bottom-preview-pane #V-MailMessageView .top-toolbar {
 	}
 
 	.openpgp-control {
-		margin: 0.5em;
 		padding: 0.5em;
 
 		span {
@@ -248,9 +233,6 @@ html.rl-bottom-preview-pane #V-MailMessageView .top-toolbar {
 			display: none;
 		}
 	}
-	.b-text-part > iframe {
-		min-height: 50vh;
-	}
 
 	.thread-controls {
 		.dropdown-toggle {
@@ -271,7 +253,6 @@ html.rl-bottom-preview-pane #V-MailMessageView .top-toolbar {
 
 #messageItem {
 
-	color: #000;
 	height: 100%;
 	overflow: auto;
 	scroll-behavior: smooth;
@@ -283,11 +264,13 @@ html.rl-bottom-preview-pane #V-MailMessageView .top-toolbar {
 		padding: 50px 0;
 	}
 
+	.bodySubHeader {
+		background-color: var(--message-header-bg-clr, #eee);
+	}
 	.bodySubHeader > * {
-		background-color: #eee;
 		border-bottom: 1px solid var(--border-color, #bbb);
 		cursor: pointer;
-		padding: 10px 15px;
+		padding: 10px;
 	}
 
 	.pgpInfo {
@@ -300,14 +283,8 @@ html.rl-bottom-preview-pane #V-MailMessageView .top-toolbar {
 		}
 	}
 
-	.readReceipt {
-		background-color: #ffffd9;
-	}
-
 	.attachmentsPlace {
 
-		padding: 10px 10px 6px 10px;
-		background: #eee;
 		border-bottom: 1px solid var(--border-color, #bbb);
 		position: relative;
 
@@ -336,9 +313,8 @@ html.rl-bottom-preview-pane #V-MailMessageView .top-toolbar {
 	}
 
 	.attachmentsControls {
-		padding: 7px 5px 7px 14px;
-		background: #e8e8e8;
-		border-bottom: 1px solid var(--border-color, #bbb);
+		padding-top: 7px;
+		border-top: 1px solid var(--border-color, #bbb);
 	}
 	.attachmentsControls > * {
 		display: inline-block;
@@ -365,8 +341,12 @@ html.rl-bottom-preview-pane #V-MailMessageView .top-toolbar {
 		height: 100%;
 		padding: 10px;
 
+		* {
+			box-sizing: unset;
+		}
+
 		a {
-			color: blue;
+			color: var(--link-color, blue);
 			text-decoration: underline;
 
 			&:visited {
@@ -382,6 +362,10 @@ html.rl-bottom-preview-pane #V-MailMessageView .top-toolbar {
 			opacity: 0.8;
 			padding: 0 10px;
 			margin: 0;
+
+			blockquote {
+				opacity: 1;
+			}
 		}
 
 		&.html {
@@ -471,15 +455,34 @@ html.rl-bottom-preview-pane #V-MailMessageView .top-toolbar {
 	}
 }
 
-html.rl-no-preview-pane .messageView {
-	border: 1px solid var(--border-color, #aaa);
-	box-shadow: var(--smMainShadow);
+.mailvelope iframe {
+	min-height: 400px;
 }
 
-html.rl-bottom-preview-pane .messageView {
-	height: 100%;
+html:not(.sm-msgView-bottom):not(.sm-msgView-side) {
+	#rl-right:not(.message-selected) #V-MailMessageView {
+		display: none;
+	}
 }
 
+@media screen and (max-width: 1400px) {
+	html.sm-msgView-side #V-MailMessageView .top-toolbar {
+		visibility: hidden;
+	}
+}
+
+html.sm-msgView-bottom {
+	#V-MailMessageView .top-toolbar {
+		display: none;
+	}
+	.messageView {
+		height: 100%;
+	}
+}
+
+/*
+@media all and (display-mode: fullscreen) {
+*/
 html.rl-fullscreen {
 
 	#rl-left,

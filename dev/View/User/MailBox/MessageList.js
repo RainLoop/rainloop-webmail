@@ -8,7 +8,7 @@ import { ComposeType, FolderType, MessageSetAction } from 'Common/EnumsUser';
 import { doc,
 	leftPanelDisabled, toggleLeftPanel,
 	Settings, SettingsCapa,
-	addEventsListeners,
+	addEventsListeners, stopEvent,
 	addShortcut, registerShortcut, formFieldFocused
 } from 'Common/Globals';
 
@@ -24,10 +24,7 @@ import { i18n } from 'Common/Translator';
 
 import { dropFilesInFolder } from 'Common/Folders';
 
-import {
-	getFolderFromCacheList,
-	MessageFlagsCache
-} from 'Common/Cache';
+import { getFolderFromCacheList } from 'Common/Cache';
 
 import { AppUserStore } from 'Stores/User/App';
 import { SettingsUserStore } from 'Stores/User/Settings';
@@ -90,7 +87,7 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.composeInEdit = ComposePopupView.inEdit;
 
-		this.isMobile = ThemeStore.isMobile;
+		this.isMobile = ThemeStore.isMobile; // Obsolete
 		this.leftPanelDisabled = leftPanelDisabled;
 		this.toggleLeftPanel = toggleLeftPanel;
 
@@ -146,10 +143,6 @@ export class MailMessageList extends AbstractViewRight {
 				return c && MessagelistUserStore().length > c;
 			},
 
-			mobileCheckedStateShow: () => ThemeStore.isMobile() ? MessagelistUserStore.hasChecked() : 1,
-
-			mobileCheckedStateHide: () => ThemeStore.isMobile() ? !MessagelistUserStore.hasChecked() : 1,
-
 			listGrouped: () => {
 				let uid = MessagelistUserStore.threadUid(),
 					sort = FolderUserStore.sortMode() || 'DATE';
@@ -179,7 +172,7 @@ export class MailMessageList extends AbstractViewRight {
 						rtf = Intl.RelativeTimeFormat
 							? new Intl.RelativeTimeFormat(doc.documentElement.lang, { numeric: "auto" }) : 0;
 					MessagelistUserStore.forEach(msg => {
-						let dt = (new Date(msg.dateTimeStampInUTC() * 1000)),
+						let dt = (new Date(msg.dateTimestamp() * 1000)),
 							date,
 							ymd = Ymd(dt);
 						if (!current || ymd != current.id) {
@@ -367,13 +360,19 @@ export class MailMessageList extends AbstractViewRight {
 		]);
 	}
 
+	/**
+	 * Download selected messages
+	 */
 	downloadZipCommand() {
 		let hashes = []/*, uids = []*/;
 //		MessagelistUserStore.forEach(message => message.checked() && uids.push(message.uid));
 		MessagelistUserStore.forEach(message => message.checked() && hashes.push(message.requestHash));
-		downloadZip(hashes, null, null, MessagelistUserStore().folder);
+		downloadZip(null, hashes, null, null, MessagelistUserStore().folder);
 	}
 
+	/**
+	 * Download attachments of selected messages
+	 */
 	downloadAttachCommand() {
 		let hashes = [];
 		MessagelistUserStore.forEach(message => {
@@ -385,7 +384,7 @@ export class MailMessageList extends AbstractViewRight {
 				});
 			}
 		});
-		downloadZip(hashes);
+		downloadZip(null, hashes);
 	}
 
 	deleteWithoutMoveCommand() {
@@ -410,10 +409,9 @@ export class MailMessageList extends AbstractViewRight {
 	}
 
 	moveCommand(vm, event) {
-		if (this.mobileCheckedStateShow()) {
+		if (MessagelistUserStore.hasChecked()) {
 			if (vm && event?.preventDefault) {
-				event.preventDefault();
-				event.stopPropagation();
+				stopEvent(event);
 			}
 
 			let b = moveAction();
@@ -475,15 +473,11 @@ export class MailMessageList extends AbstractViewRight {
 					folder.unreadEmails(0);
 				}
 
-				MessageFlagsCache.clearFolder(sFolderFullName);
-
 				Remote.request('MessageSetSeenToAll', null, {
 					folder: sFolderFullName,
 					setAction: 1,
 					threadUids: uids.join(',')
 				});
-
-				MessagelistUserStore.reloadFlagsAndCachedMessage();
 			}
 		}
 	}
@@ -574,7 +568,7 @@ export class MailMessageList extends AbstractViewRight {
 				fToggle = () => {
 					let layout = SettingsUserStore.layout();
 					setLayoutResizer(top, ClientSideKeyNameMessageListSize,
-						(ThemeStore.isMobile() || Layout.NoPreview === layout)
+						(ThemeStore.isMobile() || !layout)
 							? 0
 							: (Layout.SidePreview === layout ? 'Width' : 'Height')
 					);

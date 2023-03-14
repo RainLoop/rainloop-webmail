@@ -15,7 +15,7 @@
 
 <div data-bind="component: {
 	name: 'Checkbox',
-	params: { value: enabledPlugins, label: 'TAB_PACKAGES/LABEL_ENABLE_PLUGINS' }
+	params: { value: pluginsEnable, label: 'TAB_PACKAGES/LABEL_ENABLE_PLUGINS' }
 }"></div>
 
 <br>
@@ -28,7 +28,7 @@
 	<div data-bind="template: { name: 'AdminSettingsPackagesTable', data: {f: packagesUpdate} }"></div>
 </div>
 
-<div id="packages-installed" data-bind="visible: packagesCurrent().length, css: {'disabled': !enabledPlugins()}">
+<div id="packages-installed" data-bind="visible: packagesCurrent().length, css: {'disabled': !pluginsEnable()}">
 	<div class="legend" data-i18n="TAB_PACKAGES/LEGEND_INSTALLED_PACKAGES"></div>
 	<div data-bind="template: { name: 'AdminSettingsPackagesTable', data: {f: packagesCurrent} }"></div>
 </div>

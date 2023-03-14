@@ -28,12 +28,12 @@ export class AdminSettingsGeneral extends AbstractViewSettings {
 
 		const aLanguagesAdmin = Settings.app('languagesAdmin');
 		this.languagesAdmin = ko.observableArray(isArray(aLanguagesAdmin) ? aLanguagesAdmin : []);
-		this.languageAdmin = ko.observable(SettingsGet('LanguageAdmin'));
+		this.languageAdmin = ko.observable(SettingsGet('languageAdmin'));
 
 		this.theme = ThemeStore.theme;
 		this.themes = ThemeStore.themes;
 
-		this.addSettings(['AllowLanguagesOnSettings']);
+		this.addSettings(['allowLanguagesOnSettings']);
 
 		addObservablesTo(this, {
 			capaThemes: SettingsCapa('Themes'),
@@ -53,14 +53,14 @@ export class AdminSettingsGeneral extends AbstractViewSettings {
 		*/
 
 		this.attachmentLimit = ko
-			.observable(SettingsGet('AttachmentLimit') / (1024 * 1024))
+			.observable(SettingsGet('attachmentLimit') / (1024 * 1024))
 			.extend({ debounce: 500 });
 
-		this.addSetting('Language');
-		this.addSetting('AttachmentLimit');
+		this.addSetting('language');
+		this.addSetting('attachmentLimit');
 		this.addSetting('Theme', value => changeTheme(value, this.themeTrigger));
 
-		this.uploadData = SettingsGet('PhpUploadSizes');
+		this.uploadData = SettingsGet('phpUploadSizes');
 		this.uploadDataDesc =
 			(this.uploadData?.upload_max_filesize || this.uploadData?.post_max_size)
 				? [
@@ -91,7 +91,7 @@ export class AdminSettingsGeneral extends AbstractViewSettings {
 				this.languageAdminTrigger(SaveSettingStatus.Saving);
 				translatorReload(value, 1)
 					.then(fReloadLanguageHelper(SaveSettingStatus.Success), fReloadLanguageHelper(SaveSettingStatus.Failed))
-					.then(() => Remote.saveSetting('LanguageAdmin', value));
+					.then(() => Remote.saveSetting('languageAdmin', value));
 			},
 
 			capaAdditionalAccounts: fSaveHelper('CapaAdditionalAccounts'),
@@ -114,7 +114,7 @@ export class AdminSettingsGeneral extends AbstractViewSettings {
 		showScreenPopup(LanguagesPopupView, [
 			this.languageAdmin,
 			this.languagesAdmin(),
-			SettingsGet('UserLanguageAdmin')
+			SettingsGet('languageUsers')
 		]);
 	}
 }

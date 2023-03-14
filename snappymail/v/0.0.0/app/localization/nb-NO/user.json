@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Legg til konto"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobilversjon",
-		"BUTTON_DESKTOP_VERSION": "Skrivebordsversjon"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Avansert søk",
 		"TEXT": "Tekst",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "Advarsel: ett eller flere vedlegg er ikke blitt lastet opp enda.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Ett eller flere vedlegg er ikke blitt lastet opp enda",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Lagre utkast automatisk",
 		"BUTTON_REQUEST_READ_RECEIPT": "Be om en bekreftelse fra mottaker på at meldinga er lest",
 		"BUTTON_MARK_AS_IMPORTANT": "Marker som viktig",
 		"BUTTON_REQUEST_DSN": "Be om leveringsbekreftelse",
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Er du sikker på at du vil lukke dette vinduet?",
 		"DESC_WANT_DELETE_MESSAGES": "Er du sikker på at du vil slette meldingen(e)?"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Ingen deling",
 		"LAYOUT_VERTICAL_SPLIT": "Vertikal deling",
 		"LAYOUT_HORIZONTAL_SPLIT": "Horisontal deling",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Standard tekstbehandler",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Ren tekst",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Lag nøkler",
 		"TITLE_PRIVATE": "Privat",
 		"TITLE_PUBLIC": "Offentlig",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Lagre utkast automatisk",
 		"GET_MAILVELOPE": "Få nettlesertillegg Mailvelope."
 	},
 	"SHORTCUTS_HELP": {

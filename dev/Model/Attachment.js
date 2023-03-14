@@ -1,6 +1,8 @@
 import ko from 'ko';
 
 import { FileInfo, FileType } from 'Common/File';
+import { stopEvent, SettingsGet, SettingsCapa } from 'Common/Globals';
+import { b64EncodeJSONSafe } from 'Common/Utils';
 import {
 	attachmentDownload,
 	serverRequestRaw
@@ -22,10 +24,8 @@ export class AttachmentModel extends AbstractModel {
 		this.fileName = '';
 		this.fileNameExt = '';
 		this.fileType = FileType.Unknown;
-		this.isThumbnail = false;
 		this.cId = '';
 		this.contentLocation = '';
-		this.download = '';
 		this.folder = '';
 		this.uid = '';
 		this.url = '';
@@ -53,7 +53,7 @@ export class AttachmentModel extends AbstractModel {
 	}
 
 	toggleChecked(self, event) {
-		event.stopPropagation();
+		stopEvent(event);
 		self.checked(!self.checked());
 	}
 
@@ -125,6 +125,17 @@ export class AttachmentModel extends AbstractModel {
 		);
 	}
 
+	get download() {
+		return b64EncodeJSONSafe({
+			folder: this.folder,
+			uid: this.uid,
+			mimeIndex: this.mimeIndex,
+			mimeType: this.mimeType,
+			fileName: this.fileName,
+			accountHash: SettingsGet('accountHash')
+		});
+	}
+
 	/**
 	 * @returns {string}
 	 */
@@ -143,7 +154,7 @@ export class AttachmentModel extends AbstractModel {
 	 * @returns {boolean}
 	 */
 	hasThumbnail() {
-		return this.isThumbnail && !this.isLinked();
+		return SettingsCapa('AttachmentThumbnails') && this.isImage() && !this.isLinked();
 	}
 
 	/**

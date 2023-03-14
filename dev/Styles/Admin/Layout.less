@@ -39,6 +39,14 @@
 	height: calc(100% - 50px - @rlLowMargin);
 	margin: 50px @rlLowMargin 0 0;
 
+	background-color: var(--panel-bg-clr, #fff);
+	border: 1px solid var(--border-color, #aaa);
+	border-radius: var(--border-radius, 5px);
+	box-shadow: var(--smMainShadow);
+	overflow-y: auto;
+	padding: 20px;
+	scroll-behavior: smooth;
+
 	> .b-toolbar {
 		color: #fff;
 		display: flex;
@@ -56,28 +64,13 @@
 	}
 }
 
-.rl-mobile #V-AdminPane {
-	margin-right: 0;
-}
-
 .btn.btn-logout {
 	padding-left: 12px;
 	padding-right: 12px;
 }
 
-#rl-settings-subscreen {
-	background-color: var(--settings-bg-clr, #fff);
-	border: 1px solid var(--border-color, #aaa);
-	border-radius: var(--border-radius, 5px);
-	box-shadow: var(--smMainShadow);
-	height: 100%;
-	overflow-y: auto;
-	padding: 20px;
-	scroll-behavior: smooth;
-}
-
 /* desktop */
-@media screen and (min-width: 1000px) {
+@media screen and (min-width: @maxMobileWidth + 1px) {
 	.toggleLeft {
 		display: none;
 	}
@@ -90,14 +83,14 @@
 	}
 }
 
-/* mobile and tablet */
-@media screen and (max-width: 999px) {
-	#rl-settings-subscreen {
-		padding: 10px;
-	}
-
+@media screen and (max-width: @maxMobileWidth) {
 	#rl-right {
 		min-width: calc(100% - @rlLowMargin);
+	}
+
+	#V-AdminPane {
+		margin-right: 0;
+		padding: 10px;
 	}
 
 	html.rl-left-panel-disabled {

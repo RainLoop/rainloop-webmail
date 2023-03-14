@@ -14,7 +14,7 @@ trait Localization
 			if ($oAccount = $this->getAccountFromToken(false)) {
 				if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)
 				 && ($oSettings = $this->SettingsProvider()->Load($oAccount))) {
-					$sLanguage = $oSettings->GetConf('Language', $sLanguage);
+					$sLanguage = $oSettings->GetConf('language', $sLanguage);
 				}
 			} else if ($oConfig->Get('login', 'allow_languages_on_login', true) && $oConfig->Get('login', 'determine_user_language', true)) {
 				$sLanguage = $this->ValidateLanguage($this->detectUserLanguage($bAdmin), $sLanguage, false);

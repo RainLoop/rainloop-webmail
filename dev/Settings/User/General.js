@@ -17,7 +17,6 @@ import { LanguageStore } from 'Stores/Language';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import { IdentityUserStore } from 'Stores/User/Identity';
 import { NotificationUserStore } from 'Stores/User/Notification';
-import { MessageUserStore } from 'Stores/User/Message';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
 
 import Remote from 'Remote/User/Fetch';
@@ -35,7 +34,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 
 		this.soundNotification = SMAudio.notifications;
 		this.notificationSound = ko.observable(SettingsGet('NotificationSound'));
-		this.notificationSounds = ko.observableArray(SettingsGet('NewMailSounds'));
+		this.notificationSounds = ko.observableArray(SettingsGet('newMailSounds'));
 
 		this.desktopNotification = NotificationUserStore.enabled;
 		this.isDesktopNotificationAllowed = NotificationUserStore.allowed;
@@ -44,12 +43,13 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 
 		['layout', 'messageReadDelay', 'messagesPerPage', 'checkMailInterval',
 		 'editorDefaultType', 'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt',
-		 'viewHTML', 'viewImages', 'viewImagesWhitelist', 'removeColors', 'allowStyles',
+		 'viewHTML', 'viewImages', 'viewImagesWhitelist', 'removeColors', 'allowStyles', 'allowDraftAutosave',
 		 'hideDeleted', 'listInlineAttachments', 'simpleAttachmentsList', 'collapseBlockquotes', 'maxBlockquotesLevel',
-		 'useCheckboxesInList', 'listGrouped', 'useThreads', 'replySameFolder', 'msgDefaultAction', 'allowSpellcheck'
+		 'useCheckboxesInList', 'listGrouped', 'useThreads', 'replySameFolder', 'msgDefaultAction', 'allowSpellcheck',
+		 'showNextMessage'
 		].forEach(name => this[name] = SettingsUserStore[name]);
 
-		this.allowLanguagesOnSettings = !!SettingsGet('AllowLanguagesOnSettings');
+		this.allowLanguagesOnSettings = !!SettingsGet('allowLanguagesOnSettings');
 
 		this.languageTrigger = ko.observable(SaveSettingStatus.Idle);
 
@@ -87,7 +87,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 			layoutTypes: () => {
 				translateTrigger();
 				return [
-					{ id: Layout.NoPreview, name: i18n('SETTINGS_GENERAL/LAYOUT_NO_SPLIT') },
+					{ id: 0, name: i18n('SETTINGS_GENERAL/LAYOUT_NO_SPLIT') },
 					{ id: Layout.SidePreview, name: i18n('SETTINGS_GENERAL/LAYOUT_VERTICAL_SPLIT') },
 					{ id: Layout.BottomPreview, name: i18n('SETTINGS_GENERAL/LAYOUT_HORIZONTAL_SPLIT') }
 				];
@@ -102,10 +102,10 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.addSetting('Layout');
 		this.addSetting('MaxBlockquotesLevel');
 
-		this.addSettings(['ViewHTML', 'ViewImages', 'ViewImagesWhitelist', 'HideDeleted', 'AllowStyles',
+		this.addSettings(['ViewHTML', 'ViewImages', 'ViewImagesWhitelist', 'HideDeleted', 'RemoveColors', 'AllowStyles',
 			'ListInlineAttachments', 'simpleAttachmentsList', 'UseCheckboxesInList', 'listGrouped', 'ReplySameFolder',
 			'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt', 'allowSpellcheck',
-			'DesktopNotifications', 'SoundNotification', 'CollapseBlockquotes']);
+			'DesktopNotifications', 'SoundNotification', 'CollapseBlockquotes', 'AllowDraftAutosave', 'showNextMessage']);
 
 		const fReloadLanguageHelper = (saveSettingsStep) => () => {
 				this.languageTrigger(saveSettingsStep);
@@ -117,19 +117,11 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 				this.languageTrigger(SaveSettingStatus.Saving);
 				translatorReload(value)
 					.then(fReloadLanguageHelper(SaveSettingStatus.Success), fReloadLanguageHelper(SaveSettingStatus.Failed))
-					.then(() => Remote.saveSetting('Language', value));
+					.then(() => Remote.saveSetting('language', value));
 			},
 
 			hourCycle: value =>
 				Remote.saveSetting('hourCycle', value),
-
-			removeColors: value => {
-				let dom = MessageUserStore.bodiesDom();
-				if (dom) {
-					dom.innerHTML = '';
-				}
-				Remote.saveSetting('RemoveColors', value);
-			},
 
 			notificationSound: value => {
 				Remote.saveSetting('NotificationSound', value);

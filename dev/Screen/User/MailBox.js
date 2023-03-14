@@ -1,15 +1,14 @@
 import { Scope } from 'Common/Enums';
-import { doc, createElement, leftPanelDisabled, Settings } from 'Common/Globals';
+import { doc, createElement, Settings } from 'Common/Globals';
 import { pString, pInt } from 'Common/Utils';
 import { moveAction } from 'Common/UtilsUser';
-import { getFolderFromCacheList, getFolderFullName, getFolderInboxName } from 'Common/Cache';
+import { getFolderFromHashMap, getFolderInboxName } from 'Common/Cache';
 import { i18n, initOnStartOrLangChange } from 'Common/Translator';
 
 import { AppUserStore } from 'Stores/User/App';
 import { AccountUserStore } from 'Stores/User/Account';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
-import { ThemeStore } from 'Stores/Theme';
 
 import { SystemDropDownUserView } from 'View/User/SystemDropDown';
 import { MailFolderList } from 'View/User/MailBox/FolderList';
@@ -57,11 +56,8 @@ export class MailBoxUserScreen extends AbstractScreen {
 	 */
 	onShow() {
 		this.updateWindowTitle();
-
 		AppUserStore.focusedState('none');
 		AppUserStore.focusedState(Scope.MessageList);
-
-		ThemeStore.isMobile() && leftPanelDisabled(true);
 	}
 
 	/**
@@ -71,7 +67,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 	 * @returns {void}
 	 */
 	onRoute(folderHash, page, search, messageUid) {
-		const folder = getFolderFromCacheList(getFolderFullName(folderHash.replace(/~([\d]+)$/, '')));
+		const folder = getFolderFromHashMap(folderHash.replace(/~([\d]+)$/, ''));
 		if (folder) {
 			FolderUserStore.currentFolder(folder);
 			MessagelistUserStore.page(1 > page ? 1 : page);

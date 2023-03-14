@@ -17,8 +17,6 @@ namespace MailSo\Mail;
  */
 class MessageCollection extends \MailSo\Base\Collection
 {
-	public string $FolderHash = '';
-
 	/**
 	 * Amount of UIDs in this list (could be less then total messages when using threads)
 	 */
@@ -62,16 +60,14 @@ class MessageCollection extends \MailSo\Base\Collection
 		return array_merge(parent::jsonSerialize(), array(
 			'totalEmails' => $this->totalEmails,
 			'totalThreads' => $this->totalThreads,
-			'folder' => $this->FolderName,
-			'folderHash' => $this->FolderHash,
-			'folderInfo' => $this->FolderInfo,
 			'threadUid' => $this->ThreadUid,
 			'newMessages' => $this->NewMessages,
 //			'filtered' => $this->Filtered,
 			'offset' => $this->Offset,
 			'limit' => $this->Limit,
 			'search' => $this->Search,
-			'limited' => $this->Limited
+			'limited' => $this->Limited,
+			'folder' => $this->FolderInfo
 		));
 	}
 }

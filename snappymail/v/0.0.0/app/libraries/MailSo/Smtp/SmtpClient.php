@@ -19,6 +19,8 @@ use MailSo\Net\Enumerations\ConnectionSecurityType;
  */
 class SmtpClient extends \MailSo\Net\NetClient
 {
+	private bool $bIsLoggined = false;
+
 	private string $sEhlo = '';
 
 	private bool $bRcpt = false;
@@ -72,14 +74,14 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
-	public function Connect(\MailSo\Net\ConnectSettings $oSettings, string $sEhloHost = '[127.0.0.1]') : void
+	public function Connect(\MailSo\Net\ConnectSettings $oSettings) : void
 	{
 		parent::Connect($oSettings);
 
 		$this->validateResponse(220);
 
-		$this->ehloOrHelo($sEhloHost);
-		$this->sEhlo = $sEhloHost;
+		$this->ehloOrHelo($oSettings->Ehlo);
+		$this->sEhlo = $oSettings->Ehlo;
 
 		if (ConnectionSecurityType::STARTTLS === $this->Settings->type
 		 || (ConnectionSecurityType::AUTO_DETECT === $this->Settings->type && $this->hasCapability('STARTTLS'))) {
@@ -103,11 +105,15 @@ class SmtpClient extends \MailSo\Net\NetClient
 	/**
 	 * @throws \InvalidArgumentException
 	 * @throws \MailSo\RuntimeException
-	 * @throws \MailSo\Net\*
+	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
 	public function Login(Settings $oSettings) : self
 	{
+		if ($this->bIsLoggined) {
+			return $this;
+		}
+
 		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($oSettings->Login));
 		$sPassword = $oSettings->Password;
 
@@ -182,6 +188,8 @@ class SmtpClient extends \MailSo\Net\NetClient
 				new \MailSo\Smtp\Exceptions\LoginBadCredentialsException($oException->GetResponses(), $oException->getMessage(), 0, $oException)
 			);
 		}
+
+		$this->bIsLoggined = true;
 
 		return $this;
 	}

@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Přidat účet"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobilní verze",
-		"BUTTON_DESKTOP_VERSION": "Desktop verze"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Rozšířené hledání",
 		"TEXT": "Text",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "Upozornění! Některé přílohy nebyly nahrány.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Některé přílohy ještě nebyly nahrány",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automaticky uložit koncept",
 		"BUTTON_REQUEST_READ_RECEIPT": "Vyžádat si potvrzení o přečtení",
 		"BUTTON_MARK_AS_IMPORTANT": "Označit jako důležité",
 		"BUTTON_REQUEST_DSN": "Vyžádat si potvrzení o přijetí",
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Opravdu chcete zavřít toto okno?",
 		"DESC_WANT_DELETE_MESSAGES": "Opravdu chcete odstranit tyto zprávy?"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Nerozdělovat",
 		"LAYOUT_VERTICAL_SPLIT": "Vertikální rozdělení",
 		"LAYOUT_HORIZONTAL_SPLIT": "Horizontální rozdělení",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Přednastavený editor zpráv",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "Text",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Generovat klíče",
 		"TITLE_PRIVATE": "Soukromý",
 		"TITLE_PUBLIC": "Veřejný",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automaticky uložit koncept",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

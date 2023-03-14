@@ -4,8 +4,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Nextcloud',
-		VERSION = '2.17',
-		RELEASE  = '2023-01-31',
+		VERSION = '2.20',
+		RELEASE  = '2023-02-22',
 		CATEGORY = 'Integrations',
 		DESCRIPTION = 'Integrate with Nextcloud v20+',
 		REQUIRED = '2.25.1';
@@ -33,6 +33,17 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 			$this->addTemplate('templates/PopupsNextcloudFiles.html');
 			$this->addTemplate('templates/PopupsNextcloudCalendars.html');
+
+		} else {
+			// \OC::$server->getConfig()->getAppValue('snappymail', 'snappymail-no-embed');
+			$this->addHook('main.content-security-policy', 'ContentSecurityPolicy');
+		}
+	}
+
+	public function ContentSecurityPolicy(\SnappyMail\HTTP\CSP $CSP)
+	{
+		if (\method_exists($CSP, 'add')) {
+			$CSP->add('frame-ancestors', "'self'");
 		}
 	}
 
@@ -187,6 +198,31 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 					$sEmail = $sCustomEmail;
 				}
 				$aResult['DevEmail'] = $sEmail ?: '';
+			} else if (!empty($aResult['ContactsSync'])) {
+				$bSave = false;
+				if (empty($aResult['ContactsSync']['Url'])) {
+					$aResult['ContactsSync']['Url'] = "{$sWebDAV}/addressbooks/users/{$sUID}/contacts/";
+					$bSave = true;
+				}
+				if (empty($aResult['ContactsSync']['User'])) {
+					$aResult['ContactsSync']['User'] = $sUID;
+					$bSave = true;
+				}
+				if (empty($aResult['ContactsSync']['Password'])) {
+					$aResult['ContactsSync']['Password'] = '';
+				}
+				if ($bSave) {
+					$oActions = \RainLoop\Api::Actions();
+					$oActions->setContactsSyncData(
+						$oActions->getAccountFromToken(),
+						array(
+							'Mode' => $aResult['ContactsSync']['Mode'],
+							'User' => $aResult['ContactsSync']['User'],
+							'Password' => $aResult['ContactsSync']['Password'],
+							'Url' => $aResult['ContactsSync']['Url']
+						)
+					);
+				}
 			}
 		}
 	}

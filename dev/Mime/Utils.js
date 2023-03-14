@@ -35,9 +35,7 @@ export function MimeToMessage(data, message)
 				attachment.url = part.dataUrl;
 				attachment.estimatedSize = part.body.length;
 /*
-				attachment.isThumbnail = false;
 				attachment.contentLocation = '';
-				attachment.download = '';
 				attachment.folder = '';
 				attachment.uid = '';
 				attachment.mimeIndex = part.id;

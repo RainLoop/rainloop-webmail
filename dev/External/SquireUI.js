@@ -27,11 +27,6 @@ const
 
 	SquireDefaultConfig = {
 /*
-		blockTag: 'P',
-		undo: {
-			documentSizeThreshold: -1, // -1 means no threshold
-			undoLimit: -1 // -1 means no limit
-		},
 		addLinks: true // allow_smart_html_links
 */
 		sanitizeToDOMFragment: (html, isPaste/*, squire*/) => {
@@ -216,7 +211,7 @@ class SquireUI
 						cmd: () => {
 							let node = squire.getSelectionClosest('IMG'),
 								src = prompt("Image", node?.src || "https://");
-							src.length ? squire.insertImage(src) : (node && squire.detach(node));
+							src?.length ? squire.insertImage(src) : (node && squire.detach(node));
 						},
 						hint: 'Image URL'
 					},
@@ -288,11 +283,6 @@ class SquireUI
 		toolbar.className = 'squire-toolbar btn-toolbar';
 		let group, action/*, touchTap*/;
 		for (group in actions) {
-/*
-			if ('bidi' == group && !rl.settings.app('allowHtmlEditorBitiButtons')) {
-				continue;
-			}
-*/
 			let toolgroup = createElement('div');
 			toolgroup.className = 'btn-group';
 			toolgroup.id = 'squire-toolgroup-'+group;
@@ -379,7 +369,6 @@ class SquireUI
 		squire.addEventListener('cursor', );
 		squire.addEventListener('select', );
 		squire.addEventListener('input', );
-		squire.addEventListener('willPaste', );
 		squire.addEventListener( 'keydown keyup', monitorShiftKey )
 		squire.addEventListener( 'keydown', onKey )
 */

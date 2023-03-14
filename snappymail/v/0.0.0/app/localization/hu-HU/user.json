@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Fiók hozzáadás"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobil verzió",
-		"BUTTON_DESKTOP_VERSION": "Asztali verzió"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Részletes keresés",
 		"TEXT": "Szöveg",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "Figyelem! Még nem lett feltöltve minden melléklet.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Még nem lett feltöltve minden melléklet.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Piszkozat automatikus mentése",
 		"BUTTON_REQUEST_READ_RECEIPT": "Olvasási visszaigazolás kérése",
 		"BUTTON_MARK_AS_IMPORTANT": "Megjelölés fontosként",
 		"BUTTON_REQUEST_DSN": "Továbbítási visszaigazolás kérés",
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Biztos, hogy be akarod zárni ezt az ablakot?",
 		"DESC_WANT_DELETE_MESSAGES": "Biztos, hogy törölni akarod az üzenete(ke)t?"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Felosztás nélkül",
 		"LAYOUT_VERTICAL_SPLIT": "Függőleges felosztás",
 		"LAYOUT_HORIZONTAL_SPLIT": "Vízszintes felosztás",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Alapértelmezett szövegszerkesztő",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Egyszerű",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Kulcs generálás",
 		"TITLE_PRIVATE": "Privát",
 		"TITLE_PUBLIC": "Publikus",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Piszkozat automatikus mentése",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

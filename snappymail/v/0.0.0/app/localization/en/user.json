@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Add Account"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobile version",
-		"BUTTON_DESKTOP_VERSION": "Desktop version"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Advanced Search",
 		"TEXT": "Text",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "Warning! Not all attachments have been uploaded.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Not all attachments have been uploaded yet.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "Request a read receipt",
 		"BUTTON_MARK_AS_IMPORTANT": "Mark as important",
 		"BUTTON_REQUEST_DSN": "Request a delivery receipt",
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Are you sure you want to close this window?",
 		"DESC_WANT_DELETE_MESSAGES": "Are you sure you want to delete the message(s)?"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "No Split",
 		"LAYOUT_VERTICAL_SPLIT": "Vertical Split",
 		"LAYOUT_HORIZONTAL_SPLIT": "Horizontal Split",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Default text editor",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "Plain",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Generate Key Pair",
 		"TITLE_PRIVATE": "Private",
 		"TITLE_PUBLIC": "Public",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

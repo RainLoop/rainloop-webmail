@@ -31,7 +31,7 @@ export const
 	 */
 	serverRequestRaw = (type, hash) =>
 		BASE + '?/Raw/' + SUB_QUERY_PREFIX + '/'
-		+ '0/' // Settings.get('AccountHash') ?
+		+ '0/' // Settings.get('accountHash') ?
 		+ (type
 			? type + '/' + (hash ? SUB_QUERY_PREFIX + '/' + hash : '')
 			: ''),

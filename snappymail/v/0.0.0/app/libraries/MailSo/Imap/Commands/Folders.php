@@ -13,6 +13,7 @@
 namespace MailSo\Imap\Commands;
 
 use MailSo\Imap\Folder;
+use MailSo\Imap\FolderCollection;
 use MailSo\Imap\FolderInformation;
 use MailSo\Imap\SequenceSet;
 use MailSo\Imap\Enumerations\FolderStatus;
@@ -171,7 +172,11 @@ trait Folders
 		$oFolderInfo = $this->oCurrentFolderInfo;
 		$bReselect = false;
 		$bWritable = false;
-		if ($oFolderInfo && $sFolderName === $oFolderInfo->FolderName) {
+		if ($oFolderInfo && $sFolderName === $oFolderInfo->FullName) {
+			if ($oFolderInfo->hasStatus) {
+				return $oFolderInfo;
+			}
+
 			/**
 			 * There's a long standing IMAP CLIENTBUG where STATUS command is executed
 			 * after SELECT/EXAMINE on same folder (it should not).
@@ -196,21 +201,24 @@ trait Folders
 
 		if ($bReselect || $bSelect) {
 			// Don't use FolderExamine, else PERMANENTFLAGS is empty in Dovecot
-			$oFolderInformation = $this->selectOrExamineFolder($sFolderName, $bSelect || $bWritable, false);
-			$oFolderInformation->MESSAGES = \max(0, $oFolderInformation->MESSAGES, $oInfo->MESSAGES);
+			$oFolderInfo = $this->selectOrExamineFolder($sFolderName, $bSelect || $bWritable, false);
+			$oFolderInfo->MESSAGES = \max(0, $oFolderInfo->MESSAGES, $oInfo->MESSAGES);
 			// SELECT or EXAMINE command then UNSEEN is the message sequence number of the first unseen message.
 			// And deprecated in IMAP4rev2, so we set it to the amount of unseen messages
-			$oFolderInformation->UNSEEN = \max(0, $oInfo->UNSEEN);
-			$oFolderInformation->UIDNEXT = \max(0, $oFolderInformation->UIDNEXT, $oInfo->UIDNEXT);
-			$oFolderInformation->UIDVALIDITY = \max(0, $oFolderInformation->UIDVALIDITY, $oInfo->UIDVALIDITY);
-			$oFolderInformation->HIGHESTMODSEQ = \max(0, $oInfo->HIGHESTMODSEQ);
-			$oFolderInformation->APPENDLIMIT = \max(0, $oFolderInformation->APPENDLIMIT, $oInfo->APPENDLIMIT);
-			$oFolderInformation->MAILBOXID = $oFolderInformation->MAILBOXID ?: $oInfo->MAILBOXID;
-//			$oFolderInformation->SIZE = \max($oFolderInformation->SIZE, $oInfo->SIZE);
-//			$oFolderInformation->RECENT = \max(0, $oFolderInformation->RECENT, $oInfo->RECENT);
-			return $oFolderInformation;
+			$oFolderInfo->UNSEEN = \max(0, $oInfo->UNSEEN);
+			$oFolderInfo->UIDNEXT = \max(0, $oFolderInfo->UIDNEXT, $oInfo->UIDNEXT);
+			$oFolderInfo->UIDVALIDITY = \max(0, $oFolderInfo->UIDVALIDITY, $oInfo->UIDVALIDITY);
+			$oFolderInfo->HIGHESTMODSEQ = \max(0, $oInfo->HIGHESTMODSEQ);
+			$oFolderInfo->APPENDLIMIT = \max(0, $oFolderInfo->APPENDLIMIT, $oInfo->APPENDLIMIT);
+			$oFolderInfo->MAILBOXID = $oFolderInfo->MAILBOXID ?: $oInfo->MAILBOXID;
+//			$oFolderInfo->SIZE = \max($oFolderInfo->SIZE, $oInfo->SIZE);
+//			$oFolderInfo->RECENT = \max(0, $oFolderInfo->RECENT, $oInfo->RECENT);
+			$oFolderInfo->hasStatus = $oInfo->hasStatus;
+			$oFolderInfo->generateETag($this);
+			return $oFolderInfo;
 		}
 
+		$oInfo->generateETag($this);
 		return $oInfo;
 	}
 
@@ -258,19 +266,16 @@ trait Folders
 		if ($this->IsSelected()) {
 			if ($this->hasCapability('UNSELECT')) {
 				$this->SendRequestGetResponse('UNSELECT');
-				$this->oCurrentFolderInfo = null;
 			} else {
 				try {
 					$this->SendRequestGetResponse('SELECT', ['""']);
 					// * OK [CLOSED] Previous mailbox closed.
 					// 3 NO [CANNOT] Invalid mailbox name: Name is empty
 				} catch (\MailSo\Imap\Exceptions\NegativeResponseException $oException) {
-					if ('NO' === $oException->GetResponseStatus()) {
-						$this->oCurrentFolderInfo = null;
-					}
 				}
 			}
 		}
+		$this->oCurrentFolderInfo = null;
 	}
 
 	/**
@@ -315,9 +320,9 @@ trait Folders
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function FolderSelect(string $sFolderName, bool $bReSelectSameFolders = false) : FolderInformation
+	public function FolderSelect(string $sFolderName, bool $bForceReselect = false) : FolderInformation
 	{
-		return $this->selectOrExamineFolder($sFolderName, true, $bReSelectSameFolders);
+		return $this->selectOrExamineFolder($sFolderName, true, $bForceReselect);
 	}
 
 	/**
@@ -331,9 +336,9 @@ trait Folders
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function FolderExamine(string $sFolderName, bool $bReSelectSameFolders = false) : FolderInformation
+	public function FolderExamine(string $sFolderName, bool $bForceReselect = false) : FolderInformation
 	{
-		return $this->selectOrExamineFolder($sFolderName, $this->Settings->force_select, $bReSelectSameFolders);
+		return $this->selectOrExamineFolder($sFolderName, $this->Settings->force_select, $bForceReselect);
 	}
 
 	/**
@@ -345,11 +350,11 @@ trait Folders
 	 * REQUIRED IMAP4rev2 untagged responses:  FLAGS, EXISTS, LIST
 	 * REQUIRED IMAP4rev2 OK untagged responses:  PERMANENTFLAGS, UIDNEXT, UIDVALIDITY
 	 */
-	protected function selectOrExamineFolder(string $sFolderName, bool $bIsWritable, bool $bReSelectSameFolders) : FolderInformation
+	protected function selectOrExamineFolder(string $sFolderName, bool $bIsWritable, bool $bForceReselect) : FolderInformation
 	{
-		if (!$bReSelectSameFolders
+		if (!$bForceReselect
 		  && $this->oCurrentFolderInfo
-		  && $sFolderName === $this->oCurrentFolderInfo->FolderName
+		  && $sFolderName === $this->oCurrentFolderInfo->FullName
 		  && ($bIsWritable === $this->oCurrentFolderInfo->IsWritable || $this->oCurrentFolderInfo->IsWritable)
 		) {
 			return $this->oCurrentFolderInfo;
@@ -407,9 +412,9 @@ trait Folders
 							$oResult->PermanentFlags = \array_map('\\MailSo\\Base\\Utils::Utf7ModifiedToUtf8', $oResponse->OptionalResponse[1]);
 						}
 					} else if ('READ-ONLY' === $key) {
-//						$oResult->IsWritable = false;
+						$oResult->IsWritable = false;
 					} else if ('READ-WRITE' === $key) {
-//						$oResult->IsWritable = true;
+						$oResult->IsWritable = true;
 					} else if ('NOMODSEQ' === $key) {
 						// https://datatracker.ietf.org/doc/html/rfc4551#section-3.1.2
 					}
@@ -419,7 +424,8 @@ trait Folders
 				else if (\count($oResponse->ResponseList) > 2
 				 && 'FLAGS' === $oResponse->ResponseList[1]
 				 && \is_array($oResponse->ResponseList[2])) {
-					$oResult->Flags = \array_map('\\MailSo\\Base\\Utils::Utf7ModifiedToUtf8', $oResponse->ResponseList[2]);
+					// These could be not permanent, so we don't use them
+//					$oResult->Flags = \array_map('\\MailSo\\Base\\Utils::Utf7ModifiedToUtf8', $oResponse->ResponseList[2]);
 				}
 			}
 		}
@@ -442,7 +448,7 @@ trait Folders
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function FolderList(string $sParentFolderName, string $sListPattern, bool $bIsSubscribeList = false, bool $bUseListStatus = false) : array
+	public function FolderList(string $sParentFolderName, string $sListPattern, bool $bIsSubscribeList = false, bool $bUseListStatus = false) : FolderCollection
 	{
 		$sCmd = 'LIST';
 
@@ -502,16 +508,18 @@ trait Folders
 		$aMetadata = $bMetadata ? $this->getAllMetadata() : null;
 
 		$this->SendRequest($sCmd, $aParameters);
-		$aReturn = array();
+		$aFolders = array();
+		$oFolderCollection = new FolderCollection;
 		$sDelimiter = '';
 		$bInbox = false;
 		foreach ($this->yieldUntaggedResponses() as $oResponse) {
 			if ('STATUS' === $oResponse->StatusOrIndex && isset($oResponse->ResponseList[2])) {
 				$sFullName = $this->toUTF8($oResponse->ResponseList[2]);
-				if (!isset($aReturn[$sFullName])) {
-					$aReturn[$sFullName] = new Folder($sFullName);
+				if (!isset($oFolderCollection[$sFullName])) {
+					$oFolderCollection[$sFullName] = new Folder($sFullName);
 				}
-				$aReturn[$sFullName]->setStatusFromResponse($oResponse);
+				$oFolderCollection[$sFullName]->setStatusFromResponse($oResponse);
+				$oFolderCollection[$sFullName]->generateETag($this);
 			}
 			else if ($sCmd === $oResponse->StatusOrIndex && 5 === \count($oResponse->ResponseList)) {
 				try
@@ -521,22 +529,20 @@ trait Folders
 					/**
 					 * $oResponse->ResponseList[0] = *
 					 * $oResponse->ResponseList[1] = LIST (all) | LSUB (subscribed)
-					 * $oResponse->ResponseList[2] = Flags
+					 * $oResponse->ResponseList[2] = Attribute flags
 					 * $oResponse->ResponseList[3] = Delimiter
 					 * $oResponse->ResponseList[4] = FullName
 					 */
-					if (isset($aReturn[$sFullName])) {
-						$oFolder = $aReturn[$sFullName];
+					if (isset($oFolderCollection[$sFullName])) {
+						$oFolder = $oFolderCollection[$sFullName];
 						$oFolder->setDelimiter($oResponse->ResponseList[3]);
-						$oFolder->setFlags($oResponse->ResponseList[2]);
+						$oFolder->setAttributes($oResponse->ResponseList[2]);
 					} else {
 						$oFolder = new Folder($sFullName, $oResponse->ResponseList[3], $oResponse->ResponseList[2]);
-						$aReturn[$sFullName] = $oFolder;
+						$oFolderCollection[$sFullName] = $oFolder;
 					}
 
-					if ($oFolder->IsInbox()) {
-						$bInbox = true;
-					}
+					$bInbox = $bInbox || $oFolder->IsInbox();
 
 					if (!$sDelimiter) {
 						$sDelimiter = $oFolder->Delimiter();
@@ -545,8 +551,6 @@ trait Folders
 					if (isset($aMetadata[$oResponse->ResponseList[4]])) {
 						$oFolder->SetAllMetadata($aMetadata[$oResponse->ResponseList[4]]);
 					}
-
-					$aReturn[$sFullName] = $oFolder;
 				}
 				catch (\Throwable $oException)
 				{
@@ -555,13 +559,16 @@ trait Folders
 			}
 		}
 
+//		$iOptimizationLimit = $this->Settings->folder_list_limit;
+//		$oFolderCollection->Optimized = 10 < $iOptimizationLimit && $oFolderCollection->count() > $iOptimizationLimit;
+
 		// RFC 5464
-		if ($bMetadata && !$aMetadata /*&& 50 < \count($aReturn)*/) {
-			foreach ($aReturn as $oFolder) {
-//				if (2 > \substr_count($oFolder->FullName(), $oFolder->Delimiter()))
+		if ($bMetadata && !$aMetadata /*&& 50 < $oFolderCollection->count()*/) {
+			foreach ($oFolderCollection as $oFolder) {
+//				if (2 > \substr_count($oFolder->FullName, $oFolder->Delimiter()))
 				try {
 					$oFolder->SetAllMetadata(
-						$this->getMetadata($oFolder->FullName(), ['/shared', '/private'], ['DEPTH'=>'infinity'])
+						$this->getMetadata($oFolder->FullName, ['/shared', '/private'], ['DEPTH'=>'infinity'])
 					);
 				} catch (\Throwable $oException) {
 					// Ignore error
@@ -569,11 +576,11 @@ trait Folders
 			}
 		}
 
-		if (!$bInbox && !$sParentFolderName && !isset($aReturn['INBOX'])) {
-			$aReturn['INBOX'] = new Folder('INBOX', $sDelimiter);
+		if (!$bInbox && !$sParentFolderName && !isset($oFolderCollection['INBOX'])) {
+			$oFolderCollection['INBOX'] = new Folder('INBOX', $sDelimiter);
 		}
 
-		return $aReturn;
+		return $oFolderCollection;
 	}
 
 	/**
@@ -581,7 +588,7 @@ trait Folders
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function FolderSubscribeList(string $sParentFolderName, string $sListPattern) : array
+	public function FolderSubscribeList(string $sParentFolderName, string $sListPattern) : FolderCollection
 	{
 		return $this->FolderList($sParentFolderName, $sListPattern, true);
 	}
@@ -591,7 +598,7 @@ trait Folders
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function FolderStatusList(string $sParentFolderName, string $sListPattern) : array
+	public function FolderStatusList(string $sParentFolderName, string $sListPattern) : FolderCollection
 	{
 		return $this->FolderList($sParentFolderName, $sListPattern, false, true);
 	}

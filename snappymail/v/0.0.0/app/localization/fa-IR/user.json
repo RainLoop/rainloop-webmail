@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "ساخت کاربر"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "نسخه موبایل",
-		"BUTTON_DESKTOP_VERSION": "نسخه رومیزی"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "جستجوی پیشرفته",
 		"TEXT": "متن",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "اخطار! همه پیوست‌ها هنوز بارگذاری نشده است.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "همه پیوست‌ها هنوز بارگذاری نشده است.",
 		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "ذخیره خودکار پیش‌نویس",
 		"BUTTON_REQUEST_READ_RECEIPT": "درخواست دریافت رسید خواندن",
 		"BUTTON_MARK_AS_IMPORTANT": "علامت زدن به عنوان مهم",
 		"BUTTON_REQUEST_DSN": "درخواست دریافت رسید تحویل درمقصد",
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "آیا از بستن این پنجره مطمئن هستید؟",
 		"DESC_WANT_DELETE_MESSAGES": "آیا از حذف این پیام(ها) اطمینان دارید؟"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "بدون تقسیم",
 		"LAYOUT_VERTICAL_SPLIT": "تقسیم عمودی",
 		"LAYOUT_HORIZONTAL_SPLIT": "تقسیم افقی",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "ویرایشگر پیش‌فرض",
 		"EDITOR_HTML": "تحت فرمت Html",
 		"EDITOR_PLAIN": "ساده",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "تولید کلیدهای",
 		"TITLE_PRIVATE": "خصوصی",
 		"TITLE_PUBLIC": "عمومی",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "ذخیره خودکار پیش‌نویس",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {

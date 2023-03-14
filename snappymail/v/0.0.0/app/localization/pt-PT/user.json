@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Adicionar conta"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Versão móvel",
-		"BUTTON_DESKTOP_VERSION": "Versão computador"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Pesquisa avançada",
 		"TEXT": "Texto",
@@ -69,13 +65,13 @@
 		"SUBFOLDERS_SUBTREE": "Todas",
 		"SUBFOLDERS_SUBTREE_ONE": "Um nível",
 		"REPLIED": "Respondidas",
-		"KEYWORD": "Tag"
+		"KEYWORD": "Etiqueta"
 	},
 	"FOLDER_LIST": {
-		"BUTTON_COMPOSE": "Compor",
+		"BUTTON_COMPOSE": "Escrever",
 		"BUTTON_NEW_MESSAGE": "Nova mensagem",
 		"INBOX_NAME": "Caixa de entrada",
-		"SENT_NAME": "Correio enviado",
+		"SENT_NAME": "Enviadas",
 		"DRAFTS_NAME": "Rascunhos",
 		"TRASH_NAME": "Lixo",
 		"ARCHIVE_NAME": "Arquivo"
@@ -95,14 +91,14 @@
 		"MENU_UNSET_FLAG": "Remover sinalização",
 		"MENU_SELECT_ALL": "Todas",
 		"MENU_SELECT_INVERT": "Inverter",
-		"MENU_SELECT_UNSEEN": "Não lida",
-		"MENU_SELECT_SEEN": "Lida",
-		"MENU_SELECT_FLAGGED": "Sinalizada",
-		"MENU_SELECT_UNFLAGGED": "Não sinalizada",
-		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
+		"MENU_SELECT_UNSEEN": "Não lidas",
+		"MENU_SELECT_SEEN": "Lidas",
+		"MENU_SELECT_FLAGGED": "Sinalizadas",
+		"MENU_SELECT_UNFLAGGED": "Não sinalizadas",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Descarregar todos os anexos",
 		"EMPTY_LIST": "Lista vazia.",
 		"EMPTY_SEARCH_LIST": "Nenhuma mensagem corresponde à sua pesquisa.",
-		"SEARCH_RESULT_FOR": "Resultados de pesquisa para \"%SEARCH%\"",
+		"SEARCH_RESULT_FOR": "Resultados da pesquisa para \"%SEARCH%\"",
 		"BACK_TO_MESSAGE_LIST": "voltar à lista de mensagens",
 		"PUT_MESSAGE_HERE": "Coloque a mensagem aqui para vê-la na lista",
 		"TODAY_AT": "hoje às %TIME%",
@@ -146,13 +142,13 @@
 		"LABEL_FROM_SHORT": "de",
 		"LABEL_TO_SHORT": "para",
 		"PRINT_LABEL_ATTACHMENTS": "Anexos",
-		"MESSAGE_VIEW_DESC": "Selecione uma mensagem na lista para ver o conteúdo aqui.",
+		"MESSAGE_VIEW_DESC": "Escolha uma mensagem na lista para ver o conteúdo aqui.",
 		"MESSAGE_VIEW_MOVE_DESC": "Clique no nome da pasta no painel da esquerda para escolher o destino.",
 		"LINK_DOWNLOAD_AS_ZIP": "Transferir em arquivo zip",
 		"SPAM_SCORE": "Pontuação de Spam",
 		"HAS_VIRUS_WARNING": "AVISO: vírus detetado",
-		"TAGS": "Marcadores",
-		"NEW_TAG": "Novo marcador"
+		"TAGS": "Etiquetas",
+		"NEW_TAG": "Nova etiqueta"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Importante",
@@ -192,7 +188,7 @@
 		"EMPTY_LIST": "Nenhum contacto aqui",
 		"EMPTY_SEARCH": "Nenhum contacto encontrado",
 		"CLEAR_SEARCH": "Limpar pesquisa",
-		"CONTACT_VIEW_DESC": "Selecione o contacto na lista para visualizá-lo.",
+		"CONTACT_VIEW_DESC": "Escolha o contacto na lista para visualizá-lo.",
 		"LABEL_BIRTHDAY": "Aniversário",
 		"PLACEHOLDER_ENTER_DISPLAY_NAME": "Introduza o nome a apresentar",
 		"PLACEHOLDER_ENTER_LAST_NAME": "Introduza o último nome",
@@ -206,7 +202,7 @@
 		"ADD_MENU_URL": "Website",
 		"ADD_MENU_ADDRESS": "Morada",
 		"ADD_MENU_BIRTHDAY": "Aniversário",
-		"ADD_MENU_TAGS": "Marcadores",
+		"ADD_MENU_TAGS": "Etiquetas",
 		"BUTTON_SHARE_ALL": "Todos",
 		"BUTTON_SYNC": "Sincronização (CardDAV)"
 	},
@@ -214,8 +210,8 @@
 		"LINK_SHOW_INPUTS": "Mostrar todos os campos",
 		"BUTTON_SEND": "Enviar",
 		"BUTTON_MINIMIZE": "Minimizar",
-		"SAVED_TIME": "Guardado às %TIME%",
-		"SAVED_ERROR_ON_SEND": "A sua mensagem foi enviada, mas não foi guardada na pasta dos itens enviados.",
+		"SAVED_TIME": "Guardada às %TIME%",
+		"SAVED_ERROR_ON_SEND": "A sua mensagem foi enviada, mas não foi guardada na pasta das mensagens enviadas.",
 		"DISCARD_UNSAVED_DATA": "Rejeitar o conteúdo que não foi guardado?",
 		"ATTACH_FILES": "Anexar ficheiros",
 		"ATTACH_DROP_FILES_DESC": "Arraste os ficheiros para aqui",
@@ -227,14 +223,16 @@
 		"ATTACHMENTS_ERROR_DESC": "Aviso! Nem todos os anexos foram carregados.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Ainda não foram carregados todos os anexos",
 		"ALLOW_SPELLCHECK": "Ativar corretor ortográfico do navegador",
+		"ALLOW_DRAFT_AUTOSAVE": "Guardar rascunho automaticamente",
 		"BUTTON_REQUEST_READ_RECEIPT": "Pedir um recibo de leitura",
 		"BUTTON_MARK_AS_IMPORTANT": "Marcar como importante",
 		"BUTTON_REQUEST_DSN": "Pedir um recibo de entrega",
 		"BUTTON_REQUIRE_TLS": "Exigir entrega segura"
 	},
 	"POPUPS_ASK": {
-		"DESC_WANT_CLOSE_THIS_WINDOW": "Tem a certeza de que quer fechar esta janela?",
-		"DESC_WANT_DELETE_MESSAGES": "Tem a certeza de que quer eliminar a(s) mensagem(s)?"
+		"EXIT_ARE_YOU_SURE": "Quer mesmo sair?",
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Quer mesmo fechar esta janela?",
+		"DESC_WANT_DELETE_MESSAGES": "Quer mesmo eliminar a(s) mensagem(ns)?"
 	},
 	"POPUPS_LANGUAGES": {
 		"TITLE_LANGUAGES": "Escolha o seu idioma"
@@ -261,7 +259,7 @@
 	"POPUPS_CLEAR_FOLDER": {
 		"TITLE_CLEAR_FOLDER": "Eliminar todas as mensagens da pasta?",
 		"DANGER_DESC_WARNING": "Aviso!",
-		"DANGER_DESC_HTML_1": "Esta ação irá resultar na remoção definitiva de todos os e-mails na pasta <strong>%FOLDER%<\/strong>.",
+		"DANGER_DESC_HTML_1": "Esta ação irá resultar na eliminação definitiva de todos os e-mails na pasta <strong>%FOLDER%<\/strong>.",
 		"DANGER_DESC_HTML_2": "Uma vez iniciado, o processo não pode ser interrompido ou cancelado.",
 		"TITLE_CLEARING_PROCESS": "A eliminar a pasta..."
 	},
@@ -332,14 +330,14 @@
 		"CHANGES_NEED_TO_BE_SAVED_DESC": "Estas alterações têm que ser guardadas no sevidor."
 	},
 	"POPUPS_SYSTEM_FOLDERS": {
-		"TITLE_SYSTEM_FOLDERS": "Selecione as pastas de sistema",
+		"TITLE_SYSTEM_FOLDERS": "Escolha as pastas de sistema",
 		"SELECT_CHOOSE_ONE": "Escolha uma",
 		"SELECT_UNUSE_NAME": "Não usar",
-		"NOTIFICATION_SENT": "Você não selecionou a pasta \"Sent\" de sistema, onde as mensagens enviadas são colocadas.\nSe você não quiser guardar as mensagens enviadas, por favor selecione a opção \"Não usar\".\n",
-		"NOTIFICATION_DRAFTS": "Você não selecionou a pasta \"Drafts\" de sistema, onde as mensagens são guardadas enquanto são escritas.",
-		"NOTIFICATION_SPAM": "Você não selecionou a pasta \"Spam\" de sistema, onde as mensagens de spam são colocadas.\nSe você deseja remover as mensagens definitivamente, por favor selecione a opção \"Não usar\".\n",
-		"NOTIFICATION_TRASH": "Você não selecionou a pasta \"Trash\" de sistema, onde as mensagens eliminadas são colocadas.\nSe você deseja remover as mensagens definitivamente, por favor selecione a opção \"Não usar\".\n",
-		"NOTIFICATION_ARCHIVE": "Você não selecionou a pasta \"Archive\" de sistema, onde as mensagens arquivadas são colocadas."
+		"NOTIFICATION_SENT": "Não escolheu a pasta de sistema \"Enviadas\", onde as mensagens enviadas são colocadas.\nSe não quiser guardar as mensagens enviadas, por favor escolha a opção \"Não usar\".\n",
+		"NOTIFICATION_DRAFTS": "Não escolheu a pasta de sistema \"Rascunhos\", onde as mensagens são guardadas enquanto são escritas.",
+		"NOTIFICATION_SPAM": "Não escolheu a pasta de sistema \"Spam\", onde as mensagens de spam são colocadas.\nSe quiser eliminar as mensagens definitivamente, por favor escolha a opção \"Não usar\".\n",
+		"NOTIFICATION_TRASH": "Não escolheu a pasta de sistema \"Lixo\", onde as mensagens eliminadas são colocadas.\nSe quiser eliminar as mensagens definitivamente, por favor escolha a opção \"Não usar\".\n",
+		"NOTIFICATION_ARCHIVE": "Não escolheu a pasta de sistema \"Arquivo\", onde as mensagens arquivadas são colocadas."
 	},
 	"TITLES": {
 		"MAILBOX": "Caixa de correio",
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Sem separação",
 		"LAYOUT_VERTICAL_SPLIT": "Separação vertical",
 		"LAYOUT_HORIZONTAL_SPLIT": "Separação horizontal",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Editor de texto padrão",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "Texto simples",
@@ -403,7 +402,7 @@
 		"PREFER_HTML": "Preferir HTML em vez de texto simples",
 		"PREFER_HTML_INFO": "Por vezes as mensagens são recebidas em ambos os formatos. Esta opção determina se prefere apresentar o conteúdo em HTML ou em texto simples.",
 		"REMOVE_COLORS": "Retirar imagens de fundo e coloração de texto do corpo das mensagens",
-		"ALLOW_STYLES": "Allow <style> CSS",
+		"ALLOW_STYLES": "Permitir estilos CSS",
 		"MESSAGE_PER_PAGE": "Mensagens por página",
 		"CHECK_MAIL_INTERVAL": "Intervalo de verificação do correio",
 		"MARK_MESSAGE_READ_AFTER": "Marcar mensagem como lida após",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Gerar chaves",
 		"TITLE_PRIVATE": "Privada",
 		"TITLE_PUBLIC": "Pública",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Guardar rascunho automaticamente",
 		"GET_MAILVELOPE": "Obter extensão Mailvelope para o navegador."
 	},
 	"SHORTCUTS_HELP": {

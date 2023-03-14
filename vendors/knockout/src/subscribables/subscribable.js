@@ -187,10 +187,7 @@ ko.exportProperty(ko_subscribable_fn, 'extend', ko_subscribable_fn.extend);
 // For browsers that support proto assignment, we overwrite the prototype of each
 // observable instance. Since observables are functions, we need Function.prototype
 // to still be in the prototype chain.
-Object.setPrototypeOf(ko_subscribable_fn, Function.prototype);
-
-ko.subscribable['fn'] = ko_subscribable_fn;
-
+ko.subscribable['fn'] = Object.setPrototypeOf(ko_subscribable_fn, Function.prototype);
 
 ko.isSubscribable = instance =>
     typeof instance?.subscribe == "function" && typeof instance.notifySubscribers == "function";

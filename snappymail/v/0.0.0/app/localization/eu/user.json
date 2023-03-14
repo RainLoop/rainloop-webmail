@@ -46,10 +46,6 @@
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Gehitu kontua"
 	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mugikorreko bertsioa",
-		"BUTTON_DESKTOP_VERSION": "Mahaigaineko bertsioa"
-	},
 	"SEARCH": {
 		"TITLE_ADV": "Bilaketa aurreratua",
 		"TEXT": "Testua",
@@ -227,12 +223,14 @@
 		"ATTACHMENTS_ERROR_DESC": "Kontuz! Eranskin guztiak ez dira kargatu.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Eranskin guztiak ez dira kargatu oraindik.",
 		"ALLOW_SPELLCHECK": "Gaitu nabigatzaileko hizkuntza-zuzentzailea",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatikoi gorde zirriborroa",
 		"BUTTON_REQUEST_READ_RECEIPT": "Eskatu irakurketa-agiria",
 		"BUTTON_MARK_AS_IMPORTANT": "MArkatu garrantzitsu bezala",
 		"BUTTON_REQUEST_DSN": "Eskatu jasotze-agiria",
 		"BUTTON_REQUIRE_TLS": "Require secure delivery"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Ziur zaude leiho hau itxi nahi duzula?",
 		"DESC_WANT_DELETE_MESSAGES": "Ziur zaude mezua(k) ezabatu nahi d(it)uzula?"
 	},
@@ -391,6 +389,7 @@
 		"LAYOUT_NO_SPLIT": "Zatitu gabe",
 		"LAYOUT_VERTICAL_SPLIT": "Zatiketa bertikala",
 		"LAYOUT_HORIZONTAL_SPLIT": "Zatiketa horizontala",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Berezko testu editorea",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "Formaturik gabea",
@@ -482,7 +481,6 @@
 		"BUTTON_GENERATE_KEY_PAIR": "Sortu Gako Parea",
 		"TITLE_PRIVATE": "Pribatua",
 		"TITLE_PUBLIC": "Publikoa",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatikoi gorde zirriborroa",
 		"GET_MAILVELOPE": "Lortu Mailvelope nabigatzaileko gehigarria."
 	},
 	"SHORTCUTS_HELP": {

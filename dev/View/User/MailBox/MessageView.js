@@ -13,11 +13,11 @@ import {
 
 import {
 	elementById,
-	leftPanelDisabled,
 	keyScopeReal,
 	Settings,
 	SettingsCapa,
 	fireEvent,
+	stopEvent,
 	addShortcut,
 	registerShortcut
 } from 'Common/Globals';
@@ -30,15 +30,12 @@ import { SMAudio } from 'Common/Audio';
 
 import { i18n } from 'Common/Translator';
 
-import { MessageFlagsCache } from 'Common/Cache';
-
 import { AppUserStore } from 'Stores/User/App';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import { AccountUserStore } from 'Stores/User/Account';
 import { FolderUserStore, isAllowedKeyword } from 'Stores/User/Folder';
 import { MessageUserStore } from 'Stores/User/Message';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
-import { ThemeStore } from 'Stores/Theme';
 
 import * as Local from 'Storage/Client';
 
@@ -128,7 +125,6 @@ export class MailMessageView extends AbstractViewRight {
 
 		this.message = currentMessage;
 		this.messageLoadingThrottle = MessageUserStore.loading;
-		this.messagesBodiesDom = MessageUserStore.bodiesDom;
 		this.messageError = MessageUserStore.error;
 
 		this.fullScreenMode = isFullscreen;
@@ -166,7 +162,7 @@ export class MailMessageView extends AbstractViewRight {
 
 			listAttachments: () => currentMessage()?.attachments()
 				.filter(item => SettingsUserStore.listInlineAttachments() || !item.isLinked()),
-			hasAttachments: () => this.listAttachments().length,
+			hasAttachments: () => this.listAttachments()?.length,
 
 			canBeRepliedOrForwarded: () => !MessagelistUserStore.isDraftFolder() && this.messageVisibility(),
 
@@ -280,23 +276,19 @@ export class MailMessageView extends AbstractViewRight {
 	onBuild(dom) {
 		const eqs = (ev, s) => ev.target.closestWithin(s, dom);
 		dom.addEventListener('click', event => {
-			ThemeStore.isMobile() && leftPanelDisabled(true);
-
 			let el = eqs(event, 'a');
 			if (el && 0 === event.button && mailToHelper(el.href)) {
-				event.preventDefault();
-				event.stopPropagation();
+				stopEvent(event);
 				return;
 			}
 
 			if (eqs(event, '.attachmentsPlace .showPreview')) {
-				event.stopPropagation();
 				return;
 			}
 
 			el = eqs(event, '.attachmentsPlace .showPreplay');
 			if (el) {
-				event.stopPropagation();
+				stopEvent(event);
 				const attachment = ko.dataFor(el);
 				if (attachment && SMAudio.supported) {
 					switch (true) {
@@ -340,13 +332,6 @@ export class MailMessageView extends AbstractViewRight {
 
 			if (eqs(event, '.messageItemHeader .subjectParent .flagParent')) {
 				setAction(currentMessage()?.isFlagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag);
-			}
-		});
-
-		AppUserStore.focusedState.subscribe(value => {
-			if (Scope.MessageView !== value) {
-				this.scrollMessageToTop();
-				this.scrollMessageToLeft();
 			}
 		});
 
@@ -459,10 +444,12 @@ export class MailMessageView extends AbstractViewRight {
 			}
 			return false;
 		});
+
+		MessageUserStore.bodiesDom(dom.querySelector('.bodyText'));
 	}
 
 	scrollMessageToTop() {
-		oMessageScrollerDom().scrollTop = (50 < oMessageScrollerDom().scrollTop) ? 50 : 0;
+		oMessageScrollerDom().scrollTop = 0;
 	}
 
 	scrollMessageToLeft() {
@@ -479,7 +466,9 @@ export class MailMessageView extends AbstractViewRight {
 		const hashes = (currentMessage()?.attachments || [])
 			.map(item => item?.checked() /*&& !item?.isLinked()*/ ? item.download : '')
 			.filter(v => v);
-		downloadZip(hashes,
+		downloadZip(
+			currentMessage().subject(),
+			hashes,
 			() => this.downloadAsZipError(true),
 			this.downloadAsZipLoading
 		);
@@ -524,8 +513,6 @@ export class MailMessageView extends AbstractViewRight {
 				if (!iError) {
 					oMessage.flags.push('$mdnsent');
 //					oMessage.flags.valueHasMutated();
-					MessageFlagsCache.store(oMessage);
-					MessagelistUserStore.reloadFlagsAndCachedMessage();
 				}
 			}, {
 				messageFolder: oMessage.folder,
