@@ -160,11 +160,6 @@ $tar->addFromString('index.php', $index);
 $zip->addFile('README.md');
 $tar->addFile('README.md');
 
-$data = file_get_contents('dev/serviceworker.js');
-//$data = file_get_contents('snappymail/v/0.0.0/static/js/min/serviceworker.min.js');
-$zip->addFromString('serviceworker.js', $data);
-$tar->addFromString('serviceworker.js', $data);
-
 $zip->close();
 
 $tar->compress(Phar::GZ);
