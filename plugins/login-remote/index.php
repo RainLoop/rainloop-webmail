@@ -6,9 +6,9 @@ class LoginRemotePlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Login Remote',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.2',
-		RELEASE  = '2022-11-24',
-		REQUIRED = '2.21.0',
+		VERSION  = '1.3',
+		RELEASE  = '2023-03-14',
+		REQUIRED = '2.27.0',
 		CATEGORY = 'Login',
 		LICENSE  = 'MIT',
 		DESCRIPTION = 'Tries to login using the $_ENV["REMOTE_*"] variables';
@@ -55,7 +55,7 @@ class LoginRemotePlugin extends \RainLoop\Plugins\AbstractPlugin
 			}
 		}
 
-		$oActions->Location('./');
+		\MailSo\Base\Http::Location('./');
 		return true;
 	}
 

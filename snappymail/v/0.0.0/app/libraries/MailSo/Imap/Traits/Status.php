@@ -92,7 +92,7 @@ trait Status
 	{
 		if (!$this->hasStatus) {
 			// UNSEEN undefined when only SELECT/EXAMINE is used
-			\error_log("STATUS missing " . \print_r($this,true));
+			\error_log("{$this->FullName} STATUS missing " . \print_r(\debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS),true));
 			return;
 		}
 		if (!isset($this->MESSAGES, $this->UIDNEXT)) {

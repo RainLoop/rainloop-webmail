@@ -515,7 +515,7 @@ class ServiceActions
 				))
 			);
 		}
-		$this->oActions->Location('./');
+		\MailSo\Base\Http::Location('./');
 		return '';
 	}
 
@@ -595,7 +595,7 @@ class ServiceActions
 			}
 		}
 
-		$this->oActions->Location('./');
+		\MailSo\Base\Http::Location('./');
 		return '';
 	}
 

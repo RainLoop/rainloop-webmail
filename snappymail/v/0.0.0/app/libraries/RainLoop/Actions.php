@@ -1126,10 +1126,10 @@ class Actions
 		return isset($this->aCurrentActionParams[$sKey]);
 	}
 
-	public function Location(string $sUrl): void
+	public function Location(string $sUrl, int $iStatus = 302): void
 	{
-		$this->oLogger->Write('Location: ' . $sUrl);
-		\header('Location: ' . $sUrl);
+		$this->oLogger->Write("{$iStatus} Location: {$sUrl}");
+		\MailSo\Base\Http::Location($sUrl, $iStatus);
 	}
 
 }

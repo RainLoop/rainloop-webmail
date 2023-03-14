@@ -39,7 +39,7 @@ abstract class Service
 
 		$oHttp = \MailSo\Base\Http::SingletonInstance();
 		if ($oConfig->Get('security', 'force_https', false) && !$oHttp->IsSecure()) {
-			\header('Location: https://'.$oHttp->GetHost(false).$oHttp->GetUrl());
+			\MailSo\Base\Http::Location('https://'.$oHttp->GetHost(false).$oHttp->GetUrl());
 			return true;
 		}
 
@@ -139,7 +139,7 @@ abstract class Service
 			if (!$bAdmin) {
 				$login = $oConfig->Get('labs', 'custom_login_link', '');
 				if ($login && !$oActions->getAccountFromToken(false)) {
-					\header("Location: {$login}");
+					\MailSo\Base\Http::Location($login);
 					return true;
 				}
 			}

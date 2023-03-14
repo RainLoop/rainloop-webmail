@@ -139,6 +139,7 @@ class Http
 
 	public static function checkETag(string $ETag) : void
 	{
+		// $ETag . APP_VERSION
 		$sIfNoneMatch = static::GetHeader('If-None-Match');
 		if ($sIfNoneMatch && false !== \strpos($sIfNoneMatch, $ETag)) {
 			static::StatusHeader(304);
@@ -153,6 +154,7 @@ class Http
 
 	public static function setETag(string $ETag) : void
 	{
+		// $ETag . APP_VERSION
 		static::checkETag($ETag);
 		\header("ETag: \"{$ETag}\"");
 	}
@@ -208,6 +210,7 @@ class Http
 				200 => 'OK',
 				206 => 'Partial Content',
 				301 => 'Moved Permanently',
+				302 => 'Found',
 				304 => 'Not Modified',
 				400 => 'Bad Request',
 				401 => 'Unauthorized',
@@ -229,6 +232,12 @@ class Http
 				\header("Status: {$iStatus} {$sHeaderText}");
 			}
 		}
+	}
+
+	public static function Location(string $sUrl, int $iStatus = 302): void
+	{
+		static::StatusHeader($iStatus);
+		\header('Location: ' . $sUrl);
 	}
 
 	public function GetPath() : string
