@@ -22,15 +22,19 @@ let DesktopNotifications = false,
 	WorkerNotifications = navigator.serviceWorker;
 
 // Are Notifications supported in the service worker?
-if (WorkerNotifications && ServiceWorkerRegistration && ServiceWorkerRegistration.prototype.showNotification) {
-	/* Listen for close requests from the ServiceWorker */
-	WorkerNotifications.addEventListener('message', event => {
-		const obj = JSON.parse(event.data);
-		'notificationclick' === obj?.action && dispatchMessage(obj.data);
-	});
+if (WorkerNotifications) {
+	if (ServiceWorkerRegistration && ServiceWorkerRegistration.prototype.showNotification) {
+		/* Listen for close requests from the ServiceWorker */
+		WorkerNotifications.addEventListener('message', event => {
+			const obj = JSON.parse(event.data);
+			'notificationclick' === obj?.action && dispatchMessage(obj.data);
+		});
+	} else {
+		console.log('ServiceWorkerRegistration.showNotification undefined');
+		WorkerNotifications = null;
+	}
 } else {
-	WorkerNotifications = null;
-	console.log('ServiceWorker Notifications not supported');
+	console.log('ServiceWorker undefined');
 }
 
 export const NotificationUserStore = new class {
@@ -65,7 +69,7 @@ export const NotificationUserStore = new class {
 			}
 			if (WorkerNotifications) {
 				// Service-Worker-Allowed HTTP header to allow the scope.
-				WorkerNotifications.register('/serviceworker.js')
+				WorkerNotifications.register('./serviceworker.js')
 //				WorkerNotifications.register(Links.staticLink('js/serviceworker.js'), {scope:'/'})
 				.then(() =>
 					WorkerNotifications.ready.then(registration =>
@@ -80,7 +84,10 @@ export const NotificationUserStore = new class {
 							)
 					)
 				)
-				.catch(e => console.error(e));
+				.catch(e => {
+					console.error(e);
+					WorkerNotifications = null;
+				});
 			} else {
 				const notification = new HTML5Notification(title, options);
 				notification.show?.();
