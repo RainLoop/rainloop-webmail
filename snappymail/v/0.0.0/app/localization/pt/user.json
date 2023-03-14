@@ -403,6 +403,7 @@
 		"PREFER_HTML": "Preferir HTML em vez de texto simples",
 		"PREFER_HTML_INFO": "Por vezes as mensagens são recebidas em ambos os formatos. Esta opção determina se prefere apresentar o conteúdo em HTML ou em texto simples.",
 		"REMOVE_COLORS": "Retirar imagens de fundo e coloração de texto do corpo das mensagens",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "Mensagens por página",
 		"CHECK_MAIL_INTERVAL": "Intervalo de verificação do correio",
 		"MARK_MESSAGE_READ_AFTER": "Marcar mensagem como lida após",
@@ -421,7 +422,6 @@
 		"EXTERNAL_IMAGES": "Imagens externas",
 		"IMAGES_OPTION_ASK": "Perguntar sempre",
 		"IMAGES_OPTION_WHITELIST": "Lista Branca ou perguntar",
-		"IMAGES_OPTION_DKIM": "Mostrar sempre que DKIM for válido",
 		"IMAGES_OPTION_ALWAYS": "Mostrar sempre",
 		"IMAGES_WHITELIST": "Lista Branca de imagens"
 	},

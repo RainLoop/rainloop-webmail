@@ -97,7 +97,7 @@ abstract class HtmlUtils
 		$oBody = $oDoc->getElementsByTagName('body')->item(0);
 
 		$aRemoveTags = array(
-			'svg', 'link', 'base', 'meta', 'title', 'x-script', 'script', 'bgsound', 'keygen', 'source',
+			'svg', 'link', 'base', 'meta', 'title', 'script', 'bgsound', 'keygen', 'source',
 			'object', 'embed', 'applet', 'mocha', 'iframe', 'frame', 'frameset', 'video', 'audio', 'area', 'map',
 			'head', 'style'
 		);

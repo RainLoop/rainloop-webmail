@@ -46,25 +46,92 @@ class LdapMailAccounts
 		$this->Connect();
 	}
 
+
+	/**
+	 * @inheritDoc
+	 *
+	 * AOverwrite the MainAccount mail address by looking up the new one in the ldap directory
+	 *
+	 * The ldap search string has to be configured in the plugin configuration of the extension (in the SnappyMail Admin Panel)
+	 *
+	 * @param string &$sEmail
+	 * @param string &$sLogin
+	 */
+	public function overwriteEmail(&$sEmail, &$sLogin)
+	{
+		try {
+			$this->EnsureBound();
+		} catch (LdapMailAccountsException $e) {
+			return false; // exceptions are only thrown from the handle error function that does logging already
+		}
+
+		// Try to get account information. IncLogin() returns the username of the user
+		// and removes the domainname if this was configured inside the domain config.
+		$username = $sEmail;
+		$oActions = \RainLoop\Api::Actions();
+		$oDomain = $oActions->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true);
+		if ($oDomain->IncShortLogin()){
+			$username = @ldap_escape($this->RemoveEventualDomainPart($sEmail), "", LDAP_ESCAPE_FILTER);
+		}
+
+		$searchString = $this->config->search_string;
+
+		// Replace placeholders inside the ldap search string with actual values
+		$searchString = str_replace("#USERNAME#", $username, $searchString);
+		$searchString = str_replace("#BASE_DN#", $this->config->base, $searchString);
+
+		$this->logger->Write("ldap search string after replacement of placeholders: $searchString", \LOG_NOTICE, self::LOG_KEY);
+
+		try {
+			$mailAddressResults = $this->FindLdapResults(
+				$this->config->field_search,
+				$searchString,
+				$this->config->base,
+				$this->config->objectclass,
+				$this->config->field_name,
+				$this->config->field_username,
+				$this->config->field_domain,
+				true,
+				$this->config->field_mail_address_main_account,
+			);
+		}
+		catch (LdapMailAccountsException $e) {
+			return false; // exceptions are only thrown from the handle error function that does logging already
+		}
+		if (count($mailAddressResults) < 1) {
+			$this->logger->Write("Could not find user $username in LDAP! Overwriting of main mail address not possible.", \LOG_NOTICE, self::LOG_KEY);
+			return false;
+		}		
+
+		foreach($mailAddressResults as $mailAddressResult)
+		{
+			if($mailAddressResult->username === $username)	{
+				//$sLogin is already set to be the same as $sEmail by function "resolveLoginCredentials" in /RainLoop/Actions/UserAuth.php
+				//that called this hook, so we just have to overwrite the mail address
+				$sEmail = $mailAddressResult->mailMainAccount;
+			}
+		}
+	}
+
 	/**
 	 * @inheritDoc
 	 *
 	 * Add additional mail accounts to the given primary account by looking up the ldap directory
 	 *
-	 * The ldap lookup has to be configured in the plugin configuration of the extension (in the SnappyMail Admin Panel)
+	 * The ldap search string has to be configured in the plugin configuration of the extension (in the SnappyMail Admin Panel)
 	 *
 	 * @param MainAccount $oAccount
-	 * @return bool true if additional accounts have been added or no additional accounts where found in . false if an error occured
+	 * @return bool true if additional accounts have been added or no additional accounts where found in ldap. false if an error occured
 	 */
 	public function AddLdapMailAccounts(MainAccount $oAccount): bool
 	{
 		try {
 			$this->EnsureBound();
 		} catch (LdapMailAccountsException $e) {
-			return false; // exceptions are only thrown from the handleerror function that does logging already
+			return false; // exceptions are only thrown from the handle error function that does logging already
 		}
 
-		// Try to get account information. Login() returns the username of the user
+		// Try to get account information. IncLogin() returns the username of the user
 		// and removes the domainname if this was configured inside the domain config.
 		$username = @ldap_escape($oAccount->IncLogin(), "", LDAP_ESCAPE_FILTER);
 
@@ -84,11 +151,13 @@ class LdapMailAccounts
 				$this->config->objectclass,
 				$this->config->field_name,
 				$this->config->field_username,
-				$this->config->field_domain
+				$this->config->field_domain,
+				false,
+				$this->config->field_mail_address_additional_account
 			);
 		}
 		catch (LdapMailAccountsException $e) {
-			return false; // exceptions are only thrown from the handleerror function that does logging already
+			return false; // exceptions are only thrown from the handle error function that does logging already
 		}
 		if (count($mailAddressResults) < 1) {
 			$this->logger->Write("Could not find user $username", \LOG_NOTICE, self::LOG_KEY);
@@ -109,7 +178,7 @@ class LdapMailAccounts
 
 		$aAccounts = $oActions->GetAccounts($oAccount);
 
-		//Search for accounts with suffix " (LDAP)" at the end of the name that where created by this plugin and initially remove them from the
+		//Search for accounts with suffix " (LDAP)" at the end of the name that were created by this plugin and initially remove them from the
 		//account array. This only removes the visibility but does not delete the config done by the user. So if a user looses access to a
 		//mailbox the user will not see the account anymore but the configuration can be restored when the user regains access to it
 		foreach($aAccounts as $key => $aAccount)
@@ -125,31 +194,35 @@ class LdapMailAccounts
 			$sUsername = $mailAddressResult->username;
 			$sDomain = $mailAddressResult->domain;
 			$sName = $mailAddressResult->name;
+			$sEmail = $mailAddressResult->mailAdditionalAccount;
 
 			//Check if the domain of the found mail address is in the list of configured domains
 			if ($oActions->DomainProvider()->Load($sDomain, true))
 			{
 				//only execute if the found account isn't already in the list of additional accounts
-				//and if the found account is different from the main account
-				if (!isset($aAccounts["$sUsername@$sDomain"]) && $oAccount->Email() !== "$sUsername@$sDomain")
+				//and if the found account is different from the main account.
+				//The check if the address is different from the one of the main account when using the Nextcloud integration needs
+				//to be done twice: directly on the mail address (when Nextcloud is configured to log the user in by mail address)
+				//or on "$sUsername@$sDomain" for the case Nextcloud logs the user in to SnappyMail by his username and a default domain.
+				if (!isset($aAccounts[$sEmail]) && $oAccount->Email() !== $sEmail && $oAccount->Email() !== "$sUsername@$sDomain")
 				{
 					//Try to login the user with the same password as the primary account has
 					//if this fails the user will see the new mail addresses but will be asked for the correct password
 					$sPass = $oAccount->IncPassword();
+					//After creating the accounts here $sUsername is used as username to login to the IMAP server (see Account.php)
+					$oNewAccount = RainLoop\Model\AdditionalAccount::NewInstanceFromCredentials($oActions, $sEmail, $sUsername, $sPass);
 
-					$oNewAccount = RainLoop\Model\AdditionalAccount::NewInstanceFromCredentials($oActions, "$sUsername@$sDomain", $sUsername, $sPass);
-
-					$aAccounts["$sUsername@$sDomain"] = $oNewAccount->asTokenArray($oAccount);
+					$aAccounts[$sEmail] = $oNewAccount->asTokenArray($oAccount);
 				}
 
 				//Always inject/update the found mailbox names into the array (also if the mailbox already existed)
-				if (isset($aAccounts["$sUsername@$sDomain"]))
+				if (isset($aAccounts[$sEmail]))
 				{
-					$aAccounts["$sUsername@$sDomain"]['name'] = $sName . " (LDAP)";
+					$aAccounts[$sEmail]['name'] = $sName . " (LDAP)";
 				}
 			}
 			else {
-				$this->logger->Write("Domain $sDomain is not part of configured domains in SnappyMail Admin Panel - mail address $sUsername@$sDomain will not be added.", \LOG_NOTICE, self::LOG_KEY);
+				$this->logger->Write("Domain $sDomain is not part of configured domains in SnappyMail Admin Panel - mail address $sEmail will not be added.", \LOG_NOTICE, self::LOG_KEY);
 			}
 		}
 
@@ -264,6 +337,8 @@ class LdapMailAccounts
 	 * @param string $nameField
 	 * @param string $usernameField
 	 * @param string $domainField
+	 * @param bool $overwriteMailMainAccount true if the mail address of the main account should be looked up for overwriting. false if additional mail accounts should be searched
+	 * @param string $mailAddressField The field containing the mail address (of main account or additional mail account)
 	 * @return LdapMailAccountResult[]
 	 * @throws LdapMailAccountsException
 	 */
@@ -274,7 +349,9 @@ class LdapMailAccounts
 		string $objectClass,
 		string $nameField,
 		string $usernameField,
-		string $domainField): array
+		string $domainField,
+		bool $overwriteMailMainAccount,
+		string $mailAddressField): array
 	{
 		$this->EnsureBound();
 		$nameField = strtolower($nameField);
@@ -282,9 +359,12 @@ class LdapMailAccounts
 		$domainField = strtolower($domainField);
 
 		$filter = "(&(objectclass=$objectClass)($searchField=$searchString))";
-		$this->logger->Write("Used ldap filter to search for additional mail accounts: $filter", \LOG_NOTICE, self::LOG_KEY);
+		$this->logger->Write("Used ldap filter to search for mail account(s): $filter", \LOG_NOTICE, self::LOG_KEY);
 
-		$ldapResult = @ldap_search($this->ldap, $searchBase, $filter, ['dn', $usernameField, $nameField, $domainField]);
+		//Set together the attributes to search inside the LDAP
+		$ldapAttributes = ['dn', $usernameField, $nameField, $domainField, $mailAddressField];
+
+		$ldapResult = @ldap_search($this->ldap, $searchBase, $filter, $ldapAttributes);
 		if (!$ldapResult) {
 			$this->HandleLdapError("Fetch $objectClass");
 			return [];
@@ -310,6 +390,13 @@ class LdapMailAccounts
 
 			$result->domain = $this->LdapGetAttribute($entry, $domainField, true, true);
 			$result->domain = $this->RemoveEventualLocalPart($result->domain);
+
+			if($overwriteMailMainAccount) {
+				$result->mailMainAccount = $this->LdapGetAttribute($entry, $mailAddressField, true, true);
+			}
+			else {
+				$result->mailAdditionalAccount = $this->LdapGetAttribute($entry, $mailAddressField, true, true);
+			}
 
 			$results[] = $result;
 		}
@@ -407,4 +494,10 @@ class LdapMailAccountResult
 
 	/** @var string */
 	public $domain;
+
+	/** @var string */
+	public $mailMainAccount;
+
+	/** @var string */
+	public $mailAdditionalAccount;
 }

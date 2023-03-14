@@ -62,9 +62,14 @@
 	#rl-left {
 		display: none;
 	}
+	#rl-content, #rl-right {
+		display: block;
+		width: 100%;
+	}
 	.message-selected {
 		.close,
 		.infoParent,
+		.top-toolbar,
 		.messageView .controls-handle,
 		#tags-dropdown-id,
 		.message-fixed-button-toolbar,
@@ -75,6 +80,7 @@
 		}
 		#V-MailMessageView {
 			left: 0;
+			overflow: initial;
 			position: initial;
 		}
 		.messageView,

@@ -140,7 +140,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 		this.contactsCheckedOrSelected().forEach(oContact => {
 			const data = oContact?.getNameAndEmailHelper(),
 				email = data ? new EmailModel(data[0], data[1]) : null;
-			email?.validate() && aE.push(email);
+			email?.valid() && aE.push(email);
 		});
 
 		if (arrayLength(aE)) {

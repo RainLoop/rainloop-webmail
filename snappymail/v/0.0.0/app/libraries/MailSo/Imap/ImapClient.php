@@ -617,6 +617,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 /*
 		// literal-string
+		$this->hasCapability('LITERAL+')
 		if (\preg_match('/[\r\n\x00\x80-\xFF]/', $sStringForEscape)) {
 			return \sprintf("{%d}\r\n%s", \strlen($sStringForEscape), $sStringForEscape);
 		}

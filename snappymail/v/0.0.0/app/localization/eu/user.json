@@ -403,6 +403,7 @@
 		"PREFER_HTML": "Lehenetsi HTMLa testu arruntari",
 		"PREFER_HTML_INFO": "Mezuak batzuetan bi formatuetan datoz. Aukera honekin HTML edo testu arrunt partea erakustea aukera dezakezu.",
 		"REMOVE_COLORS": "Kendu atzealdeko irudia eta testuaren kolorean mezuaren gorputzetik",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "Orrialdeko mezuak",
 		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Markatu mezua irakurrita ondoren",
@@ -421,7 +422,6 @@
 		"EXTERNAL_IMAGES": "External images",
 		"IMAGES_OPTION_ASK": "Always ask",
 		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
-		"IMAGES_OPTION_DKIM": "Show always when DKIM is valid",
 		"IMAGES_OPTION_ALWAYS": "Show always",
 		"IMAGES_WHITELIST": "Images whitelist"
 	},

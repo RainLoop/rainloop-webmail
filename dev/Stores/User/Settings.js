@@ -19,6 +19,7 @@ export const SettingsUserStore = new class {
 			viewImages: 0,
 			viewImagesWhitelist: '',
 			removeColors: 0,
+			allowStyles: 0,
 			collapseBlockquotes: 1,
 			maxBlockquotesLevel: 0,
 			listInlineAttachments: 0,
@@ -88,6 +89,7 @@ export const SettingsUserStore = new class {
 		self.viewImages(SettingsGet('ViewImages'));
 		self.viewImagesWhitelist(SettingsGet('ViewImagesWhitelist'));
 		self.removeColors(SettingsGet('RemoveColors'));
+		self.allowStyles(SettingsGet('AllowStyles'));
 		self.collapseBlockquotes(SettingsGet('CollapseBlockquotes'));
 		self.maxBlockquotesLevel(SettingsGet('MaxBlockquotesLevel'));
 		self.listInlineAttachments(SettingsGet('ListInlineAttachments'));

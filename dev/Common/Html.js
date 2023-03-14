@@ -18,7 +18,8 @@ const
 		SettingsUserStore.collapseBlockquotes() &&
 //		tpl.content.querySelectorAll('blockquote').forEach(node => {
 		[...tpl.content.querySelectorAll('blockquote')].reverse().forEach(node => {
-			const el = Element.fromHTML('<details class="sm-bq-switcher"><summary>•••</summary></details>');
+			const el = createElement('details', {class:'sm-bq-switcher'});
+			el.innerHTML = '<summary>•••</summary>';
 			node.replaceWith(el);
 			el.append(node);
 		});
@@ -87,6 +88,86 @@ const
 			});
 		}
 		return url;
+	},
+
+	/*
+		Parses given css string, and returns css object
+		keys as selectors and values are css rules
+		eliminates all css comments before parsing
+
+		@param source css string to be parsed
+
+		@return object css
+	*/
+	parseCSS = source => {
+		const css = [];
+		css.toString = () => css.reduce(
+			(ret, tmp) =>
+				ret + tmp.selector + ' {\n'
+					+ (tmp.type === 'media' ? tmp.subStyles.toString() : tmp.rules)
+					+ '}\n'
+			,
+			''
+		);
+		/**
+		 * Given css array, parses it and then for every selector,
+		 * prepends namespace to prevent css collision issues
+		 */
+		css.applyNamespace = namespace => css.forEach(obj => {
+			if (obj.type === 'media') {
+				obj.subStyles.applyNamespace(namespace);
+			} else {
+				obj.selector = obj.selector.split(',').map(selector =>
+					(namespace + ' .mail-body ' + selector.replace(/\./g, '.msg-'))
+					.replace(/\sbody/gi, '')
+				).join(',');
+			}
+		});
+
+		if (source) {
+			source = source
+				// strip comments
+				.replace(/\/\*[\s\S]*?\*\/|<!--|-->/gi, '')
+				// strip import statements
+				.replace(/@import .*?;/gi , '')
+				// strip keyframe statements
+				.replace(/((@.*?keyframes [\s\S]*?){([\s\S]*?}\s*?)})/gi, '');
+
+			// unified regex to match css & media queries together
+			let unified = /((\s*?(?:\/\*[\s\S]*?\*\/)?\s*?@media[\s\S]*?){([\s\S]*?)}\s*?})|(([\s\S]*?){([\s\S]*?)})/gi,
+				arr;
+
+			while (true) {
+				arr = unified.exec(source);
+				if (arr === null) {
+					break;
+				}
+
+				let selector = arr[arr[2] === undefined ? 5 : 2].split('\r\n').join('\n').trim()
+					// Never have more than a single line break in a row
+					.replace(/\n+/, "\n")
+					// Remove :root and html
+					.split(/\s+/g).map(item => item.replace(/^(:root|html)$/, '')).join(' ').trim();
+
+				// determine the type
+				if (selector.includes('@media')) {
+					// we have a media query
+					css.push({
+						selector: selector,
+						type: 'media',
+						subStyles: parseCSS(arr[3] + '\n}') //recursively parse media query inner css
+					});
+				} else if (selector && !selector.includes('@')) {
+					// we have standard css
+					css.push({
+						selector: selector,
+						rules: arr[6]
+					});
+				}
+			}
+		}
+
+		return css;
 	};
 
 export const
@@ -102,7 +183,7 @@ export const
 	 * @param {string} text
 	 * @returns {string}
 	 */
-	cleanHtml = (html, oAttachments) => {
+	cleanHtml = (html, oAttachments, msgId) => {
 		let aColor;
 		const
 			debug = false, // Config()->Get('debug', 'enable', false);
@@ -159,7 +240,7 @@ export const
 				'colspan', 'rowspan', 'headers'
 			],
 			disallowedTags = [
-				'STYLE','SVG','SCRIPT','TITLE','LINK','BASE','META',
+				'SVG','SCRIPT','TITLE','LINK','BASE','META',
 				'INPUT','OUTPUT','SELECT','BUTTON','TEXTAREA',
 				'BGSOUND','KEYGEN','SOURCE','OBJECT','EMBED','APPLET','IFRAME','FRAME','FRAMESET','VIDEO','AUDIO','AREA','MAP'
 				// Not supported by <template> element
@@ -169,7 +250,15 @@ export const
 				'A','B','EM','I','SPAN','STRONG'
 			];
 
+		if (SettingsUserStore.allowStyles()) {
+			allowedAttributes.push('class');
+		} else {
+			msgId = 0;
+		}
+
 		tpl.innerHTML = html
+			// Strip Microsoft comments
+			.replace(/<!--\[if[\s\S]*?endif\]-->/gi, '')
 //			.replace(/<pre[^>]*>[\s\S]*?<\/pre>/gi, pre => pre.replace(/\n/g, '\n<br>'))
 			// Not supported by <template> element
 //			.replace(/<!doctype[^>]*>/gi, '')
@@ -198,6 +287,21 @@ export const
 			const name = oElement.tagName,
 				oStyle = oElement.style;
 
+			if ('STYLE' === name) {
+				let css = msgId ? parseCSS(oElement.textContent) : [];
+				if (css.length) {
+					css.applyNamespace(msgId);
+					css = css.toString();
+					if (SettingsUserStore.removeColors()) {
+						css = css.replace(/(background-)?color:[^};]+;?/g, '');
+					}
+					oElement.textContent = css;
+				} else {
+					oElement.remove();
+				}
+				return;
+			}
+
 			// \MailSo\Base\HtmlUtils::ClearTags()
 			if (disallowedTags.includes(name)
 			 || 'none' == oStyle.display
@@ -210,29 +314,23 @@ export const
 				oElement.remove();
 				return;
 			}
-/*
-			// Idea to allow CSS
-			if ('STYLE' === name) {
-				msgId = '#rl-msg-061eb4d647771be4185943ce91f0039d';
-				oElement.textContent = oElement.textContent
-					.replace(/[^{}]+{/g, m => msgId + ' ' + m.replace(',', ', '+msgId+' '))
-					.replace(/(background-)color:[^};]+/g, '');
-				return;
-			}
-*/
+
 			const aAttrsForRemove = [],
+				className = oElement.className,
 				hasAttribute = name => oElement.hasAttribute(name),
 				getAttribute = name => hasAttribute(name) ? oElement.getAttribute(name).trim() : '',
 				setAttribute = (name, value) => oElement.setAttribute(name, value),
 				delAttribute = name => oElement.removeAttribute(name);
 
-			if ('mail-body' === oElement.className) {
+			if ('mail-body' === className) {
 				forEachObjectEntry(tasks, (name, cb) => {
 					if (hasAttribute(name)) {
 						cb(getAttribute(name), oElement);
 						delAttribute(name);
 					}
 				});
+			} else if (msgId && className) {
+				oElement.className = className.replace(/(^|\s+)/g, '$1msg-');
 			}
 
 			if (oElement.hasAttributes()) {
@@ -258,7 +356,7 @@ export const
 						delAttribute('width');
 					}
 					value = oStyle.removeProperty('width');
-					if (value && !oStyle.maxWidth) {
+					if (parseInt(value,10) && !oStyle.maxWidth) {
 						oStyle.maxWidth = value;
 						oStyle.width = '100%';
 					}

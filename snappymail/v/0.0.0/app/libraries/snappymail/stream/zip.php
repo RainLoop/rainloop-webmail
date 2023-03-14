@@ -77,7 +77,7 @@ class ZIP
 			while ($i-- && \ob_end_clean());
 			\ob_get_level() || \header('Content-Encoding: ');
 		}
-		\header('Cache-Control: no-store, no-cache, must-revalidate');
+		\header('Cache-Control: no-store');
 		\header('Pragma: no-cache');
 		\header('Content-Transfer-Encoding: binary');
 		$name = "{$name}.zip";

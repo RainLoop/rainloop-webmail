@@ -6,50 +6,24 @@ use MailSo\Base\Utils;
 
 class Identity implements \JsonSerializable
 {
-	/**
-	 * @var string
-	 */
-	private $sId;
+	private string $sId;
 
-	/**
-	 * @var string
-	 */
-	private $sEmail;
+	private string $sEmail;
 
-	/**
-	 * @var string
-	 */
-	private $sName;
+	private string $sName = '';
 
-	/**
-	 * @var string
-	 */
-	private $sReplyTo;
+	private string $sReplyTo = '';
 
-	/**
-	 * @var string
-	 */
-	private $sBcc;
+	private string $sBcc = '';
 
-	/**
-	 * @var string
-	 */
-	private $sSignature;
+	private string $sSignature = '';
 
-	/**
-	 * @var bool
-	 */
-	private $bSignatureInsertBefore;
+	private bool $bSignatureInsertBefore = false;
 
 	function __construct(string $sId = '', string $sEmail = '')
 	{
 		$this->sId = $sId;
 		$this->sEmail = $sEmail;
-		$this->sName = '';
-		$this->sReplyTo = '';
-		$this->sBcc = '';
-		$this->sSignature = '';
-		$this->bSignatureInsertBefore = false;
 	}
 
 	public function Id(bool $bFillOnEmpty = false): string
@@ -82,16 +56,6 @@ class Identity implements \JsonSerializable
 	public function Bcc(): string
 	{
 		return $this->sBcc;
-	}
-
-	public function Signature(): string
-	{
-		return $this->sSignature;
-	}
-
-	public function SignatureInsertBefore(): bool
-	{
-		return $this->bSignatureInsertBefore;
 	}
 
 	public function SetId(string $sId): Identity
@@ -151,13 +115,13 @@ class Identity implements \JsonSerializable
 	public function ToSimpleJSON(): array
 	{
 		return array(
-			'Id' => $this->Id(),
-			'Email' => $this->Email(),
-			'Name' => $this->Name(),
-			'ReplyTo' => $this->ReplyTo(),
-			'Bcc' => $this->Bcc(),
-			'Signature' => $this->Signature(),
-			'SignatureInsertBefore' => $this->SignatureInsertBefore()
+			'Id' => $this->sId,
+			'Email' => $this->sEmail,
+			'Name' => $this->sName,
+			'ReplyTo' => $this->sReplyTo,
+			'Bcc' => $this->sBcc,
+			'Signature' => $this->sSignature,
+			'SignatureInsertBefore' => $this->bSignatureInsertBefore
 		);
 	}
 
@@ -165,13 +129,13 @@ class Identity implements \JsonSerializable
 	public function jsonSerialize()
 	{
 		return array(
-			'Id' => $this->Id(),
-			'Email' => Utils::IdnToUtf8($this->Email()),
-			'Name' => $this->Name(),
-			'ReplyTo' => $this->ReplyTo(),
-			'Bcc' => $this->Bcc(),
-			'Signature' => $this->Signature(),
-			'SignatureInsertBefore' => $this->SignatureInsertBefore()
+			'Id' => $this->sId,
+			'Email' => Utils::IdnToUtf8($this->sEmail),
+			'Name' => $this->sName,
+			'ReplyTo' => $this->sReplyTo,
+			'Bcc' => $this->sBcc,
+			'Signature' => $this->sSignature,
+			'SignatureInsertBefore' => $this->bSignatureInsertBefore
 		);
 	}
 

@@ -403,6 +403,7 @@
 		"PREFER_HTML": "Foretrekk HTML fremfor",
 		"PREFER_HTML_INFO": "Meldinger kan ankomme i både HTML og ren tekst. Dette valget styrer hvilken av dem du vil se.",
 		"REMOVE_COLORS": "Fjern bakgrunn og tekstfarger fra brødtekst",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "Meldinger per side",
 		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Marker melding som lest etter",
@@ -421,7 +422,6 @@
 		"EXTERNAL_IMAGES": "External images",
 		"IMAGES_OPTION_ASK": "Always ask",
 		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
-		"IMAGES_OPTION_DKIM": "Show always when DKIM is valid",
 		"IMAGES_OPTION_ALWAYS": "Show always",
 		"IMAGES_WHITELIST": "Images whitelist"
 	},
