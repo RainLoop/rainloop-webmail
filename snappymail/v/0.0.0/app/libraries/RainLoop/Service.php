@@ -139,6 +139,7 @@ abstract class Service
 			if (!$bAdmin) {
 				$login = $oConfig->Get('labs', 'custom_login_link', '');
 				if ($login && !$oActions->getAccountFromToken(false)) {
+					$oHttp->ServerNoCache();
 					\MailSo\Base\Http::Location($login);
 					return true;
 				}
@@ -146,14 +147,13 @@ abstract class Service
 
 //			if (!\SnappyMail\HTTP\SecFetch::isEntering()) {
 			\header('Content-Type: text/html; charset=utf-8');
-			$oHttp->ServerNoCache();
 
 			if (!\is_dir(APP_DATA_FOLDER_PATH) || !\is_writable(APP_DATA_FOLDER_PATH)) {
+				$oHttp->ServerNoCache();
 				echo $oServiceActions->ErrorTemplates(
 					'Permission denied!',
 					'SnappyMail can not access the data folder "'.APP_DATA_FOLDER_PATH.'"'
 				);
-
 				return false;
 			}
 
@@ -182,19 +182,19 @@ abstract class Service
 				'{{BaseAppAdmin}}' => $bAdmin ? 1 : 0
 			);
 
-			$sCacheFileName = '';
+			$sCacheFileName = 'TMPL:' . \sha1(
+				Utils::jsonEncode(array(
+					$sLanguage,
+					$oConfig->Get('cache', 'index', ''),
+					$oActions->Plugins()->Hash(),
+					$sAppJsMin,
+					$sAppCssMin,
+					$aTemplateParameters,
+					APP_VERSION
+				))
+			);
+			$oActions->verifyCacheByKey($sCacheFileName);
 			if ($oConfig->Get('cache', 'system_data', true)) {
-				$sCacheFileName = 'TMPL:' . \sha1(
-					Utils::jsonEncode(array(
-						$sLanguage,
-						$oConfig->Get('cache', 'index', ''),
-						$oActions->Plugins()->Hash(),
-						$sAppJsMin,
-						$sAppCssMin,
-						$aTemplateParameters,
-						APP_VERSION
-					))
-				);
 				$sResult = $oActions->Cacher()->Get($sCacheFileName);
 			}
 
@@ -231,6 +231,7 @@ abstract class Service
 			$sScriptHash = 'sha256-'.\base64_encode(\hash('sha256', $script[1], true));
 			static::setCSP(null, $sScriptHash);
 */
+			$oActions->cacheByKey($sCacheFileName);
 		} else if (!\headers_sent()) {
 			\header('X-XSS-Protection: 1; mode=block');
 		}
