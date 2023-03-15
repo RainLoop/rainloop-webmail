@@ -61,6 +61,8 @@ abstract class Service
 			} else {
 				\ob_start('ob_gzhandler');
 			}
+		} else {
+			\ob_start();
 		}
 
 		$sQuery = \trim($_SERVER['QUERY_STRING'] ?? '');
@@ -110,7 +112,6 @@ abstract class Service
 		}
 
 		$bIndex = true;
-		$sResult = '';
 		if (\count($aPaths) && !empty($aPaths[0]) && 'index' !== \strtolower($aPaths[0])) {
 			if ('mailto' !== \strtolower($aPaths[0]) && !\SnappyMail\HTTP\SecFetch::matchAnyRule($oConfig->Get('security', 'secfetch_allow', ''))) {
 				\MailSo\Base\Http::StatusHeader(403);
@@ -123,15 +124,15 @@ abstract class Service
 				return false;
 			}
 
-			$bIndex = false;
 			$sMethodName = 'Service'.\preg_replace('/@.+$/', '', $aPaths[0]);
 			$sMethodExtra = \strpos($aPaths[0], '@') ? \preg_replace('/^[^@]+@/', '', $aPaths[0]) : '';
 
 			if (\method_exists($oServiceActions, $sMethodName) && \is_callable(array($oServiceActions, $sMethodName))) {
+				$bIndex = false;
 				$oServiceActions->SetQuery($sQuery)->SetPaths($aPaths);
-				$sResult = $oServiceActions->{$sMethodName}($sMethodExtra);
-			} else if (!$oActions->Plugins()->RunAdditionalPart($aPaths[0], $aPaths)) {
-				$bIndex = true;
+				echo $oServiceActions->{$sMethodName}($sMethodExtra);
+			} else if ($oActions->Plugins()->RunAdditionalPart($aPaths[0], $aPaths)) {
+				$bIndex = false;
 			}
 		}
 
@@ -196,6 +197,8 @@ abstract class Service
 			$oActions->verifyCacheByKey($sCacheFileName);
 			if ($oConfig->Get('cache', 'system_data', true)) {
 				$sResult = $oActions->Cacher()->Get($sCacheFileName);
+			} else {
+				$sResult = '';
 			}
 
 			if ($sResult) {
@@ -232,13 +235,12 @@ abstract class Service
 			static::setCSP(null, $sScriptHash);
 */
 			$oActions->cacheByKey($sCacheFileName);
+
+			echo $sResult;
+			unset($sResult);
 		} else if (!\headers_sent()) {
 			\header('X-XSS-Protection: 1; mode=block');
 		}
-
-		// Output result
-		echo $sResult;
-		unset($sResult);
 
 		$oActions->BootEnd();
 
