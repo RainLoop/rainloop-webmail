@@ -120,3 +120,9 @@ a.selectable::after {
 		padding-top: 0;
 	}
 }
+
+@media screen and (max-width: 799px) {
+	#body-user #rl-left {
+		top: 50px;
+	}
+}
