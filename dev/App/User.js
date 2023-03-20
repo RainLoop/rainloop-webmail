@@ -183,7 +183,7 @@ export class AppUser extends AbstractApp {
 		super.bootstart();
 
 		addEventListener('beforeunload', event => {
-			if (arePopupsVisible() || (!SettingsUserStore.layout() && MessageUserStore.message())) {
+			if (arePopupsVisible() || (!SettingsUserStore.usePreviewPane() && MessageUserStore.message())) {
 				event.preventDefault();
 				return event.returnValue = i18n('POPUPS_ASK/EXIT_ARE_YOU_SURE');
 			}
