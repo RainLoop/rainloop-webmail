@@ -31,7 +31,7 @@
 		}
 	}
 
-	.attachmentIconParent {
+	.attachmentIcon {
 		position: absolute;
 		height: 48px;
 		width: 48px;
@@ -85,7 +85,9 @@
 	.iconMain, .iconPreview {
 		padding: 6px 0 0;
 		font-size: 36px;
-		color: #aaa;
+		color: var(--main-color);
+		filter: invert(33%);
+		mix-blend-mode: difference;
 
 		&.icon-none {
 			display: none;

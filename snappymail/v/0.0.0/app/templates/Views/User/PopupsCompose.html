@@ -175,7 +175,7 @@
 			data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></div>
 		<ul class="attachmentList" data-bind="foreach: attachments">
 			<li class="attachmentItem" data-bind="attr: { 'title': title }, css: { 'waiting': waiting, 'error': '' !== error() }">
-				<div class="attachmentIconParent">
+				<div class="attachmentIcon">
 					<i class="iconMain" data-bind="css: iconClass, visible: !uploading() || 0 === progress()"></i>
 					<div class="iconProgress" data-bind="attr: { 'style': progressStyle }, visible: uploading"></div>
 					<div class="iconBG" data-bind="text: progressText, visible: uploading"></div>
