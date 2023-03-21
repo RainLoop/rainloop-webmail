@@ -135,6 +135,7 @@
 		"LABEL_USE_SHORT_LOGIN": "Inicio de Sesión corto",
 		"LABEL_USE_AUTH": "Usar autenticación",
 		"LABEL_SET_SENDER": "Usar inicio de sesión como remitente",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "Utilizar la función mail() de PHP",
 		"BUTTON_WHITE_LIST": "Lista blanca",
 		"BUTTON_SIEVE_CONFIGURATION": "Configuraciones de Filtro",

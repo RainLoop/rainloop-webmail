@@ -135,6 +135,7 @@
 		"LABEL_USE_SHORT_LOGIN": "使用短用户名登录",
 		"LABEL_USE_AUTH": "使用认证",
 		"LABEL_SET_SENDER": "使用登录名作为发件人",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "使用 php mail() 函数",
 		"BUTTON_WHITE_LIST": "白名单",
 		"BUTTON_SIEVE_CONFIGURATION": "筛选设置",

@@ -135,6 +135,7 @@
 		"LABEL_USE_SHORT_LOGIN": "استفاده از ورود کوتاه بدون دامنه",
 		"LABEL_USE_AUTH": "استفاده از احراز هویت",
 		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "استفاده از تابع mail() زبان PHP",
 		"BUTTON_WHITE_LIST": "لیست سفید",
 		"BUTTON_SIEVE_CONFIGURATION": "پیکربندی Sieve",

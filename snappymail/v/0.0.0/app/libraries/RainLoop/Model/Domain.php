@@ -244,6 +244,7 @@ class Domain implements \JsonSerializable
 			$oDomain->SMTP->shortLogin = !empty($aDomain['smtpShortLogin']);
 			$oDomain->SMTP->useAuth = !empty($aDomain['smtpAuth']);
 			$oDomain->SMTP->setSender = !empty($aDomain['smtpSetSender']);
+			$oDomain->SMTP->authPlainLine = !empty($aDomain['smtpAuthPlainLine']);
 			$oDomain->SMTP->usePhpMail = !empty($aDomain['smtpPhpMail']);
 
 			$oDomain->whiteList = (string) $aDomain['whiteList'];

@@ -24,6 +24,8 @@ class Settings extends \MailSo\Net\ConnectSettings
 	public bool
 		$setSender = false,
 		$usePhpMail = false,
+		// https://github.com/the-djmaze/snappymail/issues/1038
+		$authPlainLine = false,
 		$viewErrors = false;
 
 	public string $Ehlo;
@@ -41,6 +43,7 @@ class Settings extends \MailSo\Net\ConnectSettings
 		$object->useAuth = !empty($aSettings['useAuth']);
 		$object->setSender = !empty($aSettings['setSender']);
 		$object->usePhpMail = !empty($aSettings['usePhpMail']);
+		$object->authPlainLine = !empty($aSettings['authPlainLine']);
 //		$object->viewErrors = !empty($aSettings['viewErrors']);
 		return $object;
 	}
@@ -54,7 +57,8 @@ class Settings extends \MailSo\Net\ConnectSettings
 //				'@Object' => 'Object/SmtpSettings',
 				'useAuth' => $this->useAuth,
 				'setSender' => $this->setSender,
-				'usePhpMail' => $this->usePhpMail
+				'usePhpMail' => $this->usePhpMail,
+				'authPlainLine' => $this->authPlainLine
 //				'viewErrors' => $this->viewErrors
 			]
 		);

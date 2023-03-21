@@ -135,6 +135,7 @@
 		"LABEL_USE_SHORT_LOGIN": "Gebruik verkorte login",
 		"LABEL_USE_AUTH": "Gebruik authenticatie",
 		"LABEL_SET_SENDER": "Gebruik login als verzender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "Gebruik php mail() functie",
 		"BUTTON_WHITE_LIST": "Witte lijst",
 		"BUTTON_SIEVE_CONFIGURATION": "Sieve configuratie",

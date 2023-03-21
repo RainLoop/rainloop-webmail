@@ -135,6 +135,7 @@
 		"LABEL_USE_SHORT_LOGIN": "Bruk forkortet brukernavn",
 		"LABEL_USE_AUTH": "Bruk autentisering",
 		"LABEL_SET_SENDER": "Bruk pålogging som avsender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "Bruk php-funksjonen «mail()»",
 		"BUTTON_WHITE_LIST": "Hvitliste",
 		"BUTTON_SIEVE_CONFIGURATION": "Sieve-oppsett",

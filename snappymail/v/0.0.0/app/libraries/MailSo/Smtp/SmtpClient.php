@@ -133,60 +133,76 @@ class SmtpClient extends \MailSo\Net\NetClient
 			$this->writeLogException(new \MailSo\Smtp\Exceptions\LoginBadMethodException);
 		}
 
-		$SASL = \SnappyMail\SASL::factory($type);
-		$SASL->base64 = true;
-
-		// Start authentication
-		try
-		{
-			$sResult = $this->sendRequestWithCheck('AUTH', 334, $type);
-		}
-		catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
-		{
-			$this->writeLogException(
-				new \MailSo\Smtp\Exceptions\LoginBadMethodException($oException->GetResponses(), $oException->getMessage(), 0, $oException)
-			);
-		}
-
-		try
-		{
-			if (\str_starts_with($type, 'SCRAM-')) {
-				// RFC 5802
-				$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 234, '');
-				$sChallenge = $SASL->challenge($sResult);
-				$this->oLogger && $this->oLogger->AddSecret($sChallenge);
-				$SASL->verify($this->sendRequestWithCheck($sChallenge, 235, '', true));
-			} else switch ($type) {
-			// RFC 4616
-			case 'PLAIN':
-			case 'XOAUTH2':
-			case 'OAUTHBEARER':
-				$sAuth = $SASL->authenticate($sLogin, $sPassword);
-				$this->oLogger && $this->oLogger->AddSecret($sAuth);
-				$this->sendRequestWithCheck($sAuth, 235, '', true);
-				break;
-
-			case 'LOGIN':
-				$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 334, '');
-				$sPassword = $SASL->challenge($sResult);
-				$this->oLogger && $this->oLogger->AddSecret($sPassword);
-				$this->sendRequestWithCheck($sPassword, 235, '', true);
-				break;
-
-			// RFC 2195
-			case 'CRAM-MD5':
-				if (empty($sResult)) {
-					$this->writeLogException(new \MailSo\Smtp\Exceptions\NegativeResponseException);
-				}
-				$this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 235, '', true);
-				break;
+		if ($this->Settings->authPlainLine) {
+			// https://github.com/the-djmaze/snappymail/issues/1038
+			$SASL = \SnappyMail\SASL::factory('PLAIN');
+			$SASL->base64 = true;
+			try
+			{
+				$sResult = $this->sendRequestWithCheck('AUTH', 235, 'PLAIN ' . $SASL->authenticate($sLogin, $sPassword));
 			}
-		}
-		catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
-		{
-			$this->writeLogException(
-				new \MailSo\Smtp\Exceptions\LoginBadCredentialsException($oException->GetResponses(), $oException->getMessage(), 0, $oException)
-			);
+			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
+			{
+				$this->writeLogException(
+					new \MailSo\Smtp\Exceptions\LoginBadCredentialsException($oException->GetResponses(), $oException->getMessage(), 0, $oException)
+				);
+			}
+		} else {
+			// Start authentication
+			$SASL = \SnappyMail\SASL::factory($type);
+			$SASL->base64 = true;
+
+			try
+			{
+				$sResult = $this->sendRequestWithCheck('AUTH', 334, $type);
+			}
+			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
+			{
+				$this->writeLogException(
+					new \MailSo\Smtp\Exceptions\LoginBadMethodException($oException->GetResponses(), $oException->getMessage(), 0, $oException)
+				);
+			}
+
+			try
+			{
+				if (\str_starts_with($type, 'SCRAM-')) {
+					// RFC 5802
+					$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 234, '');
+					$sChallenge = $SASL->challenge($sResult);
+					$this->oLogger && $this->oLogger->AddSecret($sChallenge);
+					$SASL->verify($this->sendRequestWithCheck($sChallenge, 235, '', true));
+				} else switch ($type) {
+				// RFC 4616
+				case 'PLAIN':
+				case 'XOAUTH2':
+				case 'OAUTHBEARER':
+					$sAuth = $SASL->authenticate($sLogin, $sPassword);
+					$this->oLogger && $this->oLogger->AddSecret($sAuth);
+					$this->sendRequestWithCheck($sAuth, 235, '', true);
+					break;
+
+				case 'LOGIN':
+					$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 334, '');
+					$sPassword = $SASL->challenge($sResult);
+					$this->oLogger && $this->oLogger->AddSecret($sPassword);
+					$this->sendRequestWithCheck($sPassword, 235, '', true);
+					break;
+
+				// RFC 2195
+				case 'CRAM-MD5':
+					if (empty($sResult)) {
+						$this->writeLogException(new \MailSo\Smtp\Exceptions\NegativeResponseException);
+					}
+					$this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 235, '', true);
+					break;
+				}
+			}
+			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
+			{
+				$this->writeLogException(
+					new \MailSo\Smtp\Exceptions\LoginBadCredentialsException($oException->GetResponses(), $oException->getMessage(), 0, $oException)
+				);
+			}
 		}
 
 		$this->bIsLoggined = true;

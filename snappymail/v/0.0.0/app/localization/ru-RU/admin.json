@@ -135,6 +135,7 @@
 		"LABEL_USE_SHORT_LOGIN": "Использовать короткий логин",
 		"LABEL_USE_AUTH": "Использовать аутентификацию",
 		"LABEL_SET_SENDER": "Использовать логин в качестве отправителя",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "Использовать mail() функцию",
 		"BUTTON_WHITE_LIST": "Белый список",
 		"BUTTON_SIEVE_CONFIGURATION": "Настройки Sieve",

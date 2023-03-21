@@ -135,6 +135,7 @@
 		"LABEL_USE_SHORT_LOGIN": "Käytä lyhyttä kirjautumista",
 		"LABEL_USE_AUTH": "Käytä tunnistautumista",
 		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "Käytä php mail() funktiota",
 		"BUTTON_WHITE_LIST": "Sallitut Lista",
 		"BUTTON_SIEVE_CONFIGURATION": "Sieve asetukset",

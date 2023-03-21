@@ -135,6 +135,7 @@
 		"LABEL_USE_SHORT_LOGIN": "Použiť skrátené prihlásenie",
 		"LABEL_USE_AUTH": "Použiť overenie",
 		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "Použiť php mail() funkciu",
 		"BUTTON_WHITE_LIST": "Zoznam povolených",
 		"BUTTON_SIEVE_CONFIGURATION": "Nastavenia Sieve",

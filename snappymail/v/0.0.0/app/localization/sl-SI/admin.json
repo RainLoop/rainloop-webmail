@@ -135,6 +135,7 @@
 		"LABEL_USE_SHORT_LOGIN": "Uporaba uporabniškega imena brez domene",
 		"LABEL_USE_AUTH": "Uporaba overjanja",
 		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "Uporaba php mail() funkcije",
 		"BUTTON_WHITE_LIST": "Dodaj na belo listo",
 		"BUTTON_SIEVE_CONFIGURATION": "Konfiguriraj Sieve",

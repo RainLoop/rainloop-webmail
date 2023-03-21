@@ -135,6 +135,7 @@
 		"LABEL_USE_SHORT_LOGIN": "Dùng đăng nhập ngắn",
 		"LABEL_USE_AUTH": "Dùng xác minh",
 		"LABEL_SET_SENDER": "Dùng tên đăng nhập là email người dùng",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "Dùng phương trình php mail()",
 		"BUTTON_WHITE_LIST": "Danh sách trắng",
 		"BUTTON_SIEVE_CONFIGURATION": "Thiết lập Sieve",

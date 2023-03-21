@@ -135,6 +135,7 @@
 		"LABEL_USE_SHORT_LOGIN": "Erabili login motza",
 		"LABEL_USE_AUTH": "Erabili autentikazioa",
 		"LABEL_SET_SENDER": "Erabili logina bidaltzaile bezala",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "Erabili php mail() funtzioa",
 		"BUTTON_WHITE_LIST": "Zerrenda Zuria",
 		"BUTTON_SIEVE_CONFIGURATION": "Sieve ezarpenak",

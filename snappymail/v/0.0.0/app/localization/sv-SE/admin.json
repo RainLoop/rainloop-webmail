@@ -135,6 +135,7 @@
 		"LABEL_USE_SHORT_LOGIN": "Använda korta inloggning",
 		"LABEL_USE_AUTH": "Använd autentisering",
 		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "Använd php mail() funktionen",
 		"BUTTON_WHITE_LIST": "Vitlista",
 		"BUTTON_SIEVE_CONFIGURATION": "sil-konfiguration",

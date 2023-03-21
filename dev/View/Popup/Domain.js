@@ -57,6 +57,7 @@ const
 		smtpShortLogin: false,
 		smtpUseAuth: true,
 		smtpSetSender: false,
+		smtpAuthPlainLine: false,
 		smtpUsePhpMail: false,
 		// SSL
 		smtpSslVerify_peer: false,
@@ -106,6 +107,7 @@ const
 				allow_self_signed: !!oDomain.smtpSslAllow_self_signed()
 			},
 			setSender: !!oDomain.smtpSetSender(),
+			authPlainLine: !!oDomain.smtpAuthPlainLine(),
 			useAuth: !!oDomain.smtpUseAuth(),
 			usePhpMail: !!oDomain.smtpUsePhpMail()
 		},
