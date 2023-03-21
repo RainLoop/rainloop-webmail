@@ -231,18 +231,13 @@
 							<ul class="attachmentList" data-bind="foreach: listAttachments">
 								<li class="attachmentItem" draggable="true"
 										data-bind="event: { 'dragstart': eventDragStart }, attr: { 'title': fileName }, css: {'checked': checked}">
-									<div class="attachmentIconParent" data-bind="css: { 'hasPreview': hasPreview(), 'hasPreplay': hasPreplay(), 'isImage': isImage() }">
+									<div class="attachmentIconParent" data-bind="css: { 'hasPreview': hasPreview(), 'hasPreplay': hasPreplay(), 'isImage': isImage() }, attr: { 'style': thumbnailStyle() }">
 										<i class="hidePreview iconMain" data-bind="css: iconClass()"></i>
 										<div class="showPreview">
 											<a data-bind="css: {'attachmentImagePreview': isImage()}, attr: { 'title': fileName, 'href': linkPreviewMain() }" target="_blank">
 												<i class="iconMain" data-bind="visible: !hasThumbnail(), css: iconClass()"></i>
-												<div class="iconBG" data-bind="attr: { 'style': thumbnailStyle() }"></div>
 												<div class="iconPreview fontastic">👁</div>
 											</a>
-										</div>
-										<div class="showPreplay">
-											<i class="iconMain" data-bind="css: iconClass()"></i>
-											<div class="iconPreview fontastic">▶</div>
 										</div>
 									</div>
 									<div class="attachmentNameParent">
