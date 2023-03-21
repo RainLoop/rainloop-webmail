@@ -137,10 +137,12 @@ abstract class Service
 		}
 
 		if ($bIndex) {
+			// https://github.com/the-djmaze/snappymail/issues/1024
+			$oHttp->ServerNoCache();
+
 			if (!$bAdmin) {
 				$login = $oConfig->Get('labs', 'custom_login_link', '');
 				if ($login && !$oActions->getAccountFromToken(false)) {
-					$oHttp->ServerNoCache();
 					\MailSo\Base\Http::Location($login);
 					return true;
 				}
@@ -150,7 +152,6 @@ abstract class Service
 			\header('Content-Type: text/html; charset=utf-8');
 
 			if (!\is_dir(APP_DATA_FOLDER_PATH) || !\is_writable(APP_DATA_FOLDER_PATH)) {
-				$oHttp->ServerNoCache();
 				echo $oServiceActions->ErrorTemplates(
 					'Permission denied!',
 					'SnappyMail can not access the data folder "'.APP_DATA_FOLDER_PATH.'"'
