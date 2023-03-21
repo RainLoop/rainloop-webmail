@@ -163,7 +163,7 @@ export class AttachmentModel extends AbstractModel {
 	thumbnailStyle() {
 		return this.hasThumbnail()
 			? 'background:url(' + serverRequestRaw('ViewThumbnail', this.download) + ')'
-			: '';
+			: null;
 	}
 
 	/**

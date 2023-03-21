@@ -1,4 +1,18 @@
-## 2.27.0 – 2023-03-14
+## 2.27.1 – 2023-03-21
+
+## Changed
+- Improved attachmentIcon glyph coloring
+- Better design for .accountPlace text
+  [#1025](https://github.com/the-djmaze/snappymail/pull/1025)
+
+## Fixed
+- Reply is broken
+  [#1027](https://github.com/the-djmaze/snappymail/pull/1027)
+- Endless loop at login - Cannot assign array to property MailSo\Imap\Folder::$MAILBOXID
+  [#1032](https://github.com/the-djmaze/snappymail/pull/1032)
+
+
+## 2.27.0 – 2023-03-20
 
 ## Added
 - Unique attachments.zip filename

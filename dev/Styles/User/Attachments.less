@@ -31,7 +31,7 @@
 		}
 	}
 
-	.attachmentIconParent {
+	.attachmentIcon {
 		position: absolute;
 		height: 48px;
 		width: 48px;
@@ -85,7 +85,9 @@
 	.iconMain, .iconPreview {
 		padding: 6px 0 0;
 		font-size: 36px;
-		color: #aaa;
+		color: var(--main-color);
+		filter: invert(33%);
+		mix-blend-mode: difference;
 
 		&.icon-none {
 			display: none;
@@ -100,21 +102,21 @@
 	}
 */
 
-	.showPreview, .showPreplay,
+	.showPreview,
 	.hasPreview:hover .iconMain,
-	.hasPreplay:hover .iconMain,
-	.hasPreview .hidePreview,
-	.hasPreplay .hidePreview {
+	.hasPreview .hidePreview {
 		display: none;
 	}
 
-	.hasPreview:hover .iconPreview,
-	.hasPreplay:hover .iconPreview {
+	.hasPreview:hover .iconPreview {
 		display: inline-block;
 	}
 
-	.hasPreview .showPreview,
-	.hasPreplay .showPreplay {
+	.hasPreplay:hover .iconMain::before {
+		content: "▶";
+	}
+
+	.hasPreview .showPreview {
 		display: inline;
 		cursor: pointer;
 	}

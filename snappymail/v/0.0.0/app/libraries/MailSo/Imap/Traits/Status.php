@@ -117,10 +117,11 @@ trait Status
 			$name = 'MAILBOXID';
 		}
 		if (\property_exists(__TRAIT__, $name)) {
-			if ('MAILBOXID' !== $name) {
-				$value = (int) $value;
+			if ('MAILBOXID' === $name) {
+				$this->MAILBOXID = \base64_encode(\is_array($value) ? $value[0] : $value);
+			} else {
+				$this->$name = (int) $value;
 			}
-			$this->$name = $value;
 			return true;
 		}
 		return false;
