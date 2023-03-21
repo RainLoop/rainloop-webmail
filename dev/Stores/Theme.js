@@ -19,23 +19,25 @@ export const
 		fontSansSerif: ko.observable(''),
 		fontSerif: ko.observable(''),
 		fontMono: ko.observable(''),
-		isMobile: ko.observable(false),
+		isMobile: ko.observable(false)
+	},
 
-		populate: () => {
-			const themes = Settings.app('themes');
+	initThemes = () => {
+		const theme = SettingsGet('Theme'),
+			themes = Settings.app('themes');
 
-			ThemeStore.themes(isArray(themes) ? themes : []);
-			ThemeStore.theme(SettingsGet('Theme'));
-			if (!ThemeStore.isMobile()) {
-				ThemeStore.userBackgroundName(SettingsGet('userBackgroundName'));
-				ThemeStore.userBackgroundHash(SettingsGet('userBackgroundHash'));
-			}
-			ThemeStore.fontSansSerif(SettingsGet('fontSansSerif'));
-			ThemeStore.fontSerif(SettingsGet('fontSerif'));
-			ThemeStore.fontMono(SettingsGet('fontMono'));
-
-			leftPanelDisabled(ThemeStore.isMobile());
+		ThemeStore.themes(isArray(themes) ? themes : []);
+		ThemeStore.theme(theme);
+		changeTheme(theme);
+		if (!ThemeStore.isMobile()) {
+			ThemeStore.userBackgroundName(SettingsGet('userBackgroundName'));
+			ThemeStore.userBackgroundHash(SettingsGet('userBackgroundHash'));
 		}
+		ThemeStore.fontSansSerif(SettingsGet('fontSansSerif'));
+		ThemeStore.fontSerif(SettingsGet('fontSerif'));
+		ThemeStore.fontMono(SettingsGet('fontMono'));
+
+		leftPanelDisabled(ThemeStore.isMobile());
 	},
 
 	changeTheme = (value, themeTrigger = ()=>0) => {

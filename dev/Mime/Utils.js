@@ -13,10 +13,11 @@ export function MimeToMessage(data, message)
 	let signed;
 	const struct = ParseMime(data);
 	if (struct.headers) {
-		let html = struct.getByContentType('text/html');
+		let html = struct.getByContentType('text/html'),
+			subject = struct.headerValue('subject');
 		html = html ? html.body : '';
 
-		message.subject(struct.headerValue('subject') || '');
+		subject && message.subject(subject);
 
 		// EmailCollectionModel
 		['from','to'].forEach(name => message[name].fromString(struct.headerValue(name)));

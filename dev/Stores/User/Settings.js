@@ -50,10 +50,10 @@ export const SettingsUserStore = new class {
 
 		self.init();
 
-		self.usePreviewPane = koComputable(() => self.layout() && !ThemeStore.isMobile());
+		self.usePreviewPane = koComputable(() => ThemeStore.isMobile() ? 0 : self.layout());
 
 		const toggleLayout = () => {
-			const value = ThemeStore.isMobile() ? 0 : self.layout();
+			const value = self.usePreviewPane();
 			$htmlCL.toggle('sm-msgView-side', Layout.SidePreview === value);
 			$htmlCL.toggle('sm-msgView-bottom', Layout.BottomPreview === value);
 			fireEvent('rl-layout', value);

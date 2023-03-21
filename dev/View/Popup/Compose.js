@@ -801,7 +801,7 @@ export class ComposePopupView extends AbstractViewPopup {
 		}
 
 		if (msgComposeType && message) {
-			sDate = timestampToString(message.dateTimeStampInUTC(), 'FULL');
+			sDate = timestampToString(message.dateTimestamp(), 'FULL');
 			sSubject = message.subject();
 			aDraftInfo = message.draftInfo;
 

@@ -87,6 +87,8 @@
 	--border-radius: var(--border-radius);
 	--hr-color: var(--color-border);
 
+	--panel-bg-clr: var(--color-main-background);
+
 	--warning-clr: var(--color-warning);
 	--warning-bg-clr: #fcf8e3;
 	--warning-border-clr: #fbeed5;

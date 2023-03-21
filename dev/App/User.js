@@ -37,7 +37,7 @@ import { IdentityUserStore } from 'Stores/User/Identity';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { PgpUserStore } from 'Stores/User/Pgp';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
-import { ThemeStore, changeTheme } from 'Stores/Theme';
+import { ThemeStore, initThemes } from 'Stores/Theme';
 import { LanguageStore } from 'Stores/Language';
 import { MessageUserStore } from 'Stores/User/Message';
 
@@ -183,7 +183,7 @@ export class AppUser extends AbstractApp {
 		super.bootstart();
 
 		addEventListener('beforeunload', event => {
-			if (arePopupsVisible() || (!SettingsUserStore.layout() && MessageUserStore.message())) {
+			if (arePopupsVisible() || (!SettingsUserStore.usePreviewPane() && MessageUserStore.message())) {
 				event.preventDefault();
 				return event.returnValue = i18n('POPUPS_ASK/EXIT_ARE_YOU_SURE');
 			}
@@ -191,9 +191,8 @@ export class AppUser extends AbstractApp {
 	}
 
 	refresh() {
-		ThemeStore.populate();
+		initThemes();
 		LanguageStore.language(SettingsGet('language'));
-		changeTheme(SettingsGet('Theme'));
 		this.start();
 	}
 

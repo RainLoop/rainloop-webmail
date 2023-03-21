@@ -1,3 +1,57 @@
+## 2.27.0 – 2023-03-14
+
+## Added
+- Unique attachments.zip filename
+  [#992](https://github.com/the-djmaze/snappymail/pull/992)
+- Select next email after (re)move current
+  [#968](https://github.com/the-djmaze/snappymail/pull/968)
+
+## Changed
+- Improved FolderCollection handling
+- MODSEQ requires 64-bit int
+- Update russian language by @Akrobs
+  [#994](https://github.com/the-djmaze/snappymail/pull/994)
+- Don't make font bigger when screen > 1400px
+- Put top menu "accountPlace" inside top-system-dropdown-id
+- Put attachment controls inside attachmentsPlace
+- Show message toolbar on screens > 1400px
+  [#970](https://github.com/the-djmaze/snappymail/pull/970)
+- Chinese updated by @mayswind
+  [#1011](https://github.com/the-djmaze/snappymail/pull/1011)
+- Prevent folder/messages flags conflict by using the right name `attributes` for Folders
+- FolderInformation() use jsonSerialize()
+- Squire space handling on paste use `\u00A0` instead of `&nbsp;` for
+  [#1004](https://github.com/the-djmaze/snappymail/pull/1004)
+- Better line-height for QR code
+
+## Fixed
+- Composer src is null
+- Image in Signature disappears in Sent/Draft
+  [#932](https://github.com/the-djmaze/snappymail/pull/932)
+- Mail list is empty
+  [#998](https://github.com/the-djmaze/snappymail/pull/998)
+- Cache handling issues
+  [#1003](https://github.com/the-djmaze/snappymail/pull/1003)
+- No message notification popup when installed in sub-directory
+  [#1007](https://github.com/the-djmaze/snappymail/pull/1007)
+- ERROR: Undefined constant "MailSo\Log\Drivers\STDERR"
+  [#965](https://github.com/the-djmaze/snappymail/pull/965)
+- 'Location:' headers using proper '302 Found' header
+- Can't send email
+  [#1006](https://github.com/the-djmaze/snappymail/pull/1006)
+- Attachment preview
+  [#1005](https://github.com/the-djmaze/snappymail/pull/1005)
+- When decrypt message, subject was replaced empty
+
+### Removed
+- \MailSo\Imap\ImapClient::GetConnectedPort()
+
+### Nextcloud
+- CSS `--panel-bg-clr` was missing
+- SnappyMail Menu under Nextcloud top bar
+  [#1017](https://github.com/the-djmaze/snappymail/pull/1017)
+
+
 ## 2.26.4 – 2023-02-24
 
 ## Added
@@ -60,7 +114,6 @@
 
 ### Removed
 - Unused Squire code
-
 
 
 ## 2.26.2 – 2023-02-17

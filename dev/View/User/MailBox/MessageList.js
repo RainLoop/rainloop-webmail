@@ -566,11 +566,9 @@ export class MailMessageList extends AbstractViewRight {
 			// initMailboxLayoutResizer
 			const top = dom.querySelector('.messageList'),
 				fToggle = () => {
-					let layout = SettingsUserStore.layout();
+					let layout = SettingsUserStore.usePreviewPane();
 					setLayoutResizer(top, ClientSideKeyNameMessageListSize,
-						(ThemeStore.isMobile() || !layout)
-							? 0
-							: (Layout.SidePreview === layout ? 'Width' : 'Height')
+						layout ? (Layout.SidePreview === layout ? 'Width' : 'Height') : 0
 					);
 				};
 			if (top) {
