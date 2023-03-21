@@ -133,9 +133,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 			$this->writeLogException(new \MailSo\Smtp\Exceptions\LoginBadMethodException);
 		}
 
-		if ($this->Settings->authPlainLine) {
+		$SASL = \SnappyMail\SASL::factory($type);
+
+		if ($this->Settings->authPlainLine && $SASL instanceof \SnappyMail\SASL\Plain) {
 			// https://github.com/the-djmaze/snappymail/issues/1038
-			$SASL = \SnappyMail\SASL::factory('PLAIN');
 			try
 			{
 				$sResult = $this->sendRequestWithCheck('AUTH', 235, 'PLAIN ' . $SASL->authenticate($sLogin, $sPassword));
@@ -148,8 +149,6 @@ class SmtpClient extends \MailSo\Net\NetClient
 			}
 		} else {
 			// Start authentication
-			$SASL = \SnappyMail\SASL::factory($type);
-
 			try
 			{
 				$sResult = $this->sendRequestWithCheck('AUTH', 334, $type);
