@@ -194,7 +194,10 @@ abstract class Service
 					APP_VERSION
 				))
 			);
-			$oActions->verifyCacheByKey($sCacheFileName);
+
+			// https://github.com/the-djmaze/snappymail/issues/1024
+//			$oActions->verifyCacheByKey($sCacheFileName);
+
 			if ($oConfig->Get('cache', 'system_data', true)) {
 				$sResult = $oActions->Cacher()->Get($sCacheFileName);
 			} else {
@@ -234,7 +237,8 @@ abstract class Service
 			$sScriptHash = 'sha256-'.\base64_encode(\hash('sha256', $script[1], true));
 			static::setCSP(null, $sScriptHash);
 */
-			$oActions->cacheByKey($sCacheFileName);
+			// https://github.com/the-djmaze/snappymail/issues/1024
+//			$oActions->cacheByKey($sCacheFileName);
 
 			echo $sResult;
 			unset($sResult);
