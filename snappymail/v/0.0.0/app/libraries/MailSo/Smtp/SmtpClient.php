@@ -136,7 +136,6 @@ class SmtpClient extends \MailSo\Net\NetClient
 		if ($this->Settings->authPlainLine) {
 			// https://github.com/the-djmaze/snappymail/issues/1038
 			$SASL = \SnappyMail\SASL::factory('PLAIN');
-			$SASL->base64 = true;
 			try
 			{
 				$sResult = $this->sendRequestWithCheck('AUTH', 235, 'PLAIN ' . $SASL->authenticate($sLogin, $sPassword));
@@ -150,7 +149,6 @@ class SmtpClient extends \MailSo\Net\NetClient
 		} else {
 			// Start authentication
 			$SASL = \SnappyMail\SASL::factory($type);
-			$SASL->base64 = true;
 
 			try
 			{

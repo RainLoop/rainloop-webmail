@@ -146,7 +146,6 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 
 		$SASL = \SnappyMail\SASL::factory($type);
-		$SASL->base64 = true;
 
 		try
 		{

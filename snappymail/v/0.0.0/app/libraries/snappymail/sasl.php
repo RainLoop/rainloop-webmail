@@ -4,7 +4,7 @@ namespace SnappyMail;
 
 abstract class SASL
 {
-	public bool $base64 = false;
+	public bool $base64 = true;
 
 	abstract public function authenticate(string $authcid, string $passphrase, ?string $authzid = null) : string;
 
