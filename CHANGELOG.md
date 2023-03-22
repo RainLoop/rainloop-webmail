@@ -1,3 +1,17 @@
+## 2.27.2 – 2023-03-22
+
+## Added
+- authentication with smtp freenet.de
+  [#1038](https://github.com/the-djmaze/snappymail/pull/1038)
+
+## Changed
+- SASL always base64 by default
+
+## Fixed
+- Cache issue with index
+  [#1024](https://github.com/the-djmaze/snappymail/pull/1024)
+
+
 ## 2.27.1 – 2023-03-21
 
 ## Changed
