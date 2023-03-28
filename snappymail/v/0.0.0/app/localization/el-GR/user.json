@@ -227,7 +227,8 @@
 		"BUTTON_REQUEST_READ_RECEIPT": "Ζητήστε αποδεικτικό ανάγνωσης",
 		"BUTTON_MARK_AS_IMPORTANT": "Σημειώστε το σαν σημαντικό",
 		"BUTTON_REQUEST_DSN": "Ζητήστε αποδεικτικό παράδοσης",
-		"BUTTON_REQUIRE_TLS": "Require secure delivery"
+		"BUTTON_REQUIRE_TLS": "Require secure delivery",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
 		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",

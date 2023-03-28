@@ -227,7 +227,8 @@
 		"BUTTON_REQUEST_READ_RECEIPT": "Demander une confirmation de lecture",
 		"BUTTON_MARK_AS_IMPORTANT": "Marquer comme important",
 		"BUTTON_REQUEST_DSN": "Demander un accusé de réception",
-		"BUTTON_REQUIRE_TLS": "Exiger une livraison sécurisée"
+		"BUTTON_REQUIRE_TLS": "Exiger une livraison sécurisée",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
 		"EXIT_ARE_YOU_SURE": "Êtes-vous sûr de vouloir quitter ?",

@@ -1400,7 +1400,7 @@ export class ComposePopupView extends AbstractViewPopup {
 
 		let Text = this.oEditor.getData().trim();
 		if (!Text.length) {
-			throw 'Message body is empty';
+			throw i18n('COMPOSE/ERROR_EMPTY_BODY');
 		}
 		if (isHtml) {
 			let l;

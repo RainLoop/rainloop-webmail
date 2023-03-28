@@ -227,7 +227,8 @@
 		"BUTTON_REQUEST_READ_RECEIPT": "Запрос о прочтении письма",
 		"BUTTON_MARK_AS_IMPORTANT": "Отметить как важное",
 		"BUTTON_REQUEST_DSN": "Запросить уведомление о доставке",
-		"BUTTON_REQUIRE_TLS": "Требовать безопасную доставку"
+		"BUTTON_REQUIRE_TLS": "Требовать безопасную доставку",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
 		"EXIT_ARE_YOU_SURE": "Вы уверены, что хотите выйти?",

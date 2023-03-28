@@ -227,7 +227,8 @@
 		"BUTTON_REQUEST_READ_RECEIPT": "要求已读回执",
 		"BUTTON_MARK_AS_IMPORTANT": "标记为“重要”",
 		"BUTTON_REQUEST_DSN": "要求送达回执",
-		"BUTTON_REQUIRE_TLS": "要求安全送达"
+		"BUTTON_REQUIRE_TLS": "要求安全送达",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
 		"EXIT_ARE_YOU_SURE": "您确定要退出吗？",

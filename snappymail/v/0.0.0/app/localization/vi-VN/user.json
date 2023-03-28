@@ -227,7 +227,8 @@
 		"BUTTON_REQUEST_READ_RECEIPT": "Yêu cầu thông báo khi người nhận đã đọc thư",
 		"BUTTON_MARK_AS_IMPORTANT": "Đánh dấu thư quan trọng",
 		"BUTTON_REQUEST_DSN": "Yêu cầu thông báo thư đã gửi thành công",
-		"BUTTON_REQUIRE_TLS": "Require secure delivery"
+		"BUTTON_REQUIRE_TLS": "Require secure delivery",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
 		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",

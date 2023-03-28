@@ -227,7 +227,8 @@
 		"BUTTON_REQUEST_READ_RECEIPT": "Leesbevestiging vragen",
 		"BUTTON_MARK_AS_IMPORTANT": "Markeer als belangrijk",
 		"BUTTON_REQUEST_DSN": "Ontvangstbevestiging vragen",
-		"BUTTON_REQUIRE_TLS": "Veilige bezorging vereisen"
+		"BUTTON_REQUIRE_TLS": "Veilige bezorging vereisen",
+		"ERROR_EMPTY_BODY": "Bericht inhoud is leeg"
 	},
 	"POPUPS_ASK": {
 		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",

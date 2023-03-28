@@ -227,7 +227,8 @@
 		"BUTTON_REQUEST_READ_RECEIPT": "Zahtevaj potrdilo o branju",
 		"BUTTON_MARK_AS_IMPORTANT": "Označi kot pomembno",
 		"BUTTON_REQUEST_DSN": "Zahtevaj potrdilo o dostavi",
-		"BUTTON_REQUIRE_TLS": "Require secure delivery"
+		"BUTTON_REQUIRE_TLS": "Require secure delivery",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
 		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
