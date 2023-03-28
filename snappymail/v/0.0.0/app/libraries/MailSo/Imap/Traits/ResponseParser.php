@@ -389,7 +389,7 @@ trait ResponseParser
 			$this->writeLogException($oException, \LOG_NOTICE, false);
 		}
 
-		if ($rImapLiteralStream) {
+		if (\is_resource($rImapLiteralStream)) {
 			$iNotReadLiteralLen = 0;
 
 			$bFeof = \feof($rImapLiteralStream);
