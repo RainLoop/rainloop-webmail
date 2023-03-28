@@ -95,7 +95,6 @@ class SnappyMailHelper
 		if ($handle) {
 			\header_remove('Content-Security-Policy');
 			\RainLoop\Service::Handle();
-			exit;
 		}
 	}
 
