@@ -23,8 +23,7 @@ trait Messages
 //		throw new ClientException(Notifications::CantGetMessageList);
 		$oParams = new \MailSo\Mail\MessageListParams;
 
-		$sRawKey = $this->GetActionParam('RawKey', '');
-		$aValues = $sRawKey ? \json_decode(\MailSo\Base\Utils::UrlSafeBase64Decode($sRawKey), true) : null;
+		$aValues = $this->decodeRawKey($this->GetActionParam('RawKey', ''));
 		$sHash = '';
 		if ($aValues && 6 < \count($aValues)) {
 			// GET
@@ -404,9 +403,7 @@ trait Messages
 	 */
 	public function DoMessage() : array
 	{
-		$sRawKey = (string) $this->GetActionParam('RawKey', '');
-
-		$aValues = \json_decode(\MailSo\Base\Utils::UrlSafeBase64Decode($sRawKey), true);
+		$aValues = $this->decodeRawKey((string) $this->GetActionParam('RawKey', ''));
 		if ($aValues && 2 <= \count($aValues)) {
 			$sFolder = (string) $aValues[0];
 			$iUid = (int) $aValues[1];

@@ -1087,7 +1087,7 @@ class Actions
 		return \MailSo\Base\Utils::UrlSafeBase64Encode(\json_encode($aValues));
 	}
 
-	protected function decodeRawKey(string $sRawKey): array
+	public function decodeRawKey(string $sRawKey): array
 	{
 		return empty($sRawKey) ? []
 			: (\json_decode(\MailSo\Base\Utils::UrlSafeBase64Decode($sRawKey), true) ?: []);
