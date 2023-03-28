@@ -282,7 +282,8 @@ const
 	// Recursively examine container nodes and wrap any inline children.
 	fixContainer = (container, root) => {
 		let wrapper, isBR;
-		[...container.children].forEach(child => {
+		// Not live, and fast
+		[...container.childNodes].forEach(child => {
 			isBR = child.nodeName === 'BR';
 			if (!isBR && isInline(child)
 //			 && (blockTag !== 'DIV' || (child.matches && !child.matches(phrasingElements)))
