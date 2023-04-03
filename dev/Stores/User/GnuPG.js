@@ -189,7 +189,7 @@ export const GnuPGUserStore = new class {
 				let params = {
 					folder: message.folder,
 					uid: message.uid,
-					partId: pgpInfo.PartId,
+					partId: pgpInfo.partId,
 					keyId: key.id,
 					passphrase: await askPassphrase(key, 'BUTTON_DECRYPT'),
 					data: '' // message.plain() optional
