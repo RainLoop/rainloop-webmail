@@ -1,4 +1,4 @@
-import { Scope } from 'Common/Enums';
+import { ScopeMessageList, ScopeMessageView } from 'Common/Enums';
 import { elementById } from 'Common/Globals';
 import { exitFullscreen } from 'Common/Fullscreen';
 import { addObservablesTo, addSubscribablesTo } from 'External/ko';
@@ -25,9 +25,9 @@ export const MessageUserStore = new class {
 				clearTimeout(this.MessageSeenTimer);
 				elementById('rl-right').classList.toggle('message-selected', !!message);
 				if (message) {
-					SettingsUserStore.usePreviewPane() || AppUserStore.focusedState(Scope.MessageView);
+					SettingsUserStore.usePreviewPane() || AppUserStore.focusedState(ScopeMessageView);
 				} else {
-					AppUserStore.focusedState(Scope.MessageList);
+					AppUserStore.focusedState(ScopeMessageList);
 					exitFullscreen();
 				}
 				[...(this.bodiesDom()?.children || [])].forEach(el => el.hidden = true);

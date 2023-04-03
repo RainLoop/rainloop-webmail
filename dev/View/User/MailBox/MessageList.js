@@ -1,7 +1,7 @@
 import ko from 'ko';
 import { addObservablesTo, addComputablesTo } from 'External/ko';
 
-import { Scope } from 'Common/Enums';
+import { ScopeFolderList, ScopeMessageList, ScopeMessageView } from 'Common/Enums';
 
 import { ComposeType, FolderType, MessageSetAction } from 'Common/EnumsUser';
 
@@ -45,7 +45,7 @@ import { ComposePopupView } from 'View/Popup/Compose';
 
 import { MessageModel } from 'Model/Message';
 
-import { Layout, ClientSideKeyNameMessageListSize } from 'Common/EnumsUser';
+import { LayoutSideView, ClientSideKeyNameMessageListSize } from 'Common/EnumsUser';
 import { setLayoutResizer } from 'Common/UtilsUser';
 
 const
@@ -426,7 +426,7 @@ export class MailMessageList extends AbstractViewRight {
 			}
 
 			let b = moveAction();
-			AppUserStore.focusedState(b ? Scope.MessageList : Scope.FolderList);
+			AppUserStore.focusedState(b ? ScopeMessageList : ScopeFolderList);
 			moveAction(!b);
 		}
 	}
@@ -569,7 +569,7 @@ export class MailMessageList extends AbstractViewRight {
 				fToggle = () => {
 					let layout = SettingsUserStore.usePreviewPane();
 					setLayoutResizer(top, ClientSideKeyNameMessageListSize,
-						layout ? (Layout.SidePreview === layout ? 'Width' : 'Height') : 0
+						layout ? (LayoutSideView === layout ? 'Width' : 'Height') : 0
 					);
 				};
 			if (top) {
@@ -578,14 +578,14 @@ export class MailMessageList extends AbstractViewRight {
 			}
 		}, 1);
 
-		this.selector.init(b_content, Scope.MessageList);
+		this.selector.init(b_content, ScopeMessageList);
 
 		addEventsListeners(dom, {
 			click: event => {
 				ThemeStore.isMobile() && !eqs(event, '.toggleLeft') && leftPanelDisabled(true);
 
-				if (eqs(event, '.messageList') && Scope.MessageView === AppUserStore.focusedState()) {
-					AppUserStore.focusedState(Scope.MessageList);
+				if (eqs(event, '.messageList') && ScopeMessageView === AppUserStore.focusedState()) {
+					AppUserStore.focusedState(ScopeMessageList);
 				}
 
 				let el = eqs(event, '.e-paginator a');
@@ -667,7 +667,7 @@ export class MailMessageList extends AbstractViewRight {
 
 		// initShortcuts
 
-		addShortcut('enter,open', '', Scope.MessageList, () => {
+		addShortcut('enter,open', '', ScopeMessageList, () => {
 			if (formFieldFocused()) {
 				MessagelistUserStore.mainSearch(sLastSearchValue);
 				return false;
@@ -679,42 +679,42 @@ export class MailMessageList extends AbstractViewRight {
 		});
 
 		// archive (zip)
-		registerShortcut('z', '', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('z', '', [ScopeMessageList, ScopeMessageView], () => {
 			this.archiveCommand();
 			return false;
 		});
 
 		// delete
-		registerShortcut('delete', 'shift', Scope.MessageList, () => {
+		registerShortcut('delete', 'shift', ScopeMessageList, () => {
 			MessagelistUserStore.listCheckedOrSelected().length && this.deleteWithoutMoveCommand();
 			return false;
 		});
-//		registerShortcut('3', 'shift', Scope.MessageList, () => {
-		registerShortcut('delete', '', Scope.MessageList, () => {
+//		registerShortcut('3', 'shift', ScopeMessageList, () => {
+		registerShortcut('delete', '', ScopeMessageList, () => {
 			MessagelistUserStore.listCheckedOrSelected().length && this.deleteCommand();
 			return false;
 		});
 
 		// check mail
-		addShortcut('r', 'meta', [Scope.FolderList, Scope.MessageList, Scope.MessageView], () => {
+		addShortcut('r', 'meta', [ScopeFolderList, ScopeMessageList, ScopeMessageView], () => {
 			this.reload();
 			return false;
 		});
 
 		// check all
-		registerShortcut('a', 'meta', Scope.MessageList, () => {
+		registerShortcut('a', 'meta', ScopeMessageList, () => {
 			this.checkAll(!(this.checkAll() && !this.isIncompleteChecked()));
 			return false;
 		});
 
 		// write/compose (open compose popup)
-		registerShortcut('w,c,new', '', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('w,c,new', '', [ScopeMessageList, ScopeMessageView], () => {
 			showMessageComposer();
 			return false;
 		});
 
 		// important - star/flag messages
-		registerShortcut('i', '', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('i', '', [ScopeMessageList, ScopeMessageView], () => {
 			const checked = MessagelistUserStore.listCheckedOrSelected();
 			if (checked.length) {
 				listAction(
@@ -726,7 +726,7 @@ export class MailMessageList extends AbstractViewRight {
 			return false;
 		});
 
-		registerShortcut('t', '', [Scope.MessageList], () => {
+		registerShortcut('t', '', [ScopeMessageList], () => {
 			let message = MessagelistUserStore.selectedMessage() || MessagelistUserStore.focusedMessage();
 			if (0 < message?.threadsLen()) {
 				this.gotoThread(message);
@@ -735,38 +735,38 @@ export class MailMessageList extends AbstractViewRight {
 		});
 
 		// move
-		registerShortcut('insert', '', Scope.MessageList, () => {
+		registerShortcut('insert', '', ScopeMessageList, () => {
 			this.moveCommand();
 			return false;
 		});
 
 		// read
-		registerShortcut('q', '', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('q', '', [ScopeMessageList, ScopeMessageView], () => {
 			this.seenMessagesFast(true);
 			return false;
 		});
 
 		// unread
-		registerShortcut('u', '', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('u', '', [ScopeMessageList, ScopeMessageView], () => {
 			this.seenMessagesFast(false);
 			return false;
 		});
 
-		registerShortcut('f,mailforward', 'shift', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('f,mailforward', 'shift', [ScopeMessageList, ScopeMessageView], () => {
 			this.forwardCommand();
 			return false;
 		});
 
 		if (SettingsCapa('Search')) {
 			// search input focus
-			addShortcut('/', '', [Scope.MessageList, Scope.MessageView], () => {
+			addShortcut('/', '', [ScopeMessageList, ScopeMessageView], () => {
 				this.focusSearch(true);
 				return false;
 			});
 		}
 
 		// cancel search
-		addShortcut('escape', '', Scope.MessageList, () => {
+		addShortcut('escape', '', ScopeMessageList, () => {
 			if (this.messageListSearchDesc()) {
 				this.cancelSearch();
 				return false;
@@ -777,25 +777,25 @@ export class MailMessageList extends AbstractViewRight {
 		});
 
 		// change focused state
-		addShortcut('tab', 'shift', Scope.MessageList, () => {
-			AppUserStore.focusedState(Scope.FolderList);
+		addShortcut('tab', 'shift', ScopeMessageList, () => {
+			AppUserStore.focusedState(ScopeFolderList);
 			return false;
 		});
-		addShortcut('arrowleft', '', Scope.MessageList, () => {
-			AppUserStore.focusedState(Scope.FolderList);
+		addShortcut('arrowleft', '', ScopeMessageList, () => {
+			AppUserStore.focusedState(ScopeFolderList);
 			return false;
 		});
-		addShortcut('tab,arrowright', '', Scope.MessageList, () => {
+		addShortcut('tab,arrowright', '', ScopeMessageList, () => {
 			if (MessageUserStore.message()) {
-				AppUserStore.focusedState(Scope.MessageView);
+				AppUserStore.focusedState(ScopeMessageView);
 				return false;
 			}
 		});
 
-		addShortcut('arrowleft', 'meta', Scope.MessageView, ()=>false);
-		addShortcut('arrowright', 'meta', Scope.MessageView, ()=>false);
+		addShortcut('arrowleft', 'meta', ScopeMessageView, ()=>false);
+		addShortcut('arrowright', 'meta', ScopeMessageView, ()=>false);
 
-		addShortcut('f', 'meta', Scope.MessageList, this.advancedSearchClick);
+		addShortcut('f', 'meta', ScopeMessageList, this.advancedSearchClick);
 	}
 
 	advancedSearchClick() {

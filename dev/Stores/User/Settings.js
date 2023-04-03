@@ -1,7 +1,7 @@
 import ko from 'ko';
 import { koComputable, addObservablesTo } from 'External/ko';
 
-import { Layout } from 'Common/EnumsUser';
+import { LayoutSideView, LayoutBottomView } from 'Common/EnumsUser';
 import { pInt } from 'Common/Utils';
 import { $htmlCL, SettingsGet, fireEvent } from 'Common/Globals';
 import { ThemeStore } from 'Stores/Theme';
@@ -54,8 +54,8 @@ export const SettingsUserStore = new class {
 
 		const toggleLayout = () => {
 			const value = self.usePreviewPane();
-			$htmlCL.toggle('sm-msgView-side', Layout.SidePreview === value);
-			$htmlCL.toggle('sm-msgView-bottom', Layout.BottomPreview === value);
+			$htmlCL.toggle('sm-msgView-side', LayoutSideView === value);
+			$htmlCL.toggle('sm-msgView-bottom', LayoutBottomView === value);
 			fireEvent('rl-layout', value);
 		};
 		self.layout.subscribe(toggleLayout);

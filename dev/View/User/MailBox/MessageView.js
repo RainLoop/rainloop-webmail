@@ -1,7 +1,7 @@
 import ko from 'ko';
 import { addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
 
-import { Scope } from 'Common/Enums';
+import { ScopeMessageList, ScopeMessageView } from 'Common/Enums';
 
 import {
 	ComposeType,
@@ -335,23 +335,23 @@ export class MailMessageView extends AbstractViewRight {
 			}
 		});
 
-		keyScopeReal.subscribe(value => this.messageDomFocused(Scope.MessageView === value));
+		keyScopeReal.subscribe(value => this.messageDomFocused(ScopeMessageView === value));
 
 		// initShortcuts
 
 		// exit fullscreen, back
-		addShortcut('escape', '', Scope.MessageView, () => {
+		addShortcut('escape', '', ScopeMessageView, () => {
 			if (!this.viewModelDom.hidden && currentMessage()) {
 				const preview = SettingsUserStore.usePreviewPane();
 				if (isFullscreen()) {
 					exitFullscreen();
 					if (preview) {
-						AppUserStore.focusedState(Scope.MessageList);
+						AppUserStore.focusedState(ScopeMessageList);
 					}
 				} else if (!preview) {
 					currentMessage(null);
 				} else {
-					AppUserStore.focusedState(Scope.MessageList);
+					AppUserStore.focusedState(ScopeMessageList);
 				}
 
 				return false;
@@ -359,13 +359,13 @@ export class MailMessageView extends AbstractViewRight {
 		});
 
 		// fullscreen
-		addShortcut('enter,open', '', Scope.MessageView, () => {
+		addShortcut('enter,open', '', ScopeMessageView, () => {
 			isFullscreen() || toggleFullscreen();
 			return false;
 		});
 
 		// reply
-		registerShortcut('r,mailreply', '', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('r,mailreply', '', [ScopeMessageList, ScopeMessageView], () => {
 			if (currentMessage()) {
 				this.replyCommand();
 				return false;
@@ -374,13 +374,13 @@ export class MailMessageView extends AbstractViewRight {
 		});
 
 		// replyAll
-		registerShortcut('a', '', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('a', '', [ScopeMessageList, ScopeMessageView], () => {
 			if (currentMessage()) {
 				this.replyAllCommand();
 				return false;
 			}
 		});
-		registerShortcut('mailreply', 'shift', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('mailreply', 'shift', [ScopeMessageList, ScopeMessageView], () => {
 			if (currentMessage()) {
 				this.replyAllCommand();
 				return false;
@@ -388,7 +388,7 @@ export class MailMessageView extends AbstractViewRight {
 		});
 
 		// forward
-		registerShortcut('f,mailforward', '', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('f,mailforward', '', [ScopeMessageList, ScopeMessageView], () => {
 			if (currentMessage()) {
 				this.forwardCommand();
 				return false;
@@ -396,13 +396,13 @@ export class MailMessageView extends AbstractViewRight {
 		});
 
 		// message information
-		registerShortcut('i', 'meta', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('i', 'meta', [ScopeMessageList, ScopeMessageView], () => {
 			currentMessage() && this.toggleFullInfo();
 			return false;
 		});
 
 		// toggle message blockquotes
-		registerShortcut('b', '', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('b', '', [ScopeMessageList, ScopeMessageView], () => {
 			const message = currentMessage();
 			if (message?.body) {
 				message.body.querySelectorAll('details').forEach(node => node.open = !node.open);
@@ -410,37 +410,37 @@ export class MailMessageView extends AbstractViewRight {
 			}
 		});
 
-		addShortcut('arrowup,arrowleft', 'meta', [Scope.MessageList, Scope.MessageView], () => {
+		addShortcut('arrowup,arrowleft', 'meta', [ScopeMessageList, ScopeMessageView], () => {
 			this.goUpCommand();
 			return false;
 		});
 
-		addShortcut('arrowdown,arrowright', 'meta', [Scope.MessageList, Scope.MessageView], () => {
+		addShortcut('arrowdown,arrowright', 'meta', [ScopeMessageList, ScopeMessageView], () => {
 			this.goDownCommand();
 			return false;
 		});
 
 		// delete
-		addShortcut('delete', '', Scope.MessageView, () => {
+		addShortcut('delete', '', ScopeMessageView, () => {
 			this.deleteCommand();
 			return false;
 		});
-		addShortcut('delete', 'shift', Scope.MessageView, () => {
+		addShortcut('delete', 'shift', ScopeMessageView, () => {
 			this.deleteWithoutMoveCommand();
 			return false;
 		});
 
 		// change focused state
-		addShortcut('arrowleft', '', Scope.MessageView, () => {
+		addShortcut('arrowleft', '', ScopeMessageView, () => {
 			if (!isFullscreen() && currentMessage() && SettingsUserStore.usePreviewPane()
 			 && !oMessageScrollerDom().scrollLeft) {
-				AppUserStore.focusedState(Scope.MessageList);
+				AppUserStore.focusedState(ScopeMessageList);
 				return false;
 			}
 		});
-		addShortcut('tab', 'shift', Scope.MessageView, () => {
+		addShortcut('tab', 'shift', ScopeMessageView, () => {
 			if (!isFullscreen() && currentMessage() && SettingsUserStore.usePreviewPane()) {
-				AppUserStore.focusedState(Scope.MessageList);
+				AppUserStore.focusedState(ScopeMessageList);
 			}
 			return false;
 		});

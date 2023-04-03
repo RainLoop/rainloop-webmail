@@ -2,7 +2,7 @@ import { AppUserStore } from 'Stores/User/App';
 import { AccountUserStore } from 'Stores/User/Account';
 //import { FolderUserStore } from 'Stores/User/Folder';
 
-import { Scope } from 'Common/Enums';
+import { ScopeMessageList, ScopeMessageView, ScopeSettings } from 'Common/Enums';
 import { settings } from 'Common/Links';
 
 import { showScreenPopup } from 'Knoin/Knoin';
@@ -112,7 +112,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 	}
 
 	onBuild() {
-		registerShortcut('m', '', [Scope.MessageList, Scope.MessageView, Scope.Settings], () => {
+		registerShortcut('m', '', [ScopeMessageList, ScopeMessageView, ScopeSettings], () => {
 			if (!this.viewModelDom.hidden) {
 //				exitFullscreen();
 				this.accountMenuDropdownTrigger(true);
@@ -121,7 +121,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 		});
 
 		// shortcuts help
-		registerShortcut('?,f1,help', '', [Scope.MessageList, Scope.MessageView, Scope.Settings], () => {
+		registerShortcut('?,f1,help', '', [ScopeMessageList, ScopeMessageView, ScopeSettings], () => {
 			if (!this.viewModelDom.hidden) {
 				showScreenPopup(KeyboardShortcutsHelpPopupView);
 				return false;

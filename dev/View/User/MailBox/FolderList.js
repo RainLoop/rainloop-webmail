@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { Scope } from 'Common/Enums';
+import { ScopeFolderList, ScopeMessageList } from 'Common/Enums';
 import { addShortcut, stopEvent } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
 //import { setFolderETag } from 'Common/Cache';
@@ -116,12 +116,12 @@ export class MailFolderList extends AbstractViewLeft {
 						hasher.setHash(mailBox(folder.fullNameHash, 1, search));
 					}
 
-					AppUserStore.focusedState(Scope.MessageList);
+					AppUserStore.focusedState(ScopeMessageList);
 				}
 			}
 		});
 
-		addShortcut('arrowup,arrowdown', '', Scope.FolderList, event => {
+		addShortcut('arrowup,arrowdown', '', ScopeFolderList, event => {
 			let items = [], index = 0;
 			dom.querySelectorAll('li a').forEach(node => {
 				if (node.offsetHeight || node.getClientRects().length) {
@@ -145,17 +145,17 @@ export class MailFolderList extends AbstractViewLeft {
 			return false;
 		});
 
-		addShortcut('enter,open', '', Scope.FolderList, () => {
+		addShortcut('enter,open', '', ScopeFolderList, () => {
 			const item = qs('li a.focused');
 			if (item) {
-				AppUserStore.focusedState(Scope.MessageList);
+				AppUserStore.focusedState(ScopeMessageList);
 				item.click();
 			}
 
 			return false;
 		});
 
-		addShortcut('space', '', Scope.FolderList, () => {
+		addShortcut('space', '', ScopeFolderList, () => {
 			const item = qs('li a.focused'),
 				folder = item && ko.dataFor(item);
 			if (folder) {
@@ -167,9 +167,9 @@ export class MailFolderList extends AbstractViewLeft {
 			return false;
 		});
 
-//		addShortcut('tab', 'shift', Scope.FolderList, () => {
-		addShortcut('escape,tab,arrowright', '', Scope.FolderList, () => {
-			AppUserStore.focusedState(Scope.MessageList);
+//		addShortcut('tab', 'shift', ScopeFolderList, () => {
+		addShortcut('escape,tab,arrowright', '', ScopeFolderList, () => {
+			AppUserStore.focusedState(ScopeMessageList);
 			moveAction(false);
 			return false;
 		});

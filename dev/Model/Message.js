@@ -1,6 +1,5 @@
 import ko from 'ko';
 
-import { MessagePriority } from 'Common/EnumsUser';
 import { i18n } from 'Common/Translator';
 
 import { doc, SettingsGet } from 'Common/Globals';
@@ -87,7 +86,7 @@ export class MessageModel extends AbstractModel {
 			hasVirus: null, // or boolean when scanned
 			dateTimestamp: 0,
 			internalTimestamp: 0,
-			priority: MessagePriority.Normal,
+			priority: 3, // Normal
 
 			senderEmailsString: '',
 			senderClearEmailsString: '',
@@ -237,7 +236,7 @@ export class MessageModel extends AbstractModel {
 			checked: this.checked(),
 			unseen: this.isUnseen(),
 			focused: this.focused(),
-			priorityHigh: this.priority() === MessagePriority.High,
+			priorityHigh: this.priority() === 1,
 			withAttachments: !!this.attachments().length,
 			// hasChildrenMessage: 1 < this.threadsLen(),
 			hasUnseenSubMessage: this.hasUnseenSubMessage(),

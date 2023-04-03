@@ -1,4 +1,4 @@
-import { Scope } from 'Common/Enums';
+import { ScopeMessageList } from 'Common/Enums';
 import { doc, createElement, Settings } from 'Common/Globals';
 import { pString, pInt } from 'Common/Utils';
 import { moveAction } from 'Common/UtilsUser';
@@ -57,7 +57,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 	onShow() {
 		this.updateWindowTitle();
 		AppUserStore.focusedState('none');
-		AppUserStore.focusedState(Scope.MessageList);
+		AppUserStore.focusedState(ScopeMessageList);
 	}
 
 	/**

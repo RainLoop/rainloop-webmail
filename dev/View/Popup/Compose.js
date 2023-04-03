@@ -7,7 +7,6 @@ import {
 
 import {
 	ComposeType,
-	EditorDefaultType,
 	FolderType
 } from 'Common/EnumsUser';
 
@@ -100,7 +99,7 @@ const
 		}
 	},
 
-	isPlainEditor = () => EditorDefaultType.Plain === SettingsUserStore.editorDefaultType(),
+	isPlainEditor = () => 'Plain' === SettingsUserStore.editorDefaultType(),
 
 	/**
 	 * @param {string} prefix

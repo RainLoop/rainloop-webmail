@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { SMAudio } from 'Common/Audio';
 import { SaveSettingStatus } from 'Common/Enums';
-import { EditorDefaultType, Layout } from 'Common/EnumsUser';
+import { LayoutSideView, LayoutBottomView } from 'Common/EnumsUser';
 import { setRefreshFoldersInterval } from 'Common/Folders';
 import { Settings, SettingsGet } from 'Common/Globals';
 import { isArray } from 'Common/Utils';
@@ -71,8 +71,8 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 			editorDefaultTypes: () => {
 				translateTrigger();
 				return [
-					{ id: EditorDefaultType.Html, name: i18n('SETTINGS_GENERAL/EDITOR_HTML') },
-					{ id: EditorDefaultType.Plain, name: i18n('SETTINGS_GENERAL/EDITOR_PLAIN') }
+					{ id: 'Html', name: i18n('SETTINGS_GENERAL/EDITOR_HTML') },
+					{ id: 'Plain', name: i18n('SETTINGS_GENERAL/EDITOR_PLAIN') }
 				];
 			},
 
@@ -88,8 +88,8 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 				translateTrigger();
 				return [
 					{ id: 0, name: i18n('SETTINGS_GENERAL/LAYOUT_NO_SPLIT') },
-					{ id: Layout.SidePreview, name: i18n('SETTINGS_GENERAL/LAYOUT_VERTICAL_SPLIT') },
-					{ id: Layout.BottomPreview, name: i18n('SETTINGS_GENERAL/LAYOUT_HORIZONTAL_SPLIT') }
+					{ id: LayoutSideView, name: i18n('SETTINGS_GENERAL/LAYOUT_VERTICAL_SPLIT') },
+					{ id: LayoutBottomView, name: i18n('SETTINGS_GENERAL/LAYOUT_HORIZONTAL_SPLIT') }
 				];
 			}
 		});

@@ -1,4 +1,4 @@
-import { Scope } from 'Common/Enums';
+import { ScopeSettings } from 'Common/Enums';
 import { keyScope, SettingsCapa } from 'Common/Globals';
 import { runSettingsViewModelHooks } from 'Common/Plugins';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
@@ -65,7 +65,7 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 
 	onShow() {
 		this.setSettingsTitle();
-		keyScope(Scope.Settings);
+		keyScope(ScopeSettings);
 	}
 
 	setSettingsTitle() {
