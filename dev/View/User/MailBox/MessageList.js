@@ -343,6 +343,17 @@ export class MailMessageList extends AbstractViewRight {
 		this.reload();
 	}
 
+	clearListIsVisible() {
+		return (
+			!this.messageListSearchDesc()
+		 && !MessagelistUserStore.error()
+		 && !MessagelistUserStore.endThreadUid()
+		 && MessagelistUserStore().length
+		 && (MessagelistUserStore.isSpamFolder() || MessagelistUserStore.isTrashFolder())
+		 && SettingsCapa('DangerousActions')
+		);
+	}
+
 	clear() {
 		SettingsCapa('DangerousActions')
 		&& showScreenPopup(FolderClearPopupView, [FolderUserStore.currentFolder()]);
@@ -546,16 +557,6 @@ export class MailMessageList extends AbstractViewRight {
 			 return i18n('MESSAGE_LIST/EMPTY_' + (MessagelistUserStore.listSearch() ? 'SEARCH_' : '') + 'LIST');
 		}
 		return '';
-	}
-
-	clearListIsVisible() {
-		return (
-			!this.messageListSearchDesc() &&
-			!MessagelistUserStore.error() &&
-			!MessagelistUserStore.endThreadUid() &&
-			MessagelistUserStore().length &&
-			(MessagelistUserStore.isSpamFolder() || MessagelistUserStore.isTrashFolder())
-		);
 	}
 
 	onBuild(dom) {
