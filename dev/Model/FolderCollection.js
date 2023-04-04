@@ -223,6 +223,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 									name = parents.pop(),
 									pfolder = getFolderFromCacheList(parentName);
 								if (!pfolder) {
+									console.log('Create nonexistent folder ' + parentName);
 									pfolder = FolderModel.reviveFromJson({
 										'@Object': 'Object/Folder',
 										name: name,
@@ -528,6 +529,7 @@ export class FolderModel extends AbstractModel {
 		const folder = super.reviveFromJson(json);
 		if (folder) {
 			const path = folder.fullName.split(folder.delimiter),
+				attr = name => folder.attributes.includes(name),
 				type = (folder.metadata[FolderMetadataKeys.KolabFolderType]
 					|| folder.metadata[FolderMetadataKeys.KolabFolderTypeShared]
 					|| ''
@@ -537,9 +539,9 @@ export class FolderModel extends AbstractModel {
 			path.pop();
 			folder.parentName = path.join(folder.delimiter);
 
-			folder.isSubscribed(folder.attributes.includes('\\subscribed'));
-			folder.exists = !folder.attributes.includes('\\nonexistent');
-			folder.selectable(folder.exists && !folder.attributes.includes('\\noselect'));
+			folder.isSubscribed(attr('\\subscribed'));
+			folder.exists = !attr('\\nonexistent');
+			folder.selectable(folder.exists && !attr('\\noselect'));
 
 			type && 'mail' != type && folder.kolabType(type);
 		}
