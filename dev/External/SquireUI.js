@@ -19,6 +19,8 @@ const
 	htmlToPlain = html => rl.Utils.htmlToPlain(html).trim(),
 	plainToHtml = text => rl.Utils.plainToHtml(text),
 
+	forEachObjectValue = (obj, fn) => Object.values(obj).forEach(fn),
+
 	getFragmentOfChildren = parent => {
 		let frag = doc.createDocumentFragment();
 		frag.append(...parent.childNodes);
@@ -127,37 +129,43 @@ class SquireUI
 						html: 'B',
 						cmd: () => this.doAction('bold'),
 						key: 'B',
-						hint: 'Bold'
+						hint: 'Bold',
+						matches: 'B,STRONT'
 					},
 					italic: {
 						html: 'I',
 						cmd: () => this.doAction('italic'),
 						key: 'I',
-						hint: 'Italic'
+						hint: 'Italic',
+						matches: 'I'
 					},
 					underline: {
 						html: '<u>U</u>',
 						cmd: () => this.doAction('underline'),
 						key: 'U',
-						hint: 'Underline'
+						hint: 'Underline',
+						matches: 'U'
 					},
 					strike: {
 						html: '<s>S</s>',
 						cmd: () => this.doAction('strikethrough'),
 						key: 'Shift + 7',
-						hint: 'Strikethrough'
+						hint: 'Strikethrough',
+						matches: 'S'
 					},
 					sub: {
 						html: 'Xₙ',
 						cmd: () => this.doAction('subscript'),
 						key: 'Shift + 5',
-						hint: 'Subscript'
+						hint: 'Subscript',
+						matches: 'SUB'
 					},
 					sup: {
 						html: 'Xⁿ',
 						cmd: () => this.doAction('superscript'),
 						key: 'Shift + 6',
-						hint: 'Superscript'
+						hint: 'Superscript',
+						matches: 'SUP'
 					}
 				},
 				block: {
@@ -165,13 +173,15 @@ class SquireUI
 						html: '#',
 						cmd: () => this.doList('OL'),
 						key: 'Shift + 8',
-						hint: 'Ordered list'
+						hint: 'Ordered list',
+						matches: 'OL'
 					},
 					ul: {
 						html: '⋮',
 						cmd: () => this.doList('UL'),
 						key: 'Shift + 9',
-						hint: 'Unordered list'
+						hint: 'Unordered list',
+						matches: 'UL'
 					},
 					quote: {
 						html: '"',
@@ -179,7 +189,8 @@ class SquireUI
 							let parent = squire.getSelectionClosest('UL,OL,BLOCKQUOTE')?.nodeName;
 							('BLOCKQUOTE' == parent) ? squire.decreaseQuoteLevel() : squire.increaseQuoteLevel();
 						},
-						hint: 'Blockquote'
+						hint: 'Blockquote',
+						matches: 'BLOCKQUOTE'
 					},
 					indentDecrease: {
 						html: '⇤',
@@ -204,7 +215,8 @@ class SquireUI
 								url.length ? squire.makeLink(url) : (node && squire.removeLink());
 							}
 						},
-						hint: 'Link'
+						hint: 'Link',
+						matches: 'A'
 					},
 					imageUrl: {
 						html: '🖼️',
@@ -213,12 +225,14 @@ class SquireUI
 								src = prompt("Image", node?.src || "https://");
 							src?.length ? squire.insertImage(src) : (node && squire.detach(node));
 						},
-						hint: 'Image URL'
+						hint: 'Image URL',
+						matches: 'IMG'
 					},
 					imageUpload: {
 						html: '📂️',
 						cmd: () => browseImage.click(),
 						hint: 'Image select',
+						matches: 'IMG'
 					}
 				},
 /*
@@ -241,7 +255,10 @@ class SquireUI
 					},
 					source: {
 						html: '👁',
-						cmd: () => this.setMode('source' == this.mode ? 'wysiwyg' : 'source'),
+						cmd: btn => {
+							this.setMode('source' == this.mode ? 'wysiwyg' : 'source');
+							btn.classList.toggle('active', 'source' == this.mode);
+						},
 						hint: i18n('EDITOR/TEXT_SWITCHER_SOURCE', 'Source')
 					}
 				}
@@ -362,15 +379,21 @@ class SquireUI
 
 		container.append(toolbar, wysiwyg, plain);
 
+		squire.addEventListener('pathChange', e => {
+			forEachObjectValue(actions, entries => {
+				forEachObjectValue(entries, cfg => {
+//					cfg.matches && cfg.input.classList.toggle('active', e.element && e.element.matches(cfg.matches));
+					cfg.matches && cfg.input.classList.toggle('active', e.element && e.element.closestWithin(cfg.matches, squire.getRoot()));
+				});
+			});
+		});
 /*
-		squire.addEventListener('dragover', );
-		squire.addEventListener('drop', );
-		squire.addEventListener('pathChange', );
-		squire.addEventListener('cursor', );
-		squire.addEventListener('select', );
-		squire.addEventListener('input', );
-		squire.addEventListener( 'keydown keyup', monitorShiftKey )
-		squire.addEventListener( 'keydown', onKey )
+		squire.addEventListener('cursor', e => {
+			console.dir({cursor:e.range});
+		});
+		squire.addEventListener('select', e => {
+			console.dir({select:e.range});
+		});
 */
 
 		// CKEditor gimmicks used by HtmlEditor
@@ -393,11 +416,11 @@ class SquireUI
 			fn = {UL:'makeUnorderedList',OL:'makeOrderedList'};
 		(parent == type) ? this.squire.removeList() : this.squire[fn[type]]();
 	}
-
+/*
 	testPresenceinSelection(format, validation) {
 		return validation.test(this.squire.getPath()) || this.squire.hasFormat(format);
 	}
-
+*/
 	setMode(mode) {
 		if (this.mode != mode) {
 			let cl = this.container.classList, source = 'source' == this.mode;

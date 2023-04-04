@@ -76,7 +76,8 @@ const
 	BLOCK = 2,
 	CONTAINER = 3,
 
-	isLeaf = node => node.nodeType === ELEMENT_NODE && !!leafNodeNames[ node.nodeName ],
+	isElement = node => node.nodeType === ELEMENT_NODE,
+	isLeaf = node => isElement(node) && !!leafNodeNames[ node.nodeName ],
 
 	getNodeCategory = node => {
 		switch (node.nodeType) {
@@ -157,7 +158,7 @@ const
 		let path = '', style;
 		if (node && node !== root) {
 			path = getPath(node.parentNode, root);
-			if (node.nodeType === ELEMENT_NODE) {
+			if (isElement(node)) {
 				path += (path ? '>' : '') + node.nodeName;
 				if (node.id) {
 					path += '#' + node.id;
@@ -395,7 +396,7 @@ const
 					frags.push(empty(child));
 				}
 			}
-			else if (child.nodeType === ELEMENT_NODE) {
+			else if (isElement(child)) {
 				child.append(...frags.reverse());
 				frags = [];
 				_mergeInlines(child, fakeRange);
@@ -407,7 +408,7 @@ const
 		if (node.nodeType === TEXT_NODE) {
 			node = node.parentNode;
 		}
-		if (node.nodeType === ELEMENT_NODE) {
+		if (isElement(node)) {
 			let fakeRange = {
 				startContainer: range.startContainer,
 				startOffset: range.startOffset,
@@ -425,7 +426,7 @@ const
 		let parent, last, offset;
 		while ((parent = container.parentNode) &&
 				parent !== root &&
-				parent.nodeType === ELEMENT_NODE &&
+				isElement(parent) &&
 				parent.childNodes.length === 1) {
 			container = parent;
 		}
@@ -485,7 +486,7 @@ const
 
 	getNodeBefore = (node, offset) => {
 		let children = node.childNodes;
-		while (offset && node.nodeType === ELEMENT_NODE) {
+		while (offset && isElement(node)) {
 			node = children[ offset - 1 ];
 			children = node.childNodes;
 			offset = children.length;
@@ -494,7 +495,7 @@ const
 	},
 
 	getNodeAfter = (node, offset) => {
-		if (node.nodeType === ELEMENT_NODE) {
+		if (isElement(node)) {
 			let children = node.childNodes;
 			if (offset < children.length) {
 				node = children[ offset ];
@@ -1221,7 +1222,7 @@ const
 		// Focus cursor
 		// If there's a <b>/<i> etc. at the beginning of the split
 		// make sure we focus inside it.
-		while (nodeAfterSplit.nodeType === ELEMENT_NODE) {
+		while (isElement(nodeAfterSplit)) {
 			let child = nodeAfterSplit.firstChild,
 				next;
 
@@ -1525,7 +1526,7 @@ const
 			child;
 		while (l--) {
 			child = children[l];
-			if (child.nodeType === ELEMENT_NODE && !isLeaf(child)) {
+			if (isElement(child) && !isLeaf(child)) {
 				removeEmptyInlines(child);
 				if (!child.firstChild && isInline(child)) {
 					child.remove();
@@ -1538,7 +1539,7 @@ const
 
 	// ---
 
-	notWSTextNode = node => node.nodeType === ELEMENT_NODE ? node.nodeName === 'BR' : notWS.test(node.data),
+	notWSTextNode = node => isElement(node) ? node.nodeName === 'BR' : notWS.test(node.data),
 	isLineBreak = (br, isLBIfEmptyBlock) => {
 		let walker, block = br.parentNode;
 		while (isInline(block)) {
@@ -2139,7 +2140,7 @@ let keyHandlers = {
 			moveRangeBoundariesUpTree(range, root, root, root);
 			cursorContainer = range.endContainer;
 			cursorOffset = range.endOffset;
-			if (cursorContainer.nodeType === ELEMENT_NODE) {
+			if (isElement(cursorContainer)) {
 				nodeAfterCursor = cursorContainer.childNodes[ cursorOffset ];
 				if (nodeAfterCursor?.nodeName === 'IMG') {
 					event.preventDefault();
@@ -2660,15 +2661,15 @@ class Squire
 		if (range) {
 			let anchor = range.startContainer,
 				focus = range.endContainer,
-				newPath;
+				newPath, node;
 			if (force || anchor !== this._lastAnchorNode || focus !== this._lastFocusNode) {
 				this._lastAnchorNode = anchor;
 				this._lastFocusNode = focus;
-				newPath = (anchor && focus) ? (anchor === focus ?
-					getPath(focus, this._root) : '(selection)') : '';
+				node = anchor === focus ? focus : null;
+				newPath = (anchor && focus) ? (node ? getPath(focus, this._root) : '(selection)') : '';
 				if (this._path !== newPath) {
 					this._path = newPath;
-					this.fireEvent('pathChange', { path: newPath });
+					this.fireEvent('pathChange', { path: newPath, element: isElement(node) ? node : node.parentElement });
 				}
 			}
 			this.fireEvent(range.collapsed ? 'cursor' : 'select', {

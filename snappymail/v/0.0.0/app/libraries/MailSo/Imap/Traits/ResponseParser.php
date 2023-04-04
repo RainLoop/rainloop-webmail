@@ -266,8 +266,7 @@ trait ResponseParser
 									$oImapResponse, true, $sPreviousAtomUpperCase, '['
 								);
 
-								if (null !== $sListBlock)
-								{
+								if (null !== $sListBlock) {
 									$sAtomBuilder .= $sListBlock.']';
 								}
 
