@@ -7,7 +7,7 @@
 	</div>
 	<div class="btn-group">
 		<a class="btn fontastic" data-bind="visible: archiveAllowed, command: archiveCommand" data-i18n="[title]GLOBAL/TO_ARCHIVE">🗄</a>
-		<a class="btn fontastic" data-bind="visible: canMarkAsSpam , command: spamCommand" data-i18n="[title]GLOBAL/SPAM">⚠</a>
+		<a class="btn fontastic" data-bind="visible: canMarkAsSpam , command: spamCommand" data-i18n="[title]GLOBAL/TO_SPAM">⚠</a>
 		<a class="btn" data-bind="visible: isSpamFolder, command: notSpamCommand" data-i18n="[title]GLOBAL/NOT_SPAM">
 			<i class="icon-check-mark-circle-two"></i>
 		</a>
@@ -68,7 +68,7 @@
 								<a href="#" tabindex="-1" data-bind="command: archiveCommand" data-icon="🗄" data-i18n="GLOBAL/TO_ARCHIVE"></a>
 							</li>
 							<li role="presentation" data-bind="visible: canMarkAsSpam">
-								<a href="#" tabindex="-1" data-bind="command: spamCommand" data-icon="⚠" data-i18n="GLOBAL/SPAM"></a>
+								<a href="#" tabindex="-1" data-bind="command: spamCommand" data-icon="⚠" data-i18n="GLOBAL/TO_SPAM"></a>
 							</li>
 							<li role="presentation" data-bind="visible: isSpamFolder">
 								<a href="#" tabindex="-1" data-bind="command: notSpamCommand">

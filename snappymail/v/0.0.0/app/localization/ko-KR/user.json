@@ -19,6 +19,7 @@
 		"MOVE_TO": "다음 위치로 이동",
 		"NAME": "받은 편지함",
 		"NONE": "없음",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "스팸 아님",
 		"USERNAME": "사용자 이름",
 		"PASSWORD": "비밀번호",

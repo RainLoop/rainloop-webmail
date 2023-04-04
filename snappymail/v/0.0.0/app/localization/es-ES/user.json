@@ -19,6 +19,7 @@
 		"MOVE_TO": "Mover",
 		"NAME": "Nombre",
 		"NONE": "Ninguno",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "Es correo deseado",
 		"USERNAME": "Nombre de usuario",
 		"PASSWORD": "Contraseña",

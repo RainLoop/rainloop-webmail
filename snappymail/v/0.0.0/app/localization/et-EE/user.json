@@ -19,6 +19,7 @@
 		"MOVE_TO": "Liiguta kausta",
 		"NAME": "Saabunud kirjad",
 		"NONE": "Puuduvad",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "Ei ole rämpspost",
 		"USERNAME": "Kasutajanimi",
 		"PASSWORD": "Salasõna",

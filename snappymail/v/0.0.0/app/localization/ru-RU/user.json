@@ -19,6 +19,7 @@
 		"MOVE_TO": "Переместить в",
 		"NAME": "Имя отправителя",
 		"NONE": "Ничего",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "Не спам",
 		"USERNAME": "Имя пользователя",
 		"PASSWORD": "Пароль",

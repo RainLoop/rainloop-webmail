@@ -19,6 +19,7 @@
 		"MOVE_TO": "移至",
 		"NAME": "收件箱",
 		"NONE": "None",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "Not Spam",
 		"USERNAME": "用户名",
 		"PASSWORD": "密碼",

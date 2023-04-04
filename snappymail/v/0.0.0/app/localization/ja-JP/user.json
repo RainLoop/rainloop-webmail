@@ -19,6 +19,7 @@
 		"MOVE_TO": "移動",
 		"NAME": "受信トレイ",
 		"NONE": "なし",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "迷惑メールを解除",
 		"USERNAME": "ユーザー名",
 		"PASSWORD": "パスワード",
