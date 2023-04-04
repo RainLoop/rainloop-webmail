@@ -29,7 +29,8 @@
 		if (hourCycle) {
 			options.hourCycle = hourCycle;
 		}
-		return this.toLocaleString(doc.documentElement.lang, options);
+		let el = doc.documentElement;
+		return this.toLocaleString(el.dataset.dateLang || el.lang, options);
 	};
 
 	Element.prototype.closestWithin = function(selector, parent) {
