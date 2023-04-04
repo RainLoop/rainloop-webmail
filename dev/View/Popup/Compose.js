@@ -1398,7 +1398,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			isHtml = this.oEditor.isHtml();
 
 		let Text = this.oEditor.getData().trim();
-		if (!Text.length) {
+		if (!draft && !Text.length) {
 			throw i18n('COMPOSE/ERROR_EMPTY_BODY');
 		}
 		if (isHtml) {
