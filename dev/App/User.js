@@ -90,6 +90,7 @@ export class AppUser extends AbstractApp {
 		addEventListener('click', dropdownsDetectVisibility);
 
 		this.folderList = FolderUserStore.folderList;
+		this.messageList = MessagelistUserStore;
 	}
 
 	/**

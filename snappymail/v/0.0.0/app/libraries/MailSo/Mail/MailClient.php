@@ -707,7 +707,7 @@ class MailClient
 								break;
 							}
 						}
-						$aAllThreads = [];
+						$aAllThreads = [$aUids];
 						// This only speeds up the search when not cached
 //						$oParams->oSequenceSet = new SequenceSet($aUids);
 					} else {

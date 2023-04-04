@@ -127,7 +127,7 @@ export class MessageModel extends AbstractModel {
 		addComputablesTo(this, {
 			attachmentIconClass: () =>
 				this.encrypted() ? 'icon-lock' : FileInfo.getAttachmentsIconClass(this.attachments()),
-			threadsLen: () => this.threads().length,
+			threadsLen: () => rl.app.messageList.threadUid() ? 0 : this.threads().length,
 
 			isUnseen: () => !this.flags().includes('\\seen'),
 			isFlagged: () => this.flags().includes('\\flagged'),
