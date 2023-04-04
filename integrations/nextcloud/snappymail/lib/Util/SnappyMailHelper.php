@@ -95,6 +95,8 @@ class SnappyMailHelper
 		if ($handle) {
 			\header_remove('Content-Security-Policy');
 			\RainLoop\Service::Handle();
+			// https://github.com/the-djmaze/snappymail/issues/1069
+			exit;
 		}
 	}
 
