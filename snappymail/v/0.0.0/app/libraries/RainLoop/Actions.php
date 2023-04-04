@@ -1068,7 +1068,7 @@ class Actions
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->ImapClient()->IsLoggined()) {
+		if ($oAccount && !$this->ImapClient()->IsLoggined()) {
 			try {
 				$oAccount->ImapConnectAndLogin($this->oPlugins, $this->ImapClient(), $this->oConfig);
 			} catch (\MailSo\Net\Exceptions\ConnectionException $oException) {
