@@ -1,3 +1,47 @@
+## 2.27.3 – 2023-04-04
+
+## Added
+- Squire visualize some active buttons states
+- Hard coded string "Message body is empty"
+  [#1048](https://github.com/the-djmaze/snappymail/pull/1048)
+- Split SPAM label in user.json for directory and action
+  [#1065](https://github.com/the-djmaze/snappymail/pull/1065)
+- A solution for
+  [#1056](https://github.com/the-djmaze/snappymail/pull/1056) to support dates in different language/calendar
+- Log \nonexistent folder for
+  [#1008](https://github.com/the-djmaze/snappymail/pull/1008)
+
+## Changed
+- Cleanup some enums to consts
+- Workaround Upgrade with Nextcloud stuck in Maintenance mode
+  [#1046](https://github.com/the-djmaze/snappymail/pull/1046)
+- Use Actions()->decodeRawKey()
+- French language updated by @hguilbert
+  [#1045](https://github.com/the-djmaze/snappymail/pull/1045)
+- Sorting in folders not working
+  [#1022](https://github.com/the-djmaze/snappymail/pull/1022)
+- Allow saving draft with empty body
+  [#1052](https://github.com/the-djmaze/snappymail/pull/1052)
+
+## Fixed
+- GnuPG decrypt failed
+- Clear folder link should be hidden if "dangerous actions" is not active
+  [#1037](https://github.com/the-djmaze/snappymail/pull/1037)
+- 500 error generating preview with GD2
+  [#1009](https://github.com/the-djmaze/snappymail/pull/1009)
+- Text and Links Jumping While Writing
+  [#1004](https://github.com/the-djmaze/snappymail/pull/1004)
+- Odd annoying behaviour when copy/ pasting anything into an email and then attempting to edit it.
+  [#1054](https://github.com/the-djmaze/snappymail/pull/1054)
+- Check if $rImapLiteralStream is open resource and not closed
+- Save as eml to nextcloud not working anymore
+  [#1057](https://github.com/the-djmaze/snappymail/pull/1057)
+- AuthError and Call to a member function ImapConnectAndLogin() on null
+  [#1060](https://github.com/the-djmaze/snappymail/pull/1060)
+- Thread count missing/shown
+  [#1003](https://github.com/the-djmaze/snappymail/pull/1003)
+
+
 ## 2.27.2 – 2023-03-22
 
 ## Added
