@@ -107,6 +107,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "U heeft %COUNT% nieuwe berichten!",
 		"QUOTA_SIZE": "U gebruikt <strong>%SIZE% (%PROC%%)<\/strong> van <strong>%LIMIT%<\/strong>",
 		"SORT": "Sorteren",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Datum oplopend",
 		"SORT_DATE_DESC": "Datum aflopend",
 		"SORT_SIZE_ASC": "Grootte oplopend",

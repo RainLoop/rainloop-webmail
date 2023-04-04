@@ -107,6 +107,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "%COUNT% mezu berri dituzu!",
 		"QUOTA_SIZE": "<strong>%SIZE% (%PROC%%)<\/strong> erabiliz zure <strong>%LIMIT%<\/strong>-tik",
 		"SORT": "Ordenatu",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Data goraka",
 		"SORT_DATE_DESC": "Data beheraka",
 		"SORT_SIZE_ASC": "Tamaina goraka",

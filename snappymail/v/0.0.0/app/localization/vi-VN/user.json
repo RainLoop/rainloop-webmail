@@ -107,6 +107,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "Bạn có %COUNT% thư mới!",
 		"QUOTA_SIZE": "Đang sử dụng <strong>%SIZE% (%PROC%%)<\/strong> trong mức <strong>%LIMIT%<\/strong> của bạn",
 		"SORT": "Sắp xếp thư",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Thư mới hiện trước",
 		"SORT_DATE_DESC": "Thư cũ hiện trước",
 		"SORT_SIZE_ASC": "Kích cỡ thư nhỏ đến lớn",

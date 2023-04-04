@@ -107,6 +107,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "Masz %COUNT% now(-ą,-e,-ych) wiadomość(-ci)!",
 		"QUOTA_SIZE": "Wykorzystano <strong>%SIZE% (%PROC%%)<\/strong> z <strong>%LIMIT%<\/strong>",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Date ascending",
 		"SORT_DATE_DESC": "Date descending",
 		"SORT_SIZE_ASC": "Size ascending",

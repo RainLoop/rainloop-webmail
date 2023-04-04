@@ -107,6 +107,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "%COUNT% 개의 새 메시지가 있습니다!",
 		"QUOTA_SIZE": "총 <strong>%LIMIT%<\/strong> 중 <strong>%PROC%%<\/strong>을(를) 사용 중입니다.",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Date ascending",
 		"SORT_DATE_DESC": "Date descending",
 		"SORT_SIZE_ASC": "Size ascending",

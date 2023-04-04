@@ -107,6 +107,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "شما تعداد %COUNT%  پیام جدید دارید!",
 		"QUOTA_SIZE": "استفاده <strong>%SIZE% (%PROC%%)<\/strong> از<strong>%LIMIT%<\/strong> برای شما",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Date ascending",
 		"SORT_DATE_DESC": "Date descending",
 		"SORT_SIZE_ASC": "Size ascending",

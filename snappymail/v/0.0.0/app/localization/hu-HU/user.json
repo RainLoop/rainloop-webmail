@@ -107,6 +107,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "%COUNT% olvasatlan üzeneted van!",
 		"QUOTA_SIZE": "Felhasználva <strong>%SIZE% (%PROC%%)<\/strong> ebből: <strong>%LIMIT%<\/strong>",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Date ascending",
 		"SORT_DATE_DESC": "Date descending",
 		"SORT_SIZE_ASC": "Size ascending",

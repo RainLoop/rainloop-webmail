@@ -107,6 +107,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "Du har %count% nye meldinger",
 		"QUOTA_SIZE": "Bruker <strong> %SIZE% ( %PROC%% ) <\/strong> av <strong> %LIMIT% <\/strong>",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Dato, stigende",
 		"SORT_DATE_DESC": "Dato, synkende",
 		"SORT_SIZE_ASC": "Størrelse, stigende",

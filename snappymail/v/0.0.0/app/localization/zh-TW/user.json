@@ -107,6 +107,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "您有 %COUNT% 封新郵件！",
 		"QUOTA_SIZE": "使用了<strong>%LIMIT%<\/strong> 存儲空間中的<strong>%SIZE% (%PROC%%)<\/strong>",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Date ascending",
 		"SORT_DATE_DESC": "Date descending",
 		"SORT_SIZE_ASC": "Size ascending",

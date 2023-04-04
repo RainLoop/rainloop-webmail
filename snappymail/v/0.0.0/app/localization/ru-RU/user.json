@@ -107,6 +107,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "У вас %COUNT% новых сообщений!",
 		"QUOTA_SIZE": "Использовано <strong>%SIZE% (%PROC%%)<\/strong> из <strong>%LIMIT%<\/strong>",
 		"SORT": "Сортировка",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Дата по возрастанию",
 		"SORT_DATE_DESC": "Дата по убыванию",
 		"SORT_SIZE_ASC": "Размер по возрастанию",

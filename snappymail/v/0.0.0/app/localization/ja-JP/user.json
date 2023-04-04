@@ -107,6 +107,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "%COUNT%の新しいメッセージ!",
 		"QUOTA_SIZE": "<strong>%SIZE% (%PROC%%)<\/strong>\/<strong>%LIMIT%<\/strong>を使用中",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "日付で昇順",
 		"SORT_DATE_DESC": "日付で降順",
 		"SORT_SIZE_ASC": "サイズで昇順",

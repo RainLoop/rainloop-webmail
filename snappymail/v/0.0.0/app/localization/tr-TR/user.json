@@ -107,6 +107,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "Toplam %COUNT% yeni mesajınız var!",
 		"QUOTA_SIZE": "Size ayrılan <strong>%LIMIT%<\/strong>'dan <strong>%SIZE% (%PROC%%)<\/strong> kullanıyorsunuz",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Date ascending",
 		"SORT_DATE_DESC": "Date descending",
 		"SORT_SIZE_ASC": "Size ascending",

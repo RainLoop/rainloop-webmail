@@ -68,6 +68,9 @@
 			</li>
 		</menu>
 	</div>
+	<div class="btn-group dropdown onCheckedHide" data-bind="visible: !sortSupported()">
+		<div id="no-sort-list" class="btn fontastic" data-i18n="[title]MESSAGE_LIST/NO_SORT">✖⬇</div>
+	</div>
 	<div class="btn-group dropdown onCheckedHide" data-bind="visible: sortSupported(), registerBootstrapDropdown: true, openDropdownTrigger: sortDropdownTrigger">
 		<a id="sort-list-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1" data-i18n="[title]MESSAGE_LIST/SORT" data-bind="text: sortText">⬇</a>
 		<menu class="dropdown-menu" role="menu" aria-labelledby="sort-list-dropdown-id">
