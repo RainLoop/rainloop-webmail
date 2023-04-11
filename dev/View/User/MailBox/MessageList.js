@@ -115,7 +115,7 @@ export class MailMessageList extends AbstractViewRight {
 
 			sortSupported: () =>
 				(FolderUserStore.hasCapability('SORT') | FolderUserStore.hasCapability('ESORT'))
-				&& !(MessagelistUserStore.listLimited() | MessagelistUserStore.threadUid()),
+				&& !MessagelistUserStore.threadUid(),
 
 			messageListSearchDesc: () => {
 				const value = MessagelistUserStore().search;
