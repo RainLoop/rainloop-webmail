@@ -741,8 +741,8 @@ class MailClient
 				}
 			}
 
-			$oMessageCollection->totalEmails = \count($aUids);
-			if ($oMessageCollection->totalEmails) {
+			if (\count($aUids)) {
+				$oMessageCollection->totalEmails = \count($aUids);
 				$aUids = \array_slice($aUids, $oParams->iOffset, $oParams->iLimit);
 				$this->MessageListByRequestIndexOrUids($oMessageCollection, new SequenceSet($aUids), $aAllThreads);
 			}
