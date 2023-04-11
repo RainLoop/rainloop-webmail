@@ -1,6 +1,6 @@
 <?php
 
-class ChangePasswordDriverISPConfig
+class ChangePasswordISPConfigDriver
 {
 	const
 		NAME        = 'ISPConfig',
