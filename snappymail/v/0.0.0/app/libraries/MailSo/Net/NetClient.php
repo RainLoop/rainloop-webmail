@@ -195,6 +195,7 @@ abstract class NetClient
 		}
 	}
 
+	abstract public function supportsAuthType(string $sasl_type) : bool;
 //	abstract public function Login(ConnectSettings $oSettings) : self;
 	abstract public function Logout() : void;
 

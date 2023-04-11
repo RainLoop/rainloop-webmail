@@ -102,6 +102,11 @@ class SmtpClient extends \MailSo\Net\NetClient
 		}
 	}
 
+	public function supportsAuthType(string $sasl_type) : bool
+	{
+		return \in_array(\strtoupper($sasl_type), $this->aAuthTypes);
+	}
+
 	/**
 	 * @throws \InvalidArgumentException
 	 * @throws \MailSo\RuntimeException

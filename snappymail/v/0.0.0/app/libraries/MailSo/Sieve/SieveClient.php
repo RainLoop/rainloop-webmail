@@ -70,6 +70,11 @@ class SieveClient extends \MailSo\Net\NetClient
 		}
 	}
 
+	public function supportsAuthType(string $sasl_type) : bool
+	{
+		return \in_array(\strtoupper($sasl_type), $this->aAuth);
+	}
+
 	/**
 	 * @throws \InvalidArgumentException
 	 * @throws \MailSo\RuntimeException

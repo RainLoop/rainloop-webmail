@@ -4,8 +4,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Nextcloud',
-		VERSION = '2.22',
-		RELEASE  = '2023-03-28',
+		VERSION = '2.23',
+		RELEASE  = '2023-04-11',
 		CATEGORY = 'Integrations',
 		DESCRIPTION = 'Integrate with Nextcloud v20+',
 		REQUIRED = '2.27.0';
@@ -34,6 +34,9 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$this->addTemplate('templates/PopupsNextcloudFiles.html');
 			$this->addTemplate('templates/PopupsNextcloudCalendars.html');
 
+			$this->addHook('imap.before-login', 'oidcLogin');
+			$this->addHook('smtp.before-login', 'oidcLogin');
+			$this->addHook('sieve.before-login', 'oidcLogin');
 		} else {
 			// \OC::$server->getConfig()->getAppValue('snappymail', 'snappymail-no-embed');
 			$this->addHook('main.content-security-policy', 'ContentSecurityPolicy');
@@ -60,6 +63,20 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public static function IsLoggedIn()
 	{
 		return static::IsIntegrated() && \OC::$server->getUserSession()->isLoggedIn();
+	}
+
+	public function oidcLogin(\RainLoop\Model\Account $oAccount, \MailSo\Net\NetClient $oClient, \MailSo\Net\ConnectSettings $oSettings) : void
+	{
+		if ($this->Config()->Get('plugin', 'oidc', false)
+		 && \OC::$server->getSession()->get('is_oidc')
+//		 && $oClient->supportsAuthType('OAUTHBEARER') // v2.28
+		) {
+			$sAccessToken = \OC::$server->getSession()->get('oidc_access_token');
+			if ($sAccessToken) {
+				$oSettings->Password = $sAccessToken;
+				\array_unshift($oSettings->SASLMechanisms, 'OAUTHBEARER');
+			}
+		}
 	}
 
 	/*
@@ -254,6 +271,9 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(true),
 			\RainLoop\Plugins\Property::NewInstance('calendar')->SetLabel('Enable "Put ICS in calendar"')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDefaultValue(false),
+			\RainLoop\Plugins\Property::NewInstance('oidc')->SetLabel('Login with OIDC')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(false)
 		);
