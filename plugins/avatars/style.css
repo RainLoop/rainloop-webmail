@@ -13,12 +13,11 @@
 	width:68px
 }
 */
-#rl-app .messageCheckbox {
-	padding-right:0;
-	white-space:nowrap;
-}
 .messageCheckbox .fromPic {
-	margin: 0 0 -0.4em 0.4em;
+	margin: 0 -0.5em -0.4em 0.4em;
 	height: 1.5em;
 	width: 1.5em;
+}
+[dir="rtl"] .messageCheckbox .fromPic {
+	margin: 0 0.4em -0.4em -0.5em;
 }

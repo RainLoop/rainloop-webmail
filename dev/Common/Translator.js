@@ -13,6 +13,7 @@ const
 		if (rl.I18N) {
 			I18N_DATA = rl.I18N;
 			rl.I18N = null;
+			doc.documentElement.dir = I18N_DATA.LANG_DIR;
 			return 1;
 		}
 	},

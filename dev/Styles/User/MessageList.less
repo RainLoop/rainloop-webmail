@@ -198,6 +198,7 @@
 	&.focused {
 		background-color: rgba(128, 128, 128, 0.1);
 		border-left-color: #ccc;
+		border-right-color: #ccc !important;
 	}
 
 	&.priorityHigh .subjectParent::before {
@@ -213,6 +214,7 @@
 	.messageCheckbox {
 		font-size: 16px;
 		padding: 5px .5em 0;
+		white-space: nowrap;
 	}
 	.checkboxMessage {
 		display: inline;
@@ -293,28 +295,34 @@
 	&.hasUnseenSubMessage {
 		background-color: rgba(255, 255, 64, 0.15);
 		border-left-color: lighten(orange, 30%);
+		border-right-color: lighten(orange, 30%) !important;
 		&.focused {
 			border-left-color: darken(orange, 10%);
+			border-right-color: darken(orange, 10%) !important;
 		}
 	}
 
 	&.unseen {
 		background-color: rgba(255, 255, 64, 0.15);
 		border-left-color: orange;
+		border-right-color: orange !important;
 		.senderParent, .subjectParent {
 			font-weight: bold;
 		}
 
 		&.focused {
 			border-left-color: darken(orange, 10%);
+			border-right-color: darken(orange, 10%) !important;
 		}
 	}
 
 	&.checked {
 		border-left-color: lighten(#398CF2, 10%);
+		border-right-color: lighten(#398CF2, 10%) !important;
 
 		&.focused {
 			border-left-color: darken(#398CF2, 5%);
+			border-right-color: darken(#398CF2, 5%) !important;
 		}
 	}
 
@@ -322,6 +330,7 @@
 		background-color: rgba(140, 200, 255, 0.3);
 		border-bottom-color: rgba(57, 140, 242, 0.2);
 		border-left-color: #398CF2;
+		border-right-color: #398CF2 !important;
 		z-index: 101;
 	}
 
