@@ -38,7 +38,7 @@ trait User
 		$sPassword = $this->GetActionParam('Password', '');
 		$bSignMe = !empty($this->GetActionParam('signMe', 0));
 
-		$this->Logger()->AddSecret($sPassword);
+		$this->logMask($sPassword);
 
 		try {
 			$oAccount = $this->LoginProcess($sEmail, $sPassword, $bSignMe);
@@ -116,17 +116,17 @@ trait User
 		}
 
 		if ($bMainCache) {
-			$this->Logger()->Write('Cacher GC: Begin');
+			$this->logWrite('Cacher GC: Begin');
 			$this->Cacher()->GC(48);
-			$this->Logger()->Write('Cacher GC: End');
+			$this->logWrite('Cacher GC: End');
 
-			$this->Logger()->Write('Storage GC: Begin');
+			$this->logWrite('Storage GC: Begin');
 			$this->StorageProvider()->GC();
-			$this->Logger()->Write('Storage GC: End');
+			$this->logWrite('Storage GC: End');
 		} else if ($bFilesCache) {
-			$this->Logger()->Write('Files GC: Begin');
+			$this->logWrite('Files GC: Begin');
 			$this->FilesProvider()->GC(48);
-			$this->Logger()->Write('Files GC: End');
+			$this->logWrite('Files GC: End');
 		}
 
 		$this->Plugins()->RunHook('service.app-delay-start-end');

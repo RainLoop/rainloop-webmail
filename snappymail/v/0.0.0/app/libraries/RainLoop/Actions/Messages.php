@@ -196,7 +196,7 @@ trait Messages
 						}
 						catch (\Throwable $oException)
 						{
-							$this->Logger()->WriteException($oException, \LOG_ERR);
+							$this->logException($oException, \LOG_ERR);
 						}
 					}
 
@@ -253,7 +253,7 @@ trait Messages
 						}
 						catch (\Throwable $oException)
 						{
-							$this->Logger()->WriteException($oException, \LOG_ERR);
+							$this->logException($oException, \LOG_ERR);
 						}
 					}
 
@@ -297,7 +297,7 @@ trait Messages
 		}
 		catch (\Throwable $oException)
 		{
-			$this->Logger()->WriteException($oException);
+			$this->logException($oException);
 		}
 
 		return $this->TrueResponse();

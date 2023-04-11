@@ -275,10 +275,8 @@ class PdoAddressBook
 						try {
 							$oVCard = \Sabre\VObject\Reader::read($sBody);
 						} catch (\Throwable $oExc) {
-							if ($this->oLogger) {
-								$this->oLogger->WriteException($oExc);
-								$this->oLogger->WriteDump($sBody);
-							}
+							$this->logException($oExc);
+							$this->oLogger && $this->oLogger->WriteDump($sBody);
 						}
 					}
 				}
@@ -341,7 +339,7 @@ class PdoAddressBook
 						}
 					}
 				} catch (\Throwable $oExc) {
-					$this->oLogger && $this->oLogger->WriteException($oExc);
+					$this->logException($oExc);
 				}
 			}
 		}

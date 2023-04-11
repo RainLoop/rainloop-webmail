@@ -20,7 +20,7 @@ class Sync
 		$this->oImapSource->TAG_PREFIX = 'S';
 		$this->oImapTarget->TAG_PREFIX = 'T';
 
-//		$this->oImapTarget->Logger()->Write('Get oImapTarget->FolderList');
+//		$this->oImapTarget->logWrite('Get oImapTarget->FolderList');
 		\SnappyMail\Log::notice('SYNC', 'Get oImapTarget->FolderList');
 		$aTargetFolders = $this->oImapTarget->FolderList($sParent, $sListPattern);
 		if (!$aTargetFolders) {

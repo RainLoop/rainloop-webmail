@@ -299,7 +299,7 @@ trait Folders
 				}
 				catch (\Throwable $oException)
 				{
-					$this->Logger()->WriteException($oException);
+					$this->logException($oException);
 				}
 			}
 		}

@@ -190,18 +190,18 @@ abstract class Account implements \JsonSerializable
 				if (isset($aAccountHash['name'])) {
 					$oAccount->sName = $aAccountHash['name'];
 				}
-				$oActions->Logger()->AddSecret($oAccount->sPassword);
+				$oActions->logMask($oAccount->sPassword);
 				// init smtp user/password
 				if (isset($aAccountHash['smtp'])) {
 					$oAccount->sSmtpLogin = $aAccountHash['smtp']['user'];
 					$oAccount->sSmtpPassword = $aAccountHash['smtp']['pass'];
-					$oActions->Logger()->AddSecret($oAccount->sSmtpPassword);
+					$oActions->logMask($oAccount->sSmtpPassword);
 				}
 				// init proxy user/password
 				if (isset($aAccountHash['proxy'])) {
 					$oAccount->sProxyAuthUser = $aAccountHash['proxy']['user'];
 					$oAccount->sProxyAuthPassword = $aAccountHash['proxy']['pass'];
-					$oActions->Logger()->AddSecret($oAccount->sProxyAuthPassword);
+					$oActions->logMask($oAccount->sProxyAuthPassword);
 				}
 			}
 		}

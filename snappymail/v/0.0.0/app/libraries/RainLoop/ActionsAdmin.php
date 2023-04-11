@@ -105,7 +105,7 @@ class ActionsAdmin extends Actions
 		$sLogin = trim($this->GetActionParam('Login', ''));
 		$sPassword = $this->GetActionParam('Password', '');
 
-		$this->Logger()->AddSecret($sPassword);
+		$this->logMask($sPassword);
 
 		$totp = $this->Config()->Get('security', 'admin_totp', '');
 
@@ -172,11 +172,11 @@ class ActionsAdmin extends Actions
 		$oConfig = $this->Config();
 
 		$sPassword = $this->GetActionParam('Password', '');
-		$this->Logger()->AddSecret($sPassword);
+		$this->logMask($sPassword);
 
 		$sNewPassword = $this->GetActionParam('newPassword', '');
 		if (\strlen($sNewPassword)) {
-			$this->Logger()->AddSecret($sNewPassword);
+			$this->logMask($sNewPassword);
 		}
 
 		$passfile = APP_PRIVATE_DATA.'admin_password.txt';

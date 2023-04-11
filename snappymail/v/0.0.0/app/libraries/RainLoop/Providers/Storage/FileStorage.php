@@ -6,6 +6,8 @@ use RainLoop\Providers\Storage\Enumerations\StorageType;
 
 class FileStorage implements \RainLoop\Providers\Storage\IStorage
 {
+	use \MailSo\Log\Inherit;
+
 	/**
 	 * @var string
 	 */
@@ -16,16 +18,10 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	 */
 	private $bLocal;
 
-	/**
-	 * @var \MailSo\Log\Logger
-	 */
-	protected $oLogger;
-
 	public function __construct(string $sStoragePath, bool $bLocal = false)
 	{
 		$this->sDataPath = \rtrim(\trim($sStoragePath), '\\/');
 		$this->bLocal = $bLocal;
-		$this->oLogger = null;
 	}
 
 	/**
@@ -167,11 +163,6 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 			}
 		}
 		return $sFilePath;
-	}
-
-	public function SetLogger(?\MailSo\Log\Logger $oLogger)
-	{
-		$this->oLogger = $oLogger;
 	}
 
 	public function GC() : void

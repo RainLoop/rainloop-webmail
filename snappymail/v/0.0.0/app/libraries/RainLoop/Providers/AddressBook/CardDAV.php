@@ -36,7 +36,7 @@ trait CardDAV
 		}
 		catch (\Throwable $oException)
 		{
-			$this->oLogger->WriteException($oException);
+			$this->logException($oException);
 		}
 
 		/**
@@ -88,7 +88,7 @@ trait CardDAV
 	{
 		\MailSo\Base\Utils::ResetTimeLimit();
 
-		$this->oLogger->Write($sCmd.' '.$sUrl.(('PUT' === $sCmd || 'POST' === $sCmd) && null !== $mData ? ' ('.\strlen($mData).')' : ''),
+		$this->logWrite($sCmd.' '.$sUrl.(('PUT' === $sCmd || 'POST' === $sCmd) && null !== $mData ? ' ('.\strlen($mData).')' : ''),
 			\LOG_INFO, 'DAV');
 
 		try
@@ -105,7 +105,7 @@ trait CardDAV
 		}
 		catch (\Throwable $oException)
 		{
-			$this->oLogger->WriteException($oException);
+			$this->logException($oException);
 		}
 
 		return null;
@@ -124,7 +124,7 @@ trait CardDAV
 		}
 		catch (\Throwable $oException)
 		{
-			$this->oLogger->WriteException($oException);
+			$this->logException($oException);
 		}
 
 		return null;
@@ -271,7 +271,7 @@ trait CardDAV
 		}
 		catch (\Throwable $oException)
 		{
-			$this->oLogger->WriteException($oException);
+			$this->logException($oException);
 		}
 
 		$bGood = false;
@@ -316,7 +316,7 @@ trait CardDAV
 			'password' => $sPassword
 		);
 
-		$this->oLogger->AddSecret($sPassword);
+		$this->logMask($sPassword);
 
 		if (!empty($sProxy)) {
 			$aSettings['proxy'] = $sProxy;
@@ -327,7 +327,7 @@ trait CardDAV
 
 		$oClient->__UrlPath__ = $aUrl['path'];
 
-		$this->oLogger->Write('DavClient: User: '.$aSettings['userName'].', Url: '.$sUrl, \LOG_INFO, 'DAV');
+		$this->logWrite('DavClient: User: '.$aSettings['userName'].', Url: '.$sUrl, \LOG_INFO, 'DAV');
 
 		return $oClient;
 	}
@@ -398,7 +398,7 @@ trait CardDAV
 
 			$bGood = $sNewPath && $this->checkContactsPath($oClient, $sNewPath);
 			if (!$bGood) {
-				$this->oLogger->Write('Contacts path not found at: '.$sPath, \LOG_INFO, 'DAV');
+				$this->logWrite('Contacts path not found at: '.$sPath, \LOG_INFO, 'DAV');
 			}
 		}
 

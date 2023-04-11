@@ -108,7 +108,7 @@ trait AdminDomains
 			}
 			catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
 			{
-				$this->Logger()->WriteException($oException, \LOG_ERR);
+				$this->logException($oException, \LOG_ERR);
 				$sImapErrorDesc = $oException->getSocketMessage();
 				if (empty($sImapErrorDesc)) {
 					$sImapErrorDesc = $oException->getMessage();
@@ -116,7 +116,7 @@ trait AdminDomains
 			}
 			catch (\Throwable $oException)
 			{
-				$this->Logger()->WriteException($oException, \LOG_ERR);
+				$this->logException($oException, \LOG_ERR);
 				$sImapErrorDesc = $oException->getMessage();
 			}
 
@@ -146,7 +146,7 @@ trait AdminDomains
 				}
 				catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
 				{
-					$this->Logger()->WriteException($oException, \LOG_ERR);
+					$this->logException($oException, \LOG_ERR);
 					$sSmtpErrorDesc = $oException->getSocketMessage();
 					if (empty($sSmtpErrorDesc)) {
 						$sSmtpErrorDesc = $oException->getMessage();
@@ -154,7 +154,7 @@ trait AdminDomains
 				}
 				catch (\Throwable $oException)
 				{
-					$this->Logger()->WriteException($oException, \LOG_ERR);
+					$this->logException($oException, \LOG_ERR);
 					$sSmtpErrorDesc = $oException->getMessage();
 				}
 			}
@@ -179,7 +179,7 @@ trait AdminDomains
 				}
 				catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
 				{
-					$this->Logger()->WriteException($oException, \LOG_ERR);
+					$this->logException($oException, \LOG_ERR);
 					$sSieveErrorDesc = $oException->getSocketMessage();
 					if (empty($sSieveErrorDesc)) {
 						$sSieveErrorDesc = $oException->getMessage();
@@ -187,7 +187,7 @@ trait AdminDomains
 				}
 				catch (\Throwable $oException)
 				{
-					$this->Logger()->WriteException($oException, \LOG_ERR);
+					$this->logException($oException, \LOG_ERR);
 					$sSieveErrorDesc = $oException->getMessage();
 				}
 			} else {

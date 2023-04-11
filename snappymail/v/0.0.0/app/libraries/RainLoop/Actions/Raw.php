@@ -156,7 +156,7 @@ trait Raw
 
 					$self->cacheByKey($sRawKey);
 
-					$self->Logger()->Write(\print_r([
+					$self->logWrite(\print_r([
 						$sFileName,
 						$sContentType,
 						$sFileNameIn,

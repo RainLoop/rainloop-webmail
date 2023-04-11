@@ -154,7 +154,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				$sAuthzid = $this->getResponseValue($this->SendRequestGetResponse('AUTHENTICATE', array($type)), Enumerations\ResponseType::CONTINUATION);
 				$this->sendRaw($SASL->authenticate($sLogin, $sPassword/*, $sAuthzid*/), true);
 				$sChallenge = $SASL->challenge($this->getResponseValue($this->getResponse(), Enumerations\ResponseType::CONTINUATION));
-				$this->oLogger && $this->oLogger->AddSecret($sChallenge);
+				$this->logMask($sChallenge);
 				$this->sendRaw($sChallenge);
 				$oResponse = $this->getResponse();
 				$SASL->verify($this->getResponseValue($oResponse));
@@ -162,16 +162,16 @@ class ImapClient extends \MailSo\Net\NetClient
 			else if ('CRAM-MD5' === $type)
 			{
 				$sChallenge = $this->getResponseValue($this->SendRequestGetResponse('AUTHENTICATE', array($type)), Enumerations\ResponseType::CONTINUATION);
-				$this->oLogger->Write('challenge: '.\base64_decode($sChallenge));
+				$this->logWrite('challenge: '.\base64_decode($sChallenge));
 				$sAuth = $SASL->authenticate($sLogin, $sPassword, $sChallenge);
-				$this->oLogger && $this->oLogger->AddSecret($sAuth);
+				$this->logMask($sAuth);
 				$this->sendRaw($sAuth);
 				$oResponse = $this->getResponse();
 			}
 			else if ('PLAIN' === $type || 'OAUTHBEARER' === $type /*|| 'PLAIN-CLIENTTOKEN' === $type*/)
 			{
 				$sAuth = $SASL->authenticate($sLogin, $sPassword);
-				$this->oLogger && $this->oLogger->AddSecret($sAuth);
+				$this->logMask($sAuth);
 				if ($this->hasCapability('SASL-IR')) {
 					$oResponse = $this->SendRequestGetResponse('AUTHENTICATE', array($type, $sAuth));
 				} else {
@@ -187,8 +187,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				$oR = $oResponse->getLast();
 				if ($oR && Enumerations\ResponseType::CONTINUATION === $oR->ResponseType) {
 					if (!empty($oR->ResponseList[1]) && preg_match('/^[a-zA-Z0-9=+\/]+$/', $oR->ResponseList[1])) {
-						$this->Logger()->Write(\base64_decode($oR->ResponseList[1]),
-							\LOG_WARNING);
+						$this->logWrite(\base64_decode($oR->ResponseList[1]), \LOG_WARNING);
 					}
 					$this->sendRaw('');
 					$oResponse = $this->getResponse();
@@ -200,14 +199,14 @@ class ImapClient extends \MailSo\Net\NetClient
 				$this->sendRaw($SASL->authenticate($sLogin, $sPassword, $sB64), true);
 				$this->getResponse();
 				$sPass = $SASL->challenge(''/*UGFzc3dvcmQ6*/);
-				$this->oLogger && $this->oLogger->AddSecret($sPass);
+				$this->logMask($sPass);
 				$this->sendRaw($sPass);
 				$oResponse = $this->getResponse();
 			}
 			else
 			{
 				$sPassword = $this->EscapeString(\mb_convert_encoding($sPassword, 'ISO-8859-1', 'UTF-8'));
-				$this->oLogger && $this->oLogger->AddSecret($sPassword);
+				$this->logMask($sPassword);
 				$oResponse = $this->SendRequestGetResponse('LOGIN',
 					array(
 						$this->EscapeString($sLogin),

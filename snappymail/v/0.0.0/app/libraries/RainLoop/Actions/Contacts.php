@@ -258,7 +258,7 @@ trait Contacts
 		if (\is_resource($rFile) && $oAddressBookProvider && $oAddressBookProvider->IsActive()) {
 			try
 			{
-				$this->Logger()->Write('Import contacts from vcf');
+				$this->logWrite('Import contacts from vcf');
 				foreach (\RainLoop\Providers\AddressBook\Utils::VcfStreamToContacts($rFile) as $oContact) {
 					if ($oAddressBookProvider->ContactSave($oContact)) {
 						++$iCount;
@@ -267,7 +267,7 @@ trait Contacts
 			}
 			catch (\Throwable $oExc)
 			{
-				$this->Logger()->WriteException($oExc);
+				$this->logException($oExc);
 			}
 		}
 		return $iCount;
@@ -280,7 +280,7 @@ trait Contacts
 		if (\is_resource($rFile) && $oAddressBookProvider && $oAddressBookProvider->IsActive()) {
 			try
 			{
-				$this->Logger()->Write('Import contacts from csv');
+				$this->logWrite('Import contacts from csv');
 				$sDelimiter = ((int)\strpos($sFileStart, ',') > (int)\strpos($sFileStart, ';')) ? ',' : ';';
 				foreach (\RainLoop\Providers\AddressBook\Utils::CsvStreamToContacts($rFile, $sDelimiter) as $oContact) {
 					if ($oAddressBookProvider->ContactSave($oContact)) {
@@ -290,7 +290,7 @@ trait Contacts
 			}
 			catch (\Throwable $oExc)
 			{
-				$this->Logger()->WriteException($oExc);
+				$this->logException($oExc);
 			}
 		}
 		return $iCount;

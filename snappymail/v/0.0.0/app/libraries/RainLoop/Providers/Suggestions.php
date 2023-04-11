@@ -47,7 +47,7 @@ class Suggestions extends \RainLoop\Providers\AbstractProvider
 		}
 		catch (\Throwable $oException)
 		{
-			$this->oLogger && $this->oLogger->WriteException($oException);
+			$this->logException($oException);
 		}
 
 		// Extensions/Plugins
@@ -67,7 +67,7 @@ class Suggestions extends \RainLoop\Providers\AbstractProvider
 					}
 				}
 			} catch (\Throwable $oException) {
-				$this->oLogger && $this->oLogger->WriteException($oException);
+				$this->logException($oException);
 			}
 		}
 

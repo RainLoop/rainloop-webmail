@@ -17,6 +17,8 @@ namespace MailSo\Net;
  */
 abstract class NetClient
 {
+	use \MailSo\Log\Inherit;
+
 	/**
 	 * @var resource
 	 */
@@ -33,11 +35,6 @@ abstract class NetClient
 	private int $iConnectTimeOut = 10;
 
 	private float $iStartConnectTime = 0;
-
-	/**
-	 * @var \MailSo\Log\Logger
-	 */
-	protected $oLogger = null;
 
 	public ConnectSettings $Settings;
 
@@ -295,34 +292,22 @@ abstract class NetClient
 
 	protected function writeLog(string $sDesc, int $iDescType = \LOG_INFO) : void
 	{
-		$this->oLogger && $this->oLogger->Write($sDesc, $iDescType, $this->getLogName());
+		$this->logWrite($sDesc, $iDescType, $this->getLogName());
 	}
 
 	protected function writeLogWithCrlf(string $sDesc) : void
 	{
-		$this->oLogger && $this->oLogger->Write($sDesc, \LOG_INFO, $this->getLogName(), true, true);
+		$this->logWrite($sDesc, \LOG_INFO, $this->getLogName(), true, true);
 	}
 
 	protected function writeLogException(\Throwable $oException, int $iDescType = \LOG_NOTICE, bool $bThrowException = true) : void
 	{
-		if ($this->oLogger) {
-			if ($oException instanceof Exceptions\SocketCanNotConnectToHostException) {
-				$this->oLogger->Write('Socket: ['.$oException->getSocketCode().'] '.$oException->getSocketMessage(), $iDescType, $this->getLogName());
-			}
-			$this->oLogger->WriteException($oException, $iDescType, $this->getLogName());
+		if ($oException instanceof Exceptions\SocketCanNotConnectToHostException) {
+			$this->logWrite('Socket: ['.$oException->getSocketCode().'] '.$oException->getSocketMessage(), $iDescType, $this->getLogName());
 		}
+		$this->logException($oException, $iDescType, $this->getLogName());
 		if ($bThrowException) {
 			throw $oException;
 		}
-	}
-
-	public function SetLogger(\MailSo\Log\Logger $oLogger) : void
-	{
-		$this->oLogger = $oLogger;
-	}
-
-	public function Logger() : ?\MailSo\Log\Logger
-	{
-		return $this->oLogger;
 	}
 }

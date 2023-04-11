@@ -113,8 +113,8 @@ trait Messages
 				if (FetchResponse::isValidImapResponse($oResponse)) {
 					if (FetchResponse::hasUidAndSize($oResponse)) {
 						yield new FetchResponse($oResponse);
-					} else if ($this->oLogger) {
-						$this->oLogger->Write('Skipped Imap Response! ['.$oResponse.']', \LOG_NOTICE);
+					} else {
+						$this->logWrite('Skipped Imap Response! ['.$oResponse.']', \LOG_NOTICE);
 					}
 				}
 			}

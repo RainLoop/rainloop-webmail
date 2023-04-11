@@ -166,7 +166,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 					// RFC 5802
 					$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 234, '');
 					$sChallenge = $SASL->challenge($sResult);
-					$this->oLogger && $this->oLogger->AddSecret($sChallenge);
+					$this->logMask($sChallenge);
 					$SASL->verify($this->sendRequestWithCheck($sChallenge, 235, '', true));
 				} else switch ($type) {
 				// RFC 4616
@@ -174,14 +174,14 @@ class SmtpClient extends \MailSo\Net\NetClient
 				case 'XOAUTH2':
 				case 'OAUTHBEARER':
 					$sAuth = $SASL->authenticate($sLogin, $sPassword);
-					$this->oLogger && $this->oLogger->AddSecret($sAuth);
+					$this->logMask($sAuth);
 					$this->sendRequestWithCheck($sAuth, 235, '', true);
 					break;
 
 				case 'LOGIN':
 					$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 334, '');
 					$sPassword = $SASL->challenge($sResult);
-					$this->oLogger && $this->oLogger->AddSecret($sPassword);
+					$this->logMask($sPassword);
 					$this->sendRequestWithCheck($sPassword, 235, '', true);
 					break;
 

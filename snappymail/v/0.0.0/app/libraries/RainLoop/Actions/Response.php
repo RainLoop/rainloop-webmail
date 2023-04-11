@@ -60,7 +60,7 @@ trait Response
 			$sErrorMessage = $oException->getCode().' - '.$oException->getMessage();
 		}
 
-		$this->Logger()->WriteException($oException->getPrevious() ?: $oException);
+		$this->logException($oException->getPrevious() ?: $oException);
 
 		return $this->DefaultResponse(false, [
 			'ErrorCode' => $iErrorCode,

@@ -12,6 +12,8 @@ class Actions
 	use Actions\Localization;
 	use Actions\Themes;
 
+	use \MailSo\Log\Inherit;
+
 	const AUTH_MAILTO_TOKEN_KEY = 'smmailtoauth';
 
 	/**
@@ -55,11 +57,6 @@ class Actions
 	 * @var \RainLoop\Plugins\Manager
 	 */
 	protected $oPlugins = null;
-
-	/**
-	 * @var \MailSo\Log\Logger
-	 */
-	protected $oLogger = null;
 
 	/**
 	 * @var \MailSo\Log\Logger
@@ -140,7 +137,7 @@ class Actions
 
 			$oHttp = $this->Http();
 
-			$this->oLogger->Write(
+			$this->logWrite(
 				'[SM:' . APP_VERSION . '][IP:'
 				. $oHttp->GetClientIp($this->oConfig->Get('labs', 'http_client_ip_check_proxy', false))
 				. '][PID:' . (\MailSo\Base\Utils::FunctionCallable('getmypid') ? \getmypid() : 'unknown')
@@ -558,11 +555,6 @@ class Actions
 	public function Plugins(): Plugins\Manager
 	{
 		return $this->oPlugins;
-	}
-
-	public function Logger(): \MailSo\Log\Logger
-	{
-		return $this->oLogger;
 	}
 
 	public function LoggerAuth(): \MailSo\Log\Logger
@@ -1130,7 +1122,7 @@ class Actions
 
 	public function Location(string $sUrl, int $iStatus = 302): void
 	{
-		$this->oLogger->Write("{$iStatus} Location: {$sUrl}");
+		$this->logWrite("{$iStatus} Location: {$sUrl}");
 		\MailSo\Base\Http::Location($sUrl, $iStatus);
 	}
 

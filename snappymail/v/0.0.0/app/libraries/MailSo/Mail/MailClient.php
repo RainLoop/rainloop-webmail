@@ -26,7 +26,7 @@ use MailSo\Mime\Enumerations\Parameter as MimeParameter;
  */
 class MailClient
 {
-	private ?\MailSo\Log\Logger $oLogger = null;
+	use \MailSo\Log\Inherit;
 
 	private \MailSo\Imap\ImapClient $oImapClient;
 
@@ -400,17 +400,13 @@ class MailClient
 				"ThreadsMapSorted/{$sSearch}/{$sFolderName}/{$oMessageCollection->FolderInfo->etag}";
 //				"ThreadsMapSorted/{$sSearch}/{$iThreadLimit}/{$sFolderName}/{$oMessageCollection->FolderInfo->etag}";
 
-			if ($this->oLogger) {
-				$this->oLogger->Write($sSerializedHashKey);
-			}
+			$this->logWrite($sSerializedHashKey);
 
 			$sSerializedUids = $oCacher->Get($sSerializedHashKey);
 			if (!empty($sSerializedUids)) {
 				$aSerializedUids = \json_decode($sSerializedUids, true);
 				if (isset($aSerializedUids['ThreadsUids']) && \is_array($aSerializedUids['ThreadsUids'])) {
-					if ($this->oLogger) {
-						$this->oLogger->Write('Get Serialized Thread UIDS from cache ("'.$sFolderName.'" / '.$sSearch.') [count:'.\count($aSerializedUids['ThreadsUids']).']');
-					}
+					$this->logWrite('Get Serialized Thread UIDS from cache ("'.$sFolderName.'" / '.$sSearch.') [count:'.\count($aSerializedUids['ThreadsUids']).']');
 					return $aSerializedUids['ThreadsUids'];
 				}
 			}
@@ -439,9 +435,7 @@ class MailClient
 				'ThreadsUids' => $aResult
 			)));
 
-			if ($this->oLogger) {
-				$this->oLogger->Write('Save Serialized Thread UIDS to cache ("'.$sFolderName.'" / '.$sSearch.') [count:'.\count($aResult).']');
-			}
+			$this->logWrite('Save Serialized Thread UIDS to cache ("'.$sFolderName.'" / '.$sSearch.') [count:'.\count($aResult).']');
 		}
 
 		return $aResult;
@@ -571,9 +565,7 @@ class MailClient
 					$sFolderHash === $aSerialized['FolderHash'] &&
 					\is_array($aSerialized['Uids'])
 				) {
-					if ($this->oLogger) {
-						$this->oLogger->Write('Get Serialized '.($bReturnUid?'UIDS':'IDS').' from cache ('.$sSerializedLog.') [count:'.\count($aSerialized['Uids']).']');
-					}
+					$this->logWrite('Get Serialized '.($bReturnUid?'UIDS':'IDS').' from cache ('.$sSerializedLog.') [count:'.\count($aSerialized['Uids']).']');
 					return $aSerialized['Uids'];
 				}
 			}
@@ -606,9 +598,7 @@ class MailClient
 				'Uids' => $aResultUids
 			)));
 
-			if ($this->oLogger) {
-				$this->oLogger->Write('Save Serialized '.($bReturnUid?'UIDS':'IDS').' to cache ('.$sSerializedLog.') [count:'.\count($aResultUids).']');
-			}
+			$this->logWrite('Save Serialized '.($bReturnUid?'UIDS':'IDS').' to cache ('.$sSerializedLog.') [count:'.\count($aResultUids).']');
 		}
 
 		return $aResultUids;
@@ -664,9 +654,7 @@ class MailClient
 //			 || (!$this->oImapClient->hasCapability('SORT') && !$this->oImapClient->CapabilityValue('THREAD'))) {
 				// Don't use THREAD for speed
 				$oMessageCollection->Limited = true;
-				if ($this->oLogger) {
-					$this->oLogger->Write('List optimization (count: '.$oInfo->MESSAGES.', limit:'.$message_list_limit.')');
-				}
+				$this->logWrite('List optimization (count: '.$oInfo->MESSAGES.', limit:'.$message_list_limit.')');
 				if (\strlen($sSearch)) {
 					// Don't use SORT for speed
 					$aUids = $this->GetUids($oParams, $sSearch, $oInfo->etag/*, $bUseSort*/);
@@ -746,8 +734,8 @@ class MailClient
 				$aUids = \array_slice($aUids, $oParams->iOffset, $oParams->iLimit);
 				$this->MessageListByRequestIndexOrUids($oMessageCollection, new SequenceSet($aUids), $aAllThreads);
 			}
-		} else if ($this->oLogger) {
-			$this->oLogger->Write('No messages in '.$oMessageCollection->FolderName);
+		} else {
+			$this->logWrite('No messages in '.$oMessageCollection->FolderName);
 		}
 
 		return $oMessageCollection;
@@ -775,7 +763,7 @@ class MailClient
 		}
 
 		if ($bUseListSubscribeStatus && !$this->oImapClient->hasCapability('LIST-EXTENDED')) {
-//			$this->oLogger && $this->oLogger->Write('RFC5258 not supported, using LSUB');
+//			$this->logWrite('RFC5258 not supported, using LSUB');
 //			\SnappyMail\Log::warning('IMAP', 'RFC5258 not supported, using LSUB');
 			try
 			{
@@ -916,7 +904,7 @@ class MailClient
 	/**
 	 * @throws \InvalidArgumentException
 	 */
-	public function SetLogger(\MailSo\Log\Logger $oLogger) : void
+	public function SetLogger(?\MailSo\Log\Logger $oLogger) : void
 	{
 		$this->oLogger = $oLogger;
 		$this->oImapClient->SetLogger($oLogger);

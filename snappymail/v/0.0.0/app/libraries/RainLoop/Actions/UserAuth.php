@@ -32,13 +32,13 @@ trait UserAuth
 		}
 
 		if (!\str_contains($sEmail, '@')) {
-			$this->Logger()->Write('The email address "' . $sEmail . '" is not complete', \LOG_INFO, 'LOGIN');
+			$this->logWrite('The email address "' . $sEmail . '" is not complete', \LOG_INFO, 'LOGIN');
 
 			$bAdded = false;
 
 			if ($this->Config()->Get('login', 'determine_user_domain', false)) {
 				$sUserHost = \trim($this->Http()->GetHost(true, true));
-				$this->Logger()->Write('Determined user domain: ' . $sUserHost, \LOG_INFO, 'LOGIN');
+				$this->logWrite('Determined user domain: ' . $sUserHost, \LOG_INFO, 'LOGIN');
 
 				$aDomainParts = \explode('.', $sUserHost);
 				$iLimit = \min(\count($aDomainParts), 14);
@@ -50,13 +50,13 @@ trait UserAuth
 					$oDomain = $oDomainProvider->Load($sLine, false);
 					if ($oDomain) {
 						$bAdded = true;
-						$this->Logger()->Write('Check "' . $sLine . '": OK (' . $sEmail . ' > ' . $sEmail . '@' . $sLine . ')',
+						$this->logWrite('Check "' . $sLine . '": OK (' . $sEmail . ' > ' . $sEmail . '@' . $sLine . ')',
 							\LOG_INFO, 'LOGIN');
 
 						$sEmail .= '@' . $sLine;
 						break;
 					} else {
-						$this->Logger()->Write('Check "' . $sLine . '": NO', \LOG_INFO, 'LOGIN');
+						$this->logWrite('Check "' . $sLine . '": NO', \LOG_INFO, 'LOGIN');
 					}
 
 					\array_shift($aDomainParts);
@@ -66,17 +66,17 @@ trait UserAuth
 					$oDomain = $oDomainProvider->Load($sUserHost, true);
 					if ($oDomain) {
 						$bAdded = true;
-						$this->Logger()->Write('Check "' . $sUserHost . '" with wildcard: OK (' . $sEmail . ' > ' . $sEmail . '@' . $sUserHost . ')',
+						$this->logWrite('Check "' . $sUserHost . '" with wildcard: OK (' . $sEmail . ' > ' . $sEmail . '@' . $sUserHost . ')',
 							\LOG_INFO, 'LOGIN');
 
 						$sEmail .= '@' . $sUserHost;
 					} else {
-						$this->Logger()->Write('Check "' . $sUserHost . '" with wildcard: NO', \LOG_INFO, 'LOGIN');
+						$this->logWrite('Check "' . $sUserHost . '" with wildcard: NO', \LOG_INFO, 'LOGIN');
 					}
 				}
 
 				if (!$bAdded) {
-					$this->Logger()->Write('Domain was not found!', \LOG_INFO, 'LOGIN');
+					$this->logWrite('Domain was not found!', \LOG_INFO, 'LOGIN');
 				}
 			}
 
@@ -88,12 +88,12 @@ trait UserAuth
 					} else if ('gethostname' === $sDefDomain) {
 						$sDefDomain = \gethostname();
 					}
-					$this->Logger()->Write('Default domain "' . $sDefDomain . '" was used. (' . $sEmail . ' > ' . $sEmail . '@' . $sDefDomain . ')',
+					$this->logWrite('Default domain "' . $sDefDomain . '" was used. (' . $sEmail . ' > ' . $sEmail . '@' . $sDefDomain . ')',
 						\LOG_INFO, 'LOGIN');
 
 					$sEmail .= '@' . $sDefDomain;
 				} else {
-					$this->Logger()->Write('Default domain not configured.', \LOG_INFO, 'LOGIN');
+					$this->logWrite('Default domain not configured.', \LOG_INFO, 'LOGIN');
 				}
 			}
 		}
@@ -105,9 +105,9 @@ trait UserAuth
 			$sLogin = \mb_strtolower($sLogin);
 		}
 
-		$this->Logger()->AddSecret($sPassword);
+		$this->logMask($sPassword);
 		$this->Plugins()->RunHook('login.credentials', array(&$sEmail, &$sLogin, &$sPassword));
-		$this->Logger()->AddSecret($sPassword);
+		$this->logMask($sPassword);
 	}
 
 	/**

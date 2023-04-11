@@ -4,6 +4,8 @@ namespace RainLoop\Common;
 
 abstract class PdoAbstract
 {
+	use \MailSo\Log\Inherit;
+
 	/**
 	 * @var \PDO
 	 */
@@ -20,11 +22,6 @@ abstract class PdoAbstract
 	protected $bSqliteCollate = true;
 
 	/**
-	 * @var \MailSo\Log\Logger
-	 */
-	protected $oLogger;
-
-	/**
 	 * @var string
 	 */
 	protected $sDbType;
@@ -32,11 +29,6 @@ abstract class PdoAbstract
 	public function IsSupported() : bool
 	{
 		return !!\class_exists('PDO');
-	}
-
-	public function SetLogger(?\MailSo\Log\Logger $oLogger)
-	{
-		$this->oLogger = $oLogger;
 	}
 
 	protected function getPdoAccessData() : array
@@ -98,7 +90,7 @@ abstract class PdoAbstract
 //				$bCaseFunc = true;
 //			}
 //		}
-//		$this->oLogger->Write('PDO:'.$sPdoType.($bCaseFunc ? '/SQLITE_NOCASE_UTF8' : ''));
+//		$this->logWrite('PDO:'.$sPdoType.($bCaseFunc ? '/SQLITE_NOCASE_UTF8' : ''));
 
 		$this->oPDO = $oPdo;
 		return $oPdo;

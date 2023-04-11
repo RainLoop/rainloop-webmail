@@ -4,6 +4,8 @@ namespace RainLoop\Plugins;
 
 class Manager
 {
+	use \MailSo\Log\Inherit;
+
 	/**
 	 * @var \RainLoop\Actions
 	 */
@@ -21,14 +23,8 @@ class Manager
 
 	private bool $bIsEnabled;
 
-	/**
-	 * @var \MailSo\Log\Logger
-	 */
-	private $oLogger;
-
 	public function __construct(\RainLoop\Actions $oActions)
 	{
-		$this->oLogger = null;
 		$this->oActions = $oActions;
 
 		$oConfig = $oActions->Config();
@@ -121,8 +117,7 @@ class Manager
 				}
 			}
 		} else {
-			$this->oActions->Logger()->Write('Cannot get installed plugins from '.APP_PLUGINS_PATH,
-				\LOG_ERR);
+			$this->oActions->logWrite('Cannot get installed plugins from '.APP_PLUGINS_PATH, \LOG_ERR);
 		}
 
 		return $aList;
@@ -478,24 +473,13 @@ class Manager
 		return $this->bIsEnabled ? \count($this->aPlugins) : 0;
 	}
 
-	public function SetLogger(\MailSo\Log\Logger $oLogger) : self
-	{
-		$this->oLogger = $oLogger;
-
-		return $this;
-	}
-
 	public function WriteLog(string $sDesc, int $iType = \LOG_INFO) : void
 	{
-		if ($this->oLogger) {
-			$this->oLogger->Write($sDesc, $iType, 'PLUGIN');
-		}
+		$this->logWrite($sDesc, $iType, 'PLUGIN');
 	}
 
 	public function WriteException(string $sDesc, int $iType = \LOG_INFO) : void
 	{
-		if ($this->oLogger) {
-			$this->oLogger->WriteException($sDesc, $iType, 'PLUGIN');
-		}
+		$this->logException($sDesc, $iType, 'PLUGIN');
 	}
 }
