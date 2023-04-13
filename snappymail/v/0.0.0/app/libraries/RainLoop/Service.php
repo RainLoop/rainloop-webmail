@@ -10,8 +10,9 @@ abstract class Service
 	public static function Handle() : bool
 	{
 		static $bOne = null;
-		if (null === $bOne && false === \stripos(\php_sapi_name(), 'cli')) {
-			$bOne = static::RunResult();
+		if (null === $bOne) {
+			$bOne = false === \stripos(\php_sapi_name(), 'cli')
+				&& static::RunResult();
 		}
 
 		return $bOne;
