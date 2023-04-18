@@ -265,8 +265,6 @@ export const
 		}
 
 		tmpl.innerHTML = html
-			// Strip Microsoft comments
-			.replace(/<!--\[if[\s\S]*?-->/gi, '')
 //			.replace(/<pre[^>]*>[\s\S]*?<\/pre>/gi, pre => pre.replace(/\n/g, '\n<br>'))
 			// Not supported by <template> element
 //			.replace(/<!doctype[^>]*>/gi, '')
@@ -280,8 +278,7 @@ export const
 			.trim();
 		html = '';
 
-		// \MailSo\Base\HtmlUtils::ClearComments()
-		// https://github.com/the-djmaze/snappymail/issues/187
+		// Strip all comments
 		const nodeIterator = document.createNodeIterator(tmpl.content, NodeFilter.SHOW_COMMENT);
 		while (nodeIterator.nextNode()) {
 			nodeIterator.referenceNode.remove();
