@@ -94,6 +94,11 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 	}
 
+	public function supportsAuthType(string $sasl_type) : bool
+	{
+		return $this->hasCapability("AUTH={$sasl_type}");
+	}
+
 	/**
 	 * @throws \InvalidArgumentException
 	 * @throws \MailSo\RuntimeException

@@ -35,13 +35,18 @@ class SnappyMailHelper
 	{
 		static::loadApp();
 
+		$oConfig = \RainLoop\Api::Config();
+
+		if (false !== \stripos(\php_sapi_name(), 'cli')) {
+			return;
+		}
+
 		try {
 			$oActions = \RainLoop\Api::Actions();
-			$oConfig = \RainLoop\Api::Config();
 			if (isset($_GET[$oConfig->Get('security', 'admin_panel_key', 'admin')])) {
 				if ($oConfig->Get('security', 'allow_admin_panel', true)
-				 && \OC_User::isAdminUser(\OC::$server->getUserSession()->getUser()->getUID())
-				 && !$oActions->IsAdminLoggined(false)
+				&& \OC_User::isAdminUser(\OC::$server->getUserSession()->getUser()->getUID())
+				&& !$oActions->IsAdminLoggined(false)
 				) {
 					$sRand = \MailSo\Base\Utils::Sha1Rand();
 					if ($oActions->Cacher(null, true)->Set(\RainLoop\KeyPathHelper::SessionAdminKey($sRand), \time())) {
@@ -88,15 +93,15 @@ class SnappyMailHelper
 					}
 				}
 			}
+
+			if ($handle) {
+				\header_remove('Content-Security-Policy');
+				\RainLoop\Service::Handle();
+				// https://github.com/the-djmaze/snappymail/issues/1069
+				exit;
+			}
 		} catch (\Throwable $e) {
 			// Ignore login failure
-		}
-
-		if ($handle) {
-			\header_remove('Content-Security-Policy');
-			\RainLoop\Service::Handle();
-			// https://github.com/the-djmaze/snappymail/issues/1069
-			exit;
 		}
 	}
 

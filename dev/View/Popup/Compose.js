@@ -1355,10 +1355,15 @@ export class ComposePopupView extends AbstractViewPopup {
 
 	async getMessageRequestParams(sSaveFolder, draft)
 	{
+		let Text = this.oEditor.getData().trim(),
+			l = Text.length,
+			hasAttachments = 0;
+
 		// Prepare ComposeAttachmentModel attachments
 		const attachments = {};
 		this.attachments.forEach(item => {
 			if (item?.complete() && item?.tempName() && item?.enabled()) {
+				++hasAttachments;
 				attachments[item.tempName()] = {
 					name: item.fileName(),
 					inline: item.isInline,
@@ -1368,6 +1373,10 @@ export class ComposePopupView extends AbstractViewPopup {
 				};
 			}
 		});
+
+		if (!draft && !l && !hasAttachments) {
+			throw i18n('COMPOSE/ERROR_EMPTY_BODY');
+		}
 
 		const
 			identity = this.currentIdentity(),
@@ -1397,12 +1406,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			encrypt = this.pgpEncrypt() && this.canPgpEncrypt(),
 			isHtml = this.oEditor.isHtml();
 
-		let Text = this.oEditor.getData().trim();
-		if (!draft && !Text.length) {
-			throw i18n('COMPOSE/ERROR_EMPTY_BODY');
-		}
 		if (isHtml) {
-			let l;
 			do {
 				l = Text.length;
 				Text = Text
