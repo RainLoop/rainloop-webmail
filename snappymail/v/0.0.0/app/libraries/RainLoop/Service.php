@@ -11,8 +11,7 @@ abstract class Service
 	{
 		static $bOne = null;
 		if (null === $bOne) {
-			$bOne = false === \stripos(\php_sapi_name(), 'cli')
-				&& static::RunResult();
+			$bOne = static::RunResult();
 		}
 
 		return $bOne;
