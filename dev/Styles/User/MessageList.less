@@ -70,7 +70,7 @@
 
 	.b-footer nav {
 		flex-grow: 1;
-		text-align: right;
+		text-align: var(--right, right);
 	}
 
 	.btn.buttonMoreSearch {
@@ -226,11 +226,7 @@
 		font-size: 11px;
 		white-space: nowrap;
 		min-width: 3.5em;
-		text-align: right;
-	}
-
-	.attachmentParent {
-		margin: 0 10px 0 5px;
+		text-align: var(--right, right);
 	}
 
 	.senderParent, .subjectParent {
@@ -334,8 +330,9 @@
 		z-index: 101;
 	}
 
+	.attachmentParent,
 	.flagParent {
-		padding: 0 10px 0 5px;
+		margin: 0 10px 0 5px;
 	}
 	.flagParent::after {
 		content: '☆'; /*⚐*/

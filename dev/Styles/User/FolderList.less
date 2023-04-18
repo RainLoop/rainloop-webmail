@@ -9,7 +9,7 @@
 
 .focused .b-folders a.focused {
 	background-color: var(--folders-focused-bg-color, #333);
-	border-left-color: #fff;
+	border-color: #fff;
 	color: var(--folders-focused-color, #eee);
 }
 
@@ -21,11 +21,6 @@
 
 	ul {
 		margin: 0;
-	}
-
-	input {
-		margin-left: 4px;
-		width: calc(100% - 8px);
 	}
 
 	.move-action-content-wrapper {
@@ -118,6 +113,7 @@
 			.e-collapsed-sign {
 				cursor: pointer;
 				font-size: 150%;
+				text-indent: 0;
 				vertical-align: inherit;
 			}
 		}
@@ -151,6 +147,7 @@
 		text-shadow: 0 -1px 0 rgba(0,0,0,.25);
 		position: absolute;
 		right: 3px;
+		text-indent: 0;
 	}
 
 	.flag-icon {
@@ -173,16 +170,16 @@
 	}
 
 	li li a {
-		padding-left: @subPadding * 1 + @folderItemPadding;
+		text-indent: 1em;
 	}
 	li li li a {
-		padding-left: @subPadding * 2 + @folderItemPadding;
+		text-indent: 2em;
 	}
 	li li li li a {
-		padding-left: @subPadding * 3 + @folderItemPadding;
+		text-indent: 3em;
 	}
 	li li li li li a {
-		padding-left: @subPadding * 4 + @folderItemPadding;
+		text-indent: 4em;
 	}
 
 /**/
@@ -192,16 +189,16 @@
 
 	&.single-root-inbox {
 		li li a {
-			padding-left: @folderItemPadding;
+			text-indent: 0;
 		}
 		li li li a {
-			padding-left: @subPadding * 1 + @folderItemPadding;
+			text-indent: 1em;
 		}
 		li li li li a {
-			padding-left: @subPadding * 2 + @folderItemPadding;
+			text-indent: 2em;
 		}
 		li li li li li a {
-			padding-left: @subPadding * 3 + @folderItemPadding;
+			text-indent: 3em;
 		}
 	}
 /**/

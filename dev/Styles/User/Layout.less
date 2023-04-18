@@ -87,7 +87,6 @@ html:not(.rl-left-panel-disabled) #rl-left {
 
 .search-input-wrp {
 	position: relative;
-	text-align: right;
 }
 .search-input-wrp a {
 	position: absolute;
@@ -103,7 +102,8 @@ html:not(.rl-left-panel-disabled) #rl-left {
 	}
 }
 #rl-left .search-input-wrp {
-	margin-right: 8px;
+	margin: 0 4px;
+	width: calc(100% - 8px);
 }
 
 html:not(.rl-ctrl-key-pressed) .visible-on-ctrl-btn,

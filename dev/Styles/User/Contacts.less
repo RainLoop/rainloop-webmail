@@ -42,7 +42,7 @@
 
 		.footer-pager {
 			padding: 8px 10px 0 0;
-			text-align: right;
+			text-align: var(--right, right);
 		}
 	}
 
@@ -79,10 +79,10 @@
 
 		margin: 0;
 		border-left: 6px solid #eee;
-		border-bottom: 1px solid var(--border-color, #ddd);
+		border-bottom: 1px solid var(--border-color, #ddd) !important;
 
 		&.focused {
-			border-left-color: #bbb;
+			border-color: #bbb;
 		}
 
 		&.deleted {
@@ -104,20 +104,20 @@
 		}
 
 		&.checked {
-			border-left-color: #69A8F5;
+			border-color: #69A8F5;
 
 			&.focused {
-				border-left-color: darken(#69A8F5, 5%);
+				border-color: darken(#69A8F5, 5%);
 			}
 		}
 
 		&.selected {
 
 			background-color: rgba(140, 200, 255, 0.3);
-			border-left-color: #398CF2;
+			border-color: #398CF2;
 
 			&.focused {
-				border-left-color: darken(#398CF2, 5%);
+				border-color: darken(#398CF2, 5%);
 			}
 		}
 	}
@@ -132,7 +132,7 @@
 	.b-view-content-toolbar {
 		border-top: 1px solid var(--border-color, #ddd);
 		padding: 7px;
-		text-align: right;
+		text-align: var(--right, right);
 
 		.dropdown-menu.right-edge {
 			top: auto;

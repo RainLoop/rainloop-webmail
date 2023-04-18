@@ -18,6 +18,10 @@
 	height: 1.5em;
 	width: 1.5em;
 }
+[dir="rtl"] .messageView .fromPic {
+	float: right;
+	margin: 0 0 0 4px;
+}
 [dir="rtl"] .messageCheckbox .fromPic {
 	margin: 0 0.4em -0.4em -0.5em;
 }
