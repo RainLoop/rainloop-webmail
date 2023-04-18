@@ -531,11 +531,12 @@ export const
 				if (urls_broken.length) {
 					setAttribute('data-x-style-broken-urls', JSON.stringify(urls_broken));
 				}
-
+/*
+				// https://github.com/the-djmaze/snappymail/issues/1082
 				if (11 > pInt(oStyle.fontSize)) {
 					oStyle.removeProperty('font-size');
 				}
-
+*/
 				// Removes background and color
 				// Many e-mails incorrectly only define one, not both
 				// And in dark theme mode this kills the readability
