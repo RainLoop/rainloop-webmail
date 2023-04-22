@@ -231,7 +231,7 @@
 		"BUTTON_MARK_AS_IMPORTANT": "Marquer comme important",
 		"BUTTON_REQUEST_DSN": "Demander un accusé de réception",
 		"BUTTON_REQUIRE_TLS": "Exiger une livraison sécurisée",
-		"ERROR_EMPTY_BODY": "Message body is empty"
+		"ERROR_EMPTY_BODY": "Le corps du message est vide"
 	},
 	"POPUPS_ASK": {
 		"EXIT_ARE_YOU_SURE": "Êtes-vous sûr de vouloir quitter ?",
@@ -440,7 +440,7 @@
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Thèmes",
 		"LABEL_BACKGROUND": "Image de fond",
-		"LABEL_FONTS": "Fonts",
+		"LABEL_FONTS": "Polices de caractères",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Envoyer une image de fond (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Fichier trop volumineux",
 		"ERROR_FILE_TYPE_ERROR": "Type de fichier invalide (JPG et PNG seulement)",
