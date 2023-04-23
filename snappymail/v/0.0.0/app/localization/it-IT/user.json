@@ -20,7 +20,7 @@
 		"MOVE_TO": "Sposta in",
 		"NAME": "Nome",
 		"NONE": "Nessuno",
-		"TO_SPAM": "Sposta messaggio/i nel spam",
+		"TO_SPAM": "Sposta messaggio\/i nel spam",
 		"NOT_SPAM": "Segnala come non spam",
 		"USERNAME": "Nome utente",
 		"PASSWORD": "Password",
@@ -107,8 +107,8 @@
 		"YESTERDAY_AT": "ieri alle %TIME%",
 		"NEW_MESSAGE_NOTIFICATION": "Hai %COUNT% nuovi messaggi!",
 		"QUOTA_SIZE": "Stai usando <strong>%SIZE% (%PROC%%)<\/strong> su <strong>%LIMIT%<\/strong>",
-		"SORT": "Sort",
-		"NO_SORT": "Mail server does not support sorting",
+		"SORT": "Riordina",
+		"NO_SORT": "Il mail server non supporta l'ordinamento",
 		"SORT_DATE_ASC": "Data crescente",
 		"SORT_DATE_DESC": "Data decrescente",
 		"SORT_SIZE_ASC": "Dimensione crescente",
@@ -151,7 +151,7 @@
 		"SPAM_SCORE": "Punteggio Spam",
 		"HAS_VIRUS_WARNING": "AVVISO: rilevato virus",
 		"TAGS": "Tag",
-		"NEW_TAG": "New tag"
+		"NEW_TAG": "Nuovo tag"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Importante",
@@ -164,7 +164,7 @@
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "Avviso di lettura - %SUBJECT%",
-		"BODY": "Questo è un avviso di lettura per la mail che hai inviato a %READ-RECEIPT%.\n\nAttenzione: questa notifica di lettura significa solo che il messaggio è stato visualizzato nel computer del destinatario.\nNon c'è alcuna garanzia che il destinatario abbia letto o capito il contenuto del messaggio.\n"
+		"BODY": "Questo è un avviso di lettura per la mail che hai inviato a %READ-RECEIPT%.\n\nAttenzione: questa notifica di lettura significa solo che il messaggio è stato visualizzato nel computer del destinatario.\nNon c'è alcuna garanzia che il destinatario abbia letto o capito il contenuto del messaggio."
 	},
 	"SUGGESTIONS": {
 		"SEARCHING_DESC": "Cerca..."
@@ -199,7 +199,7 @@
 		"PLACEHOLDER_ENTER_NICK_NAME": "Inserisci il nickname",
 		"LABEL_READ_ONLY": "Sola lettura",
 		"ADD_MENU_LABEL": "Aggiungi",
-		"ADD_MENU_NICKNAME": "Nickname",
+		"ADD_MENU_NICKNAME": "Soprannome",
 		"ADD_MENU_NOTE": "Note",
 		"ADD_MENU_PHONE": "Telefono",
 		"ADD_MENU_URL": "URL",
@@ -218,7 +218,7 @@
 		"DISCARD_UNSAVED_DATA": "Elimino i dati non salvati?",
 		"ATTACH_FILES": "Allega file",
 		"ATTACH_DROP_FILES_DESC": "Trascina i file qui",
-		"REPLY_MESSAGE_TITLE": "%DATETIME%, %EMAIL% wrote",
+		"REPLY_MESSAGE_TITLE": "%DATETIME%, %EMAIL% scrive",
 		"FORWARD_MESSAGE_TOP_TITLE": "------- Messaggio inoltrato -------",
 		"FORWARD_MESSAGE_TOP_SENT": "Inviato il",
 		"EMPTY_TO_ERROR_DESC": "Specifica almeno un destinatario",
@@ -311,14 +311,14 @@
 		"SELECT_TYPE_NOT_EQUAL_TO": "Non uguale a",
 		"SELECT_TYPE_OVER": "Maggiore di",
 		"SELECT_TYPE_UNDER": "Minore di",
-		"SELECT_TYPE_TEXT": "Text",
+		"SELECT_TYPE_TEXT": "Testo",
 		"SELECT_TYPE_RAW": "Raw",
 		"SELECT_MATCH_ANY": "Corrisponde ad una delle seguenti regole",
 		"SELECT_MATCH_ALL": "Corrisponde a tutte le seguenti regole",
 		"MARK_AS_READ_LABEL": "Marca come letto",
 		"REPLY_INTERVAL_LABEL": "Intervallo di risposta (giorni)",
 		"KEEP_LABEL": "Mantieni",
-		"STOP_LABEL": "Stop further processing of rules",
+		"STOP_LABEL": "Interrompi l'utilizzo di ulteriori regole",
 		"VACATION_SUBJECT_LABEL": "Oggetto (opzionale)",
 		"VACATION_MESSAGE_LABEL": "Messaggio",
 		"VACATION_RECIPIENTS_LABEL": "Destinatari (separati da virgola)",
@@ -337,10 +337,10 @@
 		"TITLE_SYSTEM_FOLDERS": "Imposta le cartelle di sistema",
 		"SELECT_CHOOSE_ONE": "Selezionane una",
 		"SELECT_UNUSE_NAME": "Non usarla",
-		"NOTIFICATION_SENT": "Non hai selezionato una cartella di sistema per la posta inviata.\nSe non vuoi salvare i messaggi inviati seleziona \"Non usarla\".\n",
+		"NOTIFICATION_SENT": "Non hai selezionato una cartella di sistema per la posta inviata.\nSe non vuoi salvare i messaggi inviati seleziona \"Non usarla\".",
 		"NOTIFICATION_DRAFTS": "Non hai selezionato una cartella di sistema per le bozze.",
-		"NOTIFICATION_SPAM": "Non hai selezionato una cartella di sistema per i messaggi spam.\nSe li vuoi eliminare permanentemente seleziona \"Non usarla\".\n",
-		"NOTIFICATION_TRASH": "Non hai selezionato una cartella di sistema per il cestino.\nSe non lo vuoi usare (e quindi eliminare i messaggi permanentemente) seleziona \"Non usarla\".\n",
+		"NOTIFICATION_SPAM": "Non hai selezionato una cartella di sistema per i messaggi spam.\nSe li vuoi eliminare permanentemente seleziona \"Non usarla\".",
+		"NOTIFICATION_TRASH": "Non hai selezionato una cartella di sistema per il cestino.\nSe non lo vuoi usare (e quindi eliminare i messaggi permanentemente) seleziona \"Non usarla\".",
 		"NOTIFICATION_ARCHIVE": "Non hai selezionato una cartella di sistema per i messaggi archiviati."
 	},
 	"TITLES": {
@@ -358,7 +358,7 @@
 	},
 	"EDITOR": {
 		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> Testo semplice",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"TEXT_SWITCHER_SOURCE": "HTML <-> Sorgente"
 	},
 	"SETTINGS_LABELS": {
 		"GENERAL": "Generali",
@@ -370,8 +370,8 @@
 		"THEMES": "Temi"
 	},
 	"SETTINGS_FILTERS": {
-		"SIMPLE": "Simple",
-		"ADVANCED": "Advanced",
+		"SIMPLE": "Semplice",
+		"ADVANCED": "Avanzato",
 		"BUTTON_ADD_SCRIPT": "Aggiungi uno script",
 		"SUBNAME_MOVE_TO": "Sposta in \"%FOLDER%\"",
 		"SUBNAME_FORWARD_TO": "Inoltra a \"%EMAIL%\"",
@@ -393,7 +393,7 @@
 		"LAYOUT_NO_SPLIT": "A pagina intera",
 		"LAYOUT_VERTICAL_SPLIT": "Divisione verticale",
 		"LAYOUT_HORIZONTAL_SPLIT": "Divisione orizzontale",
-		"SHOW_NEXT_MESSAGE": "Vai al prossimo messaggio dopo la eliminazione/spostamento dell'attuale",
+		"SHOW_NEXT_MESSAGE": "Vai al prossimo messaggio dopo la eliminazione\/spostamento dell'attuale",
 		"EDITOR": "Editor di testo predefinito",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Testo semplice",
@@ -417,11 +417,11 @@
 		"SOUND_NOTIFICATION": "Notifica sonora",
 		"CHROME_NOTIFICATION_DESC": "Mostra le notifiche in caso di nuovi messaggi",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Bloccate dal browser)",
-		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
-		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
-		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
-		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"COLLAPSE_BLOCKQUOTES": "Nascondi testo quotato",
+		"MAX_QUOTE_LEVEL": "Livelli massimi visibilità testo quotato",
+		"LIST_INLINE_ATTACHMENTS": "Visualizza lista degli allegati in linea",
+		"LIST_SIMPLE_ATTACHMENTS": "Lista semplice allegati",
+		"LIST_MESSAGES_GROUPED": "Lista messaggi raggruppati (quando riordinati per data o mittente)",
 		"EXTERNAL_IMAGES": "External images",
 		"IMAGES_OPTION_ASK": "Chiedi sempre",
 		"IMAGES_OPTION_WHITELIST": "Usa whitelist o chiedi",
@@ -435,7 +435,7 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Indirizzo della rubrica",
 		"LABEL_CONTACTS_SYNC_USER": "Utente",
-		"SYNC_READ": "Read only"
+		"SYNC_READ": "Sola lettura"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Temi",
@@ -462,7 +462,7 @@
 		"HELP_SHOW_HIDE_FOLDER": "Mostra\/nascondi cartella",
 		"HELP_CHECK_FOR_NEW_MESSAGES": "Controlla\/non controlla la presenza di nuovi messaggi",
 		"HIDE_UNSUBSCRIBED": "Nascondi le cartelle non sottoscritte",
-		"UNHIDE_KOLAB_FOLDERS": "Unhide Kolab folders",
+		"UNHIDE_KOLAB_FOLDERS": "Rendi visibili le cartelle Kolab",
 		"TYPE_CALENDAR": "Calendario",
 		"TYPE_CONFIGURATION": "Configurazione",
 		"TYPE_CONTACTS": "Contatti",
@@ -526,8 +526,8 @@
 	},
 	"NOTIFICATIONS": {
 		"REQUEST_ERROR": "Richiesta fallita",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
+		"REQUEST_ABORTED": "Richiesta annullata",
+		"REQUEST_TIMEOUT": "Richiesta scaduta",
 		"INVALID_TOKEN": "Token invalido",
 		"AUTH_ERROR": "Autenticazione fallita",
 		"CONNECTION_ERROR": "Impossibile connettersi al server",
