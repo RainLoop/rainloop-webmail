@@ -24,6 +24,10 @@ export class AdminSettingsContacts extends AbstractViewSettings {
 
 		this.addSettings(['contactsEnable','contactsSync']);
 
+		this.addSetting('contactsMySQLSSLCA');
+		this.addSetting('contactsMySQLSSLVerify');
+		this.addSetting('contactsMySQLSSLCiphers');
+
 		addObservablesTo(this, {
 			testing: false,
 			testContactsSuccess: false,
@@ -92,10 +96,13 @@ export class AdminSettingsContacts extends AbstractViewSettings {
 
 				this.testing(false);
 			}, {
-				contactsPdoType: this.contactsPdoType(),
-				contactsPdoDsn: this.contactsPdoDsn(),
-				contactsPdoUser: this.contactsPdoUser(),
-				contactsPdoPassword: this.contactsPdoPassword()
+				PdoType: this.contactsPdoType(),
+				PdoDsn: this.contactsPdoDsn(),
+				PdoUser: this.contactsPdoUser(),
+				PdoPassword: this.contactsPdoPassword(),
+				MySQLSSLCA: this.contactsMySQLSSLCA(),
+				MySQLSSLVerify: this.contactsMySQLSSLVerify(),
+				MySQLSSLCiphers: this.contactsMySQLSSLCiphers()
 			}
 		);
 	}

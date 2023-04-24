@@ -6,35 +6,20 @@ abstract class PdoAbstract
 {
 	use \MailSo\Log\Inherit;
 
-	/**
-	 * @var \PDO
-	 */
-	protected $oPDO = null;
+	protected ?\PDO $oPDO = null;
 
-	/**
-	 * @var bool
-	 */
-	protected $bExplain = false;
+	protected bool $bExplain = false;
 
-	/**
-	 * @var bool
-	 */
-	protected $bSqliteCollate = true;
+	protected bool $bSqliteCollate = true;
 
-	/**
-	 * @var string
-	 */
-	protected $sDbType;
+	protected string $sDbType;
 
 	public function IsSupported() : bool
 	{
 		return !!\class_exists('PDO');
 	}
 
-	protected function getPdoAccessData() : array
-	{
-		return array('', '', '', '');
-	}
+	abstract protected function getPdoAccessData() : array;
 
 	public function sqliteNoCaseCollationHelper(string $sStr1, string $sStr2) : int
 	{
@@ -64,7 +49,7 @@ abstract class PdoAbstract
 		}
 
 		$sType = $sDsn = $sDbLogin = $sDbPassword = '';
-		list($sType, $sDsn, $sDbLogin, $sDbPassword) = $this->getPdoAccessData();
+		list($sType, $sDsn, $sDbLogin, $sDbPassword, $sSslCa, $bSslVerify, $sSslCiphers) = $this->getPdoAccessData();
 
 		if (!\in_array($sType, static::getAvailableDrivers())) {
 			throw new \Exception('Unknown PDO SQL connection type');
@@ -76,7 +61,24 @@ abstract class PdoAbstract
 
 		$this->sDbType = $sType;
 
-		$oPdo = new \PDO($sDsn, $sDbLogin, $sDbPassword);
+		$options = [];
+		if ('mysql' === $sType) {
+			if ($sSslCa) {
+				$options[\PDO::MYSQL_ATTR_SSL_CA] = $sSslCa;
+			}
+			$options[\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = !empty($bSslVerify);
+			if ($sSslCiphers) {
+				$options[\PDO::MYSQL_ATTR_SSL_CIPHER] = $sSslCiphers;
+			}
+/*
+			$options[\PDO::MYSQL_ATTR_SSL_CAPATH] = '';
+			// mutual (two-way) authentication
+			$options[\PDO::MYSQL_ATTR_SSL_KEY] = '';
+			$options[\PDO::MYSQL_ATTR_SSL_CERT] = '';
+*/
+		}
+
+		$oPdo = new \PDO($sDsn, $sDbLogin, $sDbPassword, $options);
 		$sPdoType = $oPdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
 		$oPdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 

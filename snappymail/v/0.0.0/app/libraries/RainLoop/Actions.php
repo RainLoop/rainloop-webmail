@@ -625,6 +625,7 @@ class Actions
 		$UserLanguageRaw = $this->detectUserLanguage($bAdmin);
 
 		if ($bAdmin) {
+//			$this->AdminAppData($aResult);
 			$aResult['Auth'] = $this->IsAdminLoggined(false);
 			if ($aResult['Auth']) {
 				$aResult['adminLogin'] = (string)$oConfig->Get('security', 'admin_login', '');
@@ -639,11 +640,14 @@ class Actions
 
 				$aResult['contactsEnable'] = (bool)$oConfig->Get('contacts', 'enable', false);
 				$aResult['contactsSync'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
-				$aResult['contactsPdoType'] = Providers\AddressBook\PdoAddressBook::validPdoType($this->oConfig->Get('contacts', 'type', 'sqlite'));
+				$aResult['contactsPdoType'] = Providers\AddressBook\PdoAddressBook::validPdoType($oConfig->Get('contacts', 'type', 'sqlite'));
 				$aResult['contactsPdoDsn'] = (string)$oConfig->Get('contacts', 'pdo_dsn', '');
 				$aResult['contactsPdoType'] = (string)$oConfig->Get('contacts', 'type', '');
 				$aResult['contactsPdoUser'] = (string)$oConfig->Get('contacts', 'pdo_user', '');
 				$aResult['contactsPdoPassword'] = static::APP_DUMMY;
+				$aResult['contactsMySQLSSLCA'] = (string) $oConfig->Get('contacts', 'mysql_ssl_ca', '');
+				$aResult['contactsMySQLSSLVerify'] = !!$oConfig->Get('contacts', 'mysql_ssl_verify', true);
+				$aResult['contactsMySQLSSLCiphers'] = (string) $oConfig->Get('contacts', 'mysql_ssl_ciphers', '');
 				$aResult['contactsSuggestionsLimit'] = (int)$oConfig->Get('contacts', 'suggestions_limit', 20);
 
 				$aResult['faviconUrl'] = $oConfig->Get('webmail', 'favicon_url', '');

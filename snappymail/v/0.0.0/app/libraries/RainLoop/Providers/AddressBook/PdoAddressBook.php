@@ -16,25 +16,19 @@ class PdoAddressBook
 
 	private $iUserID = 0;
 
-	/**
-	 * @var string
-	 */
-	private $sDsn;
+	private string $sDsn;
 
-	/**
-	 * @var string
-	 */
-	private $sDsnType;
+	private string $sDsnType;
 
-	/**
-	 * @var string
-	 */
-	private $sUser;
+	private string $sUser;
 
-	/**
-	 * @var string
-	 */
-	private $sPassword;
+	private string $sPassword;
+
+	private string $sSslCa = '';
+
+	private bool $bSslVerify = true;
+
+	private string $sSslCiphers = '';
 
 	private static $aSearchInFields = [
 		PropertyType::EMAIl,
@@ -69,6 +63,11 @@ class PdoAddressBook
 			$sUser = \trim($oConfig->Get('contacts', 'pdo_user', ''));
 			$sPassword = (string)$oConfig->Get('contacts', 'pdo_password', '');
 			$sDsn = $sDsnType . ':' . \preg_replace('/^[a-z]+:/', '', $sDsn);
+			if ('mysql' === $sDsnType) {
+				$this->sSslCa = \trim($oConfig->Get('contacts', 'mysql_ssl_ca', ''));
+				$this->bSslVerify = !!$oConfig->Get('contacts', 'mysql_ssl_verify', true);
+				$this->sSslCiphers = \trim($oConfig->Get('contacts', 'mysql_ssl_ciphers', ''));
+			}
 		}
 
 		$this->sDsn = $sDsn;
@@ -1308,7 +1307,15 @@ SQLITEINITIAL;
 
 	protected function getPdoAccessData() : array
 	{
-		return array($this->sDsnType, $this->sDsn, $this->sUser, $this->sPassword);
+		$sSslCa = $this->sSslCa;
+		if ($sSslCa && !\is_file($sSslCa)) {
+			$sFile = \APP_PRIVATE_DATA . 'configs/contacts_mysql_ssl_ca.pem';
+//			$sSslCa = (\is_file($sFile) || \file_put_contents($sFile, $sSslCa)) ? $sFile : '';
+			$sSslCa = \file_put_contents($sFile, $sSslCa) ? $sFile : '';
+		}
+		return array($this->sDsnType, $this->sDsn, $this->sUser, $this->sPassword,
+			$sSslCa, $this->bSslVerify, $this->sSslCiphers
+		);
 	}
 
 	protected function getUserId(string $sEmail, bool $bSkipInsert = false, bool $bCache = true) : int

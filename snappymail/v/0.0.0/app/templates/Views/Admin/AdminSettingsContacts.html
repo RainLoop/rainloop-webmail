@@ -64,6 +64,29 @@
 					data-bind="value: contactsPdoPassword, saveTrigger: contactsPdoPasswordTrigger">
 			</div>
 		</div>
+
+		<div data-bind="visible: 'mysql' === contactsPdoType()">
+			<div class="control-group">
+				<label>SSL CA</label>
+				<div>
+					<textarea placeholder="PEM formatted" data-bind="value: contactsMySQLSSLCA, saveTrigger: contactsMySQLSSLCATrigger"></textarea>
+				</div>
+			</div>
+			<div class="control-group">
+				<label></label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: { value: contactsMySQLSSLVerify, label: 'VERIFY SERVER CERT' }
+				}"></div>
+			</div>
+			<div class="control-group">
+				<label>SSL CIPHER</label>
+				<div>
+					<input type="text" placeholder="HIGH" data-bind="value: contactsMySQLSSLCiphers, saveTrigger: contactsMySQLSSLCiphersTrigger">
+				</div>
+			</div>
+		</div>
+
 		<div class="control-group">
 			<label></label>
 			<a class="btn" data-bind="command: testContactsCommand, css: { 'btn-success': testContactsSuccess, 'btn-danger': testContactsError }">

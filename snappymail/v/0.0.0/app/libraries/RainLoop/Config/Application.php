@@ -189,6 +189,9 @@ Warning: only enable when server does not do this, else double compression error
 				'pdo_dsn'           => array('host=127.0.0.1;port=3306;dbname=snappymail'),
 				'pdo_user'          => array('root'),
 				'pdo_password'      => array(''),
+				'mysql_ssl_ca'      => array('', 'PEM format certificate'),
+				'mysql_ssl_verify'  => array(true),
+				'mysql_ssl_ciphers' => array('', 'HIGH'),
 				'suggestions_limit' => array(20)
 			),
 

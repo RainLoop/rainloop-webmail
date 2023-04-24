@@ -73,6 +73,9 @@ class ActionsAdmin extends Actions
 		$this->setConfigFromParams($oConfig, 'contactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
 		$this->setConfigFromParams($oConfig, 'contactsPdoUser', 'contacts', 'pdo_user', 'string');
 		$this->setConfigFromParams($oConfig, 'contactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
+		$this->setConfigFromParams($oConfig, 'contactsMySQLSSLCA', 'contacts', 'mysql_ssl_ca', 'string');
+		$this->setConfigFromParams($oConfig, 'contactsMySQLSSLVerify', 'contacts', 'mysql_ssl_verify', 'bool');
+		$this->setConfigFromParams($oConfig, 'contactsMySQLSSLCiphers', 'contacts', 'mysql_ssl_ciphers', 'string');
 		$this->setConfigFromParams($oConfig, 'contactsSuggestionsLimit', 'contacts', 'suggestions_limit', 'int');
 		$this->setConfigFromParams($oConfig, 'contactsPdoType', 'contacts', 'type', 'string', function ($sType) use ($self) {
 			return Providers\AddressBook\PdoAddressBook::validPdoType($sType);
@@ -141,12 +144,15 @@ class ActionsAdmin extends Actions
 		$this->IsAdminLoggined();
 
 		$oConfig = $this->Config();
-		$this->setConfigFromParams($oConfig, 'contactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
-		$this->setConfigFromParams($oConfig, 'contactsPdoUser', 'contacts', 'pdo_user', 'string');
-		$this->setConfigFromParams($oConfig, 'contactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
-		$this->setConfigFromParams($oConfig, 'contactsPdoType', 'contacts', 'type', 'string', function ($sType) {
+		$this->setConfigFromParams($oConfig, 'PdoDsn', 'contacts', 'pdo_dsn', 'string');
+		$this->setConfigFromParams($oConfig, 'PdoUser', 'contacts', 'pdo_user', 'string');
+		$this->setConfigFromParams($oConfig, 'PdoPassword', 'contacts', 'pdo_password', 'dummy');
+		$this->setConfigFromParams($oConfig, 'PdoType', 'contacts', 'type', 'string', function ($sType) {
 			return Providers\AddressBook\PdoAddressBook::validPdoType($sType);
 		});
+		$this->setConfigFromParams($oConfig, 'MySQLSSLCA', 'contacts', 'mysql_ssl_ca', 'string');
+		$this->setConfigFromParams($oConfig, 'MySQLSSLVerify', 'contacts', 'mysql_ssl_verify', 'bool');
+		$this->setConfigFromParams($oConfig, 'MySQLSSLCiphers', 'contacts', 'mysql_ssl_ciphers', 'string');
 
 		$sTestMessage = '';
 		try {
@@ -322,6 +328,55 @@ class ActionsAdmin extends Actions
 		);
 		return $this->DefaultResponse($QR->__toString());
 	}
+
+/*
+	public function AdminAppData(array &$aResult): void
+	{
+		$oConfig = $this->oConfig;
+		$aResult['Auth'] = $this->IsAdminLoggined(false);
+		if ($aResult['Auth']) {
+			$aResult['adminLogin'] = (string)$oConfig->Get('security', 'admin_login', '');
+			$aResult['adminTOTP'] = (string)$oConfig->Get('security', 'admin_totp', '');
+			$aResult['pluginsEnable'] = (bool)$oConfig->Get('plugins', 'enable', false);
+
+			$aResult['loginDefaultDomain'] = $oConfig->Get('login', 'default_domain', '');
+			$aResult['determineUserLanguage'] = (bool)$oConfig->Get('login', 'determine_user_language', true);
+			$aResult['determineUserDomain'] = (bool)$oConfig->Get('login', 'determine_user_domain', false);
+
+			$aResult['supportedPdoDrivers'] = \RainLoop\Common\PdoAbstract::getAvailableDrivers();
+
+			$aResult['contactsEnable'] = (bool)$oConfig->Get('contacts', 'enable', false);
+			$aResult['contactsSync'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
+			$aResult['contactsPdoType'] = Providers\AddressBook\PdoAddressBook::validPdoType($oConfig->Get('contacts', 'type', 'sqlite'));
+			$aResult['contactsPdoDsn'] = (string)$oConfig->Get('contacts', 'pdo_dsn', '');
+			$aResult['contactsPdoType'] = (string)$oConfig->Get('contacts', 'type', '');
+			$aResult['contactsPdoUser'] = (string)$oConfig->Get('contacts', 'pdo_user', '');
+			$aResult['contactsPdoPassword'] = static::APP_DUMMY;
+			$aResult['contactsMySQLSSLCA'] = (string) $oConfig->Get('contacts', 'mysql_ssl_ca', '');
+			$aResult['contactsMySQLSSLVerify'] = !!$oConfig->Get('contacts', 'mysql_ssl_verify', true);
+			$aResult['contactsMySQLSSLCiphers'] = (string) $oConfig->Get('contacts', 'mysql_ssl_ciphers', '');
+			$aResult['contactsSuggestionsLimit'] = (int)$oConfig->Get('contacts', 'suggestions_limit', 20);
+
+			$aResult['faviconUrl'] = $oConfig->Get('webmail', 'favicon_url', '');
+
+			$aResult['weakPassword'] = \is_file(APP_PRIVATE_DATA.'admin_password.txt');
+
+			$aResult['System']['languagesAdmin'] = \SnappyMail\L10n::getLanguages(true);
+			$aResult['languageAdmin'] = $this->ValidateLanguage($oConfig->Get('webmail', 'language_admin', 'en'), '', true);
+			$aResult['languageUsers'] = $this->ValidateLanguage($this->detectUserLanguage(true), '', true, true);
+		} else {
+			$passfile = APP_PRIVATE_DATA.'admin_password.txt';
+			$sPassword = $oConfig->Get('security', 'admin_password', '');
+			if (!$sPassword) {
+				$sPassword = \substr(\base64_encode(\random_bytes(16)), 0, 12);
+				Utils::saveFile($passfile, $sPassword . "\n");
+//				\chmod($passfile, 0600);
+				$oConfig->SetPassword($sPassword);
+				$oConfig->Save();
+			}
+		}
+	}
+*/
 
 	private function setAdminAuthToken() : string
 	{
