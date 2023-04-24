@@ -94,8 +94,7 @@ export class AbstractSettingsScreen extends AbstractScreen {
 		let subScreen = this.oCurrentSubScreen;
 		if (subScreen) {
 			subScreen.onHide?.();
-			subScreen.
-			.hidden = true;
+			subScreen.viewModelDom.hidden = true;
 		}
 	}
 
