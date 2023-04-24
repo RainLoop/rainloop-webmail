@@ -25,31 +25,33 @@ export class AbstractSettingsScreen extends AbstractScreen {
 		let settingsScreen = null,
 			viewModelDom = null,
 			RoutedSettingsViewModel = VIEW_MODELS.find(
-				SettingsViewModel => subName === SettingsViewModel.__rlSettingsData.route
+				SettingsViewModel => subName === SettingsViewModel.route
 			);
 
 		if (RoutedSettingsViewModel) {
 //			const vmPlace = elementById('V-SettingsPane') || elementById('V-AdminPane);
-			const vmPlace = this.viewModels[1].__dom;
-			if (RoutedSettingsViewModel.__vm) {
-				settingsScreen = RoutedSettingsViewModel.__vm;
+			const vmPlace = this.viewModels[1].__dom,
+				SettingsViewModelClass = RoutedSettingsViewModel.vmc;
+			if (SettingsViewModelClass.__vm) {
+				settingsScreen = SettingsViewModelClass.__vm;
+				viewModelDom = settingsScreen.viewModelDom;
 			} else if (vmPlace) {
 				viewModelDom = createElement('div',{
-					id: 'V-Settings-' + RoutedSettingsViewModel.name.replace(/(User|Admin)Settings/,''),
+					id: 'V-Settings-' + SettingsViewModelClass.name.replace(/(User|Admin)Settings/,''),
 					hidden: ''
 				})
 				vmPlace.append(viewModelDom);
 
-				settingsScreen = new RoutedSettingsViewModel();
+				settingsScreen = new SettingsViewModelClass();
 				settingsScreen.viewModelDom = viewModelDom;
 
-				RoutedSettingsViewModel.__dom = viewModelDom;
-				RoutedSettingsViewModel.__vm = settingsScreen;
+				SettingsViewModelClass.__dom = viewModelDom;
+				SettingsViewModelClass.__vm = settingsScreen;
 
 				ko.applyBindingAccessorsToNode(
 					viewModelDom,
 					{
-						template: () => ({ name: RoutedSettingsViewModel.__rlSettingsData.template })
+						template: () => ({ name: RoutedSettingsViewModel.template })
 					},
 					settingsScreen
 				);
@@ -69,13 +71,13 @@ export class AbstractSettingsScreen extends AbstractScreen {
 
 					// show
 					settingsScreen.beforeShow?.();
-					i18nToNodes(settingsScreen.viewModelDom);
-					settingsScreen.viewModelDom.hidden = false;
+					i18nToNodes(viewModelDom);
+					viewModelDom.hidden = false;
 					settingsScreen.onShow?.();
 
 					this.menu.forEach(item => {
 						item.selected(
-							item.route === RoutedSettingsViewModel.__rlSettingsData.route
+							item.route === RoutedSettingsViewModel.route
 						);
 					});
 
@@ -92,20 +94,23 @@ export class AbstractSettingsScreen extends AbstractScreen {
 		let subScreen = this.oCurrentSubScreen;
 		if (subScreen) {
 			subScreen.onHide?.();
-			subScreen.viewModelDom.hidden = true;
+			subScreen.
+			.hidden = true;
 		}
 	}
 
 	onBuild() {
-		VIEW_MODELS.forEach(SettingsViewModel => this.menu.push(SettingsViewModel.__rlSettingsData));
+		// TODO: issue on account switch
+		// When current domain has sieve but the new has not, or current has not and the new has
+		// SettingsViewModel.disabled() || this.menu.push()
+		VIEW_MODELS.forEach(SettingsViewModel => this.menu.push(SettingsViewModel));
 	}
 
 	routes() {
 		const DefaultViewModel = VIEW_MODELS.find(
-				SettingsViewModel => SettingsViewModel.__rlSettingsData.isDefault
+				SettingsViewModel => SettingsViewModel.isDefault
 			),
-			defaultRoute =
-				DefaultViewModel ? DefaultViewModel.__rlSettingsData.route : 'general',
+			defaultRoute = DefaultViewModel?.route || 'general',
 			rules = {
 				subname: /^(.*)$/,
 				normalize_: (rquest, vals) => {
@@ -132,13 +137,12 @@ export class AbstractSettingsScreen extends AbstractScreen {
  */
 export function settingsAddViewModel(SettingsViewModelClass, template, labelName, route, isDefault = false) {
 	let name = SettingsViewModelClass.name.replace(/(User|Admin)Settings/, '');
-	SettingsViewModelClass.__rlSettingsData = {
+	VIEW_MODELS.push({
+		vmc: SettingsViewModelClass,
 		label: labelName || 'SETTINGS_LABELS/' + name.toUpperCase(),
 		route: route || name.toLowerCase(),
 		selected: ko.observable(false),
 		template: template || SettingsViewModelClass.name,
 		isDefault: !!isDefault
-	};
-
-	VIEW_MODELS.push(SettingsViewModelClass);
+	});
 }
