@@ -335,10 +335,10 @@
 	},
 	"POPUPS_SYSTEM_FOLDERS": {
 		"TITLE_SYSTEM_FOLDERS": "選取系統資料夾",
-		"SELECT_CHOOSE_ONE": "選擇一項",
+		"SELECT_CHOOSE_ONE": "選取一項",
 		"SELECT_UNUSE_NAME": "不使用",
 		"NOTIFICATION_SENT": "尚未選取「寄件備份」系統資料夾以在寄件後存放郵件。\n如果不希望儲存寄件備份，請選取 [不使用] 選項。\n",
-		"NOTIFICATION_DRAFTS": "尚未選取「草稿」系統資料夾以撰寫時存放草稿。",
+		"NOTIFICATION_DRAFTS": "尚未選取「草稿」系統資料夾以在撰寫時存放草稿。",
 		"NOTIFICATION_SPAM": "尚未選取「垃圾郵件」系統資料夾以存放垃圾郵件。\n如果希望永久刪除郵件，請選取 [不使用] 選項。\n",
 		"NOTIFICATION_TRASH": "尚未選取「垃圾桶」系統資料夾以存放已刪除的郵件。\n如果希望永久刪除郵件，請選取 [不使用] 選項。\n",
 		"NOTIFICATION_ARCHIVE": "尚未選取「封存」系統資料夾以存放封存郵件。\n"
