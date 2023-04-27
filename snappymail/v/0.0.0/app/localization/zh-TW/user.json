@@ -559,7 +559,7 @@
 		"ACCOUNT_ALREADY_EXISTS": "帳戶已經存在",
 		"ACCOUNT_DOES_NOT_EXIST": "帳戶不存在",
 		"ACCOUNT_SWITCH_FAILED": "切換至「%EMAIL%」帳戶時失敗",
-		"MAIL_SERVER_ERROR": "存取郵件伺服器發生錯誤。",
+		"MAIL_SERVER_ERROR": "存取郵件伺服器時發生錯誤。",
 		"INVALID_INPUT_ARGUMENT": "輸入引數無效",
 		"UNKNOWN_ERROR": "未知錯誤"
 	}
