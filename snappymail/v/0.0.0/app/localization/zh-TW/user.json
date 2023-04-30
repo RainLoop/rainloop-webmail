@@ -106,7 +106,7 @@
 		"TODAY_AT": "今天 %TIME%",
 		"YESTERDAY_AT": "昨天 %TIME%",
 		"NEW_MESSAGE_NOTIFICATION": "您有 %COUNT% 封新郵件！",
-		"QUOTA_SIZE": "已使用 <strong>%SIZE% (%PROC%%)<\/strong>/<strong>%LIMIT%<\/strong> 儲存空間",
+		"QUOTA_SIZE": "已使用  <strong>%LIMIT%<\/strong> 中的 <strong>%SIZE% (%PROC%%)<\/strong> 儲存空間",
 		"SORT": "排序",
 		"NO_SORT": "郵件伺服器不支援排序",
 		"SORT_DATE_ASC": "日期遞增",
