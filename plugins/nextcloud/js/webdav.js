@@ -118,6 +118,13 @@ const
 
 	buildTree = (view, parent, items, path) => {
 		if (items.length) {
+			try {
+				// https://github.com/the-djmaze/snappymail/issues/1109
+				let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+				items.sort((a, b) => collator.compare(a.name, b.name));
+			} catch (e) {
+				console.error(e);
+			}
 			items.forEach(item => {
 				if (!item.isFile) {
 					let li = document.createElement('li'),
