@@ -435,10 +435,10 @@ class Manager
 					$aPLang = [];
 
 					// First get english
-					if (\is_file("{$sPath}en.ini")) {
-						$aPLang = \parse_ini_file("{$sPath}en.ini", true);
-					} else if (\is_file("{$sPath}en.json")) {
+					if (\is_file("{$sPath}en.json")) {
 						$aPLang = \json_decode(\file_get_contents("{$sPath}en.json"), true);
+					} else if (\is_file("{$sPath}en.ini")) {
+						$aPLang = \parse_ini_file("{$sPath}en.ini", true);
 					}
 					if ($aPLang) {
 						$aLang = \array_replace_recursive($aLang, $aPLang);
@@ -447,12 +447,15 @@ class Manager
 					// Now get native
 					if ('en' !== $sLang) {
 						$aPLang = [];
-						if (\is_file("{$sPath}{$sLang}.ini")) {
-							$aPLang = \parse_ini_file("{$sPath}{$sLang}.ini", true);
-						} else if (\is_file($sPath.\strtr($sLang,'-','_').'.ini')) {
-							$aPLang = \parse_ini_file($sPath.\strtr($sLang,'-','_').'.ini', true);
-						} else if (\is_file("{$sPath}{$sLang}.json")) {
+						if (\is_file("{$sPath}{$sLang}.json")) {
 							$aPLang = \json_decode(\file_get_contents("{$sPath}{$sLang}.json"), true);
+						} else {
+							if (!\is_file("{$sPath}{$sLang}.ini")) {
+								$sLang = \strtr($sLang, '-', '_');
+							}
+							if (\is_file("{$sPath}{$sLang}.ini")) {
+								$aPLang = \parse_ini_file("{$sPath}{$sLang}.ini", true);
+							}
 						}
 						if ($aPLang) {
 							$aLang = \array_replace_recursive($aLang, $aPLang);
