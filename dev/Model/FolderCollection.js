@@ -445,16 +445,18 @@ export class FolderModel extends AbstractModel {
 				return name;
 			},
 
-			manageFolderSystemName: () => {
+			nameInfo: () => {
 				if (this.isSystemFolder()) {
 					translateTrigger();
 					let suffix = getSystemFolderName(this.type(), getKolabFolderName(this.kolabType()));
 					if (this.name() !== suffix && 'inbox' !== suffix.toLowerCase()) {
-						return '(' + suffix + ')';
+						return ' (' + suffix + ')';
 					}
 				}
 				return '';
 			},
+
+			detailedName: () => this.name() + ' ' + this.nameInfo(),
 
 			hasSubscribedUnreadMessagesSubfolders: () =>
 				!!this.subFolders().find(
