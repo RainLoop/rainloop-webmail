@@ -173,7 +173,7 @@ trait Messages
 	{
 		$this->writeLog('Write to connection stream', \LOG_INFO);
 
-		\MailSo\Base\Utils::MultipleStreamWriter($rMessageStream, array($this->ConnectionResource()));
+		\MailSo\Base\Utils::WriteStream($rMessageStream, $this->ConnectionResource());
 
 		$this->sendRaw('');
 		$oResponses = $this->getResponse();

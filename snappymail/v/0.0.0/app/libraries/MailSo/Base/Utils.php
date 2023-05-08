@@ -609,52 +609,44 @@ abstract class Utils
 
 	/**
 	 * @param resource $rRead
+	 * @param resource $rWrite
 	 */
-	public static function MultipleStreamWriter($rRead, array $aWrite, int $iBufferLen = 8192, bool $bResetTimeLimit = true, bool $bFixCrLf = false, bool $bRewindOnComplete = false) : int
+	public static function WriteStream($rRead, $rWrite, int $iBufferLen = 8192, bool $bFixCrLf = false, bool $bRewindOnComplete = false) : int
 	{
-		$mResult = false;
-		if (\is_resource($rRead) && \count($aWrite)) {
-			$mResult = 0;
-			while (!\feof($rRead)) {
-				$sBuffer = \fread($rRead, $iBufferLen);
-				if (false === $sBuffer) {
-					$mResult = false;
-					break;
-				}
-
-				if ('' === $sBuffer) {
-					break;
-				}
-
-				if ($bFixCrLf) {
-					$sBuffer = \str_replace("\n", "\r\n", \str_replace("\r", '', $sBuffer));
-				}
-
-				$mResult += \strlen($sBuffer);
-
-				foreach ($aWrite as $rWriteStream) {
-					$mWriteResult = \fwrite($rWriteStream, $sBuffer);
-					if (false === $mWriteResult) {
-						$mResult = false;
-						break 2;
-					}
-				}
-
-				if ($bResetTimeLimit) {
-					static::ResetTimeLimit();
-				}
-			}
+		if (!\is_resource($rRead) || !\is_resource($rWrite)) {
+			return -1;
 		}
 
-		if ($mResult && $bRewindOnComplete) {
-			foreach ($aWrite as $rWriteStream) {
-				if (\is_resource($rWriteStream)) {
-					\rewind($rWriteStream);
-				}
+		$iResult = 0;
+
+		while (!\feof($rRead)) {
+			$sBuffer = \fread($rRead, $iBufferLen);
+			if (false === $sBuffer) {
+				return -1;
 			}
+
+			if ('' === $sBuffer) {
+				break;
+			}
+
+			if ($bFixCrLf) {
+				$sBuffer = \str_replace("\n", "\r\n", \str_replace("\r", '', $sBuffer));
+			}
+
+			$iResult += \strlen($sBuffer);
+
+			if (false === \fwrite($rWrite, $sBuffer)) {
+				return -1;
+			}
+
+			static::ResetTimeLimit();
 		}
 
-		return $mResult;
+		if ($bRewindOnComplete) {
+			\rewind($rWrite);
+		}
+
+		return $iResult;
 	}
 
 	public static function Utf7ModifiedToUtf8(string $sStr) : string

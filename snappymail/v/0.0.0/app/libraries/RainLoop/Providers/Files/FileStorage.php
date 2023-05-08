@@ -28,12 +28,10 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 	public function PutFile(\RainLoop\Model\Account $oAccount, string $sKey, /*resource*/ $rSource) : bool
 	{
 		$bResult = false;
-		if ($rSource)
-		{
+		if ($rSource) {
 			$rOpenOutput = \fopen($this->generateFullFileName($oAccount, $sKey, true), 'w+b');
-			if ($rOpenOutput)
-			{
-				$bResult = (false !== \MailSo\Base\Utils::MultipleStreamWriter($rSource, array($rOpenOutput)));
+			if ($rOpenOutput) {
+				$bResult = (false !== \MailSo\Base\Utils::WriteStream($rSource, $rOpenOutput));
 				\fclose($rOpenOutput);
 			}
 		}

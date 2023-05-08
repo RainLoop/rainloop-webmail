@@ -113,8 +113,7 @@ trait Messages
 		if ($oMessage) {
 			$rMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
 
-			$iMessageStreamSize = \MailSo\Base\Utils::MultipleStreamWriter(
-				$oMessage->ToStream(false), array($rMessageStream), 8192, true, true);
+			$iMessageStreamSize = \MailSo\Base\Utils::WriteStream($oMessage->ToStream(false), $rMessageStream, 8192, true);
 
 			if (false !== $iMessageStreamSize) {
 				$sMessageId = $oMessage->MessageId();
@@ -168,8 +167,9 @@ trait Messages
 			if ($oMessage) {
 				$rMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
 
-				$iMessageStreamSize = \MailSo\Base\Utils::MultipleStreamWriter(
-					$oMessage->ToStream(true), array($rMessageStream), 8192, true, true, true);
+				$iMessageStreamSize = \MailSo\Base\Utils::WriteStream(
+					$oMessage->ToStream(true), $rMessageStream, 8192, true, true
+				);
 
 				if (false !== $iMessageStreamSize) {
 					$bDsn = !empty($this->GetActionParam('dsn', 0));
@@ -217,8 +217,9 @@ trait Messages
 							} else {
 								$rAppendMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
 
-								$iAppendMessageStreamSize = \MailSo\Base\Utils::MultipleStreamWriter(
-									$oMessage->ToStream(false), array($rAppendMessageStream), 8192, true, true, true);
+								$iAppendMessageStreamSize = \MailSo\Base\Utils::WriteStream(
+									$oMessage->ToStream(false), $rAppendMessageStream, 8192, true, true
+								);
 
 								$this->Plugins()->RunHook('filter.send-message-stream',
 									array($oAccount, &$rAppendMessageStream, &$iAppendMessageStreamSize));
@@ -317,8 +318,9 @@ trait Messages
 			if ($oMessage) {
 				$rMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
 
-				$iMessageStreamSize = \MailSo\Base\Utils::MultipleStreamWriter(
-					$oMessage->ToStream(true), array($rMessageStream), 8192, true, true, true);
+				$iMessageStreamSize = \MailSo\Base\Utils::WriteStream(
+					$oMessage->ToStream(true), $rMessageStream, 8192, true, true
+				);
 
 				if (false !== $iMessageStreamSize) {
 					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream, $iMessageStreamSize, false);

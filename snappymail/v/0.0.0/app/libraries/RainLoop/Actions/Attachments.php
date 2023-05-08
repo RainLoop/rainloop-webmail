@@ -152,15 +152,12 @@ trait Attachments
 
 				unset($sContentType, $sFileName, $sMimeIndex);
 
-				if (\is_resource($rResource))
-				{
+				if (\is_resource($rResource)) {
 					$sHash = \MailSo\Base\Utils::Sha1Rand($sFileNameIn.'~'.$sContentTypeIn);
 					$rTempResource = $oFileProvider->GetFile($oAccount, $sHash, 'wb+');
 
-					if (\is_resource($rTempResource))
-					{
-						if (false !== \MailSo\Base\Utils::MultipleStreamWriter($rResource, array($rTempResource)))
-						{
+					if (\is_resource($rTempResource)) {
+						if (-1 < \MailSo\Base\Utils::WriteStream($rResource, $rTempResource)) {
 							$sResultHash = $sHash;
 						}
 
