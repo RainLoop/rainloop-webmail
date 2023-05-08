@@ -50,8 +50,11 @@ class Application extends \RainLoop\Config\AbstractConfig
 		if (!$sCipher || !\SnappyMail\Crypt::cipherSupported($sCipher)) {
 			$sCipher && \SnappyMail\Log::warning('Crypt', "OpenSSL no support for cipher '{$sCipher}'");
 			$aCiphers = \SnappyMail\Crypt::listCiphers();
-			$this->Set('security', 'encrypt_cipher', $aCiphers[\array_rand($aCiphers)]);
-			$this->Save();
+			$sCipher2 = $aCiphers ? $aCiphers[\array_rand($aCiphers)] : '';
+			if ($sCipher !== $sCipher2) {
+				$this->Set('security', 'encrypt_cipher', $sCipher2);
+				$this->Save();
+			}
 		}
 
 		return $bResult;
