@@ -72,14 +72,15 @@ computedPaginatorHelper = (koCurrentPage, koPageCount) => {
 		const currentPage = koCurrentPage(),
 			pageCount = koPageCount(),
 			result = [],
+			lang = doc.documentElement.lang,
 			fAdd = (index, push = true, customName = '') => {
-				const data = {
-					current: index === currentPage,
-					name: customName ? customName.toString() : index.toString(),
-					custom: !!customName,
-					title: customName ? index.toString() : '',
-					value: index.toString()
-				};
+				const name = index.toLocaleString(lang),
+					data = {
+						current: index === currentPage,
+						name: customName || name,
+						title: customName ? name : '',
+						value: index
+					};
 
 				push ? result.push(data) : result.unshift(data);
 			};
