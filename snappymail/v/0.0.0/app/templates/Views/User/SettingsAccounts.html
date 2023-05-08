@@ -52,7 +52,7 @@
 	</a>
 	<table class="table table-hover list-table identities-list" data-bind="i18nUpdate: identities">
 		<tbody data-bind="foreach: identities">
-			<tr draggable="true" data-bind="sortableItem: { list: $root.identities, afterMove: $root.accountsAndIdentitiesAfterMove }">
+			<tr draggable="true" data-bind="attr: {'data-identity-id': id}, sortableItem: { list: $root.identities, afterMove: $root.accountsAndIdentitiesAfterMove }">
 				<td>
 					<i class="fontastic drag-handle">⬍</i>
 				</td>
