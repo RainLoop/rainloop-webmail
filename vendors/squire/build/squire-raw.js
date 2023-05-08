@@ -2669,7 +2669,7 @@ class Squire
 				newPath = (anchor && focus) ? (node ? getPath(focus, this._root) : '(selection)') : '';
 				if (this._path !== newPath) {
 					this._path = newPath;
-					this.fireEvent('pathChange', { path: newPath, element: isElement(node) ? node : node.parentElement });
+					this.fireEvent('pathChange', { path: newPath, element: (!node || isElement(node)) ? node : node.parentElement });
 				}
 			}
 			this.fireEvent(range.collapsed ? 'cursor' : 'select', {
