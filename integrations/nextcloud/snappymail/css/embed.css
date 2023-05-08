@@ -116,6 +116,18 @@ a.selectable::after {
 	border: initial !important;
 }
 
+.btn-group > .btn {
+	border-radius: 0;
+}
+.btn-group > .btn:first-child {
+	border-top-left-radius: var(--border-radius-pill, 3px);
+	border-bottom-left-radius: var(--border-radius-pill, 3px);
+}
+.btn-group > .btn:last-child {
+	border-top-right-radius: var(--border-radius-pill, 3px);
+	border-bottom-right-radius: var(--border-radius-pill, 3px);
+}
+
 @media print {
 	#body-user #header {
 		display: none;
