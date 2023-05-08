@@ -20,7 +20,7 @@
 		"MOVE_TO": "Mover para",
 		"NAME": "Nome",
 		"NONE": "Nenhum",
-		"TO_SPAM": "Move message(s) to Spam",
+		"TO_SPAM": "Mover mensagem(ns) para o Spam",
 		"NOT_SPAM": "Não é spam",
 		"USERNAME": "Nome de usuário",
 		"PASSWORD": "Palavra-passe",
@@ -108,7 +108,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "Você tem %COUNT% novas mensagens!",
 		"QUOTA_SIZE": "Está a usar <strong>%SIZE% (%PROC%%)<\/strong> dos <strong>%LIMIT%<\/strong>",
 		"SORT": "Ordenar",
-		"NO_SORT": "Mail server does not support sorting",
+		"NO_SORT": "O servidor de correio não suporta ordenação",
 		"SORT_DATE_ASC": "Data ascendente",
 		"SORT_DATE_DESC": "Data descendente",
 		"SORT_SIZE_ASC": "Tamanho ascendente",
@@ -231,7 +231,7 @@
 		"BUTTON_MARK_AS_IMPORTANT": "Marcar como importante",
 		"BUTTON_REQUEST_DSN": "Pedir um recibo de entrega",
 		"BUTTON_REQUIRE_TLS": "Exigir entrega segura",
-		"ERROR_EMPTY_BODY": "Message body is empty"
+		"ERROR_EMPTY_BODY": "O corpo da mensagem está vazio"
 	},
 	"POPUPS_ASK": {
 		"EXIT_ARE_YOU_SURE": "Quer mesmo sair?",
@@ -393,7 +393,7 @@
 		"LAYOUT_NO_SPLIT": "Sem separação",
 		"LAYOUT_VERTICAL_SPLIT": "Separação vertical",
 		"LAYOUT_HORIZONTAL_SPLIT": "Separação horizontal",
-		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
+		"SHOW_NEXT_MESSAGE": "Mostrar a próxima mensagem quando (re)mover a mensagem atual",
 		"EDITOR": "Editor de texto padrão",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "Texto simples",
