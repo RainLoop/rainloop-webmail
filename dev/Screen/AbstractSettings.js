@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { pString } from 'Common/Utils';
 import { settings } from 'Common/Links';
-import { createElement/*, elementById*/ } from 'Common/Globals';
+import { createElement/*, elementById*/, fireEvent } from 'Common/Globals';
 
 import { AbstractScreen } from 'Knoin/AbstractScreen';
 import { i18nToNodes } from 'Common/Translator';
@@ -44,9 +44,12 @@ export class AbstractSettingsScreen extends AbstractScreen {
 
 				settingsScreen = new SettingsViewModelClass();
 				settingsScreen.viewModelDom = viewModelDom;
+				settingsScreen.viewModelTemplateID = RoutedSettingsViewModel.template;
 
 				SettingsViewModelClass.__dom = viewModelDom;
 				SettingsViewModelClass.__vm = settingsScreen;
+
+				fireEvent('rl-view-model.create', settingsScreen);
 
 				ko.applyBindingAccessorsToNode(
 					viewModelDom,
@@ -57,6 +60,8 @@ export class AbstractSettingsScreen extends AbstractScreen {
 				);
 
 				settingsScreen.onBuild?.(viewModelDom);
+
+				fireEvent('rl-view-model', settingsScreen);
 			} else {
 				console.log('Cannot find sub settings view model position: SettingsSubScreen');
 			}
