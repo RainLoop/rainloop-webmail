@@ -38,7 +38,9 @@
 		"NO": "لا",
 		"INACTIVE": "Inactive",
 		"DEFAULT": "الافتراضي",
-		"HELP": "المساعدة"
+		"HELP": "المساعدة",
+		"TEXT": "النص",
+		"ATTACHMENTS": "الملحقات"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "تسيجيل الدخول",

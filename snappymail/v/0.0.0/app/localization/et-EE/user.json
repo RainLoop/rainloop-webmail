@@ -38,7 +38,9 @@
 		"NO": "Ei",
 		"INACTIVE": "Inactive",
 		"DEFAULT": "vaikimisi",
-		"HELP": "Abi"
+		"HELP": "Abi",
+		"TEXT": "Tekst",
+		"ATTACHMENTS": "Manused"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logi sisse",

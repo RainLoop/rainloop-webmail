@@ -38,7 +38,9 @@
 		"NO": "Nee",
 		"INACTIVE": "Inactief",
 		"DEFAULT": "standaard",
-		"HELP": "Help"
+		"HELP": "Help",
+		"TEXT": "Tekst",
+		"ATTACHMENTS": "Bijlagen"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Inlognaam",

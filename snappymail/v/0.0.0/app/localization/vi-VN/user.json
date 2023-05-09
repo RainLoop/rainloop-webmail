@@ -38,7 +38,9 @@
 		"NO": "Không",
 		"INACTIVE": "Inactive",
 		"DEFAULT": "mặc định",
-		"HELP": "Hỗ trợ"
+		"HELP": "Hỗ trợ",
+		"TEXT": "Nội dung trong mail",
+		"ATTACHMENTS": "Phần đính kèm"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Đăng nhập",

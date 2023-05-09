@@ -38,7 +38,9 @@
 		"NO": "Nei",
 		"INACTIVE": "Inactive",
 		"DEFAULT": "Standard",
-		"HELP": "Hjelp"
+		"HELP": "Hjelp",
+		"TEXT": "Tekst",
+		"ATTACHMENTS": "Vedlegg"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logg inn",

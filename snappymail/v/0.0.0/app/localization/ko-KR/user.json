@@ -38,7 +38,9 @@
 		"NO": "아니요",
 		"INACTIVE": "Inactive",
 		"DEFAULT": "default",
-		"HELP": "도움말"
+		"HELP": "도움말",
+		"TEXT": "본문",
+		"ATTACHMENTS": "첨부파일"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "아이디",

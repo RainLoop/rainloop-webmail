@@ -38,7 +38,9 @@
 		"NO": "否",
 		"INACTIVE": "不生效",
 		"DEFAULT": "默认",
-		"HELP": "帮助"
+		"HELP": "帮助",
+		"TEXT": "内容",
+		"ATTACHMENTS": "附件"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "登录",

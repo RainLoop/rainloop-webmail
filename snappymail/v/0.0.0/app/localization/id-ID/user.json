@@ -38,7 +38,9 @@
 		"NO": "Tidak",
 		"INACTIVE": "Inactive",
 		"DEFAULT": "Bawaan",
-		"HELP": "Bantuan"
+		"HELP": "Bantuan",
+		"TEXT": "Teks",
+		"ATTACHMENTS": "Lampiran"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",

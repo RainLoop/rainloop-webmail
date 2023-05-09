@@ -38,7 +38,9 @@
 		"NO": "Ні",
 		"INACTIVE": "Inactive",
 		"DEFAULT": "default",
-		"HELP": "Допомога"
+		"HELP": "Допомога",
+		"TEXT": "Текст",
+		"ATTACHMENTS": "Файли"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Логін",

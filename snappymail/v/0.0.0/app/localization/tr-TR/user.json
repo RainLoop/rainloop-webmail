@@ -38,7 +38,9 @@
 		"NO": "Hayır",
 		"INACTIVE": "Inactive",
 		"DEFAULT": "default",
-		"HELP": "Yardım"
+		"HELP": "Yardım",
+		"TEXT": "Metin",
+		"ATTACHMENTS": "Ekler"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Giriş",

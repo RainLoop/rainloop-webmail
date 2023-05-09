@@ -38,7 +38,9 @@
 		"NO": "Όχι",
 		"INACTIVE": "Inactive",
 		"DEFAULT": "default",
-		"HELP": "Βοήθεια"
+		"HELP": "Βοήθεια",
+		"TEXT": "Κείμενο",
+		"ATTACHMENTS": "Συνημμένα"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Είσοδος",

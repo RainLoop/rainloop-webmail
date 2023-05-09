@@ -38,7 +38,9 @@
 		"NO": "Не",
 		"INACTIVE": "Inactive",
 		"DEFAULT": "по подразбиране",
-		"HELP": "Помощ"
+		"HELP": "Помощ",
+		"TEXT": "Текст",
+		"ATTACHMENTS": "Прикрепени файлове"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Логин",

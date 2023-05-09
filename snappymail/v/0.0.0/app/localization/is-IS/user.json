@@ -38,7 +38,9 @@
 		"NO": "Nei",
 		"INACTIVE": "Inactive",
 		"DEFAULT": "sjálfgefið",
-		"HELP": "Hjálp"
+		"HELP": "Hjálp",
+		"TEXT": "Texti",
+		"ATTACHMENTS": "Viðhengi"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Innskráning",

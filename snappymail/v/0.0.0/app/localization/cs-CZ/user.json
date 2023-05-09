@@ -38,7 +38,9 @@
 		"NO": "Ne",
 		"INACTIVE": "Inactive",
 		"DEFAULT": "výchozí",
-		"HELP": "Nápověda"
+		"HELP": "Nápověda",
+		"TEXT": "Text",
+		"ATTACHMENTS": "Přílohy"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Uživatelské jméno",

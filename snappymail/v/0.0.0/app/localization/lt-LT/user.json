@@ -38,7 +38,9 @@
 		"NO": "Ne",
 		"INACTIVE": "Inactive",
 		"DEFAULT": "numatytasis",
-		"HELP": "Pagalba"
+		"HELP": "Pagalba",
+		"TEXT": "Laiško Tekstas",
+		"ATTACHMENTS": "Priedai"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prisijungimo vardas",

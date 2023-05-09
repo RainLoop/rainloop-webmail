@@ -38,7 +38,9 @@
 		"NO": "Nej",
 		"INACTIVE": "Inactive",
 		"DEFAULT": "standard",
-		"HELP": "Hjælp"
+		"HELP": "Hjælp",
+		"TEXT": "Tekst",
+		"ATTACHMENTS": "Vedhæftninger"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Brugernavn",

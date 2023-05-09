@@ -38,7 +38,9 @@
 		"NO": "Ei",
 		"INACTIVE": "Inactive",
 		"DEFAULT": "oletus",
-		"HELP": "Ohje"
+		"HELP": "Ohje",
+		"TEXT": "Teksti",
+		"ATTACHMENTS": "Liite"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Tunnus",

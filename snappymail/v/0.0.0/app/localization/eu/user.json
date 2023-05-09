@@ -38,7 +38,9 @@
 		"NO": "Ez",
 		"INACTIVE": "Inaktibo",
 		"DEFAULT": "lehenetsia",
-		"HELP": "Laguntza"
+		"HELP": "Laguntza",
+		"TEXT": "Testua",
+		"ATTACHMENTS": "Eranskinak"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",

@@ -38,7 +38,9 @@
 		"NO": "いいえ",
 		"INACTIVE": "Inactive",
 		"DEFAULT": "デフォルト",
-		"HELP": "ヘルプ"
+		"HELP": "ヘルプ",
+		"TEXT": "キーワード",
+		"ATTACHMENTS": "添付ファイル"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ログイン",

@@ -38,7 +38,9 @@
 		"NO": "Nē",
 		"INACTIVE": "Inactive",
 		"DEFAULT": "default",
-		"HELP": "Palīdzība"
+		"HELP": "Palīdzība",
+		"TEXT": "Teksts",
+		"ATTACHMENTS": "Pielikumi"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Ielogoties",

@@ -38,7 +38,9 @@
 		"NO": "No",
 		"INACTIVE": "Inactive",
 		"DEFAULT": "predeterminado",
-		"HELP": "Ayuda"
+		"HELP": "Ayuda",
+		"TEXT": "Texto",
+		"ATTACHMENTS": "Adjuntos"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",

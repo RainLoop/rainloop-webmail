@@ -317,7 +317,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			attachmentsInProcess: () => this.attachments.filter(item => item && !item.complete()),
 			attachmentsInError: () => this.attachments.filter(item => item?.error()),
 
-			attachmentsCount: () => this.attachments.length,
+			attachmentsCount: () => this.attachments().length,
 			attachmentsInErrorCount: () => this.attachmentsInError.length,
 			attachmentsInProcessCount: () => this.attachmentsInProcess.length,
 			isDraftFolderMessage: () => this.draftsFolder() && this.draftUid(),
@@ -389,6 +389,41 @@ export class ComposePopupView extends AbstractViewPopup {
 			attachmentsInProcess: value => {
 				if (this.attachmentsInProcessError() && arrayLength(value)) {
 					this.attachmentsInProcessError(false);
+				}
+			},
+
+			viewArea: value => {
+				if (!this.mailvelope && 'mailvelope' == value) {
+					/**
+					 * Creates an iframe with an editor for a new encrypted mail.
+					 * The iframe will be injected into the container identified by selector.
+					 * https://mailvelope.github.io/mailvelope/Editor.html
+					 */
+					let text = this.oEditor.getData(),
+						encrypted = PgpUserStore.isEncrypted(text),
+						size = SettingsGet('phpUploadSizes')['post_max_size'],
+						quota = pInt(size);
+					switch (size.slice(-1)) {
+						case 'G': quota *= 1024; // fallthrough
+						case 'M': quota *= 1024; // fallthrough
+						case 'K': quota *= 1024;
+					}
+					// Issue: can't select signing key
+//					this.pgpSign(this.pgpSign() || confirm('Sign this message?'));
+					mailvelope.createEditorContainer('#mailvelope-editor', PgpUserStore.mailvelopeKeyring, {
+						// https://mailvelope.github.io/mailvelope/global.html#EditorContainerOptions
+						quota: Math.max(2048, (quota / 1024)) - 48, // (text + attachments) limit in kilobytes
+						armoredDraft: encrypted ? text : '', // Ascii Armored PGP Text Block
+						predefinedText: encrypted ? '' : (this.oEditor.isHtml() ? htmlToPlain(text) : text),
+/*
+						quotedMail: '', // Ascii Armored PGP Text Block mail that should be quoted
+						quotedMailIndent: true, // if true the quoted mail will be indented (default: true)
+						quotedMailHeader: '', // header to be added before the quoted mail
+						keepAttachments: false, // add attachments of quotedMail to editor (default: false)
+						// Issue: can't select signing key
+						signMsg: this.pgpSign()
+*/
+					}).then(editor => this.mailvelope = editor);
 				}
 			}
 		});
@@ -1276,41 +1311,6 @@ export class ComposePopupView extends AbstractViewPopup {
 		this.dropMailvelope();
 	}
 
-	mailvelopeArea() {
-		if (!this.mailvelope) {
-			/**
-			 * Creates an iframe with an editor for a new encrypted mail.
-			 * The iframe will be injected into the container identified by selector.
-			 * https://mailvelope.github.io/mailvelope/Editor.html
-			 */
-			let text = this.oEditor.getData(),
-				encrypted = PgpUserStore.isEncrypted(text),
-				size = SettingsGet('phpUploadSizes')['post_max_size'],
-				quota = pInt(size);
-			switch (size.slice(-1)) {
-				case 'G': quota *= 1024; // fallthrough
-				case 'M': quota *= 1024; // fallthrough
-				case 'K': quota *= 1024;
-			}
-			// Issue: can't select signing key
-//			this.pgpSign(this.pgpSign() || confirm('Sign this message?'));
-			mailvelope.createEditorContainer('#mailvelope-editor', PgpUserStore.mailvelopeKeyring, {
-				// https://mailvelope.github.io/mailvelope/global.html#EditorContainerOptions
-				quota: Math.max(2048, (quota / 1024)) - 48, // (text + attachments) limit in kilobytes
-				armoredDraft: encrypted ? text : '', // Ascii Armored PGP Text Block
-				predefinedText: encrypted ? '' : (this.oEditor.isHtml() ? htmlToPlain(text) : text),
-/*
-				quotedMail: '', // Ascii Armored PGP Text Block mail that should be quoted
-				quotedMailIndent: true, // if true the quoted mail will be indented (default: true)
-				quotedMailHeader: '', // header to be added before the quoted mail
-				keepAttachments: false, // add attachments of quotedMail to editor (default: false)
-				// Issue: can't select signing key
-				signMsg: this.pgpSign()
-*/
-			}).then(editor => this.mailvelope = editor);
-		}
-		this.viewArea('mailvelope');
-	}
 	attachmentsArea() {
 		this.viewArea('attachments');
 	}

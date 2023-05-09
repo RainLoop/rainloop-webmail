@@ -38,7 +38,9 @@
 		"NO": "否",
 		"INACTIVE": "閒置中",
 		"DEFAULT": "預設",
-		"HELP": "協助"
+		"HELP": "協助",
+		"TEXT": "內文",
+		"ATTACHMENTS": "附件"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "登入",
