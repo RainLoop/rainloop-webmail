@@ -1356,7 +1356,7 @@ export class ComposePopupView extends AbstractViewPopup {
 	async getMessageRequestParams(sSaveFolder, draft)
 	{
 		let Text = this.oEditor.getData().trim(),
-			l = Text.length,
+			l,
 			hasAttachments = 0;
 
 		// Prepare ComposeAttachmentModel attachments
@@ -1373,10 +1373,6 @@ export class ComposePopupView extends AbstractViewPopup {
 				};
 			}
 		});
-
-		if (!draft && !l && !hasAttachments) {
-			throw i18n('COMPOSE/ERROR_EMPTY_BODY');
-		}
 
 		const
 			identity = this.currentIdentity(),
@@ -1426,6 +1422,9 @@ export class ComposePopupView extends AbstractViewPopup {
 				? await this.mailvelope.createDraft()
 				: await this.mailvelope.encrypt(recipients);
 		} else if (sign || encrypt) {
+			if (!draft && !hasAttachments && !Text.length) {
+				throw i18n('COMPOSE/ERROR_EMPTY_BODY');
+			}
 			let data = new MimePart;
 			data.headers['Content-Type'] = 'text/'+(isHtml?'html':'plain')+'; charset="utf-8"';
 			data.headers['Content-Transfer-Encoding'] = 'base64';
