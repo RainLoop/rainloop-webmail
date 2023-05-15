@@ -25,14 +25,59 @@ class Logger extends \SplFixedArray
 
 	private bool $bShowSecrets = false;
 
+	private static $SIGNALS = [
+		'SIGABRT',
+		'SIGALRM',
+		'SIGBABY',
+		'SIGBUS',
+		'SIGCHLD',
+		'SIGCLD',
+		'SIGCONT',
+		'SIGFPE',
+		'SIGHUP',
+		'SIGILL',
+//		'SIGINT',
+		'SIGIO',
+		'SIGIOT',
+		'SIGKILL',
+		'SIGPIPE',
+		'SIGPOLL',
+		'SIGPROF',
+		'SIGPWR',
+		'SIGQUIT',
+		'SIGSEGV',
+		'SIGSTKFLT',
+		'SIGSTOP',
+		'SIGSYS',
+		'SIGTERM',
+		'SIGTRAP',
+		'SIGTSTP',
+		'SIGTTIN',
+		'SIGTTOU',
+		'SIGURG',
+		'SIGUSR1',
+		'SIGUSR2',
+		'SIGVTALRM',
+		'SIGWINCH',
+		'SIGXCPU',
+		'SIGXFSZ'
+	];
+
 	function __construct(bool $bMainLogger = false)
 	{
 		parent::__construct();
 
 		if ($bMainLogger) {
-			\set_error_handler(array($this, '__phpErrorHandler'));
-			\set_exception_handler(array($this, '__phpExceptionHandler'));
-			\register_shutdown_function(array($this, '__loggerShutDown'));
+			\set_error_handler([$this, '__phpErrorHandler']);
+			\set_exception_handler([$this, '__phpExceptionHandler']);
+			\register_shutdown_function([$this, '__loggerShutDown']);
+
+			if (\is_callable('pcntl_signal')) {
+				\pcntl_async_signals(true);
+				foreach (static::$SIGNALS as $SIGNAL) {
+					\pcntl_signal(\constant($SIGNAL), [$this, 'signalHandler']);
+				}
+			}
 		}
 	}
 
@@ -150,8 +195,25 @@ class Logger extends \SplFixedArray
 	public function __loggerShutDown() : void
 	{
 		if ($this->bUsed) {
+			$error = \error_get_last();
+			$error && $this->Write('Last error: '.\json_encode($error));
 			$this->Write('Memory peak usage: '.\MailSo\Base\Utils::FormatFileSize(\memory_get_peak_usage(true), 2));
 			$this->Write('Time delta: '.(\microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']));
+		}
+	}
+
+	public function signalHandler($signo)
+	{
+		if (\SIGTERM == $signo) {
+			exit;
+		}
+		if ($this->bUsed) {
+			foreach (static::$SIGNALS as $SIGNAL) {
+				if (\constant($SIGNAL) == $signo) {
+					$this->Write("Caught {$SIGNAL}");
+					break;
+				}
+			}
 		}
 	}
 
@@ -164,8 +226,7 @@ class Logger extends \SplFixedArray
 
 		$this->bUsed = true;
 
-		if ($bSearchSecretWords && !$this->bShowSecrets && $this->aSecretWords)
-		{
+		if ($bSearchSecretWords && !$this->bShowSecrets && $this->aSecretWords) {
 			$sDesc = \str_replace($this->aSecretWords, '*******', $sDesc);
 		}
 
