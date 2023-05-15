@@ -289,6 +289,9 @@ export const
 			+ (0 < bqLevel ? ',' + (new Array(1 + bqLevel).fill('blockquote').join(' ')) : '')
 		).forEach(oElement => oElement.remove());
 
+		// https://github.com/the-djmaze/snappymail/issues/1125
+		tmpl.content.querySelectorAll('form,button').forEach(oElement => replaceWithChildren(oElement));
+
 		[...tmpl.content.querySelectorAll('*')].forEach(oElement => {
 			const name = oElement.tagName,
 				oStyle = oElement.style;
@@ -394,7 +397,7 @@ export const
 			}
 
 //			if (['CENTER','FORM'].includes(name)) {
-			if ('FORM' === name || 'O:P' === name || (nonEmptyTags.includes(name) && ('' == oElement.textContent.trim()))) {
+			if ('O:P' === name || (nonEmptyTags.includes(name) && ('' == oElement.textContent.trim()))) {
 				('A' !== name || !oElement.querySelector('IMG')) && replaceWithChildren(oElement);
 				return;
 			}
