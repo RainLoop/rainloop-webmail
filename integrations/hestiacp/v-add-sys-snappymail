@@ -57,8 +57,8 @@ fi
 # Get current version
 if [ -f "/var/lib/snappymail/data/VERSION" ]; then
     version=$(cat $SM_INSTALL_DIR/data/VERSION);
-    if [ "$version" == "$rl_v" ]; then
-        echo "Error: Installed version ($version) is equal to the available version ($rl_v)"
+    if [ "$version" == "$sm_v" ]; then
+        echo "Error: Installed version ($version) is equal to the available version ($sm_v)"
         exit 2;
     else
         UPDATE="yes"
@@ -80,13 +80,19 @@ if [ "$UPDATE" == "no" ]; then
     mkdir $SM_CONFIG_DIR
 
     cd "$SM_INSTALL_DIR"
-    [ ! -f "${RC_INSTALL_DIR}/${RC_FILE}" ] && wget "$SM_URL" --retry-connrefused --quiet -O "${SM_INSTALL_DIR}/${SM_FILE}"
+    [ ! -f "${SM_INSTALL_DIR}/${SM_FILE}" ] && wget "$SM_URL" --retry-connrefused --quiet -O "${SM_INSTALL_DIR}/${SM_FILE}"
+
+    if [ -f "${SM_INSTALL_DIR}/${SM_FILE}" ]; then
+        echo "ERROR: Download failed, installation aborted."
+        exit 2
+    fi
+
+# Get current version
 
     key=$(openssl rand -hex 4);
 
     admin_account="admin_$key"
     admin_password=$(generate_password)
-    r=$(generate_password)
 
     echo "Username: admin_$key" > ~/.snappymail
     echo "Password: $admin_password" >> ~/.snappymail
@@ -97,12 +103,6 @@ if [ "$UPDATE" == "no" ]; then
     mv ./data $SM_CONFIG_DIR/
     ln -s $SM_CONFIG_DIR/data/ ./data
 
-    SALT=$(openssl rand -base64 64)
-    cp ./data/VERSION ./data/INSTALLED
-    echo "<?php //$SALT" >  ./data/SALT.php
-    echo "Forbidden" >  ./data/index.php
-    echo "Forbidden" >  ./data/index.html
-
     # Create database
     mysql -e "CREATE DATABASE snappymail"
     # Mysql available on system
@@ -110,23 +110,7 @@ if [ "$UPDATE" == "no" ]; then
     mysql -e "GRANT ALL ON snappymail.*
      TO snappymail@localhost IDENTIFIED BY '$r'"
 
-    mkdir -p $SM_CONFIG_DIR/data/_data_/_default_/configs
-    php -f $HESTIA_INSTALL_DIR/snappymail/change_password.php "admin_$key" "$admin_password" "$r"
-    mkdir -p $SM_CONFIG_DIR/data/_data_/_default_/domains
-    cp -f $HESTIA_INSTALL_DIR/snappymail/default.ini $SM_CONFIG_DIR/data/_data_/_default_/domains
-    mkdir -p $SM_CONFIG_DIR/data/_data_/_default_/plugins
-    cp -f -r $HESTIA_INSTALL_DIR/snappymail/plugins/hestia-change-password/ $SM_CONFIG_DIR/data/_data_/_default_/plugins
-    mkdir -p $SM_CONFIG_DIR/data/_data_/_default_/plugins/add-x-originating-ip-header
-    # Download add-x-originating-ip-header from snappymail github
-    wget --quiet -O $SM_CONFIG_DIR/data/_data_/_default_/plugins/add-x-originating-ip-header/index.php https://raw.githubusercontent.com/the-djmaze/snappymail/master/plugins/add-x-originating-ip-header/index.php
-    wget --quiet -O $SM_CONFIG_DIR/data/_data_/_default_/plugins/add-x-originating-ip-header/LICENSE https://raw.githubusercontent.com/the-djmaze/snappymail/master/plugins/add-x-originating-ip-header/LICENSE
-
-    cp -f $HESTIA_INSTALL_DIR/snappymail/plugins/plugin-add-x-originating-ip-header.ini $SM_CONFIG_DIR/data/_data_/_default_/configs/plugin-add-x-originating-ip-header.ini
-    cp -f $HESTIA_INSTALL_DIR/snappymail/plugins/plugin-hestia-change-password.ini $SM_CONFIG_DIR/data/_data_/_default_/configs/plugin-hestia-change-password.ini
-
-    sed -i "s/%hostname%/$(hostname)/g" $SM_CONFIG_DIR/data/_data_/_default_/configs/plugin-hestia-change-password.ini
-    sed -i "s/%port%/$BACKEND_PORT/g" $SM_CONFIG_DIR/data/_data_/_default_/configs/plugin-hestia-change-password.ini
-
+    php -f $HESTIA_INSTALL_DIR/snappymail/hestia.php "admin_$key" "$admin_password" "$r"
 
     chown -R  www-data:www-data ./data
     chown -R  www-data:www-data $SM_CONFIG_DIR/
@@ -150,7 +134,7 @@ if [ "$UPDATE" == "no" ]; then
     fi
 
 else
-   [ ! -f "${RC_INSTALL_DIR}/${RC_FILE}" ] && wget "$SM_URL" --quiet -O "${SM_INSTALL_DIR}/${SM_FILE}"
+   [ ! -f "${SM_INSTALL_DIR}/${SM_FILE}" ] && wget "$SM_URL" --quiet -O "${SM_INSTALL_DIR}/${SM_FILE}"
    version=$(cat $SM_INSTALL_DIR/data/VERSION);
 
    tar -xzf snappymail-latest.tar.gz "data/VERSION" $SM_INSTALL_DIR/
