@@ -84,6 +84,7 @@ trait Messages
 				$oParams->bHideDeleted = !empty($oSettingsLocal->GetConf('HideDeleted', 1));
 			}
 
+//			\ignore_user_abort(true);
 			$oMessageList = $this->MailClient()->MessageList($oParams);
 			if ($sHash) {
 				$this->cacheByKey($sHash);

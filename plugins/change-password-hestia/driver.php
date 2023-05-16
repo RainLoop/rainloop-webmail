@@ -45,6 +45,8 @@ class ChangePasswordHestiaDriver
 			return false;
 		}
 
+		$this->oLogger->Write("Hestia: Try to change password for {$oAccount->Email()}");
+
 		$sHost = $this->oConfig->Get('plugin', 'hestia_login');
 		$sPort = $this->oConfig->Get('plugin', 'hestia_port');
 
@@ -54,7 +56,15 @@ class ChangePasswordHestiaDriver
 			'password' => $sPrevPassword,
 			'new'      => $sNewPassword,
 		);
-		$cRequest = $HTTP->doRequest('POST','https://'.$sHost.':'.$sPort.'/reset/mail/',http_build_query($postvars));
-		return '==ok==' == $cRequest->body;
+		$response = $HTTP->doRequest('POST', 'https://'.$sHost.':'.$sPort.'/reset/mail/', \http_build_query($postvars));
+		if (!$response) {
+			$this->oLogger->Write("Hestia[Error]: Response failed");
+			return false;
+		}
+		if ('==ok==' != $response->body) {
+			$this->oLogger->Write("Hestia[Error]: Response: {$response->status} {$response->body}");
+			return false;
+		}
+		return true;
 	}
 }
