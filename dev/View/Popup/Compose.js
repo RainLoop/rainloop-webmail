@@ -320,7 +320,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			attachmentsCount: () => this.attachments().length,
 			attachmentsInErrorCount: () => this.attachmentsInError.length,
 			attachmentsInProcessCount: () => this.attachmentsInProcess.length,
-			isDraftFolderMessage: () => this.draftsFolder() && this.draftUid(),
+			isDraft: () => this.draftsFolder() && this.draftUid(),
 
 			identitiesOptions: () =>
 				IdentityUserStore.map(item => ({
@@ -399,7 +399,9 @@ export class ComposePopupView extends AbstractViewPopup {
 					 * The iframe will be injected into the container identified by selector.
 					 * https://mailvelope.github.io/mailvelope/Editor.html
 					 */
-					let text = this.oEditor.getData(),
+					let armored = oLastMessage && oLastMessage.body.classList.contains('mailvelope'),
+						text = armored ? oLastMessage.plain() : this.oEditor.getData(),
+						draft = this.isDraft(),
 						encrypted = PgpUserStore.isEncrypted(text),
 						size = SettingsGet('phpUploadSizes')['post_max_size'],
 						quota = pInt(size);
@@ -413,10 +415,10 @@ export class ComposePopupView extends AbstractViewPopup {
 					mailvelope.createEditorContainer('#mailvelope-editor', PgpUserStore.mailvelopeKeyring, {
 						// https://mailvelope.github.io/mailvelope/global.html#EditorContainerOptions
 						quota: Math.max(2048, (quota / 1024)) - 48, // (text + attachments) limit in kilobytes
-						armoredDraft: encrypted ? text : '', // Ascii Armored PGP Text Block
+						armoredDraft: (encrypted && draft) ? text : '', // Ascii Armored PGP Text Block
 						predefinedText: encrypted ? '' : (this.oEditor.isHtml() ? htmlToPlain(text) : text),
+						quotedMail: (encrypted && !draft) ? text : '', // Ascii Armored PGP Text Block mail that should be quoted
 /*
-						quotedMail: '', // Ascii Armored PGP Text Block mail that should be quoted
 						quotedMailIndent: true, // if true the quoted mail will be indented (default: true)
 						quotedMailHeader: '', // header to be added before the quoted mail
 						keepAttachments: false, // add attachments of quotedMail to editor (default: false)
@@ -431,7 +433,7 @@ export class ComposePopupView extends AbstractViewPopup {
 		decorateKoCommands(this, {
 			sendCommand: self => self.canBeSentOrSaved(),
 			saveCommand: self => self.canBeSentOrSaved(),
-			deleteCommand: self => self.isDraftFolderMessage(),
+			deleteCommand: self => self.isDraft(),
 			skipCommand: self => self.canBeSentOrSaved(),
 			contactsCommand: self => self.allowContacts
 		});
@@ -733,14 +735,25 @@ export class ComposePopupView extends AbstractViewPopup {
 
 		this.viewModelDom.dataset.wysiwyg = SettingsUserStore.editorDefaultType();
 
+		let options = {
+			mode: type || ComposeType.Empty,
+			to:  aToEmails,
+			cc:  aCcEmails,
+			bcc: aBccEmails,
+			subject: sCustomSubject,
+			text: sCustomPlainText
+		};
+		if (1 < arrayLength(oMessageOrArray)) {
+			options.messages = oMessageOrArray;
+		} else {
+			options.message = isArray(oMessageOrArray) ? oMessageOrArray[0] : oMessageOrArray;
+		}
+
 		if (ComposePopupView.inEdit()) {
-			type = type || ComposeType.Empty;
-			if (ComposeType.Empty !== type) {
+			if (ComposeType.Empty !== options.mode) {
 				showScreenPopup(AskPopupView, [
 					i18n('COMPOSE/DISCARD_UNSAVED_DATA'),
-					() => {
-						this.initOnShow(type, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText);
-					},
+					() => this.initOnShow(options),
 					null,
 					false
 				]);
@@ -754,7 +767,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				}
 			}
 		} else {
-			this.initOnShow(type, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText);
+			this.initOnShow(options);
 		}
 
 		ComposePopupView.inEdit(false);
@@ -764,34 +777,16 @@ export class ComposePopupView extends AbstractViewPopup {
 	}
 
 	/**
-	 * @param {string=} sType = ComposeType.Empty
-	 * @param {?MessageModel|Array=} oMessageOrArray = null
-	 * @param {Array=} aToEmails = null
-	 * @param {Array=} aCcEmails = null
-	 * @param {Array=} aBccEmails = null
-	 * @param {string=} sCustomSubject = null
-	 * @param {string=} sCustomPlainText = null
+	 * @param {object} options
 	 */
-	initOnShow(sType, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText) {
-		let sFrom = '',
-			sTo = '',
-			sCc = '',
-			sDate = '',
-			sSubject = '',
-			sText = '',
-			identity = null,
-			aDraftInfo = null,
-			message = 1 === arrayLength(oMessageOrArray)
-				? oMessageOrArray[0]
-				: (isArray(oMessageOrArray) ? null : oMessageOrArray);
+	initOnShow(options) {
 
 		const
 //			excludeEmail = new Set(),
 			excludeEmail = {},
-			mEmail = AccountUserStore.email(),
-			msgComposeType = sType || ComposeType.Empty;
+			mEmail = AccountUserStore.email();
 
-		oLastMessage = message;
+		oLastMessage = options.message;
 
 		if (mEmail) {
 //			excludeEmail.add(mEmail);
@@ -800,17 +795,18 @@ export class ComposePopupView extends AbstractViewPopup {
 
 		this.reset();
 
-		if (message) {
-			switch (msgComposeType) {
+		let identity = null;
+		if (oLastMessage) {
+			switch (options.mode) {
 				case ComposeType.Reply:
 				case ComposeType.ReplyAll:
 				case ComposeType.Forward:
 				case ComposeType.ForwardAsAttachment:
-					identity = findIdentity(message.to.concat(message.cc, message.bcc))
-						/* || findIdentity(message.deliveredTo)*/;
+					identity = findIdentity(oLastMessage.to.concat(oLastMessage.cc, oLastMessage.bcc))
+						/* || findIdentity(oLastMessage.deliveredTo)*/;
 					break;
 				case ComposeType.Draft:
-					identity = findIdentity(message.from.concat(message.replyTo));
+					identity = findIdentity(oLastMessage.from.concat(oLastMessage.replyTo));
 					break;
 				// no default
 //				case ComposeType.Empty:
@@ -822,66 +818,69 @@ export class ComposePopupView extends AbstractViewPopup {
 			excludeEmail[identity.email()] = true;
 		}
 
-		if (arrayLength(aToEmails)) {
-			this.to(emailArrayToStringLineHelper(aToEmails));
+		if (arrayLength(options.to)) {
+			this.to(emailArrayToStringLineHelper(options.to));
 		}
 
-		if (arrayLength(aCcEmails)) {
-			this.cc(emailArrayToStringLineHelper(aCcEmails));
+		if (arrayLength(options.cc)) {
+			this.cc(emailArrayToStringLineHelper(options.cc));
 		}
 
-		if (arrayLength(aBccEmails)) {
-			this.bcc(emailArrayToStringLineHelper(aBccEmails));
+		if (arrayLength(options.bcc)) {
+			this.bcc(emailArrayToStringLineHelper(options.bcc));
 		}
 
-		if (msgComposeType && message) {
-			sDate = timestampToString(message.dateTimestamp(), 'FULL');
-			sSubject = message.subject();
-			aDraftInfo = message.draftInfo;
+		if (options.mode && oLastMessage) {
+			let encrypted,
+				sCc = '',
+				sDate = timestampToString(oLastMessage.dateTimestamp(), 'FULL'),
+				sSubject = oLastMessage.subject(),
+				sText = '',
+				aDraftInfo = oLastMessage.draftInfo;
 
-			switch (msgComposeType) {
+			switch (options.mode) {
 				case ComposeType.Reply:
 				case ComposeType.ReplyAll:
-					if (ComposeType.Reply === msgComposeType) {
-						this.to(emailArrayToStringLineHelper(message.replyEmails(excludeEmail)));
+					if (ComposeType.Reply === options.mode) {
+						this.to(emailArrayToStringLineHelper(oLastMessage.replyEmails(excludeEmail)));
 					} else {
-						let parts = message.replyAllEmails(excludeEmail);
+						let parts = oLastMessage.replyAllEmails(excludeEmail);
 						this.to(emailArrayToStringLineHelper(parts[0]));
 						this.cc(emailArrayToStringLineHelper(parts[1]));
 					}
 					this.subject(replySubjectAdd('Re', sSubject));
-					this.prepareMessageAttachments(message, msgComposeType);
-					this.aDraftInfo = ['reply', message.uid, message.folder];
-					this.sInReplyTo = message.messageId;
-					this.sReferences = (message.messageId + ' ' + message.references).trim();
+					this.prepareMessageAttachments(oLastMessage, options.mode);
+					this.aDraftInfo = ['reply', oLastMessage.uid, oLastMessage.folder];
+					this.sInReplyTo = oLastMessage.messageId;
+					this.sReferences = (oLastMessage.messageId + ' ' + oLastMessage.references).trim();
 					// OpenPGP “Transferable Public Key”
-//					message.autocrypt?.keydata
+//					oLastMessage.autocrypt?.keydata
 					break;
 
 				case ComposeType.Forward:
 				case ComposeType.ForwardAsAttachment:
 					this.subject(replySubjectAdd('Fwd', sSubject));
-					this.prepareMessageAttachments(message, msgComposeType);
-					this.aDraftInfo = ['forward', message.uid, message.folder];
-					this.sInReplyTo = message.messageId;
-					this.sReferences = (message.messageId + ' ' + message.references).trim();
+					this.prepareMessageAttachments(oLastMessage, options.mode);
+					this.aDraftInfo = ['forward', oLastMessage.uid, oLastMessage.folder];
+					this.sInReplyTo = oLastMessage.messageId;
+					this.sReferences = (oLastMessage.messageId + ' ' + oLastMessage.references).trim();
 					break;
 
 				case ComposeType.Draft:
 					this.bFromDraft = true;
-					this.draftsFolder(message.folder);
-					this.draftUid(message.uid);
+					this.draftsFolder(oLastMessage.folder);
+					this.draftUid(oLastMessage.uid);
 					// fallthrough
 				case ComposeType.EditAsNew:
-					this.to(emailArrayToStringLineHelper(message.to));
-					this.cc(emailArrayToStringLineHelper(message.cc));
-					this.bcc(emailArrayToStringLineHelper(message.bcc));
-					this.replyTo(emailArrayToStringLineHelper(message.replyTo));
+					this.to(emailArrayToStringLineHelper(oLastMessage.to));
+					this.cc(emailArrayToStringLineHelper(oLastMessage.cc));
+					this.bcc(emailArrayToStringLineHelper(oLastMessage.bcc));
+					this.replyTo(emailArrayToStringLineHelper(oLastMessage.replyTo));
 					this.subject(sSubject);
-					this.prepareMessageAttachments(message, msgComposeType);
+					this.prepareMessageAttachments(oLastMessage, options.mode);
 					this.aDraftInfo = 3 === arrayLength(aDraftInfo) ? aDraftInfo : null;
-					this.sInReplyTo = message.inReplyTo;
-					this.sReferences = message.references;
+					this.sInReplyTo = oLastMessage.inReplyTo;
+					this.sReferences = oLastMessage.references;
 					break;
 
 //				case ComposeType.Empty:
@@ -889,33 +888,29 @@ export class ComposePopupView extends AbstractViewPopup {
 				// no default
 			}
 
-			let encrypted;
-
 			// https://github.com/the-djmaze/snappymail/issues/491
-			tpl.innerHTML = message.bodyAsHTML();
+			tpl.innerHTML = oLastMessage.bodyAsHTML();
 			tpl.content.querySelectorAll('img').forEach(img => {
 				img.src || img.dataset.xSrcCid || img.dataset.xSrc || img.replaceWith(img.alt || img.title)
 			});
 			sText = tpl.innerHTML.trim();
 
-			switch (msgComposeType) {
+			switch (options.mode) {
 				case ComposeType.Reply:
 				case ComposeType.ReplyAll:
-					sFrom = message.from.toString(false, true);
-					sText = '<br><br><p>' + i18n('COMPOSE/REPLY_MESSAGE_TITLE', { DATETIME: sDate, EMAIL: sFrom })
+					sText = '<br><br><p>'
+						+ i18n('COMPOSE/REPLY_MESSAGE_TITLE', { DATETIME: sDate, EMAIL: oLastMessage.from.toString(false, true) })
 						+ ':</p><blockquote>'
 						+ sText.trim()
 						+ '</blockquote>';
 					break;
 
 				case ComposeType.Forward:
-					sFrom = message.from.toString(false, true);
-					sTo = message.to.toString(false, true);
-					sCc = message.cc.toString(false, true);
+					sCc = oLastMessage.cc.toString(false, true);
 					sText = '<br><br><p>' + i18n('COMPOSE/FORWARD_MESSAGE_TOP_TITLE') + '</p><div>'
-						+ i18n('GLOBAL/FROM') + ': ' + sFrom
+						+ i18n('GLOBAL/FROM') + ': ' + oLastMessage.from.toString(false, true)
 						+ '<br>'
-						+ i18n('GLOBAL/TO') + ': ' + sTo
+						+ i18n('GLOBAL/TO') + ': ' + oLastMessage.to.toString(false, true)
 						+ (sCc.length ? '<br>' + i18n('GLOBAL/CC') + ': ' + sCc : '')
 						+ '<br>'
 						+ i18n('COMPOSE/FORWARD_MESSAGE_TOP_SENT')
@@ -937,7 +932,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				default:
 					encrypted = PgpUserStore.isEncrypted(sText);
 					if (encrypted) {
-						sText = message.plain();
+						sText = oLastMessage.plain();
 					}
 			}
 
@@ -947,22 +942,22 @@ export class ComposePopupView extends AbstractViewPopup {
 					editor.modePlain();
 				}
 				encrypted && editor.setPlain(sText);
-				this.setSignature(identity, msgComposeType);
+				this.setSignature(identity, options.mode);
 				this.setFocusInPopup();
 			});
-		} else if (ComposeType.Empty === msgComposeType) {
-			this.subject(null != sCustomSubject ? '' + sCustomSubject : '');
+		} else if (ComposeType.Empty === options.mode) {
+			this.subject(null != options.subject ? '' + options.subject : '');
 			this.editor(editor => {
-				editor.setHtml(sCustomPlainText ? '' + sCustomPlainText : '');
+				editor.setHtml(options.text ? '' + options.text : '');
 				isPlainEditor() && editor.modePlain();
 				this.setSignature(identity);
 				this.setFocusInPopup();
 			});
-		} else if (arrayLength(oMessageOrArray)) {
-			oMessageOrArray.forEach(item => this.addMessageAsAttachment(item));
+		} else if (options.messages) {
+			options.messages.forEach(item => this.addMessageAsAttachment(item));
 			this.editor(editor => {
 				isPlainEditor() ? editor.setPlain('') : editor.setHtml('');
-				this.setSignature(identity, msgComposeType);
+				this.setSignature(identity, options.mode);
 				this.setFocusInPopup();
 			});
 		} else {
