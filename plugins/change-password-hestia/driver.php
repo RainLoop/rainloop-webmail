@@ -47,7 +47,7 @@ class ChangePasswordHestiaDriver
 
 		$this->oLogger->Write("Hestia: Try to change password for {$oAccount->Email()}");
 
-		$sHost = $this->oConfig->Get('plugin', 'hestia_login');
+		$sHost = $this->oConfig->Get('plugin', 'hestia_host');
 		$sPort = $this->oConfig->Get('plugin', 'hestia_port');
 
 		$HTTP = \SnappyMail\HTTP\Request::factory();
