@@ -1558,3 +1558,24 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     color: var(--color-primary);
     font-size: 20px;
 }
+
+/*
+ * tabs
+ */
+
+#rl-app .tabs > [id^=tab]:checked+label {
+    background-color: var(--color-main-background);
+    border-color: var(--color-primary-element);
+    border-bottom-color: transparent;
+}
+
+#rl-app .tabs>label:hover {
+    border-color: transparent;
+    border-bottom-color: var(--color-primary-element);
+    background-color: var(--color-background-hover)
+}
+
+#rl-app .tabs .tab-content {
+    border-color: var(--color-primary-element);
+    padding: 10px 20px;
+}
