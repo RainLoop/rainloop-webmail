@@ -38,6 +38,10 @@
     box-shadow: none;
 }
 
+#rl-app hr {
+    border-bottom-color: var(--color-border-dark);
+}
+
 #rl-app .resizer {
     opacity: 1;
     background-color: unset;
@@ -572,7 +576,8 @@ html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-f
     -moz-appearance: textfield;
     -webkit-appearance: textfield; 
     appearance: textfield;
-    margin: 0; 
+    margin: 0;
+    /* ? margin: 0 5px 0 0; */
 }
 
 /*
@@ -648,7 +653,7 @@ select option {
 #rl-app .squire-toolbar {
     height: 50px;
     box-sizing: content-box;
-    border-color: var(--color-border);
+    border: none;
 }
 
 #rl-app textarea,
@@ -1471,6 +1476,16 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 #rl-app #V-PopupsCompose header .close,
 #rl-app #V-PopupsCompose header .minimize-custom {
     box-sizing: content-box;
+}
+
+#rl-app #V-PopupsIdentity .e-signature-place {
+    border: none;
+}
+
+#rl-app #V-PopupsDomain .domain-form .tab-content input,
+#rl-app #V-PopupsDomain .domain-form .tab-content select {
+    height: 44px;
+    padding: 8px 12px;
 }
 
 /*
