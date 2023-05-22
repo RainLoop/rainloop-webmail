@@ -1517,6 +1517,28 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     padding: 8px 12px;
 }
 
+#rl-app #V-PopupsLanguages label {
+    background-color: var(--color-background-dark) !important;
+    border-color: var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 8px 15px;
+}
+
+#rl-app #V-PopupsLanguages label:hover {
+    border-color: var(--color-primary-element);
+    background-color: unset;
+}
+
+#rl-app #V-PopupsLanguages label.user {
+    background-color: var(--color-main-background) !important;
+    border-color: var(--color-primary-element);
+}
+
+#rl-app #V-PopupsLanguages label.selected {
+    background-color: var(--color-primary-element-light) !important;
+    border-color: var(--color-primary-element);
+}
+
 /*
  * nextcloud file picker
  */
