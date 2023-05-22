@@ -447,9 +447,10 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     min-width: fit-content;
     width: -moz-fit-content;
     width: -webkit-fill-available;
+    margin: 3px !important;
 
     font-size: var(--default-font-size);
-    border-radius: var(--border-radius-pill);
+    border-radius: var(--border-radius-pill) !important;
 }
 
 #rl-app .b-footer .btn,
@@ -462,7 +463,6 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     background: transparent;
     text-align: left;
     font-size: 22px;
-    margin: 3px;
     user-select: none;
 }
 
@@ -532,11 +532,26 @@ html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-f
     text-align: center;
 }
 
-#rl-app #V-MailMessageList .btn-toolbar .btn-group .btn,
-#rl-app .squire-toolbar.btn-toolbar .btn {
-    border-radius: var(--border-radius-large);
+#rl-app .btn-toolbar .btn-group .btn {
+    border-radius: 0;
     margin: 0 .5px;
 }
+
+#rl-app .btn-toolbar .btn-group .btn:first-of-type {
+    border-top-left-radius: var(--border-radius-large);
+    border-bottom-left-radius: var(--border-radius-large);
+}
+
+#rl-app .btn-toolbar .btn-group .btn:last-of-type {
+    border-top-right-radius: var(--border-radius-large);
+    border-bottom-right-radius: var(--border-radius-large);
+}
+
+/*
+#rl-app #V-MailMessageList .btn-toolbar .btn-group .btn:not(:last-of-type) {
+    margin: 0 3px 0 0;
+}
+*/
 
 /*
  * inputs
