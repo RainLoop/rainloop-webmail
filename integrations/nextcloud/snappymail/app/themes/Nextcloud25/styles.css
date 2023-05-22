@@ -1347,6 +1347,15 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 #rl-app .form-horizontal .control-group {
     display: flex;
     align-items: center;
+    margin-left: 0;
+}
+
+#rl-app .form-horizontal .control-group {
+    margin-bottom: 1em;
+}
+
+#rl-app .control-group {
+    margin-bottom: 0.5em;
 }
 
 #rl-app .table-bordered,
