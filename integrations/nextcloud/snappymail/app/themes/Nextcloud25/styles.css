@@ -537,21 +537,17 @@ html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-f
     margin: 0 .5px;
 }
 
-#rl-app .btn-toolbar .btn-group .btn:first-of-type {
+#rl-app .btn-toolbar .btn-group .btn:first-of-type,
+#rl-app .btn-toolbar .btn-group .btn:nth-child(1 of :not([style*="display: none;"])) {
     border-top-left-radius: var(--border-radius-large);
     border-bottom-left-radius: var(--border-radius-large);
 }
 
-#rl-app .btn-toolbar .btn-group .btn:last-of-type {
+#rl-app .btn-toolbar .btn-group .btn:last-of-type,
+#rl-app .btn-toolbar .btn-group .btn:nth-last-child(1 of :not([style*="display: none;"])) {
     border-top-right-radius: var(--border-radius-large);
     border-bottom-right-radius: var(--border-radius-large);
 }
-
-/*
-#rl-app #V-MailMessageList .btn-toolbar .btn-group .btn:not(:last-of-type) {
-    margin: 0 3px 0 0;
-}
-*/
 
 /*
  * inputs
