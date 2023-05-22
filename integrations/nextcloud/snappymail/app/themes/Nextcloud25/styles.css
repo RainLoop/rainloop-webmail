@@ -700,7 +700,7 @@ select option {
     height: 44px;
     border-radius: 44px;
     padding: 0 14px;
-    margin: 0 -7px 0 -14px;
+    margin: 0;
 }
 
 #rl-app .e-component.e-checkbox.material-design:hover,
@@ -1577,5 +1577,4 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 
 #rl-app .tabs .tab-content {
     border-color: var(--color-primary-element);
-    padding: 10px 20px;
 }
