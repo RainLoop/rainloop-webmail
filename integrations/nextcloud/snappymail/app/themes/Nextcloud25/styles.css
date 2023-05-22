@@ -1621,12 +1621,21 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     border-bottom-color: transparent;
 }
 
-#rl-app .tabs>label:hover {
+#rl-app .tabs > label {
+    margin: 0 2px -1px 2px;
+    border-radius: 0;
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+}
+
+#rl-app .tabs > label:hover {
     border-color: transparent;
     border-bottom-color: var(--color-primary-element);
     background-color: var(--color-background-hover)
 }
 
 #rl-app .tabs .tab-content {
+    border-top: solid 1px;
+    border-radius: 4px;
     border-color: var(--color-primary-element);
 }
