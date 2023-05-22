@@ -1491,6 +1491,22 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     margin: 0 0 0 5px;
 }
 
+#rl-app #V-PopupsPlugin .help-block span {
+    background-color: var(--color-background-dark);
+    border-color: var(--color-border);
+    border-radius: var(--border-radius);
+    box-shadow: 0 0 2px var(--color-box-shadow);
+    color: unset;
+    left: 10px;
+    right: unset;
+    padding: 8px;
+    margin: 7px;
+}
+
+#rl-app #V-PopupsPlugin .help-block {
+    margin-left: 5px;
+}
+
 #rl-app #V-PopupsIdentity .e-signature-place {
     border: none;
 }
