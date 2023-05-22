@@ -1262,7 +1262,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     border-color: var(--color-border);
 }
 
-#rl-app .dropdown-menu ::-webkit-scrollbar-track-piece {
+#rl-app .dropdown-menu::-webkit-scrollbar-track-piece {
     background-color: inherit;
     border-top-right-radius: inherit;
     border-bottom-right-radius: inherit;
