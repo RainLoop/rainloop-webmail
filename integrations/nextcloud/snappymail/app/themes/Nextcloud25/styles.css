@@ -1478,6 +1478,10 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     box-sizing: content-box;
 }
 
+#rl-app dialog > footer .btn+.btn {
+    margin: 0 0 0 5px;
+}
+
 #rl-app #V-PopupsIdentity .e-signature-place {
     border: none;
 }
