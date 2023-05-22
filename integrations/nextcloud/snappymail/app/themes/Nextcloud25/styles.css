@@ -1287,6 +1287,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     background: unset;
     color: unset;
     text-shadow: none;
+    border-right-color: var(--color-border);
 }
 
 #rl-app #V-SystemDropDown #top-system-dropdown-id {
