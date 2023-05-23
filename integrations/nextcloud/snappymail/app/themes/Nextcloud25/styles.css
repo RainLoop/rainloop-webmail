@@ -362,7 +362,7 @@ html.rl-left-panel-disabled #rl-app #rl-left {
 #rl-app button.btn:not(.button-vue) {
     min-height: 36px;
     height: 36px;
-    box-sizing: border-box !important;
+    box-sizing: border-box;
     padding: 8px 14px;
     line-height: 20px;
     color: var(--color-main-text);
@@ -370,6 +370,10 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     border: 1px solid var(--color-border-dark) !important;
     border-radius: var(--border-radius-pill);
     font-size: var(--default-font-size);
+}
+
+#rl-app .btn.fontastic {
+    border-radius: var(--border-radius-large);
 }
 
 #rl-app .btn.btn-thin {
@@ -381,11 +385,19 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     border: unset !important;
 }
 
+#rl-app .btn:hover,
+#rl-app .btn:focus,
+#rl-app .btn:active,
+#rl-app .btn.active {
+    outline: none;
+    opacity: unset;
+}
+
+
 #rl-app .btn.disabled, .btn[disabled],
 #rl-app .btn.disabled:hover, .btn[disabled]:hover,
 #rl-app .btn.disabled:focus, .btn[disabled]:focus,
 #rl-app .btn.disabled:active, .btn[disabled]:active {
-    outline: none;
     opacity: .5;
     filter: saturate(0.7);
 }
@@ -395,19 +407,26 @@ html.rl-left-panel-disabled #rl-app #rl-left {
 #rl-app .btn:not(.disabled, [disabled]):focus,
 #rl-app button:not(.disabled, [disabled]):focus {
     border-color: var(--color-primary-element) !important;
-    outline: none;
-    opacity: unset;
 }
 
 #rl-app .btn:not(.disabled, [disabled]):active,
-#rl-app button:not(.disabled, [disabled]):active {
-    outline: none;
-    opacity: unset;
+#rl-app button:not(.disabled, [disabled]):active,
+#rl-app .btn:not(.disabled, [disabled]).active,
+#rl-app button:not(.disabled, [disabled]).active {
     background-color: var(--color-main-background);
     color: var(--color-text-light);
 }
 
-#rl-app .btn, .btn.active, .btn:active, .btn.disabled, .btn[disabled], #rl-app button {
+#rl-app .btn,
+#rl-app button,
+#rl-app .btn.active,
+#rl-app button.active,
+#rl-app .btn:active,
+#rl-app button:active,
+#rl-app .btn.disabled,
+#rl-app button.disabled,
+#rl-app .btn[disabled],
+#rl-app button[disabled] {
     text-shadow: none;
     box-shadow: none;
 }
@@ -416,6 +435,10 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     font-weight: bold;
     max-width: 100%;
     box-sizing: content-box !important;
+}
+
+#rl-app .btn.buttonCompose:active {
+    color: var(--color-primary-text-dark);
 }
 
 #rl-app button.btn.buttonLogin,
@@ -429,17 +452,66 @@ html.rl-left-panel-disabled #rl-app #rl-left {
 #rl-app .btn.btn-success:hover,
 #rl-app button.btn.buttonLogin:focus,
 #rl-app .btn.btn-success:focus {
-    background-color: var(--color-primary-element-hover) !important;
+    background-color: var(--color-primary-element-hover);
     border-color: var(--color-primary-element-hover) !important;
 }
 
-#rl-app .btn.buttonCompose:active {
-    color: var(--color-primary-text-dark);
+#rl-app .btn.btn-warning {
+    background-color: var(--color-warning);
+    border-color: var(--color-warning) !important;
+}
+
+#rl-app .btn.btn-warning:hover,
+#rl-app .btn.btn-warning:focus {
+    background-color: var(--color-warning-hover);
+    border-color: var(--color-warning-hover) !important;
+}
+
+#rl-app .btn.btn-error {
+    background-color: var(--color-error);
+    border-color: var(--color-error) !important;
+}
+
+#rl-app .btn.btn-error:hover,
+#rl-app .btn.btn-error:focus {
+    background-color: var(--color-warning-error);
+    border-color: var(--color-warning-error) !important;
+}
+
+#rl-app .btn-group .btn,
+#rl-app .btn-group button,
+#rl-app .btn-group button.btn {
+    border-radius: 0;
+    margin: 0 0.5px;
+}
+
+#rl-app .btn-group .btn:first-of-type,
+#rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])) {
+    border-top-left-radius: var(--border-radius-pill);
+    border-bottom-left-radius: var(--border-radius-pill);
+}
+
+#rl-app .btn-group .btn:last-of-type,
+#rl-app .btn-group .btn:nth-last-child(1 of :not([style*="display: none;"])) {
+    border-top-right-radius: var(--border-radius-pill);
+    border-bottom-right-radius: var(--border-radius-pill);
+}
+
+#rl-app .btn-group .btn.fontastic:first-of-type,
+#rl-app .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])) {
+    border-top-left-radius: var(--border-radius-large);
+    border-bottom-left-radius: var(--border-radius-large);
+}
+
+#rl-app .btn-group .btn.fontastic:last-of-type,
+#rl-app .btn-group .btn.fontastic:nth-last-child(1 of :not([style*="display: none;"])) {
+    border-top-right-radius: var(--border-radius-large);
+    border-bottom-right-radius: var(--border-radius-large) ;
 }
 
 #rl-app .btn.buttonCompose,
 #rl-app .b-folders .btn.buttonContacts,
-#rl-app .b-footer .btn {
+#rl-app .b-footer.btn-toolbar .btn {
     box-sizing: border-box;
     padding: 4px 14px;
     line-height: 36px;
@@ -453,14 +525,13 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     border-radius: var(--border-radius-pill) !important;
 }
 
-#rl-app .b-footer .btn,
+#rl-app .b-footer.btn-toolbar .btn,
 #rl-app #V-SettingsPane .btn-toolbar .btn {
     background: transparent;
     border: unset !important;
 }
 
-#rl-app .b-footer .btn {
-    background: transparent;
+#rl-app .b-footer.btn-toolbar .btn {
     text-align: left;
     font-size: 22px;
     user-select: none;
@@ -508,45 +579,28 @@ html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-f
 }
 
 #rl-app span.fontastic:hover,
-#rl-app .b-footer .btn:hover,
-#rl-app .b-footer .btn.fontastic:hover,
+#rl-app .b-footer.btn-toolbar .btn:hover,
+#rl-app .b-footer.btn-toolbar .btn.fontastic:hover,
 #rl-app #V-SettingsPane .btn-toolbar .btn:hover {
     background-color: var(--color-background-hover);
 }
 
 #rl-app span.fontastic:active,
-#rl-app .b-footer .btn:active,
-#rl-app .b-footer .btn.fontastic:active,
+#rl-app .b-footer.btn-toolbar .btn:active,
+#rl-app .b-footer.btn-toolbar .btn.fontastic:active,
 #rl-app #V-SettingsPane .btn-toolbar .btn:active {
     background-color: var(--color-primary-element-light);
 }
 
 #rl-app span.fontastic:focus,
-#rl-app .b-footer .btn:focus,
-#rl-app .b-footer .btn.fontastic:focus,
+#rl-app .b-footer.btn-toolbar .btn:focus,
+#rl-app .b-footer.btn-toolbar .btn.fontastic:focus,
 #rl-app #V-SettingsPane .btn-toolbar .btn:focus {
     outline: none;
 }
 
 #rl-app #V-MailMessageList .btn-toolbar {
     text-align: center;
-}
-
-#rl-app .btn-toolbar .btn-group .btn {
-    border-radius: 0;
-    margin: 0 .5px;
-}
-
-#rl-app .btn-toolbar .btn-group .btn:first-of-type,
-#rl-app .btn-toolbar .btn-group .btn:nth-child(1 of :not([style*="display: none;"])) {
-    border-top-left-radius: var(--border-radius-large);
-    border-bottom-left-radius: var(--border-radius-large);
-}
-
-#rl-app .btn-toolbar .btn-group .btn:last-of-type,
-#rl-app .btn-toolbar .btn-group .btn:nth-last-child(1 of :not([style*="display: none;"])) {
-    border-top-right-radius: var(--border-radius-large);
-    border-bottom-right-radius: var(--border-radius-large);
 }
 
 /*
@@ -1543,7 +1597,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 
 #rl-app #V-PopupsLanguages label.user {
     background-color: var(--color-main-background) !important;
-    border-color: var(--color-primary-element);
+    color: var(--color-text-light);
 }
 
 #rl-app #V-PopupsLanguages label.selected {
