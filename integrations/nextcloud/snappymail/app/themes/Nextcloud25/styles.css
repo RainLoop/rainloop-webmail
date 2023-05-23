@@ -469,15 +469,15 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     border-color: var(--color-warning-hover) !important;
 }
 
-#rl-app .btn.btn-error {
+#rl-app .btn.btn-danger {
     background-color: var(--color-error);
     border-color: var(--color-error) !important;
 }
 
-#rl-app .btn.btn-error:hover,
-#rl-app .btn.btn-error:focus {
-    background-color: var(--color-warning-error);
-    border-color: var(--color-warning-error) !important;
+#rl-app .btn.btn-danger:hover,
+#rl-app .btn.btn-danger:focus {
+    background-color: var(--color-error-hover);
+    border-color: var(--color-error-hover) !important;
 }
 
 #rl-app .btn-group .btn,
