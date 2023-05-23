@@ -358,23 +358,19 @@ export const
 //			if ('TABLE' === name || 'TD' === name || 'TH' === name) {
 			if (!oStyle.backgroundImage) {
 				if ('TD' !== name && 'TH' !== name) {
+					['width','height'].forEach(key => {
+						if (hasAttribute(key)) {
+							value = delAttribute(key);
+							oStyle[key] || (oStyle[key] = value.includes('%') ? value : value + 'px');
+						}
+					});
 					// Make width responsive
-					if (hasAttribute('width') && !oStyle.width) {
-						value = delAttribute('width');
-						oStyle.width = value.includes('%') ? value : value + 'px';
-					}
 					value = oStyle.width;
 					if (100 < parseInt(value,10) && !oStyle.maxWidth) {
 						oStyle.maxWidth = value;
 						oStyle.width = '100%';
-					} else if (!value?.includes('%')) {
-						oStyle.removeProperty('width');
 					}
 					// Make height responsive
-					if (hasAttribute('height')) {
-						value = delAttribute('height');
-						oStyle.height = value.includes('%') ? value : value + 'px';
-					}
 					value = oStyle.removeProperty('height');
 					if (value && !oStyle.maxHeight) {
 						oStyle.maxHeight = value;
