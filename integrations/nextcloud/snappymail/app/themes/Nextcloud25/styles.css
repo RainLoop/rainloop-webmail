@@ -605,16 +605,16 @@ html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-f
     text-align: center;
 }
 
-#rl-app #V-MailMessageView .messageView .b-message.selected .message-fixed-button-toolbar .btn.buttonEdit {
+#rl-app #V-MailMessageView .messageView .b-message .message-fixed-button-toolbar .btn.buttonEdit {
     padding: 4px 8px;
     min-height: 28px;
     height: 28px;
     opacity: 0.8;
 }
 
-#rl-app #V-MailMessageView .messageView .b-message.selected .message-fixed-button-toolbar .btn.buttonEdit:hover,
-#rl-app #V-MailMessageView .messageView .b-message.selected .message-fixed-button-toolbar .btn.buttonEdit:focus,
-#rl-app #V-MailMessageView .messageView .b-message.selected .message-fixed-button-toolbar .btn.buttonEdit:active {
+#rl-app #V-MailMessageView .messageView .b-message .message-fixed-button-toolbar .btn.buttonEdit:hover,
+#rl-app #V-MailMessageView .messageView .b-message .message-fixed-button-toolbar .btn.buttonEdit:focus,
+#rl-app #V-MailMessageView .messageView .b-message .message-fixed-button-toolbar .btn.buttonEdit:active {
     opacity: unset;
 }
 
