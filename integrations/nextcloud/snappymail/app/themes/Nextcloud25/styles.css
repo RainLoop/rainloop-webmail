@@ -1055,7 +1055,7 @@ html:not(rl-mobile) #rl-app .hideMessageListCheckbox .checkboxCheckAll {
 
 #rl-app #V-MailMessageList .btn-toolbar,
 #rl-app #V-MailMessageView .btn-toolbar {
-    padding: 10px 1px;
+    padding: 10px;
 }
 
 #rl-app .messageList,
