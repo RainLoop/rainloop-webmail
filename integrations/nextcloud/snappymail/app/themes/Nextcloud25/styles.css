@@ -42,6 +42,18 @@
     border-bottom-color: var(--color-border-dark);
 }
 
+#rl-app a,
+#rl-app #messageItem .b-text-part a {
+    color: var(--color-primary-light-text);
+}
+
+#rl-app a:visited,
+#rl-app a:active,
+#rl-app #messageItem .b-text-part a:visited,
+#rl-app #messageItem .b-text-part a:active {
+    color: var(--color-primary-text-dark);
+}
+
 #rl-app .resizer {
     opacity: 1;
     background-color: unset;
