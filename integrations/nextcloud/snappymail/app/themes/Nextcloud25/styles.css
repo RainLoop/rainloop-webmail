@@ -1462,6 +1462,11 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     background-color: var(--color-background-hover);
 }
 
+#rl-app .table-striped tbody tr:nth-child(odd) td,
+#rl-app .table-striped tbody tr:nth-child(odd) th {
+    background-color: var(--color-background-dark);
+}
+
 #rl-app #V-Settings-Themes figure,
 #rl-app #V-Settings-Themes img {
     border-radius: var(--border-radius-large);
