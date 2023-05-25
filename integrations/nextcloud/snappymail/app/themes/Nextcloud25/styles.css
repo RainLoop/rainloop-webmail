@@ -539,6 +539,15 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     border-radius: var(--border-radius-pill) !important;
 }
 
+#rl-app .b-folders .btn.buttonCompose {
+    min-width: 16px;
+}
+
+#rl-app .b-folders .btn.buttonContacts {
+    min-width: 44px;
+    width: 44px;
+}
+
 #rl-app .b-footer.btn-toolbar .btn,
 #rl-app #V-SettingsPane .btn-toolbar .btn {
     background: transparent;
@@ -1706,6 +1715,77 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 #rl-app #V-PopupsNextcloudFiles li details summary[data-icon]::before {
     color: var(--color-primary);
     font-size: 20px;
+}
+
+/*
+ * contacts
+ */
+
+#rl-app #V-PopupsContacts .right,
+#rl-app #V-PopupsContacts .b-list-toolbar,
+#rl-app #V-PopupsContacts .b-list-footer-toolbar,
+#rl-app #V-PopupsContacts .b-view-content-toolbar {
+    border-color: var(--color-border);
+}
+
+#rl-app #V-PopupsContacts .b-list-toolbar {
+    height: 55px;
+}
+
+#rl-app #V-PopupsContacts .b-list-toolbar .e-search {
+    margin: 9px 5px;
+    width: unset;
+}
+
+#rl-app #V-PopupsContacts .b-view-content {
+    height: calc(100% - 72px);
+    margin-top: 20px;
+}
+
+#rl-app #V-PopupsContacts .b-list-content {
+    height: calc(100% - 35px - 72px);
+}
+
+#rl-app #V-PopupsContacts .e-contact-item {
+    padding: 4px;
+    margin: 2px 4px;
+    max-height: unset;
+    border-bottom: unset;
+    border-radius: var(--border-radius);
+}
+
+#rl-app #V-PopupsContacts .e-contact-item,
+#rl-app #V-PopupsContacts .e-contact-item.focused {
+    background-color: var(--color-background);
+    border-left-color: var(--color-border);
+}
+
+#rl-app #V-PopupsContacts .e-contact-item:hover,
+#rl-app #V-PopupsContacts .e-contact-item.focused:hover {
+    background-color: var(--color-background-hover);
+    border-left-color: var(--color-primary-light-hover);
+}
+
+#rl-app #V-PopupsContacts .e-contact-item.selected,
+#rl-app #V-PopupsContacts .e-contact-item.selected:hover {
+    background-color: var(--color-primary-element-light);
+    border-left-color: var(--color-primary-element-light-text);
+}
+
+#rl-app #V-PopupsContacts .e-contact-item.checked {
+    background-color: unset;
+    border-left-color: var(--color-primary-light-text);
+}
+
+#rl-app #V-PopupsContacts .e-contact-item.checked.focused {
+    background-color: inherit;
+    border-left-color: var(--color-primary-element-light-text);
+}
+
+#rl-app #V-PopupsContacts .e-contact-item.checked:hover,
+#rl-app #V-PopupsContacts .e-contact-item.checked.focused:hover {
+    background-color: var(--color-background-hover);
+    border-left-color: inherit;
 }
 
 /*
