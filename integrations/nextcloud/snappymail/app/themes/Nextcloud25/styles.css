@@ -265,6 +265,10 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     font-weight: bold;
 }
 
+html.rl-left-panel-disabled #rl-app #rl-left:has(#V-SettingsMenu:not([hidden])) {
+    width: 250px !important;
+}
+
 #rl-app #V-AdminMenu nav,
 #rl-app #V-SettingsMenu nav,
 #rl-app .b-folders .b-content {
