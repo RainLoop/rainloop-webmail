@@ -168,6 +168,15 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     left: 10px;
 }
 
+#rl-app .LoginView .controls span.fontastic {
+    user-select: none;
+}
+
+#rl-app .LoginView .controls span.fontastic:active,
+#rl-app .LoginView .controls span.fontastic:hover {
+    background: unset;
+}
+
 #rl-app #rl-loading[hidden],
 #rl-app #rl-loading-error[hidden],
 #rl-app .LoginView .alert[hidden] {
