@@ -1601,9 +1601,14 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     border-color: var(--color-border);
 }
 
+#rl-app #V-PopupsCompose header {
+    background-color: unset;
+    color: unset;
+}
+
 #rl-app #V-PopupsCompose header .close,
 #rl-app #V-PopupsCompose header .minimize-custom {
-    box-sizing: content-box;
+    border-color: unset;
 }
 
 #rl-app dialog > footer .btn+.btn {
