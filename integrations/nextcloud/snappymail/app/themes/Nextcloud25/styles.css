@@ -1730,6 +1730,22 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 }
 
 /*
+ * nextcloud calendar select
+ */
+
+#rl-app #V-PopupsNextcloudCalendars li {
+    padding: 5px;
+    display: flex;
+    align-items: center !important;
+    border-bottom: solid 1px var(--color-border);
+}
+
+#rl-app #V-PopupsNextcloudCalendars li button {
+    margin-left: auto !important;
+    align-self: center;
+}
+
+/*
  * contacts
  */
 
