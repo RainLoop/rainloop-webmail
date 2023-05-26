@@ -1501,7 +1501,14 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 }
 
 /* hide additional theme settings, as these are made via Nextcloud theming */
-#rl-app #V-SettingsPane #V-Settings-Themes .form-horizontal {
+
+/* fonts */
+#rl-app #V-SettingsPane #V-Settings-Themes .form-horizontal:nth-of-type(3) {
+    display: none !important;
+}
+
+/* background */
+#content.app-snappymail #rl-app #V-SettingsPane #V-Settings-Themes .form-horizontal:nth-of-type(4) {
     display: none !important;
 }
 
