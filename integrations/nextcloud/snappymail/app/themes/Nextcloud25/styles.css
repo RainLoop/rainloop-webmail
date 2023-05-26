@@ -466,28 +466,33 @@ html.rl-left-panel-disabled #rl-app #rl-left {
 #rl-app .btn.btn-success:hover,
 #rl-app button.btn.buttonLogin:focus,
 #rl-app .btn.btn-success:focus {
+    color: var(--color-primary-element-text);
     background-color: var(--color-primary-element-hover);
     border-color: var(--color-primary-element-hover) !important;
 }
 
 #rl-app .btn.btn-warning {
+    color: var(--color-primary-element-text);
     background-color: var(--color-warning);
     border-color: var(--color-warning) !important;
 }
 
 #rl-app .btn.btn-warning:hover,
 #rl-app .btn.btn-warning:focus {
+    color: var(--color-primary-element-text);
     background-color: var(--color-warning-hover);
     border-color: var(--color-warning-hover) !important;
 }
 
 #rl-app .btn.btn-danger {
+    color: var(--color-primary-element-text);
     background-color: var(--color-error);
     border-color: var(--color-error) !important;
 }
 
 #rl-app .btn.btn-danger:hover,
 #rl-app .btn.btn-danger:focus {
+    color: var(--color-primary-element-text);
     background-color: var(--color-error-hover);
     border-color: var(--color-error-hover) !important;
 }
