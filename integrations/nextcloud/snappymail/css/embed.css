@@ -34,7 +34,8 @@ This stylesheet is used when SnappyMail runs in embed mode.
 	min-height: auto;
 	height: auto;
 	margin: 0;
-	padding: 4px 12px;
+	padding: 0 12px;
+	line-height: 2;
 }
 
 #rl-app .form-horizontal .control-group > :not(label)
