@@ -324,7 +324,8 @@ html.rl-left-panel-disabled #rl-app #rl-left:has(#V-SettingsMenu:not([hidden])) 
     background-color: var(--color-background-hover);
 }
 
-#rl-app .b-folders .b-folders-system a[data-unread]::after {
+#rl-app .b-folders .b-folders-system a[data-unread]::after,
+#rl-app .b-folders .b-folders-user a[data-unread]::after {
     display: block;
     margin: 0 ; 
     padding: 2px 6px;
