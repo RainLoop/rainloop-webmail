@@ -846,8 +846,10 @@ input[type="checkbox"] {
 input[type="checkbox"],
 #rl-app .e-checkbox.material-design>div {
     position: unset;
-    width: 18px !important;
     height: 18px !important;
+    width: 18px !important;
+    min-width: 18px !important;
+    flex-shrink: 0 !important;
     border: 2px solid var(--color-primary-element);
     border-radius: 2px;
     animation: none;
@@ -1707,16 +1709,35 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 }
 
 #rl-app #V-PopupsNextcloudFiles li {
-    line-height: 33px;
-}
-
-#rl-app #V-PopupsNextcloudFiles li input {
-    margin: 7px;
+    line-height: unset;
 }
 
 #rl-app #V-PopupsNextcloudFiles li[data-icon],
+#rl-app #V-PopupsNextcloudFiles li:has(>button[name="create"]),
 #rl-app #V-PopupsNextcloudFiles li details summary {
-    padding: 3px 10px;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center !important;
+    overflow-wrap: anywhere;
+}
+
+#rl-app #V-PopupsNextcloudFiles li button,
+#rl-app #V-PopupsNextcloudFiles li input {
+    margin-left: auto !important;
+    align-self: center;
+}
+
+#rl-app #V-PopupsNextcloudFiles li input {
+    min-width: 100px;
+    flex-shrink: 1;
+}
+
+#rl-app #V-PopupsNextcloudFiles li button {
+    flex-shrink: 0;
+}
+
+#rl-app #V-PopupsNextcloudFiles li button[name="create"] {
+    margin-left: 10px !important;
 }
 
 #rl-app #V-PopupsNextcloudFiles li:not(:last-child),
@@ -1746,6 +1767,11 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 #rl-app #V-PopupsNextcloudFiles li details summary[data-icon]::before {
     color: var(--color-primary);
     font-size: 20px;
+}
+
+#rl-app #V-PopupsNextcloudFiles li[data-icon]::before,
+#rl-app #V-PopupsNextcloudFiles li details summary[data-icon]::before {
+    margin: 5px 10px 5px 0;
 }
 
 /*
