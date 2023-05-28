@@ -1221,31 +1221,6 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     user-select: none;
 }
 
-#rl-app #messageItem .attachmentsPlace .attachmentItem {
-    background-color: var(--color-background-dark);
-    border-radius: var(--border-radius);
-    box-shadow: none;
-    padding: 2px;
-}
-
-#rl-app #messageItem .attachmentsPlace .attachmentItem:hover,
-#rl-app #messageItem .attachmentsPlace .attachmentItem:active {
-    background-color: var(--color-background-darker);
-}
-
-#rl-app #messageItem .attachmentsPlace .attachmentItem:focus {
-    outline: none;
-}
-
-#rl-app #messageItem .attachmentsPlace .attachmentItem .attachmentNameParent {
-    border-color: var(--color-border-dark);
-}
-
-#rl-app #messageItem .attachmentsPlace .attachmentItem .iconMain,
-#rl-app #messageItem .attachmentsPlace .attachmentItem .iconPreview {
-    color: var(--color-text-light);
-}
-
 #rl-app #messageItem .attachmentsControls {
     background-color: unset;
     border-color: var(--color-border);
@@ -1260,6 +1235,46 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 
 #rl-app #messageItem .attachmentListSimple .attachmentName {
     margin: 5px;
+}
+
+/*
+ * attachment item
+ */
+
+#rl-app .attachmentItem {
+    background-color: var(--color-background-dark);
+    border-radius: var(--border-radius);
+    box-shadow: none;
+    padding: 2px;
+}
+
+#rl-app .attachmentItem:hover,
+#rl-app .attachmentItem:active {
+    background-color: var(--color-background-darker);
+}
+
+#rl-app .attachmentItem:focus {
+    outline: none;
+}
+
+#rl-app .attachmentItem .iconProgress {
+    background-color: var(--color-background-darker);
+}
+
+#rl-app .attachmentItem .iconBG {
+    font-weight: 700;
+    line-height: 48px;
+    font-size: unset;
+    text-shadow: unset;
+}
+
+#rl-app .attachmentItem .attachmentNameParent {
+    border-color: var(--color-border-dark);
+}
+
+#rl-app .attachmentItem .iconMain,
+#rl-app .attachmentItem .iconPreview {
+    color: var(--color-text-light);
 }
 
 /*
@@ -1608,23 +1623,9 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     border-color: var(--color-border);
 }
 
-#rl-app #V-PopupsCompose .b-header {
-    background: unset;
-}
-
 #rl-app dialog > header,
 #rl-app dialog > footer {
     border-color: var(--color-border);
-}
-
-#rl-app #V-PopupsCompose header {
-    background-color: unset;
-    color: unset;
-}
-
-#rl-app #V-PopupsCompose header .close,
-#rl-app #V-PopupsCompose header .minimize-custom {
-    border-color: unset;
 }
 
 #rl-app dialog > footer .btn+.btn {
@@ -1677,6 +1678,33 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 #rl-app #V-PopupsLanguages label.selected {
     background-color: var(--color-primary-element-light) !important;
     border-color: var(--color-primary-element);
+}
+
+/*
+ * compose
+ */
+
+#rl-app #V-PopupsCompose header {
+    background-color: unset;
+    color: unset;
+}
+
+#rl-app #V-PopupsCompose header .close,
+#rl-app #V-PopupsCompose header .minimize-custom {
+    border-color: unset;
+}
+
+#rl-app #V-PopupsCompose .b-header {
+    background: unset;
+}
+
+#rl-app #V-PopupsCompose .attachmentAreaParent {
+    border-color: var(--color-border);
+}
+
+#rl-app #V-PopupsCompose .attachmentAreaParent .attachmentItem:hover,
+#rl-app #V-PopupsCompose .attachmentAreaParent .attachmentItem:active {
+    background-color: var(--color-background-dark);
 }
 
 /*
