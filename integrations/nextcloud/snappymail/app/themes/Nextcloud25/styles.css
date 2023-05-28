@@ -1698,6 +1698,10 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     background: unset;
 }
 
+#rl-app #V-PopupsCompose .no-attachments-desc {
+    text-shadow: unset;
+}
+
 #rl-app #V-PopupsCompose .attachmentAreaParent {
     border-color: var(--color-border);
 }
