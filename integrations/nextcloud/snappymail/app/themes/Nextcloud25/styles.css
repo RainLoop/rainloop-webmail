@@ -559,7 +559,8 @@ html.rl-left-panel-disabled #rl-app #rl-left:has(#V-SettingsMenu:not([hidden])) 
     line-height: 36px;
     height: 44px;
     min-width: fit-content;
-    width: -moz-fit-content;
+    width: stretch;
+    width: -moz-available;
     width: -webkit-fill-available;
     margin: 3px !important;
 
@@ -819,9 +820,8 @@ select option {
  */
 
 #rl-app .e-component.e-checkbox.material-design {
-    width: -moz-fit-content !important;
-    width: -webkit-fill-available !important;
     width: fit-content !important;
+    width: -moz-fit-content !important;
     display: flex;
     position: relative;
     align-items: center;
