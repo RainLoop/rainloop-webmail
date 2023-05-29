@@ -1699,6 +1699,11 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     color: var(--color-error);
 }
 
+#rl-app #V-PopupsCompose .pull-right>.btn,
+#rl-app #V-PopupsCompose .pull-right>.btn-group {
+    margin-left: 3px;
+}
+
 #rl-app #V-PopupsCompose .no-attachments-desc {
     text-shadow: unset;
 }
