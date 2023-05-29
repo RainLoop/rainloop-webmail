@@ -102,16 +102,25 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     margin-left: unset;
 }
 
-#rl-app .error-to {
-    color: var(--color-error);
+#rl-app [data-rainloopErrorTip]::before,
+#rl-app #V-PopupsPlugin .help-block span {
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    box-shadow: 0 0 2px var(--color-box-shadow);
+    background-color: var(--color-background-dark);
+    font-size: 13px;
+    color: unset;
+    left: 10px;
+    right: unset;
+    padding: 5px;
+    margin: 7px;
 }
 
 #rl-app [data-rainloopErrorTip]::before {
-    background: var(--color-background-dark);
-    border-radius: var(--border-radius);
-    border-color: var(--color-border-dark);
     color: var(--color-error);
+    font-weight: 700;
 }
+
 
 /*
  * loading and login screen
@@ -1632,18 +1641,6 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     margin: 0 0 0 5px;
 }
 
-#rl-app #V-PopupsPlugin .help-block span {
-    background-color: var(--color-background-dark);
-    border-color: var(--color-border);
-    border-radius: var(--border-radius);
-    box-shadow: 0 0 2px var(--color-box-shadow);
-    color: unset;
-    left: 10px;
-    right: unset;
-    padding: 8px;
-    margin: 7px;
-}
-
 #rl-app #V-PopupsPlugin .help-block {
     margin-left: 5px;
 }
@@ -1696,6 +1693,10 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 
 #rl-app #V-PopupsCompose .b-header {
     background: unset;
+}
+
+#rl-app #V-PopupsCompose .b-header .error-to {
+    color: var(--color-error);
 }
 
 #rl-app #V-PopupsCompose .no-attachments-desc {
