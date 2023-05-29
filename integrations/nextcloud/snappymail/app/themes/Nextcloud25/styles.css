@@ -1637,7 +1637,8 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     border-color: var(--color-border);
 }
 
-#rl-app dialog > footer .btn+.btn {
+#rl-app dialog > footer .btn+.btn,
+#rl-app dialog > footer button+button {
     margin: 0 0 0 5px;
 }
 
