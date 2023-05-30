@@ -60,6 +60,7 @@ class GPG
 		$passphrases = [],
 
 		$proc_resource,
+		$_openPipes, // GpgProcPipes
 
 		$armor = true,
 
