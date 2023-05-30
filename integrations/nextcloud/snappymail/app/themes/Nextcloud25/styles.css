@@ -871,8 +871,9 @@ input[type="checkbox"] {
 input[type="checkbox"],
 #rl-app .e-checkbox.material-design input+div {
     position: unset;
-    height: 18px;
-    width: 18px;
+    height: 18px !important;
+    width: 18px !important;
+    min-width: 18px !important;
     flex-shrink: 0 !important;
     border: 2px solid var(--color-primary-element);
     border-radius: 2px;
