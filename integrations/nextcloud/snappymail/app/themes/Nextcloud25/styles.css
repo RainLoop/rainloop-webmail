@@ -1720,6 +1720,15 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     background-color: var(--color-background-dark);
 }
 
+#rl-app #V-PopupsCompose .b-attachment-place {
+    border-color: var(--color-border);
+    background-color: var(--color-background-dark);
+}
+
+#rl-app #V-PopupsCompose .b-attachment-place.dragAndDropOver {
+    border-color: var(--color-border);
+}
+
 /*
  * nextcloud file picker
  */
