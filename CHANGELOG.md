@@ -1,3 +1,47 @@
+## 2.28.0 – 2023-05-30
+
+## Added
+- Threaded view make number orange when unread sub-messages #1028
+- Handle PHP pctnl messages
+- addEventListener('rl-view-model') missing for Settings #1013
+- CSS `--btn-border-radius`
+
+## Changed
+- Improved RTL languages support #1056
+- Composer text/attachments as tabs #1119
+- Filter dialog doesn't refer to folder names consistently #1111
+- TLS connection for MYSQL contact db #1078
+- Allow empty message body when there are attachments #1052
+- PHP inherit logger as Trait
+- Update Portuguese by @ner00 #1124
+- Update Traditional Chinese (Taiwan) by @chiyi4488 #1107
+- Update Russian by @konkere #1108
+- Update Italian by @cm-schl #1094
+- Update French by @hguilbert #1102
+- Update German by @cm-schl #1087
+
+## Fixed
+- Show messagelist timeout/abort error for #1071
+- DesktopNotifications setting not saved #1137
+- PHP Deprecation warning for $_openPipes #1141
+- Images size wrong #1134
+- Unable to preview body of encrypted mail in mailvelope reply-to #1130
+- Replace `<button>` in HTML message with innerHTML instead of remove #1125
+- Mailvelope failed #1126
+- Tabs labels row height
+- Selecting not yet existing filter throws error message instead of opening edit box #1104
+- JavaScript Squire `node is null` error
+- Config/Application.php: array_rand(): Argument #1 cannot be empty #1123
+- Pressing Enter in Add Filter dialog results in "Leave page?" prompt #1112
+- Issue with certain Amazon emails #1086
+- HTML font 8px and 10px issue #1082
+- Exception when executed on command line on the first-time #1085
+- Folders missing pagination #1070
+- Nextcloud WYSIWYG button style #1138
+- Nextcloud .btn-group > .btn layout
+- Nextcloud Bulleted items do not show the bullets in the preview window. #1117
+- Nextcloud Contacts integration #1083
+
 ## 2.27.3 – 2023-04-04
 
 ## Added
