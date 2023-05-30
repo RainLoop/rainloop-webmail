@@ -1114,6 +1114,16 @@ html:not(rl-mobile) #rl-app .hideMessageListCheckbox .checkboxCheckAll {
     margin: 2px 0;
 }
 
+#rl-app #messagesDragImage {
+    padding: 5px 5px 5px 10px;
+    color: var(--color-text-lighter);
+    background-color: var(--color-background-darker);
+    border-radius: var(--border-radius);
+    box-shadow: 0 0 4px var(--color-box-shadow);
+    height: unset;
+    min-width: unset;
+}
+
 /*
  * message view
  */
