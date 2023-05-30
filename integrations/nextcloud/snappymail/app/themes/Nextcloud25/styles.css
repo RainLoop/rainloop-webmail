@@ -8,10 +8,6 @@
  * app layout changes, background & color
  */
 
-:root {
-    --link-color: var(--color-primary-light-text);
-}
-
 #rl-app {
     color: var(--color-main-text);
     background-color: transparent;
@@ -30,16 +26,42 @@
     width: 300px;
 }
 
+html.rl-left-panel-disabled #rl-app #rl-left {
+    width: 65px !important;
+}
+
 #rl-app #rl-right {
     background-color: var(--color-main-background);
 }
 
-#rl-app input {
-    box-shadow: none;
-}
-
 #rl-app hr {
     border-bottom-color: var(--color-border-dark);
+}
+
+#rl-app .resizer {
+    opacity: 1;
+    background-color: unset;
+    border-right: solid 1px var(--color-border);
+}
+
+#rl-app .row {
+    margin-left: unset;
+}
+
+#rl-app .messageList,
+#rl-app .messageView {
+    margin: 0 5px;
+    border: none;
+    box-shadow: none !important;
+    background: var(--color-main-background);
+}
+
+/*
+ * links
+ */
+
+:root {
+    --link-color: var(--color-primary-light-text);
 }
 
 #rl-app a[target="_blank"],
@@ -54,53 +76,9 @@
     color: var(--color-primary);
 }
 
-#rl-app .resizer {
-    opacity: 1;
-    background-color: unset;
-    border-right: solid 1px var(--color-border);
-}
-
-#rl-app .messageList,
-#rl-app .messageView {
-    margin: 0 5px;
-    border: none;
-    box-shadow: none !important;
-    background: var(--color-main-background);
-}
-
-#rl-app .b-folders .b-toolbar {
-    height: unset;
-    display: flex;
-    flex-direction: row;
-    padding: 8px;
-}
-
-html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
-    flex-direction: column;
-}
-
-html.rl-left-panel-disabled #rl-app #rl-left {
-    width: 65px !important;
-}
-
-@media screen and (min-width: 1000px) {
-    #rl-app .b-folders .btn.buttonContacts {
-        transition: none;
-    }
-}
-
-#rl-app .b-folders .b-content {
-    top: 60px;
-    bottom: 162px;
-}
-
-#rl-app .b-folders .b-content.show-on-panel-disabled {
-    bottom: 56px;
-}
-
-#rl-app .row {
-    margin-left: unset;
-}
+/*
+ * error tips
+ */
 
 #rl-app [data-rainloopErrorTip]::before,
 #rl-app #V-PopupsPlugin .help-block span {
@@ -287,10 +265,30 @@ html.rl-left-panel-disabled #rl-app #rl-left:has(#V-SettingsMenu:not([hidden])) 
     width: 250px !important;
 }
 
+#rl-app .b-folders .b-toolbar {
+    height: unset;
+    display: flex;
+    flex-direction: row;
+    padding: 8px;
+}
+
+html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
+    flex-direction: column;
+}
+
 #rl-app #V-AdminMenu nav,
 #rl-app #V-SettingsMenu nav,
 #rl-app .b-folders .b-content {
     padding: calc(var(--default-grid-baseline) * 2);
+}
+
+#rl-app .b-folders .b-content {
+    top: 60px;
+    bottom: 162px;
+}
+
+#rl-app .b-folders .b-content.show-on-panel-disabled {
+    bottom: 56px;
 }
 
 #rl-app #V-AdminMenu nav a,
@@ -577,6 +575,12 @@ html.rl-left-panel-disabled #rl-app #rl-left:has(#V-SettingsMenu:not([hidden])) 
     width: 44px;
 }
 
+@media screen and (min-width: 1000px) {
+    #rl-app .b-folders .btn.buttonContacts {
+        transition: none;
+    }
+}
+
 #rl-app .b-footer.btn-toolbar .btn,
 #rl-app #V-SettingsPane .btn-toolbar .btn {
     background: transparent;
@@ -672,6 +676,16 @@ html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-f
  * inputs
  */
 
+#rl-app input {
+    box-shadow: none;
+}
+
+#rl-app input:hover,
+#rl-app input:active,
+#rl-app input:focus {
+    border-color: var(--color-primary-element);
+}
+
 #rl-app input:not([type="checkbox"]) {
     padding: 0 12px;
     font-size: var(--default-font-size);
@@ -681,12 +695,6 @@ html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-f
     outline: none;
     border: 2px solid var(--color-border-dark);
     border-radius: var(--border-radius-large);
-}
-
-#rl-app input:hover,
-#rl-app input:active,
-#rl-app input:focus {
-    border-color: var(--color-primary-element);
 }
 
 #rl-app input[type="search"]::-webkit-search-decoration,
