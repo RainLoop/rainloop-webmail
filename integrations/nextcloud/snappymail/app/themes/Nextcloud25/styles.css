@@ -990,12 +990,14 @@ html:not(rl-mobile) #rl-app .hideMessageListCheckbox .checkboxCheckAll {
     border-color: var(--color-border);
 }
 
-#rl-app .messageList .b-content .listDragOver {
-    /* ! does not work */
-}
-
 #rl-app .messageList .b-content .listError {
     color: var(--color-error);
+}
+
+#rl-app .messageList .b-content .listDragOver.dragOverEnter {
+    background-color: var(--color-background-dark);
+    border-radius: var(--border-radius);
+    margin: 5px;
 }
 
 #rl-app .messageList .b-content .listDragOver,
