@@ -446,7 +446,8 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	protected function MessageListByRequestIndexOrUids(MessageCollection $oMessageCollection, SequenceSet $oRange, array &$aAllThreads = []) : void
+	protected function MessageListByRequestIndexOrUids(MessageCollection $oMessageCollection, SequenceSet $oRange,
+		array &$aAllThreads = [], array &$aUnseenUIDs = []) : void
 	{
 		if (\count($oRange)) {
 			$aFetchIterator = $this->oImapClient->FetchIterate(array(
@@ -472,6 +473,7 @@ class MailClient
 						foreach ($aAllThreads as $aMap) {
 							if (\in_array($iUid, $aMap)) {
 								$oMessage->SetThreads($aMap);
+								$oMessage->SetThreadUnseen(\array_values(\array_intersect($aUnseenUIDs, $aMap)));
 								break;
 							}
 						}
@@ -490,7 +492,7 @@ class MailClient
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	private function GetUids(MessageListParams $oParams, string $sSearch,
-		string $sFolderHash, bool $bUseSort = false) : array
+		FolderInformation $oInfo, bool $bUseSort = false) : array
 	{
 		$oCacher = $oParams->oCacher;
 		$sFolderName = $oParams->sFolderName;
@@ -562,7 +564,7 @@ class MailClient
 			if (!empty($sSerialized)) {
 				$aSerialized = \json_decode($sSerialized, true);
 				if (\is_array($aSerialized) && isset($aSerialized['FolderHash'], $aSerialized['Uids']) &&
-					$sFolderHash === $aSerialized['FolderHash'] &&
+					$oInfo->etag === $aSerialized['FolderHash'] &&
 					\is_array($aSerialized['Uids'])
 				) {
 					$this->logWrite('Get Serialized '.($bReturnUid?'UIDS':'IDS').' from cache ('.$sSerializedLog.') [count:'.\count($aSerialized['Uids']).']');
@@ -594,7 +596,7 @@ class MailClient
 
 		if ($bUseCacheAfterSearch) {
 			$oCacher->Set($sSerializedHash, \json_encode(array(
-				'FolderHash' => $sFolderHash,
+				'FolderHash' => $oInfo->etag,
 				'Uids' => $aResultUids
 			)));
 
@@ -602,6 +604,23 @@ class MailClient
 		}
 
 		return $aResultUids;
+	}
+
+	public function MessageListUnseen(MessageListParams $oParams, FolderInformation $oInfo) : array
+	{
+		$oUnseenParams = new MessageListParams;
+		$oUnseenParams->sFolderName = $oParams->sFolderName;
+//		$oUnseenParams->sSearch = $oParams->sSearch;
+//		$oUnseenParams->sSort = $oParams->sSort;
+		$oUnseenParams->oCacher = $oParams->oCacher;
+		$oUnseenParams->bUseSort = false; // $oParams->bUseSort
+		$oUnseenParams->bUseThreads = false; // $oParams->bUseThreads;
+		$oUnseenParams->bHideDeleted = $oParams->bHideDeleted;
+//		$oUnseenParams->iOffset = $oParams->iOffset;
+//		$oUnseenParams->iLimit = $oParams->iLimit;
+//		$oUnseenParams->iPrevUidNext = $oParams->iPrevUidNext;
+//		$oUnseenParams->iThreadUid = $oParams->iThreadUid;
+		return $this->GetUids($oUnseenParams, 'unseen', $oInfo);
 	}
 
 	/**
@@ -646,6 +665,7 @@ class MailClient
 		if ($oInfo->MESSAGES) {
 			$bUseSort = $oParams->bUseSort || $oParams->sSort;
 			$aAllThreads = [];
+			$aUnseenUIDs = [];
 			$aUids = [];
 
 			$message_list_limit = $this->oImapClient->Settings->message_list_limit;
@@ -657,7 +677,7 @@ class MailClient
 				$this->logWrite('List optimization (count: '.$oInfo->MESSAGES.', limit:'.$message_list_limit.')');
 				if (\strlen($sSearch)) {
 					// Don't use SORT for speed
-					$aUids = $this->GetUids($oParams, $sSearch, $oInfo->etag/*, $bUseSort*/);
+					$aUids = $this->GetUids($oParams, $sSearch, $oInfo/*, $bUseSort*/);
 				} else {
 					$bUseSort = $this->oImapClient->hasCapability('SORT');
 					if (2 > $oInfo->MESSAGES) {
@@ -667,7 +687,7 @@ class MailClient
 						$end = \min($oInfo->MESSAGES, \max(1, $oInfo->MESSAGES - $oParams->iOffset + $oParams->iLimit));
 						$start = \max(1, $end - ($oParams->iLimit * 3) + 1);
 						$oParams->oSequenceSet = new SequenceSet(\range($end, $start), false);
-						$aRequestIndexes = $this->GetUids($oParams, '', $oInfo->etag, $bUseSort);
+						$aRequestIndexes = $this->GetUids($oParams, '', $oInfo, $bUseSort);
 						// Attempt to get the correct $oParams->iLimit slice
 						$aRequestIndexes = \array_slice($aRequestIndexes, $oParams->iOffset ? $oParams->iLimit : 0, $oParams->iLimit);
 					} else {
@@ -681,7 +701,7 @@ class MailClient
 			} else {
 				$aUids = ($bUseThreads && $oParams->iThreadUid)
 					? [$oParams->iThreadUid]
-					: $this->GetUids($oParams, '', $oInfo->etag, $bUseSort);
+					: $this->GetUids($oParams, '', $oInfo, $bUseSort);
 
 				if ($bUseThreads) {
 					$aAllThreads = $this->MessageListThreadsMap($oMessageCollection, $oParams->oCacher);
@@ -706,11 +726,13 @@ class MailClient
 							$threadedUids = \array_merge($threadedUids, $aMap);
 						}
 						$aUids = \array_diff($aUids, $threadedUids);
+						// Get all unseen
+						$aUnseenUIDs = $this->MessageListUnseen($oParams, $oInfo);
 					}
 				}
 
 				if ($aUids && \strlen($sSearch)) {
-					$aSearchedUids = $this->GetUids($oParams, $sSearch, $oInfo->etag/*, $bUseSort*/);
+					$aSearchedUids = $this->GetUids($oParams, $sSearch, $oInfo/*, $bUseSort*/);
 					if ($bUseThreads && !$oParams->iThreadUid) {
 						$matchingThreadUids = [];
 						foreach ($aAllThreads as $aMap) {
@@ -732,7 +754,7 @@ class MailClient
 			if (\count($aUids)) {
 				$oMessageCollection->totalEmails = \count($aUids);
 				$aUids = \array_slice($aUids, $oParams->iOffset, $oParams->iLimit);
-				$this->MessageListByRequestIndexOrUids($oMessageCollection, new SequenceSet($aUids), $aAllThreads);
+				$this->MessageListByRequestIndexOrUids($oMessageCollection, new SequenceSet($aUids), $aAllThreads, $aUnseenUIDs);
 			}
 		} else {
 			$this->logWrite('No messages in '.$oMessageCollection->FolderName);

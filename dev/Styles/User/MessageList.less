@@ -289,16 +289,6 @@
 		margin-right: 0.25em;
 	}
 
-	&.hasUnseenSubMessage {
-		background-color: rgba(255, 255, 64, 0.15);
-		border-left-color: lighten(orange, 30%);
-		border-right-color: lighten(orange, 30%) !important;
-		&.focused {
-			border-left-color: darken(orange, 10%);
-			border-right-color: darken(orange, 10%) !important;
-		}
-	}
-
 	&.unseen {
 		background-color: rgba(255, 255, 64, 0.15);
 		border-left-color: orange;
@@ -311,6 +301,9 @@
 			border-left-color: darken(orange, 10%);
 			border-right-color: darken(orange, 10%) !important;
 		}
+	}
+	[data-unseen] {
+		background-color: rgba(255, 255, 64, 0.15);
 	}
 
 	&.checked {

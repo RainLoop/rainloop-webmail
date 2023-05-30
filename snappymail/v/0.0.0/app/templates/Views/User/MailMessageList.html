@@ -139,7 +139,7 @@
 					<div class="flagParent fontastic"></div>
 					<div class="senderParent actionHandle" data-bind="attr: {'title': senderClearEmailsString}, text: senderEmailsString"></div>
 					<div class="subjectParent actionHandle" data-bind="text: subject"></div>
-					<div class="threads-len" data-bind="visible: 1 < threadsLen(), text: threadsLen"></div>
+					<div class="threads-len" data-bind="visible: 1 < threadsLen(), text: threadsLen, attr: {'data-unseen': threadUnseenLen() || null}"></div>
 					<div class="attachmentParent actionHandle">
 						<i data-bind="css: attachmentIconClass"></i>
 					</div>

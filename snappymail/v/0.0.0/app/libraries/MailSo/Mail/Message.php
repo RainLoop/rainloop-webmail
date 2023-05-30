@@ -69,7 +69,8 @@ class Message implements \JsonSerializable
 //		$aFlags = [],
 		$aFlagsLowerCase = [],
 		$UnsubsribeLinks = [],
-		$aThreads = [];
+		$aThreadUIDs = [],
+		$aThreadUnseenUIDs = [];
 
 	private ?array $DraftInfo = null;
 	private ?array $pgpSigned = null;
@@ -117,9 +118,14 @@ class Message implements \JsonSerializable
 		$this->SpamScore = \intval(\max(0, \min(100, $value)));
 	}
 
-	public function SetThreads(array $aThreads)
+	public function SetThreads(array $aThreadUIDs)
 	{
-		$this->aThreads = $aThreads;
+		$this->aThreadUIDs = $aThreadUIDs;
+	}
+
+	public function SetThreadUnseen(array $aUnseenUIDs)
+	{
+		$this->aThreadUnseenUIDs = $aUnseenUIDs;
 	}
 
 	public static function fromFetchResponse(string $sFolder, \MailSo\Imap\FetchResponse $oFetchResponse, ?\MailSo\Imap\BodyStructure $oBodyStructure = null) : self
@@ -456,7 +462,7 @@ class Message implements \JsonSerializable
 			$this->sFolder,
 			$this->Uid,
 			\implode(',', $this->getFlags()),
-//			\implode(',', $this->aThreads),
+//			\implode(',', $this->aThreadUIDs),
 			$sClientHash
 		]));
 	}
@@ -576,8 +582,11 @@ class Message implements \JsonSerializable
 			$result['pgpEncrypted'] = $this->pgpEncrypted;
 		}
 
-		if ($this->aThreads) {
-			$result['threads'] = $this->aThreads;
+		if ($this->aThreadUIDs) {
+			$result['threads'] = $this->aThreadUIDs;
+		}
+		if ($this->aThreadUnseenUIDs) {
+			$result['threadUnseen'] = $this->aThreadUnseenUIDs;
 		}
 
 		return $result;

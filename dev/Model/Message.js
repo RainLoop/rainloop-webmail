@@ -113,14 +113,12 @@ export class MessageModel extends AbstractModel {
 
 			// rfc8621
 			id: '',
-//			threadId: '',
-
-			hasUnseenSubMessage: false,
-			hasFlaggedSubMessage: false
+//			threadId: ''
 		});
 
 		this.attachments = ko.observableArray(new AttachmentCollectionModel);
 		this.threads = ko.observableArray();
+		this.threadUnseen = ko.observableArray();
 		this.unsubsribeLinks = ko.observableArray();
 		this.flags = ko.observableArray();
 
@@ -128,6 +126,7 @@ export class MessageModel extends AbstractModel {
 			attachmentIconClass: () =>
 				this.encrypted() ? 'icon-lock' : FileInfo.getAttachmentsIconClass(this.attachments()),
 			threadsLen: () => rl.app.messageList.threadUid() ? 0 : this.threads().length,
+			threadUnseenLen: () => rl.app.messageList.threadUid() ? 0 : this.threadUnseen().length,
 
 			isUnseen: () => !this.flags().includes('\\seen'),
 			isFlagged: () => this.flags().includes('\\flagged'),
@@ -238,9 +237,7 @@ export class MessageModel extends AbstractModel {
 			focused: this.focused(),
 			priorityHigh: this.priority() === 1,
 			withAttachments: !!this.attachments().length,
-			// hasChildrenMessage: 1 < this.threadsLen(),
-			hasUnseenSubMessage: this.hasUnseenSubMessage(),
-			hasFlaggedSubMessage: this.hasFlaggedSubMessage()
+			// hasChildrenMessage: 1 < this.threadsLen()
 		}, (key, value) => value && classes.push(key));
 		flags && this.flags().forEach(value => classes.push('msgflag-'+value));
 		return classes.join(' ');

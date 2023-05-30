@@ -27,8 +27,8 @@ class MessageListParams
 		$bHideDeleted = true;
 
 	protected int
-		$iOffset,
-		$iLimit,
+		$iOffset = 0,
+		$iLimit = 0,
 		$iPrevUidNext = 0, // used to check for new messages
 		$iThreadUid = 0;
 
