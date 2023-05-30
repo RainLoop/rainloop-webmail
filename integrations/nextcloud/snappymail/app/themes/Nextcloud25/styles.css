@@ -763,7 +763,7 @@ select option {
 
 #rl-app .emailaddresses li[draggable] {
     line-height: 20px;
-    padding: 2px 15px 2px 5px;
+    padding: 2px 5px;
     color: var(--color-main-text);
     border: 1px solid var(--color-border-dark);
     border-radius: var(--border-radius);
@@ -773,7 +773,8 @@ select option {
 }
 
 #rl-app .emailaddresses li a {
-    /* TODO */
+    position: unset;
+    color: var(--color-main-text);
 }
 
 /*
