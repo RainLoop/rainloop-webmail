@@ -995,7 +995,7 @@ html:not(rl-mobile) #rl-app .hideMessageListCheckbox .checkboxCheckAll {
 }
 
 #rl-app .messageList .b-content .listError {
-    /* ? cant reproduce */
+    color: var(--color-error);
 }
 
 #rl-app .messageList .b-content .listDragOver,
