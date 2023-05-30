@@ -36,7 +36,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.notificationSound = ko.observable(SettingsGet('NotificationSound'));
 		this.notificationSounds = ko.observableArray(SettingsGet('newMailSounds'));
 
-		this.desktopNotification = NotificationUserStore.enabled;
+		this.desktopNotifications = NotificationUserStore.enabled;
 		this.isDesktopNotificationAllowed = NotificationUserStore.allowed;
 
 		this.threadsAllowed = AppUserStore.threadsAllowed;
