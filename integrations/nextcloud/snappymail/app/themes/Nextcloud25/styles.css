@@ -1132,7 +1132,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 }
 
 #rl-app .messageView .b-message-view-desc.error {
-    /* ? cant reproduce */
+    color: var(--color-error);
 }
 
 #rl-app meter::-webkit-meter-bar {
