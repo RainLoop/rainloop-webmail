@@ -5,20 +5,146 @@
  */
 
 /*
+ * Default Nextcloud (v25+) theme variables and colors
+ * based on https://github.com/nextcloud/server/blob/master/core/css/variables.scss
+ */
+:not([data-theme-dark]) {
+    --nc-color-main-background: var(--color-main-background, #ffffff);
+    --nc-color-main-background-rgb: var(--color-main-background-rgb, 255, 255, 255);
+    --nc-color-main-background-blur: var(--color-main-background-blur, rgba(var(--nc-color-main-background-rgb), .8));
+    --nc-filter-background-blur: var(--filter-background-blur, blur(25px));
+    --nc-color-background-hover: var(--color-background-hover, #f5f5f5);
+    --nc-color-background-dark: var(--color-background-dark, #ededed);
+    --nc-color-background-darker: var(--color-background-darker, #dbdbdb);
+    --nc-color-placeholder-light: var(--color-placeholder-light, #e6e6e6);
+    --nc-color-placeholder-dark: var(--color-placeholder-dark, #cccccc);
+    --nc-color-main-text: var(--color-main-text, #222222);
+    --nc-color-text-light: var(--color-text-light, #222222);
+    --nc-color-text-lighter: var(--color-text-lighter, #767676);
+    --nc-color-scrollbar: var(--color-scrollbar, rgba(34, 34, 34, .15));
+    --nc-color-error: var(--color-error, #e9322d);
+    --nc-color-error-rgb: var(--color-error-rgb, 233, 50, 45);
+    --nc-color-error-hover: var(--color-error-hover, #ed5a56);
+    --nc-color-warning: var(--color-warning, #eca700);
+    --nc-color-warning-rgb: var(--color-warning-rgb, 236, 167, 0);
+    --nc-color-warning-hover: var(--color-warning-hover, #efb832);
+    --nc-color-success: var(--color-success, #46ba61);
+    --nc-color-success-rgb: var(--color-success-rgb, 70, 186, 97);
+    --nc-color-success-hover: var(--color-success-hover, #6ac780);
+    --nc-color-loading-light: var(--color-loading-light, #cccccc);
+    --nc-color-loading-dark: var(--color-loading-dark, #444444);
+    --nc-color-box-shadow-rgb: var(--color-box-shadow-rgb, 77, 77, 77);
+    --nc-color-box-shadow: var(--color-box-shadow, rgba(var(--nc-color-box-shadow-rgb), 0.5));
+    --nc-color-border: var(--color-border, #ededed);
+    --nc-color-border-dark: var(--color-border-dark, #dbdbdb);
+    --nc-font-face: var(--font-face, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Cantarell, Ubuntu, 'Helvetica Neue', Arial, sans-serif, 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol');
+    --nc-default-font-size: var(--default-font-size, 15px);
+    --nc-animation-quick: var(--animation-quick, 100ms);
+    --nc-animation-slow: var(--animation-slow, 300ms);
+    --nc-border-radius: var(--border-radius, 3px);
+    --nc-border-radius-large: var(--border-radius-large, 10px);
+    --nc-border-radius-pill: var(--border-radius-pill, 100px);
+    --nc-default-grid-baseline: var(--default-grid-baseline, 4px);
+    --nc-navigation-width: var(--navigation-width, 300px);
+    --nc-sidebar-min-width: var(--sidebar-min-width, 300px);
+    --nc-sidebar-max-width: var(--sidebar-max-width, 500px);
+    --nc-list-min-width: var(--list-min-width, 200px);
+    --nc-list-max-width: var(--list-max-width, 300px);
+    --nc-breakpoint-mobile: var(--breakpoint-mobile, 1024px);
+    --nc-color-primary: var(--color-primary, #00639a);
+    --nc-color-primary-default: var(--color-primary-default, #0082c9);
+    --nc-color-primary-text: var(--color-primary-text, #ffffff);
+    --nc-color-primary-hover: var(--color-primary-hover, #3282ae);
+    --nc-color-primary-light: var(--color-primary-light, #e5eff4);
+    --nc-color-primary-light-text: var(--color-primary-light-text, #00273d);
+    --nc-color-primary-light-hover: var(--color-primary-light-hover, #dbe4e9);
+    --nc-color-primary-text-dark: var(--color-primary-text-dark, #ededed);
+    --nc-color-primary-element: var(--color-primary-element, #00639a);
+    --nc-color-primary-element-text: var(--color-primary-element-text, #ffffff);
+    --nc-color-primary-element-hover: var(--color-primary-element-hover, #3282ae);
+    --nc-color-primary-element-light: var(--color-primary-element-light, #e5eff4);
+    --nc-color-primary-element-light-text: var(--color-primary-element-light-text, #00273d);
+    --nc-color-primary-element-light-hover: var(--color-primary-element-light-hover, #dbe4e9);
+    --nc-color-primary-element-text-dark: var(--color-primary-element-text-dark, #ededed);
+}
+
+@media (prefers-color-scheme: dark) {
+    :not([data-theme-light]) {
+        --nc-color-main-background: var(--color-main-background, #171717);
+        --nc-color-main-background-rgb: var(--color-main-background-rgb, 23, 23, 23);
+        --nc-color-main-background-blur: var(--color-main-background-blur, rgba(var(--nc-color-main-background-rgb), .8));
+        --nc-filter-background-blur: var(--filter-background-blur, blur(25px));
+        --nc-color-background-hover: var(--color-background-hover, #212121);
+        --nc-color-background-dark: var(--color-background-dark, #292929);
+        --nc-color-background-darker: var(--color-background-darker, #3b3b3b);
+        --nc-color-placeholder-light: var(--color-placeholder-light, #313131);
+        --nc-color-placeholder-dark: var(--color-placeholder-dark, #4a4a4a);
+        --nc-color-main-text: var(--color-main-text, #D8D8D8);
+        --nc-color-text-light: var(--color-text-light, #bfbfbf);
+        --nc-color-text-lighter: var(--color-text-lighter, #a5a5a5);
+        --nc-color-scrollbar: var(--color-scrollbar, #3d3d3d);
+        --nc-color-error: var(--color-error, #e9322d);
+        --nc-color-error-rgb: var(--color-error-rgb, 233, 50, 45);
+        --nc-color-error-hover: var(--color-error-hover, #ed5a56);
+        --nc-color-warning: var(--color-warning, #eca700);
+        --nc-color-warning-rgb: var(--color-warning-rgb, 236, 167, 0);
+        --nc-color-warning-hover: var(--color-warning-hover, #efb832);
+        --nc-color-success: var(--color-success, #46ba61);
+        --nc-color-success-rgb: var(--color-success-rgb, 70, 186, 97);
+        --nc-color-success-hover: var(--color-success-hover, #6ac780);
+        --nc-color-loading-light: var(--color-loading-light, #777);
+        --nc-color-loading-dark: var(--color-loading-dark, #CCC);
+        --nc-color-box-shadow-rgb: var(--color-box-shadow-rgb, 0, 0, 0);
+        --nc-color-box-shadow: var(--color-box-shadow, #000000);
+        --nc-color-border: var(--color-border, #292929);
+        --nc-color-border-dark: var(--color-border-dark, #3b3b3b);
+        --nc-font-face: var(--font-face, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Cantarell, Ubuntu, 'Helvetica Neue', Arial, sans-serif, 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol');
+        --nc-default-font-size: var(--default-font-size, 15px);
+        --nc-animation-quick: var(--animation-quick, 100ms);
+        --nc-animation-slow: var(--animation-slow, 300ms);
+        --nc-border-radius: var(--border-radius, 3px);
+        --nc-border-radius-large: var(--border-radius-large, 10px);
+        --nc-border-radius-pill: var(--border-radius-pill, 100px);
+        --nc-default-grid-baseline: var(--default-grid-baseline, 4px);
+        --nc-navigation-width: var(--navigation-width, 300px);
+        --nc-sidebar-min-width: var(--sidebar-min-width, 300px);
+        --nc-sidebar-max-width: var(--sidebar-max-width, 500px);
+        --nc-list-min-width: var(--list-min-width, 200px);
+        --nc-list-max-width: var(--list-max-width, 300px);
+        --nc-breakpoint-mobile: var(--breakpoint-mobile, 1024px);
+        --nc-color-primary: var(--color-primary, #00639a);
+        --nc-color-primary-default: var(--color-primary-default, #0082c9);
+        --nc-color-primary-text: var(--color-primary-text, #ffffff);
+        --nc-color-primary-hover: var(--color-primary-hover, #04537f);
+        --nc-color-primary-light: var(--color-primary-light, #141e24);
+        --nc-color-primary-light-text: var(--color-primary-light-text, #99c0d6);
+        --nc-color-primary-light-hover: var(--color-primary-light-hover, #1d272d);
+        --nc-color-primary-text-dark: var(--color-primary-text-dark, #ededed);
+        --nc-color-primary-element: var(--color-primary-element, #00639a);
+        --nc-color-primary-element-text: var(--color-primary-element-text, #ffffff);
+        --nc-color-primary-element-hover: var(--color-primary-element-hover, #04537f);
+        --nc-color-primary-element-light: var(--color-primary-element-light, #141e24);
+        --nc-color-primary-element-light-text: var(--color-primary-element-light-text, #99c0d6);
+        --nc-color-primary-element-light-hover: var(--color-primary-element-light-hover, #1d272d);
+        --nc-color-primary-element-text-dark: var(--color-primary-element-text-dark, #ededed);
+    }
+}
+
+/*
  * app layout changes, background & color
  */
 
 #rl-app {
-    color: var(--color-main-text);
+    color: var(--nc-color-main-text);
     background-color: transparent;
-    font-family: var(--font-face);
-    font-size: var(--default-font-size);
+    font-family: var(--nc-font-face);
+    font-size: var(--nc-default-font-size);
 }
 
 #rl-app #rl-left {
-    background-color: var(--color-main-background-blur, var(--color-main-background));
-    -webkit-backdrop-filter: var(--filter-background-blur, none);
-    backdrop-filter: var(--filter-background-blur, none);
+    background-color: var(--nc-color-main-background-blur, var(--nc-color-main-background));
+    -webkit-backdrop-filter: var(--nc-filter-background-blur, none);
+    backdrop-filter: var(--nc-filter-background-blur, none);
 }
 
 #rl-app #rl-left,
@@ -26,22 +152,26 @@
     width: 300px;
 }
 
+html:not(.rl-left-panel-disabled) #rl-left {
+    max-width: var(--nc-sidebar-max-width);
+}
+
 html.rl-left-panel-disabled #rl-app #rl-left {
     width: 65px !important;
 }
 
 #rl-app #rl-right {
-    background-color: var(--color-main-background);
+    background-color: var(--nc-color-main-background);
 }
 
 #rl-app hr {
-    border-bottom-color: var(--color-border-dark);
+    border-bottom-color: var(--nc-color-border-dark);
 }
 
 #rl-app .resizer {
     opacity: 1;
     background-color: unset;
-    border-right: solid 1px var(--color-border);
+    border-right: solid 1px var(--nc-color-border);
 }
 
 #rl-app .row {
@@ -53,19 +183,19 @@ html.rl-left-panel-disabled #rl-app #rl-left {
  */
 
 :root {
-    --link-color: var(--color-primary-light-text);
+    --link-color: var(--nc-color-primary-element-light-text);
 }
 
 #rl-app a[target="_blank"],
 #rl-app #messageItem .b-text-part a {
-    color: var(--color-primary-light-text);
+    color: var(--nc-color-primary-element-light-text);
 }
 
 #rl-app a[target="_blank"]:visited,
 #rl-app a[target="_blank"]:active,
 #rl-app #messageItem .b-text-part a:visited,
 #rl-app #messageItem .b-text-part a:active {
-    color: var(--color-primary);
+    color: var(--nc-color-primary-element);
 }
 
 /*
@@ -74,10 +204,10 @@ html.rl-left-panel-disabled #rl-app #rl-left {
 
 #rl-app [data-rainloopErrorTip]::before,
 #rl-app #V-PopupsPlugin .help-block span {
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius);
-    box-shadow: 0 0 2px var(--color-box-shadow);
-    background-color: var(--color-background-dark);
+    border: 1px solid var(--nc-color-border);
+    border-radius: var(--nc-border-radius);
+    box-shadow: 0 0 2px var(--nc-color-box-shadow);
+    background-color: var(--nc-color-background-dark);
     font-size: 13px;
     color: unset;
     left: 10px;
@@ -87,7 +217,7 @@ html.rl-left-panel-disabled #rl-app #rl-left {
 }
 
 #rl-app [data-rainloopErrorTip]::before {
-    color: var(--color-error);
+    color: var(--nc-color-error);
     font-weight: 700;
 }
 
@@ -113,17 +243,17 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     text-shadow: none;
     transition: none;
 
-    background-color: var(--color-main-background-blur, var(--color-main-background));
-    -webkit-backdrop-filter: var(--filter-background-blur, none);
-    backdrop-filter: var(--filter-background-blur, none);
+    background-color: var(--nc-color-main-background-blur, var(--nc-color-main-background));
+    -webkit-backdrop-filter: var(--nc-filter-background-blur, none);
+    backdrop-filter: var(--nc-filter-background-blur, none);
 
-    color: var(--color-main-text);
+    color: var(--nc-color-main-text);
     width: 100%;
     height: 100%;
 }
 
 #rl-app .LoginView .descWrapper {
-    color: var(--color-main-text);
+    color: var(--nc-color-main-text);
 }
 
 #rl-app .LoginView .alert {
@@ -135,11 +265,11 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     max-width: 500px;
     width: 90%;
 
-    background-color: var(--color-main-background);
+    background-color: var(--nc-color-main-background);
     border: unset;
-    border-radius: var(--border-radius-large);
-    box-shadow: 0 0 10px var(--color-box-shadow);
-    color: var(--color-main-text);
+    border-radius: var(--nc-border-radius-large);
+    box-shadow: 0 0 10px var(--nc-color-box-shadow);
+    color: var(--nc-color-main-text);
 }
 
 #rl-app .LoginView .controls > .fontastic:first-child {
@@ -167,11 +297,11 @@ html.rl-left-panel-disabled #rl-app #rl-left {
  */
 
 #rl-app .iconcolor-green {
-    color: var(--color-success) !important;
+    color: var(--nc-color-success) !important;
 }
 
 #rl-app .iconcolor-red {
-    color: var(--color-error) !important;
+    color: var(--nc-color-error) !important;
 }
 
 #rl-app i.fontastic {
@@ -183,7 +313,7 @@ html.rl-left-panel-disabled #rl-app #rl-left {
 }
 
 #rl-app .drag-handle {
-    color: var(--color-text-lighter);
+    color: var(--nc-color-text-lighter);
 }
 
 /*
@@ -193,10 +323,10 @@ html.rl-left-panel-disabled #rl-app #rl-left {
 #rl-app .alert {
     text-shadow: unset;
     border: unset;
-    color: var(--color-main-text);
-    background-color: rgba(var(--color-warning-rgb), 0.1);
-    border-inline-start: 4px solid var(--color-warning);
-    border-radius: var(--border-radius);
+    color: var(--nc-color-main-text);
+    background-color: rgba(var(--nc-color-warning-rgb), 0.1);
+    border-inline-start: 4px solid var(--nc-color-warning);
+    border-radius: var(--nc-border-radius);
     margin: 1rem;
     padding: 1rem;
 }
@@ -207,27 +337,27 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     margin-top: unset;
     margin-bottom: 12px;
     line-height: 30px;
-    color: var(--color-text-light);
+    color: var(--nc-color-text-light);
 }
 
 #rl-app .alert.alert-info {
-    background-color: var(--color-background-dark);
-    border-color: var(--color-background-darker);
+    background-color: var(--nc-color-background-dark);
+    border-color: var(--nc-color-background-darker);
 }
 
 #rl-app .alert.alert-warning {
-    background-color: rgba(var(--color-warning-rgb), 0.1);
-    border-color: var(--color-warning);
+    background-color: rgba(var(--nc-color-warning-rgb), 0.1);
+    border-color: var(--nc-color-warning);
 }
 
 #rl-app .alert.alert-success {
-    background-color: rgba(var(--color-success-rgb), 0.1);
-    border-color: var(--color-success);
+    background-color: rgba(var(--nc-color-success-rgb), 0.1);
+    border-color: var(--nc-color-success);
 }
 
 #rl-app .alert.alert-error {
-    background-color: rgba(var(--color-error-rgb), 0.1);
-    border-color: var(--color-error);
+    background-color: rgba(var(--nc-color-error-rgb), 0.1);
+    border-color: var(--nc-color-error);
 }
 
 #rl-app .alert .close {
@@ -248,8 +378,8 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     top: 0;
     left: 0;
     height: auto !important;
-    padding-top: calc(var(--default-grid-baseline) * 2) !important;
-    padding-bottom: calc(var(--default-grid-baseline) * 2) !important;
+    padding-top: calc(var(--nc-default-grid-baseline) * 2) !important;
+    padding-bottom: calc(var(--nc-default-grid-baseline) * 2) !important;
     font-weight: bold;
 }
 
@@ -271,7 +401,7 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
 #rl-app #V-AdminMenu nav,
 #rl-app #V-SettingsMenu nav,
 #rl-app .b-folders .b-content {
-    padding: calc(var(--default-grid-baseline) * 2);
+    padding: calc(var(--nc-default-grid-baseline) * 2);
 }
 
 #rl-app .b-folders .b-content {
@@ -292,7 +422,7 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
     padding: 0 2em 0 15px;
     height: 38px;
     line-height: 38px !important;
-    border-radius: var(--border-radius-pill);
+    border-radius: var(--nc-border-radius-pill);
     color: unset;
     border: none;
 }
@@ -310,7 +440,7 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
 #rl-app #V-SettingsMenu nav a.selected,
 #rl-app .b-folders li a.selectable.selected {
     color: unset;
-    background-color: var(--color-primary-light);
+    background-color: var(--nc-color-primary-light);
 }
 
 #rl-app #V-AdminMenu nav a:not(.selected):hover,
@@ -320,7 +450,7 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
 #rl-app .b-folders li a.selectable:not(.selected):hover,
 #rl-app .b-folders li a.selectable:not(.selected):focus {
     color: unset;
-    background-color: var(--color-background-hover);
+    background-color: var(--nc-color-background-hover);
 }
 
 #rl-app .b-folders .b-folders-system a[data-unread]::after,
@@ -331,16 +461,16 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
     top: 50%;
     transform: translateY(-50%);
 
-    color: var(--color-primary-element);
-    background-color: var(--color-primary-light);
+    color: var(--nc-color-primary-element);
+    background-color: var(--nc-color-primary-element-light);
 
     font-size: 12px;
     text-shadow: none;
 }
 
 #rl-app .b-folders hr {
-    border-top: solid var(--color-main-text);
-    border-radius: var(--border-radius-pill);
+    border-top: solid var(--nc-color-main-text);
+    border-radius: var(--nc-border-radius-pill);
     opacity: .1;
 }
 
@@ -390,15 +520,15 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
     box-sizing: border-box;
     padding: 8px 14px;
     line-height: 20px;
-    color: var(--color-main-text);
-    background-color: var(--color-background-dark);
-    border: 1px solid var(--color-border-dark) !important;
-    border-radius: var(--border-radius-pill);
-    font-size: var(--default-font-size);
+    color: var(--nc-color-main-text);
+    background-color: var(--nc-color-background-dark);
+    border: 1px solid var(--nc-color-border-dark) !important;
+    border-radius: var(--nc-border-radius-pill);
+    font-size: var(--nc-default-font-size);
 }
 
 #rl-app .btn.fontastic {
-    border-radius: var(--border-radius-large);
+    border-radius: var(--nc-border-radius-large);
 }
 
 #rl-app .btn.btn-thin {
@@ -433,15 +563,15 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
 #rl-app button:not(.disabled, [disabled]):hover,
 #rl-app .btn:not(.disabled, [disabled]):focus,
 #rl-app button:not(.disabled, [disabled]):focus {
-    border-color: var(--color-primary-element) !important;
+    border-color: var(--nc-color-primary-element) !important;
 }
 
 #rl-app .btn:not(.disabled, [disabled]):active,
 #rl-app button:not(.disabled, [disabled]):active,
 #rl-app .btn:not(.disabled, [disabled]).active,
 #rl-app button:not(.disabled, [disabled]).active {
-    background-color: var(--color-main-background);
-    color: var(--color-text-light);
+    background-color: var(--nc-color-main-background);
+    color: var(--nc-color-text-light);
 }
 
 #rl-app .btn,
@@ -465,49 +595,49 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
 }
 
 #rl-app .btn.buttonCompose:active {
-    color: var(--color-primary-text-dark);
+    color: var(--nc-color-primary-element-text-dark);
 }
 
 #rl-app button.btn.buttonLogin,
 #rl-app .btn.btn-success {
-    color: var(--color-primary-element-text);
-    background-color: var(--color-primary-element);
-    border-color: var(--color-primary-element) !important;
+    color: var(--nc-color-primary-element-text);
+    background-color: var(--nc-color-primary-element);
+    border-color: var(--nc-color-primary-element) !important;
 }
 
 #rl-app button.btn.buttonLogin:hover,
 #rl-app .btn.btn-success:hover,
 #rl-app button.btn.buttonLogin:focus,
 #rl-app .btn.btn-success:focus {
-    color: var(--color-primary-element-text);
-    background-color: var(--color-primary-element-hover);
-    border-color: var(--color-primary-element-hover) !important;
+    color: var(--nc-color-primary-element-text);
+    background-color: var(--nc-color-primary-element-hover);
+    border-color: var(--nc-color-primary-element-hover) !important;
 }
 
 #rl-app .btn.btn-warning {
-    color: var(--color-primary-element-text);
-    background-color: var(--color-warning);
-    border-color: var(--color-warning) !important;
+    color: var(--nc-color-primary-element-text);
+    background-color: var(--nc-color-warning);
+    border-color: var(--nc-color-warning) !important;
 }
 
 #rl-app .btn.btn-warning:hover,
 #rl-app .btn.btn-warning:focus {
-    color: var(--color-primary-element-text);
-    background-color: var(--color-warning-hover);
-    border-color: var(--color-warning-hover) !important;
+    color: var(--nc-color-primary-element-text);
+    background-color: var(--nc-color-warning-hover);
+    border-color: var(--nc-color-warning-hover) !important;
 }
 
 #rl-app .btn.btn-danger {
-    color: var(--color-primary-element-text);
-    background-color: var(--color-error);
-    border-color: var(--color-error) !important;
+    color: var(--nc-color-primary-element-text);
+    background-color: var(--nc-color-error);
+    border-color: var(--nc-color-error) !important;
 }
 
 #rl-app .btn.btn-danger:hover,
 #rl-app .btn.btn-danger:focus {
-    color: var(--color-primary-element-text);
-    background-color: var(--color-error-hover);
-    border-color: var(--color-error-hover) !important;
+    color: var(--nc-color-primary-element-text);
+    background-color: var(--nc-color-error-hover);
+    border-color: var(--nc-color-error-hover) !important;
 }
 
 #rl-app .btn-group .btn,
@@ -519,26 +649,26 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
 
 #rl-app .btn-group .btn:first-of-type,
 #rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])) {
-    border-top-left-radius: var(--border-radius-pill);
-    border-bottom-left-radius: var(--border-radius-pill);
+    border-top-left-radius: var(--nc-border-radius-pill);
+    border-bottom-left-radius: var(--nc-border-radius-pill);
 }
 
 #rl-app .btn-group .btn:last-of-type,
 #rl-app .btn-group .btn:nth-last-child(1 of :not([style*="display: none;"])) {
-    border-top-right-radius: var(--border-radius-pill);
-    border-bottom-right-radius: var(--border-radius-pill);
+    border-top-right-radius: var(--nc-border-radius-pill);
+    border-bottom-right-radius: var(--nc-border-radius-pill);
 }
 
 #rl-app .btn-group .btn.fontastic:first-of-type,
 #rl-app .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])) {
-    border-top-left-radius: var(--border-radius-large);
-    border-bottom-left-radius: var(--border-radius-large);
+    border-top-left-radius: var(--nc-border-radius-large);
+    border-bottom-left-radius: var(--nc-border-radius-large);
 }
 
 #rl-app .btn-group .btn.fontastic:last-of-type,
 #rl-app .btn-group .btn.fontastic:nth-last-child(1 of :not([style*="display: none;"])) {
-    border-top-right-radius: var(--border-radius-large);
-    border-bottom-right-radius: var(--border-radius-large) ;
+    border-top-right-radius: var(--nc-border-radius-large);
+    border-bottom-right-radius: var(--nc-border-radius-large) ;
 }
 
 #rl-app .btn.buttonCompose,
@@ -554,8 +684,8 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
     width: -webkit-fill-available;
     margin: 3px !important;
 
-    font-size: var(--default-font-size);
-    border-radius: var(--border-radius-pill) !important;
+    font-size: var(--nc-default-font-size);
+    border-radius: var(--nc-border-radius-pill) !important;
 }
 
 #rl-app .b-folders .btn.buttonCompose {
@@ -593,12 +723,12 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
 }
 
 #rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic {
-    background-color: var(--color-main-background);
+    background-color: var(--nc-color-main-background);
 }
 
 #rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn:after {
-    font-family: var(--font-face);
-    font-size: var(--default-font-size);
+    font-family: var(--nc-font-face);
+    font-size: var(--nc-default-font-size);
     position: absolute;
     margin-left: 15px;
 }
@@ -623,21 +753,21 @@ html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-f
 
 #rl-app span.fontastic {
     padding: 6px;
-    border-radius: var(--border-radius);
+    border-radius: var(--nc-border-radius);
 }
 
 #rl-app span.fontastic:hover,
 #rl-app .b-footer.btn-toolbar .btn:hover,
 #rl-app .b-footer.btn-toolbar .btn.fontastic:hover,
 #rl-app #V-SettingsPane .btn-toolbar .btn:hover {
-    background-color: var(--color-background-hover);
+    background-color: var(--nc-color-background-hover);
 }
 
 #rl-app span.fontastic:active,
 #rl-app .b-footer.btn-toolbar .btn:active,
 #rl-app .b-footer.btn-toolbar .btn.fontastic:active,
 #rl-app #V-SettingsPane .btn-toolbar .btn:active {
-    background-color: var(--color-primary-element-light);
+    background-color: var(--nc-color-primary-light);
 }
 
 #rl-app span.fontastic:focus,
@@ -675,18 +805,18 @@ html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-f
 #rl-app input:hover,
 #rl-app input:active,
 #rl-app input:focus {
-    border-color: var(--color-primary-element);
+    border-color: var(--nc-color-primary-element);
 }
 
 #rl-app input:not([type="checkbox"]) {
     padding: 0 12px;
-    font-size: var(--default-font-size);
-    color: var(--color-main-text);
+    font-size: var(--nc-default-font-size);
+    color: var(--nc-color-main-text);
     background-color: unset;
     height: 36px;
     outline: none;
-    border: 2px solid var(--color-border-dark);
-    border-radius: var(--border-radius-large);
+    border: 2px solid var(--nc-color-border-dark);
+    border-radius: var(--nc-border-radius-large);
 }
 
 #rl-app input[type="search"]::-webkit-search-decoration,
@@ -717,13 +847,13 @@ html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-f
 #rl-app .emailaddresses,
 #rl-app .select, #rl-app select {
     padding: 8px 12px;
-    font-size: var(--default-font-size);
-    color: var(--color-main-text);
+    font-size: var(--nc-default-font-size);
+    color: var(--nc-color-main-text);
     background-color: unset;
     height: 44px;
     outline: none;
-    border: 2px solid var(--color-border-dark);
-    border-radius: var(--border-radius-large);
+    border: 2px solid var(--nc-color-border-dark);
+    border-radius: var(--nc-border-radius-large);
     line-height: 24px;
     box-sizing: border-box;
 }
@@ -734,12 +864,12 @@ html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-f
 #rl-app .select:hover, #rl-app select:hover,
 #rl-app .select:active, #rl-app select:active,
 #rl-app .select:focus, #rl-app select:focus {
-    border-color: var(--color-primary-element);
+    border-color: var(--nc-color-primary-element);
 }
 
 select option {
-    background-color: var(--color-background-dark);
-    color: var(--color-main-text);
+    background-color: var(--nc-color-background-dark);
+    color: var(--nc-color-main-text);
 }
 
 /*
@@ -758,15 +888,15 @@ select option {
 }
 
 #rl-app .emailaddresses.emailaddresses-focused {
-    border: 2px solid var(--color-primary-element);
+    border: 2px solid var(--nc-color-primary-element);
 }
 
 #rl-app .emailaddresses li[draggable] {
     line-height: 20px;
     padding: 2px 5px;
-    color: var(--color-main-text);
-    border: 1px solid var(--color-border-dark);
-    border-radius: var(--border-radius);
+    color: var(--nc-color-main-text);
+    border: 1px solid var(--nc-color-border-dark);
+    border-radius: var(--nc-border-radius);
     margin: 0;
     box-shadow: none;
     background-color: unset;
@@ -774,7 +904,7 @@ select option {
 
 #rl-app .emailaddresses li a {
     position: unset;
-    color: var(--color-main-text);
+    color: var(--nc-color-main-text);
 }
 
 /*
@@ -794,12 +924,12 @@ select option {
 #rl-app .squire-plain {
     padding: 8px 12px;
     margin: unset;
-    font-size: var(--default-font-size);
-    color: var(--color-main-text);
+    font-size: var(--nc-default-font-size);
+    color: var(--nc-color-main-text);
     background-color: unset;
     outline: none;
-    border: 2px solid var(--color-border-dark);
-    border-radius: var(--border-radius-large);
+    border: 2px solid var(--nc-color-border-dark);
+    border-radius: var(--nc-border-radius-large);
 }
 
 #rl-app textarea:hover,
@@ -814,7 +944,7 @@ select option {
 #rl-app div[contenteditable=true]:focus,
 #rl-app .squire-wysiwyg:focus,
 #rl-app .squire-plain:focus {
-    border-color: var(--color-primary-element);
+    border-color: var(--nc-color-primary-element);
 }
 
 /*
@@ -836,7 +966,7 @@ select option {
 
 #rl-app .e-component.e-checkbox.material-design:hover,
 #rl-app .e-component.e-checkbox.material-design:focus-within {
-    background-color: var(--color-primary-light);
+    background-color: var(--nc-color-primary-light);
     outline: none;
 }
 
@@ -867,7 +997,7 @@ input[type="checkbox"],
     width: 18px !important;
     min-width: 18px !important;
     flex-shrink: 0 !important;
-    border: 2px solid var(--color-primary-element);
+    border: 2px solid var(--nc-color-primary-element);
     border-radius: 2px;
     box-sizing: border-box;
     animation: none;
@@ -876,10 +1006,10 @@ input[type="checkbox"],
 
 input[type="checkbox"]:checked,
 #rl-app .e-checkbox.material-design input:checked+div {
-    --svg-checked: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='3 3 18 18'><path d='M10,17L5,12L6.41,10.58L10,14.17L17.59,6.58L19,8M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z'></path></svg>");
-    -webkit-mask-image: var(--svg-checked);
-    mask-image: var(--svg-checked);
-    background: var(--color-primary-element);
+    --nc-svg-checked: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='3 3 18 18'><path d='M10,17L5,12L6.41,10.58L10,14.17L17.59,6.58L19,8M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z'></path></svg>");
+    -webkit-mask-image: var(--nc-svg-checked);
+    mask-image: var(--nc-svg-checked);
+    background: var(--nc-color-primary-element);
     border-width: 0;
     animation: none;
     transform: unset;
@@ -912,7 +1042,7 @@ input[type="checkbox"]:checked,
 
 #rl-app .messageList .second-toolbar,
 #rl-app .messageList .b-footer {
-    border-color: var(--color-border);
+    border-color: var(--nc-color-border);
 }
 
 #rl-app .messageList .inputSearch {
@@ -936,11 +1066,11 @@ input[type="checkbox"]:checked,
 
 #rl-app .messageList .checkboxCheckAll:hover,
 #rl-app .messageList .checkboxCheckAll:focus {
-    color: var(--color-primary-element);
+    color: var(--nc-color-primary-element);
 }
 
 #rl-app .messageList .checkboxCheckAll:active {
-    color: var(--color-primary-element-hover);
+    color: var(--nc-color-primary-element-hover);
 }
 
 html:not(rl-mobile) #rl-app .hideMessageListCheckbox .checkboxCheckAll {
@@ -949,47 +1079,47 @@ html:not(rl-mobile) #rl-app .hideMessageListCheckbox .checkboxCheckAll {
 
 #rl-app .messageList .btn.buttonMoreSearch {
     background: unset;
-    border-radius: var(--border-radius-large);
+    border-radius: var(--nc-border-radius-large);
     margin: 0 0 0 8px;
     line-height: 20px !important;
 }
 
 #rl-app .messageList .checkboxCheckAll,
 #rl-app .messageList .btn.buttonMoreSearch {
-    font-size: var(--default-font-size);
+    font-size: var(--nc-default-font-size);
     height: 28px;
     line-height: 28px;
 }
 
 #rl-app .messageList .b-content .listThreadUidDesc {
     margin: 8px;
-    color: var(--color-main-text);
+    color: var(--nc-color-main-text);
     background: unset;
     border: solid 1px;
-    border-radius: var(--border-radius-large);
-    border-color: var(--color-border-dark);
+    border-radius: var(--nc-border-radius-large);
+    border-color: var(--nc-color-border-dark);
 }
 
 #rl-app .messageList .b-content .listThreadUidDesc:hover,
 #rl-app .messageList .b-content .listThreadUidDesc:focus {
-    background: var(--color-background-hover);
+    background: var(--nc-color-background-hover);
 }
 
 #rl-app .messageList .b-content .listThreadUidDesc:active {
-    background-color: var(--color-primary-light);
+    background-color: var(--nc-color-primary-element-light);
 }
 
 #rl-app .messageList .b-content .listSearchDesc {
-    border-color: var(--color-border);
+    border-color: var(--nc-color-border);
 }
 
 #rl-app .messageList .b-content .listError {
-    color: var(--color-error);
+    color: var(--nc-color-error);
 }
 
 #rl-app .messageList .b-content .listDragOver.dragOverEnter {
-    background-color: var(--color-background-dark);
-    border-radius: var(--border-radius);
+    background-color: var(--nc-color-background-dark);
+    border-radius: var(--nc-border-radius);
     margin: 5px;
 }
 
@@ -997,120 +1127,120 @@ html:not(rl-mobile) #rl-app .hideMessageListCheckbox .checkboxCheckAll {
 #rl-app .messageList .b-content .listEmptyMessage,
 #rl-app .messageList .b-content .listError,
 #rl-app .messageList .b-content .listLoading {
-    color: var(--color-text-lighter);
+    color: var(--nc-color-text-lighter);
 }
 
 #rl-app .messageListItem .checkboxMessage {
-    border-color: var(--color-text-lighter);
-    color: var(--color-text-lighter);
+    border-color: var(--nc-color-text-lighter);
+    color: var(--nc-color-text-lighter);
 }
 
 #rl-app .messageListItem .checkboxMessage:hover,
 #rl-app .messageListItem .checkboxMessage:focus {
-    background-color: var(--color-background-darker);
+    background-color: var(--nc-color-background-darker);
 }
 
 #rl-app .messageListItem .checkboxMessage:active {
-    background-color: var(--color-primary-light-hover);
+    background-color: var(--nc-color-primary-light-hover);
 }
 
 #rl-app .messageListItem .threads-len {
-    color: var(--color-text-light);
-    border-color: var(--color-text-light);
+    color: var(--nc-color-text-light);
+    border-color: var(--nc-color-text-light);
     padding: 0 4px;
 }
 
 #rl-app .messageListItem .threads-len:hover,
 #rl-app .messageListItem .threads-len:focus {
-    background-color: var(--color-background-darker);
+    background-color: var(--nc-color-background-darker);
     border-color: unset;
 }
 
 #rl-app .messageListItem .threads-len:active {
-    background-color: var(--color-primary-light-hover);
+    background-color: var(--nc-color-primary-element-light-hover);
 }
 
 #rl-app .messageListItem {
     padding: 8px;
     margin: 2px 0;
     border-bottom: unset;
-    border-radius: var(--border-radius);
+    border-radius: var(--nc-border-radius);
 }
 
 #rl-app .messageListItem,
 #rl-app .messageListItem.focused {
-    background-color: var(--color-background);
-    border-left-color: var(--color-border);
+    background-color: var(--nc-color-background);
+    border-left-color: var(--nc-color-border);
 }
 
 #rl-app .messageListItem:hover,
 #rl-app .messageListItem.focused:hover {
-    background-color: var(--color-background-hover);
-    border-left-color: var(--color-primary-light-hover);
+    background-color: var(--nc-color-background-hover);
+    border-left-color: var(--nc-color-primary-light-hover);
 }
 
 #rl-app .messageListItem.selected,
 #rl-app .messageListItem.selected:hover {
-    background-color: var(--color-primary-element-light) !important;
-    border-left-color: var(--color-primary-element-light-text);
+    background-color: var(--nc-color-primary-light) !important;
+    border-left-color: var(--nc-color-primary-light-text);
 }
 
 #rl-app .messageListItem.unseen {
     background-color: unset;
-    border-left-color: var(--color-primary-element);
+    border-left-color: var(--nc-color-primary);
 }
 
 #rl-app .messageListItem.unseen.focused,
 #rl-app .messageListItem.unseen.focused:hover {
-    background-color: var(--color-primary-light);
-    border-left-color: var(--color-primary-element);
+    background-color: var(--nc-color-primary-light);
+    border-left-color: var(--nc-color-primary);
 }
 
 #rl-app .messageListItem.unseen:hover {
-    background-color: var(--color-background-hover);
-    border-left-color: var(--color-primary-element-hover);
+    background-color: var(--nc-color-background-hover);
+    border-left-color: var(--nc-color-primary-hover);
 }
 
 #rl-app .messageListItem [data-unseen] {
-    border-color: var(--color-primary-element);
-    background-color: var(--color-primary-element-light);
+    border-color: var(--nc-color-primary-element);
+    background-color: var(--nc-color-primary-element-light);
     border-width: 2px;
     font-weight: 700;
 }
 
 #rl-app .messageListItem [data-unseen]:hover {
-    border-color: var(--color-primary-element-hover);
-    background-color: var(--color-primary-element-light-hover);
+    border-color: var(--nc-color-primary-element-hover);
+    background-color: var(--nc-color-primary-element-light-hover);
 }
 
 #rl-app .messageListItem.checked {
     background-color: unset;
-    border-left-color: var(--color-primary-light-text);
+    border-left-color: var(--nc-color-primary-light-text);
 }
 
 #rl-app .messageListItem.checked.focused {
     background-color: inherit;
-    border-left-color: var(--color-primary-element-light-text);
+    border-left-color: var(--nc-color-primary-light-text);
 }
 
 #rl-app .messageListItem.checked:hover,
 #rl-app .messageListItem.checked.focused:hover {
-    background-color: var(--color-background-hover);
+    background-color: var(--nc-color-background-hover);
     border-left-color: inherit;
 }
 
 #rl-app .messageList .groupLabel {
-    background-color: var(--color-background-dark);
-    border-radius: var(--border-radius);
+    background-color: var(--nc-color-background-dark);
+    border-radius: var(--nc-border-radius);
     margin: 2px 0;
 }
 
 #rl-app #messagesDragImage {
     padding: 5px 5px 5px 10px;
-    color: var(--color-text-lighter);
-    background-color: var(--color-background-darker);
-    border-radius: var(--border-radius);
-    box-shadow: 0 0 4px var(--color-box-shadow);
+    color: var(--nc-color-text-lighter);
+    background-color: var(--nc-color-background-darker);
+    border-radius: var(--nc-border-radius);
+    box-shadow: 0 0 4px var(--nc-color-box-shadow);
     height: unset;
     min-width: unset;
 }
@@ -1134,7 +1264,7 @@ html:not(rl-mobile) #rl-app .hideMessageListCheckbox .checkboxCheckAll {
     margin: 0 5px;
     border: none;
     box-shadow: none !important;
-    background: var(--color-main-background);
+    background: var(--nc-color-main-background);
 }
 
 html.sm-msgView-bottom #rl-app .messageList {
@@ -1151,39 +1281,39 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 
 #rl-app .messageView .b-message-view-desc,
 #rl-app .messageView .b-message-view-checked-helper {
-    color: var(--color-text-lighter);
+    color: var(--nc-color-text-lighter);
 }
 
 #rl-app .messageView .b-message-view-desc.error {
-    color: var(--color-error);
+    color: var(--nc-color-error);
 }
 
 #rl-app meter::-webkit-meter-bar {
-    background-color: var(--color-border-dark);
-    border-color: var(--color-border-dark);
+    background-color: var(--nc-color-border-dark);
+    border-color: var(--nc-color-border-dark);
     border-width: 2px;
     height: 10px;
 }
 
 #rl-app .messageView .messageItemHeader .informationShort meter::-webkit-meter-optimum-value {
-    background-color: var(--color-success);
-    border-radius: var(--border-radius-pill);
+    background-color: var(--nc-color-success);
+    border-radius: var(--nc-border-radius-pill);
 }
 
 #rl-app .messageView .messageItemHeader .informationShort meter::-webkit-meter-suboptimum-value {
-    background-color: var(--color-warning);
-    border-radius: var(--border-radius-pill);
+    background-color: var(--nc-color-warning);
+    border-radius: var(--nc-border-radius-pill);
 }
 
 #rl-app .messageView .messageItemHeader .informationShort meter::-webkit-meter-even-less-good-value {
-    background-color: var(--color-error);
-    border-radius: var(--border-radius-pill);
+    background-color: var(--nc-color-error);
+    border-radius: var(--nc-border-radius-pill);
 }
 
 #rl-app .messageView .messageItemHeader .hasVirus {
     background: unset;
-    border: solid 2px var(--color-error);
-    border-radius: var(--border-radius);
+    border: solid 2px var(--nc-color-error);
+    border-radius: var(--nc-border-radius);
     margin: 5px;
 }
 
@@ -1194,19 +1324,19 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 
 #rl-app .messageView .openpgp-control.encrypted,
 #rl-app .messageView .openpgp-control.signed {
-    border-radius: var(--border-radius);
+    border-radius: var(--nc-border-radius);
 }
 
 #rl-app #V-MailMessageView .b-message-view-backdrop {
-    background-color: var(--color-main-background-blur);
+    background-color: var(--nc-color-main-background-blur);
     -webkit-backdrop-filter: blur(2px);
     backdrop-filter: blur(2px);
 }
 
 #rl-app #V-MailMessageView .b-message-view-backdrop .backdrop-message {
-    background-color: var(--color-main-background);
-    border: solid 1px var(--color-primary);
-    border-radius: var(--border-radius-large);
+    background-color: var(--nc-color-main-background);
+    border: solid 1px var(--nc-color-primary);
+    border-radius: var(--nc-border-radius-large);
     text-shadow: none;
     margin: 10px;
 }
@@ -1216,7 +1346,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 }
 
 #rl-app .messageView .messageAssignedTags span {
-    border-radius: var(--border-radius-pill);
+    border-radius: var(--nc-border-radius-pill);
     background: unset;
     padding: 2px 5px;
 }
@@ -1226,17 +1356,17 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 }
 
 #rl-app #messageItem .bodySubHeader>* {
-    border-color: var(--color-border);
+    border-color: var(--nc-color-border);
 }
 
 #rl-app #messageItem .readReceipt,
 #rl-app #messageItem .showImages {
     margin: 8px;
     padding: 10px;
-    color: var(--color-main-text);
-    border: solid 1px var(--color-primary-element);
-    background-color: var(--color-primary-light);
-    border-radius: var(--border-radius-large);
+    color: var(--nc-color-main-text);
+    border: solid 1px var(--nc-color-primary);
+    background-color: var(--nc-color-primary-light);
+    border-radius: var(--nc-border-radius-large);
 }
 
 #rl-app #messageItem .showImages>.btn,
@@ -1245,18 +1375,18 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 }
 
 #rl-app #messageItem .readReceipt:hover {
-    background-color: var(--color-primary-light-hover);
+    background-color: var(--nc-color-primary-light-hover);
 }
 
 #rl-app .messageView .messageItemHeader,
 #rl-app #messageItem .attachmentsPlace {
     background-color: unset;
-    border-color: var(--color-border);
-    color: var(--color-main-text);
+    border-color: var(--nc-color-border);
+    color: var(--nc-color-main-text);
 }
 
 #rl-app #messageItem .attachmentsPlace {
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid var(--nc-color-border);
     top: -1px;
 }
 
@@ -1267,14 +1397,14 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 
 #rl-app #messageItem .attachmentsControls {
     background-color: unset;
-    border-color: var(--color-border);
+    border-color: var(--nc-color-border);
     -webkit-user-select: none;
     user-select: none;
 }
 
 #rl-app #messageItem .attachmentsControls .icon-file-archive,
 #rl-app #messageItem .attachmentsControls .fontastic {
-    color: var(--color-main-text);
+    color: var(--nc-color-main-text);
 }
 
 #rl-app #messageItem .attachmentListSimple .attachmentName {
@@ -1286,15 +1416,15 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
  */
 
 #rl-app .attachmentItem {
-    background-color: var(--color-background-dark);
-    border-radius: var(--border-radius);
+    background-color: var(--nc-color-background-dark);
+    border-radius: var(--nc-border-radius);
     box-shadow: none;
     padding: 2px;
 }
 
 #rl-app .attachmentItem:hover,
 #rl-app .attachmentItem:active {
-    background-color: var(--color-background-darker);
+    background-color: var(--nc-color-background-darker);
 }
 
 #rl-app .attachmentItem:focus {
@@ -1302,7 +1432,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 }
 
 #rl-app .attachmentItem .iconProgress {
-    background-color: var(--color-background-darker);
+    background-color: var(--nc-color-background-darker);
 }
 
 #rl-app .attachmentItem .iconBG {
@@ -1313,12 +1443,12 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 }
 
 #rl-app .attachmentItem .attachmentNameParent {
-    border-color: var(--color-border-dark);
+    border-color: var(--nc-color-border-dark);
 }
 
 #rl-app .attachmentItem .iconMain,
 #rl-app .attachmentItem .iconPreview {
-    color: var(--color-text-light);
+    color: var(--nc-color-text-light);
 }
 
 /*
@@ -1372,7 +1502,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 #rl-app .messageListItem.msgflag-\$label3:hover,
 #rl-app .messageListItem.msgflag-\$label4:hover,
 #rl-app .messageListItem.msgflag-\$label5:hover {
-    background-color: var(--color-background-hover);
+    background-color: var(--nc-color-background-hover);
 }
 
 #rl-app a.msgflag-\$label1,
@@ -1403,10 +1533,10 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 }
 
 #rl-app .dropdown-menu {
-    background-color: var(--color-main-background);
-    filter: drop-shadow(0 1px 5px var(--color-box-shadow));
-    border-radius: var(--border-radius-large);
-    color: var(--color-main-text);
+    background-color: var(--nc-color-main-background);
+    filter: drop-shadow(0 1px 5px var(--nc-color-box-shadow));
+    border-radius: var(--nc-border-radius-large);
+    color: var(--nc-color-main-text);
     padding: 4px;
 }
 
@@ -1430,17 +1560,17 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 
 #rl-app .dropdown-menu li:not(.disabled) > a:hover,
 #rl-app .dropdown-menu li:not(.disabled) > a:focus {
-    background-color: var(--color-background-hover);
+    background-color: var(--nc-color-background-hover);
     color: unset;
     opacity: unset;
 }
 
 #rl-app .dropdown-menu li:not(.disabled) > a:active {
-    background-color: var(--color-primary-light);
+    background-color: var(--nc-color-primary-element-light);
 }
 
 #rl-app .dropdown-menu *+.dividerbar {
-    border-color: var(--color-border);
+    border-color: var(--nc-color-border);
 }
 
 #rl-app .dropdown-menu::-webkit-scrollbar-track-piece {
@@ -1454,8 +1584,8 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
  */
 
 #rl-app #V-SystemDropDown .btn-toolbar.g-ui-user-select-none {
-    border: solid 1px var(--color-border-dark);
-    border-radius: var(--border-radius-large);
+    border: solid 1px var(--nc-color-border-dark);
+    border-radius: var(--nc-border-radius-large);
     height: 36px;
     padding: 2px;
     display: flex;
@@ -1468,23 +1598,23 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     background: unset;
     color: unset;
     text-shadow: none;
-    border-right-color: var(--color-border);
+    border-right-color: var(--nc-color-border);
 }
 
 #rl-app #V-SystemDropDown #top-system-dropdown-id {
     background-color: unset;
     border: unset !important;
-    border-radius: var(--border-radius-large) !important;
+    border-radius: var(--nc-border-radius-large) !important;
     height: 20px;
 }
 
 #rl-app #V-SystemDropDown #top-system-dropdown-id:hover,
 #rl-app #V-SystemDropDown #top-system-dropdown-id:focus {
-    background-color: var(--color-background-hover);
+    background-color: var(--nc-color-background-hover);
 }
 
 #rl-app #V-SystemDropDown #top-system-dropdown-id:active {
-    background-color: var(--color-background-dark);
+    background-color: var(--nc-color-background-dark);
 }
 
 /*
@@ -1507,7 +1637,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 #rl-app #V-AdminPane hr,
 #rl-app #V-SettingsPane hr {
     color: unset;
-    border-color: var(--color-border);
+    border-color: var(--nc-color-border);
 }
 
 #rl-app .form-horizontal .control-group {
@@ -1527,31 +1657,31 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 #rl-app .table-bordered,
 #rl-app .table td,
 #rl-app .table th {
-    border-color: var(--color-border-dark);
+    border-color: var(--nc-color-border-dark);
 }
 
 #rl-app .table-hover tbody tr:hover td,
 #rl-app .table-hover tbody tr:hover th {
-    background-color: var(--color-background-hover);
+    background-color: var(--nc-color-background-hover);
 }
 
 #rl-app .table-striped tbody tr:nth-child(odd) td,
 #rl-app .table-striped tbody tr:nth-child(odd) th {
-    background-color: var(--color-background-dark);
+    background-color: var(--nc-color-background-dark);
 }
 
 #rl-app #V-Settings-Themes figure,
 #rl-app #V-Settings-Themes img {
-    border-radius: var(--border-radius-large);
+    border-radius: var(--nc-border-radius-large);
 }
 
 #rl-app #V-Settings-Themes figure:not(.selected):hover {
-    background-color: var(--color-background-hover);
+    background-color: var(--nc-color-background-hover);
     border-color: transparent;
 }
 
 #rl-app #V-Settings-Themes figure:not(.selected):active {
-    background-color: var(--color-primary-element-light);
+    background-color: var(--nc-color-primary-element-light);
 }
 
 #rl-app #V-Settings-Themes figure:not(.selected):focus {
@@ -1559,9 +1689,9 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 }
 
 #rl-app #V-Settings-Themes figure.selected {
-    background-color: var(--color-primary-element);
+    background-color: var(--nc-color-primary-element);
     border-color: transparent;
-    color: var(--color-primary-text);
+    color: var(--nc-color-primary-element-text);
 }
 
 /* hide additional theme settings, as these are made via Nextcloud theming */
@@ -1589,7 +1719,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 }
 
 #rl-app #V-Settings-Config th {
-    background-color: var(--color-background-dark);
+    background-color: var(--nc-color-background-dark);
 }
 
 #rl-app #V-Settings-General label[data-i18n="TAB_GENERAL/LABEL_ATTACHMENT_SIZE_LIMIT"] {
@@ -1614,8 +1744,8 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--color-scrollbar);
-    border-radius: var(--border-radius-large);
+    background: var(--nc-color-scrollbar);
+    border-radius: var(--nc-border-radius-large);
     border: 2px solid transparent;
     background-clip: content-box;
 }
@@ -1627,14 +1757,14 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 
 ::-webkit-resizer {
     border: 10px solid transparent;
-    border-radius: var(--border-radius);
-    border-bottom-color: var(--color-border-dark);
-    border-right-color: var(--color-border-dark);
+    border-radius: var(--nc-border-radius);
+    border-bottom-color: var(--nc-color-border-dark);
+    border-right-color: var(--nc-color-border-dark);
 }
 
 #rl-app::selection {
-    background-color: var(--color-primary-element);
-    color: var(--color-primary-text);
+    background-color: var(--nc-color-primary);
+    color: var(--nc-color-primary-text);
 }
 
 /* TODO: Improve popup layout and theming */
@@ -1643,17 +1773,17 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
  */
 
 #rl-app dialog {
-    background: var(--color-main-background);
-    color: var(--color-main-text);
-    border-radius: var(--border-radius-large);
-    filter: drop-shadow(0 1px 5px var(--color-box-shadow));
+    background: var(--nc-color-main-background);
+    color: var(--nc-color-main-text);
+    border-radius: var(--nc-border-radius-large);
+    filter: drop-shadow(0 1px 5px var(--nc-color-box-shadow));
     box-shadow: none;
-    border-color: var(--color-border);
+    border-color: var(--nc-color-border);
 }
 
 #rl-app dialog > header,
 #rl-app dialog > footer {
-    border-color: var(--color-border);
+    border-color: var(--nc-color-border);
 }
 
 #rl-app dialog > footer .btn+.btn,
@@ -1676,25 +1806,25 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 }
 
 #rl-app #V-PopupsLanguages label {
-    background-color: var(--color-background-dark) !important;
-    border-color: var(--color-border);
-    border-radius: var(--border-radius);
+    background-color: var(--nc-color-background-dark) !important;
+    border-color: var(--nc-color-border);
+    border-radius: var(--nc-border-radius);
     padding: 8px 15px;
 }
 
 #rl-app #V-PopupsLanguages label:hover {
-    border-color: var(--color-primary-element);
+    border-color: var(--nc-color-primary-element);
     background-color: unset;
 }
 
 #rl-app #V-PopupsLanguages label.user {
-    background-color: var(--color-main-background) !important;
-    color: var(--color-text-light);
+    background-color: var(--nc-color-main-background) !important;
+    color: var(--nc-color-text-light);
 }
 
 #rl-app #V-PopupsLanguages label.selected {
-    background-color: var(--color-primary-element-light) !important;
-    border-color: var(--color-primary-element);
+    background-color: var(--nc-color-primary-element-light) !important;
+    border-color: var(--nc-color-primary-element);
 }
 
 /*
@@ -1716,7 +1846,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 }
 
 #rl-app #V-PopupsCompose .b-header .error-to {
-    color: var(--color-error);
+    color: var(--nc-color-error);
 }
 
 #rl-app #V-PopupsCompose .pull-right>.btn,
@@ -1730,16 +1860,16 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 
 #rl-app #V-PopupsCompose .attachmentAreaParent .attachmentItem:hover,
 #rl-app #V-PopupsCompose .attachmentAreaParent .attachmentItem:active {
-    background-color: var(--color-background-dark);
+    background-color: var(--nc-color-background-dark);
 }
 
 #rl-app #V-PopupsCompose .b-attachment-place {
-    border-color: var(--color-border);
-    background-color: var(--color-background-dark);
+    border-color: var(--nc-color-border);
+    background-color: var(--nc-color-background-dark);
 }
 
 #rl-app #V-PopupsCompose .b-attachment-place.dragAndDropOver {
-    border-color: var(--color-border);
+    border-color: var(--nc-color-border);
 }
 
 /*
@@ -1764,7 +1894,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     mask-repeat: no-repeat;
     -webkit-mask-size: 30px;
     mask-size: 30px;
-    background-color: var(--color-main-text);
+    background-color: var(--nc-color-main-text);
 }
 
 #rl-app #V-PopupsNextcloudFiles {
@@ -1805,12 +1935,12 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 
 #rl-app #V-PopupsNextcloudFiles li:not(:last-child),
 #rl-app #V-PopupsNextcloudFiles li details[open]>summary {
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--nc-color-border);
 }
 
 #rl-app #V-PopupsNextcloudFiles li details[open]>summary {
-    background-color: var(--color-primary-light);
-    border-bottom-color: var(--color-primary-element-hover);
+    background-color: var(--nc-color-primary-element-light);
+    border-bottom-color: var(--nc-color-primary-element-hover);
 }
 
 #rl-app #V-PopupsNextcloudFiles li:hover {
@@ -1820,7 +1950,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 #rl-app #V-PopupsNextcloudFiles li[data-icon]:hover,
 #rl-app #V-PopupsNextcloudFiles li details:not([open]):hover,
 #rl-app #V-PopupsNextcloudFiles li details[open]>summary:hover {
-    background-color: var(--color-background-hover);
+    background-color: var(--nc-color-background-hover);
 }
 
 #rl-app #V-PopupsNextcloudFiles li details summary[data-icon] {
@@ -1828,7 +1958,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 }
 
 #rl-app #V-PopupsNextcloudFiles li details summary[data-icon]::before {
-    color: var(--color-primary);
+    color: var(--nc-color-primary);
     font-size: 20px;
 }
 
@@ -1845,7 +1975,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     padding: 5px;
     display: flex;
     align-items: center !important;
-    border-bottom: solid 1px var(--color-border);
+    border-bottom: solid 1px var(--nc-color-border);
 }
 
 #rl-app #V-PopupsNextcloudCalendars li button {
@@ -1861,7 +1991,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 #rl-app #V-PopupsContacts .b-list-toolbar,
 #rl-app #V-PopupsContacts .b-list-footer-toolbar,
 #rl-app #V-PopupsContacts .b-view-content-toolbar {
-    border-color: var(--color-border);
+    border-color: var(--nc-color-border);
 }
 
 #rl-app #V-PopupsContacts .b-list-toolbar {
@@ -1887,40 +2017,40 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     margin: 2px 4px;
     max-height: unset;
     border-bottom: 0 !important;
-    border-radius: var(--border-radius);
+    border-radius: var(--nc-border-radius);
 }
 
 #rl-app #V-PopupsContacts .e-contact-item,
 #rl-app #V-PopupsContacts .e-contact-item.focused {
-    background-color: var(--color-background);
-    border-left-color: var(--color-border);
+    background-color: var(--nc-color-background);
+    border-left-color: var(--nc-color-border);
 }
 
 #rl-app #V-PopupsContacts .e-contact-item:hover,
 #rl-app #V-PopupsContacts .e-contact-item.focused:hover {
-    background-color: var(--color-background-hover);
-    border-left-color: var(--color-primary-light-hover);
+    background-color: var(--nc-color-background-hover);
+    border-left-color: var(--nc-color-primary-light-hover);
 }
 
 #rl-app #V-PopupsContacts .e-contact-item.selected,
 #rl-app #V-PopupsContacts .e-contact-item.selected:hover {
-    background-color: var(--color-primary-element-light);
-    border-left-color: var(--color-primary-element-light-text);
+    background-color: var(--nc-color-primary-light);
+    border-left-color: var(--nc-color-primary-light-text);
 }
 
 #rl-app #V-PopupsContacts .e-contact-item.checked {
     background-color: unset;
-    border-left-color: var(--color-primary-light-text);
+    border-left-color: var(--nc-color-primary-light-text);
 }
 
 #rl-app #V-PopupsContacts .e-contact-item.checked.focused {
     background-color: inherit;
-    border-left-color: var(--color-primary-element-light-text);
+    border-left-color: var(--nc-color-primary-light-text);
 }
 
 #rl-app #V-PopupsContacts .e-contact-item.checked:hover,
 #rl-app #V-PopupsContacts .e-contact-item.checked.focused:hover {
-    background-color: var(--color-background-hover);
+    background-color: var(--nc-color-background-hover);
     border-left-color: inherit;
 }
 
@@ -1929,26 +2059,26 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
  */
 
 #rl-app .tabs > [id^=tab]:checked+label {
-    background-color: var(--color-main-background);
-    border-color: var(--color-primary-element);
+    background-color: var(--nc-color-main-background);
+    border-color: var(--nc-color-primary-element);
     border-bottom-color: transparent;
 }
 
 #rl-app .tabs > label {
     margin: 0 2px -1px 2px;
     border-radius: 0;
-    border-top-left-radius: var(--border-radius);
-    border-top-right-radius: var(--border-radius);
+    border-top-left-radius: var(--nc-border-radius);
+    border-top-right-radius: var(--nc-border-radius);
 }
 
 #rl-app .tabs > label:hover {
     border-color: transparent;
-    border-bottom-color: var(--color-primary-element);
-    background-color: var(--color-background-hover)
+    border-bottom-color: var(--nc-color-primary-element);
+    background-color: var(--nc-color-background-hover)
 }
 
 #rl-app .tabs .tab-content {
     border-top: solid 1px;
     border-radius: 4px;
-    border-color: var(--color-primary-element);
+    border-color: var(--nc-color-primary-element);
 }

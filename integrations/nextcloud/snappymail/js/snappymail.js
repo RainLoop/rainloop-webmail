@@ -10,6 +10,7 @@
 document.onreadystatechange = () => {
 	if (document.readyState === 'complete') {
 		watchIFrameTitle();
+		passThemesToIFrame();
 		let form = document.querySelector('form.snappymail');
 		form && SnappyMailFormHelper(form);
 	}
@@ -17,7 +18,7 @@ document.onreadystatechange = () => {
 
 // Pass Nextcloud themes and theme attributes to SnappyMail on
 // first load and when the SnappyMail iframe is reloaded. 
-document.addEventListener('DOMContentLoaded', () => {
+function passThemesToIFrame() {
 	const iframe = document.getElementById('rliframe');
 	if (!iframe) return;
 
@@ -32,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 
 	passThemes(iframe);
-});
+}
 
 // Pass Nextcloud themes and theme attributes to SnappyMail.
 function passThemes(iframe) {
