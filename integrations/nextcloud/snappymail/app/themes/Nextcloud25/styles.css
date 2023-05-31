@@ -1063,34 +1063,32 @@ html:not(rl-mobile) #rl-app .hideMessageListCheckbox .checkboxCheckAll {
     border-left-color: var(--color-primary-element-light-text);
 }
 
-#rl-app .messageListItem.unseen,
-#rl-app .messageListItem.hasUnseenSubMessage {
+#rl-app .messageListItem.unseen {
     background-color: unset;
     border-left-color: var(--color-primary-element);
 }
 
 #rl-app .messageListItem.unseen.focused,
-#rl-app .messageListItem.unseen.focused:hover,
-#rl-app .messageListItem.hasUnseenSubMessage.focused,
-#rl-app .messageListItem.hasUnseenSubMessage.focused:hover {
+#rl-app .messageListItem.unseen.focused:hover {
     background-color: var(--color-primary-light);
     border-left-color: var(--color-primary-element);
 }
 
-#rl-app .messageListItem.unseen:hover,
-#rl-app .messageListItem.hasUnseenSubMessage:hover {
+#rl-app .messageListItem.unseen:hover {
     background-color: var(--color-background-hover);
     border-left-color: var(--color-primary-element-hover);
 }
 
-#rl-app .messageListItem.hasUnseenSubMessage .threads-len {
+#rl-app .messageListItem [data-unseen] {
     border-color: var(--color-primary-element);
+    background-color: var(--color-primary-element-light);
     border-width: 2px;
     font-weight: 700;
 }
 
-#rl-app .messageListItem.hasUnseenSubMessage .threads-len:hover {
+#rl-app .messageListItem [data-unseen]:hover {
     border-color: var(--color-primary-element-hover);
+    background-color: var(--color-primary-element-light-hover);
 }
 
 #rl-app .messageListItem.checked {
