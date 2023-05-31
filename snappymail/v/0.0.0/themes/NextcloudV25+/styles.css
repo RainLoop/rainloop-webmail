@@ -474,10 +474,14 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
     opacity: .1;
 }
 
-#rl-app .b-folders input {
-    width: calc(100% - 10px);
-    margin: 5px;
+#rl-app .b-folders .search-input-wrp {
+    width: calc(100% - 20px);
+    margin: 5px 10px;
     opacity: .7;
+}
+
+#rl-app .b-folders .search-input-wrp input {
+    width: 100%;
 }
 
 #rl-app .b-footer.btn-toolbar.hide-mobile,
@@ -853,6 +857,17 @@ html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-f
     /* ? margin: 0 5px 0 0; */
 }
 
+#rl-app .search-input-wrp a {
+    position: absolute;
+    top: 2px;
+    right: 1px;
+    min-width: unset;
+    min-height: unset;
+    height: 32px;
+    font-size: 20px;
+    line-height: 30px;
+}
+
 /*
  * select
  */
@@ -1060,17 +1075,6 @@ input[type="checkbox"]:checked,
 
 #rl-app .messageList .inputSearch {
     max-width: unset;
-}
-
-#rl-app .messageList .closeSearch {
-    position: absolute;
-    top: 2px;
-    right: 1px;
-    min-width: unset;
-    min-height: unset;
-    height: 32px;
-    font-size: 20px;
-    line-height: 30px;
 }
 
 #rl-app .messageList .checkboxCheckAll {
