@@ -1866,7 +1866,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 
 #rl-app #V-PopupsContacts .b-list-toolbar .e-search {
     margin: 9px 5px;
-    width: unset;
+    width: calc(100% - 2*5px);
 }
 
 #rl-app #V-PopupsContacts .b-view-content {
@@ -1882,7 +1882,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     padding: 4px;
     margin: 2px 4px;
     max-height: unset;
-    border-bottom: unset;
+    border-bottom: 0 !important;
     border-radius: var(--border-radius);
 }
 
