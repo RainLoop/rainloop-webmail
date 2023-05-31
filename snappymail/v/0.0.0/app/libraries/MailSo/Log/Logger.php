@@ -75,7 +75,7 @@ class Logger extends \SplFixedArray
 			if (\is_callable('pcntl_signal')) {
 				\pcntl_async_signals(true);
 				foreach (static::$SIGNALS as $SIGNAL) {
-					\pcntl_signal(\constant($SIGNAL), [$this, 'signalHandler']);
+					\defined($SIGNAL) && \pcntl_signal(\constant($SIGNAL), [$this, 'signalHandler']);
 				}
 			}
 		}
@@ -209,7 +209,7 @@ class Logger extends \SplFixedArray
 		}
 		if ($this->bUsed) {
 			foreach (static::$SIGNALS as $SIGNAL) {
-				if (\constant($SIGNAL) == $signo) {
+				if (\defined($SIGNAL) && \constant($SIGNAL) == $signo) {
 					$this->Write("Caught {$SIGNAL}");
 					break;
 				}
