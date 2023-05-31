@@ -1165,6 +1165,7 @@ html:not(rl-mobile) #rl-app .hideMessageListCheckbox .checkboxCheckAll {
     color: var(--nc-color-text-light);
     border-color: var(--nc-color-text-light);
     padding: 0 4px;
+    margin-right: 5px;
 }
 
 #rl-app .messageListItem .threads-len:hover,
