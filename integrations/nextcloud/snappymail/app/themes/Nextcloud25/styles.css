@@ -48,14 +48,6 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     margin-left: unset;
 }
 
-#rl-app .messageList,
-#rl-app .messageView {
-    margin: 0 5px;
-    border: none;
-    box-shadow: none !important;
-    background: var(--color-main-background);
-}
-
 /*
  * links
  */
@@ -1139,6 +1131,18 @@ html:not(rl-mobile) #rl-app .hideMessageListCheckbox .checkboxCheckAll {
 #rl-app .messageList,
 #rl-app .messageView {
     height: calc(100% - 60px);
+    margin: 0 5px;
+    border: none;
+    box-shadow: none !important;
+    background: var(--color-main-background);
+}
+
+html.sm-msgView-bottom #rl-app .messageList {
+    height: 35vh;
+}
+
+html.sm-msgView-bottom #rl-app .messageView {
+    height: 100%;
 }
 
 html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar {
