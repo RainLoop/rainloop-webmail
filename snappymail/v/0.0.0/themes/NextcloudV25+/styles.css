@@ -165,7 +165,7 @@ html.rl-left-panel-disabled #rl-app #rl-left {
 }
 
 #rl-app hr {
-    border-bottom-color: var(--nc-color-border-dark);
+    border-color: var(--nc-color-border-dark);
 }
 
 #rl-app .resizer {
@@ -647,26 +647,34 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
     margin: 0 0.5px;
 }
 
-#rl-app .btn-group .btn:first-of-type,
-#rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])) {
+:not([dir="rtl"]) #rl-app .btn-group .btn:first-of-type,
+:not([dir="rtl"]) #rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])),
+[dir="rtl"] #rl-app .btn-group .btn:last-of-type,
+[dir="rtl"] #rl-app .btn-group .btn:nth-last-child(1 of :not([style*="display: none;"])) {
     border-top-left-radius: var(--nc-border-radius-pill);
     border-bottom-left-radius: var(--nc-border-radius-pill);
 }
 
-#rl-app .btn-group .btn:last-of-type,
-#rl-app .btn-group .btn:nth-last-child(1 of :not([style*="display: none;"])) {
+:not([dir="rtl"]) #rl-app .btn-group .btn:last-of-type,
+:not([dir="rtl"]) #rl-app .btn-group .btn:nth-last-child(1 of :not([style*="display: none;"])),
+[dir="rtl"] #rl-app .btn-group .btn:first-of-type,
+[dir="rtl"] #rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])) {
     border-top-right-radius: var(--nc-border-radius-pill);
     border-bottom-right-radius: var(--nc-border-radius-pill);
 }
 
-#rl-app .btn-group .btn.fontastic:first-of-type,
-#rl-app .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])) {
+:not([dir="rtl"]) #rl-app .btn-group .btn.fontastic:first-of-type,
+:not([dir="rtl"]) #rl-app .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])),
+[dir="rtl"] #rl-app .btn-group .btn.fontastic:last-of-type,
+[dir="rtl"] #rl-app .btn-group .btn.fontastic:nth-last-child(1 of :not([style*="display: none;"])) {
     border-top-left-radius: var(--nc-border-radius-large);
     border-bottom-left-radius: var(--nc-border-radius-large);
 }
 
-#rl-app .btn-group .btn.fontastic:last-of-type,
-#rl-app .btn-group .btn.fontastic:nth-last-child(1 of :not([style*="display: none;"])) {
+:not([dir="rtl"]) #rl-app .btn-group .btn.fontastic:last-of-type,
+:not([dir="rtl"]) #rl-app .btn-group .btn.fontastic:nth-last-child(1 of :not([style*="display: none;"])),
+[dir="rtl"] #rl-app .btn-group .btn.fontastic:first-of-type,
+[dir="rtl"] #rl-app .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])) {
     border-top-right-radius: var(--nc-border-radius-large);
     border-bottom-right-radius: var(--nc-border-radius-large) ;
 }
@@ -726,14 +734,19 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
     background-color: var(--nc-color-main-background);
 }
 
-#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn:after {
+#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn:after,
+[dir="rtl"] #rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:before {
     font-family: var(--nc-font-face);
     font-size: var(--nc-default-font-size);
-    position: absolute;
     margin-left: 15px;
 }
 
-#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:after {
+:not([dir="rtl"]) #rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn:after {
+    position: absolute;
+}
+
+:not([dir="rtl"]) #rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:after,
+[dir="rtl"] #rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:before {
     content: 'SnappyMail-Settings';
 }
 
@@ -1170,35 +1183,35 @@ html:not(rl-mobile) #rl-app .hideMessageListCheckbox .checkboxCheckAll {
 #rl-app .messageListItem,
 #rl-app .messageListItem.focused {
     background-color: var(--nc-color-background);
-    border-left-color: var(--nc-color-border);
+    border-color: var(--nc-color-border);
 }
 
 #rl-app .messageListItem:hover,
 #rl-app .messageListItem.focused:hover {
     background-color: var(--nc-color-background-hover);
-    border-left-color: var(--nc-color-primary-light-hover);
+    border-color: var(--nc-color-primary-light-hover);
 }
 
 #rl-app .messageListItem.selected,
 #rl-app .messageListItem.selected:hover {
     background-color: var(--nc-color-primary-light) !important;
-    border-left-color: var(--nc-color-primary-light-text);
+    border-color: var(--nc-color-primary-light-text) !important;
 }
 
 #rl-app .messageListItem.unseen {
     background-color: unset;
-    border-left-color: var(--nc-color-primary);
+    border-color: var(--nc-color-primary);
 }
 
 #rl-app .messageListItem.unseen.focused,
 #rl-app .messageListItem.unseen.focused:hover {
     background-color: var(--nc-color-primary-light);
-    border-left-color: var(--nc-color-primary);
+    border-color: var(--nc-color-primary);
 }
 
 #rl-app .messageListItem.unseen:hover {
     background-color: var(--nc-color-background-hover);
-    border-left-color: var(--nc-color-primary-hover);
+    border-color: var(--nc-color-primary-hover);
 }
 
 #rl-app .messageListItem [data-unseen] {
@@ -1215,18 +1228,18 @@ html:not(rl-mobile) #rl-app .hideMessageListCheckbox .checkboxCheckAll {
 
 #rl-app .messageListItem.checked {
     background-color: unset;
-    border-left-color: var(--nc-color-primary-light-text);
+    border-color: var(--nc-color-primary-light-text);
 }
 
 #rl-app .messageListItem.checked.focused {
     background-color: inherit;
-    border-left-color: var(--nc-color-primary-light-text);
+    border-color: var(--nc-color-primary-light-text);
 }
 
 #rl-app .messageListItem.checked:hover,
 #rl-app .messageListItem.checked.focused:hover {
     background-color: var(--nc-color-background-hover);
-    border-left-color: inherit;
+    border-color: inherit;
 }
 
 #rl-app .messageList .groupLabel {
@@ -1598,7 +1611,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     background: unset;
     color: unset;
     text-shadow: none;
-    border-right-color: var(--nc-color-border);
+    border-color: var(--nc-color-border);
 }
 
 #rl-app #V-SystemDropDown #top-system-dropdown-id {
@@ -1759,7 +1772,14 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     border: 10px solid transparent;
     border-radius: var(--nc-border-radius);
     border-bottom-color: var(--nc-color-border-dark);
+}
+
+html:not([dir="rtl"]) ::-webkit-resizer {
     border-right-color: var(--nc-color-border-dark);
+}
+
+html[dir="rtl"] ::-webkit-resizer {
+    border-left-color: var(--nc-color-border-dark);
 }
 
 #rl-app::selection {
@@ -2023,35 +2043,35 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 #rl-app #V-PopupsContacts .e-contact-item,
 #rl-app #V-PopupsContacts .e-contact-item.focused {
     background-color: var(--nc-color-background);
-    border-left-color: var(--nc-color-border);
+    border-color: var(--nc-color-border);
 }
 
 #rl-app #V-PopupsContacts .e-contact-item:hover,
 #rl-app #V-PopupsContacts .e-contact-item.focused:hover {
     background-color: var(--nc-color-background-hover);
-    border-left-color: var(--nc-color-primary-light-hover);
+    border-color: var(--nc-color-primary-light-hover);
 }
 
 #rl-app #V-PopupsContacts .e-contact-item.selected,
 #rl-app #V-PopupsContacts .e-contact-item.selected:hover {
     background-color: var(--nc-color-primary-light);
-    border-left-color: var(--nc-color-primary-light-text);
+    border-color: var(--nc-color-primary-light-text);
 }
 
 #rl-app #V-PopupsContacts .e-contact-item.checked {
     background-color: unset;
-    border-left-color: var(--nc-color-primary-light-text);
+    border-color: var(--nc-color-primary-light-text);
 }
 
 #rl-app #V-PopupsContacts .e-contact-item.checked.focused {
     background-color: inherit;
-    border-left-color: var(--nc-color-primary-light-text);
+    border-color: var(--nc-color-primary-light-text);
 }
 
 #rl-app #V-PopupsContacts .e-contact-item.checked:hover,
 #rl-app #V-PopupsContacts .e-contact-item.checked.focused:hover {
     background-color: var(--nc-color-background-hover);
-    border-left-color: inherit;
+    border-color: inherit;
 }
 
 /*
