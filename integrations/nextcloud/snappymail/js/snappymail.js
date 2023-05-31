@@ -1,7 +1,7 @@
 /**
  * Nextcloud - SnappyMail mail plugin
  *
- * @author RainLoop Team, Nextgen-Networks (@nextgen-networks), Tab Fitts (@tabp0le), Pierre-Alain Bandinelli (@pierre-alain-b), SnappyMail
+ * @author RainLoop Team, Nextgen-Networks (@nextgen-networks), Tab Fitts (@tabp0le), Pierre-Alain Bandinelli (@pierre-alain-b), SnappyMail, Rene Hampölz (@hampoelz)
  *
  * Based initially on https://github.com/RainLoop/rainloop-webmail/tree/master/build/owncloud/rainloop-app
  */
@@ -15,6 +15,8 @@ document.onreadystatechange = () => {
 	}
 };
 
+// Pass Nextcloud themes and theme attributes to SnappyMail on
+// first load and when the SnappyMail iframe is reloaded. 
 document.addEventListener('DOMContentLoaded', () => {
 	const iframe = document.getElementById('rliframe');
 	if (!iframe) return;
@@ -30,11 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 
 	passThemes(iframe);
-
-	// TODO: add initial stylesheets without primary colors to improve loading experience
 });
 
-// Pass nextcloud themes and theme attributes to SnappyMail.
+// Pass Nextcloud themes and theme attributes to SnappyMail.
 function passThemes(iframe) {
 	if (!iframe) return;
 	
