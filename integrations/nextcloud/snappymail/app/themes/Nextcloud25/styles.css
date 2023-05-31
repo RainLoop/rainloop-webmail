@@ -8,7 +8,7 @@
  * Default Nextcloud (v25+) theme variables and colors
  * based on https://github.com/nextcloud/server/blob/master/core/css/variables.scss
  */
-:not([data-theme-dark]) {
+:not([data-themes~="dark"]) {
     --nc-color-main-background: var(--color-main-background, #ffffff);
     --nc-color-main-background-rgb: var(--color-main-background-rgb, 255, 255, 255);
     --nc-color-main-background-blur: var(--color-main-background-blur, rgba(var(--nc-color-main-background-rgb), .8));
@@ -69,7 +69,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-    :not([data-theme-light]) {
+    :not([data-themes~="light"]) {
         --nc-color-main-background: var(--color-main-background, #171717);
         --nc-color-main-background-rgb: var(--color-main-background-rgb, 23, 23, 23);
         --nc-color-main-background-blur: var(--color-main-background-blur, rgba(var(--nc-color-main-background-rgb), .8));
