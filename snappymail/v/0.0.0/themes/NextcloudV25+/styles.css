@@ -468,6 +468,10 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
     text-shadow: none;
 }
 
+html.rl-left-panel-disabled #rl-app .b-folders .b-folders-system a.selectable {
+    text-overflow: clip;
+}
+
 #rl-app .b-folders hr {
     border-top: solid var(--nc-color-main-text);
     border-radius: var(--nc-border-radius-pill);
