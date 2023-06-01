@@ -1361,6 +1361,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     border-radius: var(--nc-border-radius-large);
     text-shadow: none;
     margin: 10px;
+    color: unset;
 }
 
 #rl-app .messageView .messageAssignedTags {
