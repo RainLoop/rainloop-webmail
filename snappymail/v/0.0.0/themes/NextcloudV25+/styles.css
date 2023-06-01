@@ -1052,7 +1052,7 @@ input[type="checkbox"]:checked,
 }
 
 #rl-app #V-MailMessageList .messageList {
-    min-width: 350px;
+    min-width: 360px;
 }
 
 #rl-app .thm-message-list-top-toolbar,
