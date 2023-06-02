@@ -410,7 +410,7 @@
 		"REMOVE_COLORS": "Usuń tło i kolory tekstu z treści wiadomości",
 		"ALLOW_STYLES": "Zezwalaj na style CSS",
 		"MESSAGE_PER_PAGE": "Wiadomości na stronę",
-		"CHECK_MAIL_INTERVAL": "Sprawdź interwał poczty",
+		"CHECK_MAIL_INTERVAL": "Sprawdź pocztę co",
 		"MARK_MESSAGE_READ_AFTER": "Oznacz wiadomość jako przeczytaną po",
 		"MSG_DEFAULT_ACTION": "Domyślna akcja",
 		"SECONDS": "sekund",
