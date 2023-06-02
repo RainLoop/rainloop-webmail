@@ -99,7 +99,7 @@
 		"MENU_SELECT_SEEN": "Przeczytane",
 		"MENU_SELECT_FLAGGED": "Oznaczone jako ważne",
 		"MENU_SELECT_UNFLAGGED": "Oznaczone jako nieważne",
-		"DOWNLOAD_ALL_ATTACHMENTS": "Pobierz wszystkie załaczniki",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Pobierz wszystkie załączniki",
 		"EMPTY_LIST": "Brak wiadomości.",
 		"EMPTY_SEARCH_LIST": "Brak wiadomości spełniających kryteria wyszukiwania.",
 		"SEARCH_RESULT_FOR": "Wyniki wyszukiwania dla \"%SEARCH%\"",
