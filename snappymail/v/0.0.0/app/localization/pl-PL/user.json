@@ -323,7 +323,7 @@
 		"STOP_LABEL": "Zatrzymaj dalsze przetwarzanie reguł",
 		"VACATION_SUBJECT_LABEL": "Temat (opcjonalnie)",
 		"VACATION_MESSAGE_LABEL": "Wiadomość",
-		"VACATION_RECIPIENTS_LABEL": "Odbiorcy (rodzielone przecinkami)",
+		"VACATION_RECIPIENTS_LABEL": "Odbiorcy (rozdzielone przecinkami)",
 		"REJECT_MESSAGE_LABEL": "Odrzuć wiadomość",
 		"ALL_INCOMING_MESSAGES_DESC": "Wszystkie przychodzące wiadomości"
 	},
@@ -384,7 +384,7 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Bezpieczeństwo",
 		"LABEL_AUTOLOGOUT": "Automatyczne wylogowanie",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Nidgy"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Nigdy"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Ogólne",
@@ -520,7 +520,7 @@
 		"LABEL_CLOSE_MESSAGE": "Zamknij wiadomość (nieaktywny podgląd wiadomości)",
 		"LABEL_SWITCH_TO_LIST": "Wróć do widoku listy wiadomości",
 		"LABEL_OPEN_COMPOSE_POPUP": "Otwórz okno tworzenia wiadomości",
-		"LABEL_MINIMIZE_COMPOSE_POPUP": "Minimize compose popup",
+		"LABEL_MINIMIZE_COMPOSE_POPUP": "Zminimalizuj okienko tworzenia",
 		"LABEL_OPEN_IDENTITIES_DROPDOWN": "Otwórz menu wyboru tożsamości",
 		"LABEL_SAVE_MESSAGE": "Zapisz wiadomość",
 		"LABEL_SEND_MESSAGE": "Wyślij wiadomość",
@@ -547,7 +547,7 @@
 		"INVALID_RECIPIENTS": "Nieprawidłowy adres odbiorcy",
 		"CANT_SAVE_FILTERS": "Nie można zapisać filtrów",
 		"CANT_GET_FILTERS": "Nie można pobrać filtrów",
-		"CANT_ACTIVATE_FILTERS_SCRIPT": "Nie można aktywować skryptu fiktrów",
+		"CANT_ACTIVATE_FILTERS_SCRIPT": "Nie można aktywować skryptu filtrów",
 		"CANT_DELETE_FILTERS_SCRIPT": "Nie można usunąć skryptu filtrów",
 		"FILTERS_ARE_NOT_CORRECT": "Filtry są nieprawidłowe",
 		"CANT_CREATE_FOLDER": "Nie można utworzyć folderu",
