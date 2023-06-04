@@ -8,7 +8,7 @@
  * Default Nextcloud (v25+) theme variables and colors
  * based on https://github.com/nextcloud/server/blob/master/core/css/variables.scss
  */
-:not([data-themes~="dark"]) {
+body:not([data-themes~="dark"]) {
     --nc-color-main-background: var(--color-main-background, #ffffff);
     --nc-color-main-background-rgb: var(--color-main-background-rgb, 255, 255, 255);
     --nc-color-main-background-blur: var(--color-main-background-blur, rgba(var(--nc-color-main-background-rgb), .8));
@@ -69,7 +69,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-    :not([data-themes~="light"]) {
+    body:not([data-themes~="light"]) {
         --nc-color-main-background: var(--color-main-background, #171717);
         --nc-color-main-background-rgb: var(--color-main-background-rgb, 23, 23, 23);
         --nc-color-main-background-blur: var(--color-main-background-blur, rgba(var(--nc-color-main-background-rgb), .8));
@@ -649,42 +649,59 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-folders-system a.selectable {
 }
 
 #rl-app .btn-group .btn,
-#rl-app .btn-group button,
 #rl-app .btn-group button.btn {
     border-radius: 0;
     margin: 0 0.5px;
 }
 
-:not([dir="rtl"]) #rl-app .btn-group .btn:first-of-type,
-:not([dir="rtl"]) #rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])),
+#rl-app .btn-group .btn:first-of-type,
+#rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])),
 [dir="rtl"] #rl-app .btn-group .btn:last-of-type,
 [dir="rtl"] #rl-app .btn-group .btn:nth-last-child(1 of :not([style*="display: none;"])) {
+    border-radius: 0;
     border-top-left-radius: var(--nc-border-radius-pill);
     border-bottom-left-radius: var(--nc-border-radius-pill);
 }
 
-:not([dir="rtl"]) #rl-app .btn-group .btn:last-of-type,
-:not([dir="rtl"]) #rl-app .btn-group .btn:nth-last-child(1 of :not([style*="display: none;"])),
+#rl-app .btn-group .btn:last-of-type,
+#rl-app .btn-group .btn:nth-last-child(1 of :not([style*="display: none;"])),
 [dir="rtl"] #rl-app .btn-group .btn:first-of-type,
 [dir="rtl"] #rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])) {
+    border-radius: 0;
     border-top-right-radius: var(--nc-border-radius-pill);
     border-bottom-right-radius: var(--nc-border-radius-pill);
 }
 
-:not([dir="rtl"]) #rl-app .btn-group .btn.fontastic:first-of-type,
-:not([dir="rtl"]) #rl-app .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])),
+#rl-app .btn-group .btn:first-of-type:last-of-type,
+#rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])),
+[dir="rtl"] #rl-app .btn-group .btn:first-of-type:last-of-type,
+[dir="rtl"] #rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])) {
+    border-radius: var(--nc-border-radius-pill);
+}
+
+#rl-app .btn-group .btn.fontastic:first-of-type,
+#rl-app .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])),
 [dir="rtl"] #rl-app .btn-group .btn.fontastic:last-of-type,
 [dir="rtl"] #rl-app .btn-group .btn.fontastic:nth-last-child(1 of :not([style*="display: none;"])) {
+    border-radius: 0;
     border-top-left-radius: var(--nc-border-radius-large);
     border-bottom-left-radius: var(--nc-border-radius-large);
 }
 
-:not([dir="rtl"]) #rl-app .btn-group .btn.fontastic:last-of-type,
-:not([dir="rtl"]) #rl-app .btn-group .btn.fontastic:nth-last-child(1 of :not([style*="display: none;"])),
+#rl-app .btn-group .btn.fontastic:last-of-type,
+#rl-app .btn-group .btn.fontastic:nth-last-child(1 of :not([style*="display: none;"])),
 [dir="rtl"] #rl-app .btn-group .btn.fontastic:first-of-type,
 [dir="rtl"] #rl-app .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])) {
+    border-radius: 0;
     border-top-right-radius: var(--nc-border-radius-large);
     border-bottom-right-radius: var(--nc-border-radius-large) ;
+}
+
+#rl-app .btn-group .btn.fontastic:first-of-type:last-of-type,
+#rl-app .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])),
+[dir="rtl"] #rl-app .btn-group .btn.fontastic:first-of-type:last-of-type,
+[dir="rtl"] #rl-app .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])) {
+    border-radius: var(--nc-border-radius-large);
 }
 
 #rl-app .btn.buttonCompose,
@@ -749,13 +766,21 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-folders-system a.selectable {
     margin-left: 15px;
 }
 
-:not([dir="rtl"]) #rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn:after {
+#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn:after {
     position: absolute;
 }
 
-:not([dir="rtl"]) #rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:after,
+[dir="rtl"] #rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn:after {
+    position: unset;
+}
+
+#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:after,
 [dir="rtl"] #rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:before {
     content: 'SnappyMail-Settings';
+}
+
+[dir="rtl"] #rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:after {
+    content: unset;
 }
 
 #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-folder-add:after {
@@ -1784,11 +1809,12 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     border-bottom-color: var(--nc-color-border-dark);
 }
 
-html:not([dir="rtl"]) ::-webkit-resizer {
+::-webkit-resizer {
     border-right-color: var(--nc-color-border-dark);
 }
 
-html[dir="rtl"] ::-webkit-resizer {
+[dir="rtl"] ::-webkit-resizer {
+    border-right-color: transparent;
     border-left-color: var(--nc-color-border-dark);
 }
 
