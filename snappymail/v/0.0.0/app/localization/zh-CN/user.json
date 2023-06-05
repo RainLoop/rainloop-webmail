@@ -20,7 +20,7 @@
 		"MOVE_TO": "移至",
 		"NAME": "名称",
 		"NONE": "无",
-		"TO_SPAM": "Move message(s) to Spam",
+		"TO_SPAM": "移动到垃圾邮件",
 		"NOT_SPAM": "非垃圾邮件",
 		"USERNAME": "用户名",
 		"PASSWORD": "密码",
@@ -110,7 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "您有 %COUNT% 封新邮件！",
 		"QUOTA_SIZE": "使用了 <strong>%LIMIT%<\/strong> 存储空间中的<strong>%SIZE% (%PROC%%)<\/strong>",
 		"SORT": "排序",
-		"NO_SORT": "Mail server does not support sorting",
+		"NO_SORT": "邮件服务器不支持排序",
 		"SORT_DATE_ASC": "日期升序",
 		"SORT_DATE_DESC": "日期降序",
 		"SORT_SIZE_ASC": "大小升序",
@@ -233,7 +233,7 @@
 		"BUTTON_MARK_AS_IMPORTANT": "标记为“重要”",
 		"BUTTON_REQUEST_DSN": "要求送达回执",
 		"BUTTON_REQUIRE_TLS": "要求安全送达",
-		"ERROR_EMPTY_BODY": "Message body is empty"
+		"ERROR_EMPTY_BODY": "消息内容为空"
 	},
 	"POPUPS_ASK": {
 		"EXIT_ARE_YOU_SURE": "您确定要退出吗？",
@@ -395,7 +395,7 @@
 		"LAYOUT_NO_SPLIT": "不分隔",
 		"LAYOUT_VERTICAL_SPLIT": "垂直分隔",
 		"LAYOUT_HORIZONTAL_SPLIT": "水平分隔",
-		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
+		"SHOW_NEXT_MESSAGE": "删除或移动当前消息后显示下一条消息",
 		"EDITOR": "默认文本编辑器",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "纯文本",
