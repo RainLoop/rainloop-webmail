@@ -849,6 +849,7 @@ input[type="checkbox"] {
     border-radius: 3px;
     margin: 2px;
     box-sizing: content-box;
+    text-align: start;
 }
 
 #rl-app .dropdown-menu li.disabled>a,
