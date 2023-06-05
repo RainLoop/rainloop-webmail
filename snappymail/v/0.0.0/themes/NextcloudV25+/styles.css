@@ -598,12 +598,6 @@
     box-shadow: none;
 }
 
-#rl-app input:hover,
-#rl-app input:active,
-#rl-app input:focus {
-    border-color: var(--nc-color-primary-element);
-}
-
 #rl-app input:not([type="checkbox"]) {
     padding: 0 12px;
     font-size: var(--nc-default-font-size);
@@ -613,6 +607,15 @@
     outline: none;
     border: 2px solid var(--nc-color-border-dark);
     border-radius: var(--nc-border-radius-large);
+}
+
+#rl-app input:hover,
+#rl-app input:active,
+#rl-app input:focus,
+#rl-app input:not([type="checkbox"]):hover,
+#rl-app input:not([type="checkbox"]):active,
+#rl-app input:not([type="checkbox"]):focus {
+    border-color: var(--nc-color-primary-element);
 }
 
 #rl-app input[type="search"]::-webkit-search-decoration,
