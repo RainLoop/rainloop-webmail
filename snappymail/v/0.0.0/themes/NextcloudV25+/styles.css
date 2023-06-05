@@ -616,7 +616,8 @@ html.rl-left-panel-disabled #rl-app #rl-left {
 }
 
 /* fallback */
-#rl-app #V-MailMessageList .btn-toolbar .btn-group .btn {
+#rl-app #V-MailMessageList .btn-toolbar .btn-group .btn,
+#rl-app #V-MailMessageView .btn-toolbar .btn-group .btn {
     border-radius: var(--nc-border-radius);
 }
 
