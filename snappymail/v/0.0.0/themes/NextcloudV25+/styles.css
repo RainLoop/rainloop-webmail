@@ -8,7 +8,8 @@
  * Default Nextcloud (v25+) theme variables and colors
  * based on https://github.com/nextcloud/server/blob/master/core/css/variables.scss
  */
-body:not([data-themes~="dark"]) {
+/* #region theme */
+:not([data-themes~="dark"]) {
     --nc-color-main-background: var(--color-main-background, #ffffff);
     --nc-color-main-background-rgb: var(--color-main-background-rgb, 255, 255, 255);
     --nc-color-main-background-blur: var(--color-main-background-blur, rgba(var(--nc-color-main-background-rgb), .8));
@@ -69,7 +70,7 @@ body:not([data-themes~="dark"]) {
 }
 
 @media (prefers-color-scheme: dark) {
-    body:not([data-themes~="light"]) {
+    :not([data-themes~="light"]) {
         --nc-color-main-background: var(--color-main-background, #171717);
         --nc-color-main-background-rgb: var(--color-main-background-rgb, 23, 23, 23);
         --nc-color-main-background-blur: var(--color-main-background-blur, rgba(var(--nc-color-main-background-rgb), .8));
@@ -129,172 +130,12 @@ body:not([data-themes~="dark"]) {
         --nc-color-primary-element-text-dark: var(--color-primary-element-text-dark, #ededed);
     }
 }
+/* #endregion */
 
 /*
- * app layout changes, background & color
+ * Icons
  */
-
-#rl-app {
-    color: var(--nc-color-main-text);
-    background-color: transparent;
-    font-family: var(--nc-font-face);
-    font-size: var(--nc-default-font-size);
-}
-
-#rl-app #rl-left {
-    background-color: var(--nc-color-main-background-blur, var(--nc-color-main-background));
-    -webkit-backdrop-filter: var(--nc-filter-background-blur, none);
-    backdrop-filter: var(--nc-filter-background-blur, none);
-}
-
-#rl-app #rl-left,
-#rl-app #V-AdminPane>.b-toolbar {
-    width: 300px;
-}
-
-html:not(.rl-left-panel-disabled) #rl-left {
-    max-width: var(--nc-sidebar-max-width);
-}
-
-html.rl-left-panel-disabled #rl-app #rl-left {
-    width: 65px !important;
-}
-
-#rl-app #rl-right {
-    background-color: var(--nc-color-main-background);
-}
-
-#rl-app hr {
-    border-color: var(--nc-color-border-dark);
-}
-
-#rl-app .resizer {
-    opacity: 1;
-    background-color: unset;
-    border-right: solid 1px var(--nc-color-border);
-}
-
-#rl-app .row {
-    margin-left: unset;
-}
-
-/*
- * links
- */
-
-:root {
-    --link-color: var(--nc-color-primary-element-light-text);
-}
-
-#rl-app a[target="_blank"],
-#rl-app #messageItem .b-text-part a {
-    color: var(--nc-color-primary-element-light-text);
-}
-
-#rl-app a[target="_blank"]:visited,
-#rl-app a[target="_blank"]:active,
-#rl-app #messageItem .b-text-part a:visited,
-#rl-app #messageItem .b-text-part a:active {
-    color: var(--nc-color-primary-element);
-}
-
-/*
- * error tips
- */
-
-#rl-app [data-rainloopErrorTip]::before,
-#rl-app #V-PopupsPlugin .help-block span {
-    border: 1px solid var(--nc-color-border);
-    border-radius: var(--nc-border-radius);
-    box-shadow: 0 0 2px var(--nc-color-box-shadow);
-    background-color: var(--nc-color-background-dark);
-    font-size: 13px;
-    color: unset;
-    left: 10px;
-    right: unset;
-    padding: 5px;
-    margin: 7px;
-}
-
-#rl-app [data-rainloopErrorTip]::before {
-    color: var(--nc-color-error);
-    font-weight: 700;
-}
-
-
-/*
- * loading and login screen
- */
-
-#rl-app #rl-loading,
-#rl-app #rl-loading-error,
-#rl-app #V-Login {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-
-    top: unset;
-    position: unset;
-    min-width: unset;
-    max-width: unset;
-    transform: unset;
-    text-shadow: none;
-    transition: none;
-
-    background-color: var(--nc-color-main-background-blur, var(--nc-color-main-background));
-    -webkit-backdrop-filter: var(--nc-filter-background-blur, none);
-    backdrop-filter: var(--nc-filter-background-blur, none);
-
-    color: var(--nc-color-main-text);
-    width: 100%;
-    height: 100%;
-}
-
-#rl-app .LoginView .descWrapper {
-    color: var(--nc-color-main-text);
-}
-
-#rl-app .LoginView .alert {
-    position: unset;
-}
-
-#rl-app .LoginView form {
-    min-width: 250px;
-    max-width: 500px;
-    width: 90%;
-
-    background-color: var(--nc-color-main-background);
-    border: unset;
-    border-radius: var(--nc-border-radius-large);
-    box-shadow: 0 0 10px var(--nc-color-box-shadow);
-    color: var(--nc-color-main-text);
-}
-
-#rl-app .LoginView .controls > .fontastic:first-child {
-    padding: unset;
-    left: 10px;
-}
-
-#rl-app .LoginView .controls span.fontastic {
-    user-select: none;
-}
-
-#rl-app .LoginView .controls span.fontastic:active,
-#rl-app .LoginView .controls span.fontastic:hover {
-    background: unset;
-}
-
-#rl-app #rl-loading[hidden],
-#rl-app #rl-loading-error[hidden],
-#rl-app .LoginView .alert[hidden] {
-    display: none;
-}
-
-/*
- * icons
- */
+/* #region icons */
 
 #rl-app .iconcolor-green {
     color: var(--nc-color-success) !important;
@@ -316,9 +157,120 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     color: var(--nc-color-text-lighter);
 }
 
+/* #endregion */
+
 /*
- * alerts
+ *  Elements
  */
+
+/* #region elements */
+
+/* #region link */
+
+:root {
+    --link-color: var(--nc-color-primary-element-light-text);
+}
+
+#rl-app a[target="_blank"] {
+    color: var(--nc-color-primary-element-light-text);
+}
+
+#rl-app a[target="_blank"]:visited,
+#rl-app a[target="_blank"]:active {
+    color: var(--nc-color-primary-element);
+}
+
+/* #endregion */
+
+/* #region scrollbar */
+
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--nc-color-scrollbar);
+    border-radius: var(--nc-border-radius-large);
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-corner,
+::-webkit-scrollbar-track-piece {
+    background-color: transparent;
+}
+
+/* #endregion */
+
+/* #region resizer */
+
+#rl-app .resizer {
+    opacity: 1;
+    background-color: unset;
+    border-right: solid 1px var(--nc-color-border);
+}
+
+::-webkit-resizer {
+    border: 10px solid transparent;
+    border-radius: var(--nc-border-radius);
+    border-bottom-color: var(--nc-color-border-dark);
+}
+
+::-webkit-resizer {
+    border-right-color: var(--nc-color-border-dark);
+}
+
+[dir="rtl"] ::-webkit-resizer {
+    border-right-color: transparent;
+    border-left-color: var(--nc-color-border-dark);
+}
+
+/* #endregion */
+
+/* #region meter */
+
+#rl-app meter::-webkit-meter-bar {
+    background-color: var(--nc-color-border-dark);
+    border-color: var(--nc-color-border-dark);
+    border-width: 2px;
+    height: 10px;
+}
+
+/* #endregion */
+
+/* #region horizontal rule */
+
+#rl-app hr {
+    border-color: var(--nc-color-border-dark);
+}
+
+/* #endregion */
+
+/* #region tooltip */
+
+#rl-app [data-rainloopErrorTip]::before,
+#rl-app .help-block span {
+    border: 1px solid var(--nc-color-border);
+    border-radius: var(--nc-border-radius);
+    box-shadow: 0 0 2px var(--nc-color-box-shadow);
+    background-color: var(--nc-color-background-dark);
+    font-size: 13px;
+    color: unset;
+    left: 10px;
+    right: unset;
+    padding: 5px;
+    margin: 7px;
+}
+
+#rl-app [data-rainloopErrorTip]::before {
+    color: var(--nc-color-error);
+    font-weight: 700;
+}
+
+/* #endregion */
+
+/* #region alert */
 
 #rl-app .alert {
     text-shadow: unset;
@@ -369,13 +321,12 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     display: none;
 }
 
-/*
- * buttons
- */
+/* #endregion */
+
+/* #region button */
 
 #rl-app .btn,
-#rl-app button,
-#rl-app button.btn:not(.button-vue) {
+#rl-app button {
     min-height: 36px;
     height: 36px;
     box-sizing: border-box;
@@ -386,140 +337,152 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     border: 1px solid var(--nc-color-border-dark) !important;
     border-radius: var(--nc-border-radius-pill);
     font-size: var(--nc-default-font-size);
-}
-
-#rl-app .btn.fontastic {
-    border-radius: var(--nc-border-radius-large);
-}
-
-#rl-app .btn.btn-thin {
-    padding-right: 9px;
-    padding-left: 9px;
-}
-
-#rl-app .btn.btn-transparent {
-    background: unset !important;
-    border: unset !important;
-    opacity: 0.6;
+    text-shadow: none;
+    box-shadow: none;
 }
 
 #rl-app .btn:hover,
 #rl-app .btn:focus,
 #rl-app .btn:active,
-#rl-app .btn.active {
+#rl-app .btn.active,
+#rl-app button:hover,
+#rl-app button:focus,
+#rl-app button:active,
+#rl-app button.active,
+#rl-app span.fontastic:hover,
+#rl-app span.fontastic:focus,
+#rl-app span.fontastic:active {
     outline: none;
     opacity: unset;
 }
 
-
-#rl-app .btn.disabled, .btn[disabled],
-#rl-app .btn.disabled:hover, .btn[disabled]:hover,
-#rl-app .btn.disabled:focus, .btn[disabled]:focus,
-#rl-app .btn.disabled:active, .btn[disabled]:active {
-    opacity: .5;
-    filter: saturate(0.7);
+#rl-app .btn.fontastic,
+#rl-app button.fontastic {
+    border-radius: var(--nc-border-radius-large);
 }
 
-#rl-app .btn:not(.disabled, [disabled]):hover,
-#rl-app button:not(.disabled, [disabled]):hover,
-#rl-app .btn:not(.disabled, [disabled]):focus,
-#rl-app button:not(.disabled, [disabled]):focus {
-    border-color: var(--nc-color-primary-element) !important;
+#rl-app .btn.btn-thin,
+#rl-app button.btn-thin {
+    padding-right: 9px;
+    padding-left: 9px;
 }
 
-#rl-app .btn:not(.disabled, [disabled]):active,
-#rl-app button:not(.disabled, [disabled]):active,
-#rl-app .btn:not(.disabled, [disabled]).active,
-#rl-app button:not(.disabled, [disabled]).active {
-    background-color: var(--nc-color-main-background);
-    color: var(--nc-color-text-light);
+#rl-app .btn.btn-transparent,
+#rl-app button.btn-transparent {
+    background: unset !important;
+    border: unset !important;
+    opacity: 0.6;
 }
 
-#rl-app .btn,
-#rl-app button,
-#rl-app .btn.active,
-#rl-app button.active,
-#rl-app .btn:active,
-#rl-app button:active,
-#rl-app .btn.disabled,
-#rl-app button.disabled,
-#rl-app .btn[disabled],
-#rl-app button[disabled] {
-    text-shadow: none;
-    box-shadow: none;
-}
-
-#rl-app .btn.buttonCompose {
-    font-weight: bold;
-    max-width: 100%;
-    box-sizing: content-box !important;
-}
-
-#rl-app .btn.buttonCompose:active {
-    color: var(--nc-color-primary-element-text-dark);
-}
-
-#rl-app button.btn.buttonLogin,
-#rl-app .btn.btn-success {
-    color: var(--nc-color-primary-element-text);
-    background-color: var(--nc-color-primary-element);
-    border-color: var(--nc-color-primary-element) !important;
-}
-
-#rl-app button.btn.buttonLogin:hover,
-#rl-app .btn.btn-success:hover,
-#rl-app button.btn.buttonLogin:focus,
-#rl-app .btn.btn-success:focus {
-    color: var(--nc-color-primary-element-text);
-    background-color: var(--nc-color-primary-element-hover);
-    border-color: var(--nc-color-primary-element-hover) !important;
-}
-
-#rl-app .btn.btn-warning {
+#rl-app .btn.btn-warning,
+#rl-app button.btn-warning {
     color: var(--nc-color-primary-element-text);
     background-color: var(--nc-color-warning);
     border-color: var(--nc-color-warning) !important;
 }
 
 #rl-app .btn.btn-warning:hover,
-#rl-app .btn.btn-warning:focus {
+#rl-app .btn.btn-warning:focus,
+#rl-app button.btn-warning:hover,
+#rl-app button.btn-warning:focus {
     color: var(--nc-color-primary-element-text);
     background-color: var(--nc-color-warning-hover);
     border-color: var(--nc-color-warning-hover) !important;
 }
 
-#rl-app .btn.btn-danger {
+#rl-app .btn.btn-danger,
+#rl-app button.btn-danger {
     color: var(--nc-color-primary-element-text);
     background-color: var(--nc-color-error);
     border-color: var(--nc-color-error) !important;
 }
 
 #rl-app .btn.btn-danger:hover,
-#rl-app .btn.btn-danger:focus {
+#rl-app .btn.btn-danger:focus,
+#rl-app button.btn-danger:hover,
+#rl-app button.btn-danger:focus {
     color: var(--nc-color-primary-element-text);
     background-color: var(--nc-color-error-hover);
     border-color: var(--nc-color-error-hover) !important;
 }
 
-#rl-app .btn-group .btn:nth-child(n+2 of :not([style*="display: none;"])):nth-last-child(n+2 of :not([style*="display: none;"])) {
-    border-radius: 0 !important;
-    margin: 0 0.5px;
+#rl-app .btn.btn-success,
+#rl-app button.btn-success,
+#rl-app button.btn.buttonLogin {
+    color: var(--nc-color-primary-element-text);
+    background-color: var(--nc-color-primary-element);
+    border-color: var(--nc-color-primary-element) !important;
 }
 
-/* fallback */
-#rl-app .btn-group .btn:not(:first-of-type):not(:last-of-type),
-#rl-app .btn-group button.btn:not(:first-of-type):not(:last-of-type) {
-    border-radius: 0;
-    margin: 0 0.5px;
+#rl-app .btn.btn-success:hover,
+#rl-app .btn.btn-success:focus,
+#rl-app button.btn-success:hover,
+#rl-app button.btn-success:focus,
+#rl-app button.btn.buttonLogin:hover,
+#rl-app button.btn.buttonLogin:focus {
+    color: var(--nc-color-primary-element-text);
+    background-color: var(--nc-color-primary-element-hover);
+    border-color: var(--nc-color-primary-element-hover) !important;
 }
+
+#rl-app span.fontastic {
+    padding: 6px;
+    border-radius: var(--nc-border-radius);
+}
+
+#rl-app span.fontastic:hover {
+    background-color: var(--nc-color-background-hover);
+}
+
+#rl-app span.fontastic:active {
+    background-color: var(--nc-color-primary-light);
+}
+
+#rl-app .btn.disabled, .btn[disabled],
+#rl-app .btn.disabled:hover, .btn[disabled]:hover,
+#rl-app .btn.disabled:focus, .btn[disabled]:focus,
+#rl-app .btn.disabled:active, .btn[disabled]:active,
+#rl-app button.disabled, button[disabled],
+#rl-app button.disabled:hover, button[disabled]:hover,
+#rl-app button.disabled:focus, button[disabled]:focus,
+#rl-app button.disabled:active, button[disabled]:active,
+#rl-app span.fontastic.disabled, span.fontastic[disabled],
+#rl-app span.fontastic.disabled:hover, span.fontastic[disabled]:hover,
+#rl-app span.fontastic.disabled:focus, span.fontastic[disabled]:focus,
+#rl-app span.fontastic.disabled:active, span.fontastic[disabled]:active {
+    opacity: .5;
+    filter: saturate(0.7);
+}
+
+#rl-app .btn:not(.disabled, [disabled]):hover,
+#rl-app .btn:not(.disabled, [disabled]):focus,
+#rl-app button:not(.disabled, [disabled]):hover,
+#rl-app button:not(.disabled, [disabled]):focus,
+#rl-app span.fontastic:not(.disabled, [disabled]):hover,
+#rl-app span.fontastic:not(.disabled, [disabled]):focus {
+    border-color: var(--nc-color-primary-element) !important;
+}
+
+#rl-app .btn:not(.disabled, [disabled]):active,
+#rl-app .btn:not(.disabled, [disabled]).active,
+#rl-app button:not(.disabled, [disabled]):active,
+#rl-app button:not(.disabled, [disabled]).active,
+#rl-app span.fontastic:not(.disabled, [disabled]):active,
+#rl-app span.fontastic:not(.disabled, [disabled]).active {
+    background-color: var(--nc-color-main-background);
+    color: var(--nc-color-text-light);
+}
+
+/* #endregion */
+
+/* #region button group */
 
 #rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])) {
     margin-right: 0.5px;
 }
 
 /* fallback */
-#rl-app .btn-group .btn:first-of-type,
-#rl-app .btn-group button.btn:first-of-type {
+#rl-app .btn-group .btn:first-of-type {
     margin-right: 0.5px;
 }
 
@@ -528,9 +491,20 @@ html.rl-left-panel-disabled #rl-app #rl-left {
 }
 
 /* fallback */
-#rl-app .btn-group .btn:last-of-type,
-#rl-app .btn-group button.btn:last-of-type {
+#rl-app .btn-group .btn:last-of-type {
     margin-left: 0.5px;
+}
+
+#rl-app .btn-group .btn:nth-child(n+2 of :not([style*="display: none;"])):nth-last-child(n+2 of :not([style*="display: none;"])) {
+    border-radius: 0 !important;
+    margin-right: 0.5px;
+    margin-left: 0.5px;
+}
+
+/* fallback */
+#rl-app .btn-group .btn:not(:first-of-type):not(:last-of-type) {
+    border-radius: 0;
+    margin: 0 0.5px;
 }
 
 #rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])),
@@ -615,150 +589,9 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     border-radius: var(--nc-border-radius-large) !important;
 }
 
-/* fallback */
-#rl-app #V-MailMessageList .btn-toolbar .btn-group .btn,
-#rl-app #V-MailMessageView .btn-toolbar .btn-group .btn {
-    border-radius: var(--nc-border-radius);
-}
+/* #endregion */
 
-#rl-app .btn.buttonCompose,
-#rl-app .btn.buttonContacts,
-#rl-app .b-footer.btn-toolbar .btn-group .btn {
-    box-sizing: border-box;
-    padding: 4px 14px;
-    line-height: 36px;
-    height: 44px;
-    min-width: fit-content;
-    width: stretch;
-    width: -moz-available;
-    width: -webkit-fill-available;
-    margin: 3px !important;
-
-    font-size: var(--nc-default-font-size);
-}
-
-#rl-app .b-folders .btn.buttonCompose {
-    min-width: 16px;
-}
-
-#rl-app .b-folders .btn.buttonContacts {
-    min-width: 44px;
-    width: 44px;
-}
-
-@media screen and (min-width: 1000px) {
-    #rl-app .b-folders .btn.buttonContacts {
-        transition: none;
-    }
-}
-
-#rl-app .b-footer.btn-toolbar .btn,
-#rl-app #V-SettingsPane .btn-toolbar .btn {
-    background: transparent;
-    border: unset !important;
-}
-
-#rl-app .b-footer.btn-toolbar .btn {
-    text-align: left;
-    font-size: 22px;
-    user-select: none;
-}
-
-#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn {
-    width: -webkit-fill-available;
-    width: -moz-available;
-    width: fill-available;
-    overflow: hidden;
-}
-
-#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic {
-    background-color: var(--nc-color-main-background);
-}
-
-#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn:after,
-[dir="rtl"] #rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:before {
-    font-family: var(--nc-font-face);
-    font-size: var(--nc-default-font-size);
-    margin-left: 15px;
-}
-
-#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn:after {
-    position: absolute;
-}
-
-[dir="rtl"] #rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn:after {
-    position: unset;
-}
-
-#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:after,
-[dir="rtl"] #rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:before {
-    content: 'SnappyMail-Settings';
-}
-
-[dir="rtl"] #rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:after {
-    content: unset;
-}
-
-#rl-app .b-footer.btn-toolbar .btn-group .btn.icon-folder-add:after {
-    content: 'Create new folder';
-}
-
-html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.fontastic:after,
-html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-folder-add:after {
-    content: '';
-}
-
-#rl-app .icon-folder-add::before,
-#rl-app .icon-resize-in::before {
-    line-height: unset;
-}
-
-#rl-app span.fontastic {
-    padding: 6px;
-    border-radius: var(--nc-border-radius);
-}
-
-#rl-app span.fontastic:hover,
-#rl-app .b-footer.btn-toolbar .btn:hover,
-#rl-app .b-footer.btn-toolbar .btn.fontastic:hover,
-#rl-app #V-SettingsPane .btn-toolbar .btn:hover {
-    background-color: var(--nc-color-background-hover);
-}
-
-#rl-app span.fontastic:active,
-#rl-app .b-footer.btn-toolbar .btn:active,
-#rl-app .b-footer.btn-toolbar .btn.fontastic:active,
-#rl-app #V-SettingsPane .btn-toolbar .btn:active {
-    background-color: var(--nc-color-primary-light);
-}
-
-#rl-app span.fontastic:focus,
-#rl-app .b-footer.btn-toolbar .btn:focus,
-#rl-app .b-footer.btn-toolbar .btn.fontastic:focus,
-#rl-app #V-SettingsPane .btn-toolbar .btn:focus {
-    outline: none;
-}
-
-#rl-app #V-MailMessageList .btn-toolbar {
-    text-align: center;
-}
-
-#rl-app #V-MailMessageView .messageView .b-message .message-fixed-button-toolbar .btn.buttonEdit {
-    padding: 4px 8px;
-    min-height: 28px;
-    height: 28px;
-    opacity: 0.8;
-}
-
-#rl-app #V-MailMessageView .messageView .b-message .message-fixed-button-toolbar .btn.buttonEdit:hover,
-#rl-app #V-MailMessageView .messageView .b-message .message-fixed-button-toolbar .btn.buttonEdit:focus,
-#rl-app #V-MailMessageView .messageView .b-message .message-fixed-button-toolbar .btn.buttonEdit:active {
-    opacity: unset;
-}
-
-/*
- * inputs
- */
+/* #region input */
 
 #rl-app input {
     box-shadow: none;
@@ -794,9 +627,9 @@ html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-f
     margin: 0;
 }
 
-#rl-app input[type=number] { 
+#rl-app input[type=number] {
     -moz-appearance: textfield;
-    -webkit-appearance: textfield; 
+    -webkit-appearance: textfield;
     appearance: textfield;
     margin: 0;
     /* ? margin: 0 5px 0 0; */
@@ -813,12 +646,81 @@ html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-f
     line-height: 30px;
 }
 
-/*
- * select
- */
+/* #endregion */
 
-#rl-app .emailaddresses,
-#rl-app .select, #rl-app select {
+/* #region checkbox */
+
+#rl-app .e-checkbox.material-design {
+    width: fit-content !important;
+    width: -moz-fit-content !important;
+    display: flex;
+    position: relative;
+    align-items: center;
+    user-select: none;
+    height: 44px;
+    border-radius: 44px;
+    padding: 0 14px;
+    margin: 0;
+}
+
+#rl-app .e-checkbox.material-design:hover,
+#rl-app .e-checkbox.material-design:focus-within {
+    background-color: var(--nc-color-primary-light);
+    outline: none;
+}
+
+#rl-app .e-checkbox.material-design:focus {
+    outline: none;
+}
+
+#rl-app .e-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+input[type="checkbox"] {
+    background-color: transparent;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+#rl-app .e-checkbox.material-design>div {
+    position: relative;
+    width: 18px;
+    top: 2px;
+}
+
+#rl-app input[type="checkbox"],
+#rl-app .e-checkbox.material-design input+div {
+    position: unset;
+    height: 18px !important;
+    width: 18px !important;
+    min-width: 18px !important;
+    flex-shrink: 0 !important;
+    border: 2px solid var(--nc-color-primary-element);
+    border-radius: 2px;
+    box-sizing: border-box;
+    animation: none;
+    transform: unset;
+}
+
+#rl-app input[type="checkbox"]:checked,
+#rl-app .e-checkbox.material-design input:checked+div {
+    --nc-svg-checked: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='3 3 18 18'><path d='M10,17L5,12L6.41,10.58L10,14.17L17.59,6.58L19,8M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z'></path></svg>");
+    -webkit-mask-image: var(--nc-svg-checked);
+    mask-image: var(--nc-svg-checked);
+    background: var(--nc-color-primary-element);
+    border-width: 0;
+    animation: none;
+    transform: unset;
+}
+
+/* #endregion */
+
+/* #region select */
+
+#rl-app select,
+#rl-app .select,
+#rl-app .emailaddresses {
     padding: 8px 12px;
     font-size: var(--nc-default-font-size);
     color: var(--nc-color-main-text);
@@ -831,23 +733,26 @@ html.rl-left-panel-disabled #rl-app .b-footer.btn-toolbar .btn-group .btn.icon-f
     box-sizing: border-box;
 }
 
+#rl-app select:hover,
+#rl-app select:active,
+#rl-app select:focus,
+#rl-app .select:hover,
+#rl-app .select:active,
+#rl-app .select:focus,
 #rl-app .emailaddresses:hover,
 #rl-app .emailaddresses:active,
-#rl-app .emailaddresses:focus,
-#rl-app .select:hover, #rl-app select:hover,
-#rl-app .select:active, #rl-app select:active,
-#rl-app .select:focus, #rl-app select:focus {
+#rl-app .emailaddresses:focus {
     border-color: var(--nc-color-primary-element);
 }
 
-select option {
+#rl-app select option {
     background-color: var(--nc-color-background-dark);
     color: var(--nc-color-main-text);
 }
 
-/*
- * email address select
- */
+/* #endregion */
+
+/* #region select email address */
 
 #rl-app .emailaddresses {
     display: inline-flex;
@@ -880,9 +785,9 @@ select option {
     color: var(--nc-color-main-text);
 }
 
-/*
- * textareas
- */
+/* #endregion */
+
+/* #region textarea */
 
 #rl-app .squire-toolbar {
     height: 50px;
@@ -906,91 +811,322 @@ select option {
 }
 
 #rl-app textarea:hover,
-#rl-app div[contenteditable=true]:hover,
-#rl-app .squire-wysiwyg:hover,
-#rl-app .squire-plain:hover,
 #rl-app textarea:active,
-#rl-app div[contenteditable=true]:active,
-#rl-app .squire-wysiwyg:active,
-#rl-app .squire-plain:active,
 #rl-app textarea:focus,
+#rl-app div[contenteditable=true]:hover,
+#rl-app div[contenteditable=true]:active,
 #rl-app div[contenteditable=true]:focus,
+#rl-app .squire-wysiwyg:hover,
+#rl-app .squire-wysiwyg:active,
 #rl-app .squire-wysiwyg:focus,
+#rl-app .squire-plain:hover,
+#rl-app .squire-plain:active,
 #rl-app .squire-plain:focus {
     border-color: var(--nc-color-primary-element);
 }
 
+/* #endregion */
+
+/* #region dropdown */
+
+#rl-app .dropdown.show {
+    box-shadow: none;
+}
+
+#rl-app .dropdown-menu {
+    background-color: var(--nc-color-main-background);
+    filter: drop-shadow(0 1px 5px var(--nc-color-box-shadow));
+    border-radius: var(--nc-border-radius-large);
+    color: var(--nc-color-main-text);
+    padding: 4px;
+}
+
+#rl-app .dropdown-menu a {
+    background-color: unset;
+    color: unset;
+    height: 22px;
+    line-height: 22px;
+    border-radius: 3px;
+    margin: 2px;
+    box-sizing: content-box;
+}
+
+#rl-app .dropdown-menu li.disabled>a,
+#rl-app .dropdown-menu li.disabled>a:hover,
+#rl-app .dropdown-menu li.disabled>a:focus,
+#rl-app .dropdown-menu li.disabled>a:active {
+    opacity: .5;
+    filter: saturate(0.7);
+}
+
+#rl-app .dropdown-menu li:not(.disabled)>a:hover,
+#rl-app .dropdown-menu li:not(.disabled)>a:focus {
+    background-color: var(--nc-color-background-hover);
+    color: unset;
+    opacity: unset;
+}
+
+#rl-app .dropdown-menu li:not(.disabled)>a:active {
+    background-color: var(--nc-color-primary-element-light);
+}
+
+#rl-app .dropdown-menu *+.dividerbar {
+    border-color: var(--nc-color-border);
+}
+
+#rl-app .dropdown-menu::-webkit-scrollbar-track-piece {
+    background-color: inherit;
+    border-top-right-radius: inherit;
+    border-bottom-right-radius: inherit;
+}
+
+/* #endregion */
+
+/* #region dropdown account */
+
+#rl-app #V-SystemDropDown .btn-toolbar {
+    border: solid 1px var(--nc-color-border-dark);
+    border-radius: var(--nc-border-radius-large);
+    height: 36px;
+    padding: 2px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    box-sizing: content-box;
+}
+
+#rl-app #V-SystemDropDown .accountPlace {
+    background: unset;
+    color: unset;
+    text-shadow: none;
+    border-color: var(--nc-color-border);
+}
+
+#rl-app #V-SystemDropDown #top-system-dropdown-id {
+    background-color: unset;
+    border: unset !important;
+    border-radius: var(--nc-border-radius-large) !important;
+    height: 20px;
+}
+
+#rl-app #V-SystemDropDown #top-system-dropdown-id:hover,
+#rl-app #V-SystemDropDown #top-system-dropdown-id:focus {
+    background-color: var(--nc-color-background-hover);
+}
+
+#rl-app #V-SystemDropDown #top-system-dropdown-id:active {
+    background-color: var(--nc-color-background-dark);
+}
+
+/* #endregion */
+
+/* #region tab */
+
+#rl-app .tabs>[id^=tab]:checked+label {
+    background-color: var(--nc-color-main-background);
+    border-color: var(--nc-color-primary-element);
+    border-bottom-color: transparent;
+}
+
+#rl-app .tabs>label {
+    margin: 0 2px -1px 2px;
+    border-radius: 0;
+    border-top-left-radius: var(--nc-border-radius);
+    border-top-right-radius: var(--nc-border-radius);
+}
+
+#rl-app .tabs>label:hover {
+    border-color: transparent;
+    border-bottom-color: var(--nc-color-primary-element);
+    background-color: var(--nc-color-background-hover)
+}
+
+#rl-app .tabs .tab-content {
+    border-top: solid 1px;
+    border-radius: 4px;
+    border-color: var(--nc-color-primary-element);
+}
+
+/* #endregion */
+
+/* #region table */
+
+#rl-app .table td,
+#rl-app .table th,
+#rl-app .table-bordered {
+    border-color: var(--nc-color-border-dark);
+}
+
+#rl-app .table-hover tbody tr:hover td,
+#rl-app .table-hover tbody tr:hover th {
+    background-color: var(--nc-color-background-hover);
+}
+
+#rl-app .table-striped tbody tr:nth-child(odd) td,
+#rl-app .table-striped tbody tr:nth-child(odd) th {
+    background-color: var(--nc-color-background-dark);
+}
+
+/* #endregion */
+
+/* #region attachment */
+
+#rl-app .attachmentItem {
+    background-color: var(--nc-color-background-dark);
+    border-radius: var(--nc-border-radius);
+    box-shadow: none;
+    padding: 2px;
+}
+
+#rl-app .attachmentItem:hover,
+#rl-app .attachmentItem:active {
+    background-color: var(--nc-color-background-darker);
+}
+
+#rl-app .attachmentItem:focus {
+    outline: none;
+}
+
+#rl-app .attachmentItem .iconProgress {
+    background-color: var(--nc-color-background-darker);
+}
+
+#rl-app .attachmentItem .iconBG {
+    font-weight: 700;
+    line-height: 48px;
+    font-size: unset;
+    text-shadow: unset;
+}
+
+#rl-app .attachmentItem .attachmentNameParent {
+    border-color: var(--nc-color-border-dark);
+}
+
+#rl-app .attachmentItem .iconMain,
+#rl-app .attachmentItem .iconPreview {
+    color: var(--nc-color-text-light);
+}
+
+/* #endregion */
+
+/* #endregion */
+
 /*
- * checkboxes
+ *  Views
  */
 
-#rl-app .e-component.e-checkbox.material-design {
-    width: fit-content !important;
-    width: -moz-fit-content !important;
+/* #region views */
+
+/* #region app */
+
+#rl-app {
+    color: var(--nc-color-main-text);
+    background-color: transparent;
+    font-family: var(--nc-font-face);
+    font-size: var(--nc-default-font-size);
+}
+
+#rl-app #rl-left {
+    background-color: var(--nc-color-main-background-blur, var(--nc-color-main-background));
+    -webkit-backdrop-filter: var(--nc-filter-background-blur, none);
+    backdrop-filter: var(--nc-filter-background-blur, none);
+    width: 300px;
+}
+
+html:not(.rl-left-panel-disabled) #rl-left {
+    max-width: var(--nc-sidebar-max-width);
+}
+
+html.rl-left-panel-disabled #rl-app #rl-left {
+    width: 65px !important;
+}
+
+#rl-app #rl-right {
+    background-color: var(--nc-color-main-background);
+}
+
+#rl-app::selection {
+    background-color: var(--nc-color-primary);
+    color: var(--nc-color-primary-text);
+}
+
+/* #endregion */
+
+/* #region login & loading */
+
+#rl-app #V-Login,
+#rl-app #rl-loading,
+#rl-app #rl-loading-error {
     display: flex;
-    position: relative;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    top: unset;
+    position: unset;
+    min-width: unset;
+    max-width: unset;
+    transform: unset;
+    text-shadow: none;
+    transition: none;
+
+    background-color: var(--nc-color-main-background-blur, var(--nc-color-main-background));
+    -webkit-backdrop-filter: var(--nc-filter-background-blur, none);
+    backdrop-filter: var(--nc-filter-background-blur, none);
+
+    color: var(--nc-color-main-text);
+    width: 100%;
+    height: 100%;
+}
+
+#rl-app .LoginView .descWrapper {
+    color: var(--nc-color-main-text);
+}
+
+#rl-app .LoginView .alert {
+    position: unset;
+}
+
+#rl-app .LoginView form {
+    min-width: 250px;
+    max-width: 500px;
+    width: 90%;
+
+    background-color: var(--nc-color-main-background);
+    border: unset;
+    border-radius: var(--nc-border-radius-large);
+    box-shadow: 0 0 10px var(--nc-color-box-shadow);
+    color: var(--nc-color-main-text);
+}
+
+#rl-app .LoginView .controls>.fontastic:first-child {
+    padding: unset;
+    left: 10px;
+}
+
+#rl-app .LoginView .controls span.fontastic {
     user-select: none;
-    height: 44px;
-    border-radius: 44px;
-    padding: 0 14px;
-    margin: 0;
 }
 
-#rl-app .e-component.e-checkbox.material-design:hover,
-#rl-app .e-component.e-checkbox.material-design:focus-within {
-    background-color: var(--nc-color-primary-light);
-    outline: none;
+#rl-app .LoginView .controls span.fontastic:active,
+#rl-app .LoginView .controls span.fontastic:hover {
+    background: unset;
 }
 
-#rl-app .e-component.e-checkbox.material-design:focus {
-    outline: none;
-}
-
-#rl-app .e-component.e-checkbox input[type="checkbox"] {
+#rl-app #rl-loading[hidden],
+#rl-app #rl-loading-error[hidden],
+#rl-app .LoginView .alert[hidden] {
     display: none;
 }
 
-input[type="checkbox"] {
-    background-color: transparent;
-    -webkit-appearance: none;
-    appearance: none;
-}
+/* #endregion */
 
-#rl-app .e-checkbox.material-design>div {
-    position: relative;
-    width: 18px;
-    top: 2px;
-}
+/* #region side panel */
 
-input[type="checkbox"],
-#rl-app .e-checkbox.material-design input+div {
-    position: unset;
-    height: 18px !important;
-    width: 18px !important;
-    min-width: 18px !important;
-    flex-shrink: 0 !important;
-    border: 2px solid var(--nc-color-primary-element);
-    border-radius: 2px;
-    box-sizing: border-box;
-    animation: none;
-    transform: unset;
+html.rl-left-panel-disabled #rl-app #rl-left:has(#V-SettingsMenu:not([hidden])) {
+    width: 250px !important;
 }
-
-input[type="checkbox"]:checked,
-#rl-app .e-checkbox.material-design input:checked+div {
-    --nc-svg-checked: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='3 3 18 18'><path d='M10,17L5,12L6.41,10.58L10,14.17L17.59,6.58L19,8M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z'></path></svg>");
-    -webkit-mask-image: var(--nc-svg-checked);
-    mask-image: var(--nc-svg-checked);
-    background: var(--nc-color-primary-element);
-    border-width: 0;
-    animation: none;
-    transform: unset;
-}
-
-/*
- * side panel
- */
 
 #rl-app #V-AdminPane>.b-toolbar,
 #rl-app #V-SettingsMenu>.b-toolbar {
@@ -1002,10 +1138,6 @@ input[type="checkbox"]:checked,
     font-weight: bold;
 }
 
-html.rl-left-panel-disabled #rl-app #rl-left:has(#V-SettingsMenu:not([hidden])) {
-    width: 250px !important;
-}
-
 #rl-app .b-folders .b-toolbar {
     height: unset;
     display: flex;
@@ -1015,6 +1147,34 @@ html.rl-left-panel-disabled #rl-app #rl-left:has(#V-SettingsMenu:not([hidden])) 
 
 html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
     flex-direction: column;
+}
+
+#rl-app .b-folders .b-toolbar .btn.buttonCompose,
+#rl-app .b-folders .b-toolbar .btn.buttonContacts,
+#rl-app .b-footer .btn {
+    box-sizing: border-box;
+    padding: 4px 14px;
+    line-height: 36px;
+    height: 44px;
+    min-width: fit-content;
+    width: stretch;
+    width: -moz-available;
+    width: -webkit-fill-available;
+    margin: 3px !important;
+
+    font-size: var(--nc-default-font-size);
+}
+
+#rl-app .b-folders .b-toolbar .btn.buttonCompose {
+    min-width: 16px;
+    max-width: 100%;
+    font-weight: bold;
+    box-sizing: content-box !important;
+}
+
+#rl-app .b-folders .b-toolbar .btn.buttonContacts {
+    width: 44px;
+    min-width: 44px;
 }
 
 #rl-app #V-AdminMenu nav,
@@ -1117,7 +1277,6 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-folders-system a.selectable {
     box-sizing: border-box;
 }
 
-#rl-app #V-SettingsMenu .b-footer,
 #rl-app .b-footer.btn-toolbar.hide-mobile,
 #rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled {
     margin: 0;
@@ -1125,34 +1284,147 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-folders-system a.selectable {
     bottom: 0;
 }
 
-#rl-app #V-SettingsMenu .b-footer,
 #rl-app .b-footer.btn-toolbar {
     overflow: unset;
     padding: 3px;
 }
 
-#rl-app #V-MailFolderList .b-footer .btn {
+#rl-app .b-footer.btn-toolbar .btn {
+    background: transparent;
+    border: unset !important;
+}
+
+#rl-app .b-footer.btn-toolbar .btn {
+    text-align: left;
+    font-size: 22px;
+    user-select: none;
+}
+
+#rl-app .b-footer.btn-toolbar .btn-group .btn:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])),
+#rl-app .b-footer.btn-toolbar .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])) {
     border-radius: var(--nc-border-radius-pill) !important;
 }
 
-#rl-app .b-footer .btn[data-bind*="toggleLeftPanel"] {
+/* fallback */
+#rl-app .b-footer.btn-toolbar .btn-group .btn,
+#rl-app .b-footer.btn-toolbar .btn-group .btn.fontastic {
+    border-radius: var(--nc-border-radius-pill) !important;
+}
+
+#rl-app .b-footer.btn-toolbar .btn:hover,
+#rl-app .b-footer.btn-toolbar .btn.fontastic:hover {
+    background-color: var(--nc-color-background-hover);
+}
+
+#rl-app .b-footer.btn-toolbar .btn:active,
+#rl-app .b-footer.btn-toolbar .btn.fontastic:active {
+    background-color: var(--nc-color-primary-light);
+}
+
+#rl-app .b-footer.btn-toolbar .btn:focus,
+#rl-app .b-footer.btn-toolbar .btn.fontastic:focus {
+    outline: none;
+}
+
+#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn {
+    width: -webkit-fill-available;
+    width: -moz-available;
+    width: fill-available;
+    overflow: hidden;
+}
+
+#rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic {
+    background-color: var(--nc-color-main-background);
+}
+
+#rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn:after,
+[dir="rtl"] #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:before {
+    font-family: var(--nc-font-face);
+    font-size: var(--nc-default-font-size);
+    margin-left: 15px;
+}
+
+#rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn:after {
+    position: absolute;
+}
+
+[dir="rtl"] #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn:after {
+    position: unset;
+}
+
+#rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:after,
+[dir="rtl"] #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:before {
+    content: 'SnappyMail-Settings';
+}
+
+[dir="rtl"] #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:after {
+    content: unset;
+}
+
+#rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group .btn.icon-folder-add:before {
+    line-height: unset;
+}
+
+#rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group .btn.icon-folder-add:after {
+    content: 'Create new folder';
+}
+
+html.rl-left-panel-disabled #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group .btn.fontastic:after,
+html.rl-left-panel-disabled #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group .btn.icon-folder-add:after {
+    content: '';
+}
+
+#rl-app #V-MailFolderList .b-footer .btn[data-bind*="toggleLeftPanel"] {
     width: unset !important;
 }
 
-/*
- * message list
- */
+/* #endregion */
+
+/* #region message list & view */
+
+#rl-app .messageList,
+#rl-app .messageView {
+    height: calc(100% - 60px);
+    margin: 0 5px;
+    border: none;
+    box-shadow: none !important;
+    background: var(--nc-color-main-background);
+}
+
+#rl-app #V-MailMessageList .btn-toolbar,
+#rl-app #V-MailMessageView .btn-toolbar {
+    padding: 10px;
+}
+
+/* fallback */
+#rl-app #V-MailMessageList .btn-toolbar .btn-group .btn,
+#rl-app #V-MailMessageView .btn-toolbar .btn-group .btn {
+    border-radius: var(--nc-border-radius);
+}
+
+/* #endregion */
+
+/* #region message list */
 
 #rl-app #V-MailMessageList {
     overflow: unset;
+}
+
+#rl-app #V-MailMessageList .btn-toolbar {
+    text-align: center;
 }
 
 #rl-app #V-MailMessageList .messageList {
     min-width: 360px;
 }
 
-#rl-app .thm-message-list-top-toolbar,
-#rl-app .thm-message-list-bottom-toolbar {
+html.sm-msgView-bottom #rl-app .messageList {
+    height: 35vh;
+}
+
+#rl-app .messageList .second-toolbar,
+#rl-app .messageList .b-footer {
+    border-color: var(--nc-color-border);
     background: unset !important;
 }
 
@@ -1162,11 +1434,6 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-folders-system a.selectable {
 
 #rl-app .messageList .b-footer {
     padding-bottom: 10px;
-}
-
-#rl-app .messageList .second-toolbar,
-#rl-app .messageList .b-footer {
-    border-color: var(--nc-color-border);
 }
 
 #rl-app .messageList .inputSearch {
@@ -1242,6 +1509,16 @@ html:not(rl-mobile) #rl-app .hideMessageListCheckbox .checkboxCheckAll {
 #rl-app .messageList .b-content .listLoading {
     color: var(--nc-color-text-lighter);
 }
+
+#rl-app .messageList .groupLabel {
+    background-color: var(--nc-color-background-dark);
+    border-radius: var(--nc-border-radius);
+    margin: 2px 0;
+}
+
+/* #endregion */
+
+/* #region message list item */
 
 #rl-app .messageListItem .checkboxMessage {
     border-color: var(--nc-color-text-lighter);
@@ -1343,12 +1620,6 @@ html:not(rl-mobile) #rl-app .hideMessageListCheckbox .checkboxCheckAll {
     border-color: inherit;
 }
 
-#rl-app .messageList .groupLabel {
-    background-color: var(--nc-color-background-dark);
-    border-radius: var(--nc-border-radius);
-    margin: 2px 0;
-}
-
 #rl-app #messagesDragImage {
     padding: 5px 5px 5px 10px;
     color: var(--nc-color-text-lighter);
@@ -1359,38 +1630,29 @@ html:not(rl-mobile) #rl-app .hideMessageListCheckbox .checkboxCheckAll {
     min-width: unset;
 }
 
-/*
- * message view
- */
+/* #endregion */
+
+/* #region message view */
 
 #rl-app #V-MailMessageView {
     bottom: 0;
-}
-
-#rl-app #V-MailMessageList .btn-toolbar,
-#rl-app #V-MailMessageView .btn-toolbar {
-    padding: 10px;
-}
-
-#rl-app .messageList,
-#rl-app .messageView {
-    height: calc(100% - 60px);
-    margin: 0 5px;
-    border: none;
-    box-shadow: none !important;
-    background: var(--nc-color-main-background);
-}
-
-html.sm-msgView-bottom #rl-app .messageList {
-    height: 35vh;
 }
 
 html.sm-msgView-bottom #rl-app .messageView {
     height: 100%;
 }
 
-html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar {
-    /* TODO Improve mobile experience */
+#rl-app .messageView .b-message .message-fixed-button-toolbar .btn.buttonEdit {
+    padding: 4px 8px;
+    min-height: 28px;
+    height: 28px;
+    opacity: 0.8;
+}
+
+#rl-app .messageView .b-message .message-fixed-button-toolbar .btn.buttonEdit:hover,
+#rl-app .messageView .b-message .message-fixed-button-toolbar .btn.buttonEdit:focus,
+#rl-app .messageView .b-message .message-fixed-button-toolbar .btn.buttonEdit:active {
+    opacity: unset;
 }
 
 #rl-app .messageView .b-message-view-desc,
@@ -1400,13 +1662,6 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 
 #rl-app .messageView .b-message-view-desc.error {
     color: var(--nc-color-error);
-}
-
-#rl-app meter::-webkit-meter-bar {
-    background-color: var(--nc-color-border-dark);
-    border-color: var(--nc-color-border-dark);
-    border-width: 2px;
-    height: 10px;
 }
 
 #rl-app .messageView .messageItemHeader .informationShort meter::-webkit-meter-optimum-value {
@@ -1526,215 +1781,9 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     margin: 5px;
 }
 
-/*
- * attachment item
- */
+/* #endregion */
 
-#rl-app .attachmentItem {
-    background-color: var(--nc-color-background-dark);
-    border-radius: var(--nc-border-radius);
-    box-shadow: none;
-    padding: 2px;
-}
-
-#rl-app .attachmentItem:hover,
-#rl-app .attachmentItem:active {
-    background-color: var(--nc-color-background-darker);
-}
-
-#rl-app .attachmentItem:focus {
-    outline: none;
-}
-
-#rl-app .attachmentItem .iconProgress {
-    background-color: var(--nc-color-background-darker);
-}
-
-#rl-app .attachmentItem .iconBG {
-    font-weight: 700;
-    line-height: 48px;
-    font-size: unset;
-    text-shadow: unset;
-}
-
-#rl-app .attachmentItem .attachmentNameParent {
-    border-color: var(--nc-color-border-dark);
-}
-
-#rl-app .attachmentItem .iconMain,
-#rl-app .attachmentItem .iconPreview {
-    color: var(--nc-color-text-light);
-}
-
-/*
- * message flags
- */
-
-:root {
-    --msgflag-\$label1-color: #ae2c35;
-    --msgflag-\$label1-color-hover: #e13a45;
-    --msgflag-\$label2-color: #cc9827;
-    --msgflag-\$label2-color-hover: #ffbf31;
-    --msgflag-\$label3-color: #005235;
-    --msgflag-\$label3-color-hover: #008557;
-    --msgflag-\$label4-color: #005cc4;
-    --msgflag-\$label4-color-hover: #0074f8;
-    --msgflag-\$label5-color: #5631c0;
-    --msgflag-\$label5-color-hover: #6d3ff3;
-
-    --msgflag-\\flagged-color: #ffca32;
-}
-
-#rl-app .msgflag-\$label5:not(.focused) { border-color: var(--msgflag-\$label5-color); }
-#rl-app .msgflag-\$label4:not(.focused) { border-color: var(--msgflag-\$label4-color); }
-#rl-app .msgflag-\$label3:not(.focused) { border-color: var(--msgflag-\$label3-color); }
-#rl-app .msgflag-\$label2:not(.focused) { border-color: var(--msgflag-\$label2-color); }
-#rl-app .msgflag-\$label1:not(.focused) { border-color: var(--msgflag-\$label1-color); }
-
-#rl-app .msgflag-\$label5.focused:not(.selected) { border-color: var(--msgflag-\$label5-color) !important; }
-#rl-app .msgflag-\$label4.focused:not(.selected) { border-color: var(--msgflag-\$label4-color) !important; }
-#rl-app .msgflag-\$label3.focused:not(.selected) { border-color: var(--msgflag-\$label3-color) !important; }
-#rl-app .msgflag-\$label2.focused:not(.selected) { border-color: var(--msgflag-\$label2-color) !important; }
-#rl-app .msgflag-\$label1.focused:not(.selected) { border-color: var(--msgflag-\$label1-color) !important; }
-
-#rl-app .msgflag-\$label5:not(.focused):hover { border-color: var(--msgflag-\$label5-color-hover); }
-#rl-app .msgflag-\$label4:not(.focused):hover { border-color: var(--msgflag-\$label4-color-hover); }
-#rl-app .msgflag-\$label3:not(.focused):hover { border-color: var(--msgflag-\$label3-color-hover); }
-#rl-app .msgflag-\$label2:not(.focused):hover { border-color: var(--msgflag-\$label2-color-hover); }
-#rl-app .msgflag-\$label1:not(.focused):hover { border-color: var(--msgflag-\$label1-color-hover); }
-
-#rl-app .msgflag-\$label1:not(.focused), #rl-app .msgflag-\$label1 .checkboxMessage,
-#rl-app .msgflag-\$label2:not(.focused), #rl-app .msgflag-\$label2 .checkboxMessage,
-#rl-app .msgflag-\$label3:not(.focused), #rl-app .msgflag-\$label3 .checkboxMessage,
-#rl-app .msgflag-\$label4:not(.focused), #rl-app .msgflag-\$label4 .checkboxMessage,
-#rl-app .msgflag-\$label5:not(.focused), #rl-app .msgflag-\$label5 .checkboxMessage {
-    background-color: unset;
-    color: unset;
-}
-
-#rl-app .messageListItem.msgflag-\$label1:hover,
-#rl-app .messageListItem.msgflag-\$label2:hover,
-#rl-app .messageListItem.msgflag-\$label3:hover,
-#rl-app .messageListItem.msgflag-\$label4:hover,
-#rl-app .messageListItem.msgflag-\$label5:hover {
-    background-color: var(--nc-color-background-hover);
-}
-
-#rl-app a.msgflag-\$label1,
-#rl-app a.msgflag-\$label2,
-#rl-app a.msgflag-\$label3,
-#rl-app a.msgflag-\$label4,
-#rl-app a.msgflag-\$label5 {
-    border-left: solid 5px;
-}
-
-#rl-app .btn-group.show .dropdown-menu div li a[class^='msgflag-']:not(.msgflag-\$label1, .msgflag-\$label2, .msgflag-\$label3, .msgflag-\$label4, .msgflag-\$label5),
-#rl-app .btn-group.show .dropdown-menu div li a[class*='msgflag-']:not(.msgflag-\$label1, .msgflag-\$label2, .msgflag-\$label3, .msgflag-\$label4, .msgflag-\$label5) {
-    border-left: solid 5px transparent;
-}
-
-#rl-app .b-folders .is-flagged .flag-icon::after,
-#rl-app .messageListItem.hasFlaggedSubMessage .flagParent::after,
-#rl-app .messageListItem.msgflag-\\flagged .flagParent::after {
-    color: var(--msgflag-\\flagged-color);
-}
-
-/*
- * dropdown menus
- */
-
-#rl-app .dropdown.show {
-    box-shadow: none;
-}
-
-#rl-app .dropdown-menu {
-    background-color: var(--nc-color-main-background);
-    filter: drop-shadow(0 1px 5px var(--nc-color-box-shadow));
-    border-radius: var(--nc-border-radius-large);
-    color: var(--nc-color-main-text);
-    padding: 4px;
-}
-
-#rl-app .dropdown-menu a {
-    background-color: unset;
-    color: unset;
-    height: 22px;
-    line-height: 22px;
-    border-radius: 3px;
-    margin: 2px;
-    box-sizing: content-box;
-}
-
-#rl-app .dropdown-menu li.disabled > a,
-#rl-app .dropdown-menu li.disabled > a:hover,
-#rl-app .dropdown-menu li.disabled > a:focus,
-#rl-app .dropdown-menu li.disabled > a:active {
-    opacity: .5;
-    filter: saturate(0.7);
-}
-
-#rl-app .dropdown-menu li:not(.disabled) > a:hover,
-#rl-app .dropdown-menu li:not(.disabled) > a:focus {
-    background-color: var(--nc-color-background-hover);
-    color: unset;
-    opacity: unset;
-}
-
-#rl-app .dropdown-menu li:not(.disabled) > a:active {
-    background-color: var(--nc-color-primary-element-light);
-}
-
-#rl-app .dropdown-menu *+.dividerbar {
-    border-color: var(--nc-color-border);
-}
-
-#rl-app .dropdown-menu::-webkit-scrollbar-track-piece {
-    background-color: inherit;
-    border-top-right-radius: inherit;
-    border-bottom-right-radius: inherit;
-}
-
-/*
- * account selector
- */
-
-#rl-app #V-SystemDropDown .btn-toolbar.g-ui-user-select-none {
-    border: solid 1px var(--nc-color-border-dark);
-    border-radius: var(--nc-border-radius-large);
-    height: 36px;
-    padding: 2px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    box-sizing: content-box;
-}
-
-#rl-app #V-SystemDropDown .accountPlace {
-    background: unset;
-    color: unset;
-    text-shadow: none;
-    border-color: var(--nc-color-border);
-}
-
-#rl-app #V-SystemDropDown #top-system-dropdown-id {
-    background-color: unset;
-    border: unset !important;
-    border-radius: var(--nc-border-radius-large) !important;
-    height: 20px;
-}
-
-#rl-app #V-SystemDropDown #top-system-dropdown-id:hover,
-#rl-app #V-SystemDropDown #top-system-dropdown-id:focus {
-    background-color: var(--nc-color-background-hover);
-}
-
-#rl-app #V-SystemDropDown #top-system-dropdown-id:active {
-    background-color: var(--nc-color-background-dark);
-}
-
-/*
- * settings 
- */
+/* #region settings */
 
 #rl-app #V-SettingsPane {
     margin: 62px 0 8px 0;
@@ -1746,6 +1795,10 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 
 #rl-app #V-SettingsPane .btn-toolbar {
     padding: 8px;
+}
+
+#rl-app .row {
+    margin-left: unset;
 }
 
 #rl-app .legend,
@@ -1767,22 +1820,6 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
 
 #rl-app .control-group {
     margin-bottom: 0.5em;
-}
-
-#rl-app .table-bordered,
-#rl-app .table td,
-#rl-app .table th {
-    border-color: var(--nc-color-border-dark);
-}
-
-#rl-app .table-hover tbody tr:hover td,
-#rl-app .table-hover tbody tr:hover th {
-    background-color: var(--nc-color-background-hover);
-}
-
-#rl-app .table-striped tbody tr:nth-child(odd) td,
-#rl-app .table-striped tbody tr:nth-child(odd) th {
-    background-color: var(--nc-color-background-dark);
 }
 
 #rl-app #V-Settings-Themes figure,
@@ -1821,9 +1858,9 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     display: none !important;
 }
 
-/*
- * admin settings 
- */
+/* #endregion */
+
+/* #region settings admin */
 
 #rl-app #V-AdminPane {
     margin: 8px 0px;
@@ -1831,6 +1868,10 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     background-color: unset;
     box-shadow: none;
     border: none;
+}
+
+#rl-app #V-AdminPane>.b-toolbar {
+    width: 300px;
 }
 
 #rl-app #V-Settings-Config th {
@@ -1841,7 +1882,7 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     align-self: self-start;
 }
 
-#rl-app #V-Settings-General label[data-i18n="TAB_GENERAL/LABEL_ATTACHMENT_SIZE_LIMIT"] ~ div .alert.alert-info {
+#rl-app #V-Settings-General label[data-i18n="TAB_GENERAL/LABEL_ATTACHMENT_SIZE_LIMIT"]~div .alert.alert-info {
     margin-left: -130px;
 }
 
@@ -1849,51 +1890,9 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     margin-left: 1rem;
 }
 
-/*
- * scrollbar
- */
+/* #endregion */
 
-::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--nc-color-scrollbar);
-    border-radius: var(--nc-border-radius-large);
-    border: 2px solid transparent;
-    background-clip: content-box;
-}
-
-::-webkit-scrollbar-corner,
-::-webkit-scrollbar-track-piece {
-    background-color: transparent;
-}
-
-::-webkit-resizer {
-    border: 10px solid transparent;
-    border-radius: var(--nc-border-radius);
-    border-bottom-color: var(--nc-color-border-dark);
-}
-
-::-webkit-resizer {
-    border-right-color: var(--nc-color-border-dark);
-}
-
-[dir="rtl"] ::-webkit-resizer {
-    border-right-color: transparent;
-    border-left-color: var(--nc-color-border-dark);
-}
-
-#rl-app::selection {
-    background-color: var(--nc-color-primary);
-    color: var(--nc-color-primary-text);
-}
-
-/* TODO: Improve popup layout and theming */
-/*
- * Popups
- */
+/* #region popup */
 
 #rl-app dialog {
     background: var(--nc-color-main-background);
@@ -1904,13 +1903,13 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     border-color: var(--nc-color-border);
 }
 
-#rl-app dialog > header,
-#rl-app dialog > footer {
+#rl-app dialog>header,
+#rl-app dialog>footer {
     border-color: var(--nc-color-border);
 }
 
-#rl-app dialog > footer .btn+.btn,
-#rl-app dialog > footer button+button {
+#rl-app dialog>footer .btn+.btn,
+#rl-app dialog>footer button+button {
     margin: 0 0 0 5px;
 }
 
@@ -1950,9 +1949,80 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     border-color: var(--nc-color-primary-element);
 }
 
-/*
- * compose
- */
+/* #endregion */
+
+/* #region popup contacts */
+
+#rl-app #V-PopupsContacts .right,
+#rl-app #V-PopupsContacts .b-list-toolbar,
+#rl-app #V-PopupsContacts .b-list-footer-toolbar,
+#rl-app #V-PopupsContacts .b-view-content-toolbar {
+    border-color: var(--nc-color-border);
+}
+
+#rl-app #V-PopupsContacts .b-list-toolbar {
+    height: 55px;
+}
+
+#rl-app #V-PopupsContacts .b-list-toolbar .e-search {
+    margin: 9px 5px;
+    width: calc(100% - 2*5px);
+}
+
+#rl-app #V-PopupsContacts .b-view-content {
+    height: calc(100% - 72px);
+    margin-top: 20px;
+}
+
+#rl-app #V-PopupsContacts .b-list-content {
+    height: calc(100% - 35px - 72px);
+}
+
+#rl-app #V-PopupsContacts .e-contact-item {
+    padding: 4px;
+    margin: 2px 4px;
+    max-height: unset;
+    border-bottom: 0 !important;
+    border-radius: var(--nc-border-radius);
+}
+
+#rl-app #V-PopupsContacts .e-contact-item,
+#rl-app #V-PopupsContacts .e-contact-item.focused {
+    background-color: var(--nc-color-background);
+    border-color: var(--nc-color-border);
+}
+
+#rl-app #V-PopupsContacts .e-contact-item:hover,
+#rl-app #V-PopupsContacts .e-contact-item.focused:hover {
+    background-color: var(--nc-color-background-hover);
+    border-color: var(--nc-color-primary-light-hover);
+}
+
+#rl-app #V-PopupsContacts .e-contact-item.selected,
+#rl-app #V-PopupsContacts .e-contact-item.selected:hover {
+    background-color: var(--nc-color-primary-light);
+    border-color: var(--nc-color-primary-light-text);
+}
+
+#rl-app #V-PopupsContacts .e-contact-item.checked {
+    background-color: unset;
+    border-color: var(--nc-color-primary-light-text);
+}
+
+#rl-app #V-PopupsContacts .e-contact-item.checked.focused {
+    background-color: inherit;
+    border-color: var(--nc-color-primary-light-text);
+}
+
+#rl-app #V-PopupsContacts .e-contact-item.checked:hover,
+#rl-app #V-PopupsContacts .e-contact-item.checked.focused:hover {
+    background-color: var(--nc-color-background-hover);
+    border-color: inherit;
+}
+
+/* #endregion */
+
+/* #region popup compose */
 
 #rl-app #V-PopupsCompose header {
     background-color: unset;
@@ -1995,9 +2065,9 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     border-color: var(--nc-color-border);
 }
 
-/*
- * nextcloud file picker
- */
+/* #endregion */
+
+/* #region popup nextcloud files */
 
 #rl-app #V-PopupsCompose .btn[data-bind*="nextcloudAttach"] {
     font-size: 0;
@@ -2090,9 +2160,9 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     margin: 5px 10px 5px 0;
 }
 
-/*
- * nextcloud calendar select
- */
+/* #endregion */
+
+/* #region popup nextcloud calendars */
 
 #rl-app #V-PopupsNextcloudCalendars li {
     padding: 5px;
@@ -2106,102 +2176,83 @@ html:not(.rl-mobile):not(.rl-no-preview-pane) #rl-app .messageView .top-toolbar 
     align-self: center;
 }
 
+/* #endregion */
+
+/* #endregion */
+
 /*
- * contacts
+ * Message Flags
  */
 
-#rl-app #V-PopupsContacts .right,
-#rl-app #V-PopupsContacts .b-list-toolbar,
-#rl-app #V-PopupsContacts .b-list-footer-toolbar,
-#rl-app #V-PopupsContacts .b-view-content-toolbar {
-    border-color: var(--nc-color-border);
+/* #region message flags */
+
+:root {
+    --msgflag-\$label1-color: #ae2c35;
+    --msgflag-\$label1-color-hover: #e13a45;
+    --msgflag-\$label2-color: #cc9827;
+    --msgflag-\$label2-color-hover: #ffbf31;
+    --msgflag-\$label3-color: #005235;
+    --msgflag-\$label3-color-hover: #008557;
+    --msgflag-\$label4-color: #005cc4;
+    --msgflag-\$label4-color-hover: #0074f8;
+    --msgflag-\$label5-color: #5631c0;
+    --msgflag-\$label5-color-hover: #6d3ff3;
+
+    --msgflag-\\flagged-color: #ffca32;
 }
 
-#rl-app #V-PopupsContacts .b-list-toolbar {
-    height: 55px;
-}
+#rl-app .msgflag-\$label5:not(.focused) { border-color: var(--msgflag-\$label5-color); }
+#rl-app .msgflag-\$label4:not(.focused) { border-color: var(--msgflag-\$label4-color); }
+#rl-app .msgflag-\$label3:not(.focused) { border-color: var(--msgflag-\$label3-color); }
+#rl-app .msgflag-\$label2:not(.focused) { border-color: var(--msgflag-\$label2-color); }
+#rl-app .msgflag-\$label1:not(.focused) { border-color: var(--msgflag-\$label1-color); }
 
-#rl-app #V-PopupsContacts .b-list-toolbar .e-search {
-    margin: 9px 5px;
-    width: calc(100% - 2*5px);
-}
+#rl-app .msgflag-\$label5.focused:not(.selected) { border-color: var(--msgflag-\$label5-color) !important; }
+#rl-app .msgflag-\$label4.focused:not(.selected) { border-color: var(--msgflag-\$label4-color) !important; }
+#rl-app .msgflag-\$label3.focused:not(.selected) { border-color: var(--msgflag-\$label3-color) !important; }
+#rl-app .msgflag-\$label2.focused:not(.selected) { border-color: var(--msgflag-\$label2-color) !important; }
+#rl-app .msgflag-\$label1.focused:not(.selected) { border-color: var(--msgflag-\$label1-color) !important; }
 
-#rl-app #V-PopupsContacts .b-view-content {
-    height: calc(100% - 72px);
-    margin-top: 20px;
-}
+#rl-app .msgflag-\$label5:not(.focused):hover { border-color: var(--msgflag-\$label5-color-hover); }
+#rl-app .msgflag-\$label4:not(.focused):hover { border-color: var(--msgflag-\$label4-color-hover); }
+#rl-app .msgflag-\$label3:not(.focused):hover { border-color: var(--msgflag-\$label3-color-hover); }
+#rl-app .msgflag-\$label2:not(.focused):hover { border-color: var(--msgflag-\$label2-color-hover); }
+#rl-app .msgflag-\$label1:not(.focused):hover { border-color: var(--msgflag-\$label1-color-hover); }
 
-#rl-app #V-PopupsContacts .b-list-content {
-    height: calc(100% - 35px - 72px);
-}
-
-#rl-app #V-PopupsContacts .e-contact-item {
-    padding: 4px;
-    margin: 2px 4px;
-    max-height: unset;
-    border-bottom: 0 !important;
-    border-radius: var(--nc-border-radius);
-}
-
-#rl-app #V-PopupsContacts .e-contact-item,
-#rl-app #V-PopupsContacts .e-contact-item.focused {
-    background-color: var(--nc-color-background);
-    border-color: var(--nc-color-border);
-}
-
-#rl-app #V-PopupsContacts .e-contact-item:hover,
-#rl-app #V-PopupsContacts .e-contact-item.focused:hover {
-    background-color: var(--nc-color-background-hover);
-    border-color: var(--nc-color-primary-light-hover);
-}
-
-#rl-app #V-PopupsContacts .e-contact-item.selected,
-#rl-app #V-PopupsContacts .e-contact-item.selected:hover {
-    background-color: var(--nc-color-primary-light);
-    border-color: var(--nc-color-primary-light-text);
-}
-
-#rl-app #V-PopupsContacts .e-contact-item.checked {
+#rl-app .msgflag-\$label1:not(.focused), #rl-app .msgflag-\$label1 .checkboxMessage,
+#rl-app .msgflag-\$label2:not(.focused), #rl-app .msgflag-\$label2 .checkboxMessage,
+#rl-app .msgflag-\$label3:not(.focused), #rl-app .msgflag-\$label3 .checkboxMessage,
+#rl-app .msgflag-\$label4:not(.focused), #rl-app .msgflag-\$label4 .checkboxMessage,
+#rl-app .msgflag-\$label5:not(.focused), #rl-app .msgflag-\$label5 .checkboxMessage {
     background-color: unset;
-    border-color: var(--nc-color-primary-light-text);
+    color: unset;
 }
 
-#rl-app #V-PopupsContacts .e-contact-item.checked.focused {
-    background-color: inherit;
-    border-color: var(--nc-color-primary-light-text);
-}
-
-#rl-app #V-PopupsContacts .e-contact-item.checked:hover,
-#rl-app #V-PopupsContacts .e-contact-item.checked.focused:hover {
+#rl-app .messageListItem.msgflag-\$label1:hover,
+#rl-app .messageListItem.msgflag-\$label2:hover,
+#rl-app .messageListItem.msgflag-\$label3:hover,
+#rl-app .messageListItem.msgflag-\$label4:hover,
+#rl-app .messageListItem.msgflag-\$label5:hover {
     background-color: var(--nc-color-background-hover);
-    border-color: inherit;
 }
 
-/*
- * tabs
- */
-
-#rl-app .tabs > [id^=tab]:checked+label {
-    background-color: var(--nc-color-main-background);
-    border-color: var(--nc-color-primary-element);
-    border-bottom-color: transparent;
+#rl-app a.msgflag-\$label1,
+#rl-app a.msgflag-\$label2,
+#rl-app a.msgflag-\$label3,
+#rl-app a.msgflag-\$label4,
+#rl-app a.msgflag-\$label5 {
+    border-left: solid 5px;
 }
 
-#rl-app .tabs > label {
-    margin: 0 2px -1px 2px;
-    border-radius: 0;
-    border-top-left-radius: var(--nc-border-radius);
-    border-top-right-radius: var(--nc-border-radius);
+#rl-app .btn-group.show .dropdown-menu div li a[class^='msgflag-']:not(.msgflag-\$label1, .msgflag-\$label2, .msgflag-\$label3, .msgflag-\$label4, .msgflag-\$label5),
+#rl-app .btn-group.show .dropdown-menu div li a[class*='msgflag-']:not(.msgflag-\$label1, .msgflag-\$label2, .msgflag-\$label3, .msgflag-\$label4, .msgflag-\$label5) {
+    border-left: solid 5px transparent;
 }
 
-#rl-app .tabs > label:hover {
-    border-color: transparent;
-    border-bottom-color: var(--nc-color-primary-element);
-    background-color: var(--nc-color-background-hover)
+#rl-app .b-folders .is-flagged .flag-icon::after,
+#rl-app .messageListItem.hasFlaggedSubMessage .flagParent::after,
+#rl-app .messageListItem.msgflag-\\flagged .flagParent::after {
+    color: var(--msgflag-\\flagged-color);
 }
 
-#rl-app .tabs .tab-content {
-    border-top: solid 1px;
-    border-radius: 4px;
-    border-color: var(--nc-color-primary-element);
-}
+/* #endregion */
