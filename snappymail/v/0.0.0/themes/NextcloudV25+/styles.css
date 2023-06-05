@@ -370,153 +370,6 @@ html.rl-left-panel-disabled #rl-app #rl-left {
 }
 
 /*
- * side panel
- */
-
-#rl-app #V-AdminPane>.b-toolbar,
-#rl-app #V-SettingsMenu>.b-toolbar {
-    top: 0;
-    left: 0;
-    height: auto !important;
-    padding-top: calc(var(--nc-default-grid-baseline) * 2) !important;
-    padding-bottom: calc(var(--nc-default-grid-baseline) * 2) !important;
-    font-weight: bold;
-}
-
-html.rl-left-panel-disabled #rl-app #rl-left:has(#V-SettingsMenu:not([hidden])) {
-    width: 250px !important;
-}
-
-#rl-app .b-folders .b-toolbar {
-    height: unset;
-    display: flex;
-    flex-direction: row;
-    padding: 8px;
-}
-
-html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
-    flex-direction: column;
-}
-
-#rl-app #V-AdminMenu nav,
-#rl-app #V-SettingsMenu nav,
-#rl-app .b-folders .b-content {
-    padding: calc(var(--nc-default-grid-baseline) * 2);
-}
-
-#rl-app .b-folders .b-content {
-    top: 60px;
-    bottom: 162px;
-}
-
-#rl-app .b-folders .b-content.show-on-panel-disabled {
-    bottom: 56px;
-}
-
-#rl-app #V-AdminMenu nav a,
-#rl-app #V-AdminPane>.b-toolbar,
-#rl-app #V-SettingsMenu nav a,
-#rl-app #V-SettingsMenu>.b-toolbar,
-#rl-app .b-folders li a.selectable {
-    margin: 2px;
-    padding: 0 2em 0 15px;
-    height: 38px;
-    line-height: 38px !important;
-    border-radius: var(--nc-border-radius-pill);
-    color: unset;
-    border: none;
-}
-
-#rl-app #V-AdminMenu nav a,
-#rl-app #V-AdminPane>.b-toolbar,
-#rl-app #V-SettingsMenu nav a,
-#rl-app #V-SettingsMenu>.b-toolbar {
-    height: 44px;
-    min-height: 44px;
-    line-height: 44px !important;
-}
-
-#rl-app #V-AdminMenu nav a.selected,
-#rl-app #V-SettingsMenu nav a.selected,
-#rl-app .b-folders li a.selectable.selected {
-    color: unset;
-    background-color: var(--nc-color-primary-light);
-}
-
-#rl-app #V-AdminMenu nav a:not(.selected):hover,
-#rl-app #V-AdminMenu nav a:not(.selected):focus,
-#rl-app #V-SettingsMenu nav a:not(.selected):hover,
-#rl-app #V-SettingsMenu nav a:not(.selected):focus,
-#rl-app .b-folders li a.selectable:not(.selected):hover,
-#rl-app .b-folders li a.selectable:not(.selected):focus {
-    color: unset;
-    background-color: var(--nc-color-background-hover);
-}
-
-#rl-app .b-folders .b-folders-system a[data-unread]::after,
-#rl-app .b-folders .b-folders-user a[data-unread]::after {
-    display: block;
-    margin: 0 ; 
-    padding: 2px 6px;
-    top: 50%;
-    transform: translateY(-50%);
-
-    color: var(--nc-color-primary-element);
-    background-color: var(--nc-color-primary-element-light);
-
-    font-size: 12px;
-    text-shadow: none;
-}
-
-html.rl-left-panel-disabled #rl-app .b-folders .b-folders-system a.selectable {
-    text-overflow: clip;
-}
-
-#rl-app .b-folders hr {
-    border-top: solid var(--nc-color-main-text);
-    border-radius: var(--nc-border-radius-pill);
-    opacity: .1;
-}
-
-#rl-app .b-folders .search-input-wrp {
-    width: calc(100% - 20px);
-    margin: 5px 10px;
-    opacity: .7;
-}
-
-#rl-app .b-folders .search-input-wrp input {
-    width: 100%;
-}
-
-#rl-app .b-footer.btn-toolbar.hide-mobile,
-#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled {
-    display: flex;
-    flex-direction: column;
-    align-content: stretch;
-    justify-content: flex-start;
-    height: unset;
-    box-sizing: border-box;
-}
-
-#rl-app #V-SettingsMenu .b-footer,
-#rl-app .b-footer.btn-toolbar.hide-mobile,
-#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled {
-    margin: 0;
-    padding: 0;
-    bottom: 0;
-}
-
-#rl-app #V-SettingsMenu .b-footer,
-#rl-app .b-footer.btn-toolbar {
-    overflow: unset;
-    padding: 3px;
-}
-
-#rl-app .b-footer .btn[data-bind*="toggleLeftPanel"] {
-    width: unset !important;
-}
-
-/*
  * buttons
  */
 
@@ -648,65 +501,128 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-folders-system a.selectable {
     border-color: var(--nc-color-error-hover) !important;
 }
 
-#rl-app .btn-group .btn,
-#rl-app .btn-group button.btn {
+#rl-app .btn-group .btn:nth-child(n+2 of :not([style*="display: none;"])):nth-last-child(n+2 of :not([style*="display: none;"])) {
+    border-radius: 0 !important;
+    margin: 0 0.5px;
+}
+
+/* fallback */
+#rl-app .btn-group .btn:not(:first-of-type):not(:last-of-type),
+#rl-app .btn-group button.btn:not(:first-of-type):not(:last-of-type) {
     border-radius: 0;
     margin: 0 0.5px;
 }
 
+#rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])) {
+    margin-right: 0.5px;
+}
+
+/* fallback */
 #rl-app .btn-group .btn:first-of-type,
+#rl-app .btn-group button.btn:first-of-type {
+    margin-right: 0.5px;
+}
+
+#rl-app .btn-group .btn:nth-last-child(1 of :not([style*="display: none;"])) {
+    margin-left: 0.5px;
+}
+
+/* fallback */
+#rl-app .btn-group .btn:last-of-type,
+#rl-app .btn-group button.btn:last-of-type {
+    margin-left: 0.5px;
+}
+
 #rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])),
-[dir="rtl"] #rl-app .btn-group .btn:last-of-type,
 [dir="rtl"] #rl-app .btn-group .btn:nth-last-child(1 of :not([style*="display: none;"])) {
+    border-radius: 0 !important;
+    border-top-left-radius: var(--nc-border-radius-pill) !important;
+    border-bottom-left-radius: var(--nc-border-radius-pill) !important;
+}
+
+/* fallback */
+#rl-app .btn-group .btn:first-of-type,
+[dir="rtl"] #rl-app .btn-group .btn:last-of-type {
     border-radius: 0;
     border-top-left-radius: var(--nc-border-radius-pill);
     border-bottom-left-radius: var(--nc-border-radius-pill);
 }
 
-#rl-app .btn-group .btn:last-of-type,
 #rl-app .btn-group .btn:nth-last-child(1 of :not([style*="display: none;"])),
-[dir="rtl"] #rl-app .btn-group .btn:first-of-type,
 [dir="rtl"] #rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])) {
+    border-radius: 0 !important;
+    border-top-right-radius: var(--nc-border-radius-pill) !important;
+    border-bottom-right-radius: var(--nc-border-radius-pill) !important;
+}
+
+/* fallback */
+#rl-app .btn-group .btn:last-of-type,
+[dir="rtl"] #rl-app .btn-group .btn:first-of-type {
     border-radius: 0;
     border-top-right-radius: var(--nc-border-radius-pill);
     border-bottom-right-radius: var(--nc-border-radius-pill);
 }
 
-#rl-app .btn-group .btn:first-of-type:last-of-type,
 #rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])),
-[dir="rtl"] #rl-app .btn-group .btn:first-of-type:last-of-type,
 [dir="rtl"] #rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])) {
-    border-radius: var(--nc-border-radius-pill);
+    border-radius: var(--nc-border-radius-pill) !important;
 }
 
-#rl-app .btn-group .btn.fontastic:first-of-type,
+/* fallback */
+#rl-app .btn-group .btn:first-of-type:last-of-type,
+[dir="rtl"] #rl-app .btn-group .btn:first-of-type:last-of-type {
+    border-radius: var(--nc-border-radius-pill) !important;
+}
+
 #rl-app .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])),
-[dir="rtl"] #rl-app .btn-group .btn.fontastic:last-of-type,
 [dir="rtl"] #rl-app .btn-group .btn.fontastic:nth-last-child(1 of :not([style*="display: none;"])) {
+    border-radius: 0 !important;
+    border-top-left-radius: var(--nc-border-radius-large) !important;
+    border-bottom-left-radius: var(--nc-border-radius-large) !important;
+}
+
+/* fallback */
+#rl-app .btn-group .btn.fontastic:first-of-type,
+[dir="rtl"] #rl-app .btn-group .btn.fontastic:last-of-type {
     border-radius: 0;
     border-top-left-radius: var(--nc-border-radius-large);
     border-bottom-left-radius: var(--nc-border-radius-large);
 }
 
-#rl-app .btn-group .btn.fontastic:last-of-type,
 #rl-app .btn-group .btn.fontastic:nth-last-child(1 of :not([style*="display: none;"])),
-[dir="rtl"] #rl-app .btn-group .btn.fontastic:first-of-type,
 [dir="rtl"] #rl-app .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])) {
-    border-radius: 0;
-    border-top-right-radius: var(--nc-border-radius-large);
-    border-bottom-right-radius: var(--nc-border-radius-large) ;
+    border-radius: 0 !important;
+    border-top-right-radius: var(--nc-border-radius-large) !important;
+    border-bottom-right-radius: var(--nc-border-radius-large) !important;
 }
 
-#rl-app .btn-group .btn.fontastic:first-of-type:last-of-type,
+/* fallback */
+#rl-app .btn-group .btn.fontastic:last-of-type,
+[dir="rtl"] #rl-app .btn-group .btn.fontastic:first-of-type {
+    border-radius: 0;
+    border-top-right-radius: var(--nc-border-radius-large);
+    border-bottom-right-radius: var(--nc-border-radius-large);
+}
+
 #rl-app .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])),
-[dir="rtl"] #rl-app .btn-group .btn.fontastic:first-of-type:last-of-type,
 [dir="rtl"] #rl-app .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])) {
-    border-radius: var(--nc-border-radius-large);
+    border-radius: var(--nc-border-radius-large) !important;
+}
+
+/* fallback */
+#rl-app .btn-group .btn.fontastic:first-of-type:last-of-type,
+[dir="rtl"] #rl-app .btn-group .btn.fontastic:first-of-type:last-of-type {
+    border-radius: var(--nc-border-radius-large) !important;
+}
+
+/* fallback */
+#rl-app #V-MailMessageList .btn-toolbar .btn-group .btn {
+    border-radius: var(--nc-border-radius);
 }
 
 #rl-app .btn.buttonCompose,
-#rl-app .b-folders .btn.buttonContacts,
-#rl-app .b-footer.btn-toolbar .btn {
+#rl-app .btn.buttonContacts,
+#rl-app .b-footer.btn-toolbar .btn-group .btn {
     box-sizing: border-box;
     padding: 4px 14px;
     line-height: 36px;
@@ -718,7 +634,6 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-folders-system a.selectable {
     margin: 3px !important;
 
     font-size: var(--nc-default-font-size);
-    border-radius: var(--nc-border-radius-pill) !important;
 }
 
 #rl-app .b-folders .btn.buttonCompose {
@@ -1070,6 +985,157 @@ input[type="checkbox"]:checked,
     border-width: 0;
     animation: none;
     transform: unset;
+}
+
+/*
+ * side panel
+ */
+
+#rl-app #V-AdminPane>.b-toolbar,
+#rl-app #V-SettingsMenu>.b-toolbar {
+    top: 0;
+    left: 0;
+    height: auto !important;
+    padding-top: calc(var(--nc-default-grid-baseline) * 2) !important;
+    padding-bottom: calc(var(--nc-default-grid-baseline) * 2) !important;
+    font-weight: bold;
+}
+
+html.rl-left-panel-disabled #rl-app #rl-left:has(#V-SettingsMenu:not([hidden])) {
+    width: 250px !important;
+}
+
+#rl-app .b-folders .b-toolbar {
+    height: unset;
+    display: flex;
+    flex-direction: row;
+    padding: 8px;
+}
+
+html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
+    flex-direction: column;
+}
+
+#rl-app #V-AdminMenu nav,
+#rl-app #V-SettingsMenu nav,
+#rl-app .b-folders .b-content {
+    padding: calc(var(--nc-default-grid-baseline) * 2);
+}
+
+#rl-app .b-folders .b-content {
+    top: 60px;
+    bottom: 162px;
+}
+
+#rl-app .b-folders .b-content.show-on-panel-disabled {
+    bottom: 56px;
+}
+
+#rl-app #V-AdminMenu nav a,
+#rl-app #V-AdminPane>.b-toolbar,
+#rl-app #V-SettingsMenu nav a,
+#rl-app #V-SettingsMenu>.b-toolbar,
+#rl-app .b-folders li a.selectable {
+    margin: 2px;
+    padding: 0 2em 0 15px;
+    height: 38px;
+    line-height: 38px !important;
+    border-radius: var(--nc-border-radius-pill);
+    color: unset;
+    border: none;
+}
+
+#rl-app #V-AdminMenu nav a,
+#rl-app #V-AdminPane>.b-toolbar,
+#rl-app #V-SettingsMenu nav a,
+#rl-app #V-SettingsMenu>.b-toolbar {
+    height: 44px;
+    min-height: 44px;
+    line-height: 44px !important;
+}
+
+#rl-app #V-AdminMenu nav a.selected,
+#rl-app #V-SettingsMenu nav a.selected,
+#rl-app .b-folders li a.selectable.selected {
+    color: unset;
+    background-color: var(--nc-color-primary-light);
+}
+
+#rl-app #V-AdminMenu nav a:not(.selected):hover,
+#rl-app #V-AdminMenu nav a:not(.selected):focus,
+#rl-app #V-SettingsMenu nav a:not(.selected):hover,
+#rl-app #V-SettingsMenu nav a:not(.selected):focus,
+#rl-app .b-folders li a.selectable:not(.selected):hover,
+#rl-app .b-folders li a.selectable:not(.selected):focus {
+    color: unset;
+    background-color: var(--nc-color-background-hover);
+}
+
+#rl-app .b-folders .b-folders-system a[data-unread]::after,
+#rl-app .b-folders .b-folders-user a[data-unread]::after {
+    display: block;
+    margin: 0;
+    padding: 2px 6px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    color: var(--nc-color-primary-element);
+    background-color: var(--nc-color-primary-element-light);
+
+    font-size: 12px;
+    text-shadow: none;
+}
+
+html.rl-left-panel-disabled #rl-app .b-folders .b-folders-system a.selectable {
+    text-overflow: clip;
+}
+
+#rl-app .b-folders hr {
+    border-top: solid var(--nc-color-main-text);
+    border-radius: var(--nc-border-radius-pill);
+    opacity: .1;
+}
+
+#rl-app .b-folders .search-input-wrp {
+    width: calc(100% - 20px);
+    margin: 5px 10px;
+    opacity: .7;
+}
+
+#rl-app .b-folders .search-input-wrp input {
+    width: 100%;
+}
+
+#rl-app .b-footer.btn-toolbar.hide-mobile,
+#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled {
+    display: flex;
+    flex-direction: column;
+    align-content: stretch;
+    justify-content: flex-start;
+    height: unset;
+    box-sizing: border-box;
+}
+
+#rl-app #V-SettingsMenu .b-footer,
+#rl-app .b-footer.btn-toolbar.hide-mobile,
+#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled {
+    margin: 0;
+    padding: 0;
+    bottom: 0;
+}
+
+#rl-app #V-SettingsMenu .b-footer,
+#rl-app .b-footer.btn-toolbar {
+    overflow: unset;
+    padding: 3px;
+}
+
+#rl-app #V-MailFolderList .b-footer .btn {
+    border-radius: var(--nc-border-radius-pill) !important;
+}
+
+#rl-app .b-footer .btn[data-bind*="toggleLeftPanel"] {
+    width: unset !important;
 }
 
 /*
