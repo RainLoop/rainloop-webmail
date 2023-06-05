@@ -32,7 +32,6 @@ class TAR
 			$files = '/^(' . \implode('|', \array_map('preg_quote', \is_array($files) ? $files : [$files])) . ')/u';
 		}
 
-		\clearstatcache(false);
 		\clearstatcache(true);
 		while (!\gzeof($fp)) {
 			$data = \gzread($fp, 512);
