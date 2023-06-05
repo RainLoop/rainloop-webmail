@@ -1416,6 +1416,10 @@ html.rl-left-panel-disabled #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn
     text-align: center;
 }
 
+html.rl-mobile #rl-app #V-MailMessageList .btn-toolbar {
+    text-align: start;
+}
+
 #rl-app #V-MailMessageList .messageList {
     min-width: 360px;
 }
