@@ -740,8 +740,10 @@ input[type="checkbox"] {
 
 /* #region select */
 
-#rl-app select option {
-    background-color: var(--nc-color-background-dark);
+#rl-app select option,
+#rl-app select::-webkit-scrollbar-corner,
+#rl-app select::-webkit-scrollbar-track-piece {
+    background-color: var(--nc-color-main-background);
     color: var(--nc-color-main-text);
 }
 
