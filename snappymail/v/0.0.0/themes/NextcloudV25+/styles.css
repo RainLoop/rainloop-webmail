@@ -428,6 +428,7 @@
 
 #rl-app span.fontastic {
     padding: 6px;
+    height: fit-content;
     border-radius: var(--nc-border-radius);
 }
 
