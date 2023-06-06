@@ -593,23 +593,32 @@
 
 /* #endregion */
 
-/* #region input */
+/* #region input & select */
 
-#rl-app input {
-    box-shadow: none;
-}
-
+#rl-app select,
+#rl-app .select,
+#rl-app .emailaddresses,
 #rl-app input:not([type="checkbox"]) {
     padding: 0 12px;
     font-size: var(--nc-default-font-size);
     color: var(--nc-color-main-text);
     background-color: unset;
     height: 36px;
-    outline: none;
     border: 2px solid var(--nc-color-border-dark);
     border-radius: var(--nc-border-radius-large);
+    line-height: 32px;
+    outline: none;
 }
 
+#rl-app select:hover,
+#rl-app select:active,
+#rl-app select:focus,
+#rl-app .select:hover,
+#rl-app .select:active,
+#rl-app .select:focus,
+#rl-app .emailaddresses:hover,
+#rl-app .emailaddresses:active,
+#rl-app .emailaddresses:focus,
 #rl-app input:hover,
 #rl-app input:active,
 #rl-app input:focus,
@@ -617,6 +626,14 @@
 #rl-app input:not([type="checkbox"]):active,
 #rl-app input:not([type="checkbox"]):focus {
     border-color: var(--nc-color-primary-element);
+}
+
+/* #endregion */
+
+/* #region input */
+
+#rl-app input {
+    box-shadow: none;
 }
 
 #rl-app input[type="search"]::-webkit-search-decoration,
@@ -723,33 +740,6 @@ input[type="checkbox"] {
 
 /* #region select */
 
-#rl-app select,
-#rl-app .select,
-#rl-app .emailaddresses {
-    padding: 8px 12px;
-    font-size: var(--nc-default-font-size);
-    color: var(--nc-color-main-text);
-    background-color: unset;
-    height: 44px;
-    outline: none;
-    border: 2px solid var(--nc-color-border-dark);
-    border-radius: var(--nc-border-radius-large);
-    line-height: 24px;
-    box-sizing: border-box;
-}
-
-#rl-app select:hover,
-#rl-app select:active,
-#rl-app select:focus,
-#rl-app .select:hover,
-#rl-app .select:active,
-#rl-app .select:focus,
-#rl-app .emailaddresses:hover,
-#rl-app .emailaddresses:active,
-#rl-app .emailaddresses:focus {
-    border-color: var(--nc-color-primary-element);
-}
-
 #rl-app select option {
     background-color: var(--nc-color-background-dark);
     color: var(--nc-color-main-text);
@@ -760,6 +750,9 @@ input[type="checkbox"] {
 /* #region select email address */
 
 #rl-app .emailaddresses {
+    padding: 8px 12px;
+    height: 44px;
+    line-height: 24px;
     display: inline-flex;
     align-items: center;
     flex-wrap: wrap;
@@ -1929,12 +1922,6 @@ html.sm-msgView-bottom #rl-app .messageView {
 
 #rl-app #V-PopupsIdentity .e-signature-place {
     border: none;
-}
-
-#rl-app #V-PopupsDomain .domain-form .tab-content input,
-#rl-app #V-PopupsDomain .domain-form .tab-content select {
-    height: 44px;
-    padding: 8px 12px;
 }
 
 #rl-app #V-PopupsLanguages label {
