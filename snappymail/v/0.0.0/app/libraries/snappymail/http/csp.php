@@ -43,7 +43,7 @@ class CSP
 	{
 		// report-uri deprecated
 		unset($this->directives['report-uri']);
-		if ($this->report) {
+		if ($this->report || $this->report_only) {
 			$this->directives['report-uri'] = [\RainLoop\Utils::WebPath() . '?/CspReport'];
 		}
 		$params = [];
