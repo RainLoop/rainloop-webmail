@@ -701,15 +701,8 @@ class Actions
 					'UseCheckboxesInList' => (bool) $oConfig->Get('defaults', 'view_use_checkboxes', true),
 					'showNextMessage' => false,
 					'AutoLogout' => (int) $oConfig->Get('defaults', 'autologout', 30),
-					'UseThreads' => (bool) $oConfig->Get('defaults', 'mail_use_threads', false),
 					'AllowDraftAutosave' => (bool) $oConfig->Get('defaults', 'allow_draft_autosave', true),
-					'ReplySameFolder' => (bool) $oConfig->Get('defaults', 'mail_reply_same_folder', false),
 					'ContactsAutosave' => (bool) $oConfig->Get('defaults', 'contacts_autosave', true),
-					'HideUnsubscribed' => false,
-					'HideDeleted' => true,
-					'ShowUnreadCount' => false,
-					'UnhideKolabFolders' => false,
-					'CheckMailInterval' => 15,
 					'sieveAllowFileintoInbox' => (bool)$oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false)
 				]);
 
@@ -756,29 +749,7 @@ class Actions
 				}
 
 				// MainAccount or AdditionalAccount
-				$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
-				if ($oSettingsLocal instanceof Settings) {
-/*
-					foreach ($oSettingsLocal->toArray() as $key => $value) {
-						$aResult[\lcfirst($key)] = $value;
-					}
-					$aResult['junkFolder'] = $aResult['spamFolder'];
-					unset($aResult['checkableFolder']);
-					unset($aResult['theme']);
-*/
-					$aResult['SentFolder'] = (string)$oSettingsLocal->GetConf('SentFolder', '');
-					$aResult['DraftsFolder'] = (string)$oSettingsLocal->GetConf('DraftsFolder', '');
-					$aResult['JunkFolder'] = (string)$oSettingsLocal->GetConf('JunkFolder', '');
-					$aResult['TrashFolder'] = (string)$oSettingsLocal->GetConf('TrashFolder', '');
-					$aResult['ArchiveFolder'] = (string)$oSettingsLocal->GetConf('ArchiveFolder', '');
-					$aResult['HideUnsubscribed'] = (bool)$oSettingsLocal->GetConf('HideUnsubscribed', $aResult['HideUnsubscribed']);
-					$aResult['UseThreads'] = (bool)$oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
-					$aResult['ReplySameFolder'] = (bool)$oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
-					$aResult['HideDeleted'] = (bool)$oSettingsLocal->GetConf('HideDeleted', $aResult['HideDeleted']);
-					$aResult['ShowUnreadCount'] = (bool)$oSettingsLocal->GetConf('ShowUnreadCount', $aResult['ShowUnreadCount']);
-					$aResult['UnhideKolabFolders'] = (bool)$oSettingsLocal->GetConf('UnhideKolabFolders', $aResult['UnhideKolabFolders']);
-					$aResult['CheckMailInterval'] = (int)$oSettingsLocal->GetConf('CheckMailInterval', $aResult['CheckMailInterval']);
-				}
+				$aResult = \array_merge($aResult, $this->getAccountData($oAccount));
 
 				// MainAccount
 				$oSettings = $this->SettingsProvider()->Load($oAccount);

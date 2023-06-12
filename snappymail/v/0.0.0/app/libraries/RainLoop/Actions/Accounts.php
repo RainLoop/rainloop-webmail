@@ -194,6 +194,49 @@ trait Accounts
 		return $this->FalseResponse();
 	}
 
+	public function getAccountData(Account $oAccount): array
+	{
+		$oConfig = $this->Config();
+		$aResult = [
+			'Email' => $oAccount->Email(),
+			'accountHash' => $oAccount->Hash(),
+			'mainEmail' => ($oAccount instanceof AdditionalAccount)
+				? $oAccount->ParentEmail() : '',
+			'contactsAllowed' => $this->AddressBookProvider($oAccount)->IsActive(),
+			'HideUnsubscribed' => false,
+			'UseThreads' => (bool) $oConfig->Get('defaults', 'mail_use_threads', false),
+			'ReplySameFolder' => (bool) $oConfig->Get('defaults', 'mail_reply_same_folder', false),
+			'HideDeleted' => true,
+			'ShowUnreadCount' => false,
+			'UnhideKolabFolders' => false,
+			'CheckMailInterval' => 15
+		];
+		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
+		if ($oSettingsLocal instanceof \RainLoop\Settings) {
+			$aResult['SentFolder'] = (string) $oSettingsLocal->GetConf('SentFolder', '');
+			$aResult['DraftsFolder'] = (string) $oSettingsLocal->GetConf('DraftsFolder', '');
+			$aResult['JunkFolder'] = (string) $oSettingsLocal->GetConf('JunkFolder', '');
+			$aResult['TrashFolder'] = (string) $oSettingsLocal->GetConf('TrashFolder', '');
+			$aResult['ArchiveFolder'] = (string) $oSettingsLocal->GetConf('ArchiveFolder', '');
+			$aResult['HideUnsubscribed'] = (bool) $oSettingsLocal->GetConf('HideUnsubscribed', $aResult['HideUnsubscribed']);
+			$aResult['UseThreads'] = (bool) $oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
+			$aResult['ReplySameFolder'] = (bool) $oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
+			$aResult['HideDeleted'] = (bool)$oSettingsLocal->GetConf('HideDeleted', $aResult['HideDeleted']);
+			$aResult['ShowUnreadCount'] = (bool)$oSettingsLocal->GetConf('ShowUnreadCount', $aResult['ShowUnreadCount']);
+			$aResult['UnhideKolabFolders'] = (bool)$oSettingsLocal->GetConf('UnhideKolabFolders', $aResult['UnhideKolabFolders']);
+			$aResult['CheckMailInterval'] = (int)$oSettingsLocal->GetConf('CheckMailInterval', $aResult['CheckMailInterval']);
+/*
+			foreach ($oSettingsLocal->toArray() as $key => $value) {
+				$aResult[\lcfirst($key)] = $value;
+			}
+			$aResult['junkFolder'] = $aResult['spamFolder'];
+			unset($aResult['checkableFolder']);
+			unset($aResult['theme']);
+*/
+		}
+		return $aResult;
+	}
+
 	/**
 	 * @throws \MailSo\RuntimeException
 	 */
@@ -201,29 +244,8 @@ trait Accounts
 	{
 		if ($this->switchAccount(\trim($this->GetActionParam('Email', '')))) {
 			$oAccount = $this->getAccountFromToken();
-			$aResult['Email'] = $oAccount->Email();
-			$aResult['accountHash'] = $oAccount->Hash();
-			$aResult['mainEmail'] = ($oAccount instanceof AdditionalAccount)
-				? $oAccount->ParentEmail() : '';
-			$aResult['contactsAllowed'] = $this->AddressBookProvider($oAccount)->IsActive();
-			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
-			if ($oSettingsLocal instanceof \RainLoop\Settings) {
-				$oConfig = $this->Config();
-				$aResult['SentFolder'] = (string) $oSettingsLocal->GetConf('SentFolder', '');
-				$aResult['DraftsFolder'] = (string) $oSettingsLocal->GetConf('DraftsFolder', '');
-				$aResult['JunkFolder'] = (string) $oSettingsLocal->GetConf('JunkFolder', '');
-				$aResult['TrashFolder'] = (string) $oSettingsLocal->GetConf('TrashFolder', '');
-				$aResult['ArchiveFolder'] = (string) $oSettingsLocal->GetConf('ArchiveFolder', '');
-				$aResult['HideUnsubscribed'] = (bool) $oSettingsLocal->GetConf('HideUnsubscribed', false);
-				$aResult['UseThreads'] = (bool) $oSettingsLocal->GetConf('UseThreads', $oConfig->Get('defaults', 'mail_use_threads', false));
-				$aResult['ReplySameFolder'] = (bool) $oSettingsLocal->GetConf('ReplySameFolder', $oConfig->Get('defaults', 'mail_reply_same_folder', false));
-				$aResult['HideDeleted'] = (bool) $oSettingsLocal->GetConf('HideDeleted', true);
-				$aResult['ShowUnreadCount'] = (bool) $oSettingsLocal->GetConf('ShowUnreadCount', false);
-				$aResult['UnhideKolabFolders'] = (bool) $oSettingsLocal->GetConf('UnhideKolabFolders', false);
-				$aResult['CheckMailInterval'] = (int) $oSettingsLocal->GetConf('CheckMailInterval', 15);
-			}
+			$aResult = $this->getAccountData($oAccount);
 //			$this->Plugins()->InitAppData($bAdmin, $aResult, $oAccount);
-
 			return $this->DefaultResponse($aResult);
 		}
 		return $this->FalseResponse();
