@@ -196,12 +196,16 @@ const
 		return frag;
 	},
 
-	setStyle = (node, style) => {
-		if (typeof style === 'object') {
-			Object.entries(style).forEach(([k,v]) => node.style[k] = v);
-		} else if (style !== undefined) {
-			node.setAttribute('style', style);
-		}
+	setAttributes = (node, props) => {
+		props && Object.entries(props).forEach(([k,v]) => {
+			if ('style' === k && typeof v === 'object') {
+				Object.entries(v).forEach(([k,v]) => node.style[k] = v);
+			} else if (v != null) {
+				node.setAttribute(k, v);
+			} else {
+				node.removeAttribute(k);
+			}
+		});
 	},
 
 	createElement = (tag, props, children) => {
@@ -210,13 +214,7 @@ const
 			children = props;
 			props = null;
 		}
-		props && Object.entries(props).forEach(([k,v]) => {
-			if ('style' === k) {
-				setStyle(el, v);
-			} else if (v !== undefined) {
-				el.setAttribute(k, v);
-			}
-		});
+		setAttributes(el, props);
 		children && el.append(...children);
 		return el;
 	},
@@ -3520,13 +3518,17 @@ class Squire
 	}
 
 	setStyle(style) {
+		this.setAttribute('style', style);
+	}
+
+	setAttribute(name, value) {
 		let range = this.getSelection();
 		let start = range?.startContainer || {};
 		let end = range ? range.endContainer : 0;
 		// When the selection is all the text inside an element, set style on the element itself
-		if (TEXT_NODE === start?.nodeType && 0 === range.startOffset && start === end && end.length === range.endOffset) {
+		if ('dir' == name || (TEXT_NODE === start?.nodeType && 0 === range.startOffset && start === end && end.length === range.endOffset)) {
 			this.saveUndoState(range);
-			setStyle(start.parentNode, style);
+			setAttributes(start.parentNode, {[name]: value});
 			this.setSelection(range);
 			this._updatePath(range, true);
 		}
@@ -3534,9 +3536,7 @@ class Squire
 		else {
 			this.changeFormat({
 				tag: 'SPAN',
-				attributes: {
-					style: style
-				}
+				attributes: {[name]: value}
 			}, null, range);
 		}
 		return this.focus();

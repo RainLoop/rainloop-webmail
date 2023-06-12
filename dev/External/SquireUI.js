@@ -110,6 +110,18 @@ class SquireUI
 					fontSize: {
 						select: ['11px','13px','16px','20px','24px','30px'],
 						cmd: s => squire.setStyle({ fontSize: s.value })
+					},
+					dir: {
+						select: [
+							['LTR','ltr'],
+							['RTL','rtl'],
+							['Auto','auto'],
+							['',''],
+						],
+						cmd: s => {
+							squire.setAttribute('dir', s.value || null);
+//							squire.setStyle({ 'unicode-bidi': 'plaintext' });
+						}
 					}
 				},
 				colors: {
