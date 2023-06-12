@@ -130,7 +130,7 @@ if (empty($_SERVER['HTTPS']) || 'off' === $_SERVER['HTTPS']) {
 if (isset($_SERVER['REQUEST_SCHEME']) && 'https' === $_SERVER['REQUEST_SCHEME']) {
 	$_SERVER['HTTPS'] = 'on';
 }
-if (isset($_SERVER['HTTPS'])) {
+if (isset($_SERVER['HTTPS']) && !headers_sent()) {
 	header('Strict-Transport-Security: max-age=31536000');
 }
 
