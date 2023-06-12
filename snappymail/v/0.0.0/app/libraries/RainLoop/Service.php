@@ -84,13 +84,12 @@ abstract class Service
 
 		$aPaths = \explode('/', $sQuery);
 
-		$bAdmin = false;
-		$sAdminPanelHost = $oConfig->Get('security', 'admin_panel_host', '');
+		$sAdminPanelHost = \trim($oConfig->Get('security', 'admin_panel_host', ''));
 		if (empty($sAdminPanelHost)) {
 			$bAdmin = !empty($aPaths[0]) && ($oConfig->Get('security', 'admin_panel_key', '') ?: 'admin') === $aPaths[0];
 			$bAdmin && \array_shift($aPaths);
-		} else if (empty($aPaths[0]) && \mb_strtolower($sAdminPanelHost) === \mb_strtolower($oHttp->GetHost())) {
-			$bAdmin = true;
+		} else {
+			$bAdmin = \mb_strtolower($sAdminPanelHost) === \mb_strtolower($oHttp->GetHost());
 		}
 
 		$oActions = $bAdmin ? new ActionsAdmin() : Api::Actions();

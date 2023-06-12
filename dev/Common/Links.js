@@ -5,7 +5,7 @@ const
 	BASE = doc.location.pathname.replace(/\/+$/,'') + '/',
 	HASH_PREFIX = '#/',
 
-	adminPath = () => rl.adminArea() && !Settings.app('adminHostUse'),
+	adminPath = () => rl.adminArea() && !Settings.app('adminHost'),
 
 	prefix = () => BASE + '?' + (adminPath() ? Settings.app('adminPath') : '');
 
