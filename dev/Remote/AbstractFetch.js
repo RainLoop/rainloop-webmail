@@ -32,10 +32,11 @@ checkResponseError = data => {
 oRequests = {},
 
 abort = (sAction, sReason, bClearOnly) => {
-	if (oRequests[sAction]) {
-		bClearOnly || oRequests[sAction].abort(sReason || 'AbortError');
-		oRequests[sAction] = null;
-		delete oRequests[sAction];
+	let controller = oRequests[sAction];
+	oRequests[sAction] = null;
+	if (controller) {
+		clearTimeout(controller.timeoutId);
+		bClearOnly || controller.abort(sReason || 'AbortError');
 	}
 },
 
@@ -48,13 +49,17 @@ fetchJSON = (action, sUrl, params, timeout, jsonCallback) => {
 		}
 	}
 	// Don't abort, read https://github.com/the-djmaze/snappymail/issues/487
-//	abort(action);
+//	abort(action, 0, 1);
 	const controller = new AbortController(),
 		signal = controller.signal;
 	oRequests[action] = controller;
 	// Currently there is no way to combine multiple signals, so AbortSignal.timeout() not possible
-	timeout && setTimeout(() => abort(action, 'TimeoutError'), timeout);
-	return rl.fetchJSON(sUrl, {signal: signal}, params).then(jsonCallback).catch(err => {
+	controller.timeoutId = timeout && setTimeout(() => abort(action, 'TimeoutError'), timeout);
+	return rl.fetchJSON(sUrl, {signal: signal}, params).then(data => {
+		abort(action, 0, 1);
+		return jsonCallback(data);
+	}).catch(err => {
+		clearTimeout(controller.timeoutId);
 		err.aborted = signal.aborted;
 		err.reason = signal.reason;
 		return Promise.reject(err);
@@ -71,8 +76,8 @@ class FetchError extends Error
 
 export class AbstractFetchRemote
 {
-	abort(sAction) {
-		abort(sAction);
+	abort(sAction, sReason) {
+		abort(sAction, sReason);
 		return this;
 	}
 
@@ -131,11 +136,7 @@ export class AbstractFetchRemote
 			undefined === iTimeout ? 30000 : pInt(iTimeout),
 			data => {
 				let iError = 0;
-				if (sAction && oRequests[sAction]) {
-					abort(sAction, 0, 1);
-				}
-
-				if (!iError && data) {
+				if (data) {
 /*
 					if (sAction !== data.Action) {
 						console.log(sAction + ' !== ' + data.Action);

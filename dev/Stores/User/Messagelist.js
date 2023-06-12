@@ -196,10 +196,13 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 		(iError, oData, bCached) => {
 			let error = '';
 			if (iError) {
-				error = getNotification(iError);
-				if (Notifications.RequestAborted !== iError) {
-					MessagelistUserStore([]);
+				if ('reload' != oData?.reason) {
+					error = getNotification(iError);
+					MessagelistUserStore.loading(false);
 				}
+//				if (Notifications.RequestAborted !== iError) {
+//					MessagelistUserStore([]);
+//				}
 //				if (oData.message) { error = oData.message + error; }
 //				if (oData.reason) { error = oData.reason + " " + error; }
 			} else {
@@ -278,9 +281,9 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 					MessagelistUserStore([]);
 					error = getNotification(Notifications.CantGetMessageList);
 				}
+				MessagelistUserStore.loading(false);
 			}
 			MessagelistUserStore.error(error);
-			MessagelistUserStore.loading(false);
 		},
 		{
 //			folder: FolderUserStore.currentFolder() ? self.currentFolder().fullName : ''),

@@ -20,7 +20,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 	 * @param {object} params
 	 * @param {boolean=} bSilent = false
 	 */
-	messageList(fCallback, params, bSilent = false) {
+	messageList(fCallback, params) {
 		const
 	//		folder = getFolderFromCacheList(params.folder.fullName),
 			folder = getFolderFromCacheList(params.folder),
@@ -46,8 +46,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 			params = {};
 		}
 
-		bSilent || this.abort('MessageList');
-		this.request('MessageList',
+		this.abort('MessageList', 'reload').request('MessageList',
 			fCallback,
 			params,
 			60000, // 60 seconds before aborting

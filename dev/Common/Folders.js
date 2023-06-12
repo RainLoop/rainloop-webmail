@@ -217,7 +217,7 @@ messagesMoveHelper = (fromFolderFullName, toFolderFullName, uidsForMove) => {
 		isSpam = sSpamFolder === toFolderFullName,
 		isHam = !isSpam && sSpamFolder === fromFolderFullName && getFolderInboxName() === toFolderFullName;
 
-	Remote.abort('MessageList').request('MessageMove',
+	Remote.abort('MessageList', 'reload').request('MessageMove',
 		moveOrDeleteResponseHelper,
 		{
 			fromFolder: fromFolderFullName,
@@ -230,7 +230,7 @@ messagesMoveHelper = (fromFolderFullName, toFolderFullName, uidsForMove) => {
 },
 
 messagesDeleteHelper = (sFromFolderFullName, aUidForRemove) => {
-	Remote.abort('MessageList').request('MessageDelete',
+	Remote.abort('MessageList', 'reload').request('MessageDelete',
 		moveOrDeleteResponseHelper,
 		{
 			folder: sFromFolderFullName,
