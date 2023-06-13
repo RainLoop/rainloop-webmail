@@ -81,8 +81,7 @@ class SquireUI
 							[i18n('SETTINGS_GENERAL/EDITOR_HTML'),'wysiwyg'],
 							[i18n('SETTINGS_GENERAL/EDITOR_PLAIN'),'plain']
 						],
-						cmd: s => this.setMode('plain' == s.value ? 'plain' : 'wysiwyg'),
-						hint: i18n('EDITOR/TEXT_SWITCHER_PLAIN_TEXT', 'Plain')
+						cmd: s => this.setMode('plain' == s.value ? 'plain' : 'wysiwyg')
 					}
 				},
 				font: {
@@ -113,9 +112,9 @@ class SquireUI
 					},
 					dir: {
 						select: [
-							['LTR','ltr'],
-							['RTL','rtl'],
-							['Auto','auto'],
+							[i18n('EDITOR/DIR_LTR', 'LTR'),'ltr'],
+							[i18n('EDITOR/DIR_RTL', 'RTL'),'rtl'],
+							[i18n('EDITOR/DIR_AUTO', 'Auto'),'auto'],
 							['',''],
 						],
 						cmd: s => {
@@ -127,13 +126,11 @@ class SquireUI
 				colors: {
 					textColor: {
 						html: 'A<sub>▾</sub>',
-						cmd: doClr('color'),
-						hint: 'Text color'
+						cmd: doClr('color')
 					},
 					backgroundColor: {
 						html: '🎨', /* ▧ */
-						cmd: doClr('backgroundColor'),
-						hint: 'Background color'
+						cmd: doClr('backgroundColor')
 					},
 				},
 				inline: {
@@ -141,42 +138,36 @@ class SquireUI
 						html: 'B',
 						cmd: () => this.doAction('bold'),
 						key: 'B',
-						hint: 'Bold',
 						matches: 'B,STRONT'
 					},
 					italic: {
 						html: 'I',
 						cmd: () => this.doAction('italic'),
 						key: 'I',
-						hint: 'Italic',
 						matches: 'I'
 					},
 					underline: {
 						html: '<u>U</u>',
 						cmd: () => this.doAction('underline'),
 						key: 'U',
-						hint: 'Underline',
 						matches: 'U'
 					},
 					strike: {
 						html: '<s>S</s>',
 						cmd: () => this.doAction('strikethrough'),
 						key: 'Shift + 7',
-						hint: 'Strikethrough',
 						matches: 'S'
 					},
 					sub: {
 						html: 'Xₙ',
 						cmd: () => this.doAction('subscript'),
 						key: 'Shift + 5',
-						hint: 'Subscript',
 						matches: 'SUB'
 					},
 					sup: {
 						html: 'Xⁿ',
 						cmd: () => this.doAction('superscript'),
 						key: 'Shift + 6',
-						hint: 'Superscript',
 						matches: 'SUP'
 					}
 				},
@@ -185,14 +176,12 @@ class SquireUI
 						html: '#',
 						cmd: () => this.doList('OL'),
 						key: 'Shift + 8',
-						hint: 'Ordered list',
 						matches: 'OL'
 					},
 					ul: {
 						html: '⋮',
 						cmd: () => this.doList('UL'),
 						key: 'Shift + 9',
-						hint: 'Unordered list',
 						matches: 'UL'
 					},
 					quote: {
@@ -201,20 +190,17 @@ class SquireUI
 							let parent = squire.getSelectionClosest('UL,OL,BLOCKQUOTE')?.nodeName;
 							('BLOCKQUOTE' == parent) ? squire.decreaseQuoteLevel() : squire.increaseQuoteLevel();
 						},
-						hint: 'Blockquote',
 						matches: 'BLOCKQUOTE'
 					},
 					indentDecrease: {
 						html: '⇤',
 						cmd: () => squire.changeIndentationLevel('decrease'),
-						key: ']',
-						hint: 'Decrease indent'
+						key: ']'
 					},
 					indentIncrease: {
 						html: '⇥',
 						cmd: () => squire.changeIndentationLevel('increase'),
-						key: '[',
-						hint: 'Increase indent'
+						key: '['
 					}
 				},
 				targets: {
@@ -227,7 +213,6 @@ class SquireUI
 								url.length ? squire.makeLink(url) : (node && squire.removeLink());
 							}
 						},
-						hint: 'Link',
 						matches: 'A'
 					},
 					imageUrl: {
@@ -237,13 +222,11 @@ class SquireUI
 								src = prompt("Image", node?.src || "https://");
 							src?.length ? squire.insertImage(src) : (node && squire.detach(node));
 						},
-						hint: 'Image URL',
 						matches: 'IMG'
 					},
 					imageUpload: {
 						html: '📂️',
 						cmd: () => browseImage.click(),
-						hint: 'Image select',
 						matches: 'IMG'
 					}
 				},
@@ -256,22 +239,19 @@ class SquireUI
 					undo: {
 						html: '↶',
 						cmd: () => squire.undo(),
-						key: 'Z',
-						hint: 'Undo'
+						key: 'Z'
 					},
 					redo: {
 						html: '↷',
 						cmd: () => squire.redo(),
-						key: 'Y',
-						hint: 'Redo'
+						key: 'Y'
 					},
 					source: {
 						html: '👁',
 						cmd: btn => {
 							this.setMode('source' == this.mode ? 'wysiwyg' : 'source');
 							btn.classList.toggle('active', 'source' == this.mode);
-						},
-						hint: i18n('EDITOR/TEXT_SWITCHER_SOURCE', 'Source')
+						}
 					}
 				}
 			},
@@ -364,6 +344,7 @@ class SquireUI
 */
 				}
 				input.addEventListener(ev, () => cfg.cmd(input));
+				cfg.hint = i18n('EDITOR/' + action.toUpperCase());
 				if (cfg.hint) {
 					input.title = cfg.key ? cfg.hint + ' (' + ctrlKey + cfg.key + ')' : cfg.hint;
 				} else if (cfg.key) {
