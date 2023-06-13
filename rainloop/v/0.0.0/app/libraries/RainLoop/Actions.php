@@ -130,11 +130,11 @@ class Actions
 	 * @var string
 	 */
 	private $sUpdateAuthToken;
-    
-    /**
-     * @var bool
-     */
-    private $bIsAjax;
+ 
+	/**
+	 * @var bool
+	 */
+	private $bIsAjax;
 
 	/**
 	 * @access private
