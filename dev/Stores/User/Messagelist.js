@@ -27,6 +27,11 @@ import { SettingsUserStore } from 'Stores/User/Settings';
 
 import Remote from 'Remote/User/Fetch';
 
+import { b64EncodeJSONSafe } from 'Common/Utils';
+import { SettingsGet } from 'Common/Globals';
+import { SUB_QUERY_PREFIX } from 'Common/Links';
+import { AppUserStore } from 'Stores/User/App';
+
 const
 	isChecked = item => item.checked(),
 	replaceHash = hash => {
@@ -165,15 +170,19 @@ MessagelistUserStore.canAutoSelect = () =>
 	&& !disableAutoSelect()
 	&& SettingsUserStore.usePreviewPane();
 
+let prevFolderName;
+
 /**
  * @param {boolean=} bDropPagePosition = false
  * @param {boolean=} bDropCurrentFolderCache = false
  */
 MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCache = false) => {
-	let iOffset = (MessagelistUserStore.page() - 1) * SettingsUserStore.messagesPerPage();
+	let iOffset = (MessagelistUserStore.page() - 1) * SettingsUserStore.messagesPerPage(),
+		folderName = FolderUserStore.currentFolderFullName();
+//		folderName = FolderUserStore.currentFolder() ? self.currentFolder().fullName : '');
 
 	if (bDropCurrentFolderCache) {
-		setFolderETag(FolderUserStore.currentFolderFullName(), '');
+		setFolderETag(folderName, '');
 	}
 
 	if (bDropPagePosition) {
@@ -191,20 +200,36 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 		);
 	}
 
+	if (prevFolderName != folderName) {
+		prevFolderName = folderName;
+		MessagelistUserStore([]);
+	}
+
 	MessagelistUserStore.loading(true);
-	Remote.messageList(
-		(iError, oData, bCached) => {
+
+	let sGetAdd = '',
+//		folder = getFolderFromCacheList(folderName.fullName),
+		folder = getFolderFromCacheList(folderName),
+		folderETag = folder?.etag || '',
+		params = {
+			folder: folderName,
+			offset: iOffset,
+			limit: SettingsUserStore.messagesPerPage(),
+			uidNext: folder?.uidNext || 0, // Used to check for new messages
+			sort: FolderUserStore.sortMode(),
+			search: MessagelistUserStore.listSearch()
+		},
+		fCallback = (iError, oData, bCached) => {
 			let error = '';
 			if (iError) {
 				if ('reload' != oData?.reason) {
 					error = getNotification(iError);
 					MessagelistUserStore.loading(false);
+//					if (Notifications.RequestAborted !== iError) {
+//						MessagelistUserStore([]);
+//					}
+//					if (oData.message) { error = oData.message + error; }
 				}
-//				if (Notifications.RequestAborted !== iError) {
-//					MessagelistUserStore([]);
-//				}
-//				if (oData.message) { error = oData.message + error; }
-//				if (oData.reason) { error = oData.reason + " " + error; }
 			} else {
 				const collection = MessageCollectionModel.reviveFromJson(oData.Result, bCached);
 				if (collection) {
@@ -284,15 +309,25 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 				MessagelistUserStore.loading(false);
 			}
 			MessagelistUserStore.error(error);
-		},
-		{
-//			folder: FolderUserStore.currentFolder() ? self.currentFolder().fullName : ''),
-			folder: FolderUserStore.currentFolderFullName(),
-			offset: iOffset,
-			limit: SettingsUserStore.messagesPerPage(),
-			search: MessagelistUserStore.listSearch(),
-			threadUid: MessagelistUserStore.threadUid()
-		}
+		};
+
+	if (AppUserStore.threadsAllowed() && SettingsUserStore.useThreads()) {
+		params.useThreads = 1;
+		params.threadUid = MessagelistUserStore.threadUid();
+	} else {
+		params.threadUid = 0;
+	}
+	if (folderETag) {
+		params.hash = folderETag + '-' + SettingsGet('accountHash');
+		sGetAdd = 'MessageList/' + SUB_QUERY_PREFIX + '/' + b64EncodeJSONSafe(params);
+		params = {};
+	}
+
+	Remote.abort('MessageList', 'reload').request('MessageList',
+		fCallback,
+		params,
+		60000, // 60 seconds before aborting
+		sGetAdd
 	);
 };
 
