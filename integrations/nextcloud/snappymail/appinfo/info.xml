@@ -63,7 +63,7 @@ There, click on the link to go to the SnappyMail admin panel.
 		<lib>xxtea</lib>
 		<lib>zip</lib>
 -->
-		<nextcloud min-version="20" max-version="26" />
+		<nextcloud min-version="20" max-version="27" />
 	</dependencies>
 	<settings>
 		<admin>OCA\SnappyMail\Settings\AdminSettings</admin>
