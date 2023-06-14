@@ -881,6 +881,13 @@ input[type="checkbox"] {
     border-bottom-right-radius: inherit;
 }
 
+.rl-left-panel-disabled #rl-app .dropdown-menu {
+    position: fixed;
+    top: auto;
+    left: auto;
+    right: 5px;
+}
+
 /* #endregion */
 
 /* #region dropdown account */
@@ -1733,6 +1740,10 @@ html.sm-msgView-bottom #rl-app .messageView {
 
 #rl-app #messageItem .bodySubHeader>* {
     border-color: var(--nc-color-border);
+}
+
+.rl-left-panel-disabled #rl-app #messageItem .dropdown-menu {
+    position: absolute;
 }
 
 #rl-app #messageItem .readReceipt,
