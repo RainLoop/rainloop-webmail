@@ -1967,6 +1967,10 @@ html.sm-msgView-bottom #rl-app .messageView {
     }
 }
 
+#rl-app #V-PopupsOpenPgpImport textarea {
+    width: 100%;
+}
+
 /* #endregion */
 
 /* #region popup contacts */
