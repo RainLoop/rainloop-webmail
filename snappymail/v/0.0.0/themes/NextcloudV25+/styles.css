@@ -1960,6 +1960,13 @@ html.sm-msgView-bottom #rl-app .messageView {
     border-color: var(--nc-color-primary-element);
 }
 
+@media screen and (max-width: 480px) {
+    #rl-app #V-PopupsLanguages label {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
 /* #endregion */
 
 /* #region popup contacts */
