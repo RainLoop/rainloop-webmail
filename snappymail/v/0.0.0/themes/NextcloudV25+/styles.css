@@ -1039,6 +1039,7 @@ input[type="checkbox"] {
     background-color: var(--nc-color-main-background-blur, var(--nc-color-main-background));
     -webkit-backdrop-filter: var(--nc-filter-background-blur, none);
     backdrop-filter: var(--nc-filter-background-blur, none);
+    border-color: var(--nc-color-border);
     width: 300px;
 }
 
