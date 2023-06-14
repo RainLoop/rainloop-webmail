@@ -934,6 +934,7 @@ input[type="checkbox"] {
     border-radius: 0;
     border-top-left-radius: var(--nc-border-radius);
     border-top-right-radius: var(--nc-border-radius);
+    overflow-wrap: anywhere;
 }
 
 #rl-app .tabs>label:hover {
