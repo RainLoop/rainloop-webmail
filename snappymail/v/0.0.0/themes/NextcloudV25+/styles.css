@@ -2154,6 +2154,14 @@ html.rl-mobile #rl-app #V-AdminPane>.b-toolbar {
     border-color: var(--nc-color-border);
 }
 
+#rl-app #V-PopupsCompose .tabs label[for="tab-attachments"] b {
+    padding: 2px 6px;
+    border-radius: 1em;
+    color: var(--nc-color-primary-element);
+    background-color: var(--nc-color-primary-element-light);
+    font-size: 12px;
+}
+
 /* #endregion */
 
 /* #region popup nextcloud files */
