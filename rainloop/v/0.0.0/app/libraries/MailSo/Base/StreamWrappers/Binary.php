@@ -67,13 +67,18 @@ class Binary
 	 * @var string
 	 */
 	private $sReadEndBuffer;
-
+	
+	/**
+	 * @var string
+	 */
+	public $context;
+	
 	/**
 	 * @param string $sContentTransferEncoding
 	 * @param bool $bDecode = true
 	 *
 	 * @return string
-	 */
+	 */	
 	public static function GetInlineDecodeOrEncodeFunctionName($sContentTransferEncoding, $bDecode = true)
 	{
 		$sFunctionName = '';

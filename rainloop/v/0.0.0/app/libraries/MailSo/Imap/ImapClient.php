@@ -88,6 +88,11 @@ class ImapClient extends \MailSo\Net\NetClient
 	public $__FORCE_SELECT_ON_EXAMINE__;
 
 	/**
+	 * @var bool
+	 */
+	private $bResponseBufferChanged;	
+	
+	/**
 	 * @access protected
 	 */
 	protected function __construct()
