@@ -2022,9 +2022,11 @@ html.rl-mobile #rl-app #V-AdminPane>.b-toolbar {
         margin-right: 0;
     }
 
-    #rl-app dialog .modal-body {
+    #rl-app #V-PopupsKeyboardShortcutsHelp .modal-body,
+    #rl-app #V-PopupsDomain .modal-body {
         padding-left: 0;
         padding-right: 0;
+        overflow-x: hidden;
     }
 }
 
