@@ -956,6 +956,13 @@ input[type="checkbox"] {
     border-color: var(--nc-color-primary-element);
 }
 
+@media screen and (max-width: 480px) {
+    #rl-app .tabs>label>i,
+    #rl-app .tabs>label::before {
+        display: none;
+    }
+}
+
 /* #endregion */
 
 /* #region table */
@@ -1049,6 +1056,10 @@ html:not(.rl-left-panel-disabled) #rl-left {
 
 html.rl-left-panel-disabled #rl-app #rl-left {
     width: 65px !important;
+}
+
+html.rl-mobile.rl-left-panel-disabled #rl-app #rl-left {
+    width: 0px !important;
 }
 
 #rl-app #rl-right {
@@ -1886,7 +1897,7 @@ html.sm-msgView-bottom #rl-app .messageView {
 
 #rl-app #V-AdminPane {
     margin: 8px 0px;
-    height: calc(100% - 8px - 8px);
+    height: calc(100% - 2*8px);
     background-color: unset;
     box-shadow: none;
     border: none;
@@ -1896,8 +1907,21 @@ html.sm-msgView-bottom #rl-app .messageView {
     width: 300px;
 }
 
+html.rl-mobile #rl-app #V-AdminPane {
+    margin: 60px 0px 8px 0px;
+    height: calc(100% - 60px - 8px);
+}
+
+html.rl-mobile #rl-app #V-AdminPane>.b-toolbar {
+    width: unset;
+}
+
 #rl-app #V-Settings-Config th {
     background-color: var(--nc-color-background-dark);
+}
+
+#rl-app #V-Settings-Config em {
+    word-break: break-word;
 }
 
 #rl-app #V-Settings-General label[data-i18n="TAB_GENERAL/LABEL_ATTACHMENT_SIZE_LIMIT"] {
@@ -1910,6 +1934,33 @@ html.sm-msgView-bottom #rl-app .messageView {
 
 #rl-app #V-Settings-Domains .btn[data-i18n="GLOBAL/TEST"] {
     margin-left: 1rem;
+}
+
+@media screen and (max-width: 1024px) {
+    #rl-app #V-AdminPane table {
+        width: 100%;
+    }
+
+    #rl-app #V-AdminPane [class*="span"] {
+        width: unset;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #rl-app #V-Settings-Config .table {
+        border-collapse: collapse;
+    }
+
+    #rl-app #V-Settings-Config .table tr {
+        border-top: 10px solid transparent;
+    }
+
+    #rl-app #V-Settings-Config .table td,
+    #rl-app #V-Settings-Config .table th {
+        display: block;
+        border-style: solid;
+        border-width: 1px 0px;
+    }
 }
 
 /* #endregion */
@@ -1969,6 +2020,11 @@ html.sm-msgView-bottom #rl-app .messageView {
     #rl-app #V-PopupsLanguages label {
         margin-left: 0;
         margin-right: 0;
+    }
+
+    #rl-app dialog .modal-body {
+        padding-left: 0;
+        padding-right: 0;
     }
 }
 
