@@ -1060,6 +1060,10 @@ html.rl-left-panel-disabled #rl-app #rl-left {
     color: var(--nc-color-primary-text);
 }
 
+:not(#rl-app) ol, ul {
+    margin: unset;
+}
+
 /* #endregion */
 
 /* #region login & loading */
