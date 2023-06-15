@@ -1905,6 +1905,7 @@ html.sm-msgView-bottom #rl-app .messageView {
 
 #rl-app #V-AdminPane>.b-toolbar {
     width: 300px;
+    text-shadow: none;
 }
 
 html.rl-mobile #rl-app #V-AdminPane {
