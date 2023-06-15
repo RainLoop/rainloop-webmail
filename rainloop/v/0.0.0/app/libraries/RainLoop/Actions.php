@@ -132,6 +132,11 @@ class Actions
 	private $sUpdateAuthToken;
 
 	/**
+	 * @var bool
+	 */
+	private $bIsAjax;
+	
+	/**
 	 * @access private
 	 */
 	private function __construct()
