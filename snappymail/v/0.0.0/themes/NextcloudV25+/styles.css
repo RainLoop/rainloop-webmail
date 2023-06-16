@@ -2067,7 +2067,6 @@ html.rl-mobile #rl-app #V-AdminPane>.b-toolbar {
 
 #rl-app #V-PopupsContacts .b-list-content {
     height: calc(100% - 35px - 72px);
-    border-bottom: 1px solid var(--nc-color-border);
 }
 
 #rl-app #V-PopupsContacts .b-list-content .listClear {
@@ -2146,6 +2145,7 @@ html.rl-mobile #rl-app #V-AdminPane>.b-toolbar {
 
     #rl-app #V-PopupsContacts .b-list-content {
         height: calc(100% - 55px);
+        border-bottom: 1px solid var(--nc-color-border);
     }
 
     #rl-app #V-PopupsContacts .right {
