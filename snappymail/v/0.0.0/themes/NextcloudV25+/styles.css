@@ -2070,6 +2070,10 @@ html.rl-mobile #rl-app #V-AdminPane>.b-toolbar {
     border-bottom: 1px solid var(--nc-color-border);
 }
 
+#rl-app #V-PopupsContacts .b-list-content .listClear {
+    box-shadow: none;
+}
+
 #rl-app #V-PopupsContacts .tabs {
     height: 100%;
 }
