@@ -2060,12 +2060,22 @@ html.rl-mobile #rl-app #V-AdminPane>.b-toolbar {
 }
 
 #rl-app #V-PopupsContacts .b-view-content {
-    height: calc(100% - 72px);
     margin-top: 20px;
+    height: calc(100% - 72px);
+    overflow: hidden;
 }
 
 #rl-app #V-PopupsContacts .b-list-content {
     height: calc(100% - 35px - 72px);
+    border-bottom: 1px solid var(--nc-color-border);
+}
+
+#rl-app #V-PopupsContacts .tabs {
+    height: 100%;
+}
+
+#rl-app #V-PopupsContacts .tab-content {
+    overflow: auto;
 }
 
 #rl-app #V-PopupsContacts .e-contact-item {
@@ -2108,6 +2118,40 @@ html.rl-mobile #rl-app #V-AdminPane>.b-toolbar {
 #rl-app #V-PopupsContacts .e-contact-item.checked.focused:hover {
     background-color: var(--nc-color-background-hover);
     border-color: inherit;
+}
+
+@media screen and (max-width: 799px) {
+    .form-horizontal .control-group>label {
+        text-align: right;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #rl-app #V-PopupsContacts .modal-body {
+        flex-direction: column;
+    }
+
+    #rl-app #V-PopupsContacts .left {
+        max-width: unset;
+        height: 40%;
+    }
+
+    #rl-app #V-PopupsContacts .b-list-footer-toolbar {
+        display: none;
+    }
+
+    #rl-app #V-PopupsContacts .b-list-content {
+        height: calc(100% - 55px);
+    }
+
+    #rl-app #V-PopupsContacts .right {
+        height: 60%;
+        border-left: unset;
+    }
+
+    #rl-app #V-PopupsContacts .control-group {
+        margin-right: 1em;
+    }
 }
 
 /* #endregion */
