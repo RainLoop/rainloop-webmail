@@ -785,6 +785,13 @@ input[type="checkbox"] {
     color: var(--nc-color-main-text);
 }
 
+@media screen and (max-width: 480px) {
+    #rl-app .emailaddresses input[type="text"] {
+        width: unset !important;
+        min-width: unset;
+    }
+}
+
 /* #endregion */
 
 /* #region textarea */
