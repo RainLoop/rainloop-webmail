@@ -2409,3 +2409,25 @@ html.rl-mobile #rl-app #V-AdminPane>.b-toolbar {
 }
 
 /* #endregion */
+
+/*
+ * Keyframes
+ */
+
+/* #region keyframes */
+
+@keyframes highlight-folder-row {
+    0% {
+        transform: scale(1)
+    }
+
+    50% {
+        transform: scale(.95)
+    }
+
+    100% {
+        transform: scale(1)
+    }
+}
+
+/* #endregion */
