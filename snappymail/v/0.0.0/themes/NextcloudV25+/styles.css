@@ -888,11 +888,11 @@ input[type="checkbox"] {
     border-bottom-right-radius: inherit;
 }
 
-.rl-left-panel-disabled #rl-app .dropdown-menu {
+.rl-left-panel-disabled #rl-app .dropdown-menu:not(.right-edge) {
     position: fixed;
     top: auto;
-    left: auto;
-    right: 5px;
+    left: 5px;
+    right: auto;
 }
 
 /* #endregion */
