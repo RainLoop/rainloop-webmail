@@ -1082,6 +1082,26 @@ html.rl-mobile.rl-left-panel-disabled #rl-app #rl-left {
     margin: unset;
 }
 
+#rl-app .control-group {
+    margin-bottom: 0.5em;
+}
+
+#rl-app .form-horizontal .control-group {
+    display: flex;
+    align-items: center;
+    margin-left: 0;
+}
+
+#rl-app .form-horizontal .control-group {
+    margin-bottom: 1em;
+}
+
+@media screen and (max-width: 799px) {
+    #rl-app .form-horizontal .control-group>label {
+        text-align: right;
+    }
+}
+
 /* #endregion */
 
 /* #region login & loading */
@@ -1848,20 +1868,6 @@ html.sm-msgView-bottom #rl-app .messageView {
     border-color: var(--nc-color-border);
 }
 
-#rl-app .form-horizontal .control-group {
-    display: flex;
-    align-items: center;
-    margin-left: 0;
-}
-
-#rl-app .form-horizontal .control-group {
-    margin-bottom: 1em;
-}
-
-#rl-app .control-group {
-    margin-bottom: 0.5em;
-}
-
 #rl-app #V-Settings-Themes figure,
 #rl-app #V-Settings-Themes img {
     border-radius: var(--nc-border-radius-large);
@@ -2131,12 +2137,6 @@ html.rl-mobile #rl-app #V-AdminPane>.b-toolbar {
 }
 
 @media screen and (max-width: 799px) {
-    .form-horizontal .control-group>label {
-        text-align: right;
-    }
-}
-
-@media screen and (max-width: 480px) {
     #rl-app #V-PopupsContacts .modal-body {
         flex-direction: column;
     }
