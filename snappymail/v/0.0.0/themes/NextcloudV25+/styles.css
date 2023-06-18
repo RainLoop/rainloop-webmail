@@ -622,7 +622,7 @@
     color: var(--nc-color-main-text);
     background-color: unset;
     height: 36px;
-    border: 2px solid var(--nc-color-border-dark);
+    border: 2px solid var(--nc-color-border-maxcontrast);
     border-radius: var(--nc-border-radius-large);
     line-height: 32px;
     outline: none;
