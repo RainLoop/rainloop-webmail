@@ -9,6 +9,18 @@
  * based on https://github.com/nextcloud/server/blob/master/core/css/variables.scss
  */
 /* #region theme */
+
+:root {
+    --nc-vs-selected-bg: var(--vs-selected-bg, var(--nc-color-background-dark));
+    --nc-vs-selected-color: var(--vs-selected-color, var(--nc-color-main-text));
+    --nc-vs-border-radius: var(--vs-border-radius, var(--nc-border-radius-large));
+    --nc-vs-controls-color: var(--vs-controls-color, var(--nc-color-text-maxcontrast));
+    --nc-vs-line-height: var(--vs-line-height, var(--nc-default-line-height));
+    --nc-vs-search-input-bg: var(--vs-search-input-bg, var(--nc-color-main-background));
+    --nc-vs-search-input-color: var(--vs-search-input-color, var(--nc-color-main-text));
+    --nc-vs-font-size: var(--vs-font-size, var(--nc-default-font-size));
+}
+
 :not([data-themes~="dark"]) {
     --nc-color-main-background: var(--color-main-background, #ffffff);
     --nc-color-main-background-rgb: var(--color-main-background-rgb, 255, 255, 255);
@@ -22,6 +34,7 @@
     --nc-color-main-text: var(--color-main-text, #222222);
     --nc-color-text-light: var(--color-text-light, #222222);
     --nc-color-text-lighter: var(--color-text-lighter, #767676);
+    --nc-color-text-maxcontrast: var(--color-text-maxcontrast, #767676);
     --nc-color-scrollbar: var(--color-scrollbar, rgba(34, 34, 34, .15));
     --nc-color-error: var(--color-error, #e9322d);
     --nc-color-error-rgb: var(--color-error-rgb, 233, 50, 45);
@@ -38,8 +51,10 @@
     --nc-color-box-shadow: var(--color-box-shadow, rgba(var(--nc-color-box-shadow-rgb), 0.5));
     --nc-color-border: var(--color-border, #ededed);
     --nc-color-border-dark: var(--color-border-dark, #dbdbdb);
+    --nc-color-border-maxcontrast: var(--color-border-maxcontrast, #949494);
     --nc-font-face: var(--font-face, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Cantarell, Ubuntu, 'Helvetica Neue', Arial, sans-serif, 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol');
     --nc-default-font-size: var(--default-font-size, 15px);
+    --nc-default-line-height: var(--default-line-height, 24px);
     --nc-animation-quick: var(--animation-quick, 100ms);
     --nc-animation-slow: var(--animation-slow, 300ms);
     --nc-border-radius: var(--border-radius, 3px);
@@ -83,6 +98,7 @@
         --nc-color-main-text: var(--color-main-text, #D8D8D8);
         --nc-color-text-light: var(--color-text-light, #bfbfbf);
         --nc-color-text-lighter: var(--color-text-lighter, #a5a5a5);
+        --nc-color-text-maxcontrast: var(--color-text-maxcontrast, #8c8c8c);
         --nc-color-scrollbar: var(--color-scrollbar, #3d3d3d);
         --nc-color-error: var(--color-error, #e9322d);
         --nc-color-error-rgb: var(--color-error-rgb, 233, 50, 45);
@@ -99,8 +115,10 @@
         --nc-color-box-shadow: var(--color-box-shadow, #000000);
         --nc-color-border: var(--color-border, #292929);
         --nc-color-border-dark: var(--color-border-dark, #3b3b3b);
+        --nc-color-border-maxcontrast: var(--color-border-maxcontrast, #646464);
         --nc-font-face: var(--font-face, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Cantarell, Ubuntu, 'Helvetica Neue', Arial, sans-serif, 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol');
         --nc-default-font-size: var(--default-font-size, 15px);
+        --nc-default-line-height: var(--default-line-height, 24px);
         --nc-animation-quick: var(--animation-quick, 100ms);
         --nc-animation-slow: var(--animation-slow, 300ms);
         --nc-border-radius: var(--border-radius, 3px);
@@ -752,43 +770,73 @@ input[type="checkbox"] {
 /* #region select email address */
 
 #rl-app .emailaddresses {
-    padding: 8px 12px;
-    height: 44px;
-    line-height: 24px;
-    display: inline-flex;
-    align-items: center;
+    display: flex;
     flex-wrap: wrap;
-    gap: 5px;
-    /* max-height: padding*2 [top & bottom] + gap*(lines + 1) + li-height*lines [= li-height + li-padding*2 + li-border*2 ]  */
-    max-height: calc(8px*2 + 5px*3 + 26px*2);
-    height: auto;
+    align-items: center;
+    padding: 0 0 4px;
     width: 100%;
+    height: auto;
+    min-height: 44px;
+    max-height: calc(44px*2);
+    line-height: var(--nc-vs-line-height);
+    background-color: var(--nc-vs-search-input-bg);
+    white-space: normal;
 }
 
 #rl-app .emailaddresses.emailaddresses-focused {
     border: 2px solid var(--nc-color-primary-element);
 }
 
-#rl-app .emailaddresses li[draggable] {
-    line-height: 20px;
-    padding: 2px 5px;
-    color: var(--nc-color-main-text);
-    border: 1px solid var(--nc-color-border-dark);
-    border-radius: var(--nc-border-radius);
-    margin: 0;
-    box-shadow: none;
-    background-color: unset;
+#rl-app .emailaddresses li {
+    margin: 4px 2px 0;
 }
 
-#rl-app .emailaddresses li a {
+#rl-app .emailaddresses li.emailaddresses-input>input[type="text"],
+#rl-app .emailaddresses li.emailaddresses-input>input[type="text"]:focus,
+#rl-app .emailaddresses li.emailaddresses-input>input[type="text"]:hover {
+    padding: 0 7px;
+    height: 36px;
+    max-width: 390px;
+    color: var(--nc-vs-search-input-color);
+    font-size: var(--nc-vs-font-size);
+    line-height: var(--nc-vs-line-height);
+}
+
+#rl-app .emailaddresses li[draggable] {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5em;
+    min-height: 36px;
+    line-height: var(--nc-vs-line-height);
+    color: var(--nc-vs-selected-color);
+    border: 0;
+    border-radius: var(--nc-vs-border-radius);
+    background-color: var(--nc-vs-selected-bg);
+    box-shadow: none;
+}
+
+#rl-app .emailaddresses li[draggable]>span {
+    max-width: calc(100vw - 140px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#rl-app .emailaddresses li[draggable]>a.ficon {
     position: unset;
-    color: var(--nc-color-main-text);
+    color: transparent;
+    text-shadow: 0 0 0 var(--nc-vs-controls-color);
+    background: none;
+    border: 0;
+    cursor: pointer;
+    display: inline-flex;
+    margin-left: 4px;
+    padding: 0;
 }
 
 @media screen and (max-width: 480px) {
-    #rl-app .emailaddresses input[type="text"] {
-        width: unset !important;
-        min-width: unset;
+    #rl-app .emailaddresses li.emailaddresses-input>input[type="text"] {
+        max-width: calc(100vw - 116px) !important;
     }
 }
 
