@@ -200,8 +200,8 @@ class PdoAddressBook
 		if (\count($aIdsForDeletion)) {
 			\SnappyMail\HTTP\Stream::JSON(['messsage'=>'Delete local ' . \implode(', ', $aIdsForDeletion)]);
 			$this->DeleteContacts($aIdsForDeletion);
-			unset($aIdsForDeletion);
 			\SnappyMail\Log::info('PdoAddressBook', \count($aIdsForDeletion) . ' local contacts removed');
+			unset($aIdsForDeletion);
 		}
 
 		$this->flushDeletedContacts();
