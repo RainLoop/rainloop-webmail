@@ -584,7 +584,7 @@ abstract class Utils
 
 	public static function UrlSafeBase64Decode(string $sValue) : string
 	{
-		return \base64_decode(\strtr($sValue, '-_', '+/'), '=');
+		return \base64_decode(\strtr($sValue, '-_', '+/'), true);
 	}
 
 	/**
