@@ -200,8 +200,7 @@ trait Accounts
 		$aResult = [
 			'Email' => $oAccount->Email(),
 			'accountHash' => $oAccount->Hash(),
-			'mainEmail' => ($oAccount instanceof AdditionalAccount)
-				? $oAccount->ParentEmail() : '',
+			'mainEmail' => \RainLoop\Api::Actions()->getMainAccountFromToken()->Email(),
 			'contactsAllowed' => $this->AddressBookProvider($oAccount)->IsActive(),
 			'HideUnsubscribed' => false,
 			'UseThreads' => (bool) $oConfig->Get('defaults', 'mail_use_threads', false),

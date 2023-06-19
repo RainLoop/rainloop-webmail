@@ -676,7 +676,6 @@ class Actions
 					'Email' => \MailSo\Base\Utils::IdnToUtf8($oAccount->Email()),
 					'accountHash' => $oAccount->Hash(),
 					'accountSignMe' => isset($_COOKIE[self::AUTH_SIGN_ME_TOKEN_KEY]),
-					'mainEmail' => \MailSo\Base\Utils::IdnToUtf8($this->getMainAccountFromToken()->Email()),
 
 					'contactsAllowed' => $this->AddressBookProvider($oAccount)->IsActive(),
 
