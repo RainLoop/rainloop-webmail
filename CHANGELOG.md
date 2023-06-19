@@ -1,3 +1,35 @@
+## 2.28.2 – 2023-06-19
+
+## Added
+- Detailed error for "Cannot access the repository at the moment"
+  [#1164](https://github.com/the-djmaze/snappymail/pull/1164)
+- Bidi in Squire editor
+  [#1158](https://github.com/the-djmaze/snappymail/pull/1158)
+- Translate Squire UI
+- Nextcloud 27 compatibility by @LarsBel
+- JWT class for handling JSON Web Tokens
+
+## Changed
+- Update German by @cm-schl
+- Update French by @hguilbert
+- Update Polish by @tinola
+- Merge handling of local Account Settings. Found while investigating
+  [#1170](https://github.com/the-djmaze/snappymail/pull/1170)
+- Image max-width now 100% instead of 90vw
+
+## Fixed
+- Cannot modify header information
+  [#929](https://github.com/the-djmaze/snappymail/pull/929) (comment)
+- Admin Panel broken when admin_panel_host is set
+  [#1169](https://github.com/the-djmaze/snappymail/pull/1169)
+- Invalid CSP report-uri
+- Prevent MessageList multiple request at the same time
+  [#1071](https://github.com/the-djmaze/snappymail/pull/1071)
+- Error in Addressbook Sync
+  [#1179](https://github.com/the-djmaze/snappymail/pull/1179)
+- base64_decode() second parameter must be true
+
+
 ## 2.28.1 – 2023-06-05
 
 ## Changed
