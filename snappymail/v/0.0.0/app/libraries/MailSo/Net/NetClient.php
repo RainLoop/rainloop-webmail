@@ -71,8 +71,8 @@ abstract class NetClient
 	}
 
 	/**
+	 * @throws \InvalidArgumentException
 	 * @throws \MailSo\RuntimeException
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\SocketAlreadyConnectedException
 	 * @throws \MailSo\Net\Exceptions\SocketCanNotConnectToHostException
 	 */
@@ -80,7 +80,7 @@ abstract class NetClient
 	{
 		$oSettings->host = \trim($oSettings->host);
 		if (!\strlen($oSettings->host) || 0 > $oSettings->port || 65535 < $oSettings->port) {
-			$this->writeLogException(new \MailSo\Base\Exceptions\InvalidArgumentException, \LOG_ERR);
+			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
 		}
 
 		if ($this->IsConnected()) {
