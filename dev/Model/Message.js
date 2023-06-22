@@ -353,13 +353,17 @@ export class MessageModel extends AbstractModel {
 				+ (bccLine ? `<div>${encodeHtml(i18n('GLOBAL/BCC'))}: ${encodeHtml(bccLine)}</div>` : ''),
 			style = getComputedStyle(doc.querySelector('.messageView')),
 			prop = property => style.getPropertyValue(property);
+		let attachments = '';
+		this.attachments.forEach(attachment => {
+			attachments += `<a href="${attachment.linkDownload()}">${attachment.fileName}</a>`;
+		});
 		sdoc.write(PreviewHTML
 			.replace('<title>', '<title>'+subject)
 			// eslint-disable-next-line max-len
 			.replace('<body>', `<body style="background-color:${prop('background-color')};color:${prop('color')}"><header><h1>${subject}</h1><time>${encodeHtml(m ? m.format('LLL',0,LanguageStore.hourCycle()) : '')}</time><div>${encodeHtml(this.from)}</div>${to}</header><${mode}>${this.bodyAsHTML()}</${mode}>`)
+			.replace('</body>', `<div id="attachments">${attachments}</div></body>`)
 		);
 		sdoc.close();
-
 		print && setTimeout(() => win.print(), 100);
 	}
 
