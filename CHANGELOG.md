@@ -1,3 +1,24 @@
+## 2.28.3 – 2023-06-22
+
+## Added
+- Attachments in "new window" view
+  [#1166](https://github.com/the-djmaze/snappymail/pull/1166)
+
+## Changed
+- Update Portuguese by @ner00
+- Update French by @hguilbert
+
+## Fixed
+- Some emails with inline CSS break the UI
+  [#1187](https://github.com/the-djmaze/snappymail/pull/1187)
+- Remote.get() Promise broken by previous change
+  [#1185](https://github.com/the-djmaze/snappymail/pull/1185)
+- Class "MailSo\Base\Exceptions\InvalidArgumentException" not found
+  [#1182](https://github.com/the-djmaze/snappymail/pull/1182)
+- First account not showed in the right list (dropbox)
+  [#1180](https://github.com/the-djmaze/snappymail/pull/1180)
+
+
 ## 2.28.2 – 2023-06-19
 
 ## Added
