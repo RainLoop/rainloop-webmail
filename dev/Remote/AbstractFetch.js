@@ -57,7 +57,7 @@ fetchJSON = (action, sUrl, params, timeout, jsonCallback) => {
 	controller.timeoutId = timeout && setTimeout(() => abort(action, 'TimeoutError'), timeout);
 	return rl.fetchJSON(sUrl, {signal: signal}, params).then(data => {
 		abort(action, 0, 1);
-		return jsonCallback(data);
+		return jsonCallback ? jsonCallback(data) : Promise.resolve(data);
 	}).catch(err => {
 		clearTimeout(controller.timeoutId);
 		err.aborted = signal.aborted;
