@@ -239,21 +239,37 @@ class MailClient
 			}
 		}
 
-		$aFetchResponse = $this->oImapClient->Fetch(array(
-//			FetchType::BINARY_SIZE.'['.$sMimeIndex.']',
-			// Push in the aFetchCallbacks array and then called by \MailSo\Imap\Traits\ResponseParser::partialResponseLiteralCallbackCallable
-			array(
-				$sPeek.'['.$sMimeIndex.']',
-				function ($sParent, $sLiteralAtomUpperCase, $rImapLiteralStream) use ($mCallback, $sMimeIndex, $sMailEncoding, $sContentType, $sFileName)
-				{
-					if (\strlen($sLiteralAtomUpperCase) && \is_resource($rImapLiteralStream) && 'FETCH' === $sParent) {
-						$mCallback($sMailEncoding
-							? \MailSo\Base\StreamWrappers\Binary::CreateStream($rImapLiteralStream, $sMailEncoding)
-							: $rImapLiteralStream,
-							$sContentType, $sFileName, $sMimeIndex);
-					}
+		$callback = function ($sParent, $sLiteralAtomUpperCase, $rImapLiteralStream)
+			use ($mCallback, $sMimeIndex, $sMailEncoding, $sContentType, $sFileName)
+			{
+				if (\strlen($sLiteralAtomUpperCase) && \is_resource($rImapLiteralStream) && 'FETCH' === $sParent) {
+					$mCallback($sMailEncoding
+						? \MailSo\Base\StreamWrappers\Binary::CreateStream($rImapLiteralStream, $sMailEncoding)
+						: $rImapLiteralStream,
+						$sContentType, $sFileName, $sMimeIndex);
 				}
-			)), $iIndex, true);
+			};
+
+		try {
+			$aFetchResponse = $this->oImapClient->Fetch(array(
+//				FetchType::BINARY_SIZE.'['.$sMimeIndex.']',
+				// Push in the aFetchCallbacks array and then called by \MailSo\Imap\Traits\ResponseParser::partialResponseLiteralCallbackCallable
+				array(
+					$sPeek.'['.$sMimeIndex.']',
+					$callback
+				)), $iIndex, true);
+		} catch (\MailSo\Imap\Exceptions\NegativeResponseException $oException) {
+			if (FetchType::BINARY_PEEK === $sPeek && \preg_match('/UNKNOWN-CTE|PARSE/', $oException->getMessage())) {
+				$this->logException($oException, \LOG_WARNING);
+				$aFetchResponse = $this->oImapClient->Fetch(array(
+					array(
+						FetchType::BODY_PEEK . '[' . $sMimeIndex . ']',
+						$callback
+					)), $iIndex, true);
+			} else {
+				throw $e;
+			}
+		}
 
 		return ($aFetchResponse && 1 === \count($aFetchResponse));
 	}

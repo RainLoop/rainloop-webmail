@@ -27,6 +27,7 @@
         "disable_move": false,
         "disable_sort": false,
         "disable_thread": false,
+        "disable_binary": false,
         "use_expunge_all_on_delete": false,
         "fast_simple_search": true,
         "force_select": false,

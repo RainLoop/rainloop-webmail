@@ -35,6 +35,7 @@ const
 		imapDisable_move: false,
 		imapDisable_sort: false,
 		imapDisable_thread: false,
+		imapDisable_binary: false,
 		imapExpunge_all_on_delete: false,
 		imapFast_simple_search: true,
 		imapFetch_new_messages: true,
@@ -84,6 +85,7 @@ const
 			disable_move: !!oDomain.imapDisable_move(),
 			disable_sort: !!oDomain.imapDisable_sort(),
 			disable_thread:  !!oDomain.imapDisable_thread(),
+			disable_binary:  !!oDomain.imapDisable_binary(),
 			folder_list_limit: pInt(oDomain.imapFolder_list_limit()),
 			message_list_limit: pInt(oDomain.imapMessage_list_limit())
 /*
