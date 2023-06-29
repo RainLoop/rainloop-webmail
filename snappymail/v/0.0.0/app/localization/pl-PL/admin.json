@@ -12,7 +12,7 @@
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
 		"LABEL_PASSWORD": "Hasło",
-		"LABEL_TOTP": "TOTP code",
+		"LABEL_TOTP": "Kod TOTP",
 		"BUTTON_LOGIN": "Zaloguj do panelu administracjnego"
 	},
 	"TOP_PANEL": {
@@ -20,13 +20,13 @@
 	},
 	"SETTINGS_LABELS": {
 		"GENERAL": "Ogólne",
-		"LOGIN": "Login",
+		"LOGIN": "Logowanie",
 		"BRANDING": "Personalizacja",
 		"CONTACTS": "Kontakty",
 		"DOMAINS": "Domeny",
 		"SECURITY": "Bezpieczeństwo",
 		"PACKAGES": "Pakiety",
-		"CONFIG": "Config",
+		"CONFIG": "Plik konfiguracyjny",
 		"ABOUT": "O programie"
 	},
 	"TAB_GENERAL": {
@@ -69,14 +69,14 @@
 		"LABEL_STORAGE_USER": "Użytkownik",
 		"LABEL_STORAGE_PASSWORD": "Hasło",
 		"ALERT_NOTICE": "Ostrzeżenie!",
-		"SUGGESTIONS_LIMIT": "Suggestions limit",
+		"SUGGESTIONS_LIMIT": "Limit sugestii",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Nie używaj tej bazy danych z dużą ilością aktywnych użytkowników.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Twój system nie zawiera wsparcia dla obsługi kontaktów.\n<br>\nMusisz zainstalować lub uruchomić na serwerze jedno z rozszerzeń <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong>.\n"
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "Domeny",
 		"BUTTON_ADD_DOMAIN": "Dodaj domenę",
-		"BUTTON_ADD_ALIAS": "Dodaj Alias",
+		"BUTTON_ADD_ALIAS": "Dodaj alias",
 		"DELETE_ARE_YOU_SURE": "Czy na pewno?",
 		"HTML_DOMAINS_HELPER": "Lista domen, do których można uzyskać dostęp poprzez tego klienta.\n<br>\nKliknij na nazwę, aby skonfigurować domenę.\n"
 	},
@@ -108,10 +108,10 @@
 		"HTML_NEW_VERSION": "Dostępna jest nowa wersja: <b>%VERSION%<\/b>.",
 		"LABEL_UPDATING": "Aktualizacja w toku...",
 		"LABEL_CHECKING": "Szukanie aktualizacji...",
-		"BUTTON_RELEASES": "Releases"
+		"BUTTON_RELEASES": "Wydania"
 	},
 	"POPUPS_DOMAIN_ALIAS": {
-		"TITLE_ADD_DOMAIN_ALIAS": "Dodaj Alias",
+		"TITLE_ADD_DOMAIN_ALIAS": "Dodaj alias",
 		"LABEL_ALIAS": "Alias",
 		"LABEL_DOMAIN": "Domena"
 	},
@@ -124,18 +124,18 @@
 		"LABEL_SERVER": "Serwer",
 		"LABEL_PORT": "Port",
 		"LABEL_SECURE": "Rodzaj połączenia",
-		"TIMEOUT": "Timeout",
-		"DISABLE_CAPABILITIES": "Disable capabilities",
-		"LIMITS": "Limits",
-		"FOLDERS": "Folders",
-		"MESSAGES": "Messages",
+		"TIMEOUT": "Limit czasu",
+		"DISABLE_CAPABILITIES": "Zablokuj funkcjonalności",
+		"LIMITS": "Limity",
+		"FOLDERS": "Foldery",
+		"MESSAGES": "Wiadomości",
 		"LABEL_WHITE_LIST": "Biała lista",
 		"SECURE_OPTION_NONE": "Bez zabezpieczeń",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Zezwól na skrypty sieve",
 		"LABEL_USE_SHORT_LOGIN": "Użyj krótkiego loginu",
-		"LABEL_USE_AUTH": "Użyj autoryzacji",
-		"LABEL_SET_SENDER": "Use login as sender",
-		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
+		"LABEL_USE_AUTH": "Użyj uwierzytelnienia",
+		"LABEL_SET_SENDER": "Użyj loginu jako nadawcy",
+		"LABEL_AUTH_PLAIN_LINE": "Wymuś logowanie pojedynczą komendą AUTH PLAIN",
 		"LABEL_USE_PHP_MAIL": "Użyj funkcji php 'mail()'",
 		"BUTTON_WHITE_LIST": "Biała lista",
 		"BUTTON_SIEVE_CONFIGURATION": "Konfiguracja sieve",
@@ -150,8 +150,8 @@
 		"DESC_NOTHING_TO_CONFIGURE": "Brak opcji do skonfigurowania"
 	},
 	"POPUPS_ASK": {
-		"BUTTON_YES": "Yes",
-		"BUTTON_NO": "No",
+		"BUTTON_YES": "Tak",
+		"BUTTON_NO": "Nie",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Czy na pewno chcesz zamknąć to okno?"
 	},
 	"POPUPS_LANGUAGES": {
@@ -166,16 +166,16 @@
 		"UNKNOWN_ERROR": "Nieznany błąd"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
+		"REQUEST_ERROR": "Zapytanie zakończone niepowodzeniem",
+		"REQUEST_ABORTED": "Zapytanie przerwane",
+		"REQUEST_TIMEOUT": "Upłynął limit czasu",
 		"INVALID_TOKEN": "Nieprawidłowy token",
-		"AUTH_ERROR": "Autoryzacja zakończona niepowodzeniem",
+		"AUTH_ERROR": "Uwierzytelnienie zakończone niepowodzeniem",
 		"DOMAIN_ALREADY_EXISTS": "Ta domena już istnieje",
 		"CANT_SAVE_PLUGIN_SETTINGS": "Nie można zapisać ustawień wtyczki",
 		"CANT_INSTALL_PACKAGE": "Instalacja wtyczki zakończona niepowodzeniem",
 		"CANT_DELETE_PACKAGE": "Usunięcie wtyczki zakończone niepowodzeniem",
-		"INVALID_PLUGIN_PACKAGE": "Niepoprawna wtyczka",
+		"INVALID_PLUGIN_PACKAGE": "Nieprawidłowa wtyczka",
 		"UNSUPPORTED_PLUGIN_PACKAGE": "Nieobsługiwana wtyczka",
 		"UNKNOWN_ERROR": "Nieznany błąd"
 	}
