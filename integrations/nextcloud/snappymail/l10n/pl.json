@@ -14,6 +14,9 @@
     "may have some" : "może mieć pewne",
     "security considerations" : "względy bezpieczeństwa",
     "Enter an email and password to auto-login to SnappyMail." : "Wpisz adres e-mail i hasło, aby automatycznie zalogować się do SnappyMaila.",
-    "Password" : "Hasło"
+    "Password" : "Hasło",
+    "Don't fully integrate in Nextcloud, use in iframe" : "Nie integruj całkowicie z Nextcloudem, używaj wewnątrz iframe",
+    "Debug" : "Debuguj",
+    "Import RainLoop data" : "Zaimportuj dane z RainLoopa"
 },"pluralForm" :"nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);"
 }
