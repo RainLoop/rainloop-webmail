@@ -2487,38 +2487,6 @@ html.rl-mobile #rl-app #V-AdminPane>.b-toolbar {
 /* #region (todo) tablet layout */
 
 @media screen and (min-width: 800px) and (max-width: 1024px) {
-    html.sm-msgView-side #rl-app #rl-right {
-        flex-direction: column;
-    }
-
-    html.sm-msgView-side #rl-app #V-MailMessageList {
-        height: unset;
-        width: unset;
-    }
-
-    html.sm-msgView-side #rl-app #V-MailMessageList .resizer {
-        /* ? vertical resize not working in side view */
-        display: none;
-    }
-
-    html.sm-msgView-side #rl-app #V-MailMessageList .messageList {
-        height: 35vh;
-        max-height: 50vh;
-        min-height: 200px;
-        width: unset !important;
-        max-width: unset;
-        overflow: auto;
-        resize: vertical;
-    }
-
-    html.sm-msgView-side #rl-app #V-MailMessageView .top-toolbar {
-        display: none;
-    }
-
-    html.sm-msgView-side #rl-app .messageView {
-        height: 100%;
-    }
-
     #rl-app #rl-left {
         width: 250px;
     }
