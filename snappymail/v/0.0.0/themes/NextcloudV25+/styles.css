@@ -11,6 +11,9 @@
 /* #region theme */
 
 :root {
+    --border-color: var(--nc-color-border);
+    --dialog-border-clr: var(--nc-color-border);
+
     --nc-vs-selected-bg: var(--vs-selected-bg, var(--nc-color-background-dark));
     --nc-vs-selected-color: var(--vs-selected-color, var(--nc-color-main-text));
     --nc-vs-border-radius: var(--vs-border-radius, var(--nc-border-radius-large));
@@ -258,6 +261,10 @@
 /* #endregion */
 
 /* #region horizontal rule */
+
+:root {
+    --hr-color: var(--nc-color-border-dark);
+}
 
 #rl-app hr {
     border-color: var(--nc-color-border-dark);
