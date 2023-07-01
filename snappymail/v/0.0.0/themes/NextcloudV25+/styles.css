@@ -1401,13 +1401,17 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-folders-system a.selectable {
 }
 
 #rl-app .b-footer.btn-toolbar .btn-group .btn:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])),
-#rl-app .b-footer.btn-toolbar .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])) {
+#rl-app .b-footer.btn-toolbar .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])),
+[dir="rtl"] #rl-app .b-footer.btn-toolbar .btn-group .btn:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])),
+[dir="rtl"] #rl-app .b-footer.btn-toolbar .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])) {
     border-radius: var(--nc-border-radius-pill) !important;
 }
 
 /* fallback */
 #rl-app .b-footer.btn-toolbar .btn-group .btn,
-#rl-app .b-footer.btn-toolbar .btn-group .btn.fontastic {
+#rl-app .b-footer.btn-toolbar .btn-group .btn.fontastic,
+[dir="rtl"] #rl-app .b-footer.btn-toolbar .btn-group .btn,
+[dir="rtl"] #rl-app .b-footer.btn-toolbar .btn-group .btn.fontastic {
     border-radius: var(--nc-border-radius-pill) !important;
 }
 
@@ -1470,7 +1474,8 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-folders-system a.selectable {
 }
 
 html.rl-left-panel-disabled #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group .btn.fontastic:after,
-html.rl-left-panel-disabled #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group .btn.icon-folder-add:after {
+html.rl-left-panel-disabled #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group .btn.icon-folder-add:after,
+html.rl-left-panel-disabled[dir="rtl"] #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group .btn.fontastic:before {
     content: '';
 }
 
