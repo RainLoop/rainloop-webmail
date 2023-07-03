@@ -313,6 +313,7 @@ class ActionsAdmin extends Actions
 
 	public function DoAdminUpgradeCore() : array
 	{
+		\header('Connection: close');
 		return $this->DefaultResponse(\SnappyMail\Upgrade::core());
 	}
 
