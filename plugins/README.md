@@ -440,6 +440,22 @@ and called in JavaScript using rl.pluginRemoteRequest().
 	event.detail = 'screenname'
 	cancelable using preventDefault()
 
+### squire-toolbar
+	event.detail = { squire: SquireUI, actions: object }
+	`actions` is the toolbar structure.
+	```javascript
+	block-of-buttons: {
+		button-name: {
+			select: ['selectbox options'],
+			html: 'button text',
+			cmd: () => `command to execute`,
+			key: 'keyboard shortcut',
+			matches: 'HTML elements that match'
+		}
+	}
+	```
+	See [SquireUI.js](https://github.com/the-djmaze/snappymail/blob/master/dev/External/SquireUI.js)
+	for all default toolbar actions.
 
 # JavaScript `rl` object
 

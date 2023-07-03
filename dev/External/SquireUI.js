@@ -289,6 +289,8 @@ class SquireUI
 		this.plain = plain;
 		this.wysiwyg = wysiwyg;
 
+		dispatchEvent(new CustomEvent('squire-toolbar', {detail:{squire:this,actions:actions}}));
+
 		toolbar.className = 'squire-toolbar btn-toolbar';
 		let group, action/*, touchTap*/;
 		for (group in actions) {
