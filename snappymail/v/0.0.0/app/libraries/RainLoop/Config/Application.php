@@ -298,7 +298,8 @@ Values:
 				'contacts_autosave'      => array(true),
 				'mail_use_threads'       => array(false),
 				'allow_draft_autosave'   => array(true),
-				'mail_reply_same_folder' => array(false)
+				'mail_reply_same_folder' => array(false),
+				'msg_default_action'     => array(1, '1 - reply, 2 - reply all'),
 			),
 
 			'logs' => array(

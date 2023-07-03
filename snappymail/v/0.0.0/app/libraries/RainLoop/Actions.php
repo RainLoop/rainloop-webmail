@@ -691,7 +691,7 @@ class Actions
 					'listGrouped' => false,
 					'MessagesPerPage' => (int) $oConfig->Get('webmail', 'messages_per_page', 25),
 					'MessageReadDelay' => (int) $oConfig->Get('webmail', 'message_read_delay', 5),
-					'MsgDefaultAction' => 1,
+					'MsgDefaultAction' => (int) $oConfig->Get('defaults', 'msg_default_action', 1),
 					'SoundNotification' => true,
 					'NotificationSound' => 'new-mail',
 					'DesktopNotifications' => true,
