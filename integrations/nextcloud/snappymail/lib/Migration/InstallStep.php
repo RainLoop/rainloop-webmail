@@ -2,6 +2,8 @@
 // https://docs.nextcloud.com/server/19/developer_manual/app/repair.html
 namespace OCA\SnappyMail\Migration;
 
+use OCA\SnappyMail\AppInfo\Application;
+use OCP\IConfig;
 use OCP\Migration\IOutput;
 use OCP\Migration\IRepairStep;
 use OCP\ILogger;
@@ -88,5 +90,22 @@ class InstallStep implements IRepairStep
 		}
 
 		$bSave && $oConfig->Save();
+
+		// check if admins provided additional/custom initial config file
+		// https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/occ_command.html#setting-a-single-configuration-value
+		// ex: php occ config:app:set snappymail custom_config_file --value="/path/to/config.php"
+		try {
+			/** @var IConfig $ncConfig */
+			$ncConfig = \OC::$server->get(IConfig::class);
+			$customConfigFile = $ncConfig->getAppValue(Application::APP_ID, 'custom_config_file');
+			if ($customConfigFile && strpos($customConfigFile, ':') === false) {
+				include $customConfigFile;
+			}
+		} catch (\Throwable $e) {
+			$output->warning("custom config error: " . $e->getMessage());
+			/** @var \Psr\Log\LoggerInterface $logger */
+			$logger = \OC::$server->get(\Psr\Log\LoggerInterface::class);
+			$logger->error("custom config error: " . $e->getMessage());
+		}
 	}
 }
