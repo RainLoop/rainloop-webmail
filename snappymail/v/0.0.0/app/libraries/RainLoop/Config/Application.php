@@ -292,6 +292,7 @@ Values:
 				'view_editor_type'       => array('Html', 'Editor mode used by default (Plain, Html)'),
 				'view_layout'            => array(1, 'layout: 0 - no preview, 1 - side preview, 2 - bottom preview'),
 				'view_use_checkboxes'    => array(true),
+				'view_show_next_message' => array(true, 'Show next message when (re)move current message'),
 				'autologout'             => array(30),
 				'view_html'              => array(true),
 				'show_images'            => array(false),

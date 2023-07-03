@@ -698,7 +698,7 @@ class Actions
 					'Layout' => (int) $oConfig->Get('defaults', 'view_layout', Enumerations\Layout::SIDE_PREVIEW),
 					'EditorDefaultType' => \str_replace('Forced', '', $oConfig->Get('defaults', 'view_editor_type', '')),
 					'UseCheckboxesInList' => (bool) $oConfig->Get('defaults', 'view_use_checkboxes', true),
-					'showNextMessage' => false,
+					'showNextMessage' => (bool) $oConfig->Get('defaults', 'view_show_next_message', false),
 					'AutoLogout' => (int) $oConfig->Get('defaults', 'autologout', 30),
 					'AllowDraftAutosave' => (bool) $oConfig->Get('defaults', 'allow_draft_autosave', true),
 					'ContactsAutosave' => (bool) $oConfig->Get('defaults', 'contacts_autosave', true),
