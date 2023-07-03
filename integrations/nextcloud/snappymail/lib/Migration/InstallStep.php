@@ -94,12 +94,17 @@ class InstallStep implements IRepairStep
 		// check if admins provided additional/custom initial config file
 		// https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/occ_command.html#setting-a-single-configuration-value
 		// ex: php occ config:app:set snappymail custom_config_file --value="/path/to/config.php"
+		// https://github.com/the-djmaze/snappymail/pull/1197
 		try {
 			/** @var IConfig $ncConfig */
 			$ncConfig = \OC::$server->get(IConfig::class);
 			$customConfigFile = $ncConfig->getAppValue(Application::APP_ID, 'custom_config_file');
-			if ($customConfigFile && strpos($customConfigFile, ':') === false) {
-				include $customConfigFile;
+			if ($customConfigFile) {
+				if (!\str_contains($customConfigFile, ':') && \is_readable($customConfigFile)) {
+					require $customConfigFile;
+				} else {
+					throw new \Exception("not found {$customConfigFile}");
+				}
 			}
 		} catch (\Throwable $e) {
 			$output->warning("custom config error: " . $e->getMessage());
