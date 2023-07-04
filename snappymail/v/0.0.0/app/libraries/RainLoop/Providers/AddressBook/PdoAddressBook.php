@@ -9,26 +9,14 @@ use
 ;
 
 class PdoAddressBook
-	extends \RainLoop\Common\PdoAbstract
+	extends \RainLoop\Pdo\Base
 	implements AddressBookInterface
 {
 	use CardDAV;
 
 	private $iUserID = 0;
 
-	private string $sDsn;
-
-	private string $sDsnType;
-
-	private string $sUser;
-
-	private string $sPassword;
-
-	private string $sSslCa = '';
-
-	private bool $bSslVerify = true;
-
-	private string $sSslCiphers = '';
+	private \RainLoop\Pdo\Settings $settings;
 
 	private static $aSearchInFields = [
 		PropertyType::EMAIl,
@@ -40,9 +28,9 @@ class PdoAddressBook
 	public function __construct()
 	{
 		$oConfig = \RainLoop\Api::Config();
-		$sDsnType = static::validPdoType($oConfig->Get('contacts', 'type', 'sqlite'));
-		if ('sqlite' === $sDsnType) {
-			$sUser = $sPassword = '';
+		$oSettings = new \RainLoop\Pdo\Settings;
+		$oSettings->driver = static::validPdoType($oConfig->Get('contacts', 'type', 'sqlite'));
+		if ('sqlite' === $oSettings->driver) {
 			$sDsn = 'sqlite:' . APP_PRIVATE_DATA . 'AddressBook.sqlite';
 /*
 			// TODO: use local db?
@@ -60,20 +48,18 @@ class PdoAddressBook
 */
 		} else {
 			$sDsn = \trim($oConfig->Get('contacts', 'pdo_dsn', ''));
-			$sUser = \trim($oConfig->Get('contacts', 'pdo_user', ''));
-			$sPassword = (string)$oConfig->Get('contacts', 'pdo_password', '');
-			$sDsn = $sDsnType . ':' . \preg_replace('/^[a-z]+:/', '', $sDsn);
-			if ('mysql' === $sDsnType) {
-				$this->sSslCa = \trim($oConfig->Get('contacts', 'mysql_ssl_ca', ''));
-				$this->bSslVerify = !!$oConfig->Get('contacts', 'mysql_ssl_verify', true);
-				$this->sSslCiphers = \trim($oConfig->Get('contacts', 'mysql_ssl_ciphers', ''));
+			$oSettings->user = \trim($oConfig->Get('contacts', 'pdo_user', ''));
+			$oSettings->password = (string)$oConfig->Get('contacts', 'pdo_password', '');
+			$sDsn = $oSettings->driver . ':' . \preg_replace('/^[a-z]+:/', '', $sDsn);
+			if ('mysql' === $oSettings->driver) {
+				$oSettings->sslCa = \trim($oConfig->Get('contacts', 'mysql_ssl_ca', ''));
+				$oSettings->sslVerify = !!$oConfig->Get('contacts', 'mysql_ssl_verify', true);
+				$oSettings->sslCiphers = \trim($oConfig->Get('contacts', 'mysql_ssl_ciphers', ''));
 			}
 		}
 
-		$this->sDsn = $sDsn;
-		$this->sUser = $sUser;
-		$this->sPassword = $sPassword;
-		$this->sDsnType = $sDsnType;
+		$oSettings->dsn = $sDsn;
+		$this->settings = $oSettings;
 
 		$this->bExplain = false; // debug
 	}
@@ -87,7 +73,7 @@ class PdoAddressBook
 	public function IsSupported() : bool
 	{
 		$aDrivers = static::getAvailableDrivers();
-		return \is_array($aDrivers) && \in_array($this->sDsnType, $aDrivers);
+		return \is_array($aDrivers) && \in_array($this->settings->driver, $aDrivers);
 	}
 
 	public function SetEmail(string $sEmail) : bool
@@ -1075,7 +1061,7 @@ class PdoAddressBook
 		$sResult = '';
 		try {
 			$this->SyncDatabase();
-			if (0 >= $this->getVersion($this->sDsnType.'-ab-version')) {
+			if (0 >= $this->getVersion($this->settings->driver.'-ab-version')) {
 				$sResult = 'Unknown database error';
 			}
 		}
@@ -1222,10 +1208,10 @@ SQLITEINITIAL;
 		}
 
 		$mCache = false;
-		switch ($this->sDsnType) {
+		switch ($this->settings->driver) {
 			case 'mysql':
-				$mCache = $this->dataBaseUpgrade($this->sDsnType.'-ab-version', array(
-					1 => $this->getInitialTablesArray($this->sDsnType),
+				$mCache = $this->dataBaseUpgrade($this->settings->driver.'-ab-version', array(
+					1 => $this->getInitialTablesArray($this->settings->driver),
 					2 => array(
 'ALTER TABLE rainloop_ab_properties ADD prop_value_lower MEDIUMTEXT NOT NULL AFTER prop_value_custom;'
 					),
@@ -1242,8 +1228,8 @@ SQLITEINITIAL;
 				));
 				break;
 			case 'pgsql':
-				$mCache = $this->dataBaseUpgrade($this->sDsnType.'-ab-version', array(
-					1 => $this->getInitialTablesArray($this->sDsnType),
+				$mCache = $this->dataBaseUpgrade($this->settings->driver.'-ab-version', array(
+					1 => $this->getInitialTablesArray($this->settings->driver),
 					2 => array(
 'ALTER TABLE rainloop_ab_properties ADD prop_value_lower text NOT NULL DEFAULT \'\';'
 					),
@@ -1252,8 +1238,8 @@ SQLITEINITIAL;
 				));
 				break;
 			case 'sqlite':
-				$mCache = $this->dataBaseUpgrade($this->sDsnType.'-ab-version', array(
-					1 => $this->getInitialTablesArray($this->sDsnType),
+				$mCache = $this->dataBaseUpgrade($this->settings->driver.'-ab-version', array(
+					1 => $this->getInitialTablesArray($this->settings->driver),
 					2 => array(
 'ALTER TABLE rainloop_ab_properties ADD prop_value_lower text NOT NULL DEFAULT \'\';'
 					),
@@ -1305,17 +1291,15 @@ SQLITEINITIAL;
 				(string) \mb_strtolower($sSearch)).'%';
 	}
 
-	protected function getPdoAccessData() : array
+	protected function getPdoSettings() : \RainLoop\Pdo\Settings
 	{
-		$sSslCa = $this->sSslCa;
+		$sSslCa = $this->settings->sslCa;
 		if ($sSslCa && !\is_file($sSslCa)) {
 			$sFile = \APP_PRIVATE_DATA . 'configs/contacts_mysql_ssl_ca.pem';
 //			$sSslCa = (\is_file($sFile) || \file_put_contents($sFile, $sSslCa)) ? $sFile : '';
-			$sSslCa = \file_put_contents($sFile, $sSslCa) ? $sFile : '';
+			$this->settings->sslCa = \file_put_contents($sFile, $sSslCa) ? $sFile : '';
 		}
-		return array($this->sDsnType, $this->sDsn, $this->sUser, $this->sPassword,
-			$sSslCa, $this->bSslVerify, $this->sSslCiphers
-		);
+		return $this->settings;
 	}
 
 	protected function getUserId(string $sEmail, bool $bSkipInsert = false, bool $bCache = true) : int

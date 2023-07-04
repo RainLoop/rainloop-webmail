@@ -1,8 +1,8 @@
 <?php
 
-namespace RainLoop\Common;
+namespace RainLoop\Pdo;
 
-abstract class PdoAbstract
+abstract class Base
 {
 	use \MailSo\Log\Inherit;
 
@@ -19,7 +19,7 @@ abstract class PdoAbstract
 		return !!\class_exists('PDO');
 	}
 
-	abstract protected function getPdoAccessData() : array;
+	abstract protected function getPdoSettings() : \RainLoop\Pdo\Settings;
 
 	public function sqliteNoCaseCollationHelper(string $sStr1, string $sStr2) : int
 	{
@@ -48,27 +48,26 @@ abstract class PdoAbstract
 			throw new \Exception('Class PDO does not exist');
 		}
 
-		$sType = $sDsn = $sDbLogin = $sDbPassword = '';
-		list($sType, $sDsn, $sDbLogin, $sDbPassword, $sSslCa, $bSslVerify, $sSslCiphers) = $this->getPdoAccessData();
+		$oSettings = $this->getPdoSettings();
 
-		if (!\in_array($sType, static::getAvailableDrivers())) {
+		if (!\in_array($oSettings->driver, static::getAvailableDrivers())) {
 			throw new \Exception('Unknown PDO SQL connection type');
 		}
 
-		if (empty($sDsn)) {
+		if (empty($oSettings->dsn)) {
 			throw new \Exception('Empty PDO DSN configuration');
 		}
 
-		$this->sDbType = $sType;
+		$this->sDbType = $oSettings->driver;
 
 		$options = [];
-		if ('mysql' === $sType) {
-			if ($sSslCa) {
-				$options[\PDO::MYSQL_ATTR_SSL_CA] = $sSslCa;
+		if ('mysql' === $oSettings->driver) {
+			if ($oSettings->sslCa) {
+				$options[\PDO::MYSQL_ATTR_SSL_CA] = $oSettings->sslCa;
 			}
-			$options[\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = !empty($bSslVerify);
-			if ($sSslCiphers) {
-				$options[\PDO::MYSQL_ATTR_SSL_CIPHER] = $sSslCiphers;
+			$options[\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $oSettings->sslVerify;
+			if ($oSettings->sslCiphers) {
+				$options[\PDO::MYSQL_ATTR_SSL_CIPHER] = $oSettings->sslCiphers;
 			}
 /*
 			$options[\PDO::MYSQL_ATTR_SSL_CAPATH] = '';
@@ -78,15 +77,15 @@ abstract class PdoAbstract
 */
 		}
 
-		$oPdo = new \PDO($sDsn, $sDbLogin, $sDbPassword, $options);
+		$oPdo = new \PDO($oSettings->dsn, $oSettings->user, $oSettings->password, $options);
 		$sPdoType = $oPdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
 		$oPdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
 //		$bCaseFunc = false;
-		if ('mysql' === $sType && 'mysql' === $sPdoType) {
+		if ('mysql' === $oSettings->driver && 'mysql' === $sPdoType) {
 			$oPdo->exec('SET NAMES utf8mb4 COLLATE utf8mb4_general_ci');
 		}
-//		else if ('sqlite' === $sType && 'sqlite' === $sPdoType && $this->bSqliteCollate) {
+//		else if ('sqlite' === $oSettings->driver && 'sqlite' === $sPdoType && $this->bSqliteCollate) {
 //			if (\method_exists($oPdo, 'sqliteCreateCollation')) {
 //				$oPdo->sqliteCreateCollation('SQLITE_NOCASE_UTF8', array($this, 'sqliteNoCaseCollationHelper'));
 //				$bCaseFunc = true;

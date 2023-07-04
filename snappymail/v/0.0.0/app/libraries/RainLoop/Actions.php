@@ -636,7 +636,7 @@ class Actions
 				$aResult['determineUserLanguage'] = (bool)$oConfig->Get('login', 'determine_user_language', true);
 				$aResult['determineUserDomain'] = (bool)$oConfig->Get('login', 'determine_user_domain', false);
 
-				$aResult['supportedPdoDrivers'] = \RainLoop\Common\PdoAbstract::getAvailableDrivers();
+				$aResult['supportedPdoDrivers'] = \RainLoop\Pdo\Base::getAvailableDrivers();
 
 				$aResult['contactsEnable'] = (bool)$oConfig->Get('contacts', 'enable', false);
 				$aResult['contactsSync'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
