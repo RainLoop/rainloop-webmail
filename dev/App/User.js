@@ -247,7 +247,7 @@ export class AppUser extends AbstractApp {
 							}
 						}, 1);
 
-						setInterval(reloadTime(), 60000);
+						setInterval(reloadTime, 60000);
 
 						PgpUserStore.init();
 
