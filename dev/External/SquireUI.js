@@ -124,15 +124,13 @@ class SquireUI
 // 					}
 				},
 				dir: {
-					ltr: {
+					dir_ltr: {
 						html: '⁋',
-						cmd: () => squire.bidi('ltr'),
-						hint: 'ltr direction'
+						cmd: () => squire.bidi('ltr')
 					},
-					rtl: {
+					dir_rtl: {
 						html: '¶',
-						cmd: () => squire.bidi('rtl'),
-						hint: 'rtl direction'
+						cmd: () => squire.bidi('rtl')
 					}
 				},
 				colors: {
