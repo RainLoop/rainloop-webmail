@@ -296,6 +296,10 @@ Values:
 				'autologout'             => array(30),
 				'view_html'              => array(true),
 				'show_images'            => array(false),
+				'view_images'            => array('ask', 'View external images:
+  "ask" - always ask
+  "match" - whitelist or ask
+  "always" - show always'),
 				'contacts_autosave'      => array(true),
 				'mail_use_threads'       => array(false),
 				'allow_draft_autosave'   => array(true),
