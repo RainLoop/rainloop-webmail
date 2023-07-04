@@ -1766,6 +1766,22 @@ const
 		return frag;
 	},
 
+	setDirection = (self, frag, dir) => {
+		let walker = getBlockWalker(frag, self._root),
+			node;
+
+		while(node = walker.nextNode()){
+
+			if (node.nodeName === "LI") {
+				node.parentNode.setAttribute("dir", dir);
+				break;
+			}
+
+			node.setAttribute("dir", dir);
+		}
+		return frag;
+	},
+
 	linkRegExp = /\b(?:((https?:\/\/)?(?:www\d{0,3}\.|[a-z0-9][a-z0-9.-]*\.[a-z]{2,}\/)(?:[^\s()<>]+|\([^\s()<>]+\))+(?:[^\s?&`!()[\]{};:'".,<>«»“”‘’]|\([^\s()<>]+\)))|([\w\-.%+]+@(?:[\w-]+\.)+[a-z]{2,}\b(?:\?[^&?\s]+=[^\s?&`!()[\]{};:'".,<>«»“”‘’]+(?:&[^&?\s]+=[^\s?&`!()[\]{};:'".,<>«»“”‘’]+)*)?))/i,
 
 	addLinks = (frag, root) => {
@@ -3660,6 +3676,12 @@ class Squire
 			},
 			range
 		);
+		return this.focus();
+	}
+
+	bidi(dir) {
+		this.modifyBlocks(frag => setDirection(this, frag, dir));
+
 		return this.focus();
 	}
 

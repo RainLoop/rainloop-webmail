@@ -110,17 +110,29 @@ class SquireUI
 						select: ['11px','13px','16px','20px','24px','30px'],
 						cmd: s => squire.setStyle({ fontSize: s.value })
 					},
-					dir: {
-						select: [
-							[i18n('EDITOR/DIR_LTR', 'LTR'),'ltr'],
-							[i18n('EDITOR/DIR_RTL', 'RTL'),'rtl'],
-							[i18n('EDITOR/DIR_AUTO', 'Auto'),'auto'],
-							['',''],
-						],
-						cmd: s => {
-							squire.setAttribute('dir', s.value || null);
-//							squire.setStyle({ 'unicode-bidi': 'plaintext' });
-						}
+// 					dir: {
+// 						select: [
+// 							[i18n('EDITOR/DIR_LTR', 'LTR'),'ltr'],
+// 							[i18n('EDITOR/DIR_RTL', 'RTL'),'rtl'],
+// 							[i18n('EDITOR/DIR_AUTO', 'Auto'),'auto'],
+// 							['',''],
+// 						],
+// 						cmd: s => {
+// 							squire.setAttribute('dir', s.value || null);
+// //							squire.setStyle({ 'unicode-bidi': 'plaintext' });
+// 						}
+// 					}
+				},
+				dir: {
+					ltr: {
+						html: '⁋',
+						cmd: () => squire.bidi('ltr'),
+						hint: 'ltr direction'
+					},
+					rtl: {
+						html: '¶',
+						cmd: () => squire.bidi('rtl'),
+						hint: 'rtl direction'
 					}
 				},
 				colors: {
@@ -278,6 +290,7 @@ class SquireUI
 
 		plain.className = 'squire-plain';
 		wysiwyg.className = 'squire-wysiwyg';
+		wysiwyg.dir = 'auto';
 		this.mode = ''; // 'plain' | 'wysiwyg'
 		this.__plain = {
 			getRawData: () => this.plain.value,
