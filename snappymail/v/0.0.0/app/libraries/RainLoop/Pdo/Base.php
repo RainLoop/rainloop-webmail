@@ -65,7 +65,10 @@ abstract class Base
 			if ($oSettings->sslCa) {
 				$options[\PDO::MYSQL_ATTR_SSL_CA] = $oSettings->sslCa;
 			}
-			$options[\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $oSettings->sslVerify;
+			// PHP 8.0 https://github.com/the-djmaze/snappymail/issues/1205
+			if (\defined('PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT')) {
+				$options[\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $oSettings->sslVerify;
+			}
 			if ($oSettings->sslCiphers) {
 				$options[\PDO::MYSQL_ATTR_SSL_CIPHER] = $oSettings->sslCiphers;
 			}
