@@ -1,3 +1,33 @@
+## 2.28.4 – 2023-07-10
+
+## Added
+- application.ini msg_default_action by @SergeyMosin
+  [#1204](https://github.com/the-djmaze/snappymail/pull/1204)
+- application.ini view_show_next_message by @SergeyMosin
+  [#1204](https://github.com/the-djmaze/snappymail/pull/1204)
+- application.ini view_images by @SergeyMosin
+  [#1204](https://github.com/the-djmaze/snappymail/pull/1204)
+- nextcloud add ability to include custom php file in InstallStep migration by @SergeyMosin
+  [#1197](https://github.com/the-djmaze/snappymail/pull/1197)
+- Support plugin for Squire editor
+  [#1192](https://github.com/the-djmaze/snappymail/pull/1192)
+
+## Changed
+- only show 'Add "domain.tld" as an application for mailto links?' message after login (firefox shows the message on every reload otherwise).
+  [#1204](https://github.com/the-djmaze/snappymail/pull/1204)
+- Convert getPdoAccessData() : array to a RainLoop\Pdo\Settings object instance
+- New bidi buttons to Squire editor by @rezaei92
+  [#1200](https://github.com/the-djmaze/snappymail/pull/1200)
+
+## Fixed
+- Undefined constant PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT
+  [#1205](https://github.com/the-djmaze/snappymail/pull/1205)
+- 'reloadTime' function result is passed into 'setInterval' instead of the function by @SergeyMosin
+  [#1204](https://github.com/the-djmaze/snappymail/pull/1204)
+- UNKNOWN-CTE Invalid data in MIME part
+  [#1186](https://github.com/the-djmaze/snappymail/pull/1186)
+
+
 ## 2.28.3 – 2023-06-22
 
 ## Added
