@@ -292,13 +292,19 @@ Values:
 				'view_editor_type'       => array('Html', 'Editor mode used by default (Plain, Html)'),
 				'view_layout'            => array(1, 'layout: 0 - no preview, 1 - side preview, 2 - bottom preview'),
 				'view_use_checkboxes'    => array(true),
+				'view_show_next_message' => array(true, 'Show next message when (re)move current message'),
 				'autologout'             => array(30),
 				'view_html'              => array(true),
 				'show_images'            => array(false),
+				'view_images'            => array('ask', 'View external images:
+  "ask" - always ask
+  "match" - whitelist or ask
+  "always" - show always'),
 				'contacts_autosave'      => array(true),
 				'mail_use_threads'       => array(false),
 				'allow_draft_autosave'   => array(true),
-				'mail_reply_same_folder' => array(false)
+				'mail_reply_same_folder' => array(false),
+				'msg_default_action'     => array(1, '1 - reply, 2 - reply all'),
 			),
 
 			'logs' => array(

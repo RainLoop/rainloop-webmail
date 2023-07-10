@@ -177,6 +177,7 @@ export class AppUser extends AbstractApp {
 	}
 
 	logout() {
+		localStorage.removeItem('register_protocol_offered');
 		Remote.request('Logout', () => rl.logoutReload(Settings.app('customLogoutLink')));
 	}
 
@@ -247,18 +248,21 @@ export class AppUser extends AbstractApp {
 							}
 						}, 1);
 
-						setInterval(reloadTime(), 60000);
+						setInterval(reloadTime, 60000);
 
 						PgpUserStore.init();
 
 						setTimeout(() => mailToHelper(SettingsGet('mailToEmail')), 500);
 
-						// When auto-login is active
-						navigator.registerProtocolHandler?.(
-							'mailto',
-							location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
-							(SettingsGet('title') || 'SnappyMail')
-						);
+						if (!localStorage.getItem('register_protocol_offered')) {
+							// When auto-login is active
+							navigator.registerProtocolHandler?.(
+								'mailto',
+								location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
+								(SettingsGet('title') || 'SnappyMail')
+							);
+							localStorage.setItem('register_protocol_offered', '1');
+						}
 
 					} else {
 						this.logout();

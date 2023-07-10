@@ -680,7 +680,7 @@ class Actions
 					'contactsAllowed' => $this->AddressBookProvider($oAccount)->IsActive(),
 
 					'ViewHTML' => (bool) $oConfig->Get('defaults', 'view_html', true),
-					'ViewImages' => 'ask',
+					'ViewImages' => $oConfig->Get('defaults', 'view_images', 'ask'),
 					'ViewImagesWhitelist' => '',
 					'RemoveColors' => (bool) $oConfig->Get('defaults', 'remove_colors', false),
 					'AllowStyles' => false,
@@ -691,14 +691,14 @@ class Actions
 					'listGrouped' => false,
 					'MessagesPerPage' => (int) $oConfig->Get('webmail', 'messages_per_page', 25),
 					'MessageReadDelay' => (int) $oConfig->Get('webmail', 'message_read_delay', 5),
-					'MsgDefaultAction' => 1,
+					'MsgDefaultAction' => (int) $oConfig->Get('defaults', 'msg_default_action', 1),
 					'SoundNotification' => true,
 					'NotificationSound' => 'new-mail',
 					'DesktopNotifications' => true,
 					'Layout' => (int) $oConfig->Get('defaults', 'view_layout', Enumerations\Layout::SIDE_PREVIEW),
 					'EditorDefaultType' => \str_replace('Forced', '', $oConfig->Get('defaults', 'view_editor_type', '')),
 					'UseCheckboxesInList' => (bool) $oConfig->Get('defaults', 'view_use_checkboxes', true),
-					'showNextMessage' => false,
+					'showNextMessage' => (bool) $oConfig->Get('defaults', 'view_show_next_message', false),
 					'AutoLogout' => (int) $oConfig->Get('defaults', 'autologout', 30),
 					'AllowDraftAutosave' => (bool) $oConfig->Get('defaults', 'allow_draft_autosave', true),
 					'ContactsAutosave' => (bool) $oConfig->Get('defaults', 'contacts_autosave', true),
@@ -778,7 +778,7 @@ class Actions
 
 					$aResult['ViewHTML'] = (bool)$oSettings->GetConf('ViewHTML', $aResult['ViewHTML']);
 					$show_images = (bool) $oSettings->GetConf('ShowImages', false);
-					$aResult['ViewImages'] = $oSettings->GetConf('ViewImages', $show_images ? 'always' : 'ask');
+					$aResult['ViewImages'] = $oSettings->GetConf('ViewImages', $show_images ? 'always' : $aResult['ViewImages']);
 					$aResult['ViewImagesWhitelist'] = $oSettings->GetConf('ViewImagesWhitelist', '');
 					$aResult['RemoveColors'] = (bool)$oSettings->GetConf('RemoveColors', $aResult['RemoveColors']);
 					$aResult['AllowStyles'] = (bool)$oSettings->GetConf('AllowStyles', $aResult['AllowStyles']);
