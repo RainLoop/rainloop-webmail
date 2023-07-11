@@ -28,12 +28,17 @@ class IMagick extends \Imagick implements \SnappyMail\Image
 
 	public static function createFromStream($fp)
 	{
+		// https://github.com/the-djmaze/snappymail/issues/1201
+		$data = \stream_get_contents($fp);
+		return static::createFromString($data);
+/*
 		$imagick = new static();
 		if (!$imagick->readImageFile($fp)) {
 			throw new \InvalidArgumentException('Failed to load image');
 		}
 		$imagick->setImageMatte(true);
 		return $imagick;
+*/
 	}
 
 	public function getOrientation() : int
