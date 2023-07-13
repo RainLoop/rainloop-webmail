@@ -219,7 +219,7 @@ export class MailMessageList extends AbstractViewRight {
 			MessagelistUserStore,
 			MessagelistUserStore.selectedMessage,
 			MessagelistUserStore.focusedMessage,
-			'.messageListItem .actionHandle',
+			'.messageListItem',
 			'.messageListItem .messageCheckbox',
 			'.messageListItem.focused'
 		);
