@@ -40,18 +40,24 @@
 			<br />
 			<p>
 				<input id="snappymail-no-embed" name="snappymail-no-embed" type="checkbox" class="checkbox" <?php if ($_['snappymail-no-embed']) echo 'checked="checked"'; ?>>
-				<label for="snappymail-no-embed">Don't fully integrate in Nextcloud, use in iframe</label>
+				<label for="snappymail-no-embed">
+					<?php echo($l->t('Don\'t fully integrate in Nextcloud, use in iframe')); ?>
+				</label>
 			</p>
 			<br />
 			<p>
 				<input id="snappymail-debug" name="snappymail-debug" type="checkbox" class="checkbox" <?php if ($_['snappymail-debug']) echo 'checked="checked"'; ?>>
-				<label for="snappymail-debug">Debug</label>
+				<label for="snappymail-debug">
+					<?php echo($l->t('Debug')); ?>
+				</label>
 			</p>
 			<br />
 			<?php if ($_['can-import-rainloop']) { ?>
 			<p>
 				<input id="import-rainloop" name="import-rainloop" type="checkbox" class="checkbox">
-				<label for="import-rainloop">Import RainLoop data</label>
+				<label for="import-rainloop">
+					<?php echo($l->t('Import RainLoop data')); ?>
+				</label>
 			</p>
 			<br />
 			<?php } ?>
