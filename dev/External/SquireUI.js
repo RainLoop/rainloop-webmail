@@ -108,7 +108,12 @@ class SquireUI
 					},
 					fontSize: {
 						select: ['11px','13px','16px','20px','24px','30px'],
+						defaultValueIndex: 2,
 						cmd: s => squire.setStyle({ fontSize: s.value })
+						// TODO: maybe consider using https://developer.mozilla.org/en-US/docs/Web/CSS/font-size#values
+						// example:
+						// select: ['xx-small', 'x-small',' small',' medium', 'large', 'x-large', 'xx-large', 'xxx-large'],
+						// defaultValueIndex: 3,
 					},
 // 					dir: {
 // 						select: [
@@ -380,18 +385,119 @@ class SquireUI
 			changes.redo.input.disabled = !state.canRedo;
 		});
 
+		actions.font.fontSize.input.selectedIndex = actions.font.fontSize.defaultValueIndex;
+
 //		squire.addEventListener('focus', () => shortcuts.off());
 //		squire.addEventListener('blur', () => shortcuts.on());
 
 		container.append(toolbar, wysiwyg, plain);
 
+		/**
+		 * @param {string} fontName
+		 * @return {string}
+		 */
+		const normalizeFontName = (fontName) => fontName.trim().replace(/(^["']*|["']*$)/g, '').trim().toLowerCase();
+
+		/** @type {string[]} - lower cased array of available font families*/
+		const fontFamiliesLowerCase = Object.values(actions.font.fontFamily.input.options).map(option => option.value.toLowerCase());
+
+		/**
+		 * A theme might have CSS like div.squire-wysiwyg[contenteditable="true"] {
+		 * font-family: 'Times New Roman', Times, serif; }
+		 * so let's find the best match squire.getRoot()'s font
+		 * it will also help to properly handle generic font names like 'sans-serif'
+		 * @type {number}
+		 */
+		let defaultFontFamilyIndex = 0;
+		const squireRootFonts = getComputedStyle(squire.getRoot()).fontFamily.split(',').map(normalizeFontName);
+		fontFamiliesLowerCase.some((family, index) => {
+			const matchFound = family.split(',').some(availableFontName => {
+				const normalizedFontName = normalizeFontName(availableFontName);
+				return squireRootFonts.some(squireFontName => squireFontName === normalizedFontName);
+			});
+			if (matchFound) {
+				defaultFontFamilyIndex = index;
+			}
+			return matchFound;
+		});
+
+		/**
+		 * Instead of comparing whole 'font-family' strings,
+		 * we are going to look for individual font names, because we might be
+		 * editing a Draft started in another email client for example
+		 *
+		 * @type {Object.<string,number>}
+		 */
+		const fontNamesMap = {};
+		/**
+		 * @param {string} fontFamily
+		 * @param {number} index
+		 */
+		const processFontFamilyString = (fontFamily, index) => {
+			fontFamily.split(',').forEach(fontName => {
+				const key = normalizeFontName(fontName);
+				if (fontNamesMap[key] === undefined) {
+					fontNamesMap[key] = index;
+				}
+			});
+		};
+		// first deal with the default font family
+		processFontFamilyString(fontFamiliesLowerCase[defaultFontFamilyIndex], defaultFontFamilyIndex);
+		// and now with the rest of the font families
+		fontFamiliesLowerCase.forEach((fontFamily, index) => {
+			if (index !== defaultFontFamilyIndex) {
+				processFontFamilyString(fontFamily, index);
+			}
+		});
+
+		// -----
+
 		squire.addEventListener('pathChange', e => {
+
+			const squireRoot = squire.getRoot();
+
 			forEachObjectValue(actions, entries => {
 				forEachObjectValue(entries, cfg => {
 //					cfg.matches && cfg.input.classList.toggle('active', e.element && e.element.matches(cfg.matches));
-					cfg.matches && cfg.input.classList.toggle('active', e.element && e.element.closestWithin(cfg.matches, squire.getRoot()));
+					cfg.matches && cfg.input.classList.toggle('active', e.element && e.element.closestWithin(cfg.matches, squireRoot));
 				});
 			});
+
+			if (e.element) {
+				// try to find font-family and/or font-size and set "select" elements' values
+
+				let sizeSelectedIndex = actions.font.fontSize.defaultValueIndex;
+				let familySelectedIndex = defaultFontFamilyIndex;
+
+				let elm = e.element;
+				let familyFound = false;
+				let sizeFound = false;
+				do {
+					if (!familyFound && elm.style.fontFamily) {
+						familyFound = true;
+						familySelectedIndex = -1; // show empty select if we don't know the font
+						const fontNames = elm.style.fontFamily.split(',');
+						for (let i = 0; i < fontNames.length; i++) {
+							const index = fontNamesMap[normalizeFontName(fontNames[i])];
+							if (index !== undefined) {
+								familySelectedIndex = index;
+								break;
+							}
+						}
+					}
+
+					if (!sizeFound && elm.style.fontSize) {
+						sizeFound = true;
+						// -1 is ok because it will just show a black <select>
+						sizeSelectedIndex = actions.font.fontSize.select.indexOf(elm.style.fontSize);
+					}
+
+					elm = elm.parentElement;
+				} while ((!familyFound || !sizeFound) && elm && elm !== squireRoot);
+
+				actions.font.fontFamily.input.selectedIndex = familySelectedIndex;
+				actions.font.fontSize.input.selectedIndex = sizeSelectedIndex;
+			}
 		});
 /*
 		squire.addEventListener('cursor', e => {
