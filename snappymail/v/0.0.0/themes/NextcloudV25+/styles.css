@@ -1465,7 +1465,7 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-folders-system a.selectable {
 
 #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:after,
 [dir="rtl"] #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:before {
-    content: 'SnappyMail-Settings';
+    content: 'Folder-Settings';
     width: inherit;
     overflow: hidden;
     text-overflow: ellipsis;
