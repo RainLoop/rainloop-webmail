@@ -2465,7 +2465,7 @@ html.rl-mobile #rl-app #V-AdminPane>.b-toolbar {
 
 #rl-app .btn-group.show .dropdown-menu div li a[class^='msgflag-']:not(.msgflag-\$label1, .msgflag-\$label2, .msgflag-\$label3, .msgflag-\$label4, .msgflag-\$label5),
 #rl-app .btn-group.show .dropdown-menu div li a[class*='msgflag-']:not(.msgflag-\$label1, .msgflag-\$label2, .msgflag-\$label3, .msgflag-\$label4, .msgflag-\$label5) {
-    border-left: solid 5px transparent;
+    border-left: solid 5px gray;
 }
 
 #rl-app .b-folders .is-flagged .flag-icon::after,
