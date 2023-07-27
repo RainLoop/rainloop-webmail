@@ -106,3 +106,6 @@
 .icon-check-mark-circle-two::before {
   content: "\e073";
 }
+.icon-file-calendar::before {
+  content: "📅";
+}

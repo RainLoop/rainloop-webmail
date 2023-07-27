@@ -116,7 +116,8 @@ export const FileType = {
 	Spreadsheet: 'spreadsheet',
 	Presentation: 'presentation',
 	Certificate: 'certificate',
-	Archive: 'archive'
+	Archive: 'archive',
+	Calendar: 'calendar'
 };
 
 export const FileInfo = {
@@ -190,6 +191,9 @@ export const FileInfo = {
 			case 'eml' == ext || ['message/delivery-status', 'message/rfc822'].includes(mimeType):
 				result = FileType.Eml;
 				break;
+			case 'ics' == ext || mimeType == 'text/calendar':
+				result = FileType.Calendar;
+				break;
 			case 'text' == mimeTypeParts[0] || 'txt' == ext || 'log' == ext:
 				result = FileType.Text;
 				break;
@@ -240,6 +244,7 @@ export const FileInfo = {
 			case FileType.Certificate:
 			case FileType.Spreadsheet:
 			case FileType.Presentation:
+			case FileType.Calendar:
 				return result + '-' + fileType;
 		}
 		return result;
