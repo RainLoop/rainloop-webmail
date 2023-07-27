@@ -1466,6 +1466,9 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-folders-system a.selectable {
 #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:after,
 [dir="rtl"] #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:before {
     content: 'SnappyMail-Settings';
+    width: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 [dir="rtl"] #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:after {
@@ -1478,6 +1481,9 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-folders-system a.selectable {
 
 #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group .btn.icon-folder-add:after {
     content: 'Create new folder';
+    width: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 html.rl-left-panel-disabled #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group .btn.fontastic:after,
