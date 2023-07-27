@@ -13,8 +13,7 @@ namespace MailSo\Imap\Requests;
 
 abstract class Request
 {
-	protected
-		$oImapClient;
+	protected \MailSo\Imap\ImapClient $oImapClient;
 
 	function __construct(\MailSo\Imap\ImapClient $oImapClient)
 	{

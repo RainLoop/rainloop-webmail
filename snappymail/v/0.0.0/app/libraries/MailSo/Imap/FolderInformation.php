@@ -19,45 +19,32 @@ class FolderInformation implements \JsonSerializable
 {
 	use Traits\Status;
 
-	/**
-	 * @var string
-	 */
-	public $FolderName;
+	public bool $IsWritable;
 
 	/**
-	 * @var bool
-	 */
-	public $IsWritable;
-
-	/**
-	 * @var array
 	 * Message flags
+	 * https://www.rfc-editor.org/rfc/rfc3501#section-7.2.6
+	 * These could be not permanent so we don't use them
 	 */
-	public $Flags = array();
+	public array $Flags = array();
 
 	/**
-	 * @var array
 	 * NOTE: Empty when FolderExamine is used
+	 * https://www.rfc-editor.org/rfc/rfc3501#page-64
 	 */
-	public $PermanentFlags = array();
+	public array $PermanentFlags = array();
 
-	/**
-	 * https://datatracker.ietf.org/doc/html/rfc3501#section-7.3.1
-	 * @var int
-	 */
-	public $Exists = null;
-
-	function __construct(string $sFolderName, bool $bIsWritable)
+	function __construct(string $sFullName, bool $bIsWritable)
 	{
-		$this->FolderName = $sFolderName;
+		$this->FullName = $sFullName;
 		$this->IsWritable = $bIsWritable;
 	}
 
 	public function IsFlagSupported(string $sFlag) : bool
 	{
-		return \in_array('\\*', $this->PermanentFlags) ||
-			\in_array($sFlag, $this->PermanentFlags) ||
-			\in_array($sFlag, $this->Flags);
+		return \in_array('\\*', $this->PermanentFlags)
+			|| \in_array($sFlag, $this->PermanentFlags);
+//			|| \in_array($sFlag, $this->Flags);
 	}
 
 	#[\ReturnTypeWillChange]
@@ -65,24 +52,33 @@ class FolderInformation implements \JsonSerializable
 	{
 		$result = array(
 			'id' => $this->MAILBOXID,
-			'Name' => $this->FolderName,
-			'Flags' => $this->Flags,
-			'PermanentFlags' => $this->PermanentFlags,
-			'UidNext' => $this->UIDNEXT,
-			'UidValidity' => $this->UIDVALIDITY
+			'name' => $this->FullName,
+			'uidNext' => $this->UIDNEXT,
+			'uidValidity' => $this->UIDVALIDITY
 		);
 		if (isset($this->MESSAGES)) {
 			$result['totalEmails'] = $this->MESSAGES;
 			$result['unreadEmails'] = $this->UNSEEN;
 		}
 		if (isset($this->HIGHESTMODSEQ)) {
-			$result['Highestmodseq'] = $this->HIGHESTMODSEQ;
+			$result['highestModSeq'] = $this->HIGHESTMODSEQ;
 		}
 		if (isset($this->APPENDLIMIT)) {
-			$result['Appendlimit'] = $this->APPENDLIMIT;
+			$result['appendLimit'] = $this->APPENDLIMIT;
 		}
 		if (isset($this->SIZE)) {
-			$result['Size'] = $this->SIZE;
+			$result['size'] = $this->SIZE;
+		}
+		if ($this->etag) {
+			$result['etag'] = $this->etag;
+		}
+/*
+		if ($this->Flags) {
+			$result['flags'] = $this->Flags;
+		}
+*/
+		if ($this->PermanentFlags) {
+			$result['permanentFlags'] = $this->PermanentFlags;
 		}
 		return $result;
 	}

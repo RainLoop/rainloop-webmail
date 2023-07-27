@@ -205,7 +205,7 @@ Returns the path through the DOM tree from the `<body>` element to the current c
 
 ### getFontInfo
 
-Returns an object containing the active font family, size, colour and background colour for the the current cursor position, if any are set. The property names are respectively `family`, `size`, `color` and `backgroundColor`. It looks at style attributes to detect this, so will not detect `<FONT>` tags or non-inline styles. If a selection across multiple elements has been made, it will return an empty object.
+Returns an object containing the active font family, size, color and background color for the the current cursor position, if any are set. The property names are respectively `family`, `size`, `color` and `backgroundColor`. It looks at style attributes to detect this, so will not detect `<FONT>` tags or non-inline styles. If a selection across multiple elements has been made, it will return an empty object.
 
 ### createRange
 
@@ -252,7 +252,7 @@ Returns self (the Squire instance).
 ### saveUndoState
 
 Saves an undo checkpoint with the current editor state. Methods that modify the
-state (e.g. bold/setHighlightColour/modifyBlocks) will automatically save undo
+state (e.g. bold/setHighlightColor/modifyBlocks) will automatically save undo
 checkpoints; you only need this method if you want to modify the DOM outside of
 one of these methods, and you want to save an undo checkpoint first.
 
@@ -354,23 +354,23 @@ This method takes one argument:
 
 Returns self (the Squire instance).
 
-### setTextColour
+### setTextColor
 
-Sets the colour of the selected text.
+Sets the color of the selected text.
 
 This method takes one argument:
 
-* **colour**: The colour to set. Any [CSS colour value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value) is accepted, e.g. '#f00', or 'hsl(0,0,0)'.
+* **color**: The color to set. Any [CSS color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value) is accepted, e.g. '#f00', or 'hsl(0,0,0)'.
 
 Returns self (the Squire instance).
 
-### setHighlightColour
+### setHighlightColor
 
-Sets the colour of the background of the selected text.
+Sets the color of the background of the selected text.
 
 This method takes one argument:
 
-* **colour**: The colour to set. Any [CSS colour value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value) is accepted, e.g. '#f00', or 'hsl(0,0,0)'.
+* **color**: The color to set. Any [CSS color value](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value) is accepted, e.g. '#f00', or 'hsl(0,0,0)'.
 
 Returns self (the Squire instance).
 

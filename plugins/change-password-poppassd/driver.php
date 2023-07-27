@@ -17,10 +17,6 @@ class ChangePasswordPoppassdDriver extends \MailSo\Net\NetClient
 		$this->oLogger = $oLogger;
 	}
 
-	public static function isSupported() : bool
-	{
-		return true;
-	}
 
 	public static function configMapping() : array
 	{
@@ -58,8 +54,8 @@ class ChangePasswordPoppassdDriver extends \MailSo\Net\NetClient
 
 			try
 			{
-				$this->sendRequestWithCheck('user', $oAccount->Login(), true);
-				$this->sendRequestWithCheck('pass', $sPassword, true);
+				$this->sendRequestWithCheck('user', $oAccount->IncLogin(), true);
+				$this->sendRequestWithCheck('pass', $sPrevPassword, true);
 			}
 			catch (\Throwable $oException)
 			{
@@ -97,6 +93,16 @@ class ChangePasswordPoppassdDriver extends \MailSo\Net\NetClient
 		$this->iRequestTime = \microtime(true);
 		parent::Connect($oSettings);
 		$this->validateResponse();
+	}
+
+	public function supportsAuthType(string $sasl_type) : bool
+	{
+		return true;
+	}
+
+	public static function isSupported() : bool
+	{
+		return true;
 	}
 
 	public function Logout() : void

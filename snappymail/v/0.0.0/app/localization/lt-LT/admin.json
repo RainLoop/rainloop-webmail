@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Administratoriaus valdymo skydas"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Pagrindiniai",
-		"LABEL_LOGIN_NAME": "Prisijungimo vardas",
-		"LABEL_BRANDING_NAME": "Įdaguoti",
-		"LABEL_CONTACTS_NAME": "Kontaktai",
-		"LABEL_DOMAINS_NAME": "Domenai",
-		"LABEL_SECURITY_NAME": "Sauga",
-		"LABEL_PACKAGES_NAME": "Paketai",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "Apie"
+		"GENERAL": "Pagrindiniai",
+		"LOGIN": "Prisijungimo vardas",
+		"BRANDING": "Įdaguoti",
+		"CONTACTS": "Kontaktai",
+		"DOMAINS": "Domenai",
+		"SECURITY": "Sauga",
+		"PACKAGES": "Paketai",
+		"CONFIG": "Config",
+		"ABOUT": "Apie"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Sąsaja",
@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "Vartotojas",
 		"LABEL_STORAGE_PASSWORD": "Slaptažodis",
 		"ALERT_NOTICE": "Pastaba!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Nenaudokite šio duomenų bazės tipo, jei turite daug aktyvių vartotojų",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Jūsų sistema nepalaiko kontaktų sąrašo.\nReikia įdiegti ar įjungti <strong>PDO (SĄLite \/ MySQL \/ PostgreSQL)<\/strong> plėtinius jūsų serveryje.\n"
 	},
@@ -88,8 +89,7 @@
 		"LABEL_CURRENT_PASSWORD": "Dabartinis slaptažodis",
 		"LABEL_NEW_PASSWORD": "Naujas slaptažodis",
 		"LABEL_REPEAT_PASSWORD": "Pakartokite",
-		"LEGEND_SSL": "SSL",
-		"LABEL_REQUIRE_VERIFICATION": "Reikalauti SSL sertifikato (IMAP\/SMTP)",
+		"LABEL_REQUIRE_VERIFICATION": "Reikalauti SSL sertifikato",
 		"LABEL_ALLOW_SELF_SIGNED": "Leisti pačių sukurtus sertifikatus"
 	},
 	"TAB_PACKAGES": {
@@ -121,20 +121,21 @@
 		"TITLE_EDIT_DOMAIN": "Redaguoti Domeną \"%NAME%\"",
 		"LABEL_NAME": "Pavadinimas",
 		"NAME_HELPER": "wildcard palaikymas",
-		"LABEL_IMAP": "IMAP",
-		"LABEL_SMTP": "SMTP",
-		"LABEL_SIEVE": "SIEVE",
 		"LABEL_SERVER": "Serveris",
 		"LABEL_PORT": "Prievadas",
 		"LABEL_SECURE": "Sauga",
+		"TIMEOUT": "Timeout",
+		"DISABLE_CAPABILITIES": "Disable capabilities",
+		"LIMITS": "Limits",
+		"FOLDERS": "Folders",
+		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "Baltas Sąrašas",
 		"SECURE_OPTION_NONE": "Nėra",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Leisti sieve programavimą",
 		"LABEL_USE_SHORT_LOGIN": "Naudoti trumpą prisijungimo vardą",
 		"LABEL_USE_AUTH": "Naudoti autentifikavimą ",
 		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "Naudoti php mail() funkciją",
 		"BUTTON_WHITE_LIST": "Baltas sąrašas",
 		"BUTTON_SIEVE_CONFIGURATION": "Sieve konfiguracija",
@@ -158,7 +159,6 @@
 	},
 	"HINTS": {
 		"BETA": "beta",
-		"UNSTABLE": "nestabilus",
 		"WARNING": "Dėmesio!"
 	},
 	"ERRORS": {

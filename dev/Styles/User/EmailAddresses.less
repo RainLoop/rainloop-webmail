@@ -3,7 +3,6 @@
 	border: 1px solid var(--input-border-clr, #ccc);
 	border-radius: var(--input-border-radius, 3px);
 	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-	box-sizing: border-box;
 	color: var(--input-clr, #555);
 	cursor: text;
 	font-size: 90%;
@@ -26,7 +25,7 @@
 .emailaddresses li[draggable] {
 	background-color: #eee;
 	border: 1px solid #aaa;
-	border-radius: 2px;
+	border-radius: calc(var(--input-border-radius, 3px) - 1px);
 	box-shadow: 0 1px 0 rgba(255,255,255,0.75) inset;
 	color: #555;
 	cursor: default;

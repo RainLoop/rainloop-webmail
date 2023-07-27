@@ -1,19 +1,20 @@
-import { MessageFlagsCache } from 'Common/Cache';
-import { Notification } from 'Common/Enums';
+import { Notifications } from 'Common/Enums';
 import { MessageSetAction, ComposeType/*, FolderType*/ } from 'Common/EnumsUser';
-import { doc, createElement, elementById, dropdowns, dropdownVisibility, SettingsGet } from 'Common/Globals';
+import { doc, createElement, elementById, dropdowns, dropdownVisibility, SettingsGet, leftPanelDisabled } from 'Common/Globals';
 import { plainToHtml } from 'Common/Html';
 import { getNotification } from 'Common/Translator';
-import { EmailModel } from 'Model/Email';
-import { MessageModel } from 'Model/Message';
+import { EmailCollectionModel } from 'Model/EmailCollection';
 import { MessageUserStore } from 'Stores/User/Message';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import * as Local from 'Storage/Client';
 import { ThemeStore } from 'Stores/Theme';
 import Remote from 'Remote/User/Fetch';
+import { attachmentDownload } from 'Common/Links';
 
 export const
+
+moveAction = ko.observable(false),
 
 dropdownsDetectVisibility = (() =>
 	dropdownVisibility(!!dropdowns.find(item => item.classList.contains('show')))
@@ -40,6 +41,29 @@ download = (link, name = "") => {
 	}
 },
 
+downloadZip = (name, hashes, onError, fTrigger, folder) => {
+	if (hashes.length) {
+		let params = {
+			target: 'zip',
+			filename: name,
+			hashes: hashes
+		};
+		if (!onError) {
+			onError = () => alert('Download failed');
+		}
+		if (folder) {
+			params.folder = folder;
+//			params.uids = uids;
+		}
+		Remote.post('AttachmentsActions', fTrigger || null, params)
+		.then(result => {
+			let hash = result?.Result?.fileHash;
+			hash ? download(attachmentDownload(hash), hash+'.zip') : onError();
+		})
+		.catch(onError);
+	}
+},
+
 /**
  * @returns {function}
  */
@@ -48,14 +72,15 @@ computedPaginatorHelper = (koCurrentPage, koPageCount) => {
 		const currentPage = koCurrentPage(),
 			pageCount = koPageCount(),
 			result = [],
+			lang = doc.documentElement.lang,
 			fAdd = (index, push = true, customName = '') => {
-				const data = {
-					current: index === currentPage,
-					name: customName ? customName.toString() : index.toString(),
-					custom: !!customName,
-					title: customName ? index.toString() : '',
-					value: index.toString()
-				};
+				const name = index.toLocaleString(lang),
+					data = {
+						current: index === currentPage,
+						name: customName || name,
+						title: customName ? name : '',
+						value: index
+					};
 
 				push ? result.push(data) : result.unshift(data);
 			};
@@ -131,29 +156,15 @@ mailToHelper = mailToUrl => {
 		mailToUrl = mailToUrl.slice(7).split('?');
 
 		const
-			email = mailToUrl[0],
+			email = decodeURIComponent(mailToUrl[0]),
 			params = new URLSearchParams(mailToUrl[1]),
-			toEmailModel = value => null != value ? EmailModel.parseEmailLine(value) : null;
+			to = params.get('to'),
+			toEmailModel = value => EmailCollectionModel.fromString(value);
 
 		showMessageComposer([
 			ComposeType.Empty,
 			null,
-			params.get('to')
-				? Object.values(
-						toEmailModel(email + ',' + params.get('to')).reduce((result, value) => {
-							if (value) {
-								if (result[value.email]) {
-									if (!result[value.email].name) {
-										result[value.email] = value;
-									}
-								} else {
-									result[value.email] = value;
-								}
-							}
-							return result;
-						}, {})
-					)
-				: EmailModel.parseEmailLine(email),
+			toEmailModel(to ? email + ',' + to : email),
 			toEmailModel(params.get('cc')),
 			toEmailModel(params.get('bcc')),
 			params.get('subject'),
@@ -171,37 +182,24 @@ showMessageComposer = (params = []) =>
 	rl.app.showMessageComposer(params);
 },
 
-setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
+setLayoutResizer = (source, sClientSideKeyName, mode) =>
 {
 	if (source.layoutResizer && source.layoutResizer.mode != mode) {
-		target.removeAttribute('style');
 		source.removeAttribute('style');
 	}
 	source.observer?.disconnect();
 //	source.classList.toggle('resizable', mode);
 	if (mode) {
-		const length = Local.get(sClientSideKeyName + mode) || SettingsGet('Resizer' + sClientSideKeyName + mode),
-			setTargetPos = mode => {
-				let value;
-				if ('Width' == mode) {
-					value = source.offsetWidth;
-					target.style.left = value + 'px';
-				} else {
-					value = source.offsetHeight;
-					target.style.top = (4 + source.offsetTop + value) + 'px';
-				}
-				return value;
-			};
+		const length = Local.get(sClientSideKeyName + mode) || SettingsGet('Resizer' + sClientSideKeyName + mode);
 		if (length) {
 			source.style[mode.toLowerCase()] = length + 'px';
-			setTargetPos(mode);
 		}
 		if (!source.layoutResizer) {
 			const resizer = createElement('div', {'class':'resizer'}),
 				save = (data => Remote.saveSettings(0, data)).debounce(500),
 				size = {},
 				store = () => {
-					const value = setTargetPos(resizer.mode),
+					const value = ('Width' == resizer.mode) ? source.offsetWidth : source.offsetHeight,
 						prop = resizer.key + resizer.mode;
 					(value == Local.get(prop)) || Local.set(prop, value);
 					(value == SettingsGet('Resizer' + prop)) || save({['Resizer' + prop]: value});
@@ -248,111 +246,80 @@ setLayoutResizer = (source, target, sClientSideKeyName, mode) =>
 	}
 },
 
+viewMessage = (oMessage, popup) => {
+	if (popup) {
+		oMessage.viewPopupMessage();
+	} else {
+		MessageUserStore.error('');
+		let id = 'rl-msg-' + oMessage.hash,
+			body = oMessage.body || elementById(id);
+		if (!body) {
+			body = createElement('div',{
+				id:id,
+				hidden:'',
+				class:'b-text-part'
+					+ (oMessage.pgpSigned() ? ' openpgp-signed' : '')
+					+ (oMessage.pgpEncrypted() ? ' openpgp-encrypted' : '')
+			});
+			MessageUserStore.purgeCache();
+		}
+
+		body.message = oMessage;
+		oMessage.body = body;
+
+		if (!SettingsUserStore.viewHTML() || !oMessage.viewHtml()) {
+			oMessage.viewPlain();
+		}
+
+		MessageUserStore.bodiesDom().append(body);
+
+		MessageUserStore.loading(false);
+		oMessage.body.hidden = false;
+
+		if (oMessage.isUnseen()) {
+			MessageUserStore.MessageSeenTimer = setTimeout(
+				() => MessagelistUserStore.setAction(oMessage.folder, MessageSetAction.SetSeen, [oMessage]),
+				SettingsUserStore.messageReadDelay() * 1000 // seconds
+			);
+		}
+	}
+},
+
 populateMessageBody = (oMessage, popup) => {
 	if (oMessage) {
 		popup || MessageUserStore.message(oMessage);
-		popup || MessageUserStore.loading(true);
-		Remote.message((iError, oData/*, bCached*/) => {
-			if (iError) {
-				if (Notification.RequestAborted !== iError && !popup) {
-					MessageUserStore.message(null);
-					MessageUserStore.error(getNotification(iError));
-				}
-			} else {
-				let json = oData?.Result;
-
-				if (
-					json &&
-					MessageModel.validJson(json) &&
-					oMessage.folder === json.Folder
-				) {
-					const threads = oMessage.threads(),
-						isNew = !popup && oMessage.uid != json.Uid && threads.includes(json.Uid),
-						messagesDom = MessageUserStore.bodiesDom();
-					if (isNew) {
-						oMessage = MessageModel.reviveFromJson(json);
-						if (oMessage) {
-							oMessage.threads(threads);
-							MessageFlagsCache.initMessage(oMessage);
-
-							// Set clone
-							oMessage = MessageModel.fromMessageListItem(oMessage);
-						}
-						MessageUserStore.message(oMessage);
+		if (oMessage.body) {
+			viewMessage(oMessage, popup);
+		} else {
+			popup || MessageUserStore.loading(true);
+			Remote.message((iError, oData/*, bCached*/) => {
+				if (iError) {
+					if (Notifications.RequestAborted !== iError && !popup) {
+						MessageUserStore.message(null);
+						MessageUserStore.error(getNotification(iError));
 					}
-
-					if (oMessage && oMessage.uid == json.Uid) {
-						popup || MessageUserStore.error('');
+				} else {
+					let json = oData?.Result;
+					if (json
+					 && oMessage.hash === json.hash
+//					 && oMessage.folder === json.folder
+//					 && oMessage.uid == json.uid
+					 && oMessage.revivePropertiesFromJson(json)
+					) {
 /*
 						if (bCached) {
-							delete json.Flags;
+							delete json.flags;
 						}
+						oMessage.body.remove();
 */
-						isNew || oMessage.revivePropertiesFromJson(json);
-
-						if (messagesDom) {
-							let id = 'rl-msg-' + oMessage.hash.replace(/[^a-zA-Z0-9]/g, ''),
-								body = elementById(id);
-							if (body) {
-								oMessage.body = body;
-								oMessage.isHtml(body.classList.contains('html'));
-								oMessage.hasImages(body.rlHasImages);
-							} else {
-								body = Element.fromHTML('<div id="' + id + '" hidden="" class="b-text-part '
-									+ (oMessage.pgpSigned() ? ' openpgp-signed' : '')
-									+ (oMessage.pgpEncrypted() ? ' openpgp-encrypted' : '')
-									+ '">'
-									+ '</div>');
-								oMessage.body = body;
-								if (!SettingsUserStore.viewHTML() || !oMessage.viewHtml()) {
-									oMessage.viewPlain();
-								}
-
-								MessageUserStore.purgeMessageBodyCache();
-							}
-
-							messagesDom.append(body);
-
-							popup || (oMessage.body.hidden = false);
-							popup && oMessage.viewPopupMessage();
-						}
-
-						MessageFlagsCache.initMessage(oMessage);
-						if (oMessage.isUnseen()) {
-							MessageUserStore.MessageSeenTimer = setTimeout(
-								() => MessagelistUserStore.setAction(oMessage.folder, MessageSetAction.SetSeen, [oMessage]),
-								SettingsUserStore.messageReadDelay() * 1000 // seconds
-							);
-						}
-
-						if (isNew) {
-							let selectedMessage = MessagelistUserStore.selectedMessage();
-							if (
-								selectedMessage &&
-								(oMessage.folder !== selectedMessage.folder || oMessage.uid != selectedMessage.uid)
-							) {
-								MessagelistUserStore.selectedMessage(null);
-								if (1 === MessagelistUserStore.length) {
-									MessagelistUserStore.focusedMessage(null);
-								}
-							} else if (!selectedMessage) {
-								selectedMessage = MessagelistUserStore.find(
-									subMessage =>
-										subMessage &&
-										subMessage.folder === oMessage.folder &&
-										subMessage.uid == oMessage.uid
-								);
-
-								if (selectedMessage) {
-									MessagelistUserStore.selectedMessage(selectedMessage);
-									MessagelistUserStore.focusedMessage(selectedMessage);
-								}
-							}
-						}
+						viewMessage(oMessage, popup);
 					}
 				}
-			}
-			popup || MessageUserStore.loading(false);
-		}, oMessage.folder, oMessage.uid);
+				popup || MessageUserStore.loading(false);
+			}, oMessage.folder, oMessage.uid);
+		}
 	}
 };
+
+leftPanelDisabled.subscribe(value => value && moveAction(false));
+moveAction.subscribe(value => value && leftPanelDisabled(false));

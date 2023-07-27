@@ -20,6 +20,6 @@ DomainAdminStore.fetch = () => {
 				);
 			}
 		}, {
-			IncludeAliases: 1
+			includeAliases: 1
 		});
 };

@@ -2,7 +2,7 @@ import { AppUserStore } from 'Stores/User/App';
 import { AccountUserStore } from 'Stores/User/Account';
 //import { FolderUserStore } from 'Stores/User/Folder';
 
-import { Scope } from 'Common/Enums';
+import { ScopeMessageList, ScopeMessageView, ScopeSettings } from 'Common/Enums';
 import { settings } from 'Common/Links';
 
 import { showScreenPopup } from 'Knoin/Knoin';
@@ -12,13 +12,10 @@ import { KeyboardShortcutsHelpPopupView } from 'View/Popup/KeyboardShortcutsHelp
 import { AccountPopupView } from 'View/Popup/Account';
 import { ContactsPopupView } from 'View/Popup/Contacts';
 
-import { doc, leftPanelDisabled, fireEvent, SettingsCapa, registerShortcut } from 'Common/Globals';
-
-import { ThemeStore } from 'Stores/Theme';
+import { fireEvent, stopEvent, SettingsCapa, registerShortcut } from 'Common/Globals';
 
 import Remote from 'Remote/User/Fetch';
 import { getNotification } from 'Common/Translator';
-//import { clearCache } from 'Common/Cache';
 //import { koComputable } from 'External/ko';
 import { addObservablesTo } from 'External/ko';
 
@@ -30,11 +27,11 @@ export class SystemDropDownUserView extends AbstractViewRight {
 
 		this.accountEmail = AccountUserStore.email;
 
-		this.accounts = AccountUserStore.accounts;
+		this.accounts = AccountUserStore;
 		this.accountsLoading = AccountUserStore.loading;
 /*
 		this.accountsUnreadCount = : koComputable(() => 0);
-		this.accountsUnreadCount = : koComputable(() => AccountUserStore.accounts().reduce((result, item) => result + item.count(), 0));
+		this.accountsUnreadCount = : koComputable(() => AccountUserStore().reduce((result, item) => result + item.count(), 0));
 */
 
 		addObservablesTo(this, {
@@ -56,8 +53,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 		let email = account?.email;
 		if (email && 0 === event.button && AccountUserStore.email() != email) {
 			AccountUserStore.loading(true);
-			event.preventDefault();
-			event.stopPropagation();
+			stopEvent(event);
 			Remote.request('AccountSwitch',
 				(iError/*, oData*/) => {
 					if (iError) {
@@ -69,10 +65,8 @@ export class SystemDropDownUserView extends AbstractViewRight {
 					} else {
 /*						// Not working yet
 						forEachObjectEntry(oData.Result, (key, value) => rl.settings.set(key, value));
-						clearCache();
-//						MessageUserStore.setMessage();
-//						MessageUserStore.purgeMessageBodyCache();
-//						MessageUserStore.hideMessageBodies();
+//						MessageUserStore.message();
+//						MessageUserStore.purgeCache();
 						MessagelistUserStore([]);
 //						FolderUserStore.folderList([]);
 						loadFolders(value => {
@@ -91,8 +85,10 @@ export class SystemDropDownUserView extends AbstractViewRight {
 		return true;
 	}
 
-	emailTitle() {
-		return AccountUserStore.email();
+	accountName() {
+		let email = AccountUserStore.email(),
+			account = AccountUserStore.find(account => account.email == email);
+		return account?.name || email;
 	}
 
 	settingsClick() {
@@ -111,20 +107,12 @@ export class SystemDropDownUserView extends AbstractViewRight {
 		this.allowContacts && showScreenPopup(ContactsPopupView);
 	}
 
-	toggleLayout()
-	{
-		const mobile = !ThemeStore.isMobile();
-		doc.cookie = 'rllayout=' + (mobile ? 'mobile' : 'desktop') + '; samesite=strict';
-		ThemeStore.isMobile(mobile);
-		leftPanelDisabled(mobile);
-	}
-
 	logoutClick() {
 		rl.app.logout();
 	}
 
 	onBuild() {
-		registerShortcut('m', '', [Scope.MessageList, Scope.MessageView, Scope.Settings], () => {
+		registerShortcut('m', '', [ScopeMessageList, ScopeMessageView, ScopeSettings], () => {
 			if (!this.viewModelDom.hidden) {
 //				exitFullscreen();
 				this.accountMenuDropdownTrigger(true);
@@ -133,7 +121,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 		});
 
 		// shortcuts help
-		registerShortcut('?,f1,help', '', [Scope.MessageList, Scope.MessageView, Scope.Settings], () => {
+		registerShortcut('?,f1,help', '', [ScopeMessageList, ScopeMessageView, ScopeSettings], () => {
 			if (!this.viewModelDom.hidden) {
 				showScreenPopup(KeyboardShortcutsHelpPopupView);
 				return false;

@@ -5,16 +5,6 @@
 //header('Strict-Transport-Security: max-age=31536000');
 
 /**
- * Uncomment to use gzip compressed output
- */
-//define('USE_GZIP', 1);
-
-/**
- * Uncomment to use brotli compressed output
- */
-//define('USE_BROTLI', 1);
-
-/**
  * Uncomment to enable multiple domain installation.
  */
 //define('MULTIDOMAIN', 1);
@@ -34,3 +24,8 @@
  * Additional configuration file name
  */
 //define('APP_CONFIGURATION_NAME', $_SERVER['HTTP_HOST'].'.ini');
+
+/**
+ * Also update extensions on upgrade
+ */
+//define('SNAPPYMAIL_UPDATE_PLUGINS', 1);

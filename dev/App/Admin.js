@@ -1,7 +1,7 @@
 import 'External/ko';
 
 import { Settings, SettingsGet } from 'Common/Globals';
-import { ThemeStore } from 'Stores/Theme';
+import { initThemes } from 'Stores/Theme';
 
 import Remote from 'Remote/Admin/Fetch';
 
@@ -18,7 +18,7 @@ export class AdminApp extends AbstractApp {
 	}
 
 	refresh() {
-		ThemeStore.populate();
+		initThemes();
 		this.start();
 	}
 
@@ -27,7 +27,7 @@ export class AdminApp extends AbstractApp {
 			rl.route.root();
 			setTimeout(() => location.href = '/', 1);
 		} else if (SettingsGet('Auth')) {
-			this.weakPassword(SettingsGet('WeakPassword'));
+			this.weakPassword(SettingsGet('weakPassword'));
 			startScreens([SettingsAdminScreen]);
 		} else {
 			startScreens([LoginAdminScreen]);

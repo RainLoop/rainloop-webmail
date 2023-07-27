@@ -125,7 +125,7 @@ function filtersToSieveScript(filters)
 		// actions
 		block ? result.push('{') : (sTab = '');
 
-		if (filter.actionMarkAsRead() && ['None','MoveTo','Forward'].includes(filter.actionType())) {
+		if (filter.markAsRead() && ['None','MoveTo','Forward'].includes(filter.actionType())) {
 			require.imap4flags = 1;
 			result.push(sTab + 'addflag "\\\\Seen";');
 		}
@@ -182,7 +182,7 @@ function filtersToSieveScript(filters)
 				break; }
 			case 'Forward':
 				if (value) {
-					if (filter.actionKeep()) {
+					if (filter.keep()) {
 						require.fileinto = 1;
 						result.push(sTab + 'fileinto "INBOX";');
 					}
@@ -201,7 +201,7 @@ function filtersToSieveScript(filters)
 				break;
 		}
 
-		filter.actionNoStop() || result.push(sTab + 'stop;');
+		filter.stop() && result.push(sTab + 'stop;');
 
 		block && result.push('}');
 
@@ -213,7 +213,7 @@ function filtersToSieveScript(filters)
 			'/*',
 			'BEGIN:FILTER:' + filter.id,
 			'BEGIN:HEADER',
-			btoa(unescape(encodeURIComponent(JSON.stringify(filter.toJson())))).match(split).join(eol) + 'END:HEADER',
+			btoa(unescape(encodeURIComponent(JSON.stringify(filter)))).match(split).join(eol) + 'END:HEADER',
 			'*/',
 			filter.enabled() ? '' : '/* @Filter is disabled ',
 			filterToString(filter, require),
@@ -290,13 +290,12 @@ export class SieveScriptModel extends AbstractModel
 		return !this.nameError();
 	}
 
-	toJson() {
+	toJSON() {
 		return {
-			name: this.name(),
-			active: this.active() ? 1 : 0,
-			body: this.body()
+			name: this.name,
+			active: this.active,
+			body: this.body
 //			body: this.allowFilters() ? this.body() : this.filtersToRaw()
-//			filters: this.filters.map(item => item.toJson())
 		};
 	}
 
@@ -316,13 +315,7 @@ export class SieveScriptModel extends AbstractModel
 		const script = super.reviveFromJson(json);
 		if (script) {
 			if (script.allowFilters()) {
-				script.filters(
-					Array.isArray(json.filters) && json.filters.length
-						? json.filters.map(aData => FilterModel.reviveFromJson(aData)).filter(v => v)
-						: sieveScriptToFilters(script.body())
-				);
-			} else {
-				script.filters([]);
+				script.filters(sieveScriptToFilters(script.body()));
 			}
 			script.canBeDeleted(SIEVE_FILE_NAME !== json.name);
 			script.exists(true);

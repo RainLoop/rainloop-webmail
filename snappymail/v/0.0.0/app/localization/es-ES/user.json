@@ -1,4 +1,5 @@
 {
+	"LANG_DIR": "ltr",
 	"GLOBAL": {
 		"TO_ARCHIVE": "Archivar",
 		"ARE_YOU_SURE": "¿Está seguro?",
@@ -19,21 +20,27 @@
 		"MOVE_TO": "Mover",
 		"NAME": "Nombre",
 		"NONE": "Ninguno",
-		"NOT_SPAM": "Correo no deseado",
+		"TO_SPAM": "Move message(s) to Spam",
+		"NOT_SPAM": "Es correo deseado",
 		"USERNAME": "Nombre de usuario",
 		"PASSWORD": "Contraseña",
+		"REMEMBER": "Remember",
 		"REPLY_TO": "Responder",
 		"SAVE": "Guardar",
 		"SAVE_CHANGES": "Save changes?",
 		"SEARCH": "Buscar",
-		"SPAM": "Es correo deseado",
+		"SPAM": "Correo no deseado",
 		"SUBJECT": "Asunto",
 		"TEST": "Probar",
 		"TO": "Para",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Sí",
 		"NO": "No",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "predeterminado",
+		"HELP": "Ayuda",
+		"TEXT": "Texto",
+		"ATTACHMENTS": "Adjuntos"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
@@ -41,13 +48,7 @@
 		"BUTTON_SIGN_IN": "Acceder"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Agregar cuenta",
-		"BUTTON_SETTINGS": "Configuración",
-		"BUTTON_HELP": "Ayuda"
-	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Versión móvil",
-		"BUTTON_DESKTOP_VERSION": "Versión escritorio"
+		"BUTTON_ADD_ACCOUNT": "Agregar cuenta"
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Búsqueda avanzada",
@@ -98,6 +99,7 @@
 		"MENU_SELECT_SEEN": "Leído",
 		"MENU_SELECT_FLAGGED": "Destacado",
 		"MENU_SELECT_UNFLAGGED": "No Destacado",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "No hay mensajes.",
 		"EMPTY_SEARCH_LIST": "La búsqueda no ha producido resultados.",
 		"SEARCH_RESULT_FOR": "Resultados de búsqueda para \"%SEARCH%\"",
@@ -108,6 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "Tiene %COUNT% nuevos mensajes.",
 		"QUOTA_SIZE": "Usando <strong>%SIZE% (%PROC%%)<\/strong> de sus <strong>%LIMIT%<\/strong>",
 		"SORT": "Ordenar",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Fecha ascendente",
 		"SORT_DATE_DESC": "Fecha descendente",
 		"SORT_SIZE_ASC": "Tamaño ascendente",
@@ -224,11 +227,16 @@
 		"NO_ATTACHMENTS_HERE_DESC": "No hay adjuntos aquí.",
 		"ATTACHMENTS_ERROR_DESC": "¡Atención! No se han subido todos los archivos adjuntos.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "No se han subido todos los archivos adjuntos.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "Solicitar confirmación de lectura",
 		"BUTTON_MARK_AS_IMPORTANT": "Marcar como importante",
-		"BUTTON_REQUEST_DSN": "Solicitar una confirmación de entrega"
+		"BUTTON_REQUEST_DSN": "Solicitar una confirmación de entrega",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "¿Está seguro de que desea cerrar esta ventana?",
 		"DESC_WANT_DELETE_MESSAGES": "¿Está seguro de que desea eliminar los mensajes?"
 	},
@@ -312,7 +320,7 @@
 		"MARK_AS_READ_LABEL": "Marcar como leído",
 		"REPLY_INTERVAL_LABEL": "Intervalo de respuesta (días)",
 		"KEEP_LABEL": "Mantener",
-		"STOP_LABEL": "Don't stop processing rules",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Asunto (opcional)",
 		"VACATION_MESSAGE_LABEL": "Mensaje",
 		"VACATION_RECIPIENTS_LABEL": "Destinatarios (separados por coma)",
@@ -351,21 +359,43 @@
 		"ERROR_UNKNOWN": "Se ha producido un error de carga de archivo desconocido"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> TEXTO",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"PLAIN": "HTML <-> TEXTO",
+		"SOURCE": "HTML <-> SOURCE",
+		"FONTFAMILY": "Font family",
+		"FONTSIZE": "Font size",
+		"DIR": "Text direction",
+		"DIR_LTR": "Left to right",
+		"DIR_RTL": "Right to left",
+		"DIR_AUTO": "Automatic",
+		"TEXTCOLOR": "Text color",
+		"BACKGROUNDCOLOR": "Background color",
+		"BOLD": "Bold",
+		"ITALIC": "Italic",
+		"UNDERLINE": "Underline",
+		"STRIKE": "Strikethrough",
+		"SUB": "Subscript",
+		"SUP": "Superscript",
+		"OL": "Ordered list",
+		"UL": "Unordered list",
+		"QUOTE": "Blockquote",
+		"INDENTDECREASE": "Decrease indent",
+		"INDENTINCREASE": "Increase indent",
+		"LINK": "Link",
+		"IMAGEURL": "Image URL",
+		"IMAGEUPLOAD": "Image select",
+		"UNDO": "Undo",
+		"REDO": "Redo"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Personal",
-		"LABEL_GENERAL_NAME": "General",
-		"LABEL_CONTACTS_NAME": "Contactos",
-		"LABEL_FOLDERS_NAME": "Carpetas",
-		"LABEL_ACCOUNTS_NAME": "Cuentas",
-		"LABEL_FILTERS_NAME": "Filtros",
-		"LABEL_SECURITY_NAME": "Seguridad",
-		"LABEL_THEMES_NAME": "Temas"
+		"GENERAL": "General",
+		"CONTACTS": "Contactos",
+		"FOLDERS": "Carpetas",
+		"ACCOUNTS": "Cuentas",
+		"FILTERS": "Filtros",
+		"SECURITY": "Seguridad",
+		"THEMES": "Temas"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "Filtros",
 		"SIMPLE": "Simple",
 		"ADVANCED": "Advanced",
 		"BUTTON_ADD_SCRIPT": "Añadir un Script",
@@ -378,18 +408,18 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Seguridad",
 		"LABEL_AUTOLOGOUT": "Salir Automáticamente",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Nunca",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minuto(s)",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% hora(s)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Nunca"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "General",
 		"LANGUAGE": "Idioma",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identidad",
 		"LAYOUT": "Layout",
 		"LAYOUT_NO_SPLIT": "Sin División",
 		"LAYOUT_VERTICAL_SPLIT": "División Vertical",
 		"LAYOUT_HORIZONTAL_SPLIT": "División Horizontal",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Editor de texto predeterminado",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Texto plano",
@@ -399,19 +429,30 @@
 		"USE_CHECKBOXES_IN_LIST": "Mostrar casillas de verificación en la lista",
 		"USE_THREADS": "Usar hilos de conversación",
 		"REPLY_SAME_FOLDER": "Coloque las respuestas en la carpeta del mensaje que esta respondiendo.",
-		"SHOW_IMAGES": "Mostrar siempre las imágenes en el cuerpo del mensaje",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"REMOVE_COLORS": "Eliminar el fondo y los colores del texto del mensaje",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "Mensajes en página",
+		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Marcar el mensaje como leído después de",
 		"MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "segundos",
+		"MINUTES": "minutes",
 		"NOTIFICATIONS": "Notificaciones",
 		"SOUND_NOTIFICATION": "Sonido de la notificación",
 		"CHROME_NOTIFICATION_DESC": "Mostrar notificación de nuevos mensajes en Popup",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Bloqueado por el explorador)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
+		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Agregar automáticamente destinatarios a la libreta de direcciones",
@@ -463,14 +504,13 @@
 		"BUTTON_ADD_ACCOUNT": "Añadir cuenta",
 		"BUTTON_ADD_IDENTITY": "Añadir identidad",
 		"LOADING_PROCESS": "Actualizando lista de cuentas",
-		"DEFAULT_IDENTITY_LABEL": "predeterminado"
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importar llave",
 		"BUTTON_GENERATE_KEY_PAIR": "Generar llaves",
 		"TITLE_PRIVATE": "Privado",
 		"TITLE_PUBLIC": "Público",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
@@ -484,7 +524,6 @@
 		"LABEL_REPLY_ALL": "Responder a todos",
 		"LABEL_FORWARD": "Adelante",
 		"LABEL_FORWARD_MULTIPLY": "Reenviar (multiplicar)",
-		"LABEL_HELP": "Ayuda",
 		"LABEL_CHECK_ALL": "Comprobar todos los mensajes",
 		"LABEL_DELETE": "Eliminar",
 		"LABEL_OPEN_THREAD": "Abrir hilo seleccionado",

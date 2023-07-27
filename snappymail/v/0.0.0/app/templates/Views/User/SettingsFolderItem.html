@@ -1,13 +1,12 @@
 <tr data-bind="css: { 'selectable': selectable, 'system': isSystemFolder }">
 	<td data-bind="css: 'deep-' + deep">
 		<span class="folder-name" data-bind="text: name, visible: !editing(), css: { 'can-be-edited': canBeEdited },
-			click: function (oFolder) { oFolder.canBeEdited() && $root.folderForEdit(oFolder); },
+			click: edit,
 			tooltipErrorTip: errorMsg"></span>
 		<input type="text"
 			autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-			data-bind="value: nameForEdit, visible: editing, hasfocus: editing, onEnter: function () { $root.folderEditOnEnter($data); }, onEsc: function () { $root.folderEditOnEsc($data); }">
-		&nbsp;
-		<span class="folder-system-name" data-bind="text: manageFolderSystemName, visible: isSystemFolder"></span>
+			data-bind="textInput: nameForEdit, visible: editing, hasfocus: editing, onEnter: rename, onEsc: unedit">
+		<span class="folder-system-name" data-bind="text: nameInfo, visible: isSystemFolder"></span>
 	</td>
 	<td data-i18n="[title]SETTINGS_FOLDERS/HELP_DELETE_FOLDER">
 		<a class="btn btn-small btn-danger button-confirm-delete" data-bind="css: {'delete-access': askDelete()}, click: $root.deleteFolder"

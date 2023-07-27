@@ -8,10 +8,10 @@ class LDAPLoginMappingPlugin extends AbstractPlugin
 {
 	const
 		NAME     = 'LDAP login mapping',
-		VERSION  = '2.0',
+		VERSION  = '2.1',
 		AUTHOR   = 'RainLoop Team, Ludovic Pouzenc<ludovic@pouzenc.fr>, ZephOne<zephone@protonmail.com>',
-		RELEASE  = '2022-07-13',
-		REQUIRED = '2.16.3',
+		RELEASE  = '2023-01-19',
+		REQUIRED = '2.19.2',
 		CATEGORY = 'Login',
 		DESCRIPTION = 'Enable custom mapping using ldap field';
 	/**

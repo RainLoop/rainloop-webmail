@@ -1,6 +1,8 @@
 import ko from 'ko';
 
 import { FileInfo, FileType } from 'Common/File';
+import { stopEvent, SettingsGet, SettingsCapa } from 'Common/Globals';
+import { b64EncodeJSONSafe } from 'Common/Utils';
 import {
 	attachmentDownload,
 	serverRequestRaw
@@ -18,13 +20,12 @@ export class AttachmentModel extends AbstractModel {
 		this.checked = ko.observable(true);
 
 		this.mimeType = '';
+//		this.mimeTypeParams = '';
 		this.fileName = '';
 		this.fileNameExt = '';
 		this.fileType = FileType.Unknown;
-		this.isThumbnail = false;
-		this.cid = '';
+		this.cId = '';
 		this.contentLocation = '';
-		this.download = '';
 		this.folder = '';
 		this.uid = '';
 		this.url = '';
@@ -51,12 +52,17 @@ export class AttachmentModel extends AbstractModel {
 		return attachment;
 	}
 
+	toggleChecked(self, event) {
+		stopEvent(event);
+		self.checked(!self.checked());
+	}
+
 	friendlySize() {
 		return FileInfo.friendlySize(this.estimatedSize) + (this.isLinked() ? ' 🔗' : '');
 	}
 
 	contentId() {
-		return this.cid.replace(/^<+|>+$/g, '');
+		return this.cId.replace(/^<+|>+$/g, '');
 	}
 
 	/**
@@ -119,6 +125,17 @@ export class AttachmentModel extends AbstractModel {
 		);
 	}
 
+	get download() {
+		return b64EncodeJSONSafe({
+			folder: this.folder,
+			uid: this.uid,
+			mimeIndex: this.mimeIndex,
+			mimeType: this.mimeType,
+			fileName: this.fileName,
+			accountHash: SettingsGet('accountHash')
+		});
+	}
+
 	/**
 	 * @returns {string}
 	 */
@@ -137,7 +154,7 @@ export class AttachmentModel extends AbstractModel {
 	 * @returns {boolean}
 	 */
 	hasThumbnail() {
-		return this.isThumbnail && !this.isLinked();
+		return SettingsCapa('AttachmentThumbnails') && this.isImage() && !this.isLinked();
 	}
 
 	/**
@@ -146,7 +163,7 @@ export class AttachmentModel extends AbstractModel {
 	thumbnailStyle() {
 		return this.hasThumbnail()
 			? 'background:url(' + serverRequestRaw('ViewThumbnail', this.download) + ')'
-			: '';
+			: null;
 	}
 
 	/**

@@ -1,4 +1,5 @@
 {
+	"LANG_DIR": "ltr",
 	"GLOBAL": {
 		"TO_ARCHIVE": "Archivace",
 		"ARE_YOU_SURE": "Jste si jisti?",
@@ -19,9 +20,11 @@
 		"MOVE_TO": "Přesunout do",
 		"NAME": "Přijaté",
 		"NONE": "Žádný",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "Není to spam",
 		"USERNAME": "Uživatelské jméno",
 		"PASSWORD": "Heslo",
+		"REMEMBER": "Remember",
 		"REPLY_TO": "Adresa odpovědi",
 		"SAVE": "Uložit",
 		"SAVE_CHANGES": "Save changes?",
@@ -33,7 +36,11 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Ano",
 		"NO": "Ne",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "výchozí",
+		"HELP": "Nápověda",
+		"TEXT": "Text",
+		"ATTACHMENTS": "Přílohy"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Uživatelské jméno",
@@ -41,13 +48,7 @@
 		"BUTTON_SIGN_IN": "Přihlásit"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Přidat účet",
-		"BUTTON_SETTINGS": "Nastavení",
-		"BUTTON_HELP": "Nápověda"
-	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobilní verze",
-		"BUTTON_DESKTOP_VERSION": "Desktop verze"
+		"BUTTON_ADD_ACCOUNT": "Přidat účet"
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Rozšířené hledání",
@@ -98,6 +99,7 @@
 		"MENU_SELECT_SEEN": "Přečtené",
 		"MENU_SELECT_FLAGGED": "Označené",
 		"MENU_SELECT_UNFLAGGED": "Neoznačené",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Seznam je prázdný",
 		"EMPTY_SEARCH_LIST": "Vašemu vyhledávání neodpovídají žádné zprávy.",
 		"SEARCH_RESULT_FOR": "Výsledky vyhledávání pro \"%SEARCH%\"",
@@ -108,6 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "Máte %COUNT% nových zpráv!",
 		"QUOTA_SIZE": "Používáte <strong>%SIZE% (%PROC%%)<\/strong> z vašich <strong>%LIMIT%<\/strong>",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Date ascending",
 		"SORT_DATE_DESC": "Date descending",
 		"SORT_SIZE_ASC": "Size ascending",
@@ -224,11 +227,16 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Žádné přílohy.",
 		"ATTACHMENTS_ERROR_DESC": "Upozornění! Některé přílohy nebyly nahrány.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Některé přílohy ještě nebyly nahrány",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automaticky uložit koncept",
 		"BUTTON_REQUEST_READ_RECEIPT": "Vyžádat si potvrzení o přečtení",
 		"BUTTON_MARK_AS_IMPORTANT": "Označit jako důležité",
-		"BUTTON_REQUEST_DSN": "Vyžádat si potvrzení o přijetí"
+		"BUTTON_REQUEST_DSN": "Vyžádat si potvrzení o přijetí",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Opravdu chcete zavřít toto okno?",
 		"DESC_WANT_DELETE_MESSAGES": "Opravdu chcete odstranit tyto zprávy?"
 	},
@@ -312,7 +320,7 @@
 		"MARK_AS_READ_LABEL": "Odznačit jako přečtené",
 		"REPLY_INTERVAL_LABEL": "Interval odpovědi (dny)",
 		"KEEP_LABEL": "Zachovat",
-		"STOP_LABEL": "Neukončovat zpracování pravidel",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Předmět (volitelný)",
 		"VACATION_MESSAGE_LABEL": "Zpráva",
 		"VACATION_RECIPIENTS_LABEL": "Příjemci (odděleni čárkou)",
@@ -351,21 +359,43 @@
 		"ERROR_UNKNOWN": "Nastala neznámá chyba při nahrávaní"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> TEXT",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"PLAIN": "HTML <-> TEXT",
+		"SOURCE": "HTML <-> SOURCE",
+		"FONTFAMILY": "Font family",
+		"FONTSIZE": "Font size",
+		"DIR": "Text direction",
+		"DIR_LTR": "Left to right",
+		"DIR_RTL": "Right to left",
+		"DIR_AUTO": "Automatic",
+		"TEXTCOLOR": "Text color",
+		"BACKGROUNDCOLOR": "Background color",
+		"BOLD": "Bold",
+		"ITALIC": "Italic",
+		"UNDERLINE": "Underline",
+		"STRIKE": "Strikethrough",
+		"SUB": "Subscript",
+		"SUP": "Superscript",
+		"OL": "Ordered list",
+		"UL": "Unordered list",
+		"QUOTE": "Blockquote",
+		"INDENTDECREASE": "Decrease indent",
+		"INDENTINCREASE": "Increase indent",
+		"LINK": "Link",
+		"IMAGEURL": "Image URL",
+		"IMAGEUPLOAD": "Image select",
+		"UNDO": "Undo",
+		"REDO": "Redo"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Osobní",
-		"LABEL_GENERAL_NAME": "Všeobecné",
-		"LABEL_CONTACTS_NAME": "Kontakty",
-		"LABEL_FOLDERS_NAME": "Složky",
-		"LABEL_ACCOUNTS_NAME": "Účty",
-		"LABEL_FILTERS_NAME": "Filtry",
-		"LABEL_SECURITY_NAME": "Zabezpečení",
-		"LABEL_THEMES_NAME": "Motivy"
+		"GENERAL": "Všeobecné",
+		"CONTACTS": "Kontakty",
+		"FOLDERS": "Složky",
+		"ACCOUNTS": "Účty",
+		"FILTERS": "Filtry",
+		"SECURITY": "Zabezpečení",
+		"THEMES": "Motivy"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "Filtry",
 		"SIMPLE": "Simple",
 		"ADVANCED": "Advanced",
 		"BUTTON_ADD_SCRIPT": "Add a Script",
@@ -378,18 +408,18 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Zabezpečení",
 		"LABEL_AUTOLOGOUT": "Automatické odhlášení",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Nikdy",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minut",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% hodin"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Nikdy"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Všeobecné",
 		"LANGUAGE": "Jazyk",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Uživatel",
 		"LAYOUT": "Rozložení",
 		"LAYOUT_NO_SPLIT": "Nerozdělovat",
 		"LAYOUT_VERTICAL_SPLIT": "Vertikální rozdělení",
 		"LAYOUT_HORIZONTAL_SPLIT": "Horizontální rozdělení",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Přednastavený editor zpráv",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "Text",
@@ -399,19 +429,30 @@
 		"USE_CHECKBOXES_IN_LIST": "Zobrazení zaškrtávacích políček v seznamu",
 		"USE_THREADS": "Zobrazit jako konverzace",
 		"REPLY_SAME_FOLDER": "Ukládat odpovědi do složky se zprávou, které se týkají",
-		"SHOW_IMAGES": "Vždy zobrazovat obrázky v těle zprávy",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"REMOVE_COLORS": "Remove background and text colors from message body",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "Zpráv na stranu",
+		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Mark message as read after",
 		"MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
+		"MINUTES": "minutes",
 		"NOTIFICATIONS": "Notifikace",
 		"SOUND_NOTIFICATION": "Zvukové notifikace",
 		"CHROME_NOTIFICATION_DESC": "Zobrazovat upozornění na nové zprávy",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Zablokované prohlížečem)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
+		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Automaticky přidávat adresy příjemců do Adresáře",
@@ -463,14 +504,13 @@
 		"BUTTON_ADD_ACCOUNT": "Přidat účet",
 		"BUTTON_ADD_IDENTITY": "Přidat alias",
 		"LOADING_PROCESS": "Aktualizace seznamu účtů",
-		"DEFAULT_IDENTITY_LABEL": "výchozí"
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importovat klíč",
 		"BUTTON_GENERATE_KEY_PAIR": "Generovat klíče",
 		"TITLE_PRIVATE": "Soukromý",
 		"TITLE_PUBLIC": "Veřejný",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automaticky uložit koncept",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
@@ -484,7 +524,6 @@
 		"LABEL_REPLY_ALL": "Odpovědět všem",
 		"LABEL_FORWARD": "Přeposlat",
 		"LABEL_FORWARD_MULTIPLY": "Přeposlat jako přílohu",
-		"LABEL_HELP": "Nápověda",
 		"LABEL_CHECK_ALL": "Zjistit nové zprávy",
 		"LABEL_DELETE": "Smazat",
 		"LABEL_OPEN_THREAD": "Otevřít označenou konverzaci",

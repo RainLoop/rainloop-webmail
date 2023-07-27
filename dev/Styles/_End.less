@@ -4,7 +4,7 @@
 }
 [data-rainloopErrorTip]::before {
 	background: #fff;
-	border-radius: 3px;
+	border-radius: var(--input-border-radius, 3px);
 	border: 1px solid #999;
 	color: red;
 	content: attr(data-rainloopErrorTip);
@@ -13,13 +13,13 @@
 	opacity: 1;
 	padding: 0.25em;
 	position : absolute;
-	text-align: left;
+	text-align: var(--left, left);
 	top: 100%;
 	transition: opacity 0.2s ease-in-out;
 	white-space: nowrap;
 	z-index: 2001;
 }
-@media only screen and (max-width: 600px) {
+@media screen and (max-width: @maxMobileWidth) {
 	[data-rainloopErrorTip]::before {
 		min-width: 60vw;
 		white-space: normal;

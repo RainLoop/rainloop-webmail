@@ -1,4 +1,5 @@
 {
+	"LANG_DIR": "ltr",
 	"GLOBAL": {
 		"TO_ARCHIVE": "Arkiv",
 		"ARE_YOU_SURE": "Är du säker?",
@@ -19,9 +20,11 @@
 		"MOVE_TO": "Flytta till",
 		"NAME": "Inkorg",
 		"NONE": "Ingen",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "Inte spam",
 		"USERNAME": "Användarnamn",
 		"PASSWORD": "Lösenord",
+		"REMEMBER": "Remember",
 		"REPLY_TO": "Svara till",
 		"SAVE": "Spara",
 		"SAVE_CHANGES": "Save changes?",
@@ -33,7 +36,11 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Ja",
 		"NO": "Nej",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "standard",
+		"HELP": "Hjälp",
+		"TEXT": "Text",
+		"ATTACHMENTS": "Bilagor"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Användarnamn",
@@ -41,13 +48,7 @@
 		"BUTTON_SIGN_IN": "Logga in"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Lägg till konto",
-		"BUTTON_SETTINGS": "Inställningar",
-		"BUTTON_HELP": "Hjälp"
-	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobilversion",
-		"BUTTON_DESKTOP_VERSION": "Datorversion"
+		"BUTTON_ADD_ACCOUNT": "Lägg till konto"
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Avancerad sök",
@@ -98,6 +99,7 @@
 		"MENU_SELECT_SEEN": "Läst",
 		"MENU_SELECT_FLAGGED": "Flaggad",
 		"MENU_SELECT_UNFLAGGED": "Avflaggad",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Tom lista",
 		"EMPTY_SEARCH_LIST": "Inga meddelanden matchar din sökning.",
 		"SEARCH_RESULT_FOR": "Sök resultat för \"%SEARCH%\"",
@@ -108,6 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "Du har %COUNT% nya meddelanden!",
 		"QUOTA_SIZE": "Använder <strong>%SIZE% (%PROC%%)<\/strong> av dina <strong>%LIMIT%<\/strong>",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Date ascending",
 		"SORT_DATE_DESC": "Date descending",
 		"SORT_SIZE_ASC": "Size ascending",
@@ -224,11 +227,16 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Inga filer är ännu valda",
 		"ATTACHMENTS_ERROR_DESC": "Varning! Inte alla bilagor har överförts.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Alla bilagor är inte uppladddade än",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Spara utkast automatiskt",
 		"BUTTON_REQUEST_READ_RECEIPT": "Begär mottagningskvitto",
 		"BUTTON_MARK_AS_IMPORTANT": "Markera som viktigt",
-		"BUTTON_REQUEST_DSN": "Begär ett leveranskvitto"
+		"BUTTON_REQUEST_DSN": "Begär ett leveranskvitto",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Vill du stänga detta fönster?",
 		"DESC_WANT_DELETE_MESSAGES": "Är du säker att du vill ta bort meddelandet?"
 	},
@@ -312,7 +320,7 @@
 		"MARK_AS_READ_LABEL": "Markera som läst",
 		"REPLY_INTERVAL_LABEL": "Svarsintervall (dagar)",
 		"KEEP_LABEL": "Behåll",
-		"STOP_LABEL": "Sluta inte bearbeta andra regler",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Ämne (valfritt)",
 		"VACATION_MESSAGE_LABEL": "Meddelande",
 		"VACATION_RECIPIENTS_LABEL": "Mottagare (kommaseparerade)",
@@ -351,21 +359,43 @@
 		"ERROR_UNKNOWN": "Okänt uppladdingsfel"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> TEXT",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"PLAIN": "HTML <-> TEXT",
+		"SOURCE": "HTML <-> SOURCE",
+		"FONTFAMILY": "Font family",
+		"FONTSIZE": "Font size",
+		"DIR": "Text direction",
+		"DIR_LTR": "Left to right",
+		"DIR_RTL": "Right to left",
+		"DIR_AUTO": "Automatic",
+		"TEXTCOLOR": "Text color",
+		"BACKGROUNDCOLOR": "Background color",
+		"BOLD": "Bold",
+		"ITALIC": "Italic",
+		"UNDERLINE": "Underline",
+		"STRIKE": "Strikethrough",
+		"SUB": "Subscript",
+		"SUP": "Superscript",
+		"OL": "Ordered list",
+		"UL": "Unordered list",
+		"QUOTE": "Blockquote",
+		"INDENTDECREASE": "Decrease indent",
+		"INDENTINCREASE": "Increase indent",
+		"LINK": "Link",
+		"IMAGEURL": "Image URL",
+		"IMAGEUPLOAD": "Image select",
+		"UNDO": "Undo",
+		"REDO": "Redo"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Personligt",
-		"LABEL_GENERAL_NAME": "Allmänt",
-		"LABEL_CONTACTS_NAME": "Kontakter",
-		"LABEL_FOLDERS_NAME": "Mappar",
-		"LABEL_ACCOUNTS_NAME": "Konton",
-		"LABEL_FILTERS_NAME": "Filter",
-		"LABEL_SECURITY_NAME": "Säkerhet",
-		"LABEL_THEMES_NAME": "Teman"
+		"GENERAL": "Allmänt",
+		"CONTACTS": "Kontakter",
+		"FOLDERS": "Mappar",
+		"ACCOUNTS": "Konton",
+		"FILTERS": "Filter",
+		"SECURITY": "Säkerhet",
+		"THEMES": "Teman"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "Filter",
 		"SIMPLE": "Simple",
 		"ADVANCED": "Advanced",
 		"BUTTON_ADD_SCRIPT": "Add a Script",
@@ -378,18 +408,18 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Säkerhet",
 		"LABEL_AUTOLOGOUT": "Automatisk utloggning",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Aldrig",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minut(er)",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% timme\/timmar"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Aldrig"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Allmänt",
 		"LANGUAGE": "Språk",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identitet",
 		"LAYOUT": "Stil",
 		"LAYOUT_NO_SPLIT": "Utan delad vy",
 		"LAYOUT_VERTICAL_SPLIT": "Vertikalt delad vy",
 		"LAYOUT_HORIZONTAL_SPLIT": "Horisontellt delad vy",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Textredigerare",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Oformaterad text",
@@ -399,19 +429,30 @@
 		"USE_CHECKBOXES_IN_LIST": "Visa kryssrutor i listan",
 		"USE_THREADS": "Använd trådar",
 		"REPLY_SAME_FOLDER": "Placera svar i samma mapp som mottagna meddelandet",
-		"SHOW_IMAGES": "Visa alltid bilder i mail",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"REMOVE_COLORS": "Remove background and text colors from message body",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "Meddelanden per sida",
+		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Markera meddelandet som läst efter",
 		"MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "sekunder",
+		"MINUTES": "minutes",
 		"NOTIFICATIONS": "Aviseringar",
 		"SOUND_NOTIFICATION": "Ljudnotifikation",
 		"CHROME_NOTIFICATION_DESC": "Visa nya meddelande-aviseringar som popup-fönster",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Blockat av webbläsaren)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
+		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Lägg till mottagare automatiskt i din adressbok",
@@ -463,14 +504,13 @@
 		"BUTTON_ADD_ACCOUNT": "Lägg till konto",
 		"BUTTON_ADD_IDENTITY": "Lägg till identitet",
 		"LOADING_PROCESS": "Uppdaterar kontolista",
-		"DEFAULT_IDENTITY_LABEL": "standard"
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importera nyckel",
 		"BUTTON_GENERATE_KEY_PAIR": "Skapa nycklar",
 		"TITLE_PRIVATE": "Privat",
 		"TITLE_PUBLIC": "Publik",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Spara utkast automatiskt",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
@@ -484,7 +524,6 @@
 		"LABEL_REPLY_ALL": "Svara alla",
 		"LABEL_FORWARD": "Vidarebefordra",
 		"LABEL_FORWARD_MULTIPLY": "Vidarebefordra som bilaga(or)",
-		"LABEL_HELP": "Hjälp",
 		"LABEL_CHECK_ALL": "Kontrollera alla meddelanden",
 		"LABEL_DELETE": "Ta bort",
 		"LABEL_OPEN_THREAD": "Öppna valda trådar",

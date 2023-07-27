@@ -18,19 +18,13 @@ namespace MailSo\Cache\Drivers;
  */
 class APCU implements \MailSo\Cache\DriverInterface
 {
-	/**
-	 * @var string
-	 */
-	private $sKeyPrefix;
+	private string $sKeyPrefix;
 
 	function __construct(string $sKeyPrefix = '')
 	{
-		$this->sKeyPrefix = $sKeyPrefix;
-		if (!empty($this->sKeyPrefix))
-		{
-			$this->sKeyPrefix =
-				\preg_replace('/[^a-zA-Z0-9_]/', '_', rtrim(trim($this->sKeyPrefix), '\\/')).'/';
-		}
+		$this->sKeyPrefix = empty($sKeyPrefix)
+			? $sKeyPrefix
+			: \preg_replace('/[^a-zA-Z0-9_]/', '_', \rtrim(\trim($sKeyPrefix), '\\/')).'/';
 	}
 
 	public function Set(string $sKey, string $sValue) : bool
@@ -51,12 +45,7 @@ class APCU implements \MailSo\Cache\DriverInterface
 
 	public function GC(int $iTimeToClearInHours = 24) : bool
 	{
-		if (0 === $iTimeToClearInHours)
-		{
-			return \apcu_clear_cache('user');
-		}
-
-		return false;
+		return (0 === $iTimeToClearInHours) ? \apcu_clear_cache('user') : false;
 	}
 
 	private function generateCachedKey(string $sKey) : string

@@ -1,17 +1,19 @@
 import ko from 'ko';
 import { addObservablesTo, addComputablesTo } from 'External/ko';
 
-import { Scope } from 'Common/Enums';
+import { ScopeFolderList, ScopeMessageList, ScopeMessageView } from 'Common/Enums';
 
 import { ComposeType, FolderType, MessageSetAction } from 'Common/EnumsUser';
 
-import { leftPanelDisabled, moveAction,
+import { doc,
+	leftPanelDisabled, toggleLeftPanel,
 	Settings, SettingsCapa,
-	addEventsListeners,
+	addEventsListeners, stopEvent,
 	addShortcut, registerShortcut, formFieldFocused
 } from 'Common/Globals';
 
-import { computedPaginatorHelper, showMessageComposer, populateMessageBody } from 'Common/UtilsUser';
+import { arrayLength } from 'Common/Utils';
+import { computedPaginatorHelper, showMessageComposer, populateMessageBody, downloadZip, moveAction } from 'Common/UtilsUser';
 import { FileInfo } from 'Common/File';
 import { isFullscreen, toggleFullscreen } from 'Common/Fullscreen';
 
@@ -22,14 +24,12 @@ import { i18n } from 'Common/Translator';
 
 import { dropFilesInFolder } from 'Common/Folders';
 
-import {
-	getFolderFromCacheList,
-	MessageFlagsCache
-} from 'Common/Cache';
+import { getFolderFromCacheList } from 'Common/Cache';
 
 import { AppUserStore } from 'Stores/User/App';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import { FolderUserStore } from 'Stores/User/Folder';
+import { LanguageStore } from 'Stores/Language';
 import { MessageUserStore } from 'Stores/User/Message';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { ThemeStore } from 'Stores/Theme';
@@ -44,6 +44,9 @@ import { AdvancedSearchPopupView } from 'View/Popup/AdvancedSearch';
 import { ComposePopupView } from 'View/Popup/Compose';
 
 import { MessageModel } from 'Model/Message';
+
+import { LayoutSideView, ClientSideKeyNameMessageListSize } from 'Common/EnumsUser';
+import { setLayoutResizer } from 'Common/UtilsUser';
 
 const
 	canBeMovedHelper = () => MessagelistUserStore.hasCheckedOrSelected(),
@@ -62,7 +65,10 @@ const
 			FolderUserStore.currentFolderFullName(),
 			MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails(),
 			bDelete
-		);
+		),
+
+	pad2 = v => 10 > v ? '0' + v : '' + v,
+	Ymd = dt => dt.getFullYear() + pad2(1 + dt.getMonth()) + pad2(dt.getDate());
 
 let
 	iGoToUpOrDownTimeout = 0,
@@ -81,8 +87,9 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.composeInEdit = ComposePopupView.inEdit;
 
-		this.isMobile = ThemeStore.isMobile;
+		this.isMobile = ThemeStore.isMobile; // Obsolete
 		this.leftPanelDisabled = leftPanelDisabled;
+		this.toggleLeftPanel = toggleLeftPanel;
 
 		this.popupVisibility = arePopupsVisible;
 
@@ -101,13 +108,17 @@ export class MailMessageList extends AbstractViewRight {
 		this.dragOver = ko.observable(false).extend({ throttle: 1 });
 		this.dragOverEnter = ko.observable(false).extend({ throttle: 1 });
 
+		const attachmentsActions = Settings.app('attachmentsActions');
+		this.attachmentsActions = ko.observableArray(arrayLength(attachmentsActions) ? attachmentsActions : []);
+
 		addComputablesTo(this, {
 
 			sortSupported: () =>
-				FolderUserStore.hasCapability('SORT') | FolderUserStore.hasCapability('ESORT'),
+				(FolderUserStore.hasCapability('SORT') | FolderUserStore.hasCapability('ESORT'))
+				&& !MessagelistUserStore.threadUid(),
 
 			messageListSearchDesc: () => {
-				const value = MessagelistUserStore().Search;
+				const value = MessagelistUserStore().search;
 				return value ? i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', { SEARCH: value }) : ''
 			},
 
@@ -132,9 +143,63 @@ export class MailMessageList extends AbstractViewRight {
 				return c && MessagelistUserStore().length > c;
 			},
 
-			mobileCheckedStateShow: () => ThemeStore.isMobile() ? MessagelistUserStore.hasChecked() : 1,
+			listGrouped: () => {
+				let uid = MessagelistUserStore.threadUid(),
+					sort = FolderUserStore.sortMode() || 'DATE';
+				return SettingsUserStore.listGrouped() && (sort.includes('DATE') || sort.includes('FROM')) && !uid;
+			},
 
-			mobileCheckedStateHide: () => ThemeStore.isMobile() ? !MessagelistUserStore.hasChecked() : 1,
+			timeFormat: () => (FolderUserStore.sortMode() || '').includes('FROM') ? 'AUTO' : 'LT',
+
+			groupedList: () => {
+				let list = [], current, sort = FolderUserStore.sortMode() || 'DATE';
+				if (sort.includes('FROM')) {
+					MessagelistUserStore.forEach(msg => {
+						let email = msg.from[0].email;
+						if (!current || email != current.id) {
+							current = {
+								id: email,
+								label: msg.from[0].toLine(),
+								search: 'from=' + email,
+								messages: []
+							};
+							list.push(current);
+						}
+						current.messages.push(msg);
+					});
+				} else if (sort.includes('DATE')) {
+					let today = Ymd(new Date()),
+						rtf = Intl.RelativeTimeFormat
+							? new Intl.RelativeTimeFormat(doc.documentElement.lang, { numeric: "auto" }) : 0;
+					MessagelistUserStore.forEach(msg => {
+						let dt = (new Date(msg.dateTimestamp() * 1000)),
+							date,
+							ymd = Ymd(dt);
+						if (!current || ymd != current.id) {
+							if (rtf && today == ymd) {
+								date = rtf.format(0, 'day');
+							} else if (rtf && today - 1 == ymd) {
+								date = rtf.format(-1, 'day');
+//							} else if (today - 7 < ymd) {
+//								date = dt.format({weekday: 'long'});
+//								date = dt.format({dateStyle: 'full'},0,LanguageStore.hourCycle());
+							} else {
+//								date = dt.format({dateStyle: 'medium'},0,LanguageStore.hourCycle());
+								date = dt.format({dateStyle: 'full'},0,LanguageStore.hourCycle());
+							}
+							current = {
+								id: ymd,
+								label: date,
+								search: 'on=' + dt.getFullYear() + '-' + pad2(1 + dt.getMonth()) + '-' + pad2(dt.getDate()),
+								messages: []
+							};
+							list.push(current);
+						}
+						current.messages.push(msg);
+					});
+				}
+				return list;
+			},
 
 			sortText: () => {
 				let mode = FolderUserStore.sortMode(),
@@ -147,7 +212,9 @@ export class MailMessageList extends AbstractViewRight {
 					 return '𝐒' + (desc ? '⬆' : '⬇');
 				}
 				return (mode.includes('SIZE') ? '✉' : '📅') + (desc ? '⬇' : '⬆');
-			}
+			},
+
+			downloadAsZipAllowed: () => this.attachmentsActions.includes('zip')
 		});
 
 		this.selector = new Selector(
@@ -161,7 +228,8 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.selector.on('ItemSelect', message => {
 			if (message) {
-				populateMessageBody(MessageModel.fromMessageListItem(message));
+//				populateMessageBody(message.clone());
+				populateMessageBody(message);
 			} else {
 				MessageUserStore.message(null);
 			}
@@ -226,7 +294,7 @@ export class MailMessageList extends AbstractViewRight {
 		);
 
 		addEventListener('mailbox.message.show', e => {
-			const sFolder = e.detail.Folder, iUid = e.detail.Uid;
+			const sFolder = e.detail.folder, iUid = e.detail.uid;
 
 			const message = MessagelistUserStore.find(
 				item => sFolder === item?.folder && iUid == item?.uid
@@ -258,6 +326,8 @@ export class MailMessageList extends AbstractViewRight {
 		).throttle(50));
 
 		decorateKoCommands(this, {
+			downloadAttachCommand: canBeMovedHelper,
+			downloadZipCommand: canBeMovedHelper,
 			forwardCommand: canBeMovedHelper,
 			deleteWithoutMoveCommand: canBeMovedHelper,
 			deleteCommand: canBeMovedHelper,
@@ -271,6 +341,17 @@ export class MailMessageList extends AbstractViewRight {
 	changeSort(self, event) {
 		FolderUserStore.sortMode(event.target.closest('li').dataset.sort);
 		this.reload();
+	}
+
+	clearListIsVisible() {
+		return (
+			!this.messageListSearchDesc()
+		 && !MessagelistUserStore.error()
+		 && !MessagelistUserStore.endThreadUid()
+		 && MessagelistUserStore().length
+		 && (MessagelistUserStore.isSpamFolder() || MessagelistUserStore.isTrashFolder())
+		 && SettingsCapa('DangerousActions')
+		);
 	}
 
 	clear() {
@@ -290,6 +371,33 @@ export class MailMessageList extends AbstractViewRight {
 		]);
 	}
 
+	/**
+	 * Download selected messages
+	 */
+	downloadZipCommand() {
+		let hashes = []/*, uids = []*/;
+//		MessagelistUserStore.forEach(message => message.checked() && uids.push(message.uid));
+		MessagelistUserStore.forEach(message => message.checked() && hashes.push(message.requestHash));
+		downloadZip(null, hashes, null, null, MessagelistUserStore().folder);
+	}
+
+	/**
+	 * Download attachments of selected messages
+	 */
+	downloadAttachCommand() {
+		let hashes = [];
+		MessagelistUserStore.forEach(message => {
+			if (message.checked()) {
+				message.attachments.forEach(attachment => {
+					if (!attachment.isLinked() && attachment.download) {
+						hashes.push(attachment.download);
+					}
+				});
+			}
+		});
+		downloadZip(null, hashes);
+	}
+
 	deleteWithoutMoveCommand() {
 		SettingsCapa('DangerousActions')
 		&& moveMessagesToFolderType(FolderType.Trash, true);
@@ -304,22 +412,21 @@ export class MailMessageList extends AbstractViewRight {
 	}
 
 	spamCommand() {
-		moveMessagesToFolderType(FolderType.Spam);
+		moveMessagesToFolderType(FolderType.Junk);
 	}
 
 	notSpamCommand() {
-		moveMessagesToFolderType(FolderType.NotSpam);
+		moveMessagesToFolderType(FolderType.Inbox);
 	}
 
 	moveCommand(vm, event) {
-		if (this.mobileCheckedStateShow()) {
+		if (MessagelistUserStore.hasChecked()) {
 			if (vm && event?.preventDefault) {
-				event.preventDefault();
-				event.stopPropagation();
+				stopEvent(event);
 			}
 
 			let b = moveAction();
-			AppUserStore.focusedState(b ? Scope.MessageList : Scope.FolderList);
+			AppUserStore.focusedState(b ? ScopeMessageList : ScopeFolderList);
 			moveAction(!b);
 		}
 	}
@@ -377,15 +484,11 @@ export class MailMessageList extends AbstractViewRight {
 					folder.unreadEmails(0);
 				}
 
-				MessageFlagsCache.clearFolder(sFolderFullName);
-
 				Remote.request('MessageSetSeenToAll', null, {
-					Folder: sFolderFullName,
-					SetAction: 1,
-					ThreadUids: uids.join(',')
+					folder: sFolderFullName,
+					setAction: 1,
+					threadUids: uids.join(',')
 				});
-
-				MessagelistUserStore.reloadFlagsAndCachedMessage();
 			}
 		}
 	}
@@ -456,28 +559,33 @@ export class MailMessageList extends AbstractViewRight {
 		return '';
 	}
 
-	clearListIsVisible() {
-		return (
-			!this.messageListSearchDesc() &&
-			!MessagelistUserStore.error() &&
-			!MessagelistUserStore.endThreadUid() &&
-			MessagelistUserStore().length &&
-			(MessagelistUserStore.isSpamFolder() || MessagelistUserStore.isTrashFolder())
-		);
-	}
-
 	onBuild(dom) {
 		const b_content = dom.querySelector('.b-content'),
 			eqs = (ev, s) => ev.target.closestWithin(s, dom);
 
-		this.selector.init(b_content, Scope.MessageList);
+		setTimeout(() => {
+			// initMailboxLayoutResizer
+			const top = dom.querySelector('.messageList'),
+				fToggle = () => {
+					let layout = SettingsUserStore.usePreviewPane();
+					setLayoutResizer(top, ClientSideKeyNameMessageListSize,
+						layout ? (LayoutSideView === layout ? 'Width' : 'Height') : 0
+					);
+				};
+			if (top) {
+				fToggle();
+				addEventListener('rl-layout', fToggle);
+			}
+		}, 1);
+
+		this.selector.init(b_content, ScopeMessageList);
 
 		addEventsListeners(dom, {
 			click: event => {
 				ThemeStore.isMobile() && !eqs(event, '.toggleLeft') && leftPanelDisabled(true);
 
-				if (eqs(event, '.messageList') && Scope.MessageView === AppUserStore.focusedState()) {
-					AppUserStore.focusedState(Scope.MessageList);
+				if (eqs(event, '.messageList') && ScopeMessageView === AppUserStore.focusedState()) {
+					AppUserStore.focusedState(ScopeMessageList);
 				}
 
 				let el = eqs(event, '.e-paginator a');
@@ -559,7 +667,7 @@ export class MailMessageList extends AbstractViewRight {
 
 		// initShortcuts
 
-		addShortcut('enter,open', '', Scope.MessageList, () => {
+		addShortcut('enter,open', '', ScopeMessageList, () => {
 			if (formFieldFocused()) {
 				MessagelistUserStore.mainSearch(sLastSearchValue);
 				return false;
@@ -571,42 +679,42 @@ export class MailMessageList extends AbstractViewRight {
 		});
 
 		// archive (zip)
-		registerShortcut('z', '', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('z', '', [ScopeMessageList, ScopeMessageView], () => {
 			this.archiveCommand();
 			return false;
 		});
 
 		// delete
-		registerShortcut('delete', 'shift', Scope.MessageList, () => {
+		registerShortcut('delete', 'shift', ScopeMessageList, () => {
 			MessagelistUserStore.listCheckedOrSelected().length && this.deleteWithoutMoveCommand();
 			return false;
 		});
-//		registerShortcut('3', 'shift', Scope.MessageList, () => {
-		registerShortcut('delete', '', Scope.MessageList, () => {
+//		registerShortcut('3', 'shift', ScopeMessageList, () => {
+		registerShortcut('delete', '', ScopeMessageList, () => {
 			MessagelistUserStore.listCheckedOrSelected().length && this.deleteCommand();
 			return false;
 		});
 
 		// check mail
-		addShortcut('r', 'meta', [Scope.FolderList, Scope.MessageList, Scope.MessageView], () => {
+		addShortcut('r', 'meta', [ScopeFolderList, ScopeMessageList, ScopeMessageView], () => {
 			this.reload();
 			return false;
 		});
 
 		// check all
-		registerShortcut('a', 'meta', Scope.MessageList, () => {
+		registerShortcut('a', 'meta', ScopeMessageList, () => {
 			this.checkAll(!(this.checkAll() && !this.isIncompleteChecked()));
 			return false;
 		});
 
 		// write/compose (open compose popup)
-		registerShortcut('w,c,new', '', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('w,c,new', '', [ScopeMessageList, ScopeMessageView], () => {
 			showMessageComposer();
 			return false;
 		});
 
 		// important - star/flag messages
-		registerShortcut('i', '', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('i', '', [ScopeMessageList, ScopeMessageView], () => {
 			const checked = MessagelistUserStore.listCheckedOrSelected();
 			if (checked.length) {
 				listAction(
@@ -618,7 +726,7 @@ export class MailMessageList extends AbstractViewRight {
 			return false;
 		});
 
-		registerShortcut('t', '', [Scope.MessageList], () => {
+		registerShortcut('t', '', [ScopeMessageList], () => {
 			let message = MessagelistUserStore.selectedMessage() || MessagelistUserStore.focusedMessage();
 			if (0 < message?.threadsLen()) {
 				this.gotoThread(message);
@@ -627,38 +735,38 @@ export class MailMessageList extends AbstractViewRight {
 		});
 
 		// move
-		registerShortcut('insert', '', Scope.MessageList, () => {
+		registerShortcut('insert', '', ScopeMessageList, () => {
 			this.moveCommand();
 			return false;
 		});
 
 		// read
-		registerShortcut('q', '', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('q', '', [ScopeMessageList, ScopeMessageView], () => {
 			this.seenMessagesFast(true);
 			return false;
 		});
 
 		// unread
-		registerShortcut('u', '', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('u', '', [ScopeMessageList, ScopeMessageView], () => {
 			this.seenMessagesFast(false);
 			return false;
 		});
 
-		addShortcut('f,mailforward', 'shift', [Scope.MessageList, Scope.MessageView], () => {
+		registerShortcut('f,mailforward', 'shift', [ScopeMessageList, ScopeMessageView], () => {
 			this.forwardCommand();
 			return false;
 		});
 
 		if (SettingsCapa('Search')) {
 			// search input focus
-			addShortcut('/', '', [Scope.MessageList, Scope.MessageView], () => {
+			addShortcut('/', '', [ScopeMessageList, ScopeMessageView], () => {
 				this.focusSearch(true);
 				return false;
 			});
 		}
 
 		// cancel search
-		addShortcut('escape', '', Scope.MessageList, () => {
+		addShortcut('escape', '', ScopeMessageList, () => {
 			if (this.messageListSearchDesc()) {
 				this.cancelSearch();
 				return false;
@@ -669,29 +777,37 @@ export class MailMessageList extends AbstractViewRight {
 		});
 
 		// change focused state
-		addShortcut('tab', 'shift', Scope.MessageList, () => {
-			AppUserStore.focusedState(Scope.FolderList);
+		addShortcut('tab', 'shift', ScopeMessageList, () => {
+			AppUserStore.focusedState(ScopeFolderList);
 			return false;
 		});
-		addShortcut('arrowleft', '', Scope.MessageList, () => {
-			AppUserStore.focusedState(Scope.FolderList);
+		addShortcut('arrowleft', '', ScopeMessageList, () => {
+			AppUserStore.focusedState(ScopeFolderList);
 			return false;
 		});
-		addShortcut('tab,arrowright', '', Scope.MessageList, () => {
+		addShortcut('tab,arrowright', '', ScopeMessageList, () => {
 			if (MessageUserStore.message()) {
-				AppUserStore.focusedState(Scope.MessageView);
+				AppUserStore.focusedState(ScopeMessageView);
 				return false;
 			}
 		});
 
-		addShortcut('arrowleft', 'meta', Scope.MessageView, ()=>false);
-		addShortcut('arrowright', 'meta', Scope.MessageView, ()=>false);
+		addShortcut('arrowleft', 'meta', ScopeMessageView, ()=>false);
+		addShortcut('arrowright', 'meta', ScopeMessageView, ()=>false);
 
-		addShortcut('f', 'meta', Scope.MessageList, this.advancedSearchClick);
+		addShortcut('f', 'meta', ScopeMessageList, this.advancedSearchClick);
 	}
 
 	advancedSearchClick() {
 		showScreenPopup(AdvancedSearchPopupView, [MessagelistUserStore.mainSearch()]);
+	}
+
+	groupSearch(group) {
+		group.search && MessagelistUserStore.mainSearch(group.search);
+	}
+
+	groupCheck(group) {
+		group.messages.forEach(message => message.checked(!message.checked()));
 	}
 
 	quotaTooltip() {

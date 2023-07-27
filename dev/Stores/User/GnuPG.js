@@ -11,9 +11,17 @@ import { showScreenPopup } from 'Knoin/Knoin';
 import { OpenPgpKeyPopupView } from 'View/Popup/OpenPgpKey';
 import { AskPopupView } from 'View/Popup/Ask';
 
+import { Passphrases } from 'Storage/Passphrases';
+
 const
-	askPassphrase = async (privateKey, btnTxt = 'LABEL_SIGN') =>
-		await AskPopupView.password('GnuPG key<br>' + privateKey.id + ' ' + privateKey.emails[0], 'OPENPGP/'+btnTxt),
+	askPassphrase = async (privateKey, btnTxt = 'LABEL_SIGN') => {
+		const key = privateKey.id,
+			pass = Passphrases.has(key)
+				? {password:Passphrases.get(key), remember:false}
+				: await AskPopupView.password('GnuPG key<br>' + key + ' ' + privateKey.emails[0], 'OPENPGP/'+btnTxt);
+		pass && pass.remember && Passphrases.set(key, pass.password);
+		return pass.password;
+	},
 
 	findGnuPGKey = (keys, query/*, sign*/) =>
 		keys.find(key =>
@@ -63,7 +71,7 @@ export const GnuPGUserStore = new class {
 											}
 										}
 									}, {
-										KeyId: key.id,
+										keyId: key.id,
 										isPrivate: isPrivate
 									}
 								);
@@ -75,11 +83,13 @@ export const GnuPGUserStore = new class {
 										if (oData?.Result) {
 											key.armor = oData.Result;
 											showScreenPopup(OpenPgpKeyPopupView, [key]);
+										} else {
+											Passphrases.delete(key.id);
 										}
 									}, {
-										KeyId: key.id,
+										keyId: key.id,
 										isPrivate: isPrivate,
-										Passphrase: pass
+										passphrase: pass
 									}
 								);
 							if (isPrivate) {
@@ -115,7 +125,7 @@ export const GnuPGUserStore = new class {
 				}
 				callback?.(iError, oData);
 			}, {
-				Key: key
+				key: key
 			}
 		);
 	}
@@ -166,7 +176,7 @@ export const GnuPGUserStore = new class {
 		const
 			pgpInfo = message.pgpEncrypted();
 		if (pgpInfo) {
-			let ids = [message.to[0].email].concat(pgpInfo.KeyIds),
+			let ids = [message.to[0].email].concat(pgpInfo.keyIds),
 				i = ids.length, key;
 			while (i--) {
 				key = findGnuPGKey(this.privateKeys, ids[i]);
@@ -177,34 +187,35 @@ export const GnuPGUserStore = new class {
 			if (key) {
 				// Also check message.from[0].email
 				let params = {
-					Folder: message.folder,
-					Uid: message.uid,
-					PartId: pgpInfo.PartId,
-					KeyId: key.id,
-					Passphrase: await askPassphrase(key, 'BUTTON_DECRYPT'),
-					Data: '' // message.plain() optional
+					folder: message.folder,
+					uid: message.uid,
+					partId: pgpInfo.partId,
+					keyId: key.id,
+					passphrase: await askPassphrase(key, 'BUTTON_DECRYPT'),
+					data: '' // message.plain() optional
 				}
-				if (null !== params.Passphrase) {
+				if (null !== params.passphrase) {
 					const result = await Remote.post('GnupgDecrypt', null, params);
-					if (result?.Result) {
+					if (result?.Result && false !== result.Result.data) {
 						return result.Result;
 					}
+					Passphrases.delete(key.id);
 				}
 			}
 		}
 	}
 
 	async verify(message) {
-		let data = message.pgpSigned(); // { BodyPartId: "1", SigPartId: "2", MicAlg: "pgp-sha256" }
+		let data = message.pgpSigned(); // { bodyPartId: "1", sigPartId: "2", micAlg: "pgp-sha256" }
 		if (data) {
 			data = { ...data }; // clone
 //			const sender = message.from[0].email;
 //			let mode = await this.hasPublicKeyForEmails([sender]);
-			data.Folder = message.folder;
-			data.Uid = message.uid;
-			if (data.BodyPart) {
-				data.BodyPart = data.BodyPart.raw;
-				data.SigPart = data.SigPart.body;
+			data.folder = message.folder;
+			data.uid = message.uid;
+			if (data.bodyPart) {
+				data.bodyPart = data.bodyPart.raw;
+				data.sigPart = data.sigPart.body;
 			}
 			let response = await Remote.post('MessagePgpVerify', null, data);
 			if (response?.Result) {

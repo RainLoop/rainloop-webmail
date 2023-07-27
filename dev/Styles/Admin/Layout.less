@@ -1,13 +1,7 @@
 
-#rl-content {
-	display:flex;
-	height: 100%;
-}
-
 #rl-left {
 	flex-grow: 0;
 	flex-shrink: 0;
-	overflow: auto;
 	padding-top: 50px + @rlLowMargin + 10px;
 	transition: width 0.3s ease-out;
 	width: @rlLeftWidth;
@@ -42,19 +36,26 @@
 }
 
 #V-AdminPane {
-	height: 100%;
+	height: calc(100% - 50px - @rlLowMargin);
+	margin: 50px @rlLowMargin 0 0;
+
+	background-color: var(--panel-bg-clr, #fff);
+	border: 1px solid var(--border-color, #aaa);
+	border-radius: var(--border-radius, 5px);
+	box-shadow: var(--smMainShadow);
+	overflow-y: auto;
+	padding: 20px;
+	scroll-behavior: smooth;
 
 	> .b-toolbar {
+		color: #fff;
+		display: flex;
 		position: absolute;
 		top: 0;
 		right: 0;
 		left: 0;
-		height: 34px;
 		padding: 8px @rlLowMargin 8px 0;
-		color: #fff;
 		text-shadow: 0 1px 1px #000;
-
-		display: flex;
 
 		h4 {
 			flex-grow: 1;
@@ -68,20 +69,8 @@
 	padding-right: 12px;
 }
 
-#rl-settings-subscreen {
-	background-color: var(--settings-bg-clr, #fff);
-	border: 1px solid @rlMainDarkColor;
-	border-radius: @rlMainBorderRadius;
-	box-shadow: @rlMainShadow;
-	box-sizing: border-box;
-	height: calc(100% - 50px - @rlLowMargin - @rlLowMargin);
-	margin: (50px + @rlLowMargin) @rlLowMargin @rlLowMargin 0;
-	overflow-y: auto;
-	padding: 20px;
-}
-
 /* desktop */
-@media screen and (min-width: 1000px) {
+@media screen and (min-width: @maxMobileWidth + 1px) {
 	.toggleLeft {
 		display: none;
 	}
@@ -94,14 +83,14 @@
 	}
 }
 
-/* mobile and tablet */
-@media screen and (max-width: 999px) {
-	#rl-settings-subscreen {
-		padding: 10px;
-	}
-
+@media screen and (max-width: @maxMobileWidth) {
 	#rl-right {
 		min-width: calc(100% - @rlLowMargin);
+	}
+
+	#V-AdminPane {
+		margin-right: 0;
+		padding: 10px;
 	}
 
 	html.rl-left-panel-disabled {

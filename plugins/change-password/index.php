@@ -6,9 +6,9 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Change Password',
-		VERSION  = '2.16.3',
-		RELEASE  = '2022-10-14',
-		REQUIRED = '2.12.0',
+		VERSION  = '2.19',
+		RELEASE  = '2023-04-11',
+		REQUIRED = '2.23.0',
 		CATEGORY = 'Security',
 		DESCRIPTION = 'Extension to allow users to change their passwords';
 
@@ -106,12 +106,14 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetLabel('Password minimum length')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::INT)
 				->SetDescription('Minimum length of the password')
-				->SetDefaultValue(10),
+				->SetDefaultValue(10)
+				->SetAllowedInJs(true),
 			\RainLoop\Plugins\Property::NewInstance("pass_min_strength")
 				->SetLabel('Password minimum strength')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::INT)
 				->SetDescription('Minimum strength of the password in %')
-				->SetDefaultValue(70),
+				->SetDefaultValue(70)
+				->SetAllowedInJs(true),
 		];
 		foreach ($this->getSupportedDrivers(true) as $name => $class) {
 			$group = new \RainLoop\Plugins\PropertyCollection($name);
@@ -144,7 +146,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 
 		$sPrevPassword = $this->jsonParam('PrevPassword');
-		if ($sPrevPassword !== $oAccount->Password()) {
+		if ($sPrevPassword !== $oAccount->IncPassword()) {
 			throw new ClientException(static::CurrentPasswordIncorrect, null, $oActions->StaticI18N('NOTIFICATIONS/CURRENT_PASSWORD_INCORRECT'));
 		}
 

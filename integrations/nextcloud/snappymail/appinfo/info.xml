@@ -3,7 +3,7 @@
 	<id>snappymail</id>
 	<name>SnappyMail</name>
 	<summary>SnappyMail Webmail</summary>
-	<version>2.20.1</version>
+	<version>2.28.4</version>
 	<licence>agpl</licence>
 	<author>SnappyMail, RainLoop Team, Nextgen-Networks, Tab Fitts, Nathan Kinkade, Pierre-Alain Bandinelli</author>
 	<description><![CDATA[**Simple, modern, lightweight & fast web-based email client.**
@@ -25,6 +25,8 @@ There, click on the link to go to the SnappyMail admin panel.
 	<namespace>SnappyMail</namespace>
 	<documentation>
 		<user>https://github.com/the-djmaze/snappymail/blob/master/integrations/nextcloud/snappymail/README.md</user>
+		<admin>https://github.com/the-djmaze/snappymail/wiki/Admin-Manual</admin>
+		<developer>https://github.com/the-djmaze/snappymail/wiki/Developer-Documentation</developer>
 		<website>https://github.com/the-djmaze/snappymail/wiki</website>
 	</documentation>
 	<category>integration</category>
@@ -37,7 +39,7 @@ There, click on the link to go to the SnappyMail admin panel.
 	<repository>https://github.com/the-djmaze/snappymail/tree/master/integrations/nextcloud</repository>
 	<bugs>https://github.com/the-djmaze/snappymail/issues</bugs>
 	<dependencies>
-		<php min-version="7.4" min-int-size="64" />
+		<php min-version="7.4" min-int-size="32" />
 		<lib>mbstring</lib>
 		<lib>zlib</lib>
 <!--
@@ -61,7 +63,7 @@ There, click on the link to go to the SnappyMail admin panel.
 		<lib>xxtea</lib>
 		<lib>zip</lib>
 -->
-		<nextcloud min-version="20" max-version="26" />
+		<nextcloud min-version="20" max-version="27" />
 	</dependencies>
 	<settings>
 		<admin>OCA\SnappyMail\Settings\AdminSettings</admin>
@@ -75,4 +77,12 @@ There, click on the link to go to the SnappyMail admin panel.
 			<order>4</order>
 		</navigation>
 	</navigations>
+	<repair-steps>
+		<install>
+			<step>OCA\SnappyMail\Migration\InstallStep</step>
+		</install>
+		<post-migration>
+			<step>OCA\SnappyMail\Migration\InstallStep</step>
+		</post-migration>
+	</repair-steps>
 </info>

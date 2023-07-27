@@ -1,15 +1,19 @@
 import ko from 'ko';
 import { koComputable } from 'External/ko';
-import { doc, $htmlCL, elementById, fireEvent } from 'Common/Globals';
-import { forEachObjectValue, forEachObjectEntry } from 'Common/Utils';
+import { doc, $htmlCL, elementById, createElement, fireEvent } from 'Common/Globals';
+import { forEachObjectEntry } from 'Common/Utils';
 import { i18nToNodes } from 'Common/Translator';
 
+import { leftPanelDisabled } from 'Common/Globals';
+import { ThemeStore } from 'Stores/Theme';
+
 let
-	SCREENS = {},
 	currentScreen = null,
 	defaultScreenName = '';
 
 const
+	SCREENS = new Map,
+
 	autofocus = dom => dom.querySelector('[autofocus]')?.focus(),
 
 	visiblePopups = new Set,
@@ -18,7 +22,7 @@ const
 	 * @param {string} screenName
 	 * @returns {?Object}
 	 */
-	screen = screenName => (screenName && SCREENS[screenName]) || null,
+	screen = screenName => (screenName && SCREENS.get(screenName)) || null,
 
 	/**
 	 * @param {Function} ViewModelClass
@@ -35,27 +39,24 @@ const
 				dialog = ViewTypePopup === vm.viewType,
 				vmPlace = doc.getElementById(position);
 
-			fireEvent('rl-view-model.create', vm);
-
 			ViewModelClass.__builded = true;
 			ViewModelClass.__vm = vm;
 
 			if (vmPlace) {
-				vmDom = Element.fromHTML(dialog
-					? '<dialog id="V-'+ id + '"></dialog>'
-					: '<div id="V-'+ id + '" hidden=""></div>');
+				vmDom = dialog
+					? createElement('dialog',{id:'V-'+id})
+					: createElement('div',{id:'V-'+id,hidden:''})
 				vmPlace.append(vmDom);
 
 				vm.viewModelDom = ViewModelClass.__dom = vmDom;
 
 				if (dialog) {
-					vm.close = () => hideScreenPopup(ViewModelClass);
-
 					// Firefox < 98 / Safari < 15.4 HTMLDialogElement not defined
 					if (!vmDom.showModal) {
+						vmDom.className = 'polyfill';
 						vmDom.showModal = () => {
 							vmDom.backdrop ||
-								vmDom.before(vmDom.backdrop = Element.fromHTML('<div class="dialog-backdrop"></div>'));
+								vmDom.before(vmDom.backdrop = createElement('div',{class:'dialog-backdrop'}));
 							vmDom.setAttribute('open','');
 							vmDom.open = true;
 							vmDom.returnValue = null;
@@ -79,7 +80,6 @@ const
 					const endShowHide = e => {
 						if (e.target === vmDom) {
 							if (vmDom.classList.contains('animate')) {
-								autofocus(vmDom);
 								vm.afterShow?.();
 							} else {
 								vmDom.close();
@@ -98,6 +98,7 @@ const
 								vmDom.backdrop.style.zIndex = 3000 + (visiblePopups.size * 2);
 							}
 							vm.keyScope.set();
+							setTimeout(()=>autofocus(vmDom),1);
 							requestAnimationFrame(() => { // wait just before the next paint
 								vmDom.offsetHeight; // force a reflow
 								vmDom.classList.add('animate'); // trigger the transitions
@@ -112,6 +113,8 @@ const
 					});
 					vmDom.addEventListener('transitionend', endShowHide);
 				}
+
+				fireEvent('rl-view-model.create', vm);
 
 				ko.applyBindingAccessorsToNode(
 					vmDom,
@@ -129,7 +132,7 @@ const
 			}
 		}
 
-		return ViewModelClass && ViewModelClass.__vm;
+		return ViewModelClass?.__vm;
 	},
 
 	forEachViewModel = (screen, fn) => {
@@ -151,16 +154,7 @@ const
 			vm.onHide?.();
 			destroy && vm.viewModelDom.remove();
 		});
-	},
-
-	/**
-	 * @param {Function} ViewModelClassToHide
-	 * @returns {void}
-	 */
-	hideScreenPopup = ViewModelClassToHide => {
-		if (ViewModelClassToHide?.__vm && ViewModelClassToHide?.__dom) {
-			ViewModelClassToHide.__vm.modalVisible(false);
-		}
+		ThemeStore.isMobile() && leftPanelDisabled(true);
 	},
 
 	/**
@@ -169,69 +163,58 @@ const
 	 * @returns {void}
 	 */
 	screenOnRoute = (screenName, subPart) => {
-		let vmScreen = null,
-			isSameScreen = false;
-
-		if (null == screenName || '' == screenName) {
-			screenName = defaultScreenName;
-		}
-
-		if (fireEvent('sm-show-screen', screenName, 1)) {
-
+		screenName = screenName || defaultScreenName;
+		if (screenName && fireEvent('sm-show-screen', screenName, 1)) {
 			// Close all popups
 			for (let vm of visiblePopups) {
 				(false === vm.onClose()) || vm.close();
 			}
 
-			if (screenName) {
-				vmScreen = screen(screenName);
-				if (!vmScreen) {
-					vmScreen = screen(defaultScreenName);
-					if (vmScreen) {
-						subPart = screenName + '/' + subPart;
-						screenName = defaultScreenName;
-					}
+			let vmScreen = screen(screenName);
+			if (!vmScreen) {
+				vmScreen = screen(defaultScreenName);
+				if (vmScreen) {
+					subPart = screenName + '/' + subPart;
+					screenName = defaultScreenName;
+				}
+			}
+
+			if (vmScreen?.__started) {
+				let isSameScreen = currentScreen && vmScreen === currentScreen;
+
+				if (!vmScreen.__builded) {
+					vmScreen.__builded = true;
+
+					vmScreen.viewModels.forEach(ViewModelClass =>
+						buildViewModel(ViewModelClass, vmScreen)
+					);
+
+					vmScreen.onBuild?.();
 				}
 
-				if (vmScreen?.__started) {
-					isSameScreen = currentScreen && vmScreen === currentScreen;
+				setTimeout(() => {
+					// hide screen
+					currentScreen && !isSameScreen && hideScreen(currentScreen);
+					// --
 
-					if (!vmScreen.__builded) {
-						vmScreen.__builded = true;
+					currentScreen = vmScreen;
 
-						vmScreen.viewModels.forEach(ViewModelClass =>
-							buildViewModel(ViewModelClass, vmScreen)
-						);
+					// show screen
+					if (!isSameScreen) {
+						vmScreen.onShow?.();
 
-						vmScreen.onBuild?.();
+						forEachViewModel(vmScreen, (vm, dom) => {
+							vm.beforeShow?.();
+							i18nToNodes(dom);
+							dom.hidden = false;
+							vm.onShow?.();
+							autofocus(dom);
+						});
 					}
+					// --
 
-					setTimeout(() => {
-						// hide screen
-						if (currentScreen && !isSameScreen) {
-							hideScreen(currentScreen);
-						}
-						// --
-
-						currentScreen = vmScreen;
-
-						// show screen
-						if (!isSameScreen) {
-							vmScreen.onShow?.();
-
-							forEachViewModel(vmScreen, (vm, dom) => {
-								vm.beforeShow?.();
-								i18nToNodes(dom);
-								dom.hidden = false;
-								vm.onShow?.();
-								autofocus(dom);
-							});
-						}
-						// --
-
-						vmScreen.__cross?.parse(subPart);
-					}, 1);
-				}
+					vmScreen.__cross?.parse(subPart);
+				}, 1);
 			}
 		}
 	};
@@ -267,21 +250,19 @@ export const
 	 */
 	startScreens = screensClasses => {
 		hasher.clear();
-		forEachObjectValue(SCREENS, screen => hideScreen(screen, 1));
-		SCREENS = {};
+		SCREENS.forEach(screen => hideScreen(screen, 1));
+		SCREENS.clear();
 		currentScreen = null,
 		defaultScreenName = '';
 
 		screensClasses.forEach(CScreen => {
-			if (CScreen) {
-				const vmScreen = new CScreen(),
-					screenName = vmScreen.screenName;
-				defaultScreenName || (defaultScreenName = screenName);
-				SCREENS[screenName] = vmScreen;
-			}
+			const vmScreen = new CScreen(),
+				screenName = vmScreen.screenName;
+			defaultScreenName || (defaultScreenName = screenName);
+			SCREENS.set(screenName, vmScreen);
 		});
 
-		forEachObjectValue(SCREENS, vmScreen => {
+		SCREENS.forEach(vmScreen => {
 			if (!vmScreen.__started) {
 				vmScreen.onStart();
 				vmScreen.__started = true;
@@ -289,7 +270,7 @@ export const
 		});
 
 		const cross = new Crossroads();
-		cross.addRoute(/^([a-zA-Z0-9-]*)\/?(.*)$/, screenOnRoute);
+		cross.addRoute(/^([^/]*)\/?(.*)$/, screenOnRoute);
 
 		hasher.add(cross.parse.bind(cross));
 		hasher.init();

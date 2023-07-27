@@ -22,55 +22,41 @@ class Attachment
 	 */
 	private $rResource;
 
-	/**
-	 * @var string
-	 */
-	private $sFileName;
+	private string $sFileName;
 
-	/**
-	 * @var int
-	 */
-	private $iFileSize;
+//	private int $iFileSize;
 
-	/**
-	 * @var string
-	 */
-	private $sCID;
+	private string $sContentID;
 
-	/**
-	 * @var bool
-	 */
-	private $bIsInline;
+	private bool $bIsInline;
 
-	/**
-	 * @var bool
-	 */
-	private $bIsLinked;
+	private bool $bIsLinked;
 
-	/**
-	 * @var array
-	 */
-	private $aCustomContentTypeParams;
+	private array $aCustomContentTypeParams;
 
-	/**
-	 * @var string
-	 */
-	private $sContentLocation;
+	private string $sContentLocation;
+
+	private string $sContentType;
 
 	/**
 	 * @param resource $rResource
 	 */
 	function __construct($rResource, string $sFileName, int $iFileSize, bool $bIsInline,
-		bool $bIsLinked, string $sCID, array $aCustomContentTypeParams = [], string $sContentLocation = '')
+		bool $bIsLinked, string $sContentID, array $aCustomContentTypeParams = [],
+		string $sContentLocation = '', string $sContentType = '')
 	{
 		$this->rResource = $rResource;
 		$this->sFileName = $sFileName;
-		$this->iFileSize = $iFileSize;
+//		$this->iFileSize = $iFileSize;
 		$this->bIsInline = $bIsInline;
 		$this->bIsLinked = $bIsLinked;
-		$this->sCID = $sCID;
+		$this->sContentID = $sContentID;
 		$this->aCustomContentTypeParams = $aCustomContentTypeParams;
 		$this->sContentLocation = $sContentLocation;
+		$this->sContentType = $sContentType
+			?: \SnappyMail\File\MimeType::fromStream($rResource, $sFileName)
+			?: \SnappyMail\File\MimeType::fromFilename($sFileName)
+			?: 'application/octet-stream';
 	}
 
 	/**
@@ -83,7 +69,7 @@ class Attachment
 
 	public function ContentType() : string
 	{
-		return \MailSo\Base\Utils::MimeContentType($this->sFileName);
+		return $this->sContentType;
 	}
 
 	public function CustomContentTypeParams() : array
@@ -91,69 +77,33 @@ class Attachment
 		return $this->aCustomContentTypeParams;
 	}
 
-	public function CID() : string
-	{
-		return $this->sCID;
-	}
-
-	public function ContentLocation() : string
-	{
-		return $this->sContentLocation;
-	}
-
 	public function FileName() : string
 	{
 		return $this->sFileName;
 	}
 
-	public function FileSize() : int
-	{
-		return $this->iFileSize;
-	}
-
-	public function IsInline() : bool
+	public function isInline() : bool
 	{
 		return $this->bIsInline;
 	}
 
-	public function IsImage() : bool
+	public function isLinked() : bool
 	{
-		return 'image' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->FileName());
-	}
-
-	public function IsArchive() : bool
-	{
-		return 'archive' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->FileName());
-	}
-
-	public function IsPdf() : bool
-	{
-		return 'pdf' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->FileName());
-	}
-
-	public function IsDoc() : bool
-	{
-		return 'doc' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->FileName());
-	}
-
-	public function IsLinked() : bool
-	{
-		return $this->bIsLinked && \strlen($this->sCID);
+		return $this->bIsLinked && \strlen($this->sContentID);
 	}
 
 	public function ToPart() : Part
 	{
 		$oAttachmentPart = new Part;
 
-		$sFileName = $this->FileName();
-		$sCID = $this->CID();
-		$sContentLocation = $this->ContentLocation();
+		$sFileName = \trim($this->sFileName);
+		$sContentID = $this->sContentID;
+		$sContentLocation = $this->sContentLocation;
 
 		$oContentTypeParameters = null;
 		$oContentDispositionParameters = null;
 
-		if (\strlen(\trim($sFileName)))
-		{
+		if (\strlen($sFileName)) {
 			$oContentTypeParameters =
 				(new ParameterCollection)->Add(new Parameter(
 					Enumerations\Parameter::NAME, $sFileName));
@@ -165,27 +115,25 @@ class Attachment
 
 		$oAttachmentPart->Headers->append(
 			new Header(Enumerations\Header::CONTENT_TYPE,
-				$this->ContentType().';'.
-				(($oContentTypeParameters) ? ' '.$oContentTypeParameters->ToString() : '')
+				$this->ContentType().
+				($oContentTypeParameters ? '; '.$oContentTypeParameters : '')
 			)
 		);
 
 		$oAttachmentPart->Headers->append(
 			new Header(Enumerations\Header::CONTENT_DISPOSITION,
-				($this->IsInline() ? 'inline' : 'attachment').';'.
-				(($oContentDispositionParameters) ? ' '.$oContentDispositionParameters->ToString() : '')
+				($this->isInline() ? 'inline' : 'attachment').
+				($oContentDispositionParameters ? '; '.$oContentDispositionParameters : '')
 			)
 		);
 
-		if (\strlen($sCID))
-		{
+		if (\strlen($sContentID)) {
 			$oAttachmentPart->Headers->append(
-				new Header(Enumerations\Header::CONTENT_ID, $sCID)
+				new Header(Enumerations\Header::CONTENT_ID, $sContentID)
 			);
 		}
 
-		if (\strlen($sContentLocation))
-		{
+		if (\strlen($sContentLocation)) {
 			$oAttachmentPart->Headers->append(
 				new Header(Enumerations\Header::CONTENT_LOCATION, $sContentLocation)
 			);
@@ -193,8 +141,7 @@ class Attachment
 
 		$oAttachmentPart->Body = $this->Resource();
 
-		if ('message/rfc822' !== \strtolower($this->ContentType()))
-		{
+		if ('message/rfc822' !== \strtolower($this->ContentType())) {
 			$oAttachmentPart->Headers->append(
 				new Header(
 					Enumerations\Header::CONTENT_TRANSFER_ENCODING,
@@ -202,17 +149,13 @@ class Attachment
 				)
 			);
 
-			if (\is_resource($oAttachmentPart->Body))
-			{
-				if (!\MailSo\Base\StreamWrappers\Binary::IsStreamRemembed($oAttachmentPart->Body))
-				{
-					$oAttachmentPart->Body =
-						\MailSo\Base\StreamWrappers\Binary::CreateStream($oAttachmentPart->Body,
-							\MailSo\Base\StreamWrappers\Binary::GetInlineDecodeOrEncodeFunctionName(
-								\MailSo\Base\Enumerations\Encoding::BASE64, false));
+			if (\is_resource($oAttachmentPart->Body) && !\MailSo\Base\StreamWrappers\Binary::IsStreamRemembed($oAttachmentPart->Body)) {
+				$oAttachmentPart->Body =
+					\MailSo\Base\StreamWrappers\Binary::CreateStream($oAttachmentPart->Body,
+						\MailSo\Base\StreamWrappers\Binary::GetInlineDecodeOrEncodeFunctionName(
+							\MailSo\Base\Enumerations\Encoding::BASE64, false));
 
-					\MailSo\Base\StreamWrappers\Binary::RememberStream($oAttachmentPart->Body);
-				}
+				\MailSo\Base\StreamWrappers\Binary::RememberStream($oAttachmentPart->Body);
 			}
 		}
 

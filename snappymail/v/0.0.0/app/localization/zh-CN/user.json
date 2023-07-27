@@ -1,4 +1,5 @@
 {
+	"LANG_DIR": "ltr",
 	"GLOBAL": {
 		"TO_ARCHIVE": "存档",
 		"ARE_YOU_SURE": "您是否确定？",
@@ -6,7 +7,7 @@
 		"BCC": "密送",
 		"CANCEL": "取消",
 		"CC": "抄送",
-		"CLEAR": "取消",
+		"CLEAR": "清除",
 		"CLOSE": "关闭",
 		"CONTACTS": "联系人",
 		"DELETE": "删除",
@@ -19,9 +20,11 @@
 		"MOVE_TO": "移至",
 		"NAME": "名称",
 		"NONE": "无",
+		"TO_SPAM": "移动到垃圾邮件",
 		"NOT_SPAM": "非垃圾邮件",
 		"USERNAME": "用户名",
 		"PASSWORD": "密码",
+		"REMEMBER": "记住",
 		"REPLY_TO": "回复",
 		"SAVE": "保存",
 		"SAVE_CHANGES": "是否保存修改？",
@@ -33,7 +36,11 @@
 		"SERVER_MESSAGE": "服务器信息",
 		"YES": "是",
 		"NO": "否",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "不生效",
+		"DEFAULT": "默认",
+		"HELP": "帮助",
+		"TEXT": "内容",
+		"ATTACHMENTS": "附件"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "登录",
@@ -41,13 +48,7 @@
 		"BUTTON_SIGN_IN": "登录"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "添加账户",
-		"BUTTON_SETTINGS": "设置",
-		"BUTTON_HELP": "帮助"
-	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "移动端版本",
-		"BUTTON_DESKTOP_VERSION": "桌面端版本"
+		"BUTTON_ADD_ACCOUNT": "添加账户"
 	},
 	"SEARCH": {
 		"TITLE_ADV": "高级搜索",
@@ -98,6 +99,7 @@
 		"MENU_SELECT_SEEN": "已读",
 		"MENU_SELECT_FLAGGED": "已加星标",
 		"MENU_SELECT_UNFLAGGED": "未加星标",
+		"DOWNLOAD_ALL_ATTACHMENTS": "下载所有附件",
 		"EMPTY_LIST": "空列表。",
 		"EMPTY_SEARCH_LIST": "未找到您搜索的消息。",
 		"SEARCH_RESULT_FOR": "搜索 \"%SEARCH%\" 的结果",
@@ -108,6 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "您有 %COUNT% 封新邮件！",
 		"QUOTA_SIZE": "使用了 <strong>%LIMIT%<\/strong> 存储空间中的<strong>%SIZE% (%PROC%%)<\/strong>",
 		"SORT": "排序",
+		"NO_SORT": "邮件服务器不支持排序",
 		"SORT_DATE_ASC": "日期升序",
 		"SORT_DATE_DESC": "日期降序",
 		"SORT_SIZE_ASC": "大小升序",
@@ -224,11 +227,16 @@
 		"NO_ATTACHMENTS_HERE_DESC": "无附件。",
 		"ATTACHMENTS_ERROR_DESC": "注意！还有正在上传的附件。",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "还有附件正在上传。",
+		"ALLOW_SPELLCHECK": "启用浏览器拼写检查器",
+		"ALLOW_DRAFT_AUTOSAVE": "自动保存草稿",
 		"BUTTON_REQUEST_READ_RECEIPT": "要求已读回执",
 		"BUTTON_MARK_AS_IMPORTANT": "标记为“重要”",
-		"BUTTON_REQUEST_DSN": "要求送达回执"
+		"BUTTON_REQUEST_DSN": "要求送达回执",
+		"BUTTON_REQUIRE_TLS": "要求安全送达",
+		"ERROR_EMPTY_BODY": "消息内容为空"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "您确定要退出吗？",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "您确定要关闭此窗口吗？",
 		"DESC_WANT_DELETE_MESSAGES": "您确定要删除这条消息吗？"
 	},
@@ -312,7 +320,7 @@
 		"MARK_AS_READ_LABEL": "标记为已读",
 		"REPLY_INTERVAL_LABEL": "答复间隔 (天) ",
 		"KEEP_LABEL": "保留邮件",
-		"STOP_LABEL": "继续匹配其他规则",
+		"STOP_LABEL": "停止处理更多规则",
 		"VACATION_SUBJECT_LABEL": "主题 (可选)",
 		"VACATION_MESSAGE_LABEL": "内容",
 		"VACATION_RECIPIENTS_LABEL": "收件人 (半角逗号“,”分隔)",
@@ -351,21 +359,43 @@
 		"ERROR_UNKNOWN": "未知上传文件错误"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> TEXT",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"PLAIN": "HTML <-> TEXT",
+		"SOURCE": "HTML <-> SOURCE",
+		"FONTFAMILY": "Font family",
+		"FONTSIZE": "Font size",
+		"DIR": "Text direction",
+		"DIR_LTR": "Left to right",
+		"DIR_RTL": "Right to left",
+		"DIR_AUTO": "Automatic",
+		"TEXTCOLOR": "Text color",
+		"BACKGROUNDCOLOR": "Background color",
+		"BOLD": "Bold",
+		"ITALIC": "Italic",
+		"UNDERLINE": "Underline",
+		"STRIKE": "Strikethrough",
+		"SUB": "Subscript",
+		"SUP": "Superscript",
+		"OL": "Ordered list",
+		"UL": "Unordered list",
+		"QUOTE": "Blockquote",
+		"INDENTDECREASE": "Decrease indent",
+		"INDENTINCREASE": "Increase indent",
+		"LINK": "Link",
+		"IMAGEURL": "Image URL",
+		"IMAGEUPLOAD": "Image select",
+		"UNDO": "Undo",
+		"REDO": "Redo"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "个人",
-		"LABEL_GENERAL_NAME": "常规",
-		"LABEL_CONTACTS_NAME": "联系人",
-		"LABEL_FOLDERS_NAME": "文件夹",
-		"LABEL_ACCOUNTS_NAME": "账户",
-		"LABEL_FILTERS_NAME": "筛选器",
-		"LABEL_SECURITY_NAME": "安全",
-		"LABEL_THEMES_NAME": "主题"
+		"GENERAL": "常规",
+		"CONTACTS": "联系人",
+		"FOLDERS": "文件夹",
+		"ACCOUNTS": "账户",
+		"FILTERS": "筛选器",
+		"SECURITY": "安全",
+		"THEMES": "主题"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "筛选器",
 		"SIMPLE": "简单",
 		"ADVANCED": "高级",
 		"BUTTON_ADD_SCRIPT": "添加脚本",
@@ -378,18 +408,18 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "安全",
 		"LABEL_AUTOLOGOUT": "自动登出",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "从不",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% 分钟",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% 小时"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "从不"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "常规",
 		"LANGUAGE": "语言",
+		"HOUR_FORMAT": "小时格式",
 		"IDENTITY": "身份",
 		"LAYOUT": "布局",
 		"LAYOUT_NO_SPLIT": "不分隔",
 		"LAYOUT_VERTICAL_SPLIT": "垂直分隔",
 		"LAYOUT_HORIZONTAL_SPLIT": "水平分隔",
+		"SHOW_NEXT_MESSAGE": "删除或移动当前消息后显示下一条消息",
 		"EDITOR": "默认文本编辑器",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "纯文本",
@@ -399,19 +429,30 @@
 		"USE_CHECKBOXES_IN_LIST": "列表中显示多选框",
 		"USE_THREADS": "使用对话",
 		"REPLY_SAME_FOLDER": "将回复的邮件置于被回复的邮件所在的文件夹",
-		"SHOW_IMAGES": "总是显示外部图片信息",
 		"PREFER_HTML": "相比纯文本优先使用 HTML",
 		"PREFER_HTML_INFO": "消息有时以两种格式传送。该选项控制您希望显示 HTML 部分还是纯文本部分。",
 		"REMOVE_COLORS": "从消息中删除背景和文本颜色",
+		"ALLOW_STYLES": "允许 <style> CSS",
 		"MESSAGE_PER_PAGE": "每页消息数",
+		"CHECK_MAIL_INTERVAL": "邮件检查间隔",
 		"MARK_MESSAGE_READ_AFTER": "将消息标记为已读",
 		"MSG_DEFAULT_ACTION": "默认操作",
 		"SECONDS": "秒",
+		"MINUTES": "分",
 		"NOTIFICATIONS": "通知",
 		"SOUND_NOTIFICATION": "提示音",
 		"CHROME_NOTIFICATION_DESC": "显示新邮件弹窗",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(被浏览器阻止)",
-		"LIST_INLINE_ATTACHMENTS": "在列表中显示内联附件"
+		"COLLAPSE_BLOCKQUOTES": "折叠引用文本",
+		"MAX_QUOTE_LEVEL": "最多显示的引用文本层级",
+		"LIST_INLINE_ATTACHMENTS": "在列表中显示内联附件",
+		"LIST_SIMPLE_ATTACHMENTS": "简洁附件列表",
+		"LIST_MESSAGES_GROUPED": "按分组显示消息 (按时间或发件人排序时)",
+		"EXTERNAL_IMAGES": "外部图片",
+		"IMAGES_OPTION_ASK": "总是询问",
+		"IMAGES_OPTION_WHITELIST": "白名单或询问",
+		"IMAGES_OPTION_ALWAYS": "总是显示",
+		"IMAGES_WHITELIST": "图片白名单"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "自动添加到您的地址簿",
@@ -463,14 +504,13 @@
 		"BUTTON_ADD_ACCOUNT": "添加一个账户",
 		"BUTTON_ADD_IDENTITY": "添加一个身份",
 		"LOADING_PROCESS": "更新账户列表中",
-		"DEFAULT_IDENTITY_LABEL": "默认"
+		"SHOW_UNREAD": "显示未读消息数量"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "导入 密钥",
 		"BUTTON_GENERATE_KEY_PAIR": "生成 密钥",
 		"TITLE_PRIVATE": "私有",
 		"TITLE_PUBLIC": "公开",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "自动保存草稿",
 		"GET_MAILVELOPE": "获取 Mailvelope 浏览器扩展。"
 	},
 	"SHORTCUTS_HELP": {
@@ -484,7 +524,6 @@
 		"LABEL_REPLY_ALL": "回复所有",
 		"LABEL_FORWARD": "转发",
 		"LABEL_FORWARD_MULTIPLY": "作为附件转发",
-		"LABEL_HELP": "帮助",
 		"LABEL_CHECK_ALL": "选择所有消息",
 		"LABEL_DELETE": "删除",
 		"LABEL_OPEN_THREAD": "打开选定的邮件往来",

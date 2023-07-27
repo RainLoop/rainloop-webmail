@@ -104,10 +104,10 @@ export class ContactsPopupView extends AbstractViewPopup {
 		const contacts = this.contactsCheckedOrSelected();
 		if (contacts.length) {
 			let selectorContact = this.selectorContact(),
-				Uids = [],
+				uids = [],
 				count = 0;
 			contacts.forEach(contact => {
-				Uids.push(contact.id());
+				uids.push(contact.id());
 				if (selectorContact && selectorContact.id() === contact.id()) {
 					this.selectorContact(selectorContact = null);
 				}
@@ -127,7 +127,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 					}
 					this.reloadContactList();
 				}, {
-					Uids: Uids.join(',')
+					uids: uids.join(',')
 				}
 			);
 		}
@@ -140,7 +140,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 		this.contactsCheckedOrSelected().forEach(oContact => {
 			const data = oContact?.getNameAndEmailHelper(),
 				email = data ? new EmailModel(data[0], data[1]) : null;
-			email?.validate() && aE.push(email);
+			email?.valid() && aE.push(email);
 		});
 
 		if (arrayLength(aE)) {

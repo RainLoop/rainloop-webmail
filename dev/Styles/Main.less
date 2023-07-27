@@ -1,31 +1,10 @@
-/**
- * 1. Correct the line height in all browsers.
- * 2. Prevent adjustments of font size after orientation changes in iOS.
- */
-
-html, body {
-	height: 100%;
-	overflow: hidden;
-	-webkit-text-size-adjust: 100%; /* 2 */
-}
-
-#rl-app {
-	-webkit-touch-callout: none;
-	font-size: var(--main-font-size, 14px);
-	line-height: 1.15; /* 1 */
-	position: fixed;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
-}
 
 html.list-loading body {
 /*	cursor: wait;*/
 	cursor: progress;
 }
 
-@media screen and (min-width: 1000px) {
+@media screen and (min-width: @maxMobileWidth + 1px) {
 	#rl-app {
 		background-image: var(--main-bg-image);
 		background-size: var(--main-bg-size);
@@ -43,6 +22,10 @@ option:disabled {
 	-webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
+#rl-content:not([hidden]) {
+	display:flex;
+	height: 100%;
+}
 
 dialog::backdrop {
 	background: rgba(0,0,0,0.5);
@@ -66,7 +49,8 @@ dialog {
 	display: flex;
 	flex-direction: column;
 	margin: 10px auto;
-	max-height: calc(100vh - 20px);
+	max-height: calc(100vh - var(--smDialogShrink));
+	max-height: calc(100dvh - var(--smDialogShrink));
 	max-width: 560px;
 	overflow: auto;
 	padding: 0;
@@ -85,6 +69,18 @@ dialog:not(.animate) {
 	background-color: rgba(0,0,0,0);
 	opacity: 0;
 	top: -25%;
+}
+
+/**
+ * https://github.com/the-djmaze/snappymail/issues/686
+ */
+@media screen and (max-width: @maxMobileWidth) {
+	dialog {
+		margin: 0 auto;
+/*		max-height: calc(100vh - 86px);*/
+/*		max-height: 100dvh;*/
+		width: 100%;
+	}
 }
 
 dialog > header {
@@ -113,11 +109,11 @@ dialog .modal-body {
 
 // Footer (for actions)
 dialog > footer {
-	padding: 14px 15px 15px;
+	padding: 9px 15px;
 	margin-bottom: 0;
-	text-align: right; // right align buttons
+	text-align: var(--right, right); // right align buttons
 	border-top: 1px solid var(--border-color, #ddd);
-	border-radius: 0 0 6px 6px;
+	border-radius: 0 0 var(--dialog-border-radius, 6px) var(--dialog-border-radius, 6px);
 
 	// Properly space out buttons
 	.btn + .btn {

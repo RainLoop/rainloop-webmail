@@ -96,23 +96,23 @@ trait Metadata
 
 	public function ServerGetMetadata(array $aEntries, array $aOptions = []) : array
 	{
-		return $this->IsSupported('METADATA-SERVER')
+		return $this->hasCapability('METADATA-SERVER')
 			? $this->getMetadata('', $aEntries, $aOptions)
 			: [];
 	}
 
 	public function FolderGetMetadata(string $sFolderName, array $aEntries, array $aOptions = []) : array
 	{
-		return $this->IsSupported('METADATA')
+		return $this->hasCapability('METADATA')
 			? $this->getMetadata($sFolderName, $aEntries, $aOptions)
 			: [];
 	}
 
 	public function FolderSetMetadata(string $sFolderName, array $aEntries) : void
 	{
-		if ($this->IsSupported('METADATA')) {
+		if ($this->hasCapability('METADATA')) {
 			if (!$aEntries) {
-				throw new \MailSo\Base\Exceptions\InvalidArgumentException("Wrong argument for SETMETADATA command");
+				throw new \InvalidArgumentException('Wrong argument for SETMETADATA command');
 			}
 
 			$arguments = [$this->EscapeFolderName($sFolderName)];
@@ -126,4 +126,8 @@ trait Metadata
 		}
 	}
 
+	public function FolderRemoveMetadata($sFolderName, array $aEntries) : void
+	{
+		$this->FolderSetMetadata($sFolderName, \array_fill_keys(\array_keys($aEntries), null));
+	}
 }

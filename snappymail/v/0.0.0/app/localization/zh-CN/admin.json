@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "控制面板"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "常规",
-		"LABEL_LOGIN_NAME": "登录",
-		"LABEL_BRANDING_NAME": "Logo",
-		"LABEL_CONTACTS_NAME": "联系人",
-		"LABEL_DOMAINS_NAME": "域名",
-		"LABEL_SECURITY_NAME": "安全",
-		"LABEL_PACKAGES_NAME": "插件包",
-		"LABEL_CONFIG_NAME": "配置",
-		"LABEL_ABOUT_NAME": "关于"
+		"GENERAL": "常规",
+		"LOGIN": "登录",
+		"BRANDING": "Logo",
+		"CONTACTS": "联系人",
+		"DOMAINS": "域名",
+		"SECURITY": "安全",
+		"PACKAGES": "插件包",
+		"CONFIG": "配置",
+		"ABOUT": "关于"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "界面",
@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "用户",
 		"LABEL_STORAGE_PASSWORD": "密码",
 		"ALERT_NOTICE": "提示!",
+		"SUGGESTIONS_LIMIT": "建议数量上限",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "如果有大量的活跃用户，请不要选择此数据库类型。",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "您的系统不支持联系人\n<br>\n您需要在您的服务器上安装或启用<strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> 组件。\n"
 	},
@@ -88,8 +89,7 @@
 		"LABEL_CURRENT_PASSWORD": "当前密码",
 		"LABEL_NEW_PASSWORD": "新密码",
 		"LABEL_REPEAT_PASSWORD": "重复输入新密码",
-		"LEGEND_SSL": "SSL",
-		"LABEL_REQUIRE_VERIFICATION": "要求验证 SSL 证书（IMAP\/SMTP）",
+		"LABEL_REQUIRE_VERIFICATION": "要求验证 SSL 证书",
 		"LABEL_ALLOW_SELF_SIGNED": "允许自签名证书"
 	},
 	"TAB_PACKAGES": {
@@ -121,20 +121,21 @@
 		"TITLE_EDIT_DOMAIN": "编辑域名 \"%NAME%\"",
 		"LABEL_NAME": "名字",
 		"NAME_HELPER": "支持通配符",
-		"LABEL_IMAP": "IMAP",
-		"LABEL_SMTP": "SMTP",
-		"LABEL_SIEVE": "SIEVE",
 		"LABEL_SERVER": "服务器",
 		"LABEL_PORT": "端口",
 		"LABEL_SECURE": "加密",
+		"TIMEOUT": "超时",
+		"DISABLE_CAPABILITIES": "禁用能力",
+		"LIMITS": "限制",
+		"FOLDERS": "文件夹",
+		"MESSAGES": "消息",
 		"LABEL_WHITE_LIST": "白名单",
 		"SECURE_OPTION_NONE": "无",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "可使用筛选脚本",
 		"LABEL_USE_SHORT_LOGIN": "使用短用户名登录",
 		"LABEL_USE_AUTH": "使用认证",
 		"LABEL_SET_SENDER": "使用登录名作为发件人",
+		"LABEL_AUTH_PLAIN_LINE": "强制单一 AUTH PLAIN 命令登录",
 		"LABEL_USE_PHP_MAIL": "使用 php mail() 函数",
 		"BUTTON_WHITE_LIST": "白名单",
 		"BUTTON_SIEVE_CONFIGURATION": "筛选设置",
@@ -158,7 +159,6 @@
 	},
 	"HINTS": {
 		"BETA": "测试版本",
-		"UNSTABLE": "不稳定版本",
 		"WARNING": "警告"
 	},
 	"ERRORS": {

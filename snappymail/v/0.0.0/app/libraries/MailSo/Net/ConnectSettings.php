@@ -15,66 +15,84 @@ namespace MailSo\Net;
  * @category MailSo
  * @package Net
  */
-class ConnectSettings
+class ConnectSettings implements \JsonSerializable
 {
-	public
-		$host,
+	public string $host;
 
-		$port,
+	public int $port;
 
-		// none, TLS, STARTTLS
-		$type = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
+	/**
+	 * stream timeout in seconds
+	 */
+	public int $timeout = 10;
 
-		// https://www.php.net/context.ssl
-		$ssl = [
-//			'peer_name' => '',
-//			'peer_fingerprint' => '', // string | array
-			'verify_peer' => true,
-			'verify_peer_name' => true,
-			'allow_self_signed' => false,
-//			'cafile' => '',
-//			'capath' => '',
+	// none, TLS, STARTTLS
+	public int $type = Enumerations\ConnectionSecurityType::AUTO_DETECT;
+//	public int $type = Enumerations\ConnectionSecurityType::NONE;
 
-//			'ciphers' => 'HIGH:!SSLv2:!SSLv3',
-			'SNI_enabled' => true,
-			'disable_compression' => true,
-			'security_level' => 1,
+	public SSLContext $ssl;
+//	public bool $tls_weak = false;
 
-//			'local_cert' => '',
-//			'local_pk' => '',
-//			'passphrase' => '',
+	// Authentication settings use by all child classes
+	public bool $useAuth = true;
+	public bool $shortLogin = false;
+	public array $SASLMechanisms = [
+		// https://github.com/the-djmaze/snappymail/issues/182
+		'SCRAM-SHA3-512',
+		'SCRAM-SHA-512',
+		'SCRAM-SHA-256',
+		'SCRAM-SHA-1',
+//		'CRAM-MD5',
+		'PLAIN',
+		'LOGIN'
+	];
+	public string $Login = '';
+	public string $Password = '';
+	public string $ProxyAuthUser = '';
+	public string $ProxyAuthPassword = '';
 
-//			'verify_depth' => 0,
-//			'capture_peer_cert' => false,
-//			'capture_peer_cert_chain' => false,
-		];
-
-	function __construct()
+	public function __construct()
 	{
-		// TODO: This should be moved to \RainLoop\Model\Domain
-		$oConfig = \RainLoop\API::Config();
-		$this->ssl['verify_peer'] = !!$oConfig->Get('ssl', 'verify_certificate', false);
-		$this->ssl['verify_peer_name'] = !!$oConfig->Get('ssl', 'verify_certificate', false);
-		$this->ssl['allow_self_signed'] = !!$oConfig->Get('ssl', 'allow_self_signed', true);
-		$this->ssl['security_level'] = (int) $oConfig->Get('ssl', 'security_level', 1);
-//		$this->ssl['local_cert'] = (string) $oConfig->Get('ssl', 'client_cert', '');
-//		$this->ssl['cafile'] = (string) $oConfig->Get('ssl', 'cafile', '');
-//		$this->ssl['capath'] = (string) $oConfig->Get('ssl', 'capath', '');
+		$this->ssl = new SSLContext;
+	}
+
+	public static function Host() : string
+	{
+		return \SnappyMail\IDN::toAscii($this->host);
 	}
 
 	public static function fromArray(array $aSettings) : self
 	{
-		$object = new self;
-		$object->host = $aSettings['Host'];
-		$object->port = $aSettings['Port'];
-		$object->type = $aSettings['Secure'];
-		$object->ssl['verify_peer'] = !!$aSettings['VerifySsl'];
-		$object->ssl['verify_peer_name'] = !!$aSettings['VerifySsl'];
-		$object->ssl['allow_self_signed'] = !!$aSettings['AllowSelfSigned'];
-		if (!empty($aSettings['ClientCert'])) {
-			$object->ssl['local_cert'] = $aSettings['ClientCert'];
+		$object = new static;
+		$object->host = $aSettings['host'];
+		$object->port = $aSettings['port'];
+		$object->type = isset($aSettings['type']) ? $aSettings['type'] : $aSettings['secure'];
+		if (isset($aSettings['timeout'])) {
+			$object->timeout = $aSettings['timeout'];
 		}
+		$object->shortLogin = !empty($aSettings['shortLogin']);
+		$object->ssl = SSLContext::fromArray($aSettings['ssl'] ?? []);
+		if (isset($aSettings['sasl'])) {
+			$object->SASLMechanisms = $aSettings['sasl'];
+		}
+//		$object->tls_weak = !empty($aSettings['tls_weak']);
 		return $object;
+	}
+
+	#[\ReturnTypeWillChange]
+	public function jsonSerialize()
+	{
+		return array(
+//			'@Object' => 'Object/ConnectSettings',
+			'host' => $this->host,
+			'port' => $this->port,
+			'type' => $this->type,
+			'timeout' => $this->timeout,
+			'shortLogin' => $this->shortLogin,
+			'sasl' => $this->SASLMechanisms,
+			'ssl' => $this->ssl
+//			'tls_weak' => $this->tls_weak
+		);
 	}
 
 }

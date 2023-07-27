@@ -4,6 +4,13 @@
 		&nbsp;&nbsp;&nbsp;
 		<i class="icon-spinner" style="margin-top: 5px" data-bind="visible: loading"></i>
 	</div>
+	<div data-bind="component: {
+		name: 'Checkbox',
+		params: {
+			label: 'SETTINGS_ACCOUNTS/SHOW_UNREAD',
+			value: showUnread
+		}
+	}"></div>
 	<a class="btn" data-bind="click: addNewAccount">
 		<i class="icon-user-add"></i>
 		<span data-i18n="SETTINGS_ACCOUNTS/BUTTON_ADD_ACCOUNT"></span>
@@ -20,8 +27,11 @@
 					<i class="fontastic drag-handle">⬍</i>
 				</td>
 				<td class="e-action">
-					<span class="account-name" data-bind="text: email"></span>
+					<span class="account-name" data-bind="text: displayName"></span>
 				</td>
+<!--
+				<td><span class="icon-import" data-bind="click: importAll"></span></td>
+-->
 				<td>
 					<a class="btn btn-small btn-danger button-confirm-delete" data-bind="css: {'delete-access': askDelete}, click: function(oAccount) { $root.deleteAccount(oAccount); }"
 						data-i18n="GLOBAL/ARE_YOU_SURE"></a>
@@ -42,14 +52,14 @@
 	</a>
 	<table class="table table-hover list-table identities-list" data-bind="i18nUpdate: identities">
 		<tbody data-bind="foreach: identities">
-			<tr draggable="true" data-bind="sortableItem: { list: $root.identities, afterMove: $root.accountsAndIdentitiesAfterMove }">
+			<tr draggable="true" data-bind="attr: {'data-identity-id': id}, sortableItem: { list: $root.identities, afterMove: $root.accountsAndIdentitiesAfterMove }">
 				<td>
 					<i class="fontastic drag-handle">⬍</i>
 				</td>
 				<td class="e-action">
 					<span class="identity-name" data-bind="text: formattedName()"></span>
 					&nbsp;&nbsp;
-					<span class="identity-default" data-bind="visible: 0 === $index()" data-i18n="SETTINGS_ACCOUNTS/DEFAULT_IDENTITY_LABEL"></span>
+					<span class="identity-default" data-bind="visible: 0 === $index()" data-i18n="GLOBAL/DEFAULT"></span>
 				</td>
 				<td>
 					<a class="btn btn-small btn-danger button-confirm-delete" data-bind="visible: id, css: {'delete-access': askDelete}, click: function(oIdentity) { $root.deleteIdentity(oIdentity); }"

@@ -32,6 +32,9 @@ ko.utils = {
     objectForEach: (obj, action) => obj && Object.entries(obj).forEach(prop => action(prop[0], prop[1])),
 
     emptyDomNode: domNode => [...domNode.childNodes].forEach(child => ko.removeNode(child)),
+//    emptyDomNode: domNode => {while (domNode.lastChild) ko.removeNode(domNode.lastChild)},
+	// Safari 14+
+//    emptyDomNode: domNode => domNode.replaceChildren(),
 
     moveCleanedNodesToContainerElement: nodes => {
         // Ensure it's a real array, as we're about to reparent the nodes and
@@ -472,10 +475,7 @@ ko.exportProperty(ko_subscribable_fn, 'extend', ko_subscribable_fn.extend);
 // For browsers that support proto assignment, we overwrite the prototype of each
 // observable instance. Since observables are functions, we need Function.prototype
 // to still be in the prototype chain.
-Object.setPrototypeOf(ko_subscribable_fn, Function.prototype);
-
-ko.subscribable['fn'] = ko_subscribable_fn;
-
+ko.subscribable['fn'] = Object.setPrototypeOf(ko_subscribable_fn, Function.prototype);
 
 ko.isSubscribable = instance =>
     typeof instance?.subscribe == "function" && typeof instance.notifySubscribers == "function";
@@ -554,9 +554,7 @@ ko.observable = initialValue => {
     ko.subscribable['fn'].init(observable);
 
     // Inherit from 'observable'
-    Object.setPrototypeOf(observable, observableFn);
-
-    return observable;
+    return Object.setPrototypeOf(observable, observableFn);
 }
 
 // Define prototype for observables
@@ -605,12 +603,12 @@ ko.observableArray = initialValues => {
     if (typeof initialValues != 'object' || !('length' in initialValues))
         throw new Error("The argument passed when initializing an observable array must be an array, or null, or undefined.");
 
-    var result = ko.observable(initialValues);
-    Object.setPrototypeOf(result, ko.observableArray['fn']);
-    return result.extend({'trackArrayChanges':true});
+    return Object.setPrototypeOf(ko.observable(initialValues), ko.observableArray['fn']).extend({'trackArrayChanges':true});
 };
 
-ko.observableArray['fn'] = {
+// Note that for browsers that don't support proto assignment, the
+// inheritance chain is created manually in the ko.observableArray constructor
+ko.observableArray['fn'] = Object.setPrototypeOf({
     'remove': function (valueOrPredicate) {
         var underlyingArray = this.peek();
         var removed = false;
@@ -630,11 +628,7 @@ ko.observableArray['fn'] = {
         }
         removed && this.valueHasMutated();
     }
-};
-
-// Note that for browsers that don't support proto assignment, the
-// inheritance chain is created manually in the ko.observableArray constructor
-Object.setPrototypeOf(ko.observableArray['fn'], ko.observable['fn']);
+}, ko.observable['fn']);
 
 // Populate ko.observableArray.fn with native arrays functions
 Object.getOwnPropertyNames(Array.prototype).forEach(methodName => {
@@ -2398,6 +2392,63 @@ ko.bindingHandlers['attr'] = {
         });
     }
 };
+(()=>{
+
+ko.bindingHandlers['checked'] = {
+    'after': ['value', 'attr'],
+    'init': function (element, valueAccessor, allBindings) {
+        var isCheckbox = element.type == "checkbox",
+            isRadio = element.type == "radio";
+
+        // Only bind to check boxes and radio buttons
+        if (isCheckbox || isRadio) {
+            const checkedValue = ko.pureComputed(()=>{
+                if (isRadio) {
+                    return allBindings['has']('value')
+                        ? ko.utils.unwrapObservable(allBindings.get('value'))
+                        : element.value;
+                }
+            });
+
+            // Set up two computeds to update the binding:
+
+            // The first responds to element clicks
+            element.addEventListener("click", () => {
+                // When we're first setting up this computed, don't change any model state.
+                if (ko.dependencyDetection.isInitial()) {
+                    return;
+                }
+
+                // This updates the model value from the view value.
+                // It runs in response to DOM events (click) and changes in checkedValue.
+                var isChecked = element.checked;
+
+                // We can ignore unchecked radio buttons, because some other radio
+                // button will be checked, and that one can take care of updating state.
+                // Also ignore value changes to an already unchecked checkbox.
+                if (!isChecked && (isRadio || ko.dependencyDetection.getDependenciesCount())) {
+                    return;
+                }
+
+                var elemValue = isCheckbox ? isChecked : checkedValue(),
+                    modelValue = ko.dependencyDetection.ignore(valueAccessor);
+                ko.expressionRewriting.writeValueToProperty(modelValue, allBindings, 'checked', elemValue, true);
+            }),
+
+            // The second responds to changes in the model value (the one associated with the checked binding)
+            ko.computed(() => {
+                // This updates the view value from the model value.
+                // It runs in response to changes in the bound (checked) value.
+                var modelValue = ko.utils.unwrapObservable(valueAccessor());
+                element.checked = isCheckbox ? !!modelValue : (checkedValue() === modelValue);
+            }, null, { disposeWhenNodeIsRemoved: element });
+        }
+    }
+};
+
+ko.expressionRewriting.twoWayBindings['checked'] = true;
+
+})();
 var classesWrittenByBindingKey = '__ko__cssValue',
     toggleClasses = (node, classNames, force) =>
         classNames && classNames.split(/\s+/).forEach(className =>
@@ -2698,7 +2749,7 @@ ko.bindingHandlers['options'] = {
             if (allBindings['has']('optionsCaption')) {
                 captionValue = ko.utils.unwrapObservable(allBindings.get('optionsCaption'));
                 // If caption value is null or undefined, don't show a caption
-                if (captionValue !== null && captionValue !== undefined) {
+                if (captionValue != null) {
                     filteredArray.unshift(captionPlaceholder);
                 }
             }
@@ -2840,7 +2891,7 @@ ko.bindingHandlers['textInput'] = {
             timeoutHandle,
             elementValueBeforeEvent;
 
-        var updateModel = event => {
+        var updateModel = () => {
             clearTimeout(timeoutHandle);
             elementValueBeforeEvent = timeoutHandle = undefined;
 

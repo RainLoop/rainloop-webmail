@@ -5,7 +5,6 @@
 		<div data-bind="component: {
 			name: 'Select',
 			params: {
-				inline: true,
 				options: autoLogoutOptions,
 				value: autoLogout,
 				trigger: autoLogoutTrigger,
@@ -22,19 +21,6 @@
 &nbsp;&nbsp;
 <button class="btn" data-bind="click: generateOpenPgpKey" data-icon="🔑" data-i18n="SETTINGS_OPENPGP/BUTTON_GENERATE_KEY_PAIR"></button>
 <!-- /ko -->
-
-<br>
-<br>
-<div class="control-group">
-	<div data-bind="component: {
-		name: 'Checkbox',
-		params: {
-			label: 'SETTINGS_OPENPGP/LABEL_ALLOW_DRAFT_AUTOSAVE',
-			value: allowDraftAutosave
-		}
-	}"></div>
-</div>
-<br>
 
 <!-- ko if: canGnuPG -->
 <details>

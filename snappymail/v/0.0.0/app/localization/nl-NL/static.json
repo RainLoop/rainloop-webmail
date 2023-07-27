@@ -1,9 +1,9 @@
 {
 	"BACK_LINK": "Reload",
 	"NO_SCRIPT_TITLE": "JavaScript is required for this application.",
-	"NO_SCRIPT_DESC": "JavaScript support is not available in your browser.\nPlease enable JavaScript support in your browser settings and retry.\n",
-	"NO_COOKIE_TITLE": "Cookies support is required for this application.",
-	"NO_COOKIE_DESC": "Cookies support is not available in your browser.\nPlease enable Cookie support in your browser settings and retry.\n",
-	"BAD_BROWSER_TITLE": "Your browser is outdated.",
-	"BAD_BROWSER_DESC": "Om alle functies van deze applicatie te gebruiken,\ndownload en installeer een van de volgende browsers:\n"
+	"NO_SCRIPT_DESC": "JavaScript support is not available in your browser.\nPlease enable JavaScript support in your browser settings and retry.",
+	"NO_COOKIE_TITLE": "Cookie-ondersteuning is vereist voor deze applicatie.",
+	"NO_COOKIE_DESC": "Cookie-ondersteuning is niet beschikbaar in uw browser.\nSchakel Cookie-ondersteuning in uw browserinstellingen in en probeer het opnieuw.",
+	"BAD_BROWSER_TITLE": "Uw browser is te oud.",
+	"BAD_BROWSER_DESC": "Om alle functies van deze applicatie te gebruiken,\ndownload en installeer een van de nieuwste browsers."
 }

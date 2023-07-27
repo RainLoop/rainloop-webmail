@@ -28,34 +28,26 @@ trait CardDAV
 		$aResponse = null;
 		try
 		{
-			$this->oLogger->Write('PROPFIND '.$sPath, \LOG_INFO, 'DAV');
-
 			$aResponse = $oClient->propFind($sPath, array(
 				'{DAV:}getlastmodified',
 				'{DAV:}resourcetype',
 				'{DAV:}getetag'
 			), 1);
-
-//			$this->oLogger->WriteDump($aResponse);
 		}
 		catch (\Throwable $oException)
 		{
-			$this->oLogger->WriteException($oException);
+			$this->logException($oException);
 		}
 
 		/**
 		 * find every <response><href>*.vcf</href> with empty <resourcetype/>
 		 */
-		if (\is_array($aResponse))
-		{
+		if (\is_array($aResponse)) {
 			$mResult = array();
-			foreach ($aResponse as $sKey => $aItem)
-			{
+			foreach ($aResponse as $sKey => $aItem) {
 				$sKey = \rtrim(\trim($sKey), '\\/');
-				if (!empty($sKey) && is_array($aItem))
-				{
-					if (isset($aItem['{DAV:}getetag']))
-					{
+				if (!empty($sKey) && is_array($aItem)) {
+					if (isset($aItem['{DAV:}getetag'])) {
 						$aMatch = array();
 						if (\preg_match('/\/([^\/?]+)$/', $sKey, $aMatch) && !empty($aMatch[1])
 						 && !static::hasDAVCollection($aItem))
@@ -72,14 +64,11 @@ trait CardDAV
 								'changed' => 0
 							);
 
-							if (isset($aItem['{DAV:}getlastmodified']))
-							{
+							if (isset($aItem['{DAV:}getlastmodified'])) {
 								$mResult[$sKeyID]['lastmodified'] = $aItem['{DAV:}getlastmodified'];
 								$mResult[$sKeyID]['changed'] = \MailSo\Base\DateTimeHelper::ParseRFC2822DateString(
 									$aItem['{DAV:}getlastmodified']);
-							}
-							else
-							{
+							} else {
 								$mResult[$sKeyID]['changed'] = \MailSo\Base\DateTimeHelper::TryToParseSpecEtagFormat($mResult[$sKeyID]['etag']);
 								$mResult[$sKeyID]['lastmodified'] = 0 < $mResult[$sKeyID]['changed'] ?
 									\gmdate('c', $mResult[$sKeyID]['changed']) : '';
@@ -99,35 +88,24 @@ trait CardDAV
 	{
 		\MailSo\Base\Utils::ResetTimeLimit();
 
-		$this->oLogger->Write($sCmd.' '.$sUrl.(('PUT' === $sCmd || 'POST' === $sCmd) && null !== $mData ? ' ('.\strlen($mData).')' : ''),
+		$this->logWrite($sCmd.' '.$sUrl.(('PUT' === $sCmd || 'POST' === $sCmd) && null !== $mData ? ' ('.\strlen($mData).')' : ''),
 			\LOG_INFO, 'DAV');
-
-//		if ('PUT' === $sCmd || 'POST' === $sCmd)
-//		{
-//			$this->oLogger->Write($mData, \LOG_INFO, 'DAV');
-//		}
 
 		try
 		{
-			if (('PUT' === $sCmd || 'POST' === $sCmd) && null !== $mData)
-			{
+			if (('PUT' === $sCmd || 'POST' === $sCmd) && null !== $mData) {
 				return $oClient->request($sCmd, $sUrl, $mData, array(
 					'Content-Type' => 'text/vcard; charset=utf-8'
 				));
 			}
-			else
-			{
-				return $oClient->request($sCmd, $sUrl);
-			}
-
-//			if ('GET' === $sCmd)
-//			{
+			return $oClient->request($sCmd, $sUrl);
+//			if ('GET' === $sCmd) {
 //				$this->oLogger->WriteDump($aResponse, \LOG_INFO, 'DAV');
 //			}
 		}
 		catch (\Throwable $oException)
 		{
-			$this->oLogger->WriteException($oException);
+			$this->logException($oException);
 		}
 
 		return null;
@@ -135,193 +113,143 @@ trait CardDAV
 
 	private function detectionPropFind(DAVClient $oClient, string $sPath) : ?array
 	{
-		$aResponse = null;
-
 		try
 		{
-			$this->oLogger->Write('PROPFIND '.$sPath, \LOG_INFO, 'DAV');
-
-			$aResponse = $oClient->propFind($sPath, array(
+			return $oClient->propFind($sPath, array(
 				'{DAV:}current-user-principal',
 				'{DAV:}resourcetype',
 				'{DAV:}displayname',
 				'{urn:ietf:params:xml:ns:carddav}addressbook-home-set'
 			), 1);
-
-//			$this->oLogger->WriteDump($aResponse);
 		}
 		catch (\Throwable $oException)
 		{
-			$this->oLogger->WriteException($oException);
+			$this->logException($oException);
 		}
 
-		return $aResponse;
+		return null;
 	}
 
-	private function getContactsPaths(DAVClient $oClient, string $sUser, string $sPassword, string $sProxy = '') : array
+	private function getContactsPaths(DAVClient $oClient, string $sPath, string $sUser, string $sPassword, string $sProxy = '') : array
 	{
 		$aContactsPaths = array();
 
 		$sCurrentUserPrincipal = '';
 		$sAddressbookHomeSet = '';
 
-//		[{DAV:}current-user-principal] => /cloud/remote.php/carddav/principals/admin/
-//		[{urn:ietf:params:xml:ns:carddav}addressbook-home-set] => /cloud/remote.php/carddav/addressbooks/admin/
-
-		$aResponse = $this->detectionPropFind($oClient, '/.well-known/carddav');
+		$aResponse = $this->detectionPropFind($oClient, '/.well-known/carddav')
+			?: $this->detectionPropFind($oClient, $sPath);
 
 		$sNextPath = '';
 		$sFirstNextPath = '';
-		if (\is_array($aResponse))
-		{
-			foreach ($aResponse as $sKey => $aItem)
-			{
-				if (empty($sAddressbookHomeSet) && !empty($aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set']) &&
-					false === \strpos($aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set'], '/calendar-proxy'))
+		if (\is_array($aResponse)) {
+			foreach ($aResponse as $sPropPath => $aItem) {
+				if (empty($sAddressbookHomeSet) && !empty($aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set']['{DAV:}href'])
+				 && false === \strpos($aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set']['{DAV:}href'], '/calendar-proxy'))
 				{
-					$sAddressbookHomeSet = $aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set'];
+					$sAddressbookHomeSet = $aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set']['{DAV:}href'];
 					continue;
 				}
 
-				if (empty($sCurrentUserPrincipal) && !empty($aItem['{DAV:}current-user-principal']))
-				{
-					$sCurrentUserPrincipal = $aItem['{DAV:}current-user-principal'];
+				if (empty($sCurrentUserPrincipal) && !empty($aItem['{DAV:}current-user-principal']['{DAV:}href'])) {
+					$sCurrentUserPrincipal = $aItem['{DAV:}current-user-principal']['{DAV:}href'];
 					continue;
 				}
 
-				if (!empty($sKey))
-				{
-					if (empty($sFirstNextPath))
-					{
-						$sFirstNextPath = $sKey;
+				if (!empty($sPropPath)) {
+					if (empty($sFirstNextPath)) {
+						$sFirstNextPath = $sPropPath;
 					}
 
-					if (empty($sNextPath))
-					{
-						if (static::hasDAVCollection($aItem))
-						{
-							$sNextPath = $sKey;
+					if (empty($sNextPath)) {
+						if (static::hasDAVCollection($aItem)) {
+							$sNextPath = $sPropPath;
 							continue;
 						}
 					}
 				}
 			}
 
-			if (empty($sNextPath) && empty($sCurrentUserPrincipal) && empty($sAddressbookHomeSet) && !empty($sFirstNextPath))
-			{
+			if (empty($sNextPath) && empty($sCurrentUserPrincipal) && empty($sAddressbookHomeSet) && !empty($sFirstNextPath)) {
 				$sNextPath = $sFirstNextPath;
 			}
 		}
 
-		if (empty($sCurrentUserPrincipal) && empty($sAddressbookHomeSet))
-		{
-			if (empty($sNextPath))
-			{
+		if (empty($sCurrentUserPrincipal) && empty($sAddressbookHomeSet)) {
+			if (empty($sNextPath)) {
 				return $aContactsPaths;
 			}
-			else
-			{
-				if (\preg_match('/^http[s]?:\/\//i', $sNextPath))
-				{
-					$oClient = $this->getDavClientFromUrl($sNextPath, $sUser, $sPassword, $sProxy);
-					if ($oClient)
-					{
-						$sNextPath = $oClient->__UrlPath__;
-					}
-					else
-					{
-						return $aContactsPaths;
-					}
-				}
-
-				$aResponse = $this->detectionPropFind($oClient, $sNextPath);
-				if (\is_array($aResponse))
-				{
-					foreach ($aResponse as $sKey => $aItem)
-					{
-						if (empty($sAddressbookHomeSet) && !empty($aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set']) &&
-							false === \strpos($aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set'], '/calendar-proxy'))
-						{
-							$sAddressbookHomeSet = $aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set'];
-							continue;
-						}
-
-						if (empty($sCurrentUserPrincipal) && !empty($aItem['{DAV:}current-user-principal']))
-						{
-							$sCurrentUserPrincipal = $aItem['{DAV:}current-user-principal'];
-							continue;
-						}
-					}
-				}
-			}
-		}
-
-		if (empty($sAddressbookHomeSet))
-		{
-			if (empty($sCurrentUserPrincipal))
-			{
-				return $aContactsPaths;
-			}
-			else
-			{
-				if (\preg_match('/^http[s]?:\/\//i', $sCurrentUserPrincipal))
-				{
-					$oClient = $this->getDavClientFromUrl($sCurrentUserPrincipal, $sUser, $sPassword, $sProxy);
-					if ($oClient)
-					{
-						$sCurrentUserPrincipal = $oClient->__UrlPath__;
-					}
-					else
-					{
-						return $aContactsPaths;
-					}
-				}
-
-				$aResponse = $this->detectionPropFind($oClient, $sCurrentUserPrincipal);
-				if (\is_array($aResponse))
-				{
-					foreach ($aResponse as $sKey => $aItem)
-					{
-						if (empty($sAddressbookHomeSet) && !empty($aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set']) &&
-							false === \strpos($aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set'], '/calendar-proxy'))
-						{
-							$sAddressbookHomeSet = $aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set'];
-							continue;
-						}
-					}
-				}
-			}
-		}
-
-		if (empty($sAddressbookHomeSet))
-		{
-			return $aContactsPaths;
-		}
-		else
-		{
-			if (\preg_match('/^http[s]?:\/\//i', $sAddressbookHomeSet))
-			{
-				$oClient = $this->getDavClientFromUrl($sAddressbookHomeSet, $sUser, $sPassword, $sProxy);
-				if ($oClient)
-				{
-					$sAddressbookHomeSet = $oClient->__UrlPath__;
-				}
-				else
-				{
+			if (\preg_match('/^http[s]?:\/\//i', $sNextPath)) {
+				$oClient = $this->getDavClientFromUrl($sNextPath, $sUser, $sPassword, $sProxy);
+				if (!$oClient) {
 					return $aContactsPaths;
 				}
+				$sNextPath = $oClient->__UrlPath__;
 			}
 
-			$aResponse = $this->detectionPropFind($oClient, $sAddressbookHomeSet);
-			if (\is_array($aResponse))
-			{
-				foreach ($aResponse as $sKey => $aItem)
-				{
-					if (!empty($sKey) && static::hasDAVCollection($aItem)
-					 && \in_array('{urn:ietf:params:xml:ns:carddav}addressbook', $aItem['{DAV:}resourcetype']))
-					{
-						$aContactsPaths[$sKey] = isset($aItem['{DAV:}displayname']) ? \trim($aItem['{DAV:}displayname']) : '';
+			if ($sPath != $sNextPath) {
+				$aResponse = $this->detectionPropFind($oClient, $sNextPath);
+				if (\is_array($aResponse)) {
+					foreach ($aResponse as $aItem) {
+						if (empty($sAddressbookHomeSet) && !empty($aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set']['{DAV:}href']) &&
+							false === \strpos($aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set']['{DAV:}href'], '/calendar-proxy'))
+						{
+							$sAddressbookHomeSet = $aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set']['{DAV:}href'];
+							continue;
+						}
+
+						if (empty($sCurrentUserPrincipal) && !empty($aItem['{DAV:}current-user-principal']['{DAV:}href'])) {
+							$sCurrentUserPrincipal = $aItem['{DAV:}current-user-principal']['{DAV:}href'];
+							continue;
+						}
 					}
+				}
+			}
+		}
+
+		if (empty($sAddressbookHomeSet)) {
+			if (empty($sCurrentUserPrincipal)) {
+				return $aContactsPaths;
+			}
+			if (\preg_match('/^http[s]?:\/\//i', $sCurrentUserPrincipal)) {
+				$oClient = $this->getDavClientFromUrl($sCurrentUserPrincipal, $sUser, $sPassword, $sProxy);
+				if (!$oClient) {
+					return $aContactsPaths;
+				}
+				$sCurrentUserPrincipal = $oClient->__UrlPath__;
+			}
+
+			$aResponse = $this->detectionPropFind($oClient, $sCurrentUserPrincipal);
+			if (\is_array($aResponse)) {
+				foreach ($aResponse as $aItem) {
+					if (empty($sAddressbookHomeSet) && !empty($aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set']['{DAV:}href']) &&
+						false === \strpos($aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set']['{DAV:}href'], '/calendar-proxy'))
+					{
+						$sAddressbookHomeSet = $aItem['{urn:ietf:params:xml:ns:carddav}addressbook-home-set']['{DAV:}href'];
+						continue;
+					}
+				}
+			}
+		}
+
+		if (empty($sAddressbookHomeSet)) {
+			return $aContactsPaths;
+		}
+		if (\preg_match('/^http[s]?:\/\//i', $sAddressbookHomeSet)) {
+			$oClient = $this->getDavClientFromUrl($sAddressbookHomeSet, $sUser, $sPassword, $sProxy);
+			if (!$oClient) {
+				return $aContactsPaths;
+			}
+			$sAddressbookHomeSet = $oClient->__UrlPath__;
+		}
+
+		$aResponse = $this->detectionPropFind($oClient, $sAddressbookHomeSet);
+		if (\is_array($aResponse)) {
+			foreach ($aResponse as $sPropPath => $aItem) {
+				if (!empty($sPropPath) && static::hasDAVCollection($aItem)
+				 && \in_array('{urn:ietf:params:xml:ns:carddav}addressbook', $aItem['{DAV:}resourcetype']))
+				{
+					$aContactsPaths[$sPropPath] = isset($aItem['{DAV:}displayname']) ? \trim($aItem['{DAV:}displayname']) : '';
 				}
 			}
 		}
@@ -329,45 +257,35 @@ trait CardDAV
 		return $aContactsPaths;
 	}
 
+	/**
+	 * Checks if remote path resourcetype is an addressbook
+	 */
 	private function checkContactsPath(DAVClient $oClient, string $sPath) : bool
 	{
-		if (!$oClient)
-		{
-			return false;
-		}
-
-		$this->oLogger->Write('PROPFIND '.$sPath, \LOG_INFO, 'DAV');
-
 		$aResponse = null;
 		try
 		{
 			$aResponse = $oClient->propFind($sPath, array(
 				'{DAV:}resourcetype'
 			), 1);
-
-//			$this->oLogger->WriteDump($aResponse);
 		}
 		catch (\Throwable $oException)
 		{
-			$this->oLogger->WriteException($oException);
+			$this->logException($oException);
 		}
 
 		$bGood = false;
-		if (\is_array($aResponse))
-		{
-			foreach ($aResponse as $sKey => $aItem)
-			{
+		if (\is_array($aResponse)) {
+			foreach ($aResponse as $sKey => $aItem) {
 				if (!empty($sKey) && static::hasDAVCollection($aItem)
 				 && \in_array('{urn:ietf:params:xml:ns:carddav}addressbook', $aItem['{DAV:}resourcetype']))
 				{
 					$bGood = true;
 				}
 			}
-		}
-
-		if ($bGood)
-		{
-			$oClient->__UrlPath__ = $sPath;
+			if ($bGood) {
+				$oClient->__UrlPath__ = $sPath;
+			}
 		}
 
 		return $bGood;
@@ -375,8 +293,7 @@ trait CardDAV
 
 	private function getDavClientFromUrl(string $sUrl, string $sUser, string $sPassword, string $sProxy = '') : DAVClient
 	{
-		if (!\preg_match('/^http[s]?:\/\//i', $sUrl))
-		{
+		if (!\preg_match('/^http[s]?:\/\//i', $sUrl)) {
 			$sUrl = \preg_replace('/^fruux\.com/i', 'dav.fruux.com', $sUrl);
 			$sUrl = \preg_replace('/^icloud\.com/i', 'contacts.icloud.com', $sUrl);
 			$sUrl = \preg_replace('/^gmail\.com/i', 'google.com', $sUrl);
@@ -384,8 +301,7 @@ trait CardDAV
 		}
 
 		$aUrl = \parse_url($sUrl);
-		if (!\is_array($aUrl))
-		{
+		if (!\is_array($aUrl)) {
 			$aUrl = array();
 		}
 
@@ -400,10 +316,9 @@ trait CardDAV
 			'password' => $sPassword
 		);
 
-		$this->oLogger->AddSecret($sPassword);
+		$this->logMask($sPassword);
 
-		if (!empty($sProxy))
-		{
+		if (!empty($sProxy)) {
 			$aSettings['proxy'] = $sProxy;
 		}
 
@@ -412,7 +327,7 @@ trait CardDAV
 
 		$oClient->__UrlPath__ = $aUrl['path'];
 
-		$this->oLogger->Write('DavClient: User: '.$aSettings['userName'].', Url: '.$sUrl, \LOG_INFO, 'DAV');
+		$this->logWrite('DavClient: User: '.$aSettings['userName'].', Url: '.$sUrl, \LOG_INFO, 'DAV');
 
 		return $oClient;
 	}
@@ -430,8 +345,7 @@ trait CardDAV
 		$aMatch = array();
 		$sUserAddressBookNameName = '';
 
-		if (\preg_match('/\|(.+)$/', $sUrl, $aMatch) && !empty($aMatch[1]))
-		{
+		if (\preg_match('/\|(.+)$/', $sUrl, $aMatch) && !empty($aMatch[1])) {
 			$sUserAddressBookNameName = \trim($aMatch[1]);
 			$sUserAddressBookNameName = \mb_strtolower($sUserAddressBookNameName);
 
@@ -443,37 +357,30 @@ trait CardDAV
 		$sPath = $oClient->__UrlPath__;
 
 		$bGood = true;
-		if ('' === $sPath || '/' === $sPath || !$this->checkContactsPath($oClient, $sPath))
-		{
-			$sNewPath = '';
-
-			$aPaths = $this->getContactsPaths($oClient, $sUser, $sPassword, $sProxy);
+		if ('' === $sPath || '/' === $sPath || !$this->checkContactsPath($oClient, $sPath)) {
+			/**
+			 * Path is not an addressbook, try to find it
+			 */
+			$aPaths = $this->getContactsPaths($oClient, $sPath, $sUser, $sPassword, $sProxy);
 			$this->oLogger->WriteDump($aPaths);
 
-			if (\is_array($aPaths))
-			{
-				if (1 < \count($aPaths))
-				{
-					if ('' !== $sUserAddressBookNameName)
-					{
-						foreach ($aPaths as $sKey => $sValue)
-						{
+			$sNewPath = '';
+			if (\is_array($aPaths)) {
+				if (1 < \count($aPaths)) {
+					if ('' !== $sUserAddressBookNameName) {
+						foreach ($aPaths as $sKey => $sValue) {
 							$sValue = \mb_strtolower(\trim($sValue));
-							if ($sValue === $sUserAddressBookNameName)
-							{
+							if ($sValue === $sUserAddressBookNameName) {
 								$sNewPath = $sKey;
 								break;
 							}
 						}
 					}
 
-					if (empty($sNewPath))
-					{
-						foreach ($aPaths as $sKey => $sValue)
-						{
+					if (empty($sNewPath)) {
+						foreach ($aPaths as $sKey => $sValue) {
 							$sValue = \mb_strtolower($sValue);
-							if (\in_array($sValue, array('contacts', 'default', 'addressbook', 'address book')))
-							{
+							if (\in_array($sValue, array('contacts', 'default', 'addressbook', 'address book'))) {
 								$sNewPath = $sKey;
 								break;
 							}
@@ -481,19 +388,18 @@ trait CardDAV
 					}
 				}
 
-				if (empty($sNewPath))
-				{
-					foreach ($aPaths as $sKey => $sValue)
-					{
+				if (empty($sNewPath)) {
+					foreach ($aPaths as $sKey => $sValue) {
 						$sNewPath = $sKey;
 						break;
 					}
 				}
 			}
 
-			$sPath = $sNewPath;
-
-			$bGood = $this->checkContactsPath($oClient, $sPath);
+			$bGood = $sNewPath && $this->checkContactsPath($oClient, $sNewPath);
+			if (!$bGood) {
+				$this->logWrite('Contacts path not found at: '.$sPath, \LOG_INFO, 'DAV');
+			}
 		}
 
 		return $bGood ? $oClient : null;

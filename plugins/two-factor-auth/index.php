@@ -7,8 +7,8 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Two Factor Authentication',
-		VERSION  = '2.16.1',
-		RELEASE  = '2022-09-20',
+		VERSION  = '2.16.3',
+		RELEASE  = '2023-06-02',
 		REQUIRED = '2.15.2',
 		CATEGORY = 'Login',
 		DESCRIPTION = 'Provides support for TOTP 2FA';
@@ -167,10 +167,10 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 			return $this->jsonResponse(__FUNCTION__, false);
 		}
 
-		$oSettings = $this->Manager()->Actions()->SettingsProvider()->Load($oAccount);
-		if ($this->Manager()->Actions()->HasActionParam('EnableTwoFactor')) {
-			$sValue = $this->GetActionParam('EnableTwoFactor', '');
-			$oSettings->SetConf('EnableTwoFactor', !empty($sValue));
+		$oActions = $this->Manager()->Actions();
+		if ($oActions->HasActionParam('EnableTwoFactor')) {
+			$sValue = $oActions->GetActionParam('EnableTwoFactor', '');
+			$oActions->SettingsProvider()->Load($oAccount)->SetConf('EnableTwoFactor', !empty($sValue));
 		}
 
 		$sEmail = $oAccount->Email();

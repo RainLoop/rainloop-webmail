@@ -1,4 +1,5 @@
 {
+	"LANG_DIR": "ltr",
 	"GLOBAL": {
 		"TO_ARCHIVE": "Arşivleme",
 		"ARE_YOU_SURE": "Eminmisiniz?",
@@ -19,9 +20,11 @@
 		"MOVE_TO": "Taşı",
 		"NAME": "Gelen Kutusu",
 		"NONE": "None",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "Spam Değil",
 		"USERNAME": "Kullanıcı adı",
 		"PASSWORD": "Şifre",
+		"REMEMBER": "Remember",
 		"REPLY_TO": "Reply-To",
 		"SAVE": "Kaydet",
 		"SAVE_CHANGES": "Save changes?",
@@ -33,7 +36,11 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Evet",
 		"NO": "Hayır",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "default",
+		"HELP": "Yardım",
+		"TEXT": "Metin",
+		"ATTACHMENTS": "Ekler"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Giriş",
@@ -41,13 +48,7 @@
 		"BUTTON_SIGN_IN": "Giriş Yap"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Hesap Ekle",
-		"BUTTON_SETTINGS": "Ayarlar",
-		"BUTTON_HELP": "Yardım"
-	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobil versiyonu",
-		"BUTTON_DESKTOP_VERSION": "Masaüstü versiyonu"
+		"BUTTON_ADD_ACCOUNT": "Hesap Ekle"
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Detaylı Arama",
@@ -98,6 +99,7 @@
 		"MENU_SELECT_SEEN": "Oku",
 		"MENU_SELECT_FLAGGED": "İşaretlenmiş",
 		"MENU_SELECT_UNFLAGGED": "İşaretlenmemiş",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Herhangi Bir Sonuç Bulunamadı.",
 		"EMPTY_SEARCH_LIST": "Arama sonuçlarına uyan herhangi bir mesaj bulunamadı.",
 		"SEARCH_RESULT_FOR": "\"%SEARCH%\" için arama sonuçları",
@@ -108,6 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "Toplam %COUNT% yeni mesajınız var!",
 		"QUOTA_SIZE": "Size ayrılan <strong>%LIMIT%<\/strong>'dan <strong>%SIZE% (%PROC%%)<\/strong> kullanıyorsunuz",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Date ascending",
 		"SORT_DATE_DESC": "Date descending",
 		"SORT_SIZE_ASC": "Size ascending",
@@ -224,11 +227,16 @@
 		"NO_ATTACHMENTS_HERE_DESC": "No attachments here.",
 		"ATTACHMENTS_ERROR_DESC": "Warning! Not all attachments have been uploaded.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Not all attachments have been uploaded yet",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "Okundu bilgisi iste",
 		"BUTTON_MARK_AS_IMPORTANT": "Mark as important",
-		"BUTTON_REQUEST_DSN": "Request a delivery receipt"
+		"BUTTON_REQUEST_DSN": "Request a delivery receipt",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Bu pencereyi kapatmak istediğinizden emin misiniz?",
 		"DESC_WANT_DELETE_MESSAGES": "Mesaj(ları) silmek istediğinizden emin misiniz?"
 	},
@@ -312,7 +320,7 @@
 		"MARK_AS_READ_LABEL": "Okundu olarak işaretle",
 		"REPLY_INTERVAL_LABEL": "Reply interval (days)",
 		"KEEP_LABEL": "Keep",
-		"STOP_LABEL": "Don't stop processing rules",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Konu (Opsiyonel)",
 		"VACATION_MESSAGE_LABEL": "Mesaj",
 		"VACATION_RECIPIENTS_LABEL": "Recipients (comma separated)",
@@ -351,21 +359,43 @@
 		"ERROR_UNKNOWN": "Bilinmeyen bir dosya yükleme bir hatası oluştu"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> Yazi Formati",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"PLAIN": "HTML <-> Yazi Formati",
+		"SOURCE": "HTML <-> SOURCE",
+		"FONTFAMILY": "Font family",
+		"FONTSIZE": "Font size",
+		"DIR": "Text direction",
+		"DIR_LTR": "Left to right",
+		"DIR_RTL": "Right to left",
+		"DIR_AUTO": "Automatic",
+		"TEXTCOLOR": "Text color",
+		"BACKGROUNDCOLOR": "Background color",
+		"BOLD": "Bold",
+		"ITALIC": "Italic",
+		"UNDERLINE": "Underline",
+		"STRIKE": "Strikethrough",
+		"SUB": "Subscript",
+		"SUP": "Superscript",
+		"OL": "Ordered list",
+		"UL": "Unordered list",
+		"QUOTE": "Blockquote",
+		"INDENTDECREASE": "Decrease indent",
+		"INDENTINCREASE": "Increase indent",
+		"LINK": "Link",
+		"IMAGEURL": "Image URL",
+		"IMAGEUPLOAD": "Image select",
+		"UNDO": "Undo",
+		"REDO": "Redo"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Kişisel",
-		"LABEL_GENERAL_NAME": "Genel",
-		"LABEL_CONTACTS_NAME": "Kişi Listesi",
-		"LABEL_FOLDERS_NAME": "Klasörler",
-		"LABEL_ACCOUNTS_NAME": "Hesaplar",
-		"LABEL_FILTERS_NAME": "Filtreler",
-		"LABEL_SECURITY_NAME": "Güvenlik",
-		"LABEL_THEMES_NAME": "Temalar"
+		"GENERAL": "Genel",
+		"CONTACTS": "Kişi Listesi",
+		"FOLDERS": "Klasörler",
+		"ACCOUNTS": "Hesaplar",
+		"FILTERS": "Filtreler",
+		"SECURITY": "Güvenlik",
+		"THEMES": "Temalar"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "Filters",
 		"SIMPLE": "Simple",
 		"ADVANCED": "Advanced",
 		"BUTTON_ADD_SCRIPT": "Add a Script",
@@ -378,18 +408,18 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Security",
 		"LABEL_AUTOLOGOUT": "Auto Logout",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Never",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minute(s)",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% saat"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Never"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Genel",
 		"LANGUAGE": "Dil",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identity",
 		"LAYOUT": "Layout",
 		"LAYOUT_NO_SPLIT": "No Split",
 		"LAYOUT_VERTICAL_SPLIT": "Vertical Split",
 		"LAYOUT_HORIZONTAL_SPLIT": "Horizontal Split",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Varsayılan text editör",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "Düz",
@@ -399,19 +429,30 @@
 		"USE_CHECKBOXES_IN_LIST": "Listede ekran onay kutularını göster",
 		"USE_THREADS": "Konuları kullanın",
 		"REPLY_SAME_FOLDER": "Klasördeki cevapları mesajlarda göster",
-		"SHOW_IMAGES": "Herzaman gelen maillerdeki resimleri görüntüle.",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"REMOVE_COLORS": "Remove background and text colors from message body",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "Messages on page",
+		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Mark message as read after",
 		"MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
+		"MINUTES": "minutes",
 		"NOTIFICATIONS": "Bildirimler",
 		"SOUND_NOTIFICATION": "Sound notification",
 		"CHROME_NOTIFICATION_DESC": "Yeni mesajları pop-up ile göster",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Tarayıcınız tarafından engellendi)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
+		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Otomatik olarak adres defterinize alıcıyı ekle",
@@ -463,14 +504,13 @@
 		"BUTTON_ADD_ACCOUNT": "Hesap Ekle",
 		"BUTTON_ADD_IDENTITY": "Add an Identity",
 		"LOADING_PROCESS": "Hesap listesi güncelleniyor",
-		"DEFAULT_IDENTITY_LABEL": "default"
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Key İçe Aktar",
 		"BUTTON_GENERATE_KEY_PAIR": "Key Oluştur",
 		"TITLE_PRIVATE": "Private",
 		"TITLE_PUBLIC": "Public",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
@@ -484,7 +524,6 @@
 		"LABEL_REPLY_ALL": "Tümünü Yanıtla",
 		"LABEL_FORWARD": "Yönlendir",
 		"LABEL_FORWARD_MULTIPLY": "Yönlendir (çoklu)",
-		"LABEL_HELP": "Yardım",
 		"LABEL_CHECK_ALL": "Tüm mesajları seç",
 		"LABEL_DELETE": "Sil",
 		"LABEL_OPEN_THREAD": "Open selected thread",

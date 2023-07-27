@@ -8,11 +8,11 @@ class LdapIdentitiesPlugin extends AbstractPlugin
 {
 	const
 		NAME     = 'LDAP Identities',
-		VERSION  = '2.0',
+		VERSION  = '2.1',
 		AUTHOR   = 'FWest98',
 		URL      = 'https://github.com/FWest98',
-		RELEASE  = '2020-11-11',
-		REQUIRED = '2.1.0',
+		RELEASE  = '2022-11-09',
+		REQUIRED = '2.20.0',
 		CATEGORY = 'Accounts',
 		DESCRIPTION = 'Adds functionality to import account identities from LDAP.';
 

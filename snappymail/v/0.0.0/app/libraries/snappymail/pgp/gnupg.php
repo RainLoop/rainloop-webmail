@@ -10,7 +10,7 @@ class GnuPG
 {
 	private
 		$homedir,
-		// Instance of gnupg pecl extension
+		// Instance of gnupg pecl extension https://www.php.net/gnupg
 		$GnuPG,
 		// Instance of \SnappyMail\PGP\GPG
 		$GPG;
@@ -383,10 +383,10 @@ class GnuPG
 			: $this->GPG->verify($signed_text, $signature, $plaintext);
 		if (!$result) {
 			if ($this->GnuPG) {
-				\SnappyMail\Log::notice('gnupg_verify() failed: ' . $this->GnuPG->geterror());
-				\SnappyMail\Log::info(\print_r($this->GnuPG->geterrorinfo(),1));
+				\SnappyMail\Log::notice('GnuPG', 'gnupg_verify() failed: ' . $this->GnuPG->geterror());
+				\SnappyMail\Log::info('GnuPG', \print_r($this->GnuPG->geterrorinfo(),1));
 			} else {
-				\SnappyMail\Log::notice('GPG->verify() failed');
+				\SnappyMail\Log::notice('GPG', 'GPG->verify() failed');
 			}
 		}
 		return $result;

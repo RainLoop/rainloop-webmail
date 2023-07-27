@@ -21,15 +21,9 @@ use MailSo\Imap\Exceptions\ResponseNotFoundException;
  */
 trait ResponseParser
 {
-	/**
-	 * @var int
-	 */
-	private $iResponseBufParsedPos;
+	private int $iResponseBufParsedPos;
 
-	/**
-	 * @var bool
-	 */
-	private $bNeedNext = true;
+	private bool $bNeedNext = true;
 
 	protected function partialParseResponse() : Response
 	{
@@ -66,6 +60,8 @@ trait ResponseParser
 		return !$oImapResponse->IsStatusResponse || 2 < \count($oImapResponse->ResponseList);
 	}
 
+	private $sResponseBuffer = '';
+
 	/**
 	 * @return array|string
 	 * @throws \MailSo\RuntimeException
@@ -87,35 +83,25 @@ trait ResponseParser
 
 		$sAtomBuilder = $bTreatAsAtom ? '' : null;
 		$aList = array();
-		if ($bRoot)
-		{
+		if ($bRoot) {
 			$aList =& $oImapResponse->ResponseList;
 		}
 
-		while (true)
-		{
-			if ($this->bNeedNext)
-			{
-				/**
-				 * $this->sResponseBuffer is a single fgets() that ends with \r\n
-				 */
+		while (true) {
+			if ($this->bNeedNext) {
 				$iPos = 0;
-				$this->getNextBuffer();
+				$this->sResponseBuffer = $this->getNextBuffer();
 				$this->iResponseBufParsedPos = $iPos;
 				$this->bNeedNext = false;
 			}
 
 			$sChar = null;
-			if ($bIsGotoDefault)
-			{
+			if ($bIsGotoDefault) {
 				$bIsGotoDefault = false;
-			}
-			else
-			{
+			} else {
 				$iBufferEndIndex = \strlen($this->sResponseBuffer) - 3;
 
-				if ($iPos > $iBufferEndIndex)
-				{
+				if ($iPos > $iBufferEndIndex) {
 					break;
 				}
 
@@ -185,9 +171,7 @@ trait ResponseParser
 							if (null !== $sLiteral) {
 								if (!$bTreatAsAtom) {
 									$aList[] = $sLiteral;
-									if (\MailSo\Config::$LogSimpleLiterals) {
-										$this->writeLog('{'.$iLiteralLen.'} '.$sLiteral, \LOG_INFO);
-									}
+//									$this->writeLog('{'.$iLiteralLen.'} '.$sLiteral, \LOG_INFO);
 								} else {
 									\SnappyMail\Log::notice('IMAP', 'Literal treated as atom and skipped');
 								}
@@ -255,16 +239,14 @@ trait ResponseParser
 				default:
 					$iCharBlockStartPos = $iPos;
 
-					if ($bRoot && $oImapResponse->IsStatusResponse)
-					{
+					if ($bRoot && $oImapResponse->IsStatusResponse) {
 						$iPos = $iBufferEndIndex;
 						if ($iPos > $iCharBlockStartPos) {
 							$iCharBlockStartPos += \strspn($this->sResponseBuffer, ' ', $iCharBlockStartPos, $iPos - $iCharBlockStartPos);
 						}
 					}
 
-					while ($iPos <= $iBufferEndIndex)
-					{
+					while ($iPos <= $iBufferEndIndex) {
 						$sCharDef = $this->sResponseBuffer[$iPos];
 						switch (true)
 						{
@@ -272,8 +254,7 @@ trait ResponseParser
 								++$iPos;
 								break;
 							case '[' === $sCharDef:
-								if (null === $sAtomBuilder)
-								{
+								if (null === $sAtomBuilder) {
 									$sAtomBuilder = '';
 								}
 
@@ -285,8 +266,7 @@ trait ResponseParser
 									$oImapResponse, true, $sPreviousAtomUpperCase, '['
 								);
 
-								if (null !== $sListBlock)
-								{
+								if (null !== $sListBlock) {
 									$sAtomBuilder .= $sListBlock.']';
 								}
 
@@ -303,33 +283,25 @@ trait ResponseParser
 						}
 					}
 
-					if ($iPos > $iCharBlockStartPos || null !== $sAtomBuilder)
-					{
+					if ($iPos > $iCharBlockStartPos || null !== $sAtomBuilder) {
 						$sLastCharBlock = \substr($this->sResponseBuffer, $iCharBlockStartPos, $iPos - $iCharBlockStartPos);
-						if (null === $sAtomBuilder)
-						{
+						if (null === $sAtomBuilder) {
 							$aList[] = 'NIL' === $sLastCharBlock ? null : $sLastCharBlock;
 							$sPreviousAtomUpperCase = \strtoupper($sLastCharBlock);
-						}
-						else
-						{
+						} else {
 							$sAtomBuilder .= $sLastCharBlock;
 
-							if (!$bTreatAsAtom)
-							{
+							if (!$bTreatAsAtom) {
 								$aList[] = $sAtomBuilder;
 								$sPreviousAtomUpperCase = \strtoupper($sAtomBuilder);
 								$sAtomBuilder = null;
 							}
 						}
 
-						if ($bRoot)
-						{
-							if (!isset($oImapResponse->Tag) && 1 === \count($aList))
-							{
+						if ($bRoot) {
+							if (!isset($oImapResponse->Tag) && 1 === \count($aList)) {
 								$oImapResponse->setTag($aList[0]);
-								if ($this->getCurrentTag() === $oImapResponse->Tag)
-								{
+								if ($this->getCurrentTag() === $oImapResponse->Tag) {
 									$oImapResponse->ResponseType = ResponseType::TAGGED;
 								}
 							}
@@ -374,8 +346,7 @@ trait ResponseParser
 
 		$iLiteralSize = \strlen($sLiteral);
 		if ($iLiteralLen !== $iLiteralSize) {
-			$this->writeLog('Literal stream read warning "read '.$iLiteralSize.' of '.
-				$iLiteralLen.'" bytes', \LOG_WARNING);
+			$this->writeLog('Literal stream read warning "read '.$iLiteralSize.' of '.$iLiteralLen.'" bytes', \LOG_WARNING);
 		}
 		return $sLiteral;
 	}
@@ -387,9 +358,9 @@ trait ResponseParser
 		}
 
 		$sLiteralAtomUpperCasePeek = '';
-		if (0 === \strpos($sLiteralAtomUpperCase, 'BODY')) {
+		if (\str_starts_with($sLiteralAtomUpperCase, 'BODY')) {
 			$sLiteralAtomUpperCasePeek = \str_replace('BODY', 'BODY.PEEK', $sLiteralAtomUpperCase);
-		} else if (0 === \strpos($sLiteralAtomUpperCase, 'BINARY')) {
+		} else if (\str_starts_with($sLiteralAtomUpperCase, 'BINARY')) {
 			$sLiteralAtomUpperCasePeek = \str_replace('BINARY', 'BINARY.PEEK', $sLiteralAtomUpperCase);
 		}
 
@@ -401,8 +372,7 @@ trait ResponseParser
 			return false;
 		}
 
-		$rImapLiteralStream =
-			\MailSo\Base\StreamWrappers\Literal::CreateStream($this->ConnectionResource(), $iLiteralLen);
+		$rImapLiteralStream = \MailSo\Base\StreamWrappers\Literal::CreateStream($this->ConnectionResource(), $iLiteralLen);
 
 		$this->writeLog('Start Callback for '.$sParent.' / '.$sLiteralAtomUpperCase.
 			' - try to read '.$iLiteralLen.' bytes.', \LOG_INFO);
@@ -411,14 +381,14 @@ trait ResponseParser
 
 		try
 		{
-			$this->aFetchCallbacks[$sFetchKey]($sParent, $sLiteralAtomUpperCase, $rImapLiteralStream);
+			$this->aFetchCallbacks[$sFetchKey]($sParent, $sLiteralAtomUpperCase, $rImapLiteralStream, $iLiteralLen);
 		}
 		catch (\Throwable $oException)
 		{
-			$this->writeLogException($oException);
+			$this->writeLogException($oException, \LOG_NOTICE, false);
 		}
 
-		if ($rImapLiteralStream) {
+		if (\is_resource($rImapLiteralStream)) {
 			$iNotReadLiteralLen = 0;
 
 			$bFeof = \feof($rImapLiteralStream);
@@ -445,12 +415,10 @@ trait ResponseParser
 			\fclose($rImapLiteralStream);
 
 			if (0 < $iNotReadLiteralLen) {
-				$this->writeLog('Not read literal size is '.$iNotReadLiteralLen.' bytes.',
-					\LOG_WARNING);
+				$this->writeLog('Not read literal size is '.$iNotReadLiteralLen.' bytes.', \LOG_WARNING);
 			}
 		} else {
-			$this->writeLog('Literal stream is not resource after callback.',
-				\LOG_WARNING);
+			$this->writeLog('Literal stream is not resource after callback.', \LOG_WARNING);
 		}
 
 		$this->bRunningCallback = false;

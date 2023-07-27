@@ -1,4 +1,5 @@
 {
+	"LANG_DIR": "ltr",
 	"GLOBAL": {
 		"TO_ARCHIVE": "Архивиране",
 		"ARE_YOU_SURE": "Сигурни ли си?",
@@ -19,9 +20,11 @@
 		"MOVE_TO": "Премести в",
 		"NAME": "Вх. кутия",
 		"NONE": "Няма",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "Не е спам",
 		"USERNAME": "Потребителско име",
 		"PASSWORD": "Парола",
+		"REMEMBER": "Remember",
 		"REPLY_TO": "Отговори на",
 		"SAVE": "Запази",
 		"SAVE_CHANGES": "Save changes?",
@@ -33,7 +36,11 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Да",
 		"NO": "Не",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "по подразбиране",
+		"HELP": "Помощ",
+		"TEXT": "Текст",
+		"ATTACHMENTS": "Прикрепени файлове"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Логин",
@@ -41,13 +48,7 @@
 		"BUTTON_SIGN_IN": "Вход"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Добави акаунт",
-		"BUTTON_SETTINGS": "Настройки",
-		"BUTTON_HELP": "Помощ"
-	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Мобилна версия",
-		"BUTTON_DESKTOP_VERSION": "Десктоп версия"
+		"BUTTON_ADD_ACCOUNT": "Добави акаунт"
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Разширено търсене",
@@ -98,6 +99,7 @@
 		"MENU_SELECT_SEEN": "Прочетени",
 		"MENU_SELECT_FLAGGED": "Маркирани с флаг",
 		"MENU_SELECT_UNFLAGGED": "С премахнат флаг",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Празен списък.",
 		"EMPTY_SEARCH_LIST": "Няма съобщения, които да отговарят на търсенето.",
 		"SEARCH_RESULT_FOR": "Резултати от търсенето за \"%SEARCH%\"",
@@ -108,6 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "Имате %COUNT% нови съобщения!",
 		"QUOTA_SIZE": "Използване на <strong>%SIZE% (%PROC%%)<\/strong> от вашите <strong>%LIMIT%<\/strong>",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Date ascending",
 		"SORT_DATE_DESC": "Date descending",
 		"SORT_SIZE_ASC": "Size ascending",
@@ -224,11 +227,16 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Няма прикрепени файлове.",
 		"ATTACHMENTS_ERROR_DESC": "Внимание! Не всички прикачени файлове са качени.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Все още не са качени всички прикрепени файлове",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Автоматично запазване на чернова",
 		"BUTTON_REQUEST_READ_RECEIPT": "Поискайте разписка за прочитане на съобщението",
 		"BUTTON_MARK_AS_IMPORTANT": "Отбележи като важно",
-		"BUTTON_REQUEST_DSN": "Уведомяване при доставка"
+		"BUTTON_REQUEST_DSN": "Уведомяване при доставка",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Сигурни ли сте, че желаете да затворите този прозорец?",
 		"DESC_WANT_DELETE_MESSAGES": "Сигурни ли сте, че желаете да изтриете съобщението\/съобщенията?"
 	},
@@ -312,7 +320,7 @@
 		"MARK_AS_READ_LABEL": "Отбележи като прочетено",
 		"REPLY_INTERVAL_LABEL": "За колко време (дни)",
 		"KEEP_LABEL": "Запази",
-		"STOP_LABEL": "Да не спира да обработва правилата",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Тема (незадължително)",
 		"VACATION_MESSAGE_LABEL": "Съобщение",
 		"VACATION_RECIPIENTS_LABEL": "Получатели (разделени със запетая)",
@@ -351,21 +359,43 @@
 		"ERROR_UNKNOWN": "Възникна неизвестна грешка при качването на файла"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> ТЕКСТ",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"PLAIN": "HTML <-> ТЕКСТ",
+		"SOURCE": "HTML <-> SOURCE",
+		"FONTFAMILY": "Font family",
+		"FONTSIZE": "Font size",
+		"DIR": "Text direction",
+		"DIR_LTR": "Left to right",
+		"DIR_RTL": "Right to left",
+		"DIR_AUTO": "Automatic",
+		"TEXTCOLOR": "Text color",
+		"BACKGROUNDCOLOR": "Background color",
+		"BOLD": "Bold",
+		"ITALIC": "Italic",
+		"UNDERLINE": "Underline",
+		"STRIKE": "Strikethrough",
+		"SUB": "Subscript",
+		"SUP": "Superscript",
+		"OL": "Ordered list",
+		"UL": "Unordered list",
+		"QUOTE": "Blockquote",
+		"INDENTDECREASE": "Decrease indent",
+		"INDENTINCREASE": "Increase indent",
+		"LINK": "Link",
+		"IMAGEURL": "Image URL",
+		"IMAGEUPLOAD": "Image select",
+		"UNDO": "Undo",
+		"REDO": "Redo"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Лични",
-		"LABEL_GENERAL_NAME": "Общи",
-		"LABEL_CONTACTS_NAME": "Контакти",
-		"LABEL_FOLDERS_NAME": "Папки",
-		"LABEL_ACCOUNTS_NAME": "Акаунти",
-		"LABEL_FILTERS_NAME": "Филтри",
-		"LABEL_SECURITY_NAME": "Сигурност",
-		"LABEL_THEMES_NAME": "Теми"
+		"GENERAL": "Общи",
+		"CONTACTS": "Контакти",
+		"FOLDERS": "Папки",
+		"ACCOUNTS": "Акаунти",
+		"FILTERS": "Филтри",
+		"SECURITY": "Сигурност",
+		"THEMES": "Теми"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "Филтри",
 		"SIMPLE": "Simple",
 		"ADVANCED": "Advanced",
 		"BUTTON_ADD_SCRIPT": "Add a Script",
@@ -378,18 +408,18 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Сигурност",
 		"LABEL_AUTOLOGOUT": "Автоматично излизане",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Никога",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% минута(и)",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% час(а)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Никога"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Общи",
 		"LANGUAGE": "Език",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Идентичност",
 		"LAYOUT": "Стил",
 		"LAYOUT_NO_SPLIT": "Не разделяй",
 		"LAYOUT_VERTICAL_SPLIT": "Вертикално разделяне",
 		"LAYOUT_HORIZONTAL_SPLIT": "Хоризонтално разделяне",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Текстов редактор по подразбиране",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Чист текст",
@@ -399,19 +429,30 @@
 		"USE_CHECKBOXES_IN_LIST": "Показавай отметките в списъка",
 		"USE_THREADS": "Използвай групиране на съобщенията",
 		"REPLY_SAME_FOLDER": "Постави отговорите с папката на отговаряното съобщение",
-		"SHOW_IMAGES": "Винаги показвай външни картинки в текста на съобщението",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"REMOVE_COLORS": "Remove background and text colors from message body",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "Съобщения на страница",
+		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Mark message as read after",
 		"MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
+		"MINUTES": "minutes",
 		"NOTIFICATIONS": "Известия",
 		"SOUND_NOTIFICATION": "Звуково известяване",
 		"CHROME_NOTIFICATION_DESC": "Покажи известие при ново съобщение",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Блокирано от браузъра)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
+		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Автоматично добавяне на получателите към адресната ви книга",
@@ -463,14 +504,13 @@
 		"BUTTON_ADD_ACCOUNT": "Добавяне на акаунт",
 		"BUTTON_ADD_IDENTITY": "Добавяне на идентичност",
 		"LOADING_PROCESS": "Обновяване на списъка с акаунти",
-		"DEFAULT_IDENTITY_LABEL": "по подразбиране"
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Внеси ключ",
 		"BUTTON_GENERATE_KEY_PAIR": "Генерирай ключ",
 		"TITLE_PRIVATE": "Частен",
 		"TITLE_PUBLIC": "Публичен",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Автоматично запазване на чернова",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
@@ -484,7 +524,6 @@
 		"LABEL_REPLY_ALL": "Отговори до всички",
 		"LABEL_FORWARD": "Препрати",
 		"LABEL_FORWARD_MULTIPLY": "Препрати като прикачен файл",
-		"LABEL_HELP": "Помощ",
 		"LABEL_CHECK_ALL": "Провери всички съобщения",
 		"LABEL_DELETE": "Изтрий",
 		"LABEL_OPEN_THREAD": "Отвори избраната нишка",

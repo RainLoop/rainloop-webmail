@@ -2,7 +2,7 @@
 
 	background-color: rgba(128, 128, 128, 0.1);
 	border: 0;
-	border-radius: 3px;
+	border-radius: var(--input-border-radius, 3px);
 	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 1px 5px rgba(0, 0, 0, 0.1);
 	display: inline-block;
 	list-style: none;
@@ -31,7 +31,7 @@
 		}
 	}
 
-	.attachmentIconParent {
+	.attachmentIcon {
 		position: absolute;
 		height: 48px;
 		width: 48px;
@@ -83,10 +83,11 @@
 	}
 
 	.iconMain, .iconPreview {
-		box-sizing: border-box;
 		padding: 6px 0 0;
 		font-size: 36px;
-		color: #aaa;
+		color: var(--main-color);
+		filter: invert(33%);
+		mix-blend-mode: difference;
 
 		&.icon-none {
 			display: none;
@@ -101,22 +102,41 @@
 	}
 */
 
-	.showPreview, .showPreplay,
+	.showPreview,
 	.hasPreview:hover .iconMain,
-	.hasPreplay:hover .iconMain,
-	.hasPreview .hidePreview,
-	.hasPreplay .hidePreview {
+	.hasPreview .hidePreview {
 		display: none;
 	}
 
-	.hasPreview:hover .iconPreview,
-	.hasPreplay:hover .iconPreview {
+	.hasPreview:hover .iconPreview {
 		display: inline-block;
 	}
 
-	.hasPreview .showPreview,
-	.hasPreplay .showPreplay {
+	.hasPreplay:hover .iconMain::before {
+		content: "▶";
+	}
+
+	.hasPreview .showPreview {
 		display: inline;
 		cursor: pointer;
+	}
+}
+
+.attachmentListSimple {
+	margin: 0;
+
+	.attachmentItem {
+		min-height: 1em;
+		border: 1px solid var(--border-color);
+		padding: 0 2px;
+	}
+
+	.attachmentName {
+		margin:0;
+	}
+
+	.checkboxAttachment {
+		position: initial;
+		margin-left:.5em;
 	}
 }

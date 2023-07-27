@@ -1,4 +1,5 @@
 {
+	"LANG_DIR": "ltr",
 	"GLOBAL": {
 		"TO_ARCHIVE": "Arhiveerimine",
 		"ARE_YOU_SURE": "Kas oled kindel?",
@@ -19,9 +20,11 @@
 		"MOVE_TO": "Liiguta kausta",
 		"NAME": "Saabunud kirjad",
 		"NONE": "Puuduvad",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "Ei ole rämpspost",
 		"USERNAME": "Kasutajanimi",
 		"PASSWORD": "Salasõna",
+		"REMEMBER": "Remember",
 		"REPLY_TO": "Vastuse saaja",
 		"SAVE": "Salvesta",
 		"SAVE_CHANGES": "Save changes?",
@@ -33,7 +36,11 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Jah",
 		"NO": "Ei",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "vaikimisi",
+		"HELP": "Abi",
+		"TEXT": "Tekst",
+		"ATTACHMENTS": "Manused"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logi sisse",
@@ -41,13 +48,7 @@
 		"BUTTON_SIGN_IN": "Sisene"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Lisa konto",
-		"BUTTON_SETTINGS": "Sätted",
-		"BUTTON_HELP": "Abi"
-	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobiiliversioon",
-		"BUTTON_DESKTOP_VERSION": "Töölauaversioon"
+		"BUTTON_ADD_ACCOUNT": "Lisa konto"
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Täpsem otsing",
@@ -98,6 +99,7 @@
 		"MENU_SELECT_SEEN": "Loetud",
 		"MENU_SELECT_FLAGGED": "Lipuga märgitud",
 		"MENU_SELECT_UNFLAGGED": "Lipuga märkimata",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Tühi nimekiri",
 		"EMPTY_SEARCH_LIST": "Otsingule ei vastanud ühtegi kirja",
 		"SEARCH_RESULT_FOR": "Vasted otsingule \"%SEARCH%\"",
@@ -108,6 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "Sulle on %COUNT% uut kirja!",
 		"QUOTA_SIZE": "Kasutad <strong>%SIZE% (%PROC%%)<\/strong> lubatud kettamahust <strong>%LIMIT%<\/strong>",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Date ascending",
 		"SORT_DATE_DESC": "Date descending",
 		"SORT_SIZE_ASC": "Size ascending",
@@ -224,11 +227,16 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Manused puuduvad.",
 		"ATTACHMENTS_ERROR_DESC": "Tähelepanu! Kõiki manuseid ei ole üles laetud.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Kõiki manuseid ei ole veel üles laetud.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "Palu lugemise kohta kinnitust",
 		"BUTTON_MARK_AS_IMPORTANT": "Tähista olulisena",
-		"BUTTON_REQUEST_DSN": "Palu kättesaamise kohta kinnitust"
+		"BUTTON_REQUEST_DSN": "Palu kättesaamise kohta kinnitust",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Kas oled kindel, et soovid akna sulgeda?",
 		"DESC_WANT_DELETE_MESSAGES": "Kas oled kindel, et soovid sõnumi(d) kustutada?"
 	},
@@ -312,7 +320,7 @@
 		"MARK_AS_READ_LABEL": "Märgi loetuks",
 		"REPLY_INTERVAL_LABEL": "Vastuse intervall (päevades)",
 		"KEEP_LABEL": "Salvesta",
-		"STOP_LABEL": "Ära peata reeglite protsessimist",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Pealkiri (valikuline)",
 		"VACATION_MESSAGE_LABEL": "Sõnum",
 		"VACATION_RECIPIENTS_LABEL": "Saajad (eraldatud komaga)",
@@ -351,21 +359,43 @@
 		"ERROR_UNKNOWN": "Faili üleslaadimisel tekkis tundmatu iseloomuga viga"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> TEXT",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"PLAIN": "HTML <-> TEXT",
+		"SOURCE": "HTML <-> SOURCE",
+		"FONTFAMILY": "Font family",
+		"FONTSIZE": "Font size",
+		"DIR": "Text direction",
+		"DIR_LTR": "Left to right",
+		"DIR_RTL": "Right to left",
+		"DIR_AUTO": "Automatic",
+		"TEXTCOLOR": "Text color",
+		"BACKGROUNDCOLOR": "Background color",
+		"BOLD": "Bold",
+		"ITALIC": "Italic",
+		"UNDERLINE": "Underline",
+		"STRIKE": "Strikethrough",
+		"SUB": "Subscript",
+		"SUP": "Superscript",
+		"OL": "Ordered list",
+		"UL": "Unordered list",
+		"QUOTE": "Blockquote",
+		"INDENTDECREASE": "Decrease indent",
+		"INDENTINCREASE": "Increase indent",
+		"LINK": "Link",
+		"IMAGEURL": "Image URL",
+		"IMAGEUPLOAD": "Image select",
+		"UNDO": "Undo",
+		"REDO": "Redo"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Isiklik",
-		"LABEL_GENERAL_NAME": "Üldine",
-		"LABEL_CONTACTS_NAME": "Kontaktid",
-		"LABEL_FOLDERS_NAME": "Kaustad",
-		"LABEL_ACCOUNTS_NAME": "Kontod",
-		"LABEL_FILTERS_NAME": "Filtrid",
-		"LABEL_SECURITY_NAME": "Turvalisus",
-		"LABEL_THEMES_NAME": "Teemad"
+		"GENERAL": "Üldine",
+		"CONTACTS": "Kontaktid",
+		"FOLDERS": "Kaustad",
+		"ACCOUNTS": "Kontod",
+		"FILTERS": "Filtrid",
+		"SECURITY": "Turvalisus",
+		"THEMES": "Teemad"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "Filtrid",
 		"SIMPLE": "Simple",
 		"ADVANCED": "Advanced",
 		"BUTTON_ADD_SCRIPT": "Add a Script",
@@ -378,18 +408,18 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Turvalisus",
 		"LABEL_AUTOLOGOUT": "Automaatne välja logimine",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Mitte kunagi",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minutit",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% tund(i)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Mitte kunagi"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Üldine",
 		"LANGUAGE": "Keel",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identiteet",
 		"LAYOUT": "Vaade",
 		"LAYOUT_NO_SPLIT": "Jaotuseta",
 		"LAYOUT_VERTICAL_SPLIT": "Vertikaalse jaotusega",
 		"LAYOUT_HORIZONTAL_SPLIT": "Horisontaalse jaotusega",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Vaikimisi tekstiredaktor",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Lihttekst",
@@ -399,19 +429,30 @@
 		"USE_CHECKBOXES_IN_LIST": "Kuva nimekirjas valikukastikesi",
 		"USE_THREADS": "Kasuta vestluse lõimesid",
 		"REPLY_SAME_FOLDER": "Pane vastused samasse kausta, kus asub vastatud kiri",
-		"SHOW_IMAGES": "Näita alati kirja sisus viidatud väliseid pilte",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"REMOVE_COLORS": "Remove background and text colors from message body",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "Lehel kuvatavate kirjade arv",
+		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Mark message as read after",
 		"MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
+		"MINUTES": "minutes",
 		"NOTIFICATIONS": "Teavitused",
 		"SOUND_NOTIFICATION": "Teavitused heliga",
 		"CHROME_NOTIFICATION_DESC": "Näita uute kirjade teavitust hüpikaknaga",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Veebilehitseja poolt blokeeritud)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
+		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Lisa saajad automaatselt aadressiraamatusse",
@@ -463,14 +504,13 @@
 		"BUTTON_ADD_ACCOUNT": "Lisa konto",
 		"BUTTON_ADD_IDENTITY": "Lisa identiteet",
 		"LOADING_PROCESS": "Värskendan...",
-		"DEFAULT_IDENTITY_LABEL": "vaikimisi"
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Impordi võti",
 		"BUTTON_GENERATE_KEY_PAIR": "Genereeri võti",
 		"TITLE_PRIVATE": "Privaatne",
 		"TITLE_PUBLIC": "Avalik",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
@@ -484,7 +524,6 @@
 		"LABEL_REPLY_ALL": "Vasta kõigile",
 		"LABEL_FORWARD": "Edasta",
 		"LABEL_FORWARD_MULTIPLY": "Edasta manusena",
-		"LABEL_HELP": "Abi",
 		"LABEL_CHECK_ALL": "Vali kõik kirjad",
 		"LABEL_DELETE": "Kustuta",
 		"LABEL_OPEN_THREAD": "Ava valitud lõim",

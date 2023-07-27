@@ -12,29 +12,29 @@
 		<div class="control-group">
 			<label data-i18n="GLOBAL/EMAIL"></label>
 			<div>
-				<div class="textEmail" data-bind="text: email, visible: owner"></div>
+				<div class="textEmail" data-bind="text: email, visible: !id()"></div>
 				<input name="Email" type="email" class="input-xlarge" autofocus=""
 					autocomplete="off" autocorrect="off" autocapitalize="off"
-					data-bind="visible: !owner(), value: email, hasfocus: emailFocused, attr: {required: !owner()}">
+					data-bind="visible: id, value: email, hasfocus: emailFocused, attr: {required: id}">
 			</div>
 		</div>
 		<div class="control-group">
 			<label data-i18n="GLOBAL/NAME"></label>
 			<input name="Name" type="text" class="input-xlarge"
 				autocomplete="off" autocorrect="off" autocapitalize="off"
-				data-bind="value: name">
+				data-bind="value: name, hasfocus: nameFocused">
 		</div>
 		<div class="control-group" data-bind="visible: showReplyTo">
 			<label data-i18n="GLOBAL/REPLY_TO"></label>
 			<input name="ReplyTo" type="email" class="inputReplyTo input-xlarge"
 				autocomplete="off" autocorrect="off" autocapitalize="off"
-				data-bind="value: replyTo, hasfocus: replyToFocused">
+				data-bind="value: replyTo">
 		</div>
 		<div class="control-group" data-bind="visible: showBcc">
 			<label data-i18n="GLOBAL/BCC"></label>
 			<input name="Bcc" type="email" class="inputBcc input-xlarge"
 				autocomplete="off" autocorrect="off" autocapitalize="off"
-				data-bind="value: bcc, hasfocus: bccFocused">
+				data-bind="value: bcc">
 		</div>
 		<div class="control-group" data-bind="visible: !showReplyTo() || !showBcc()">
 			<div>
@@ -56,7 +56,8 @@
 			name: 'Checkbox',
 			params: {
 				label: 'POPUPS_IDENTITY/LABEL_SIGNATURE_INSERT_BEFORE',
-				value: signatureInsertBefore
+				value: signatureInsertBefore,
+				name: 'SignatureInsertBefore'
 			}
 		}"></div>
 	</div>

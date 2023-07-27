@@ -4,7 +4,7 @@ import { logoutLink } from 'Common/Links';
 import { i18nToNodes, initOnStartOrLangChange } from 'Common/Translator';
 
 import { LanguageStore } from 'Stores/Language';
-import { ThemeStore } from 'Stores/Theme';
+import { initThemes } from 'Stores/Theme';
 
 import { SelectComponent } from 'Component/Select';
 import { CheckboxComponent } from 'Component/Checkbox';
@@ -36,9 +36,6 @@ export class AbstractApp {
 					createViewModel: (params, componentInfo) => {
 						params = params || {};
 						i18nToNodes(componentInfo.element);
-						if (params.inline) {
-							componentInfo.element.style.display = 'inline-block';
-						}
 						return new ClassObject(params);
 					}
 				}
@@ -49,7 +46,7 @@ export class AbstractApp {
 		initOnStartOrLangChange();
 
 		LanguageStore.populate();
-		ThemeStore.populate();
+		initThemes();
 
 		this.start();
 	}

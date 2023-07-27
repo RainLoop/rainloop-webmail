@@ -24,9 +24,9 @@ class SequenceSet /*extends \SplFixedArray*/ implements \Countable
 	/**
 	 * By default the numbers are unique identifiers as this is more reliable.
 	 */
-	public $UID = true;
+	public bool $UID = true;
 
-	private $data = [];
+	private array $data = [];
 
 	public function __construct($mItems, bool $uid = true)
 	{

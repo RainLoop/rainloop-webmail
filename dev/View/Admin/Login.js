@@ -33,6 +33,10 @@ export class AdminLoginView extends AbstractViewLogin {
 		});
 	}
 
+	hideError() {
+		this.submitError('');
+	}
+
 	submitCommand(self, event) {
 		let form = event.target.form,
 			data = new FormData(form),

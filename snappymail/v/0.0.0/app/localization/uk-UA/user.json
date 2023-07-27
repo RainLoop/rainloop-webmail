@@ -1,4 +1,5 @@
 {
+	"LANG_DIR": "ltr",
 	"GLOBAL": {
 		"TO_ARCHIVE": "Архівування",
 		"ARE_YOU_SURE": "Ви впевнені?",
@@ -19,9 +20,11 @@
 		"MOVE_TO": "Перемістити",
 		"NAME": "Вхідні",
 		"NONE": "None",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "Не спам",
 		"USERNAME": "Ім'я користувача",
 		"PASSWORD": "Пароль",
+		"REMEMBER": "Remember",
 		"REPLY_TO": "Reply-To",
 		"SAVE": "Зберегти",
 		"SAVE_CHANGES": "Save changes?",
@@ -33,7 +36,11 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Так",
 		"NO": "Ні",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "default",
+		"HELP": "Допомога",
+		"TEXT": "Текст",
+		"ATTACHMENTS": "Файли"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Логін",
@@ -41,13 +48,7 @@
 		"BUTTON_SIGN_IN": "Увійти"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Додати ще акаунт",
-		"BUTTON_SETTINGS": "Налаштування",
-		"BUTTON_HELP": "Допомога"
-	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Мобільна версія",
-		"BUTTON_DESKTOP_VERSION": "Повна версія"
+		"BUTTON_ADD_ACCOUNT": "Додати ще акаунт"
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Розширений пошук листів",
@@ -98,6 +99,7 @@
 		"MENU_SELECT_SEEN": "Прочитані",
 		"MENU_SELECT_FLAGGED": "Відмічені",
 		"MENU_SELECT_UNFLAGGED": "Без поміток",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "В папці немає листів.",
 		"EMPTY_SEARCH_LIST": "Листи не знайдено.",
 		"SEARCH_RESULT_FOR": "Результат пошуку \"%SEARCH%\"",
@@ -108,6 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "У вас %COUNT% нових повідомлень!",
 		"QUOTA_SIZE": "Використано <strong>%SIZE% (%PROC%%)<\/strong> з <strong>%LIMIT%<\/strong>",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Date ascending",
 		"SORT_DATE_DESC": "Date descending",
 		"SORT_SIZE_ASC": "Size ascending",
@@ -224,11 +227,16 @@
 		"NO_ATTACHMENTS_HERE_DESC": "No attachments here.",
 		"ATTACHMENTS_ERROR_DESC": "Warning! Not all attachments have been uploaded.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Not all attachments have been uploaded yet",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "Запит про прочитання листа",
 		"BUTTON_MARK_AS_IMPORTANT": "Mark as important",
-		"BUTTON_REQUEST_DSN": "Request a delivery receipt"
+		"BUTTON_REQUEST_DSN": "Request a delivery receipt",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Ви впевнені, що хочете закрити це вікно?",
 		"DESC_WANT_DELETE_MESSAGES": "Ви впевнені, що хочете видалити повідомлення?"
 	},
@@ -312,7 +320,7 @@
 		"MARK_AS_READ_LABEL": "Mark as read",
 		"REPLY_INTERVAL_LABEL": "Reply interval (days)",
 		"KEEP_LABEL": "Keep",
-		"STOP_LABEL": "Don't stop processing rules",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Тема (не обов'язково)",
 		"VACATION_MESSAGE_LABEL": "Повідомлення",
 		"VACATION_RECIPIENTS_LABEL": "Отримувачі (розділяти комами)",
@@ -351,21 +359,43 @@
 		"ERROR_UNKNOWN": "Помилка завантаження файлу"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> TEXT",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"PLAIN": "HTML <-> TEXT",
+		"SOURCE": "HTML <-> SOURCE",
+		"FONTFAMILY": "Font family",
+		"FONTSIZE": "Font size",
+		"DIR": "Text direction",
+		"DIR_LTR": "Left to right",
+		"DIR_RTL": "Right to left",
+		"DIR_AUTO": "Automatic",
+		"TEXTCOLOR": "Text color",
+		"BACKGROUNDCOLOR": "Background color",
+		"BOLD": "Bold",
+		"ITALIC": "Italic",
+		"UNDERLINE": "Underline",
+		"STRIKE": "Strikethrough",
+		"SUB": "Subscript",
+		"SUP": "Superscript",
+		"OL": "Ordered list",
+		"UL": "Unordered list",
+		"QUOTE": "Blockquote",
+		"INDENTDECREASE": "Decrease indent",
+		"INDENTINCREASE": "Increase indent",
+		"LINK": "Link",
+		"IMAGEURL": "Image URL",
+		"IMAGEUPLOAD": "Image select",
+		"UNDO": "Undo",
+		"REDO": "Redo"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Персональні",
-		"LABEL_GENERAL_NAME": "Основні",
-		"LABEL_CONTACTS_NAME": "Контакти",
-		"LABEL_FOLDERS_NAME": "Теки",
-		"LABEL_ACCOUNTS_NAME": "Акаунти",
-		"LABEL_FILTERS_NAME": "Фильтры",
-		"LABEL_SECURITY_NAME": "Безпека",
-		"LABEL_THEMES_NAME": "Теми"
+		"GENERAL": "Основні",
+		"CONTACTS": "Контакти",
+		"FOLDERS": "Теки",
+		"ACCOUNTS": "Акаунти",
+		"FILTERS": "Фильтры",
+		"SECURITY": "Безпека",
+		"THEMES": "Теми"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "Filters",
 		"SIMPLE": "Simple",
 		"ADVANCED": "Advanced",
 		"BUTTON_ADD_SCRIPT": "Add a Script",
@@ -378,18 +408,18 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Безпека",
 		"LABEL_AUTOLOGOUT": "Автовихід",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Ніколи",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minute(s)",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% hour(s)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Ніколи"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Основні налаштування",
 		"LANGUAGE": "Мова",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identity",
 		"LAYOUT": "Layout",
 		"LAYOUT_NO_SPLIT": "No Split",
 		"LAYOUT_VERTICAL_SPLIT": "Vertical Split",
 		"LAYOUT_HORIZONTAL_SPLIT": "Horizontal Split",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Редактор тексту за змовчуванням",
 		"EDITOR_HTML": "Форматований",
 		"EDITOR_PLAIN": "Простий",
@@ -399,19 +429,30 @@
 		"USE_CHECKBOXES_IN_LIST": "Показувати чекбокси у списках",
 		"USE_THREADS": "Згортати листи у листуваннях",
 		"REPLY_SAME_FOLDER": "Поміщати відповіді в ту ж теку, де знаходиться оригінал",
-		"SHOW_IMAGES": "Показувати зовнішні зображення в тілі листа без попередження",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"REMOVE_COLORS": "Remove background and text colors from message body",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "Повідомлень на одній сторінці",
+		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Mark message as read after",
 		"MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
+		"MINUTES": "minutes",
 		"NOTIFICATIONS": "Сповіщення",
 		"SOUND_NOTIFICATION": "Звукове сповіщення",
 		"CHROME_NOTIFICATION_DESC": "Показувати сповіщення про нові повідомлення у підказках",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Заблоковано браузером)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
+		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Автоматично додавати отримувачів у адресну книгу",
@@ -463,14 +504,13 @@
 		"BUTTON_ADD_ACCOUNT": "Додати ще акаунт",
 		"BUTTON_ADD_IDENTITY": "Add an Identity",
 		"LOADING_PROCESS": "Оновлення списку акаунтів",
-		"DEFAULT_IDENTITY_LABEL": "default"
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Імпортувати ключ",
 		"BUTTON_GENERATE_KEY_PAIR": "Новий ключ",
 		"TITLE_PRIVATE": "Приватний",
 		"TITLE_PUBLIC": "Публічний",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
@@ -484,7 +524,6 @@
 		"LABEL_REPLY_ALL": "Відповісти всім",
 		"LABEL_FORWARD": "Переслати",
 		"LABEL_FORWARD_MULTIPLY": "Переслати всі вибрані повідомлення",
-		"LABEL_HELP": "Допомога",
 		"LABEL_CHECK_ALL": "Вибрати всі повідомлення",
 		"LABEL_DELETE": "Видалити",
 		"LABEL_OPEN_THREAD": "Відкрити відмічене листування",

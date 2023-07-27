@@ -5,12 +5,10 @@ export const
 /**
  * @enum {string}
  */
-Scope = {
-	MessageList: 'MessageList',
-	FolderList: 'FolderList',
-	MessageView: 'MessageView',
-	Settings: 'Settings'
-},
+ScopeMessageList = 'MessageList',
+ScopeFolderList = 'FolderList',
+ScopeMessageView = 'MessageView',
+ScopeSettings = 'Settings',
 
 /**
  * @enum {number}
@@ -39,7 +37,7 @@ SaveSettingStatus = {
 /**
  * @enum {number}
  */
-Notification = {
+Notifications = {
 	RequestError: 1,
 	RequestAborted: 2,
 	RequestTimeout: 3,

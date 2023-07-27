@@ -3,21 +3,18 @@
 class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
-		NAME = 'Contacts suggestions (LDAP)',
-		VERSION = '2.9',
-		RELEASE  = '2022-05-05',
+		NAME     = 'Contacts suggestions (LDAP)',
+		VERSION  = '2.12',
+		RELEASE  = '2023-01-31',
+		REQUIRED = '2.23.0',
 		CATEGORY = 'Contacts',
-		DESCRIPTION = 'Get contacts suggestions from LDAP.',
-		REQUIRED = '2.9.1';
+		DESCRIPTION = 'Get contacts suggestions from LDAP.';
 
 	public function Init() : void
 	{
 		$this->addHook('main.fabrica', 'MainFabrica');
 	}
 
-	/**
-	 * @return string
-	 */
 	public function Supported() : string
 	{
 		if (!\function_exists('ldap_connect'))
@@ -34,43 +31,38 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	 */
 	public function MainFabrica($sName, &$mResult)
 	{
-		switch ($sName)
-		{
-			case 'suggestions':
+		if ('suggestions' == $sName) {
+			if (!\is_array($mResult)) {
+				$mResult = array();
+			}
 
-				if (!\is_array($mResult))
-				{
-					$mResult = array();
-				}
+			$sLdapUri = \trim($this->Config()->Get('plugin', 'ldap_uri', ''));
+			$sBaseDn = \trim($this->Config()->Get('plugin', 'base_dn', ''));
+			$sObjectClasses = \trim($this->Config()->Get('plugin', 'object_classes', ''));
+			$sEmailAttributes = \trim($this->Config()->Get('plugin', 'mail_attributes', ''));
 
-				$sLdapUri = \trim($this->Config()->Get('plugin', 'ldap_uri', ''));
-				$bUseStartTLS = (bool) $this->Config()->Get('plugin', 'use_start_tls', True);
-				$sBindDn = \trim($this->Config()->Get('plugin', 'bind_dn', ''));
-				$sBindPassword = \trim($this->Config()->Get('plugin', 'bind_password', ''));
-				$sBaseDn = \trim($this->Config()->Get('plugin', 'base_dn', ''));
-				$sObjectClasses = \trim($this->Config()->Get('plugin', 'object_classes', ''));
-				$sUidAttributes = \trim($this->Config()->Get('plugin', 'uid_attributes', ''));
-				$sNameAttributes = \trim($this->Config()->Get('plugin', 'name_attributes', ''));
-				$sEmailAttributes = \trim($this->Config()->Get('plugin', 'mail_attributes', ''));
-				$sAllowedEmails = \trim($this->Config()->Get('plugin', 'allowed_emails', ''));
+			if (\strlen($sLdapUri) && \strlen($sBaseDn) && \strlen($sObjectClasses) && \strlen($sEmailAttributes)) {
+				require_once __DIR__.'/LdapContactsSuggestions.php';
 
-				if (0 < \strlen($sLdapUri) && 0 < \strlen($sBaseDn) && 0 < \strlen($sObjectClasses) && 0 < \strlen($sEmailAttributes))
-				{
-					include_once __DIR__.'/LdapContactsSuggestions.php';
+				$oProvider = new LdapContactsSuggestions();
+				$oProvider->SetConfig(
+					$sLdapUri,
+					(bool) $this->Config()->Get('plugin', 'use_start_tls', true),
+					\trim($this->Config()->Get('plugin', 'bind_dn', '')),
+					\trim($this->Config()->Get('plugin', 'bind_password', '')),
+					$sBaseDn,
+					$sObjectClasses,
+					\trim($this->Config()->Get('plugin', 'uid_attributes', '')),
+					\trim($this->Config()->Get('plugin', 'name_attributes', '')),
+					$sEmailAttributes,
+					\trim($this->Config()->Get('plugin', 'allowed_emails', ''))
+				);
 
-					$oProvider = new LdapContactsSuggestions();
-					$oProvider->SetConfig($sLdapUri, $bUseStartTLS, $sBindDn, $sBindPassword, $sBaseDn, $sObjectClasses, $sUidAttributes, $sNameAttributes, $sEmailAttributes, $sAllowedEmails);
-
-					$mResult[] = $oProvider;
-				}
-
-				break;
+				$mResult[] = $oProvider;
+			}
 		}
 	}
 
-	/**
-	 * @return array
-	 */
 	protected function configMapping() : array
 	{
 		return array(

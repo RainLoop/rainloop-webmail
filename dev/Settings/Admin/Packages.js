@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { Notification } from 'Common/Enums';
+import { Notifications } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
 import { PackageAdminStore } from 'Stores/Admin/Package';
@@ -15,7 +15,7 @@ export class AdminSettingsPackages extends AbstractViewSettings {
 	constructor() {
 		super();
 
-		this.addSettings(['EnabledPlugins']);
+		this.addSettings(['pluginsEnable']);
 
 		addObservablesTo(this, {
 			packagesError: ''
@@ -46,7 +46,7 @@ export class AdminSettingsPackages extends AbstractViewSettings {
 			data && Remote.request('AdminPluginLoad',
 				(iError, data) => iError || showScreenPopup(PluginPopupView, [data.Result]),
 				{
-					Id: data.id
+					id: data.id
 				}
 			);
 			// disablePlugin
@@ -67,7 +67,7 @@ export class AdminSettingsPackages extends AbstractViewSettings {
 
 			if (iError) {
 				this.packagesError(
-					getNotification(install ? Notification.CantInstallPackage : Notification.CantDeletePackage)
+					getNotification(install ? Notifications.CantInstallPackage : Notifications.CantDeletePackage)
 					+ (data.ErrorMessage ? ':\n' + data.ErrorMessage : '')
 				);
 			} else if (data.Result.Reload) {
@@ -84,7 +84,7 @@ export class AdminSettingsPackages extends AbstractViewSettings {
 			Remote.request('AdminPackageDelete',
 				this.requestHelper(packageToDelete, false),
 				{
-					Id: packageToDelete.id
+					id: packageToDelete.id
 				}
 			);
 		}
@@ -96,9 +96,9 @@ export class AdminSettingsPackages extends AbstractViewSettings {
 			Remote.request('AdminPackageInstall',
 				this.requestHelper(packageToInstall, true),
 				{
-					Id: packageToInstall.id,
-					Type: packageToInstall.type,
-					File: packageToInstall.file
+					id: packageToInstall.id,
+					type: packageToInstall.type,
+					file: packageToInstall.file
 				},
 				60000
 			);
@@ -113,15 +113,15 @@ export class AdminSettingsPackages extends AbstractViewSettings {
 				if (iError) {
 					plugin.enabled(disable);
 					this.packagesError(
-						(Notification.UnsupportedPluginPackage === iError && data?.ErrorMessage)
+						(Notifications.UnsupportedPluginPackage === iError && data?.ErrorMessage)
 						? data.ErrorMessage
 						: getNotification(iError)
 					);
 				}
 //				PackageAdminStore.fetch();
 			}, {
-				Id: plugin.id,
-				Disabled: disable ? 1 : 0
+				id: plugin.id,
+				disabled: disable ? 1 : 0
 			}
 		);
 	}

@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Adminisztrációs felület"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Általános",
-		"LABEL_LOGIN_NAME": "Belépés",
-		"LABEL_BRANDING_NAME": "Arculat",
-		"LABEL_CONTACTS_NAME": "Névjegyek",
-		"LABEL_DOMAINS_NAME": "Domainek",
-		"LABEL_SECURITY_NAME": "Biztonság",
-		"LABEL_PACKAGES_NAME": "Bővítmények",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "Névjegy"
+		"GENERAL": "Általános",
+		"LOGIN": "Belépés",
+		"BRANDING": "Arculat",
+		"CONTACTS": "Névjegyek",
+		"DOMAINS": "Domainek",
+		"SECURITY": "Biztonság",
+		"PACKAGES": "Bővítmények",
+		"CONFIG": "Config",
+		"ABOUT": "Névjegy"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Felület",
@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "Felhasználó",
 		"LABEL_STORAGE_PASSWORD": "Jelszó",
 		"ALERT_NOTICE": "Megjegyzés!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Ne használd ezt az adatbázis típust nagy számú aktív felhasználóval.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "A rendszer nem támogatja a címtárat.\n<br>\nTelepítened vagy engedélyezned kell egy <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> kiterjesztést a szervereden.\n"
 	},
@@ -88,8 +89,7 @@
 		"LABEL_CURRENT_PASSWORD": "Jelenlegi jelszó",
 		"LABEL_NEW_PASSWORD": "Új jelszó",
 		"LABEL_REPEAT_PASSWORD": "Újra",
-		"LEGEND_SSL": "SSL",
-		"LABEL_REQUIRE_VERIFICATION": "A használt (IMAP\/SMTP) tanúsítvány ellenőrzés megkövetelése",
+		"LABEL_REQUIRE_VERIFICATION": "A használt tanúsítvány ellenőrzés megkövetelése",
 		"LABEL_ALLOW_SELF_SIGNED": "Saját aláírt tanúsítványok engedélyezése"
 	},
 	"TAB_PACKAGES": {
@@ -121,20 +121,21 @@
 		"TITLE_EDIT_DOMAIN": "\"%NAME%\" domain szerkesztése",
 		"LABEL_NAME": "Név",
 		"NAME_HELPER": "helyettesítő karakter használható",
-		"LABEL_IMAP": "IMAP",
-		"LABEL_SMTP": "SMTP",
-		"LABEL_SIEVE": "SIEVE",
 		"LABEL_SERVER": "Szerver",
 		"LABEL_PORT": "Port",
 		"LABEL_SECURE": "Biztonság",
+		"TIMEOUT": "Timeout",
+		"DISABLE_CAPABILITIES": "Disable capabilities",
+		"LIMITS": "Limits",
+		"FOLDERS": "Folders",
+		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "Fehér lista",
 		"SECURE_OPTION_NONE": "Semmi",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "SIEVE szkriptek engedélyezése",
 		"LABEL_USE_SHORT_LOGIN": "Rövid felhasználónév használata",
 		"LABEL_USE_AUTH": "Hitelesítés használata",
 		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "A PHP mail() funkció használata",
 		"BUTTON_WHITE_LIST": "Fehér lista",
 		"BUTTON_SIEVE_CONFIGURATION": "SIEVE beállítás",
@@ -158,7 +159,6 @@
 	},
 	"HINTS": {
 		"BETA": "béta",
-		"UNSTABLE": "instabil",
 		"WARNING": "Figyelmeztetés!"
 	},
 	"ERRORS": {

@@ -1,39 +1,52 @@
 
-html.rl-no-preview-pane {
-	#rl-right:not(.message-selected) #V-MailMessageView {
-		display: none;
+#V-MailMessageView {
+	flex-grow: 1;
+	overflow: auto;
+	padding-bottom: @rlLowMargin;
+
+	.b-message-view-backdrop {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, .4);
+		z-index: 10;
+		text-align: center;
+
+		.backdrop-message {
+			position: relative;
+			display: inline-block;
+			color: white;
+			font-size: 20px;
+			line-height: 30px;
+			background: rgba(0, 0, 0, .6);
+			padding: 15px;
+			border-radius: var(--border-radius, 5px);
+			text-shadow: 0 1px 1px #000;
+			transform: translateY(-50%);
+			top: 50%;
+		}
 	}
 }
 
-#V-MailMessageView.focused .messageView {
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-	border-color: darken(@rlMainDarkColor, 5%);
+#V-MailMessageView .top-toolbar {
+	color: #fff;
+	padding: 10px 0;
+	visibility: visible;
 }
 
 .messageView {
-	background-color: #fff;
-	border: 1px solid @rlMainDarkColor;
-	border-radius: @rlMainBorderRadius;
-	height: 100%;
-
-	.toolbar {
-		position: absolute;
-		top: -50px - @rlLowMargin;
-		right: 0;
-		left: 0;
-		height: 30px;
-		padding: 10px 0;
-		color: #fff;
-	}
+	background-color: var(--panel-bg-clr, #fff);
+	border: 1px solid var(--border-color, #aaa);
+	border-radius: var(--border-radius, 5px);
+	height: calc(100% - 50px);
+	position: relative;
 
 	.priorityHigh .subject::before {
 		content: '! '; /*❗*/
 		color: red;
 		font-weight: bolder;
-	}
-
-	.b-content {
-		height: 100%;
 	}
 
 	.b-message {
@@ -45,9 +58,8 @@ html.rl-no-preview-pane {
 	.b-message-view-checked-helper {
 		text-align: center;
 		font-size: 70px;
-		line-height: 70px;
-		padding-top: 100px;
-		color: #999;
+		padding-top: 25vh;
+		opacity: 0.6;
 	}
 	.b-message-view-checked-helper::after {
 		content: ' ✉';
@@ -59,7 +71,7 @@ html.rl-no-preview-pane {
 		font-size: 24px;
 		line-height: 30px;
 		color: #999;
-		padding: 120px 10px 0 10px;
+		padding: 25vh 10px 0;
 	}
 
 	.b-message-view-desc.error {
@@ -96,7 +108,6 @@ html.rl-no-preview-pane {
 	}
 
 	.messageTags {
-		margin-top: 6px;
 		align-items: baseline;
 		display: flex;
 	}
@@ -115,11 +126,12 @@ html.rl-no-preview-pane {
 
 	.messageItemHeader {
 
-		background-color: #f8f8f8;
-		border-bottom: 1px solid #ddd;
-		border-radius: @rlMainBorderRadius @rlMainBorderRadius 0 0;
+		background-color: var(--message-header-bg-clr, #eee);
+		border-bottom: 1px solid var(--border-color, #bbb);
+		border-radius: var(--border-radius, 5px) var(--border-radius, 5px) 0 0;
 		padding: 10px;
 		flex-shrink: 0;
+		word-break: keep-all;
 
 		.fontastic + span {
 			margin-left: 0.25em;
@@ -129,7 +141,6 @@ html.rl-no-preview-pane {
 			display: flex;
 			font-size: 18px;
 			font-weight: bold;
-			margin-bottom: 8px;
 		}
 
 		.subject {
@@ -144,12 +155,8 @@ html.rl-no-preview-pane {
 			opacity: 0.5;
 		}
 
-		.messageButtons {
-			margin-top: 5px;
-		}
-
 		.informationShort {
-			margin: 4px 40px 0 0;
+			margin: 0 56px 0 0;
 			overflow: hidden;
 			text-overflow: ellipsis;
 
@@ -180,13 +187,9 @@ html.rl-no-preview-pane {
 
 			td:first-child {
 				border-right: 1px solid #999;
-				text-align: right;
+				text-align: var(--right, right);
 				white-space: nowrap;
 				width: 1%;
-			}
-
-			td + td {
-				word-break: break-all;
 			}
 		}
 
@@ -198,7 +201,6 @@ html.rl-no-preview-pane {
 	}
 
 	.openpgp-control {
-		margin: 0.5em;
 		padding: 0.5em;
 
 		span {
@@ -231,9 +233,6 @@ html.rl-no-preview-pane {
 			display: none;
 		}
 	}
-	.b-text-part > iframe {
-		min-height: 50vh;
-	}
 
 	.thread-controls {
 		.dropdown-toggle {
@@ -247,39 +246,16 @@ html.rl-no-preview-pane {
 	}
 }
 
+#V-MailMessageView.focused .messageView {
+	border-color: #9d9d9d;
+	box-shadow: var(--smMainShadow);
+}
+
 #messageItem {
 
-	color: #000;
 	height: 100%;
 	overflow: auto;
 	scroll-behavior: smooth;
-
-	.buttonFull {
-		display: inline-block;
-		position: fixed;
-		right: 8px;
-		bottom: 8px;
-		height: 30px;
-		width: 30px;
-		text-align: center;
-		vertical-align: middle;
-		line-height: 30px;
-		background-color: transparent;
-		background-color: #fff;
-		border: 1px solid #333;
-		color: #333;
-		z-index: 2;
-		cursor: pointer;
-		border-radius: 5px;
-		opacity: 0.5;
-
-		&:hover {
-			opacity: 0.8;
-			border-color: #666;
-			background-color: #888;
-			color: #fff;
-		}
-	}
 
 	.loading {
 		text-align: center;
@@ -288,16 +264,18 @@ html.rl-no-preview-pane {
 		padding: 50px 0;
 	}
 
+	.bodySubHeader {
+		background-color: var(--message-header-bg-clr, #eee);
+	}
 	.bodySubHeader > * {
-		background-color: #eee;
-		border-bottom: 1px solid #ddd;
+		border-bottom: 1px solid var(--border-color, #bbb);
 		cursor: pointer;
-		padding: 10px 15px;
+		padding: 10px;
 	}
 
 	.pgpInfo {
 		padding: 5px 15px;
-		border-bottom: 1px solid #ddd;
+		border-bottom: 1px solid var(--border-color, #bbb);
 		background-color: #fcf8e3;
 
 		&.success {
@@ -305,15 +283,9 @@ html.rl-no-preview-pane {
 		}
 	}
 
-	.readReceipt {
-		background-color: #ffffd9;
-	}
-
 	.attachmentsPlace {
 
-		padding: 10px 10px 6px 10px;
-		background: #eee;
-		border-bottom: 1px solid #ddd;
+		border-bottom: 1px solid var(--border-color, #bbb);
 		position: relative;
 
 		.attachmentList {
@@ -341,24 +313,24 @@ html.rl-no-preview-pane {
 	}
 
 	.attachmentsControls {
-		padding: 7px 5px 7px 14px;
-		background: #e8e8e8;
-		border-bottom: 1px solid #ddd;
+		padding-top: 7px;
+		border-top: 1px solid var(--border-color, #bbb);
 	}
 	.attachmentsControls > * {
+		display: inline-block;
 		margin-right: 0.5em;
 		white-space: nowrap;
 	}
 
 	.sm-bq-switcher > summary {
 		border: 1px solid #999;
-		display: block;
-		width: 3em;
-		line-height: 1em;
-		text-align: center;
 		cursor: pointer;
+		line-height: 1em;
 		margin: 2em 0 10px;
 		opacity: 0.5;
+		padding: 0 0.5em;
+		text-align: center;
+		width: fit-content;
 		&:hover {
 			opacity: 1;
 		}
@@ -368,9 +340,15 @@ html.rl-no-preview-pane {
 
 		height: 100%;
 		padding: 10px;
+		position: relative;
+
+		* {
+			box-sizing: unset;
+/*			unicode-bidi: plaintext;*/
+		}
 
 		a {
-			color: blue;
+			color: var(--link-color, blue);
 			text-decoration: underline;
 
 			&:visited {
@@ -386,22 +364,27 @@ html.rl-no-preview-pane {
 			opacity: 0.8;
 			padding: 0 10px;
 			margin: 0;
+
+			blockquote {
+				opacity: 1;
+			}
 		}
 
 		&.html {
 
 			img {
-				max-width: 90vw;
+				max-width: 100%;
 				height: auto;
 			}
 			img[data-x-src]:not([src]) {
 				border: 1px solid #999;
+				line-height: 1;
+				padding-left: 1.1em;
 				position: relative;
 			}
 			img[data-x-src]:not([src])::after {
 				content: "🖼";
 				font-family: snappymail;
-				line-height: 1;
 				position: absolute;
 				top: 0;
 				left: 0;
@@ -414,9 +397,6 @@ html.rl-no-preview-pane {
 				font-size: 11px;
 				height: auto;
 				transform: translate(-25%,0);
-				width: auto;
-				width: -moz-fit-content;
-				width: -webkit-fit-content;
 				width: fit-content;
 				z-index: 1000;
 			}
@@ -435,7 +415,7 @@ html.rl-no-preview-pane {
 			}
 
 			pre {
-				border-radius: 5px;
+				border-radius: var(--border-radius, 5px);
 				display: block;
 				padding: 5px 10px;
 			}
@@ -477,72 +457,45 @@ html.rl-no-preview-pane {
 	}
 }
 
-html.rl-no-preview-pane .messageView {
-
-	.toolbar {
-		padding-left: 1px;
-	}
-
-	.b-content {
-		top: 50px;
-		left: 0;
-		bottom: @rlBottomMargin;
-		right: @rlBottomMargin;
-		border: 1px solid @rlMainDarkColor;
-		box-shadow: @rlMainShadow;
-	}
+.mailvelope iframe {
+	min-height: 400px;
 }
 
-html:not(.rl-mobile):not(.rl-no-preview-pane) .messageView {
-	.top-toolbar {
+html:not(.sm-msgView-bottom):not(.sm-msgView-side) {
+	#rl-right:not(.message-selected) #V-MailMessageView {
 		display: none;
 	}
 }
 
-html.rl-bottom-preview-pane .messageView {
-	.b-content {
-		bottom: @rlBottomMargin;
+@media screen and (max-width: 1400px) {
+	html.sm-msgView-side #V-MailMessageView .top-toolbar {
+		visibility: hidden;
 	}
 }
 
+html.sm-msgView-bottom {
+	#V-MailMessageView .top-toolbar {
+		display: none;
+	}
+	.messageView {
+		height: 100%;
+	}
+}
+
+/*
+@media all and (display-mode: fullscreen) {
+*/
 html.rl-fullscreen {
 
-	#rl-left {
-		display: none !important;
-	}
-
-	#rl-right {
-		left: 0 !important;
-
-		#V-MailMessageList,
-		#V-SettingsPane,
-		#V-SystemDropDown,
-		#V-MailMessageView .messageView .toolbar {
-			display: none !important;
-		}
-	}
-
+	#rl-left,
+	#V-MailMessageList,
+	#V-SettingsPane,
 	#V-SystemDropDown,
-	.messageView .top-toolbar {
-		display: none;
+	#V-MailMessageView .top-toolbar {
+		display: none !important;
 	}
 
 	.messageView {
 		border: 0;
-	}
-
-	.messageView .b-content {
-		position: fixed;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
-		border: 0;
-	}
-}
-
-html:not(.rl-mobile) #messageItem {
-	.buttonFull {
-		display: none !important;
 	}
 }

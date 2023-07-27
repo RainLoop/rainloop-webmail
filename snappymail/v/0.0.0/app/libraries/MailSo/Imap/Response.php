@@ -19,46 +19,24 @@ use MailSo\Imap\Enumerations\ResponseType;
  */
 class Response
 {
-	/**
-	 * @var array
-	 */
-	public $ResponseList = array();
+	public array $ResponseList = array();
 
-	/**
-	 * @var array | null
-	 */
-	public $OptionalResponse = null;
+	public ?array $OptionalResponse = null;
 
-	/**
-	 * @var string
-	 */
-	public $StatusOrIndex;
+	public ?string $StatusOrIndex = null;
 
-	/**
-	 * @var string
-	 */
-	public $HumanReadable = '';
+	public string $HumanReadable = '';
 
-	/**
-	 * @var bool
-	 */
-	public $IsStatusResponse = false;
+	public bool $IsStatusResponse = false;
 
-	/**
-	 * @var int
-	 */
-	public $ResponseType = 0;
+	public int $ResponseType = 0;
 
-	/**
-	 * @var string
-	 */
-	public $Tag;
+	public ?string $Tag = null;
 
 	private function recToLine(array $aList) : string
 	{
 		$aResult = array();
-		foreach ($aList as $mItem)
-		{
+		foreach ($aList as $mItem) {
 			$aResult[] = \is_array($mItem) ? '('.$this->recToLine($mItem).')' : (string) $mItem;
 		}
 		return \implode(' ', $aResult);

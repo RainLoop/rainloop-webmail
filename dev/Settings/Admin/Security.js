@@ -10,12 +10,12 @@ export class AdminSettingsSecurity extends AbstractViewSettings {
 	constructor() {
 		super();
 
-		this.addSettings(['UseLocalProxyForExternalImages','VerifySslCertificate','AllowSelfSigned']);
+		this.addSettings(['useLocalProxyForExternalImages']);
 
 		this.weakPassword = rl.app.weakPassword;
 
 		addObservablesTo(this, {
-			adminLogin: SettingsGet('AdminLogin'),
+			adminLogin: SettingsGet('adminLogin'),
 			adminLoginError: false,
 			adminPassword: '',
 			adminPasswordNew: '',
@@ -68,7 +68,7 @@ export class AdminSettingsSecurity extends AbstractViewSettings {
 			capaOpenPGP: value => Remote.saveSetting('CapaOpenPGP', value)
 		});
 
-		this.adminTOTP(SettingsGet('AdminTOTP'));
+		this.adminTOTP(SettingsGet('adminTOTP'));
 
 		decorateKoCommands(this, {
 			saveAdminUserCommand: self => self.adminLogin().trim() && self.adminPassword()
@@ -102,10 +102,10 @@ export class AdminSettingsSecurity extends AbstractViewSettings {
 				this.weakPassword(!!data.Result.Weak);
 			}
 		}, {
-			'Login': this.adminLogin(),
-			'Password': this.adminPassword(),
-			'NewPassword': this.adminPasswordNew(),
-			'TOTP': this.adminTOTP()
+			Login: this.adminLogin(),
+			Password: this.adminPassword(),
+			newPassword: this.adminPasswordNew(),
+			TOTP: this.adminTOTP()
 		});
 
 		return true;

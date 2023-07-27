@@ -26,12 +26,15 @@ After a quick wait, SnappyMail is installed. Now you should configure it before 
 To enter SnappyMail admin area, you must be Nextcloud admin (so you get logged in automatically) or else use the admin login credentials.
 The default login is "admin" and the default password will be generated in `[nextcloud-data]/app_snappymail/_data_/_default_/admin_password.txt`. Don't forget to change it once in the admin panel!
 
-From that point, all instance-wide SnappyMail settings can be tweaked as you wish. One important point is the "Domains" section where you should set up the IMAP/SMTP parameters that will be associated with the email adresses of your users. Basically, if a user of the Nextcloud instance starts SnappyMail and puts "firstname@domain.tld" as an email address, then SnappyMail should know how to connect to the IMAP & SMTP of domain.tld. You can fill in this information in the "Domains" section of the SnappyMail admin settings. For more information how to configure an automatic login for your Nextcloud users see [How to auto-connect to SnappyMail?](https://github.com/the-djmaze/snappymail/edit/master/integrations/nextcloud/snappymail/README.md#how-to-auto-connect-to-snappymail)
+From that point, all instance-wide SnappyMail settings can be tweaked as you wish. One important point is the "Domains" section where you should set up the IMAP/SMTP parameters that will be associated with the email adresses of your users. Basically, if a user of the Nextcloud instance starts SnappyMail and puts "firstname@domain.tld" as an email address, then SnappyMail should know how to connect to the IMAP & SMTP of domain.tld. You can fill in this information in the "Domains" section of the SnappyMail admin settings. For more information how to configure an automatic login for your Nextcloud users see [How to auto-connect to SnappyMail?](#how-to-auto-connect-to-snappymail)
 
 ![grafik](https://user-images.githubusercontent.com/63400209/199767908-fbef0f50-ecb7-47ae-9ac1-771959d4b7f5.png)
 
 ![grafik](https://user-images.githubusercontent.com/63400209/199768097-7bd939a7-56d0-47ba-b481-aeac08776fb4.png)
 
+## App Integrations
+### Contacts
+SnappyMail automatically connects with the Nextcloud contacts app. Download and install the [contacts app](https://apps.nextcloud.com/apps/contacts) for SnappyMail to obtain access to all registered users on the Nextcloud system, as well as users' personal contacts saved in here.
 
 ## SnappyMail Settings, Where Are They?
 
@@ -68,7 +71,7 @@ If no personal credentials are defined the user is prompted by SnappyMail to ins
 
 #### Option 2: Attempt to automatically login users with their Nextcloud username and password, or user-defined credentials, if set.
 If the user sets his credentials for the mailbox in his personal account under "Settings -> Additional settings", these credentials are used by SnappyMail to login.
-If no personal credentials are defined the Nextcloud username and password is used by SnappyMail to login (eventually adding the [default domain](https://github.com/the-djmaze/snappymail/edit/master/integrations/nextcloud/snappymail/README.md#default-domain)).
+If no personal credentials are defined the Nextcloud username and password is used by SnappyMail to login (eventually adding the [default domain](#default-domain)).
 
 If your IMAP server only accepts usernames without a domain (for example the ldap username of your user) the automatic addition of the "default domain" would block your users from logging in to your IMAP server - but on the other side it is needed by SnappyMail to determine the server settings to use. In such a case you must configure SnappyMail to strip off the domain part before sending the credentials to your IMAP server. This is done by entering to the SnappyMail Admin Panel -> Domains -> clicking on your default domain -> flagging the checkbox "Use short login" under IMAP and SMTP.
 

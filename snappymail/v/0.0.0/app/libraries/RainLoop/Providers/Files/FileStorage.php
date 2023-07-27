@@ -28,12 +28,10 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 	public function PutFile(\RainLoop\Model\Account $oAccount, string $sKey, /*resource*/ $rSource) : bool
 	{
 		$bResult = false;
-		if ($rSource)
-		{
+		if ($rSource) {
 			$rOpenOutput = \fopen($this->generateFullFileName($oAccount, $sKey, true), 'w+b');
-			if ($rOpenOutput)
-			{
-				$bResult = (false !== \MailSo\Base\Utils::MultipleStreamWriter($rSource, array($rOpenOutput)));
+			if ($rOpenOutput) {
+				$bResult = (false !== \MailSo\Base\Utils::WriteStream($rSource, $rOpenOutput));
 				\fclose($rOpenOutput);
 			}
 		}
@@ -144,9 +142,9 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 		$aEmail = \explode('@', $sEmail ?: 'nobody@unknown.tld');
 		$sDomain = \trim(1 < \count($aEmail) ? \array_pop($aEmail) : '');
 		$sFilePath = $this->sDataPath
-			.'/'.\RainLoop\Utils::fixName($sDomain ?: 'unknown.tld')
-			.'/'.\RainLoop\Utils::fixName(\implode('@', $aEmail) ?: '.unknown')
-			.($sSubEmail ? '/'.\RainLoop\Utils::fixName($sSubEmail) : '')
+			.'/'.\MailSo\Base\Utils::SecureFileName($sDomain ?: 'unknown.tld')
+			.'/'.\MailSo\Base\Utils::SecureFileName(\implode('@', $aEmail) ?: '.unknown')
+			.($sSubEmail ? '/'.\MailSo\Base\Utils::SecureFileName($sSubEmail) : '')
 			.'/.files/'.\sha1($sKey);
 
 		if ($bMkDir && !\is_dir(\dirname($sFilePath)) && !\mkdir(\dirname($sFilePath), 0700, true)) {

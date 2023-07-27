@@ -4,10 +4,10 @@
 		<div class="playIcon"><div></div></div>
 		<i class="stopIcon fontastic">⏸</i>
 	</div>
-	<div class="accountPlace hide-mobile" data-bind="text: emailTitle()"></div>
 	<div class="btn-group dropdown" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: accountMenuDropdownTrigger">
 		<a id="top-system-dropdown-id" href="#" tabindex="-1" class="btn single btn-block dropdown-toggle">
-			<i style="vertical-align:middle" class="fontastic" data-bind="css: {'icon-spinner': accountsLoading()}">👤</i>
+			<span class="accountPlace hide-mobile" data-bind="text: accountName(), title: accountEmail"></span>
+			<i class="fontastic" data-bind="css: {'icon-spinner': accountsLoading()}">👤</i>
 <!--
 			<b data-bind="text: accountsUnreadCount, visible: 100 > accountsUnreadCount() && accountsUnreadCount()"></b>
 			<b data-bind="visible: 99 < accountsUnreadCount()">99+</b>
@@ -17,16 +17,10 @@
 		<menu class="dropdown-menu right-edge" tabindex="-1" role="menu" aria-labelledby="top-system-dropdown-id">
 
 			<!-- ko foreach: accounts -->
-				<li role="presentation">
-					<a class="account-item" href="#" data-bind="click: $root.accountClick">
-<!--						<b class="pull-right counter" data-bind="visible: count()">
-							<span data-bind="text: count, visible: 100 > count()"></span>
-							<span data-bind="visible: 99 < count()">99+</span>
-						</b>-->
-						<i class="fontastic" data-bind="text: $root.accountEmail() === email ? '✔' : '👤'"></i>
-						<span class="email-title" data-bind="text: email, attr: {title: email}"></span>
-					</a>
-				</li>
+			<li role="presentation">
+				<a class="email-title" href="#" data-bind="click: $root.accountClick, text: name || email,
+					attr: {title: email, 'data-unread': unreadEmails, 'data-icon': $root.accountEmail() === email ? '✔' : '👤'}"></a>
+			</li>
 			<!-- /ko -->
 
 			<li class="dividerbar" role="presentation" data-bind="visible: allowAccounts">
@@ -36,19 +30,12 @@
 				<a href="#" tabindex="-1" data-bind="click: contactsClick" data-icon="📇" data-i18n="GLOBAL/CONTACTS"></a>
 			</li>
 			<li role="presentation">
-				<a href="#" tabindex="-1" data-bind="click: settingsClick" data-icon="⚙" data-i18n="TOP_TOOLBAR/BUTTON_SETTINGS"></a>
+				<a href="#" tabindex="-1" data-bind="click: settingsClick" data-icon="⚙" data-i18n="TITLES/SETTINGS"></a>
 			</li>
 			<li role="presentation">
-				<a href="#" tabindex="-1" data-bind="click: settingsHelp">
-					<i class="icon-help"></i>
-					<span data-i18n="TOP_TOOLBAR/BUTTON_HELP"></span>
-				</a>
+				<a href="#" tabindex="-1" data-bind="click: settingsHelp" data-icon="🛈" data-i18n="GLOBAL/HELP"></a>
 			</li>
 			<li class="dividerbar" role="presentation">
-				<a href="#" tabindex="-1" data-bind="click: toggleLayout" data-icon="💻" class="show-mobile" data-i18n="MOBILE/BUTTON_DESKTOP_VERSION"></a>
-				<a href="#" tabindex="-1" data-bind="click: toggleLayout" data-icon="📱" class="hide-mobile" data-i18n="MOBILE/BUTTON_MOBILE_VERSION"></a>
-			</li>
-			<li role="presentation">
 				<a href="#" tabindex="-1" data-bind="click: logoutClick" data-icon="⏻" data-i18n="GLOBAL/LOGOUT"></a>
 			</li>
 		</menu>

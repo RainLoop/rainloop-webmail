@@ -1,4 +1,5 @@
 {
+	"LANG_DIR": "ltr",
 	"GLOBAL": {
 		"TO_ARCHIVE": "Archivieren",
 		"ARE_YOU_SURE": "Sind Sie sicher?",
@@ -19,9 +20,11 @@
 		"MOVE_TO": "Verschieben nach",
 		"NAME": "Name",
 		"NONE": "Keine",
+		"TO_SPAM": "Nachricht(en) zu Spam verschieben",
 		"NOT_SPAM": "Kein Spam",
 		"USERNAME": "Nutzername",
 		"PASSWORD": "Passwort",
+		"REMEMBER": "Zugangsdaten merken",
 		"REPLY_TO": "Antwort an",
 		"SAVE": "Speichern",
 		"SAVE_CHANGES": "Änderungen speichern?",
@@ -33,7 +36,11 @@
 		"SERVER_MESSAGE": "Server-Nachricht",
 		"YES": "Ja",
 		"NO": "Nein",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inaktiv",
+		"DEFAULT": "Standard",
+		"HELP": "Hilfe",
+		"TEXT": "Text",
+		"ATTACHMENTS": "Anhänge"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Anmeldung",
@@ -41,13 +48,7 @@
 		"BUTTON_SIGN_IN": "Anmelden"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Konto hinzufügen",
-		"BUTTON_SETTINGS": "Einstellungen",
-		"BUTTON_HELP": "Hilfe"
-	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobile Version",
-		"BUTTON_DESKTOP_VERSION": "Desktop Version"
+		"BUTTON_ADD_ACCOUNT": "Konto hinzufügen"
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Erweiterte Suche",
@@ -98,6 +99,7 @@
 		"MENU_SELECT_SEEN": "Gelesen",
 		"MENU_SELECT_FLAGGED": "Markiert",
 		"MENU_SELECT_UNFLAGGED": "Nicht markiert",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Alle Anhänge herunterladen",
 		"EMPTY_LIST": "Liste ist leer.",
 		"EMPTY_SEARCH_LIST": "Keine Treffer für Ihre Suche.",
 		"SEARCH_RESULT_FOR": "Suchergebnisse für \"%SEARCH%\"",
@@ -108,6 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "Sie haben %COUNT% neue Nachrichten!",
 		"QUOTA_SIZE": "Sie nutzen <strong>%SIZE% (%PROC%%)<\/strong> von <strong>%LIMIT%<\/strong>.",
 		"SORT": "Sortieren",
+		"NO_SORT": "Ihr Mailserver unterstützt das Sortieren von E-Mails nicht",
 		"SORT_DATE_ASC": "Datum aufsteigend",
 		"SORT_DATE_DESC": "Datum absteigend",
 		"SORT_SIZE_ASC": "Größe aufsteigend",
@@ -150,7 +153,7 @@
 		"SPAM_SCORE": "Spam-Score",
 		"HAS_VIRUS_WARNING": "WARNUNG: Virus erkannt",
 		"TAGS": "Stichworte",
-		"NEW_TAG": "New tag"
+		"NEW_TAG": "Neues Schlagwort"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Wichtig",
@@ -224,11 +227,16 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Keine Anhänge vorhanden.",
 		"ATTACHMENTS_ERROR_DESC": "Warnung! Nicht alle Anhänge wurden hochgeladen.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Es wurden noch nicht alle Anhänge hochgeladen.",
+		"ALLOW_SPELLCHECK": "Rechtschreibprüfung durch den Browser zulassen",
+		"ALLOW_DRAFT_AUTOSAVE": "Entwurf automatisch speichern",
 		"BUTTON_REQUEST_READ_RECEIPT": "Empfangsbestätigung anfordern",
 		"BUTTON_MARK_AS_IMPORTANT": "Als Wichtig markieren",
-		"BUTTON_REQUEST_DSN": "Übermittlungsstatus anfordern"
+		"BUTTON_REQUEST_DSN": "Übermittlungsstatus anfordern",
+		"BUTTON_REQUIRE_TLS": "Erzwinge sichere Übermittlung (TLS)",
+		"ERROR_EMPTY_BODY": "Inhalt der Nachricht ist leer"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Sind Sie sicher, dass Sie SnappyMail beenden möchten?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Sind Sie sicher, dass Sie dieses Fenster schließen möchten?",
 		"DESC_WANT_DELETE_MESSAGES": "Sind Sie sicher, dass Sie diese Nachricht(en) löschen möchten?"
 	},
@@ -312,7 +320,7 @@
 		"MARK_AS_READ_LABEL": "Als Gelesen markieren",
 		"REPLY_INTERVAL_LABEL": "Antwortintervall (Tage)",
 		"KEEP_LABEL": "Behalten",
-		"STOP_LABEL": "Weiterverarbeitung der Regeln nicht verhindern",
+		"STOP_LABEL": "Stoppe das Abarbeiten nachfolgender Regeln",
 		"VACATION_SUBJECT_LABEL": "Betreff (optional)",
 		"VACATION_MESSAGE_LABEL": "Nachricht",
 		"VACATION_RECIPIENTS_LABEL": "Empfänger (durch Komma getrennt)",
@@ -351,21 +359,43 @@
 		"ERROR_UNKNOWN": "Ein unbekannter Fehler trat beim Hochladen auf"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> TEXT",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> QUELLE"
+		"PLAIN": "HTML <-> TEXT",
+		"SOURCE": "HTML <-> QUELLTEXT",
+		"FONTFAMILY": "Schriftart",
+		"FONTSIZE": "Schriftgröße",
+		"DIR": "Textrichtung",
+		"DIR_LTR": "Links nach rechts",
+		"DIR_RTL": "Rechts nach links",
+		"DIR_AUTO": "Automatisch",
+		"TEXTCOLOR": "Textfarbe",
+		"BACKGROUNDCOLOR": "Hintergrundfarbe",
+		"BOLD": "Fett",
+		"ITALIC": "Kursiv",
+		"UNDERLINE": "Unterstrichen",
+		"STRIKE": "Durchgestrichen",
+		"SUB": "Tiefgestellt",
+		"SUP": "Hochgestellt",
+		"OL": "Geordnete Liste",
+		"UL": "Ungeordnete Liste",
+		"QUOTE": "Blockzitat",
+		"INDENTDECREASE": "Einzug verkleinern",
+		"INDENTINCREASE": "Einzug vergrößern",
+		"LINK": "Hyperlink",
+		"IMAGEURL": "Bild URL",
+		"IMAGEUPLOAD": "Bilddatei auswählen",
+		"UNDO": "Rückgängig",
+		"REDO": "Wiederholen"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Persönlich",
-		"LABEL_GENERAL_NAME": "Allgemein",
-		"LABEL_CONTACTS_NAME": "Kontakte",
-		"LABEL_FOLDERS_NAME": "Ordner",
-		"LABEL_ACCOUNTS_NAME": "Konten",
-		"LABEL_FILTERS_NAME": "Filter",
-		"LABEL_SECURITY_NAME": "Sicherheit",
-		"LABEL_THEMES_NAME": "Themen"
+		"GENERAL": "Allgemein",
+		"CONTACTS": "Kontakte",
+		"FOLDERS": "Ordner",
+		"ACCOUNTS": "Konten",
+		"FILTERS": "Filter",
+		"SECURITY": "Sicherheit",
+		"THEMES": "Themen"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "Filter",
 		"SIMPLE": "Einfach",
 		"ADVANCED": "Fortschrittlich",
 		"BUTTON_ADD_SCRIPT": "Skript hinzufügen",
@@ -378,18 +408,18 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Sicherheit",
 		"LABEL_AUTOLOGOUT": "Automatische Abmeldung",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Nie",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% Minute(n)",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% Stunde(n)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Nie"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Allgemein",
 		"LANGUAGE": "Sprache",
+		"HOUR_FORMAT": "Stundenformat",
 		"IDENTITY": "Identität",
 		"LAYOUT": "Layout",
 		"LAYOUT_NO_SPLIT": "Keine Aufteilung",
 		"LAYOUT_VERTICAL_SPLIT": "Vertikale Aufteilung",
 		"LAYOUT_HORIZONTAL_SPLIT": "Horizontale Aufteilung",
+		"SHOW_NEXT_MESSAGE": "Zeige nächste Nachricht wenn aktuelle gelöscht oder verschoben wird",
 		"EDITOR": "Standard-Texteditor",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Unformatierter Text",
@@ -399,19 +429,30 @@
 		"USE_CHECKBOXES_IN_LIST": "Kontrollkästchen in der Liste anzeigen",
 		"USE_THREADS": "Als Unterhaltungen anzeigen",
 		"REPLY_SAME_FOLDER": "Antworten im gleichen Ordner wie die Nachricht, auf die geantwortet wurde, abspeichern",
-		"SHOW_IMAGES": "In der Nachricht enthaltene Bilder immer anzeigen",
 		"PREFER_HTML": "HTML gegenüber Klartext bevorzugen",
 		"PREFER_HTML_INFO": "Nachrichten können manchmal in beiden Formaten empfangen werden. Diese Option setzt, ob die Nachricht standardmäßig in HTML oder als Klartext angezeigt wird.",
 		"REMOVE_COLORS": "Entferne Hintergrund- und Textfarben aus der Nachricht",
+		"ALLOW_STYLES": "Erlaube erweiterte Darstellungen in Nachrichten (CSS <style>)",
 		"MESSAGE_PER_PAGE": "Nachrichten pro Seite",
+		"CHECK_MAIL_INTERVAL": "Prüfintervall für neue Nachrichten",
 		"MARK_MESSAGE_READ_AFTER": "Nachricht als gelesen markieren nach",
 		"MSG_DEFAULT_ACTION": "Standardaktion",
 		"SECONDS": "Sekunden",
+		"MINUTES": "Minuten",
 		"NOTIFICATIONS": "Benachrichtigungen",
 		"SOUND_NOTIFICATION": "Benachrichtigungston",
 		"CHROME_NOTIFICATION_DESC": "Popups einblenden, wenn neue Nachrichten vorhanden sind",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Vom Browser blockiert.)",
-		"LIST_INLINE_ATTACHMENTS": "Inline-Anhänge in der Liste anzeigen"
+		"COLLAPSE_BLOCKQUOTES": "zitierten Text ausblenden",
+		"MAX_QUOTE_LEVEL": "Maximal sichtbare Ebenen von zitiertem Text",
+		"LIST_INLINE_ATTACHMENTS": "Inline-Anhänge in der Liste anzeigen",
+		"LIST_SIMPLE_ATTACHMENTS": "Vereinfachte Liste der Anhänge",
+		"LIST_MESSAGES_GROUPED": "Nachrichten bei Sortierung nach Datum oder Absender gruppieren",
+		"EXTERNAL_IMAGES": "Externe Bilder",
+		"IMAGES_OPTION_ASK": "Jedesmal Fragen",
+		"IMAGES_OPTION_WHITELIST": "Nutze Ausnahmeliste oder frage den Benutzer",
+		"IMAGES_OPTION_ALWAYS": "Immer anzeigen",
+		"IMAGES_WHITELIST": "Ausnahmeliste für Bilder"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Empfänger automatisch zu Ihrem Adressbuch hinzuzufügen",
@@ -425,7 +466,7 @@
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Themen",
 		"LABEL_BACKGROUND": "Hintergrund",
-		"LABEL_FONTS": "Fonts",
+		"LABEL_FONTS": "Schriftarten",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Hintergrundbild hochladen (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Datei ist zu groß",
 		"ERROR_FILE_TYPE_ERROR": "Ungültiger Dateityp (nur JPG und PNG)",
@@ -447,7 +488,7 @@
 		"HELP_SHOW_HIDE_FOLDER": "Ordner ein-\/ausblenden",
 		"HELP_CHECK_FOR_NEW_MESSAGES": "Auf neue Nachrichten prüfen\/nicht prüfen",
 		"HIDE_UNSUBSCRIBED": "Nicht abonnierte Ordner ausblenden",
-		"UNHIDE_KOLAB_FOLDERS": "Dehide Kolab Ordner",
+		"UNHIDE_KOLAB_FOLDERS": "Kolab Ordner anzeigen",
 		"TYPE_CALENDAR": "Kalender",
 		"TYPE_CONFIGURATION": "Konfiguration",
 		"TYPE_CONTACTS": "Kontakte",
@@ -463,14 +504,13 @@
 		"BUTTON_ADD_ACCOUNT": "Konto hinzufügen",
 		"BUTTON_ADD_IDENTITY": "Identität hinzufügen",
 		"LOADING_PROCESS": "Aktualisiere Kontenliste",
-		"DEFAULT_IDENTITY_LABEL": "Standard"
+		"SHOW_UNREAD": "Zeige Zahl der ungelesenen Nachrichten aller Konten"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Schlüssel importieren",
 		"BUTTON_GENERATE_KEY_PAIR": "Schlüssel generieren",
 		"TITLE_PRIVATE": "Privat",
 		"TITLE_PUBLIC": "Öffentlich",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Entwurf automatisch speichern",
 		"GET_MAILVELOPE": "Lade das Mailvelope Browser Addon herunter."
 	},
 	"SHORTCUTS_HELP": {
@@ -484,7 +524,6 @@
 		"LABEL_REPLY_ALL": "Allen Antworten",
 		"LABEL_FORWARD": "Weiterleiten",
 		"LABEL_FORWARD_MULTIPLY": "Als Anhang\/Anhänge weiterleiten",
-		"LABEL_HELP": "Hilfe",
 		"LABEL_CHECK_ALL": "Alle Nachrichten auswählen",
 		"LABEL_DELETE": "Löschen",
 		"LABEL_OPEN_THREAD": "Ausgewählte Unterhaltung öffnen",

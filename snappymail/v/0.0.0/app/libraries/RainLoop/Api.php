@@ -5,22 +5,10 @@ namespace RainLoop;
 abstract class Api
 {
 
-	public static function Handle() : bool
-	{
-		static $bOne = false;
-		if (!$bOne)
-		{
-			static::SetupDefaultMailSoConfig();
-			$bOne = true;
-		}
-		return $bOne;
-	}
-
 	public static function Actions() : Actions
 	{
 		static $oActions = null;
-		if (null === $oActions)
-		{
+		if (null === $oActions) {
 			$oActions = new Actions();
 		}
 
@@ -36,14 +24,36 @@ abstract class Api
 				\usleep(10000);
 				$oConfig->Load();
 			}
-//			\ini_set('display_errors', 0);
+//			\ini_set('display_errors', '0');
 			if ($oConfig->Get('debug', 'enable', false)) {
 				\error_reporting(E_ALL);
-//				\ini_set('display_errors', 1);
-				\ini_set('log_errors', 1);
+//				\ini_set('display_errors', '1');
+				\ini_set('log_errors', '1');
 			}
+			\MailSo\Config::$BoundaryPrefix = \trim($oConfig->Get('labs', 'boundary_prefix', ''));
 		}
 		return $oConfig;
+	}
+
+	public static function getCSP(string $sScriptNonce = null) : \SnappyMail\HTTP\CSP
+	{
+		$oConfig = static::Config();
+		$CSP = new \SnappyMail\HTTP\CSP(\trim($oConfig->Get('security', 'content_security_policy', '')));
+		$CSP->report = $oConfig->Get('security', 'csp_report', false);
+		$CSP->report_only = $oConfig->Get('debug', 'enable', false); // || SNAPPYMAIL_DEV
+
+		// Allow https: due to remote images in e-mails or use proxy
+		if (!$oConfig->Get('security', 'use_local_proxy_for_external_images', '')) {
+			$CSP->add('img-src', 'https:');
+			$CSP->add('img-src', 'http:');
+		}
+		if ($sScriptNonce) {
+			$CSP->add('script-src', "'nonce-{$sScriptNonce}'");
+		}
+
+		static::Actions()->Plugins()->RunHook('main.content-security-policy', array($CSP));
+
+		return $CSP;
 	}
 
 	public static function Logger() : \MailSo\Log\Logger
@@ -60,65 +70,6 @@ abstract class Api
 			}
 		}
 		return $oLogger;
-	}
-
-	protected static function SetupDefaultMailSoConfig() : void
-	{
-		if (\class_exists('MailSo\Config'))
-		{
-			\MailSo\Config::$MessageListFastSimpleSearch =
-				!!static::Config()->Get('imap', 'message_list_fast_simple_search', true);
-
-			\MailSo\Config::$MessageListCountLimitTrigger =
-				(int) static::Config()->Get('imap', 'message_list_count_limit_trigger', 0);
-
-			\MailSo\Config::$MessageListDateFilter =
-				(int) static::Config()->Get('imap', 'message_list_date_filter', 0);
-
-			\MailSo\Config::$MessageListPermanentFilter =
-				\trim(static::Config()->Get('imap', 'message_list_permanent_filter', ''));
-
-			\MailSo\Config::$MessageAllHeaders =
-				!!static::Config()->Get('imap', 'message_all_headers', false);
-
-			\MailSo\Config::$LargeThreadLimit =
-				(int) static::Config()->Get('imap', 'large_thread_limit', 50);
-
-			\MailSo\Config::$ImapTimeout =
-				(int) static::Config()->Get('imap', 'timeout', 300);
-
-			\MailSo\Config::$BoundaryPrefix =
-				\trim(static::Config()->Get('labs', 'boundary_prefix', ''));
-
-			$sSslCafile = static::Config()->Get('ssl', 'cafile', '');
-			$sSslCapath = static::Config()->Get('ssl', 'capath', '');
-
-			Utils::$CookieDefaultPath = static::Config()->Get('labs', 'cookie_default_path', '');
-			Utils::$CookieSameSite = static::Config()->Get('security', 'cookie_samesite', 'Strict');
-			Utils::$CookieSecure = isset($_SERVER['HTTPS'])
-				|| 'None' == Utils::$CookieSameSite
-				|| !!static::Config()->Get('labs', 'cookie_default_secure', false);
-
-			if (!empty($sSslCafile) || !empty($sSslCapath))
-			{
-				\MailSo\Hooks::Add('Net.NetClient.StreamContextSettings/Filter', function ($aStreamContextSettings) use ($sSslCafile, $sSslCapath) {
-					if (isset($aStreamContextSettings['ssl']) && \is_array($aStreamContextSettings['ssl']))
-					{
-						if (empty($aStreamContextSettings['ssl']['cafile']) && !empty($sSslCafile))
-						{
-							$aStreamContextSettings['ssl']['cafile'] = $sSslCafile;
-						}
-
-						if (empty($aStreamContextSettings['ssl']['capath']) && !empty($sSslCapath))
-						{
-							$aStreamContextSettings['ssl']['capath'] = $sSslCapath;
-						}
-					}
-				});
-			}
-
-			\MailSo\Config::$CheckNewMessages = !!static::Config()->Get('labs', 'check_new_messages', true);
-		}
 	}
 
 	public static function Version() : string
@@ -148,19 +99,16 @@ abstract class Api
 
 	public static function ClearUserData(string $sEmail) : bool
 	{
-		if (\strlen($sEmail))
-		{
+		if (\strlen($sEmail)) {
 			$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail);
 
 			$oStorageProvider = static::Actions()->StorageProvider();
-			if ($oStorageProvider && $oStorageProvider->IsActive())
-			{
+			if ($oStorageProvider && $oStorageProvider->IsActive()) {
 				$oStorageProvider->DeleteStorage($sEmail);
 			}
 
 			$oAddressBookProvider = static::Actions()->AddressBookProvider();
-			if ($oAddressBookProvider)
-			{
+			if ($oAddressBookProvider) {
 				$oAddressBookProvider->DeleteAllContacts($sEmail);
 			}
 

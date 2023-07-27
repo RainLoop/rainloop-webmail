@@ -5,7 +5,7 @@
 		"SAVE": "Guardar",
 		"TEST": "Testar",
 		"UPDATE": "Atualizar",
-		"USERNAME": "Nome de usuário",
+		"USERNAME": "Nome de utilizador",
 		"PASSWORD": "Palavra-passe",
 		"CANCEL": "Cancelar"
 	},
@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Painel de Admin"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Geral",
-		"LABEL_LOGIN_NAME": "Entrada",
-		"LABEL_BRANDING_NAME": "Personalização",
-		"LABEL_CONTACTS_NAME": "Contactos",
-		"LABEL_DOMAINS_NAME": "Domínios",
-		"LABEL_SECURITY_NAME": "Segurança",
-		"LABEL_PACKAGES_NAME": "Extensões",
-		"LABEL_CONFIG_NAME": "Configuração",
-		"LABEL_ABOUT_NAME": "Acerca"
+		"GENERAL": "Geral",
+		"LOGIN": "Entrada",
+		"BRANDING": "Personalização",
+		"CONTACTS": "Contactos",
+		"DOMAINS": "Domínios",
+		"SECURITY": "Segurança",
+		"PACKAGES": "Extensões",
+		"CONFIG": "Configuração",
+		"ABOUT": "Acerca"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Interface",
@@ -42,7 +42,7 @@
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "Tamanho limite dos anexos",
 		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Permitir contas adicionais",
 		"LABEL_ALLOW_IDENTITIES": "Permitir múltiplas identidades",
-		"ALERT_DATA_ACCESS": "A pasta \"Data\" está acessível. Por favor, configure o seu servidor web para impedir o acesso à pasta \"data\" a partir do exterior. Leia mais aqui:",
+		"ALERT_DATA_ACCESS": "A pasta \"data\" está acessível. Por favor, configure o seu servidor web para impedir o acesso à pasta \"data\" a partir do exterior. Leia mais aqui:",
 		"ALERT_WARNING": "Aviso!",
 		"HTML_ALERT_WEAK_PASSWORD": "Está a usar a palavra-passe de administração predefinida.\n<br>\nPor razões de segurança\n<strong><a href=\"#\/security\">mude<\/a><\/strong>\na palavra-passe agora.\n"
 	},
@@ -65,10 +65,11 @@
 		"LABEL_ENABLE_CONTACTS": "Ativar contactos",
 		"LABEL_ALLOW_SYNC": "Permitir sincronização de contactos (com servidor CardDAV externo)",
 		"LABEL_STORAGE_TYPE": "Tipo",
-		"LABEL_STORAGE_DSN": "Dsn",
+		"LABEL_STORAGE_DSN": "Nome da Origem de Dados (DSN)",
 		"LABEL_STORAGE_USER": "Utilizador",
 		"LABEL_STORAGE_PASSWORD": "Palavra-passe",
 		"ALERT_NOTICE": "Aviso!",
+		"SUGGESTIONS_LIMIT": "Limite de sugestões",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Não use este tipo de base de dados com uma grande quantidade de utilizadores ativos.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "O seu sistema não suporta contactos.\n<br>\nPrecisa instalar ou ativar a extensão <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> no seu servidor.\n"
 	},
@@ -88,8 +89,7 @@
 		"LABEL_CURRENT_PASSWORD": "Palavra-passe atual",
 		"LABEL_NEW_PASSWORD": "Nova palavra-passe",
 		"LABEL_REPEAT_PASSWORD": "Repetir",
-		"LEGEND_SSL": "SSL",
-		"LABEL_REQUIRE_VERIFICATION": "Obrigar a verificação dos certificados SSL utilizados (IMAP\/SMTP)",
+		"LABEL_REQUIRE_VERIFICATION": "Exigir a verificação dos certificados SSL",
 		"LABEL_ALLOW_SELF_SIGNED": "Permitir certificados autoassinados"
 	},
 	"TAB_PACKAGES": {
@@ -101,7 +101,7 @@
 	},
 	"TAB_ABOUT": {
 		"LEGEND_ABOUT": "Acerca",
-		"LABEL_TAG_HINT": "Cliente de email moderno e rápido, baseado em tecnologia web",
+		"LABEL_TAG_HINT": "Cliente de correio web simples, moderno e rápido",
 		"LABEL_ALL_RIGHTS_RESERVED": "Todos os direitos reservados.",
 		"HINT_READ_CHANGE_LOG": "Por favor leia a lista de modificações antes de atualizar.",
 		"HINT_IS_UP_TO_DATE": "SnappyMail está atualizado.",
@@ -121,20 +121,21 @@
 		"TITLE_EDIT_DOMAIN": "Editar domínio \"%NAME%\"",
 		"LABEL_NAME": "Nome",
 		"NAME_HELPER": "caracter universal suportado",
-		"LABEL_IMAP": "IMAP",
-		"LABEL_SMTP": "SMTP",
-		"LABEL_SIEVE": "SIEVE",
 		"LABEL_SERVER": "Servidor",
 		"LABEL_PORT": "Porta",
 		"LABEL_SECURE": "Segurança",
+		"TIMEOUT": "Tempo de espera",
+		"DISABLE_CAPABILITIES": "Desativar capacidades",
+		"LIMITS": "Limites",
+		"FOLDERS": "Pastas",
+		"MESSAGES": "Mensagens",
 		"LABEL_WHITE_LIST": "Lista Branca",
 		"SECURE_OPTION_NONE": "Nenhuma",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Permitir scripts sieve",
 		"LABEL_USE_SHORT_LOGIN": "Usar nome de utilizador curto",
 		"LABEL_USE_AUTH": "Usar autenticação",
 		"LABEL_SET_SENDER": "Usar nome de utilizador como remetente",
+		"LABEL_AUTH_PLAIN_LINE": "Forçar comando AUTH PLAIN único para autenticar",
 		"LABEL_USE_PHP_MAIL": "Usar a função php mail()",
 		"BUTTON_WHITE_LIST": "Lista Branca",
 		"BUTTON_SIEVE_CONFIGURATION": "Configuração SIEVE",
@@ -151,14 +152,13 @@
 	"POPUPS_ASK": {
 		"BUTTON_YES": "Sim",
 		"BUTTON_NO": "Não",
-		"DESC_WANT_CLOSE_THIS_WINDOW": "Tem a certeza de que quer fechar esta janela?"
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Quer mesmo fechar esta janela?"
 	},
 	"POPUPS_LANGUAGES": {
 		"TITLE_LANGUAGES": "Escolha o seu idioma"
 	},
 	"HINTS": {
 		"BETA": "beta",
-		"UNSTABLE": "instável",
 		"WARNING": "Aviso!"
 	},
 	"ERRORS": {
@@ -166,11 +166,11 @@
 		"UNKNOWN_ERROR": "Erro desconhecido"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
+		"REQUEST_ERROR": "A solicitação falhou",
+		"REQUEST_ABORTED": "A solicitação foi abortada",
+		"REQUEST_TIMEOUT": "A solicitação expirou",
 		"INVALID_TOKEN": "Token inválido",
-		"AUTH_ERROR": "Falha na autenticação",
+		"AUTH_ERROR": "A autenticação falhou",
 		"DOMAIN_ALREADY_EXISTS": "O domínio já existe",
 		"CANT_SAVE_PLUGIN_SETTINGS": "Não é possível guardar as definições",
 		"CANT_INSTALL_PACKAGE": "Não foi possível instalar a extensão",

@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
-import { keyScope, SettingsGet, leftPanelDisabled, elementById } from 'Common/Globals';
+import { keyScope, addShortcut, SettingsGet, leftPanelDisabled, toggleLeftPanel, elementById } from 'Common/Globals';
 import { ViewTypePopup, showScreenPopup } from 'Knoin/Knoin';
 
 import { SaveSettingStatus } from 'Common/Enums';
@@ -59,7 +59,8 @@ export class AbstractViewPopup extends AbstractView
 		super('Popups' + name, ViewTypePopup);
 		this.keyScope.scope = name;
 		this.modalVisible = ko.observable(false).extend({ rateLimit: 0 });
-		shortcuts.add('escape,close', '', name, () => {
+		this.close = () => this.modalVisible(false);
+		addShortcut('escape,close', '', name, () => {
 			if (this.modalVisible() && false !== this.onClose()) {
 				this.close();
 			}
@@ -78,8 +79,6 @@ export class AbstractViewPopup extends AbstractView
 	afterShow() {}  // Happens after  showModal() animation transitionend
 	onHide() {}     // Happens before animation transitionend
 	afterHide() {}  // Happens after  animation transitionend
-
-	close() {}
 */
 }
 
@@ -97,6 +96,7 @@ export class AbstractViewLeft extends AbstractView
 	{
 		super(templateID, 'left');
 		this.leftPanelDisabled = leftPanelDisabled;
+		this.toggleLeftPanel = toggleLeftPanel;
 	}
 }
 

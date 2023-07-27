@@ -107,11 +107,43 @@ abstract class SecFetch
 
 	public static function isSameOrigin() : bool
 	{
-
 		return !isset($_SERVER['HTTP_SEC_FETCH_SITE'])
 			|| 'same-origin' === $_SERVER['HTTP_SEC_FETCH_SITE']
 			// Fulguris incognito: Dest = document, Mode = navigate, Site = none, User = true
 			|| 'none' === $_SERVER['HTTP_SEC_FETCH_SITE'];
+	}
+
+	/**
+	 * $rules = Additional allowed Sec-Fetch combinations separated by ";".
+	 * For example:
+	 *	 Allow iframe on same domain in any mode: dest=iframe,site=same-origin
+	 *	 Allow navigate to iframe on same domain: mode=navigate,dest=iframe,site=same-origin
+	 *	 Allow navigate to iframe on (sub)domain: mode=navigate,dest=iframe,site=same-site
+	 *	 Allow navigate to iframe from any domain: mode=navigate,dest=iframe,site=cross-site
+	 *
+	 * Default is "site=same-origin;site=none"
+	 */
+	public static function matchAnyRule(string $rules) : bool
+	{
+		if (!isset($_SERVER['HTTP_SEC_FETCH_SITE'])) {
+			return true;
+		}
+		$secfetch = \explode(';', 'site=same-origin;site=none;' . $rules);
+		foreach ($secfetch as $rule) {
+			if (\preg_match_all('/(dest|mode|site)=([^,]+)/', $rule, $matches, PREG_SET_ORDER)) {
+				$data = ['dest'=>'','mode'=>'','site'=>''];
+				foreach ($matches as $match) {
+					$data[$match[1]] = $match[2];
+				}
+				if ((!$data['site'] || static::site($data['site']))
+					&& (!$data['dest'] || !isset($_SERVER['HTTP_SEC_FETCH_DEST']) || static::dest($data['dest']))
+					&& (!$data['mode'] || !isset($_SERVER['HTTP_SEC_FETCH_MODE']) || static::mode($data['mode']))
+				) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }

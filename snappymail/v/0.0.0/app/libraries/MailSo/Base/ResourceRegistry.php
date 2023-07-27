@@ -17,10 +17,7 @@ namespace MailSo\Base;
  */
 abstract class ResourceRegistry
 {
-	/**
-	 * @var array
-	 */
-	public static $Resources = array();
+	public static array $Resources = array();
 
 	/**
 	 * @staticvar bool $bInited
@@ -28,16 +25,12 @@ abstract class ResourceRegistry
 	private static function regResourcesShutdownFunc() : void
 	{
 		static $bInited = false;
-		if (!$bInited)
-		{
+		if (!$bInited) {
 			$bInited = true;
 			\register_shutdown_function(function () {
-				if (\is_array(static::$Resources))
-				{
-					foreach (\array_keys(static::$Resources) as $sKey)
-					{
-						if (\is_resource(static::$Resources[$sKey]))
-						{
+				if (\is_array(static::$Resources)) {
+					foreach (\array_keys(static::$Resources) as $sKey) {
+						if (\is_resource(static::$Resources[$sKey])) {
 							\fclose(static::$Resources[$sKey]);
 						}
 						static::$Resources[$sKey] = null;
@@ -57,8 +50,7 @@ abstract class ResourceRegistry
 		self::regResourcesShutdownFunc();
 
 		$oResult = \fopen('php://temp/maxmemory:'.($iMemoryMaxInMb * 1024 * 1024), 'r+b');
-		if (\is_resource($oResult))
-		{
+		if (\is_resource($oResult)) {
 			static::$Resources[(string) $oResult] = $oResult;
 			return $oResult;
 		}
@@ -72,8 +64,7 @@ abstract class ResourceRegistry
 	public static function CreateMemoryResourceFromString(string $sString)
 	{
 		$oResult = self::CreateMemoryResource();
-		if (\is_resource($oResult))
-		{
+		if (\is_resource($oResult)) {
 			\fwrite($oResult, $sString);
 			\rewind($oResult);
 		}
@@ -86,18 +77,15 @@ abstract class ResourceRegistry
 	 */
 	public static function CloseMemoryResource(&$rResource) : void
 	{
-		if (\is_resource($rResource))
-		{
+		if (\is_resource($rResource)) {
 			$sKey = (string) $rResource;
-			if (isset(static::$Resources[$sKey]))
-			{
+			if (isset(static::$Resources[$sKey])) {
 				\fclose(static::$Resources[$sKey]);
 				static::$Resources[$sKey] = null;
 				unset(static::$Resources[$sKey]);
 			}
 
-			if (\is_resource($rResource))
-			{
+			if (\is_resource($rResource)) {
 				\fclose($rResource);
 			}
 

@@ -3,9 +3,9 @@
 namespace OCA\SnappyMail\Controller;
 
 use OCA\SnappyMail\Util\SnappyMailHelper;
+use OCA\SnappyMail\ContentSecurityPolicy;
 
 use OCP\AppFramework\Controller;
-use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\TemplateResponse;
 
 class PageController extends Controller
@@ -38,6 +38,7 @@ class PageController extends Controller
 			]);
 			$csp = new ContentSecurityPolicy();
 			$csp->addAllowedFrameDomain("'self'");
+//			$csp->addAllowedFrameAncestorDomain("'self'");
 			$response->setContentSecurityPolicy($csp);
 			return $response;
 		}
@@ -51,29 +52,29 @@ class PageController extends Controller
 		$oActions = $bAdmin ? new \RainLoop\ActionsAdmin() : \RainLoop\Api::Actions();
 		$oHttp = \MailSo\Base\Http::SingletonInstance();
 		$oServiceActions = new \RainLoop\ServiceActions($oHttp, $oActions);
-		$sAppJsMin = $oConfig->Get('labs', 'use_app_debug_js', false) ? '' : '.min';
-		$sAppCssMin = $oConfig->Get('labs', 'use_app_debug_css', false) ? '' : '.min';
+		$sAppJsMin = $oConfig->Get('debug', 'javascript', false) ? '' : '.min';
+		$sAppCssMin = $oConfig->Get('debug', 'css', false) ? '' : '.min';
 		$sLanguage = $oActions->GetLanguage(false);
 
-		$sScriptNonce = \OC::$server->getContentSecurityPolicyNonceManager()->getNonce();
-//		$sScriptNonce = \SnappyMail\UUID::generate();
-//		\RainLoop\Service::setCSP($sScriptNonce);
+		$csp = new ContentSecurityPolicy();
+		$sNonce = $csp->getSnappyMailNonce();
 
 		$params = [
 			'Admin' => $bAdmin ? 1 : 0,
 			'LoadingDescriptionEsc' => \htmlspecialchars($oConfig->Get('webmail', 'loading_description', 'SnappyMail'), ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
 			'BaseTemplates' => \RainLoop\Utils::ClearHtmlOutput($oServiceActions->compileTemplates($bAdmin)),
 			'BaseAppBootScript' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/js'.($sAppJsMin ? '/min' : '').'/boot'.$sAppJsMin.'.js'),
-			'BaseAppBootScriptNonce' => $sScriptNonce,
+			'BaseAppBootScriptNonce' => $sNonce,
 			'BaseLanguage' => $oActions->compileLanguage($sLanguage, $bAdmin),
 			'BaseAppBootCss' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot'.$sAppCssMin.'.css'),
-			'BaseAppThemeCssLink' => $oActions->ThemeLink($bAdmin),
 			'BaseAppThemeCss' => \preg_replace(
 				'/\\s*([:;{},]+)\\s*/s',
 				'$1',
 				$oActions->compileCss($oActions->GetTheme($bAdmin), $bAdmin)
 			)
 		];
+
+//		\OCP\Util::addScript('snappymail', '../app/snappymail/v/'.APP_VERSION.'/static/js'.($sAppJsMin ? '/min' : '').'/boot'.$sAppJsMin);
 
 		// Nextcloud html encodes, so addHeader('style') is not possible
 //		\OCP\Util::addHeader('style', ['id'=>'app-boot-css'], \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot'.$sAppCssMin.'.css'));
@@ -82,11 +83,6 @@ class PageController extends Controller
 
 		$response = new TemplateResponse('snappymail', 'index_embed', $params);
 
-		$csp = new ContentSecurityPolicy();
-		$csp->addAllowedScriptDomain("'self'");
-		$csp->useStrictDynamic(true);
-		$csp->allowEvalScript(true); // $csp->addAllowedScriptDomain("'unsafe-eval'");
-		$csp->addAllowedStyleDomain("'self'");
 		$response->setContentSecurityPolicy($csp);
 
 		return $response;

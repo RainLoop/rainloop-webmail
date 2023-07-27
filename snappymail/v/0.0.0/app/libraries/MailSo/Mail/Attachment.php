@@ -11,30 +11,25 @@
 
 namespace MailSo\Mail;
 
+use MailSo\Imap\BodyStructure;
+
 /**
  * @category MailSo
  * @package Mail
  */
 class Attachment implements \JsonSerializable
 {
-	/**
-	 * @var string
-	 */
-	private $sFolder;
+	private string $sFolder;
 
-	/**
-	 * @var int
-	 */
-	private $iUid;
+	private int $iUid;
 
-	/**
-	 * @var \MailSo\Imap\BodyStructure
-	 */
-	private $oBodyStructure;
+	private ?BodyStructure $oBodyStructure;
 
-	function __construct()
+	function __construct(string $sFolder, int $iUid, BodyStructure $oBodyStructure)
 	{
-		$this->Clear();
+		$this->sFolder = $sFolder;
+		$this->iUid = $iUid;
+		$this->oBodyStructure = $oBodyStructure;
 	}
 
 	public function Clear() : self
@@ -56,127 +51,18 @@ class Attachment implements \JsonSerializable
 		return $this->iUid;
 	}
 
-	public function MimeIndex() : string
+	public function __call(string $name, array $arguments) //: mixed
 	{
-		return $this->oBodyStructure ? $this->oBodyStructure->PartID() : '';
-	}
-
-	public function FileName(bool $bCalculateOnEmpty = false) : string
-	{
-		if (!$this->oBodyStructure) {
-			return '';
-		}
-
-		$sFileName = \trim($this->oBodyStructure->FileName());
-		if (\strlen($sFileName) || !$bCalculateOnEmpty) {
-			return $sFileName;
-		}
-
-		$sIdx = '-' . $this->MimeIndex();
-
-		$sMimeType = \strtolower(\trim($this->MimeType()));
-		if ('message/rfc822' === $sMimeType) {
-			return "message{$sIdx}.eml";
-		}
-		if ('text/calendar' === $sMimeType) {
-			return "calendar{$sIdx}.ics";
-		}
-		if ('text/plain' === $sMimeType) {
-			return "part{$sIdx}.txt";
-		}
-		if (\preg_match('@text/(vcard|html|csv|xml|css|asp)@', $sMimeType, $aMatch)
-		 || \preg_match('@image/(png|jpeg|gif|bmp|cgm|ief|tiff|webp)@', $sMimeType, $aMatch)) {
-			return "part{$sIdx}.{$aMatch[1]}";
-		}
-		if (\strlen($sMimeType)) {
-			return \str_replace('/', $sIdx.'.', $sMimeType);
-		}
-
-		return ($this->oBodyStructure->IsInline() ? 'inline' : 'part' ) . $sIdx;
-	}
-
-	public function MimeType() : string
-	{
-		return $this->oBodyStructure ? $this->oBodyStructure->ContentType() : '';
-	}
-
-	public function EncodedSize() : int
-	{
-		return $this->oBodyStructure ? $this->oBodyStructure->Size() : 0;
-	}
-
-	public function EstimatedSize() : int
-	{
-		return $this->oBodyStructure ? $this->oBodyStructure->EstimatedSize() : 0;
-	}
-
-	public function Cid() : string
-	{
-		return $this->oBodyStructure ? $this->oBodyStructure->ContentID() : '';
-	}
-
-	public function ContentLocation() : string
-	{
-		return $this->oBodyStructure ? $this->oBodyStructure->ContentLocation() : '';
-	}
-
-	public function IsInline() : bool
-	{
-		return $this->oBodyStructure ? $this->oBodyStructure->IsInline() : false;
-	}
-
-	public function IsImage() : bool
-	{
-		return $this->oBodyStructure ? $this->oBodyStructure->IsImage() : false;
-	}
-
-	public function IsArchive() : bool
-	{
-		return $this->oBodyStructure ? $this->oBodyStructure->IsArchive() : false;
-	}
-
-	public function IsPdf() : bool
-	{
-		return $this->oBodyStructure ? $this->oBodyStructure->IsPdf() : false;
-	}
-
-	public function IsDoc() : bool
-	{
-		return $this->oBodyStructure ? $this->oBodyStructure->IsDoc() : false;
-	}
-
-	public function IsPgpSignature() : bool
-	{
-		return $this->oBodyStructure ? $this->oBodyStructure->IsPgpSignature() : false;
-	}
-
-	public static function NewBodyStructureInstance(string $sFolder, int $iUid, \MailSo\Imap\BodyStructure $oBodyStructure) : self
-	{
-		return (new self)->InitByBodyStructure($sFolder, $iUid, $oBodyStructure);
-	}
-
-	public function InitByBodyStructure(string $sFolder, int $iUid, \MailSo\Imap\BodyStructure $oBodyStructure) : self
-	{
-		$this->sFolder = $sFolder;
-		$this->iUid = $iUid;
-		$this->oBodyStructure = $oBodyStructure;
-		return $this;
+		return $this->oBodyStructure->{$name}(...$arguments);
 	}
 
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
-		return array(
+		return \array_merge([
 			'@Object' => 'Object/Attachment',
-			'Folder' => $this->Folder(),
-			'Uid' => (string) $this->Uid(),
-			'MimeIndex' => (string) $this->MimeIndex(),
-			'MimeType' => $this->MimeType(),
-			'FileName' => \MailSo\Base\Utils::SecureFileName($this->FileName(true)),
-			'EstimatedSize' => $this->EstimatedSize(),
-			'Cid' => $this->Cid(),
-			'ContentLocation' => $this->ContentLocation(),
-			'IsInline' => $this->IsInline()
-		);
+			'folder' => $this->sFolder,
+			'uid' => $this->iUid
+		], $this->oBodyStructure->jsonSerialize());
 	}
 }

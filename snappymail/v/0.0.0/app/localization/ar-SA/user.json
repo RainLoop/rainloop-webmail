@@ -1,4 +1,5 @@
 {
+	"LANG_DIR": "rtl",
 	"GLOBAL": {
 		"TO_ARCHIVE": "الأرشيف",
 		"ARE_YOU_SURE": "هل أنت متأكد؟",
@@ -19,21 +20,27 @@
 		"MOVE_TO": "..انقل الى",
 		"NAME": "البريد الوارد",
 		"NONE": "None",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "ليست رسائل غير مرغوب فيها",
 		"USERNAME": "اسم المستخدم",
 		"PASSWORD": "كلمة السر",
+		"REMEMBER": "Remember",
 		"REPLY_TO": "الرد-الى",
 		"SAVE": "حفظ",
 		"SAVE_CHANGES": "Save changes?",
 		"SEARCH": "لم يتم ايجاد جهة الإتصال",
-		"SPAM": "الإبلاغ عن الرسائل غير المرغوب فيها",
+		"SPAM": "رسائل إلكترونية مزعجة",
 		"SUBJECT": "الموضوع",
 		"TEST": "تجريب",
 		"TO": "الى",
 		"SERVER_MESSAGE": "Server message",
 		"YES": "نعم",
 		"NO": "لا",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "الافتراضي",
+		"HELP": "المساعدة",
+		"TEXT": "النص",
+		"ATTACHMENTS": "الملحقات"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "تسيجيل الدخول",
@@ -41,13 +48,7 @@
 		"BUTTON_SIGN_IN": "الدخول"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "ضفّ حساب",
-		"BUTTON_SETTINGS": "الإعدادات",
-		"BUTTON_HELP": "المساعدة"
-	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobile version",
-		"BUTTON_DESKTOP_VERSION": "Desktop version"
+		"BUTTON_ADD_ACCOUNT": "ضفّ حساب"
 	},
 	"SEARCH": {
 		"TITLE_ADV": "البحث المطور",
@@ -98,6 +99,7 @@
 		"MENU_SELECT_SEEN": "مقروء",
 		"MENU_SELECT_FLAGGED": "محدد كـ مهم",
 		"MENU_SELECT_UNFLAGGED": "إزالة الأهمية",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "إفراغ القائمة",
 		"EMPTY_SEARCH_LIST": "ليست هناك أية رسائل تطابق بحثك.",
 		"SEARCH_RESULT_FOR": "نتيجة البحث لـ \"%SEARCH%\"",
@@ -108,6 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "يوجد لديك %COUNT% رسالة جديدة!",
 		"QUOTA_SIZE": "Using <strong>%SIZE% (%PROC%%)<\/strong> of your <strong>%LIMIT%<\/strong>",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Date ascending",
 		"SORT_DATE_DESC": "Date descending",
 		"SORT_SIZE_ASC": "Size ascending",
@@ -224,11 +227,16 @@
 		"NO_ATTACHMENTS_HERE_DESC": "لايوجد مرفقات",
 		"ATTACHMENTS_ERROR_DESC": "تحذير! لم يتم إرفاق جميع المرفقات",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "لم تنتهي عملية الإرفاق بعد",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "اطلب اعلاماً بالقراءة",
 		"BUTTON_MARK_AS_IMPORTANT": "تحديده كـ هام",
-		"BUTTON_REQUEST_DSN": "اطلب اعلاماً بايصال البريد"
+		"BUTTON_REQUEST_DSN": "اطلب اعلاماً بايصال البريد",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "هل أنت متأكد من رغبتك باغلاق هذه النافذة؟",
 		"DESC_WANT_DELETE_MESSAGES": "هل أنت متأكد من رغبتك بحذف هذه الرسائل؟"
 	},
@@ -312,7 +320,7 @@
 		"MARK_AS_READ_LABEL": "تعليمها بـ مقروءة",
 		"REPLY_INTERVAL_LABEL": "فترة الرد (بلأيام)",
 		"KEEP_LABEL": "الإحتفاظ بها",
-		"STOP_LABEL": "لاتتوقف عن المعالجة بالشروط",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "الموضوع (خياري)",
 		"VACATION_MESSAGE_LABEL": "الرسالة",
 		"VACATION_RECIPIENTS_LABEL": "Recipients (comma separated)",
@@ -351,21 +359,43 @@
 		"ERROR_UNKNOWN": "حدث خطأ نتيجة إضافة ملف غير معروف النوع"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> TEXT",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"PLAIN": "HTML <-> TEXT",
+		"SOURCE": "HTML <-> SOURCE",
+		"FONTFAMILY": "Font family",
+		"FONTSIZE": "Font size",
+		"DIR": "Text direction",
+		"DIR_LTR": "Left to right",
+		"DIR_RTL": "Right to left",
+		"DIR_AUTO": "Automatic",
+		"TEXTCOLOR": "Text color",
+		"BACKGROUNDCOLOR": "Background color",
+		"BOLD": "Bold",
+		"ITALIC": "Italic",
+		"UNDERLINE": "Underline",
+		"STRIKE": "Strikethrough",
+		"SUB": "Subscript",
+		"SUP": "Superscript",
+		"OL": "Ordered list",
+		"UL": "Unordered list",
+		"QUOTE": "Blockquote",
+		"INDENTDECREASE": "Decrease indent",
+		"INDENTINCREASE": "Increase indent",
+		"LINK": "Link",
+		"IMAGEURL": "Image URL",
+		"IMAGEUPLOAD": "Image select",
+		"UNDO": "Undo",
+		"REDO": "Redo"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "الشخصي",
-		"LABEL_GENERAL_NAME": "العام",
-		"LABEL_CONTACTS_NAME": "جهات الإتصال",
-		"LABEL_FOLDERS_NAME": "المجلدات",
-		"LABEL_ACCOUNTS_NAME": "الحسابات",
-		"LABEL_FILTERS_NAME": "عوامل التصفية",
-		"LABEL_SECURITY_NAME": "الأمان",
-		"LABEL_THEMES_NAME": "المظاهر العامة"
+		"GENERAL": "العام",
+		"CONTACTS": "جهات الإتصال",
+		"FOLDERS": "المجلدات",
+		"ACCOUNTS": "الحسابات",
+		"FILTERS": "عوامل التصفية",
+		"SECURITY": "الأمان",
+		"THEMES": "المظاهر العامة"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "عوامل التصفية",
 		"SIMPLE": "Simple",
 		"ADVANCED": "Advanced",
 		"BUTTON_ADD_SCRIPT": "Add a Script",
@@ -378,18 +408,18 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "الأمان",
 		"LABEL_AUTOLOGOUT": "تسجيل الخروج التلقائي",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "أبداَ",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% دقيقة",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% hour(s)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "أبداَ"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "عام",
 		"LANGUAGE": "اللغة",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "الهوية",
 		"LAYOUT": "التصميم",
 		"LAYOUT_NO_SPLIT": "بدون إنقسام",
 		"LAYOUT_VERTICAL_SPLIT": "إنقسام عمودي",
 		"LAYOUT_HORIZONTAL_SPLIT": "إنقسام أفقي",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "المحرر النصي الأساسي",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "عادي",
@@ -399,19 +429,30 @@
 		"USE_CHECKBOXES_IN_LIST": "عرض مربعات التحديد في القائمة",
 		"USE_THREADS": "إستخدام المواضيع",
 		"REPLY_SAME_FOLDER": "ضع الردود في مجلد الرسالة التي يتم الرد عليها",
-		"SHOW_IMAGES": "قم دائماَ بعرض الصور القادمة في الرسالة",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"REMOVE_COLORS": "Remove background and text colors from message body",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "الرسائل في الصفحة",
+		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Mark message as read after",
 		"MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
+		"MINUTES": "minutes",
 		"NOTIFICATIONS": "التنبيهات",
 		"SOUND_NOTIFICATION": "صوت التنبيهات",
 		"CHROME_NOTIFICATION_DESC": "إظهار نافذة منبثقة في حالة قدوم ايميل جديد",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(تم إعتراضها من قبل المتصفح)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
+		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "قم باضافة المستلمين تلقائيا الى دفتر العناوين",
@@ -463,14 +504,13 @@
 		"BUTTON_ADD_ACCOUNT": "قم باضافة حساب",
 		"BUTTON_ADD_IDENTITY": "قم باضافة هوية",
 		"LOADING_PROCESS": "..جاري التحميل",
-		"DEFAULT_IDENTITY_LABEL": "الافتراضي"
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": " إستيراد مفتاح",
 		"BUTTON_GENERATE_KEY_PAIR": " توليد مفتاح",
 		"TITLE_PRIVATE": "خاص",
 		"TITLE_PUBLIC": "عام",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
@@ -484,7 +524,6 @@
 		"LABEL_REPLY_ALL": "الرد للجميع",
 		"LABEL_FORWARD": "إعادة التوجيه",
 		"LABEL_FORWARD_MULTIPLY": "إعادة التوجيه كملف مرفق",
-		"LABEL_HELP": "المساعدة",
 		"LABEL_CHECK_ALL": "تحديد جميع الرسائل",
 		"LABEL_DELETE": "حذف",
 		"LABEL_OPEN_THREAD": "فتح المواضيع المحددة",

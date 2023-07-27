@@ -1,17 +1,14 @@
-import { Scope } from 'Common/Enums';
-import { Layout, ClientSideKeyNameMessageListSize } from 'Common/EnumsUser';
-import { doc, createElement, leftPanelDisabled, moveAction, Settings, elementById } from 'Common/Globals';
+import { ScopeMessageList } from 'Common/Enums';
+import { doc, createElement, Settings } from 'Common/Globals';
 import { pString, pInt } from 'Common/Utils';
-import { setLayoutResizer } from 'Common/UtilsUser';
-import { getFolderFromCacheList, getFolderFullName, getFolderInboxName } from 'Common/Cache';
+import { moveAction } from 'Common/UtilsUser';
+import { getFolderFromHashMap, getFolderInboxName } from 'Common/Cache';
 import { i18n, initOnStartOrLangChange } from 'Common/Translator';
-import { SettingsUserStore } from 'Stores/User/Settings';
 
 import { AppUserStore } from 'Stores/User/App';
 import { AccountUserStore } from 'Stores/User/Account';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
-import { ThemeStore } from 'Stores/Theme';
 
 import { SystemDropDownUserView } from 'View/User/SystemDropDown';
 import { MailFolderList } from 'View/User/MailBox/FolderList';
@@ -46,7 +43,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 		const count = Settings.app('listPermanentFiltered') ? 0 : FolderUserStore.foldersInboxUnreadCount(),
 			email = AccountUserStore.email();
 
-		rl.setWindowTitle(
+		rl.setTitle(
 			(email
 				? '' + (0 < count ? '(' + count + ') ' : ' ') + email + ' - '
 				: ''
@@ -59,11 +56,8 @@ export class MailBoxUserScreen extends AbstractScreen {
 	 */
 	onShow() {
 		this.updateWindowTitle();
-
 		AppUserStore.focusedState('none');
-		AppUserStore.focusedState(Scope.MessageList);
-
-		ThemeStore.isMobile() && leftPanelDisabled(true);
+		AppUserStore.focusedState(ScopeMessageList);
 	}
 
 	/**
@@ -73,7 +67,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 	 * @returns {void}
 	 */
 	onRoute(folderHash, page, search, messageUid) {
-		const folder = getFolderFromCacheList(getFolderFullName(folderHash.replace(/~([\d]+)$/, '')));
+		const folder = getFolderFromHashMap(folderHash.replace(/~([\d]+)$/, ''));
 		if (folder) {
 			FolderUserStore.currentFolder(folder);
 			MessagelistUserStore.page(1 > page ? 1 : page);
@@ -101,7 +95,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 			FolderUserStore.foldersInboxUnreadCount(e.detail);
 /*			// Disabled in SystemDropDown.html
 			const email = AccountUserStore.email();
-			AccountUserStore.accounts.forEach(item =>
+			AccountUserStore.forEach(item =>
 				email === item?.email && item?.count(e.detail)
 			);
 */
@@ -113,24 +107,6 @@ export class MailBoxUserScreen extends AbstractScreen {
 	 * @returns {void}
 	 */
 	onBuild() {
-		setTimeout(() => {
-			// initMailboxLayoutResizer
-			const top = elementById('V-MailMessageList'),
-				bottom = elementById('V-MailMessageView'),
-				fToggle = () => {
-					let layout = SettingsUserStore.layout();
-					setLayoutResizer(top, bottom, ClientSideKeyNameMessageListSize,
-						(ThemeStore.isMobile() || Layout.NoPreview === layout)
-							? 0
-							: (Layout.SidePreview === layout ? 'Width' : 'Height')
-					);
-				};
-			if (top && bottom) {
-				fToggle();
-				addEventListener('rl-layout', fToggle);
-			}
-		}, 1);
-
 		doc.addEventListener('click', event =>
 			event.target.closest('#rl-right') && moveAction(false)
 		);

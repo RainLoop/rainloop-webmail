@@ -6,35 +6,38 @@
 			let view = e.detail;
 			view.nextcloudAttach = () => {
 				rl.nextcloud.selectFiles().then(files => {
+					let urls = [];
 					files && files.forEach(file => {
-						let attachment = view.addAttachmentHelper(
-								Jua?.randomId(),
-								file.name.replace(/^.*\/([^/]+)$/, '$1'),
-								file.size
-							);
-						attachment
-							.waiting(false)
-							.uploading(true)
-							.complete(false);
+						if (file.name) {
+							let attachment = view.addAttachmentHelper(
+									Jua?.randomId(),
+									file.name.replace(/^.*\/([^/]+)$/, '$1'),
+									file.size
+								);
 
-						rl.pluginRemoteRequest(
-							(iError, data) => {
-								attachment
-									.uploading(false)
-									.complete(true);
-								if (iError) {
-									attachment.error(data?.Result?.error || 'failed');
-								} else {
-									attachment.tempName(data.Result.tempName);
+							rl.pluginRemoteRequest(
+								(iError, data) => {
+									attachment.uploading(false).complete(true);
+									if (iError) {
+										attachment.error(data?.Result?.error || 'failed');
+									} else {
+										attachment.tempName(data.Result.tempName);
+									}
+								},
+								'NextcloudAttachFile',
+								{
+									'file': file.name
 								}
-							},
-							'NextcloudAttachFile',
-							{
-								'file': file.name
-							}
-						);
-
+							);
+						} else if (file.url) {
+							urls.push(file.url);
+						}
 					});
+					if (urls.length) {
+						// TODO: other editors and text/plain
+						// https://github.com/the-djmaze/snappymail/issues/981
+						view.oEditor.editor.squire.insertHTML(urls.join("<br>"));
+					}
 				});
 			};
 		}

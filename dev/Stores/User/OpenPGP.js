@@ -12,6 +12,8 @@ import { showScreenPopup } from 'Knoin/Knoin';
 import { OpenPgpKeyPopupView } from 'View/Popup/OpenPgpKey';
 import { AskPopupView } from 'View/Popup/Ask';
 
+import { Passphrases } from 'Storage/Passphrases';
+
 const
 	findOpenPGPKey = (keys, query/*, sign*/) =>
 		keys.find(key =>
@@ -22,15 +24,21 @@ const
 		if (privateKey.key.isDecrypted()) {
 			return privateKey.key;
 		}
-		const passphrase = await AskPopupView.password(
-			'OpenPGP.js key<br>' + privateKey.id + ' ' + privateKey.emails[0],
-			'OPENPGP/'+btnTxt
-		);
-		if (null !== passphrase) {
-			return await openpgp.decryptKey({
-				privateKey: privateKey.key,
-				passphrase
-			});
+		const key = privateKey.id,
+			pass = Passphrases.has(key)
+				? {password:Passphrases.get(key), remember:false}
+				: await AskPopupView.password(
+					'OpenPGP.js key<br>' + key + ' ' + privateKey.emails[0],
+					'OPENPGP/'+btnTxt
+				);
+		if (pass) {
+			const passphrase = pass.password,
+				result = await openpgp.decryptKey({
+					privateKey: privateKey.key,
+					passphrase
+				});
+			result && pass.remember && Passphrases.set(key, passphrase);
+			return result;
 		}
 	},
 
@@ -214,17 +222,18 @@ export const OpenPGPUserStore = new class {
 	 * https://docs.openpgpjs.org/#sign-and-verify-cleartext-messages
 	 */
 	async verify(message) {
-		const data = message.pgpSigned(), // { BodyPartId: "1", SigPartId: "2", MicAlg: "pgp-sha256" }
+		const data = message.pgpSigned(), // { bodyPartId: "1", sigPartId: "2", micAlg: "pgp-sha256" }
 			publicKey = this.publicKeys().find(key => key.emails.includes(message.from[0].email));
 		if (data && publicKey) {
-			data.Folder = message.folder;
-			data.Uid = message.uid;
-			data.GnuPG = 0;
+			data.folder = message.folder;
+			data.uid = message.uid;
+			data.tryGnuPG = 0;
 			let response;
-			if (data.SigPartId) {
+			if (data.sigPartId) {
 				response = await Remote.post('MessagePgpVerify', null, data);
-			} else if (data.BodyPart) {
-				response = { Result: { text: data.BodyPart.raw, signature: data.SigPart.body } };
+			} else if (data.bodyPart) {
+				// MimePart
+				response = { Result: { text: data.bodyPart.raw, signature: data.sigPart.body } };
 			} else {
 				response = { Result: { text: message.plain(), signature: null } };
 			}

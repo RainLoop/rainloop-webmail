@@ -1,39 +1,54 @@
 (rl => {
 
 const
-	namespace = 'DAV:',
+	nsDAV = 'DAV:',
+	nsNC = 'http://nextcloud.org/ns',
+	nsOC = 'http://owncloud.org/ns',
+	nsOCS = 'http://open-collaboration-services.org/ns',
 	nsCalDAV = 'urn:ietf:params:xml:ns:caldav',
 
+	OC = () => parent.OC,
+
+	// Nextcloud 19 deprecated generateUrl, but screw `import { generateUrl } from "@nextcloud/router"`
+	shareUrl = () => OC().webroot + '/ocs/v2.php/apps/files_sharing/api/v1/shares',
+	generateUrl = path => OC().webroot + (OC().config.modRewriteWorking ? '' : '/index.php') + path,
+	generateRemoteUrl = path => location.protocol + '//' + location.host + generateUrl(path),
+
+//	shareTypes = {0 = user, 1 = group, 3 = public link}
+
 	propfindFiles = `<?xml version="1.0"?>
-<d:propfind xmlns:d="DAV:" xmlns:oc="http://owncloud.org/ns">
-  <d:prop>
-		<d:resourcetype/>
+<propfind xmlns="DAV:" xmlns:oc="${nsOC}" xmlns:ocs="${nsOCS}" xmlns:nc="${nsNC}">
+	<prop>
+		<oc:fileid/>
 		<oc:size/>
-		<d:getcontentlength/>
-  </d:prop>
-</d:propfind>`,
+		<resourcetype/>
+		<getcontentlength/>
+		<ocs:share-permissions/>
+		<oc:share-types/>
+	</prop>
+</propfind>`,
 
 	propfindCal = `<?xml version="1.0"?>
-<d:propfind xmlns:d="DAV:">
-  <d:prop>
-		<d:resourcetype/>
-		<d:current-user-privilege-set/>
-		<d:displayname/>
-  </d:prop>
-</d:propfind>`,
+<propfind xmlns="DAV:">
+	<prop>
+		<resourcetype/>
+		<current-user-privilege-set/>
+		<displayname/>
+	</prop>
+</propfind>`,
 
 	xmlParser = new DOMParser(),
 	pathRegex = /.*\/remote.php\/dav\/[^/]+\/[^/]+/g,
 
-	getDavElementsByTagName = (parent, localName) => parent.getElementsByTagNameNS(namespace, localName),
+	getElementsByTagName = (parent, namespace, localName) => parent.getElementsByTagNameNS(namespace, localName),
+	getDavElementsByTagName = (parent, localName) => getElementsByTagName(parent, nsDAV, localName),
 	getDavElementByTagName = (parent, localName) => getDavElementsByTagName(parent, localName)?.item(0),
 	getElementByTagName = (parent, localName) => +parent.getElementsByTagName(localName)?.item(0),
 
-	davFetch = (mode, path, options) => {
-		if (!parent.OC.requestToken) {
+	ncFetch = (path, options) => {
+		if (!OC().requestToken) {
 			return Promise.reject(new Error('OC.requestToken missing'));
 		}
-		let cfg = rl.settings.get('Nextcloud');
 		options = Object.assign({
 			mode: 'same-origin',
 			cache: 'no-cache',
@@ -41,9 +56,14 @@ const
 			credentials: 'same-origin',
 			headers: {}
 		}, options);
-		options.headers.requesttoken = parent.OC.requestToken;
+		options.headers.requesttoken = OC().requestToken;
+		return fetch(path, options);
+	},
+
+	davFetch = (mode, path, options) => {
+		let cfg = rl.settings.get('Nextcloud');
 //		cfg.UID = document.head.dataset.user
-		return fetch(cfg.WebDAV + '/' + mode + '/' + cfg.UID + path, options);
+		return ncFetch(cfg.WebDAV + '/' + mode + '/' + cfg.UID + path, options);
 	},
 
 	davFetchFiles = (path, options) => davFetch('files', path, options),
@@ -51,7 +71,7 @@ const
 	createDirectory = path => davFetchFiles(path, { method: 'MKCOL' }),
 
 	fetchFiles = path => {
-		if (!parent.OC.requestToken) {
+		if (!OC().requestToken) {
 			return Promise.reject(new Error('OC.requestToken missing'));
 		}
 		return davFetchFiles(path, {
@@ -85,8 +105,10 @@ const
 					}
 				} else {
 					elem.isFile = true;
+					elem.id = e.getElementsByTagNameNS(nsOC, 'fileid')?.item(0)?.textContent;
 					elem.size = getDavElementByTagName(e, 'getcontentlength')?.textContent
 						|| getElementByTagName(e, 'oc:size')?.textContent;
+					elem.shared = [...e.getElementsByTagNameNS(nsOC, 'share-type')].some(node => '3' == node.textContent);
 				}
 				elemList.push(elem);
 			}
@@ -96,6 +118,13 @@ const
 
 	buildTree = (view, parent, items, path) => {
 		if (items.length) {
+			try {
+				// https://github.com/the-djmaze/snappymail/issues/1109
+				let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+				items.sort((a, b) => collator.compare(a.name, b.name));
+			} catch (e) {
+				console.error(e);
+			}
 			items.forEach(item => {
 				if (!item.isFile) {
 					let li = document.createElement('li'),
@@ -110,12 +139,11 @@ const
 					summary.dataset.icon = '📁';
 					if (!view.files()) {
 						let btn = document.createElement('button');
-						btn.item_name = item.name;
 						btn.name = 'select';
 						btn.textContent = 'select';
 						btn.className = 'button-vue';
-						btn.style.marginLeft = '1em';
 						summary.append(btn);
+						summary.item_name = item.name;
 					}
 					details.append(summary);
 					details.append(ul);
@@ -127,17 +155,16 @@ const
 			if (view.files()) {
 				items.forEach(item => {
 					if (item.isFile) {
-						// TODO show files
 						let li = document.createElement('li'),
-							btn = document.createElement('button');
-						btn.item = item;
-						btn.name = 'select';
-						btn.textContent = 'select';
-						btn.className = 'button-vue';
-						btn.style.marginLeft = '1em';
+							cb = document.createElement('input');
+
+						li.item = item;
 						li.textContent = item.name.replace(/^.*\/([^/]+)$/, '$1');
 						li.dataset.icon = '🗎';
-						li.append(btn);
+
+						cb.type = 'checkbox';
+						li.append(cb);
+
 						parent.append(li);
 					}
 				});
@@ -150,8 +177,8 @@ const
 			btn.name = 'create';
 			btn.textContent = 'create & select';
 			btn.className = 'button-vue';
-			btn.item_name = path;
 			btn.input = input;
+			li.item_path = path;
 			li.append(input);
 			li.append(btn);
 			parent.append(li);
@@ -166,18 +193,87 @@ class NextcloudFilesPopupView extends rl.pluginPopupView {
 		});
 	}
 
+	attach() {
+		this.select = [];
+		this.tree.querySelectorAll('input').forEach(input =>
+			input.checked && this.select.push(input.parentNode.item)
+		);
+		this.close();
+	}
+
+	shareInternal() {
+		this.select = [];
+		this.tree.querySelectorAll('input').forEach(input =>
+			input.checked && this.select.push({url:generateRemoteUrl(`/f/${input.parentNode.item.id}`)})
+		);
+		this.close();
+	}
+
+	sharePublic() {
+		const inputs = [...this.tree.querySelectorAll('input')],
+			loop = () => {
+				if (!inputs.length) {
+					this.close();
+					return;
+				}
+				const input = inputs.pop();
+				if (!input.checked) {
+					loop();
+				} else {
+					const item = input.parentNode.item;
+					if (item.shared) {
+						ncFetch(
+							shareUrl() + `?format=json&path=${encodeURIComponent(item.name)}&reshares=true`
+						)
+						.then(response => (response.status < 400) ? response.json() : Promise.reject(new Error({ response })))
+						.then(json => {
+							this.select.push({url:json.ocs.data[0].url});
+							loop();
+//							json.data[0].password
+						});
+					} else {
+						ncFetch(
+							shareUrl(),
+							{
+								method:'POST',
+								headers: {
+									Accept: 'application/json',
+									'Content-Type': 'application/json'
+								},
+								body: JSON.stringify({
+									path:item.name,
+									shareType:3,
+									attributes:"[]"
+								})
+							}
+						)
+						.then(response => (response.status < 400) ? response.json() : Promise.reject(new Error({ response })))
+						.then(json => {
+//							PUT /ocs/v2.php/apps/files_sharing/api/v1/shares/2 {"password":"ABC09"}
+							this.select.push({url:json.ocs.data.url});
+							loop();
+						});
+					}
+				}
+			};
+
+		this.select = [];
+		loop();
+	}
+
 	onBuild(dom) {
 		this.tree = dom.querySelector('#sm-nc-files-tree');
 		this.tree.addEventListener('click', event => {
 			let el = event.target;
 			if (el.matches('button')) {
+				let parent = el.parentNode;
 				if ('select' == el.name) {
-					this.select = this.files() ? [el.item] : el.item_name;
+					this.select = parent.item_name;
 					this.close();
 				} else if ('create' == el.name) {
 					let name = el.input.value.replace(/[|\\?*<":>+[]\/&\s]/g, '');
 					if (name.length) {
-						name = el.item_name + '/' + name;
+						name = parent.item_path + '/' + name;
 						createDirectory(name).then(response => {
 							if (response.status == 201) {
 								this.select = name;
@@ -293,20 +389,29 @@ rl.nextcloud = {
 		}),
 
 	calendarPut: (path, event) => {
-		// Validation error in iCalendar: A calendar object on a CalDAV server MUST NOT have a METHOD property.
-		event = event.replace(/METHOD:.+\r?\n/i, '');
-
-		let m = event.match(/UID:(.+)/);
-		davFetch('calendars', path + '/' + m[1] + '.ics', {
+		davFetch('calendars', path + '/' + event.UID + '.ics', {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'text/calendar'
 			},
-			body: event
+			// Validation error in iCalendar: A calendar object on a CalDAV server MUST NOT have a METHOD property.
+			body: event.rawText
+				.replace('METHOD:', 'X-METHOD:')
+				// https://github.com/nextcloud/calendar/issues/4684
+				.replace('ATTENDEE:', 'X-ATTENDEE:')
+				.replace('ORGANIZER:', 'X-ORGANIZER:')
+				.replace(/RSVP=TRUE/g, 'RSVP=FALSE')
+				.replace(/\r?\n/g, '\r\n')
 		})
-		.then(response => (response.status < 400) ? response.text() : Promise.reject(new Error({ response })))
-		.then(text => {
-			console.dir({event_response:text});
+		.then(response => {
+			if (201 == response.status) {
+				// Created
+			} else if (204 == response.status) {
+				// Not modified
+			} else {
+//				response.text().then(text => console.error({status:response.status, body:text}));
+				Promise.reject(new Error({ response }));
+			}
 		});
 	},
 

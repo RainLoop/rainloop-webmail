@@ -1,13 +1,11 @@
 import { koComputable, addObservablesTo } from 'External/ko';
 
-import { Notification } from 'Common/Enums';
-import { UNUSED_OPTION_VALUE } from 'Common/Consts';
+import { Notifications } from 'Common/Enums';
 import { defaultOptionsAfterRender } from 'Common/Utils';
 import { folderListOptionsBuilder, sortFolders } from 'Common/Folders';
 import { getNotification } from 'Common/Translator';
 
 import { FolderUserStore } from 'Stores/User/Folder';
-import { SettingsUserStore } from 'Stores/User/Settings';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -21,18 +19,16 @@ export class FolderCreatePopupView extends AbstractViewPopup {
 		super('FolderCreate');
 
 		addObservablesTo(this, {
-			folderName: '',
-			folderSubscribe: SettingsUserStore.hideUnsubscribed(),
-
-			selectedParentValue: UNUSED_OPTION_VALUE
+			name: '',
+			subscribe: true,
+			parentFolder: ''
 		});
 
 		this.parentFolderSelectList = koComputable(() =>
 			folderListOptionsBuilder(
 				[],
 				[['', '']],
-				oItem =>
-					oItem ? (oItem.isSystemFolder() ? oItem.name() + ' ' + oItem.manageFolderSystemName() : oItem.name()) : '',
+				oItem => oItem ? oItem.detailedName() : '',
 				FolderUserStore.namespace
 					? item => !item.fullName.startsWith(FolderUserStore.namespace)
 					: null,
@@ -46,11 +42,10 @@ export class FolderCreatePopupView extends AbstractViewPopup {
 	submitForm(form) {
 		if (form.reportValidity()) {
 			const data = new FormData(form);
-			data.set('Subscribe', this.folderSubscribe() ? 1 : 0);
 
-			let parentFolderName = this.selectedParentValue();
+			let parentFolderName = this.parentFolder();
 			if (!parentFolderName && 1 < FolderUserStore.namespace.length) {
-				data.set('Parent', FolderUserStore.namespace.slice(0, FolderUserStore.namespace.length - 1));
+				data.set('parent', FolderUserStore.namespace.slice(0, FolderUserStore.namespace.length - 1));
 			}
 
 			Remote.abort('Folders').post('FolderCreate', FolderUserStore.foldersCreating, data)
@@ -69,7 +64,7 @@ export class FolderCreatePopupView extends AbstractViewPopup {
 					},
 					error => {
 						FolderUserStore.folderListError(
-							getNotification(error.code, '', Notification.CantCreateFolder)
+							getNotification(error.code, '', Notifications.CantCreateFolder)
 							+ '.\n' + error.message);
 					}
 				);
@@ -79,7 +74,8 @@ export class FolderCreatePopupView extends AbstractViewPopup {
 	}
 
 	onShow() {
-		this.folderName('');
-		this.selectedParentValue('');
+		this.name('');
+		this.subscribe(true);
+		this.parentFolder('');
 	}
 }

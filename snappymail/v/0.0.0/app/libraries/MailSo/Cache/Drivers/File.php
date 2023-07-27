@@ -18,30 +18,20 @@ namespace MailSo\Cache\Drivers;
  */
 class File implements \MailSo\Cache\DriverInterface
 {
-	/**
-	 * @var string
-	 */
-	private $sCacheFolder;
+	private string $sCacheFolder;
 
-	/**
-	 * @var string
-	 */
-	private $sKeyPrefix;
+	private string $sKeyPrefix = '';
 
 	function __construct(string $sCacheFolder, string $sKeyPrefix = '')
 	{
-		$this->sCacheFolder = $sCacheFolder;
-		$this->sCacheFolder = rtrim(trim($this->sCacheFolder), '\\/').'/';
-
-		$this->sKeyPrefix = $sKeyPrefix;
-		if (!empty($this->sKeyPrefix))
-		{
-			$this->sKeyPrefix = \str_pad(\preg_replace('/[^a-zA-Z0-9_]/', '_',
-				rtrim(trim($this->sKeyPrefix), '\\/')), 5, '_');
+		$this->sCacheFolder = \rtrim(\trim($sCacheFolder), '\\/').'/';
+		if (!empty($sKeyPrefix)) {
+			$sKeyPrefix = \str_pad(\preg_replace('/[^a-zA-Z0-9_]/', '_',
+				\rtrim(\trim($sKeyPrefix), '\\/')), 5, '_');
 
 			$this->sKeyPrefix = '__/'.
-				\substr($this->sKeyPrefix, 0, 2).'/'.\substr($this->sKeyPrefix, 2, 2).'/'.
-				$this->sKeyPrefix.'/';
+				\substr($sKeyPrefix, 0, 2).'/'.\substr($sKeyPrefix, 2, 2).'/'.
+				$sKeyPrefix.'/';
 		}
 	}
 
@@ -55,49 +45,41 @@ class File implements \MailSo\Cache\DriverInterface
 	{
 		$sValue = '';
 		$sPath = $this->generateCachedFileName($sKey);
-		if ('' !== $sPath && \file_exists($sPath))
-		{
+		if ('' !== $sPath && \file_exists($sPath)) {
 			$sValue = \file_get_contents($sPath);
 		}
-
 		return \is_string($sValue) ? $sValue : '';
 	}
 
 	public function Delete(string $sKey) : void
 	{
 		$sPath = $this->generateCachedFileName($sKey);
-		if ('' !== $sPath && \file_exists($sPath))
-		{
+		if ('' !== $sPath && \file_exists($sPath)) {
 			\unlink($sPath);
 		}
 	}
 
 	public function GC(int $iTimeToClearInHours = 24) : bool
 	{
-		if (0 === $iTimeToClearInHours) {
-			\MailSo\Base\Utils::RecRmDir($this->sCacheFolder);
-		} else {
-			\MailSo\Base\Utils::RecTimeDirRemove($this->sCacheFolder, 3600 * $iTimeToClearInHours);
-		}
+		\MailSo\Base\Utils::RecTimeDirRemove($this->sCacheFolder, 3600 * $iTimeToClearInHours);
 		return true;
 	}
 
 	private function generateCachedFileName(string $sKey, bool $bMkDir = false) : string
 	{
 		$sFilePath = '';
-		if (3 < \strlen($sKey))
-		{
+		if (3 < \strlen($sKey)) {
 			$sKeyPath = \sha1($sKey);
-			$sKeyPath = \substr($sKeyPath, 0, 2).'/'.\substr($sKeyPath, 2, 2).'/'.$sKeyPath;
-
-			$sFilePath = $this->sCacheFolder.$this->sKeyPrefix.$sKeyPath;
-			$dir = \dirname($sFilePath);
-			if ($bMkDir && !\is_dir($dir) && !\mkdir($dir, 0700, true))
-			{
-				$sFilePath = '';
+			$sFilePath = $this->sCacheFolder . $this->sKeyPrefix
+				. \substr($sKeyPath, 0, 2) . '/' . \substr($sKeyPath, 2, 2) . '/' . $sKeyPath;
+			if ($bMkDir) {
+				$dir = \dirname($sFilePath);
+				if (!\is_dir($dir) && !\mkdir($dir, 0700, true)) {
+					\error_log("mkdir({$dir}) failed");
+					$sFilePath = '';
+				}
 			}
 		}
-
 		return $sFilePath;
 	}
 }

@@ -1,4 +1,5 @@
 {
+	"LANG_DIR": "ltr",
 	"GLOBAL": {
 		"TO_ARCHIVE": "Αρχειοθέτηση",
 		"ARE_YOU_SURE": "Είστε σίγουροι;",
@@ -19,9 +20,11 @@
 		"MOVE_TO": "Μετακίνησε σε",
 		"NAME": "Εισερχόμενα",
 		"NONE": "Κανένα",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "Όχι ανεπιθύμητο",
 		"USERNAME": "Όνομα χρήστη",
 		"PASSWORD": "Κωδικός πρόσβασης",
+		"REMEMBER": "Remember",
 		"REPLY_TO": "Απάντηση στον",
 		"SAVE": "Αποθήκευση",
 		"SAVE_CHANGES": "Save changes?",
@@ -33,7 +36,11 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Ναι",
 		"NO": "Όχι",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "default",
+		"HELP": "Βοήθεια",
+		"TEXT": "Κείμενο",
+		"ATTACHMENTS": "Συνημμένα"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Είσοδος",
@@ -41,13 +48,7 @@
 		"BUTTON_SIGN_IN": "Σύνδεση"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Προσθήκη λογαριασμού",
-		"BUTTON_SETTINGS": "Ρυθμίσεις",
-		"BUTTON_HELP": "Βοήθεια"
-	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobile version",
-		"BUTTON_DESKTOP_VERSION": "Desktop version"
+		"BUTTON_ADD_ACCOUNT": "Προσθήκη λογαριασμού"
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Προχωρημένη αναζήτηση",
@@ -98,6 +99,7 @@
 		"MENU_SELECT_SEEN": "Διαβασμένο",
 		"MENU_SELECT_FLAGGED": "Σημαδεμένο",
 		"MENU_SELECT_UNFLAGGED": "Μη σημαδεμένο",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Άδεια λίστα.",
 		"EMPTY_SEARCH_LIST": "Δεν υπάρχουν μηνύματα που να ταιριάζουν στην αναζήτηση.",
 		"SEARCH_RESULT_FOR": "Αποτελέσματα αναζήτησης για \"%SEARCH%\"",
@@ -108,6 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "Έχετε %COUNT% νέα μηνύματα!",
 		"QUOTA_SIZE": "Χρησιμοποιούνται <strong>%SIZE% (%PROC%%)<\/strong> από <strong>%LIMIT%<\/strong>",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Date ascending",
 		"SORT_DATE_DESC": "Date descending",
 		"SORT_SIZE_ASC": "Size ascending",
@@ -224,11 +227,16 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Δεν υπάρχουν συνημμένα εδώ.",
 		"ATTACHMENTS_ERROR_DESC": "Προειδοποίηση! Δεν έχουν μεταφορτωθεί όλα τα συνημμένα.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Δεν έχουν μεταφορτωθεί ακόμη όλα τα συνημμένα.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "Ζητήστε αποδεικτικό ανάγνωσης",
 		"BUTTON_MARK_AS_IMPORTANT": "Σημειώστε το σαν σημαντικό",
-		"BUTTON_REQUEST_DSN": "Ζητήστε αποδεικτικό παράδοσης"
+		"BUTTON_REQUEST_DSN": "Ζητήστε αποδεικτικό παράδοσης",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Είστε σίγουροι πως θέλετε να κλείσετε αυτό το παράθυρο;",
 		"DESC_WANT_DELETE_MESSAGES": "Είστε σίγουροι πως θέλετε να διαγράψετε το (τα) μήνυμα(τα);"
 	},
@@ -312,7 +320,7 @@
 		"MARK_AS_READ_LABEL": "Σήμανε σαν διαβασμένο",
 		"REPLY_INTERVAL_LABEL": "Μεσοδιάστημα απαντήσεων (σε ημέρες)",
 		"KEEP_LABEL": "Κράτησε",
-		"STOP_LABEL": "Μην σταματάς να επεξεργάζεσαι κανόνες",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Θέμα (προαιρετικό)",
 		"VACATION_MESSAGE_LABEL": "Μήνυμα",
 		"VACATION_RECIPIENTS_LABEL": "Παραλήπτες (χωρισμένοι με κόμμα)",
@@ -351,21 +359,43 @@
 		"ERROR_UNKNOWN": "Υπήρξε άγνωστο λάθος κατα τη διαδικασία μεταφόρτωσης του αρχείου"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> TEXT",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"PLAIN": "HTML <-> TEXT",
+		"SOURCE": "HTML <-> SOURCE",
+		"FONTFAMILY": "Font family",
+		"FONTSIZE": "Font size",
+		"DIR": "Text direction",
+		"DIR_LTR": "Left to right",
+		"DIR_RTL": "Right to left",
+		"DIR_AUTO": "Automatic",
+		"TEXTCOLOR": "Text color",
+		"BACKGROUNDCOLOR": "Background color",
+		"BOLD": "Bold",
+		"ITALIC": "Italic",
+		"UNDERLINE": "Underline",
+		"STRIKE": "Strikethrough",
+		"SUB": "Subscript",
+		"SUP": "Superscript",
+		"OL": "Ordered list",
+		"UL": "Unordered list",
+		"QUOTE": "Blockquote",
+		"INDENTDECREASE": "Decrease indent",
+		"INDENTINCREASE": "Increase indent",
+		"LINK": "Link",
+		"IMAGEURL": "Image URL",
+		"IMAGEUPLOAD": "Image select",
+		"UNDO": "Undo",
+		"REDO": "Redo"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Προσωπικό",
-		"LABEL_GENERAL_NAME": "Γενικό",
-		"LABEL_CONTACTS_NAME": "Επαφές",
-		"LABEL_FOLDERS_NAME": "Φάκελοι",
-		"LABEL_ACCOUNTS_NAME": "Λογαρισμοί",
-		"LABEL_FILTERS_NAME": "Φίλτρα",
-		"LABEL_SECURITY_NAME": "Ασφάλεια",
-		"LABEL_THEMES_NAME": "Θέματα"
+		"GENERAL": "Γενικό",
+		"CONTACTS": "Επαφές",
+		"FOLDERS": "Φάκελοι",
+		"ACCOUNTS": "Λογαρισμοί",
+		"FILTERS": "Φίλτρα",
+		"SECURITY": "Ασφάλεια",
+		"THEMES": "Θέματα"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "Φίλτρα",
 		"SIMPLE": "Simple",
 		"ADVANCED": "Advanced",
 		"BUTTON_ADD_SCRIPT": "Add a Script",
@@ -378,18 +408,18 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Ασφάλεια",
 		"LABEL_AUTOLOGOUT": "Αυτόματη αποσύνδεση",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Ποτέ",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% λεπτό(α)",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% hour(s)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Ποτέ"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Γενικό",
 		"LANGUAGE": "Γλώσσα",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Ταυτότητα",
 		"LAYOUT": "Σχέδιο",
 		"LAYOUT_NO_SPLIT": "Χωρίς χώρισμα",
 		"LAYOUT_VERTICAL_SPLIT": "Κάθετο χώρισμα",
 		"LAYOUT_HORIZONTAL_SPLIT": "Οριζόντιο χώρισμα",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Προεπιλεγμένος συντάκτης κειμένου",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "Απλό",
@@ -399,19 +429,30 @@
 		"USE_CHECKBOXES_IN_LIST": "Εμφάνιση των κουτιών επιλογής σε λίστα",
 		"USE_THREADS": "Χρήση νημάτων",
 		"REPLY_SAME_FOLDER": "Τοποθέτηση απαντήσεων στο φάκελο που ανήκει το μήνυμα που απαντάται",
-		"SHOW_IMAGES": "Να εμφανίζονται πάντα οι εξωτερικές εικόνες στο σώμα του μηνύματος",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"REMOVE_COLORS": "Remove background and text colors from message body",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "Μηνύματα στη σελίδα",
+		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Mark message as read after",
 		"MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
+		"MINUTES": "minutes",
 		"NOTIFICATIONS": "Επισημάνσεις",
 		"SOUND_NOTIFICATION": "Ηχητική επισήμανση",
 		"CHROME_NOTIFICATION_DESC": "Να εμφανίζονται τα νέα μηνύματα σε αναδυόμενες επισημάνσεις",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Αποκλείστηκε από το φυλλομετρητή)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
+		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Αυτόματη προσθήκη επαφών στον κατάλογο διευθύνσεων",
@@ -463,14 +504,13 @@
 		"BUTTON_ADD_ACCOUNT": "Add an Account",
 		"BUTTON_ADD_IDENTITY": "Add an Identity",
 		"LOADING_PROCESS": "Updating...",
-		"DEFAULT_IDENTITY_LABEL": "default"
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Import Key",
 		"BUTTON_GENERATE_KEY_PAIR": "Generate Keys",
 		"TITLE_PRIVATE": "Private",
 		"TITLE_PUBLIC": "Public",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
@@ -484,7 +524,6 @@
 		"LABEL_REPLY_ALL": "Απάντηση σε όλους",
 		"LABEL_FORWARD": "Προώθηση",
 		"LABEL_FORWARD_MULTIPLY": "Προώθησε σαν συνημμένο(α)",
-		"LABEL_HELP": "Βοήθεια",
 		"LABEL_CHECK_ALL": "Select all messages",
 		"LABEL_DELETE": "Διέγραψε",
 		"LABEL_OPEN_THREAD": "Open selected thread",

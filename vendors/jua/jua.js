@@ -44,11 +44,9 @@
 		{
 			return oFile.size
 				? {
-					FileName: (oFile.name || '').replace(/^.*\/([^/]*)$/, '$1'),
-					Size: oFile.size,
-					Type: oFile.type,
-					Folder: '',
-					File : oFile
+					fileName: (oFile.name || '').replace(/^.*\/([^/]*)$/, '$1'),
+					size: oFile.size,
+					file: oFile
 				}
 				: null; // Folder
 		},
@@ -233,7 +231,7 @@
 		 */
 		uploadTask(sUid, oFileInfo)
 		{
-			if (false === this.oUids[sUid] || !oFileInfo || !oFileInfo['File'])
+			if (false === this.oUids[sUid] || !oFileInfo || !oFileInfo.file)
 			{
 				return false;
 			}
@@ -285,7 +283,7 @@
 
 				fStartFunction && fStartFunction(sUid);
 
-				oFormData.append(this.options.name, oFileInfo['File']);
+				oFormData.append(this.options.name, oFileInfo.file);
 
 				oXhr.send(oFormData);
 
@@ -329,11 +327,9 @@
 						getDataFromFiles(oInput.files, fFileCallback, limit);
 					} else {
 						fFileCallback({
-							FileName: oInput.value.split(/\\\//).pop(),
-							Size: null,
-							Type: null,
-							Folder: '',
-							File : null
+							fileName: oInput.value.split(/\\\//).pop(),
+							size: null,
+							file : null
 						});
 					}
 				});

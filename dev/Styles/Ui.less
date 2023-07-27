@@ -1,5 +1,4 @@
 
-#rl-settings-subscreen,
 .g-ui-user-select-none {
 	user-select: none;
 	-webkit-touch-callout: none;
@@ -20,7 +19,6 @@
 .settings-save-trigger {
 
 	display: inline-block;
-	height: 1em;
 	line-height: 1em;
 	margin-left: 0.5em !important;
 
@@ -100,6 +98,7 @@ tr:hover .drag-handle {
 .tabs {
     display: grid;
     grid-auto-columns: minmax(0, 1fr);
+    grid-template-rows: min-content auto;
 }
 
 .tabs > input[type="radio"] {
@@ -142,4 +141,35 @@ tr:hover .drag-handle {
 
 .tabs > [id^="tab"]:checked + label + .tab-content {
 	visibility: visible;
+}
+
+// OTHER
+
+.legend {
+	border-bottom: 1px solid var(--border-color, #ddd);
+	font-size: 150%;
+	line-height: 2.1;
+	margin-bottom: 1.43em;
+}
+summary.legend {
+	cursor: pointer;
+}
+
+.btn.btn-thin {
+	padding: 0 9px;
+}
+
+@media screen and (max-width: @maxMobileWidth) {
+	.form-horizontal {
+		.control-group {
+			> label {
+				text-align: var(--left, left);
+			}
+
+			// Move over all input controls and content
+			> *:not(label) {
+				margin-left: 20px;
+			}
+		}
+	}
 }

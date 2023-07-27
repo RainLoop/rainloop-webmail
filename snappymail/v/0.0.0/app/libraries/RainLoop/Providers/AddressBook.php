@@ -60,6 +60,11 @@ class AddressBook extends AbstractProvider
 		) : array();
 	}
 
+	public function GetContactByEmail(string $sEmail) : ?AddressBook\Classes\Contact
+	{
+		return $this->IsActive() ? $this->oDriver->GetContactByEmail($sEmail) : null;
+	}
+
 	public function GetContactByID($mID, bool $bIsStrID = false) : ?AddressBook\Classes\Contact
 	{
 		return $this->IsActive() ? $this->oDriver->GetContactByID($mID, $bIsStrID) : null;
@@ -76,38 +81,5 @@ class AddressBook extends AbstractProvider
 	public function IncFrec(array $aEmails, bool $bCreateAuto = true) : bool
 	{
 		return $this->IsActive() ? $this->oDriver->IncFrec($aEmails, $bCreateAuto) : false;
-	}
-
-	public function ImportCsvArray(array $aCsvData) : int
-	{
-		$iCount = 0;
-		if ($this->IsActive()) {
-			foreach (AddressBook\Utils::CsvArrayToContacts($aCsvData) as $oContact) {
-				if ($this->ContactSave($oContact)) {
-					++$iCount;
-				}
-			}
-		}
-		return $iCount;
-	}
-
-	public function ImportVcfFile(string $sVcfData) : int
-	{
-		$iCount = 0;
-		if ($this->IsActive()) {
-			try
-			{
-				foreach (AddressBook\Utils::VcfFileToContacts($sVcfData) as $oContact) {
-					if ($this->ContactSave($oContact)) {
-						++$iCount;
-					}
-				}
-			}
-			catch (\Throwable $oExc)
-			{
-				$this->Logger()->WriteException($oExc);
-			}
-		}
-		return $iCount;
 	}
 }

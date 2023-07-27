@@ -2,17 +2,6 @@
 
 	max-width: 660px;
 
-	.information {
-		display: inline-block;
-		background-color: #ddd;
-		border-radius: 10px;
-		cursor: pointer;
-		height: 25px;
-		width: 30px;
-		text-align: center;
-		padding-top: 5px;
-	}
-
 	textarea {
 		width: 400px;
 		height: 70px;
@@ -30,7 +19,7 @@
 	.help-block span {
 		background-color: #fff;
 		border: 1px solid #000;
-		border-radius: 3px;
+		border-radius: var(--input-border-radius, 3px);
 		color: #000;
 		display: none;
 		left: 2px;

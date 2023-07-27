@@ -6,12 +6,12 @@ export class IdentityModel extends AbstractModel {
 	 * @param {string} id
 	 * @param {string} email
 	 */
-	constructor(id, email) {
+	constructor() {
 		super();
 
 		addObservablesTo(this, {
-			id: id || '',
-			email: email,
+			id: '',
+			email: '',
 			name: '',
 
 			replyTo: '',

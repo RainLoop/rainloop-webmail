@@ -1,5 +1,4 @@
 <?php
-define('ROOT_DIR', dirname(__DIR__));
 define('PLUGINS_DEST_DIR', __DIR__ . '/dist/releases/plugins');
 
 is_dir(PLUGINS_DEST_DIR) || mkdir(PLUGINS_DEST_DIR, 0777, true);
@@ -10,6 +9,8 @@ $files = new RecursiveIteratorIterator(
 foreach ($files as $fileinfo) {
     $fileinfo->isDir() || unlink($fileinfo->getRealPath());
 }
+
+$terser = ROOT_DIR . '/node_modules/terser/bin/terser';
 
 $manifest = [];
 require ROOT_DIR . '/snappymail/v/0.0.0/app/libraries/RainLoop/Plugins/AbstractPlugin.php';
@@ -42,6 +43,21 @@ foreach (glob(ROOT_DIR . '/plugins/*', GLOB_NOSORT | GLOB_ONLYDIR) as $dir) {
 		$version = $manifest_item['version'];
 		if (0 < floatval($version)) {
 			echo "+ {$name} {$version}\n";
+
+			// Minify JavaScript
+			foreach (glob("{$dir}/*.js") as $file) {
+				if (!strpos($file,'.min')) {
+					$mfile = str_replace('.js', '.min.js', $file);
+					passthru("{$terser} {$file} --output {$mfile} --compress 'drop_console' --ecma 6 --mangle");
+				}
+			}
+			foreach (glob("{$dir}/js/*.js") as $file) {
+				if (!strpos($file,'.min')) {
+					$mfile = str_replace('.js', '.min.js', $file);
+					passthru("{$terser} {$file} --output {$mfile} --compress 'drop_console' --ecma 6 --mangle");
+				}
+			}
+
 			$manifest_item['type'] = 'plugin';
 			$manifest_item['id']   = $name;
 			$manifest_item['file'] = "plugins/{$name}-{$version}.tgz";
@@ -54,6 +70,7 @@ foreach (glob(ROOT_DIR . '/plugins/*', GLOB_NOSORT | GLOB_ONLYDIR) as $dir) {
 			$tar->compress(Phar::GZ);
 			unlink($tar_destination);
 			rename("{$tar_destination}.gz", $tgz_destination);
+/*
 			if (Phar::canWrite()) {
 				$phar_destination = PLUGINS_DEST_DIR . "/{$name}.phar";
 				@unlink($phar_destination);
@@ -63,6 +80,7 @@ foreach (glob(ROOT_DIR . '/plugins/*', GLOB_NOSORT | GLOB_ONLYDIR) as $dir) {
 				unlink($phar_destination);
 				rename("{$phar_destination}.gz", $phar_destination);
 			}
+*/
 			if (isset($options['sign'])) {
 				passthru('gpg --local-user 1016E47079145542F8BA133548208BA13290F3EB --armor --detach-sign '.escapeshellarg($tgz_destination), $return_var);
 				$manifest_item['pgp_sig'] = trim(preg_replace('/-----(BEGIN|END) PGP SIGNATURE-----/', '', file_get_contents($tgz_destination.'.asc')));
@@ -85,6 +103,6 @@ $manifest = str_replace('"}', "\"\n\t}", $manifest);
 $manifest = str_replace('}]', "}\n]", $manifest);
 $manifest = str_replace('","', "\",\n\t\t\"", $manifest);
 $manifest = str_replace('\/', '/', $manifest);
-file_put_contents(PLUGINS_DEST_DIR . "/packages.json", $manifest);
+file_put_contents(dirname(PLUGINS_DEST_DIR) . "/packages.json", $manifest);
 
 exit;

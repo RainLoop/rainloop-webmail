@@ -15,8 +15,8 @@ abstract class Upgrade
 				$aEmail = \explode('@', \basename($sDomainDir));
 				$sDomain = \trim(1 < \count($aEmail) ? \array_pop($aEmail) : '');
 				$sNewDir = $sDataPath
-					.'/'.\RainLoop\Utils::fixName($sDomain ?: 'unknown.tld')
-					.'/'.\RainLoop\Utils::fixName(\implode('@', $aEmail) ?: '.unknown');
+					.'/'.\MailSo\Base\Utils::SecureFileName($sDomain ?: 'unknown.tld')
+					.'/'.\MailSo\Base\Utils::SecureFileName(\implode('@', $aEmail) ?: '.unknown');
 				if (\is_dir($sNewDir) || \mkdir($sNewDir, 0700, true)) {
 					foreach (\glob("{$sDomainDir}/*") as $sItem) {
 						$sName = \basename($sItem);
@@ -130,13 +130,14 @@ abstract class Upgrade
 			if (!$aData) {
 				$aData = static::DecodeKeyValues($sData);
 				if ($aData) {
-					$oActions->setContactsSyncData($oAccount, $aData);
-					return array(
-						'Enable' => isset($aData['Enable']) ? !!$aData['Enable'] : false,
+					$aData = array(
+						'Mode' => empty($aData['Enable']) ? 0 : 1,
 						'Url' => isset($aData['Url']) ? \trim($aData['Url']) : '',
 						'User' => isset($aData['User']) ? \trim($aData['User']) : '',
 						'Password' => isset($aData['Password']) ? $aData['Password'] : ''
 					);
+					$oActions->setContactsSyncData($oAccount, $aData);
+					return $aData;
 				}
 			}
 		}
@@ -197,16 +198,22 @@ abstract class Upgrade
 					throw new \Exception('Failed to download latest SnappyMail');
 				}
 				$target = \rtrim(APP_INDEX_ROOT_PATH, '\\/');
-				$oArchive = new \PharData($sTmp, 0, null, \Phar::GZ);
+				if (\class_exists('PharData')) {
+					$oArchive = new \PharData($sTmp, 0, null, \Phar::GZ);
+				} else {
+					$oArchive = new \SnappyMail\TAR($sTmp);
+				}
 				\error_log('Extract to ' . $target);
 //				$bResult = $oArchive->extractTo($target, null, true);
 				$bResult = $oArchive->extractTo($target, 'snappymail/')
 					&& $oArchive->extractTo($target, 'index.php', true);
-				if ($bResult) {
-					\error_log('Update success');
-				} else {
+				if (!$bResult) {
 					throw new \Exception('Extract core files failed');
 				}
+
+				static::fixPermissions();
+
+				\error_log('Update success');
 				// opcache_reset is a terrible solution
 //				\is_callable('opcache_reset') && \opcache_reset();
 				\is_callable('opcache_invalidate') && \opcache_invalidate($target.'/index.php', true);
@@ -216,4 +223,30 @@ abstract class Upgrade
 		}
 		return $bResult;
 	}
+
+	// Prevents Apache access error due to directories being 0700
+	public static function fixPermissions($mode = 0755) : void
+	{
+		\clearstatcache(true);
+		\umask(0022);
+		$target = \rtrim(APP_INDEX_ROOT_PATH, '\\/');
+		// Prevent Apache access error due to directories being 0700
+		foreach (\glob("{$target}/snappymail/v/*", \GLOB_ONLYDIR) as $dir) {
+			\chmod($dir, 0755);
+			foreach (['static','themes'] as $folder) {
+				$iterator = new \RecursiveIteratorIterator(
+					new \RecursiveDirectoryIterator("{$dir}/{$folder}", \FilesystemIterator::SKIP_DOTS),
+					\RecursiveIteratorIterator::SELF_FIRST
+				);
+				foreach ($iterator as $item) {
+					if ($item->isDir()) {
+						\chmod($item, 0755);
+					} else if ($item->isFile()) {
+						\chmod($item, 0644);
+					}
+				}
+			}
+		}
+	}
+
 }

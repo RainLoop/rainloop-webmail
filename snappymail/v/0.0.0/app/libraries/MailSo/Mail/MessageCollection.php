@@ -18,52 +18,30 @@ namespace MailSo\Mail;
 class MessageCollection extends \MailSo\Base\Collection
 {
 	/**
-	 * @var string
+	 * Amount of UIDs in this list (could be less then total messages when using threads)
 	 */
-	public $FolderHash = '';
+	public int $totalEmails = 0;
 
-	/**
-	 * @var int
-	 */
-	public $MessageResultCount = 0;
+	public ?int $totalThreads = null;
 
-	/**
-	 * @var string
-	 */
-	public $FolderName = '';
+	public string $FolderName = '';
 
-	/**
-	 * @var int
-	 */
-	public $Offset = 0;
+	public int $Offset = 0;
 
-	/**
-	 * @var int
-	 */
-	public $Limit = 0;
+	public int $Limit = 0;
 
-	/**
-	 * @var string
-	 */
-	public $Search = '';
+	public string $Search = '';
 
-	/**
-	 * @var int
-	 */
-	public $ThreadUid = 0;
+	public int $ThreadUid = 0;
 
 	// MailSo\Imap\FolderInformation
 	public $FolderInfo = null;
 
-	/**
-	 * @var array
-	 */
-	public $NewMessages = array();
+	public array $NewMessages = array();
 
-	/**
-	 * @var bool
-	 */
-	public $Filtered = false;
+//	public bool $Filtered = false;
+
+	public bool $Limited = false;
 
 	public function append($oMessage, bool $bToTop = false) : void
 	{
@@ -80,16 +58,16 @@ class MessageCollection extends \MailSo\Base\Collection
 	public function jsonSerialize()
 	{
 		return array_merge(parent::jsonSerialize(), array(
-			'MessageResultCount' => $this->MessageResultCount,
-			'Folder' => $this->FolderName,
-			'FolderHash' => $this->FolderHash,
-			'FolderInfo' => $this->FolderInfo,
-			'ThreadUid' => $this->ThreadUid,
-			'NewMessages' => $this->NewMessages,
-			'Filtered' => $this->Filtered,
-			'Offset' => $this->Offset,
-			'Limit' => $this->Limit,
-			'Search' => $this->Search
+			'totalEmails' => $this->totalEmails,
+			'totalThreads' => $this->totalThreads,
+			'threadUid' => $this->ThreadUid,
+			'newMessages' => $this->NewMessages,
+//			'filtered' => $this->Filtered,
+			'offset' => $this->Offset,
+			'limit' => $this->Limit,
+			'search' => $this->Search,
+			'limited' => $this->Limited,
+			'folder' => $this->FolderInfo
 		));
 	}
 }

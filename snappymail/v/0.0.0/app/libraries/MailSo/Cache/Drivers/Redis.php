@@ -18,21 +18,14 @@ namespace MailSo\Cache\Drivers;
  */
 class Redis implements \MailSo\Cache\DriverInterface
 {
-	/**
-	 * @var int
-	 */
-	private $iExpire;
+	private int $iExpire;
 
 	/**
-	 * @var \Memcache|null
+	 * @var \Predis\Client|null
 	 */
 	private $oRedis;
 
-	/**
-	 * @var string
-	 */
-	private $sKeyPrefix;
-
+	private string $sKeyPrefix;
 
 	function __construct(string $sHost = '127.0.0.1', int $iPort = 6379, int $iExpire = 43200, string $sKeyPrefix = '')
 	{
@@ -49,8 +42,7 @@ class Redis implements \MailSo\Cache\DriverInterface
 
 			$this->oRedis->connect();
 
-			if (!$this->oRedis->isConnected())
-			{
+			if (!$this->oRedis->isConnected()) {
 				$this->oRedis = null;
 			}
 		}
@@ -60,18 +52,14 @@ class Redis implements \MailSo\Cache\DriverInterface
 			unset($oExc);
 		}
 
-		$this->sKeyPrefix = $sKeyPrefix;
-		if (!empty($this->sKeyPrefix))
-		{
-			$this->sKeyPrefix =
-				\preg_replace('/[^a-zA-Z0-9_]/', '_', rtrim(trim($this->sKeyPrefix), '\\/')).'/';
-		}
+		$this->sKeyPrefix = empty($sKeyPrefix)
+			? $sKeyPrefix
+			: \preg_replace('/[^a-zA-Z0-9_]/', '_', rtrim(trim($sKeyPrefix), '\\/')) . '/';
 	}
 
 	public function Set(string $sKey, string $sValue) : bool
 	{
-		if (!$this->oRedis)
-		{
+		if (!$this->oRedis) {
 			return false;
 		}
 
@@ -88,16 +76,14 @@ class Redis implements \MailSo\Cache\DriverInterface
 
 	public function Delete(string $sKey) : void
 	{
-		if ($this->oRedis)
-		{
+		if ($this->oRedis) {
 			$this->oRedis->del($this->generateCachedKey($sKey));
 		}
 	}
 
 	public function GC(int $iTimeToClearInHours = 24) : bool
 	{
-		if (0 === $iTimeToClearInHours && $this->oRedis)
-		{
+		if (0 === $iTimeToClearInHours && $this->oRedis) {
 			return $this->oRedis->flushdb();
 		}
 

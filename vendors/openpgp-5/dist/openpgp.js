@@ -1,4 +1,4 @@
-/*! OpenPGP.js v5.2.1 - 2022-03-30 - this is LGPL licensed code, see LICENSE/our website https://openpgpjs.org/ for more information. */
+/*! OpenPGP.js v5.5.0 - 2022-11-25 - this is LGPL licensed code, see LICENSE/our website https://openpgpjs.org/ for more information. */
 var openpgp = (function (exports) {
   'use strict';
 
@@ -2637,7 +2637,10 @@ var openpgp = (function (exports) {
      */
     allowUnauthenticatedMessages: false,
     /**
-     * Allow streaming unauthenticated data before its integrity has been checked.
+     * Allow streaming unauthenticated data before its integrity has been checked. This would allow the application to
+     * process large streams while limiting memory usage by releasing the decrypted chunks as soon as possible
+     * and deferring checking their integrity until the decrypted stream has been read in full.
+     *
      * This setting is **insecure** if the partially decrypted message is processed further or displayed to the user.
      * @memberof module:config
      * @property {Boolean} allowUnauthenticatedStream
@@ -2733,7 +2736,7 @@ var openpgp = (function (exports) {
      * @memberof module:config
      * @property {String} versionString A version string to be included in armored messages
      */
-    versionString: 'OpenPGP.js 5.2.1',
+    versionString: 'OpenPGP.js 5.5.0',
     /**
      * @memberof module:config
      * @property {String} commentString A comment string to be included in armored messages
@@ -2784,7 +2787,7 @@ var openpgp = (function (exports) {
      * @memberof module:config
      * @property {Set<String>} rejectCurves {@link module:enums.curve}
      */
-    rejectCurves: new Set([enums.curve.brainpoolP256r1, enums.curve.brainpoolP384r1, enums.curve.brainpoolP512r1, enums.curve.secp256k1])
+    rejectCurves: new Set([enums.curve.secp256k1])
   };
 
   // GPG4Browsers - An OpenPGP implementation in javascript
@@ -2950,8 +2953,10 @@ var openpgp = (function (exports) {
   }
 
   /**
-   * Verify armored headers. RFC4880, section 6.3: "OpenPGP should consider improperly formatted
-   * Armor Headers to be corruption of the ASCII Armor."
+   * Verify armored headers. crypto-refresh-06, section 6.2:
+   * "An OpenPGP implementation may consider improperly formatted Armor
+   * Headers to be corruption of the ASCII Armor, but SHOULD make an
+   * effort to recover."
    * @private
    * @param {Array<String>} headers - Armor headers
    */
@@ -3152,7 +3157,7 @@ var openpgp = (function (exports) {
         result.push('-----END PGP MESSAGE, PART ' + partIndex + '-----\n');
         break;
       case enums.armor.signed:
-        result.push('\n-----BEGIN PGP SIGNED MESSAGE-----\n');
+        result.push('-----BEGIN PGP SIGNED MESSAGE-----\n');
         result.push('Hash: ' + hash + '\n\n');
         result.push(text.replace(/^-/mg, '- -'));
         result.push('\n-----BEGIN PGP SIGNATURE-----\n');
@@ -11750,6 +11755,301 @@ var openpgp = (function (exports) {
     return new elliptic$1.ec(name);
   }
 
+  // GPG4Browsers - An OpenPGP implementation in javascript
+
+  function readSimpleLength(bytes) {
+    let len = 0;
+    let offset;
+    const type = bytes[0];
+
+
+    if (type < 192) {
+      [len] = bytes;
+      offset = 1;
+    } else if (type < 255) {
+      len = ((bytes[0] - 192) << 8) + (bytes[1]) + 192;
+      offset = 2;
+    } else if (type === 255) {
+      len = util.readNumber(bytes.subarray(1, 1 + 4));
+      offset = 5;
+    }
+
+    return {
+      len: len,
+      offset: offset
+    };
+  }
+
+  /**
+   * Encodes a given integer of length to the openpgp length specifier to a
+   * string
+   *
+   * @param {Integer} length - The length to encode
+   * @returns {Uint8Array} String with openpgp length representation.
+   */
+  function writeSimpleLength(length) {
+    if (length < 192) {
+      return new Uint8Array([length]);
+    } else if (length > 191 && length < 8384) {
+      /*
+        * let a = (total data packet length) - 192 let bc = two octet
+        * representation of a let d = b + 192
+        */
+      return new Uint8Array([((length - 192) >> 8) + 192, (length - 192) & 0xFF]);
+    }
+    return util.concatUint8Array([new Uint8Array([255]), util.writeNumber(length, 4)]);
+  }
+
+  function writePartialLength(power) {
+    if (power < 0 || power > 30) {
+      throw new Error('Partial Length power must be between 1 and 30');
+    }
+    return new Uint8Array([224 + power]);
+  }
+
+  function writeTag(tag_type) {
+    /* we're only generating v4 packet headers here */
+    return new Uint8Array([0xC0 | tag_type]);
+  }
+
+  /**
+   * Writes a packet header version 4 with the given tag_type and length to a
+   * string
+   *
+   * @param {Integer} tag_type - Tag type
+   * @param {Integer} length - Length of the payload
+   * @returns {String} String of the header.
+   */
+  function writeHeader(tag_type, length) {
+    /* we're only generating v4 packet headers here */
+    return util.concatUint8Array([writeTag(tag_type), writeSimpleLength(length)]);
+  }
+
+  /**
+   * Whether the packet type supports partial lengths per RFC4880
+   * @param {Integer} tag - Tag type
+   * @returns {Boolean} String of the header.
+   */
+  function supportsStreaming(tag) {
+    return [
+      enums.packet.literalData,
+      enums.packet.compressedData,
+      enums.packet.symmetricallyEncryptedData,
+      enums.packet.symEncryptedIntegrityProtectedData,
+      enums.packet.aeadEncryptedData
+    ].includes(tag);
+  }
+
+  /**
+   * Generic static Packet Parser function
+   *
+   * @param {Uint8Array | ReadableStream<Uint8Array>} input - Input stream as string
+   * @param {Function} callback - Function to call with the parsed packet
+   * @returns {Boolean} Returns false if the stream was empty and parsing is done, and true otherwise.
+   */
+  async function readPackets(input, callback) {
+    const reader = getReader(input);
+    let writer;
+    let callbackReturned;
+    try {
+      const peekedBytes = await reader.peekBytes(2);
+      // some sanity checks
+      if (!peekedBytes || peekedBytes.length < 2 || (peekedBytes[0] & 0x80) === 0) {
+        throw new Error('Error during parsing. This message / key probably does not conform to a valid OpenPGP format.');
+      }
+      const headerByte = await reader.readByte();
+      let tag = -1;
+      let format = -1;
+      let packetLength;
+
+      format = 0; // 0 = old format; 1 = new format
+      if ((headerByte & 0x40) !== 0) {
+        format = 1;
+      }
+
+      let packetLengthType;
+      if (format) {
+        // new format header
+        tag = headerByte & 0x3F; // bit 5-0
+      } else {
+        // old format header
+        tag = (headerByte & 0x3F) >> 2; // bit 5-2
+        packetLengthType = headerByte & 0x03; // bit 1-0
+      }
+
+      const packetSupportsStreaming = supportsStreaming(tag);
+      let packet = null;
+      if (packetSupportsStreaming) {
+        if (util.isStream(input) === 'array') {
+          const arrayStream = new ArrayStream();
+          writer = getWriter(arrayStream);
+          packet = arrayStream;
+        } else {
+          const transform = new TransformStream$1();
+          writer = getWriter(transform.writable);
+          packet = transform.readable;
+        }
+        callbackReturned = callback({ tag, packet });
+      } else {
+        packet = [];
+      }
+
+      let wasPartialLength;
+      do {
+        if (!format) {
+          // 4.2.1. Old Format Packet Lengths
+          switch (packetLengthType) {
+            case 0:
+              // The packet has a one-octet length. The header is 2 octets
+              // long.
+              packetLength = await reader.readByte();
+              break;
+            case 1:
+              // The packet has a two-octet length. The header is 3 octets
+              // long.
+              packetLength = (await reader.readByte() << 8) | await reader.readByte();
+              break;
+            case 2:
+              // The packet has a four-octet length. The header is 5
+              // octets long.
+              packetLength = (await reader.readByte() << 24) | (await reader.readByte() << 16) | (await reader.readByte() <<
+                8) | await reader.readByte();
+              break;
+            default:
+              // 3 - The packet is of indeterminate length. The header is 1
+              // octet long, and the implementation must determine how long
+              // the packet is. If the packet is in a file, this means that
+              // the packet extends until the end of the file. In general,
+              // an implementation SHOULD NOT use indeterminate-length
+              // packets except where the end of the data will be clear
+              // from the context, and even then it is better to use a
+              // definite length, or a new format header. The new format
+              // headers described below have a mechanism for precisely
+              // encoding data of indeterminate length.
+              packetLength = Infinity;
+              break;
+          }
+        } else { // 4.2.2. New Format Packet Lengths
+          // 4.2.2.1. One-Octet Lengths
+          const lengthByte = await reader.readByte();
+          wasPartialLength = false;
+          if (lengthByte < 192) {
+            packetLength = lengthByte;
+            // 4.2.2.2. Two-Octet Lengths
+          } else if (lengthByte >= 192 && lengthByte < 224) {
+            packetLength = ((lengthByte - 192) << 8) + (await reader.readByte()) + 192;
+            // 4.2.2.4. Partial Body Lengths
+          } else if (lengthByte > 223 && lengthByte < 255) {
+            packetLength = 1 << (lengthByte & 0x1F);
+            wasPartialLength = true;
+            if (!packetSupportsStreaming) {
+              throw new TypeError('This packet type does not support partial lengths.');
+            }
+            // 4.2.2.3. Five-Octet Lengths
+          } else {
+            packetLength = (await reader.readByte() << 24) | (await reader.readByte() << 16) | (await reader.readByte() <<
+              8) | await reader.readByte();
+          }
+        }
+        if (packetLength > 0) {
+          let bytesRead = 0;
+          while (true) {
+            if (writer) await writer.ready;
+            const { done, value } = await reader.read();
+            if (done) {
+              if (packetLength === Infinity) break;
+              throw new Error('Unexpected end of packet');
+            }
+            const chunk = packetLength === Infinity ? value : value.subarray(0, packetLength - bytesRead);
+            if (writer) await writer.write(chunk);
+            else packet.push(chunk);
+            bytesRead += value.length;
+            if (bytesRead >= packetLength) {
+              reader.unshift(value.subarray(packetLength - bytesRead + value.length));
+              break;
+            }
+          }
+        }
+      } while (wasPartialLength);
+
+      // If this was not a packet that "supports streaming", we peek to check
+      // whether it is the last packet in the message. We peek 2 bytes instead
+      // of 1 because the beginning of this function also peeks 2 bytes, and we
+      // want to cut a `subarray` of the correct length into `web-stream-tools`'
+      // `externalBuffer` as a tiny optimization here.
+      //
+      // If it *was* a streaming packet (i.e. the data packets), we peek at the
+      // entire remainder of the stream, in order to forward errors in the
+      // remainder of the stream to the packet data. (Note that this means we
+      // read/peek at all signature packets before closing the literal data
+      // packet, for example.) This forwards MDC errors to the literal data
+      // stream, for example, so that they don't get lost / forgotten on
+      // decryptedMessage.packets.stream, which we never look at.
+      //
+      // An example of what we do when stream-parsing a message containing
+      // [ one-pass signature packet, literal data packet, signature packet ]:
+      // 1. Read the one-pass signature packet
+      // 2. Peek 2 bytes of the literal data packet
+      // 3. Parse the one-pass signature packet
+      //
+      // 4. Read the literal data packet, simultaneously stream-parsing it
+      // 5. Peek until the end of the message
+      // 6. Finish parsing the literal data packet
+      //
+      // 7. Read the signature packet again (we already peeked at it in step 5)
+      // 8. Peek at the end of the stream again (`peekBytes` returns undefined)
+      // 9. Parse the signature packet
+      //
+      // Note that this means that if there's an error in the very end of the
+      // stream, such as an MDC error, we throw in step 5 instead of in step 8
+      // (or never), which is the point of this exercise.
+      const nextPacket = await reader.peekBytes(packetSupportsStreaming ? Infinity : 2);
+      if (writer) {
+        await writer.ready;
+        await writer.close();
+      } else {
+        packet = util.concatUint8Array(packet);
+        await callback({ tag, packet });
+      }
+      return !nextPacket || !nextPacket.length;
+    } catch (e) {
+      if (writer) {
+        await writer.abort(e);
+        return true;
+      } else {
+        throw e;
+      }
+    } finally {
+      if (writer) {
+        await callbackReturned;
+      }
+      reader.releaseLock();
+    }
+  }
+
+  class UnsupportedError extends Error {
+    constructor(...params) {
+      super(...params);
+
+      if (Error.captureStackTrace) {
+        Error.captureStackTrace(this, UnsupportedError);
+      }
+
+      this.name = 'UnsupportedError';
+    }
+  }
+
+  class UnparseablePacket {
+    constructor(tag, rawContent) {
+      this.tag = tag;
+      this.rawContent = rawContent;
+    }
+
+    write() {
+      return this.rawContent;
+    }
+  }
+
   // OpenPGP.js - An OpenPGP implementation in javascript
 
   const webCrypto$6 = util.getWebCrypto();
@@ -11846,7 +12146,7 @@ var openpgp = (function (exports) {
         // by curve name or oid string
         this.name = enums.write(enums.curve, oidOrName);
       } catch (err) {
-        throw new Error('Not valid curve');
+        throw new UnsupportedError('Unknown curve');
       }
       params = params || curves[this.name];
 
@@ -13233,7 +13533,7 @@ var openpgp = (function (exports) {
           oid, kdfParams, V, C.data, Q, d, fingerprint);
       }
       default:
-        throw new Error('Invalid public key encryption algorithm.');
+        throw new Error('Unknown public key encryption algorithm.');
     }
   }
 
@@ -13268,23 +13568,26 @@ var openpgp = (function (exports) {
       }
       case enums.publicKey.ecdsa: {
         const oid = new OID(); read += oid.read(bytes);
+        checkSupportedCurve(oid);
         const Q = util.readMPI(bytes.subarray(read)); read += Q.length + 2;
         return { read: read, publicParams: { oid, Q } };
       }
       case enums.publicKey.eddsa: {
         const oid = new OID(); read += oid.read(bytes);
+        checkSupportedCurve(oid);
         let Q = util.readMPI(bytes.subarray(read)); read += Q.length + 2;
         Q = util.leftPad(Q, 33);
         return { read: read, publicParams: { oid, Q } };
       }
       case enums.publicKey.ecdh: {
         const oid = new OID(); read += oid.read(bytes);
+        checkSupportedCurve(oid);
         const Q = util.readMPI(bytes.subarray(read)); read += Q.length + 2;
         const kdfParams = new KDFParams(); read += kdfParams.read(bytes.subarray(read));
         return { read: read, publicParams: { oid, Q, kdfParams } };
       }
       default:
-        throw new Error('Invalid public key encryption algorithm.');
+        throw new UnsupportedError('Unknown public key encryption algorithm.');
     }
   }
 
@@ -13320,12 +13623,13 @@ var openpgp = (function (exports) {
         return { read, privateParams: { d } };
       }
       case enums.publicKey.eddsa: {
+        const curve = new Curve(publicParams.oid);
         let seed = util.readMPI(bytes.subarray(read)); read += seed.length + 2;
-        seed = util.leftPad(seed, 32);
+        seed = util.leftPad(seed, curve.payloadSize);
         return { read, privateParams: { seed } };
       }
       default:
-        throw new Error('Invalid public key encryption algorithm.');
+        throw new UnsupportedError('Unknown public key encryption algorithm.');
     }
   }
 
@@ -13362,7 +13666,7 @@ var openpgp = (function (exports) {
         return { V, C };
       }
       default:
-        throw new Error('Invalid public key encryption algorithm.');
+        throw new UnsupportedError('Unknown public key encryption algorithm.');
     }
   }
 
@@ -13421,7 +13725,7 @@ var openpgp = (function (exports) {
       case enums.publicKey.elgamal:
         throw new Error('Unsupported algorithm for key generation.');
       default:
-        throw new Error('Invalid public key algorithm.');
+        throw new Error('Unknown public key algorithm.');
     }
   }
 
@@ -13468,7 +13772,7 @@ var openpgp = (function (exports) {
         return publicKey.elliptic.eddsa.validateParams(oid, Q, seed);
       }
       default:
-        throw new Error('Invalid public key algorithm.');
+        throw new Error('Unknown public key algorithm.');
     }
   }
 
@@ -13518,6 +13822,19 @@ var openpgp = (function (exports) {
   function getCipher(algo) {
     const algoName = enums.read(enums.symmetric, algo);
     return cipher[algoName];
+  }
+
+  /**
+   * Check whether the given curve OID is supported
+   * @param {module:type/oid} oid - EC object identifier
+   * @throws {UnsupportedError} if curve is not supported
+   */
+  function checkSupportedCurve(oid) {
+    try {
+      oid.getName();
+    } catch (e) {
+      throw new UnsupportedError('Unknown curve OID');
+    }
   }
 
   var crypto$2 = /*#__PURE__*/Object.freeze({
@@ -14628,7 +14945,7 @@ var openpgp = (function (exports) {
         return { r, s };
       }
       default:
-        throw new Error('Invalid signature algorithm.');
+        throw new UnsupportedError('Unknown signature algorithm.');
     }
   }
 
@@ -14674,7 +14991,7 @@ var openpgp = (function (exports) {
         return publicKey.elliptic.eddsa.verify(oid, hashAlgo, signature, data, Q, hashed);
       }
       default:
-        throw new Error('Invalid signature algorithm.');
+        throw new Error('Unknown signature algorithm.');
     }
   }
 
@@ -14724,7 +15041,7 @@ var openpgp = (function (exports) {
         return publicKey.elliptic.eddsa.sign(oid, hashAlgo, data, Q, seed, hashed);
       }
       default:
-        throw new Error('Invalid signature algorithm.');
+        throw new Error('Unknown signature algorithm.');
     }
   }
 
@@ -21899,290 +22216,6 @@ var openpgp = (function (exports) {
 
   // GPG4Browsers - An OpenPGP implementation in javascript
 
-  function readSimpleLength(bytes) {
-    let len = 0;
-    let offset;
-    const type = bytes[0];
-
-
-    if (type < 192) {
-      [len] = bytes;
-      offset = 1;
-    } else if (type < 255) {
-      len = ((bytes[0] - 192) << 8) + (bytes[1]) + 192;
-      offset = 2;
-    } else if (type === 255) {
-      len = util.readNumber(bytes.subarray(1, 1 + 4));
-      offset = 5;
-    }
-
-    return {
-      len: len,
-      offset: offset
-    };
-  }
-
-  /**
-   * Encodes a given integer of length to the openpgp length specifier to a
-   * string
-   *
-   * @param {Integer} length - The length to encode
-   * @returns {Uint8Array} String with openpgp length representation.
-   */
-  function writeSimpleLength(length) {
-    if (length < 192) {
-      return new Uint8Array([length]);
-    } else if (length > 191 && length < 8384) {
-      /*
-        * let a = (total data packet length) - 192 let bc = two octet
-        * representation of a let d = b + 192
-        */
-      return new Uint8Array([((length - 192) >> 8) + 192, (length - 192) & 0xFF]);
-    }
-    return util.concatUint8Array([new Uint8Array([255]), util.writeNumber(length, 4)]);
-  }
-
-  function writePartialLength(power) {
-    if (power < 0 || power > 30) {
-      throw new Error('Partial Length power must be between 1 and 30');
-    }
-    return new Uint8Array([224 + power]);
-  }
-
-  function writeTag(tag_type) {
-    /* we're only generating v4 packet headers here */
-    return new Uint8Array([0xC0 | tag_type]);
-  }
-
-  /**
-   * Writes a packet header version 4 with the given tag_type and length to a
-   * string
-   *
-   * @param {Integer} tag_type - Tag type
-   * @param {Integer} length - Length of the payload
-   * @returns {String} String of the header.
-   */
-  function writeHeader(tag_type, length) {
-    /* we're only generating v4 packet headers here */
-    return util.concatUint8Array([writeTag(tag_type), writeSimpleLength(length)]);
-  }
-
-  /**
-   * Whether the packet type supports partial lengths per RFC4880
-   * @param {Integer} tag - Tag type
-   * @returns {Boolean} String of the header.
-   */
-  function supportsStreaming(tag) {
-    return [
-      enums.packet.literalData,
-      enums.packet.compressedData,
-      enums.packet.symmetricallyEncryptedData,
-      enums.packet.symEncryptedIntegrityProtectedData,
-      enums.packet.aeadEncryptedData
-    ].includes(tag);
-  }
-
-  /**
-   * Generic static Packet Parser function
-   *
-   * @param {Uint8Array | ReadableStream<Uint8Array>} input - Input stream as string
-   * @param {Function} callback - Function to call with the parsed packet
-   * @returns {Boolean} Returns false if the stream was empty and parsing is done, and true otherwise.
-   */
-  async function readPackets(input, callback) {
-    const reader = getReader(input);
-    let writer;
-    let callbackReturned;
-    try {
-      const peekedBytes = await reader.peekBytes(2);
-      // some sanity checks
-      if (!peekedBytes || peekedBytes.length < 2 || (peekedBytes[0] & 0x80) === 0) {
-        throw new Error('Error during parsing. This message / key probably does not conform to a valid OpenPGP format.');
-      }
-      const headerByte = await reader.readByte();
-      let tag = -1;
-      let format = -1;
-      let packetLength;
-
-      format = 0; // 0 = old format; 1 = new format
-      if ((headerByte & 0x40) !== 0) {
-        format = 1;
-      }
-
-      let packetLengthType;
-      if (format) {
-        // new format header
-        tag = headerByte & 0x3F; // bit 5-0
-      } else {
-        // old format header
-        tag = (headerByte & 0x3F) >> 2; // bit 5-2
-        packetLengthType = headerByte & 0x03; // bit 1-0
-      }
-
-      const packetSupportsStreaming = supportsStreaming(tag);
-      let packet = null;
-      if (packetSupportsStreaming) {
-        if (util.isStream(input) === 'array') {
-          const arrayStream = new ArrayStream();
-          writer = getWriter(arrayStream);
-          packet = arrayStream;
-        } else {
-          const transform = new TransformStream$1();
-          writer = getWriter(transform.writable);
-          packet = transform.readable;
-        }
-        callbackReturned = callback({ tag, packet });
-      } else {
-        packet = [];
-      }
-
-      let wasPartialLength;
-      do {
-        if (!format) {
-          // 4.2.1. Old Format Packet Lengths
-          switch (packetLengthType) {
-            case 0:
-              // The packet has a one-octet length. The header is 2 octets
-              // long.
-              packetLength = await reader.readByte();
-              break;
-            case 1:
-              // The packet has a two-octet length. The header is 3 octets
-              // long.
-              packetLength = (await reader.readByte() << 8) | await reader.readByte();
-              break;
-            case 2:
-              // The packet has a four-octet length. The header is 5
-              // octets long.
-              packetLength = (await reader.readByte() << 24) | (await reader.readByte() << 16) | (await reader.readByte() <<
-                8) | await reader.readByte();
-              break;
-            default:
-              // 3 - The packet is of indeterminate length. The header is 1
-              // octet long, and the implementation must determine how long
-              // the packet is. If the packet is in a file, this means that
-              // the packet extends until the end of the file. In general,
-              // an implementation SHOULD NOT use indeterminate-length
-              // packets except where the end of the data will be clear
-              // from the context, and even then it is better to use a
-              // definite length, or a new format header. The new format
-              // headers described below have a mechanism for precisely
-              // encoding data of indeterminate length.
-              packetLength = Infinity;
-              break;
-          }
-        } else { // 4.2.2. New Format Packet Lengths
-          // 4.2.2.1. One-Octet Lengths
-          const lengthByte = await reader.readByte();
-          wasPartialLength = false;
-          if (lengthByte < 192) {
-            packetLength = lengthByte;
-            // 4.2.2.2. Two-Octet Lengths
-          } else if (lengthByte >= 192 && lengthByte < 224) {
-            packetLength = ((lengthByte - 192) << 8) + (await reader.readByte()) + 192;
-            // 4.2.2.4. Partial Body Lengths
-          } else if (lengthByte > 223 && lengthByte < 255) {
-            packetLength = 1 << (lengthByte & 0x1F);
-            wasPartialLength = true;
-            if (!packetSupportsStreaming) {
-              throw new TypeError('This packet type does not support partial lengths.');
-            }
-            // 4.2.2.3. Five-Octet Lengths
-          } else {
-            packetLength = (await reader.readByte() << 24) | (await reader.readByte() << 16) | (await reader.readByte() <<
-              8) | await reader.readByte();
-          }
-        }
-        if (packetLength > 0) {
-          let bytesRead = 0;
-          while (true) {
-            if (writer) await writer.ready;
-            const { done, value } = await reader.read();
-            if (done) {
-              if (packetLength === Infinity) break;
-              throw new Error('Unexpected end of packet');
-            }
-            const chunk = packetLength === Infinity ? value : value.subarray(0, packetLength - bytesRead);
-            if (writer) await writer.write(chunk);
-            else packet.push(chunk);
-            bytesRead += value.length;
-            if (bytesRead >= packetLength) {
-              reader.unshift(value.subarray(packetLength - bytesRead + value.length));
-              break;
-            }
-          }
-        }
-      } while (wasPartialLength);
-
-      // If this was not a packet that "supports streaming", we peek to check
-      // whether it is the last packet in the message. We peek 2 bytes instead
-      // of 1 because the beginning of this function also peeks 2 bytes, and we
-      // want to cut a `subarray` of the correct length into `web-stream-tools`'
-      // `externalBuffer` as a tiny optimization here.
-      //
-      // If it *was* a streaming packet (i.e. the data packets), we peek at the
-      // entire remainder of the stream, in order to forward errors in the
-      // remainder of the stream to the packet data. (Note that this means we
-      // read/peek at all signature packets before closing the literal data
-      // packet, for example.) This forwards MDC errors to the literal data
-      // stream, for example, so that they don't get lost / forgotten on
-      // decryptedMessage.packets.stream, which we never look at.
-      //
-      // An example of what we do when stream-parsing a message containing
-      // [ one-pass signature packet, literal data packet, signature packet ]:
-      // 1. Read the one-pass signature packet
-      // 2. Peek 2 bytes of the literal data packet
-      // 3. Parse the one-pass signature packet
-      //
-      // 4. Read the literal data packet, simultaneously stream-parsing it
-      // 5. Peek until the end of the message
-      // 6. Finish parsing the literal data packet
-      //
-      // 7. Read the signature packet again (we already peeked at it in step 5)
-      // 8. Peek at the end of the stream again (`peekBytes` returns undefined)
-      // 9. Parse the signature packet
-      //
-      // Note that this means that if there's an error in the very end of the
-      // stream, such as an MDC error, we throw in step 5 instead of in step 8
-      // (or never), which is the point of this exercise.
-      const nextPacket = await reader.peekBytes(packetSupportsStreaming ? Infinity : 2);
-      if (writer) {
-        await writer.ready;
-        await writer.close();
-      } else {
-        packet = util.concatUint8Array(packet);
-        await callback({ tag, packet });
-      }
-      return !nextPacket || !nextPacket.length;
-    } catch (e) {
-      if (writer) {
-        await writer.abort(e);
-        return true;
-      } else {
-        throw e;
-      }
-    } finally {
-      if (writer) {
-        await callbackReturned;
-      }
-      reader.releaseLock();
-    }
-  }
-
-  class UnsupportedError extends Error {
-    constructor(...params) {
-      super(...params);
-
-      if (Error.captureStackTrace) {
-        Error.captureStackTrace(this, UnsupportedError);
-      }
-
-      this.name = 'UnsupportedError';
-    }
-  }
-
-  // GPG4Browsers - An OpenPGP implementation in javascript
-
   // Symbol to store cryptographic validity of the signature, to avoid recomputing multiple times on verification.
   const verified = Symbol('verified');
 
@@ -22348,6 +22381,11 @@ var openpgp = (function (exports) {
       // Add hashed subpackets
       arr.push(this.writeHashedSubPackets());
 
+      // Remove unhashed subpackets, in case some allowed unhashed
+      // subpackets existed, in order not to duplicate them (in both
+      // the hashed and unhashed subpackets) when re-signing.
+      this.unhashedSubpackets = [];
+
       this.signatureData = util.concat(arr);
 
       const toHash = this.toHash(this.signatureType, data, detached);
@@ -22410,6 +22448,11 @@ var openpgp = (function (exports) {
         bytes = util.concat([bytes, this.revocationKeyFingerprint]);
         arr.push(writeSubPacket(sub.revocationKey, bytes));
       }
+      if (!this.issuerKeyID.isNull() && this.issuerKeyVersion !== 5) {
+        // If the version of [the] key is greater than 4, this subpacket
+        // MUST NOT be included in the signature.
+        arr.push(writeSubPacket(sub.issuer, this.issuerKeyID.write()));
+      }
       this.rawNotations.forEach(([{ name, value, humanReadable }]) => {
         bytes = [new Uint8Array([humanReadable ? 0x80 : 0, 0, 0, 0])];
         // 2 octets of name length
@@ -22463,6 +22506,14 @@ var openpgp = (function (exports) {
         bytes = util.concat(bytes);
         arr.push(writeSubPacket(sub.signatureTarget, bytes));
       }
+      if (this.embeddedSignature !== null) {
+        arr.push(writeSubPacket(sub.embeddedSignature, this.embeddedSignature.write()));
+      }
+      if (this.issuerFingerprint !== null) {
+        bytes = [new Uint8Array([this.issuerKeyVersion]), this.issuerFingerprint];
+        bytes = util.concat(bytes);
+        arr.push(writeSubPacket(sub.issuerFingerprint, bytes));
+      }
       if (this.preferredAEADAlgorithms !== null) {
         bytes = util.stringToUint8Array(util.uint8ArrayToString(this.preferredAEADAlgorithms));
         arr.push(writeSubPacket(sub.preferredAEADAlgorithms, bytes));
@@ -22475,26 +22526,11 @@ var openpgp = (function (exports) {
     }
 
     /**
-     * Creates Uint8Array of bytes of Issuer and Embedded Signature subpackets
+     * Creates an Uint8Array containing the unhashed subpackets
      * @returns {Uint8Array} Subpacket data.
      */
     writeUnhashedSubPackets() {
-      const sub = enums.signatureSubpacket;
       const arr = [];
-      let bytes;
-      if (!this.issuerKeyID.isNull() && this.issuerKeyVersion !== 5) {
-        // If the version of [the] key is greater than 4, this subpacket
-        // MUST NOT be included in the signature.
-        arr.push(writeSubPacket(sub.issuer, this.issuerKeyID.write()));
-      }
-      if (this.embeddedSignature !== null) {
-        arr.push(writeSubPacket(sub.embeddedSignature, this.embeddedSignature.write()));
-      }
-      if (this.issuerFingerprint !== null) {
-        bytes = [new Uint8Array([this.issuerKeyVersion]), this.issuerFingerprint];
-        bytes = util.concat(bytes);
-        arr.push(writeSubPacket(sub.issuerFingerprint, bytes));
-      }
       this.unhashedSubpackets.forEach(data => {
         arr.push(writeSimpleLength(data.length));
         arr.push(data);
@@ -22514,9 +22550,11 @@ var openpgp = (function (exports) {
       const critical = bytes[mypos] & 0x80;
       const type = bytes[mypos] & 0x7F;
 
-      if (!hashed && !allowedUnhashedSubpackets.has(type)) {
+      if (!hashed) {
         this.unhashedSubpackets.push(bytes.subarray(mypos, bytes.length));
-        return;
+        if (!allowedUnhashedSubpackets.has(type)) {
+          return;
+        }
       }
 
       mypos++;
@@ -23127,6 +23165,9 @@ var openpgp = (function (exports) {
                   // Those are also the ones we want to be more strict about and throw on parse errors
                   // (since we likely cannot process the message without these packets anyway).
                   await writer.abort(e);
+                } else {
+                  const unparsedPacket = new UnparseablePacket(parsed.tag, parsed.packet);
+                  await writer.write(unparsedPacket);
                 }
                 console.error(e);
               }
@@ -23167,12 +23208,13 @@ var openpgp = (function (exports) {
       const arr = [];
 
       for (let i = 0; i < this.length; i++) {
+        const tag = this[i] instanceof UnparseablePacket ? this[i].tag : this[i].constructor.tag;
         const packetbytes = this[i].write();
         if (util.isStream(packetbytes) && supportsStreaming(this[i].constructor.tag)) {
           let buffer = [];
           let bufferLength = 0;
           const minLength = 512;
-          arr.push(writeTag(this[i].constructor.tag));
+          arr.push(writeTag(tag));
           arr.push(transform(packetbytes, value => {
             buffer.push(value);
             bufferLength += value.length;
@@ -23190,9 +23232,9 @@ var openpgp = (function (exports) {
             let length = 0;
             arr.push(transform(clone(packetbytes), value => {
               length += value.length;
-            }, () => writeHeader(this[i].constructor.tag, length)));
+            }, () => writeHeader(tag, length)));
           } else {
-            arr.push(writeHeader(this[i].constructor.tag, packetbytes.length));
+            arr.push(writeHeader(tag, packetbytes.length));
           }
           arr.push(packetbytes);
         }
@@ -24282,13 +24324,9 @@ var openpgp = (function (exports) {
         }
 
         // - A series of values comprising the key material.
-        try {
-          const { read, publicParams } = mod.parsePublicKeyParams(this.algorithm, bytes.subarray(pos));
-          this.publicParams = publicParams;
-          pos += read;
-        } catch (err) {
-          throw new Error('Error reading MPIs');
-        }
+        const { read, publicParams } = mod.parsePublicKeyParams(this.algorithm, bytes.subarray(pos));
+        this.publicParams = publicParams;
+        pos += read;
 
         // we set the fingerprint and keyID already to make it possible to put together the key packets directly in the Key constructor
         await this.computeFingerprintAndKeyID();
@@ -24825,6 +24863,8 @@ var openpgp = (function (exports) {
           const { privateParams } = mod.parsePrivateKeyParams(this.algorithm, cleartext, this.publicParams);
           this.privateParams = privateParams;
         } catch (err) {
+          if (err instanceof UnsupportedError) throw err;
+          // avoid throwing potentially sensitive errors
           throw new Error('Error reading MPIs');
         }
       }
@@ -26722,7 +26762,7 @@ var openpgp = (function (exports) {
         try {
           options.curve = enums.write(enums.curve, options.curve);
         } catch (e) {
-          throw new Error('Invalid curve');
+          throw new Error('Unknown curve');
         }
         if (options.curve === enums.curve.ed25519 || options.curve === enums.curve.curve25519) {
           options.curve = options.sign ? enums.curve.ed25519 : enums.curve.curve25519;
@@ -27244,6 +27284,11 @@ var openpgp = (function (exports) {
 
   // A key revocation certificate can contain the following packets
   const allowedRevocationPackets = /*#__PURE__*/ util.constructAllowedPackets([SignaturePacket]);
+  const mainKeyPacketTags = new Set([enums.packet.publicKey, enums.packet.privateKey]);
+  const keyPacketTags = new Set([
+    enums.packet.publicKey, enums.packet.privateKey,
+    enums.packet.publicSubkey, enums.packet.privateSubkey
+  ]);
 
   /**
    * Abstract class that represents an OpenPGP key. Must contain a primary key.
@@ -27264,8 +27309,29 @@ var openpgp = (function (exports) {
       let user;
       let primaryKeyID;
       let subkey;
+      let ignoreUntil;
+
       for (const packet of packetlist) {
+
+        if (packet instanceof UnparseablePacket) {
+          const isUnparseableKeyPacket = keyPacketTags.has(packet.tag);
+          if (isUnparseableKeyPacket && !ignoreUntil){
+            // Since non-key packets apply to the preceding key packet, if a (sub)key is Unparseable we must
+            // discard all non-key packets that follow, until another (sub)key packet is found.
+            if (mainKeyPacketTags.has(packet.tag)) {
+              ignoreUntil = mainKeyPacketTags;
+            } else {
+              ignoreUntil = keyPacketTags;
+            }
+          }
+          continue;
+        }
+
         const tag = packet.constructor.tag;
+        if (ignoreUntil) {
+          if (!ignoreUntil.has(tag)) continue;
+          ignoreUntil = null;
+        }
         if (disallowedPackets.has(tag)) {
           throw new Error(`Unexpected packet type: ${tag}`);
         }
@@ -28669,7 +28735,7 @@ var openpgp = (function (exports) {
       );
 
       if (symEncryptedPacketlist.length === 0) {
-        return this;
+        throw new Error('No encrypted data found');
       }
 
       const symEncryptedPacket = symEncryptedPacketlist[0];
@@ -29496,7 +29562,7 @@ var openpgp = (function (exports) {
      * @param {Signature} signature - The detached signature or an empty signature for unsigned messages
      */
     constructor(text, signature) {
-      // normalize EOL to canonical form <CR><LF>
+      // remove trailing whitespace and normalize EOL to canonical form <CR><LF>
       this.text = util.removeTrailingSpaces(text).replace(/\r?\n/g, '\r\n');
       if (signature && !(signature instanceof Signature$2)) {
         throw new Error('Invalid signature input');
@@ -29896,7 +29962,7 @@ var openpgp = (function (exports) {
 
 
   /**
-   * Encrypts a message using public keys, passwords or both at once. At least one of `encryptionKeys` or `passwords`
+   * Encrypts a message using public keys, passwords or both at once. At least one of `encryptionKeys`, `passwords` or `sessionKeys`
    *   must be specified. If signing keys are specified, those will be used to sign the message.
    * @param {Object} options
    * @param {Message} options.message - Message to be encrypted as created by {@link createMessage}
@@ -30210,6 +30276,10 @@ var openpgp = (function (exports) {
     encryptionKeys = toArray(encryptionKeys); passwords = toArray(passwords); encryptionKeyIDs = toArray(encryptionKeyIDs); encryptionUserIDs = toArray(encryptionUserIDs);
     if (rest.publicKeys) throw new Error('The `publicKeys` option has been removed from openpgp.encryptSessionKey, pass `encryptionKeys` instead');
     const unknownOptions = Object.keys(rest); if (unknownOptions.length > 0) throw new Error(`Unknown option: ${unknownOptions.join(', ')}`);
+
+    if ((!encryptionKeys || encryptionKeys.length === 0) && (!passwords || passwords.length === 0)) {
+      throw new Error('No encryption keys or passwords provided.');
+    }
 
     try {
       const message = await Message.encryptSessionKey(data, algorithm, aeadAlgorithm, encryptionKeys, passwords, wildcard, encryptionKeyIDs, date, encryptionUserIDs, config);
@@ -42906,6 +42976,7 @@ var openpgp = (function (exports) {
   exports.SymEncryptedSessionKeyPacket = SymEncryptedSessionKeyPacket;
   exports.SymmetricallyEncryptedDataPacket = SymmetricallyEncryptedDataPacket;
   exports.TrustPacket = TrustPacket;
+  exports.UnparseablePacket = UnparseablePacket;
   exports.UserAttributePacket = UserAttributePacket;
   exports.UserIDPacket = UserIDPacket;
   exports.armor = armor;

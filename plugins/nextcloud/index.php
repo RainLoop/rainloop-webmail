@@ -4,11 +4,11 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Nextcloud',
-		VERSION = '2.10',
-		RELEASE  = '2022-11-04',
+		VERSION = '2.23',
+		RELEASE  = '2023-04-11',
 		CATEGORY = 'Integrations',
 		DESCRIPTION = 'Integrate with Nextcloud v20+',
-		REQUIRED = '2.19.0';
+		REQUIRED = '2.27.0';
 
 	public function Init() : void
 	{
@@ -17,6 +17,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 			$this->addHook('main.fabrica', 'MainFabrica');
 			$this->addHook('filter.app-data', 'FilterAppData');
+
+			$this->addCss('style.css');
 
 			$this->addJs('js/webdav.js');
 
@@ -31,6 +33,20 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 			$this->addTemplate('templates/PopupsNextcloudFiles.html');
 			$this->addTemplate('templates/PopupsNextcloudCalendars.html');
+
+			$this->addHook('imap.before-login', 'oidcLogin');
+			$this->addHook('smtp.before-login', 'oidcLogin');
+			$this->addHook('sieve.before-login', 'oidcLogin');
+		} else {
+			// \OC::$server->getConfig()->getAppValue('snappymail', 'snappymail-no-embed');
+			$this->addHook('main.content-security-policy', 'ContentSecurityPolicy');
+		}
+	}
+
+	public function ContentSecurityPolicy(\SnappyMail\HTTP\CSP $CSP)
+	{
+		if (\method_exists($CSP, 'add')) {
+			$CSP->add('frame-ancestors', "'self'");
 		}
 	}
 
@@ -47,6 +63,20 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public static function IsLoggedIn()
 	{
 		return static::IsIntegrated() && \OC::$server->getUserSession()->isLoggedIn();
+	}
+
+	public function oidcLogin(\RainLoop\Model\Account $oAccount, \MailSo\Net\NetClient $oClient, \MailSo\Net\ConnectSettings $oSettings) : void
+	{
+		if ($this->Config()->Get('plugin', 'oidc', false)
+		 && \OC::$server->getSession()->get('is_oidc')
+//		 && $oClient->supportsAuthType('OAUTHBEARER') // v2.28
+		) {
+			$sAccessToken = \OC::$server->getSession()->get('oidc_access_token');
+			if ($sAccessToken) {
+				$oSettings->Password = $sAccessToken;
+				\array_unshift($oSettings->SASLMechanisms, 'OAUTHBEARER');
+			}
+		}
 	}
 
 	/*
@@ -81,18 +111,19 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function NextcloudSaveMsg() : array
 	{
 		$sSaveFolder = \ltrim($this->jsonParam('folder', ''), '/');
-		$aValues = \RainLoop\Utils::DecodeKeyValuesQ($this->jsonParam('msgHash', ''));
+//		$aValues = \RainLoop\Api::Actions()->decodeRawKey($this->jsonParam('msgHash', ''));
+		$aValues = \json_decode(\MailSo\Base\Utils::UrlSafeBase64Decode($this->jsonParam('msgHash', '')), true);
 		$aResult = [
 			'folder' => '',
 			'filename' => '',
 			'success' => false
 		];
-		if ($sSaveFolder && !empty($aValues['Folder']) && !empty($aValues['Uid'])) {
+		if ($sSaveFolder && !empty($aValues['folder']) && !empty($aValues['uid'])) {
 			$oActions = \RainLoop\Api::Actions();
 			$oMailClient = $oActions->MailClient();
 			if (!$oMailClient->IsLoggined()) {
 				$oAccount = $oActions->getAccountFromToken();
-				$oAccount->ImapConnectAndLoginHelper($oActions->Plugins(), $oMailClient, $oActions->Config());
+				$oAccount->ImapConnectAndLogin($oActions->Plugins(), $oMailClient->ImapClient(), $oActions->Config());
 			}
 
 			$sSaveFolder = $sSaveFolder ?: 'Emails';
@@ -101,19 +132,17 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 				$oFiles->is_dir($sSaveFolder) || $oFiles->mkdir($sSaveFolder);
 			}
 			$aResult['folder'] = $sSaveFolder;
-
-			$sFilename = $sSaveFolder . '/' . ($this->jsonParam('filename', '') ?: \date('YmdHis')) . '.eml';
-			$aResult['folder'] = $sFilename;
+			$aResult['filename'] = ($this->jsonParam('filename', '') ?: \date('YmdHis')) . '.eml';
 
 			$oMailClient->MessageMimeStream(
-				function ($rResource) use ($oFiles, $sFilename, $aResult) {
+				function ($rResource) use ($oFiles, $aResult) {
 					if (\is_resource($rResource)) {
-						$aResult['success'] = $oFiles->file_put_contents($sFilename, $rResource);
+						$aResult['success'] = $oFiles->file_put_contents("{$aResult['folder']}/{$aResult['filename']}", $rResource);
 					}
 				},
-				(string) $aValues['Folder'],
-				(int) $aValues['Uid'],
-				isset($aValues['MimeIndex']) ? (string) $aValues['MimeIndex'] : ''
+				(string) $aValues['folder'],
+				(int) $aValues['uid'],
+				isset($aValues['mimeIndex']) ? (string) $aValues['mimeIndex'] : ''
 			);
 		}
 
@@ -130,8 +159,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 				$oFiles->is_dir($sSaveFolder) || $oFiles->mkdir($sSaveFolder);
 				$data->result = true;
 				foreach ($data->items as $aItem) {
-					$sSavedFileName = isset($aItem['FileName']) ? $aItem['FileName'] : 'file.dat';
-					$sSavedFileHash = !empty($aItem['FileHash']) ? $aItem['FileHash'] : '';
+					$sSavedFileName = isset($aItem['fileName']) ? $aItem['fileName'] : 'file.dat';
+					$sSavedFileHash = !empty($aItem['fileHash']) ? $aItem['fileHash'] : '';
 					if (!empty($sSavedFileHash)) {
 						$fFile = $data->filesProvider->GetFile($data->account, $sSavedFileHash, 'rb');
 						if (\is_resource($fFile)) {
@@ -148,7 +177,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 			}
 
 			foreach ($data->items as $aItem) {
-				$sFileHash = (string) (isset($aItem['FileHash']) ? $aItem['FileHash'] : '');
+				$sFileHash = (string) (isset($aItem['fileHash']) ? $aItem['fileHash'] : '');
 				if (!empty($sFileHash)) {
 					$data->filesProvider->Clear($data->account, $sFileHash);
 				}
@@ -160,7 +189,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		if (!$bAdmin && \is_array($aResult)) {
 			$sUID = \OC::$server->getUserSession()->getUser()->getUID();
-			$sWebDAV = \OC::$server->getURLGenerator()->linkTo('', 'remote.php') . '/dav/';
+			$oUrlGen = \OC::$server->getURLGenerator();
+			$sWebDAV = $oUrlGen->getAbsoluteURL($oUrlGen->linkTo('', 'remote.php') . '/dav');
 //			$sWebDAV = \OCP\Util::linkToRemote('dav');
 			$aResult['Nextcloud'] = [
 				'UID' => $sUID,
@@ -185,6 +215,31 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 					$sEmail = $sCustomEmail;
 				}
 				$aResult['DevEmail'] = $sEmail ?: '';
+			} else if (!empty($aResult['ContactsSync'])) {
+				$bSave = false;
+				if (empty($aResult['ContactsSync']['Url'])) {
+					$aResult['ContactsSync']['Url'] = "{$sWebDAV}/addressbooks/users/{$sUID}/contacts/";
+					$bSave = true;
+				}
+				if (empty($aResult['ContactsSync']['User'])) {
+					$aResult['ContactsSync']['User'] = $sUID;
+					$bSave = true;
+				}
+				if (empty($aResult['ContactsSync']['Password'])) {
+					$aResult['ContactsSync']['Password'] = '';
+				}
+				if ($bSave) {
+					$oActions = \RainLoop\Api::Actions();
+					$oActions->setContactsSyncData(
+						$oActions->getAccountFromToken(),
+						array(
+							'Mode' => $aResult['ContactsSync']['Mode'],
+							'User' => $aResult['ContactsSync']['User'],
+							'Password' => $aResult['ContactsSync']['Password'],
+							'Url' => $aResult['ContactsSync']['Url']
+						)
+					);
+				}
 			}
 		}
 	}
@@ -200,7 +255,9 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 					$mResult = array();
 				}
 				include_once __DIR__ . '/NextcloudContactsSuggestions.php';
-				$mResult[] = new NextcloudContactsSuggestions();
+				$mResult[] = new NextcloudContactsSuggestions(
+					$this->Config()->Get('plugin', 'ignoreSystemAddressbook', true)
+				);
 			}
 		}
 	}
@@ -211,7 +268,13 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 			\RainLoop\Plugins\Property::NewInstance('suggestions')->SetLabel('Suggestions')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(true),
+			\RainLoop\Plugins\Property::NewInstance('ignoreSystemAddressbook')->SetLabel('Ignore system addressbook')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDefaultValue(true),
 			\RainLoop\Plugins\Property::NewInstance('calendar')->SetLabel('Enable "Put ICS in calendar"')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDefaultValue(false),
+			\RainLoop\Plugins\Property::NewInstance('oidc')->SetLabel('Login with OIDC')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(false)
 		);

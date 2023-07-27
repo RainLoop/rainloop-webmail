@@ -1,4 +1,5 @@
 {
+	"LANG_DIR": "ltr",
 	"GLOBAL": {
 		"TO_ARCHIVE": "Archiviazione",
 		"ARE_YOU_SURE": "Sei sicuro?",
@@ -19,12 +20,14 @@
 		"MOVE_TO": "Sposta in",
 		"NAME": "Nome",
 		"NONE": "Nessuno",
+		"TO_SPAM": "Sposta messaggio\/i nel spam",
 		"NOT_SPAM": "Segnala come non spam",
 		"USERNAME": "Nome utente",
-		"PASSWORD": "Parola d'ordine",
+		"PASSWORD": "Password",
+		"REMEMBER": "Ricordami",
 		"REPLY_TO": "Rispondi a",
 		"SAVE": "Salva",
-		"SAVE_CHANGES": "Save changes?",
+		"SAVE_CHANGES": "Salvare le modifiche?",
 		"SEARCH": "Cerca",
 		"SPAM": "Segnala come spam",
 		"SUBJECT": "Oggetto",
@@ -33,7 +36,11 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Sì",
 		"NO": "No",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inattivo",
+		"DEFAULT": "predefinito",
+		"HELP": "Aiuto",
+		"TEXT": "Messaggio",
+		"ATTACHMENTS": "Allegati"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
@@ -41,13 +48,7 @@
 		"BUTTON_SIGN_IN": "Accedi"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Aggiungi account",
-		"BUTTON_SETTINGS": "Impostazioni",
-		"BUTTON_HELP": "Aiuto"
-	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Versione mobile",
-		"BUTTON_DESKTOP_VERSION": "Versione desktop"
+		"BUTTON_ADD_ACCOUNT": "Aggiungi account"
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Ricerca avanzata",
@@ -98,6 +99,7 @@
 		"MENU_SELECT_SEEN": "Letti",
 		"MENU_SELECT_FLAGGED": "Preferiti",
 		"MENU_SELECT_UNFLAGGED": "Non preferiti",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Scarica tutti allegati",
 		"EMPTY_LIST": "Lista vuota",
 		"EMPTY_SEARCH_LIST": "Nessun messaggio corrisponde alla tua ricerca",
 		"SEARCH_RESULT_FOR": "Risultati di ricerca per \"%SEARCH%\"",
@@ -107,7 +109,8 @@
 		"YESTERDAY_AT": "ieri alle %TIME%",
 		"NEW_MESSAGE_NOTIFICATION": "Hai %COUNT% nuovi messaggi!",
 		"QUOTA_SIZE": "Stai usando <strong>%SIZE% (%PROC%%)<\/strong> su <strong>%LIMIT%<\/strong>",
-		"SORT": "Sort",
+		"SORT": "Riordina",
+		"NO_SORT": "Il mail server non supporta l'ordinamento",
 		"SORT_DATE_ASC": "Data crescente",
 		"SORT_DATE_DESC": "Data decrescente",
 		"SORT_SIZE_ASC": "Dimensione crescente",
@@ -150,7 +153,7 @@
 		"SPAM_SCORE": "Punteggio Spam",
 		"HAS_VIRUS_WARNING": "AVVISO: rilevato virus",
 		"TAGS": "Tag",
-		"NEW_TAG": "New tag"
+		"NEW_TAG": "Nuovo tag"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Importante",
@@ -163,23 +166,23 @@
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "Avviso di lettura - %SUBJECT%",
-		"BODY": "Questo è un avviso di lettura per la mail che hai inviato a %READ-RECEIPT%.\n\nAttenzione: questa notifica di lettura significa solo che il messaggio è stato visualizzato nel computer del destinatario.\nNon c'è alcuna garanzia che il destinatario abbia letto o capito il contenuto del messaggio.\n"
+		"BODY": "Questo è un avviso di lettura per la mail che hai inviato a %READ-RECEIPT%.\n\nAttenzione: questa notifica di lettura significa solo che il messaggio è stato visualizzato nel computer del destinatario.\nNon c'è alcuna garanzia che il destinatario abbia letto o capito il contenuto del messaggio."
 	},
 	"SUGGESTIONS": {
 		"SEARCHING_DESC": "Cerca..."
 	},
 	"CONTACTS": {
-		"TAB_CONTACT": "Contact",
-		"TAB_LOCATIONS": "Locations",
+		"TAB_CONTACT": "Contatto",
+		"TAB_LOCATIONS": "Località",
 		"TAB_BUSINESS": "Business",
-		"LABEL_ORGANIZATION": "Organization",
-		"LABEL_DEPARTMENT": "Department",
-		"LABEL_TITLE": "Title",
+		"LABEL_ORGANIZATION": "Organizzazione",
+		"LABEL_DEPARTMENT": "Reparto",
+		"LABEL_TITLE": "Titolo",
 		"TAB_CRYPTO": "Crypto",
-		"ASK": "Ask",
-		"NEVER": "Never",
-		"ALWAYS": "Always",
-		"ALWAYS_IF_POSSIBLE": "Always if possible",
+		"ASK": "Chiedi",
+		"NEVER": "Mai",
+		"ALWAYS": "Sempre",
+		"ALWAYS_IF_POSSIBLE": "Sempre, se possibile",
 		"BUTTON_ADD_CONTACT": "Aggiungi contatto",
 		"BUTTON_CREATE_CONTACT": "Crea",
 		"BUTTON_UPDATE_CONTACT": "Aggiorna",
@@ -198,7 +201,7 @@
 		"PLACEHOLDER_ENTER_NICK_NAME": "Inserisci il nickname",
 		"LABEL_READ_ONLY": "Sola lettura",
 		"ADD_MENU_LABEL": "Aggiungi",
-		"ADD_MENU_NICKNAME": "Nickname",
+		"ADD_MENU_NICKNAME": "Soprannome",
 		"ADD_MENU_NOTE": "Note",
 		"ADD_MENU_PHONE": "Telefono",
 		"ADD_MENU_URL": "URL",
@@ -217,18 +220,23 @@
 		"DISCARD_UNSAVED_DATA": "Elimino i dati non salvati?",
 		"ATTACH_FILES": "Allega file",
 		"ATTACH_DROP_FILES_DESC": "Trascina i file qui",
-		"REPLY_MESSAGE_TITLE": "%DATETIME%, %EMAIL% wrote",
+		"REPLY_MESSAGE_TITLE": "%DATETIME%, %EMAIL% scrive",
 		"FORWARD_MESSAGE_TOP_TITLE": "------- Messaggio inoltrato -------",
 		"FORWARD_MESSAGE_TOP_SENT": "Inviato il",
 		"EMPTY_TO_ERROR_DESC": "Specifica almeno un destinatario",
 		"NO_ATTACHMENTS_HERE_DESC": "Nessun allegato.",
 		"ATTACHMENTS_ERROR_DESC": "Attenzione! Non tutti gli allegati sono stati caricati.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Non tutti gli allegati sono stati caricati al momento.",
+		"ALLOW_SPELLCHECK": "Abilita il controllo ortografico del browser",
+		"ALLOW_DRAFT_AUTOSAVE": "Salva automaticamente la bozza",
 		"BUTTON_REQUEST_READ_RECEIPT": "Richiedi conferma di lettura",
 		"BUTTON_MARK_AS_IMPORTANT": "Marca come importante",
-		"BUTTON_REQUEST_DSN": "Richiedi conferma del ricevimento"
+		"BUTTON_REQUEST_DSN": "Richiedi conferma del ricevimento",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery",
+		"ERROR_EMPTY_BODY": "Il corpo del messaggio è vuoto"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Sei sicuro di voler chiudere?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Sei sicuro di voler chiudere questa finestra?",
 		"DESC_WANT_DELETE_MESSAGES": "Sei sicuro di voler eliminare il messaggio?"
 	},
@@ -305,14 +313,14 @@
 		"SELECT_TYPE_NOT_EQUAL_TO": "Non uguale a",
 		"SELECT_TYPE_OVER": "Maggiore di",
 		"SELECT_TYPE_UNDER": "Minore di",
-		"SELECT_TYPE_TEXT": "Text",
+		"SELECT_TYPE_TEXT": "Testo",
 		"SELECT_TYPE_RAW": "Raw",
 		"SELECT_MATCH_ANY": "Corrisponde ad una delle seguenti regole",
 		"SELECT_MATCH_ALL": "Corrisponde a tutte le seguenti regole",
 		"MARK_AS_READ_LABEL": "Marca come letto",
 		"REPLY_INTERVAL_LABEL": "Intervallo di risposta (giorni)",
 		"KEEP_LABEL": "Mantieni",
-		"STOP_LABEL": "Non interrompere l'elaborazione delle regole",
+		"STOP_LABEL": "Interrompi l'utilizzo di ulteriori regole",
 		"VACATION_SUBJECT_LABEL": "Oggetto (opzionale)",
 		"VACATION_MESSAGE_LABEL": "Messaggio",
 		"VACATION_RECIPIENTS_LABEL": "Destinatari (separati da virgola)",
@@ -331,10 +339,10 @@
 		"TITLE_SYSTEM_FOLDERS": "Imposta le cartelle di sistema",
 		"SELECT_CHOOSE_ONE": "Selezionane una",
 		"SELECT_UNUSE_NAME": "Non usarla",
-		"NOTIFICATION_SENT": "Non hai selezionato una cartella di sistema per la posta inviata.\nSe non vuoi salvare i messaggi inviati seleziona \"Non usarla\".\n",
+		"NOTIFICATION_SENT": "Non hai selezionato una cartella di sistema per la posta inviata.\nSe non vuoi salvare i messaggi inviati seleziona \"Non usarla\".",
 		"NOTIFICATION_DRAFTS": "Non hai selezionato una cartella di sistema per le bozze.",
-		"NOTIFICATION_SPAM": "Non hai selezionato una cartella di sistema per i messaggi spam.\nSe li vuoi eliminare permanentemente seleziona \"Non usarla\".\n",
-		"NOTIFICATION_TRASH": "Non hai selezionato una cartella di sistema per il cestino.\nSe non lo vuoi usare (e quindi eliminare i messaggi permanentemente) seleziona \"Non usarla\".\n",
+		"NOTIFICATION_SPAM": "Non hai selezionato una cartella di sistema per i messaggi spam.\nSe li vuoi eliminare permanentemente seleziona \"Non usarla\".",
+		"NOTIFICATION_TRASH": "Non hai selezionato una cartella di sistema per il cestino.\nSe non lo vuoi usare (e quindi eliminare i messaggi permanentemente) seleziona \"Non usarla\".",
 		"NOTIFICATION_ARCHIVE": "Non hai selezionato una cartella di sistema per i messaggi archiviati."
 	},
 	"TITLES": {
@@ -351,23 +359,45 @@
 		"ERROR_UNKNOWN": "Si è verificato un errore sconosciuto durante il caricamento del file"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> Testo semplice",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"PLAIN": "HTML <-> Testo semplice",
+		"SOURCE": "HTML <-> Sorgente",
+		"FONTFAMILY": "Font family",
+		"FONTSIZE": "Font size",
+		"DIR": "Text direction",
+		"DIR_LTR": "Left to right",
+		"DIR_RTL": "Right to left",
+		"DIR_AUTO": "Automatic",
+		"TEXTCOLOR": "Text color",
+		"BACKGROUNDCOLOR": "Background color",
+		"BOLD": "Bold",
+		"ITALIC": "Italic",
+		"UNDERLINE": "Underline",
+		"STRIKE": "Strikethrough",
+		"SUB": "Subscript",
+		"SUP": "Superscript",
+		"OL": "Ordered list",
+		"UL": "Unordered list",
+		"QUOTE": "Blockquote",
+		"INDENTDECREASE": "Decrease indent",
+		"INDENTINCREASE": "Increase indent",
+		"LINK": "Link",
+		"IMAGEURL": "Image URL",
+		"IMAGEUPLOAD": "Image select",
+		"UNDO": "Undo",
+		"REDO": "Redo"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Personali",
-		"LABEL_GENERAL_NAME": "Generali",
-		"LABEL_CONTACTS_NAME": "Contatti",
-		"LABEL_FOLDERS_NAME": "Cartelle",
-		"LABEL_ACCOUNTS_NAME": "Account",
-		"LABEL_FILTERS_NAME": "Filtri",
-		"LABEL_SECURITY_NAME": "Sicurezza",
-		"LABEL_THEMES_NAME": "Temi"
+		"GENERAL": "Generali",
+		"CONTACTS": "Contatti",
+		"FOLDERS": "Cartelle",
+		"ACCOUNTS": "Account",
+		"FILTERS": "Filtri",
+		"SECURITY": "Sicurezza",
+		"THEMES": "Temi"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "Filtri",
-		"SIMPLE": "Simple",
-		"ADVANCED": "Advanced",
+		"SIMPLE": "Semplice",
+		"ADVANCED": "Avanzato",
 		"BUTTON_ADD_SCRIPT": "Aggiungi uno script",
 		"SUBNAME_MOVE_TO": "Sposta in \"%FOLDER%\"",
 		"SUBNAME_FORWARD_TO": "Inoltra a \"%EMAIL%\"",
@@ -378,18 +408,18 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Sicurezza",
 		"LABEL_AUTOLOGOUT": "Disconnessione automatica",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Mai",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minuti",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% ore"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Mai"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Generali",
 		"LANGUAGE": "Lingua",
+		"HOUR_FORMAT": "Formato orario",
 		"IDENTITY": "Identità",
 		"LAYOUT": "Struttura",
 		"LAYOUT_NO_SPLIT": "A pagina intera",
 		"LAYOUT_VERTICAL_SPLIT": "Divisione verticale",
 		"LAYOUT_HORIZONTAL_SPLIT": "Divisione orizzontale",
+		"SHOW_NEXT_MESSAGE": "Vai al prossimo messaggio dopo la eliminazione\/spostamento dell'attuale",
 		"EDITOR": "Editor di testo predefinito",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Testo semplice",
@@ -399,19 +429,30 @@
 		"USE_CHECKBOXES_IN_LIST": "Mostra le caselle di spunta nella lista",
 		"USE_THREADS": "Usa le conversazioni",
 		"REPLY_SAME_FOLDER": "Posiziona le risposte nella cartella del messaggio a cui si è risposto",
-		"SHOW_IMAGES": "Visualizza sempre le immagini esterne nel messaggio",
 		"PREFER_HTML": "Usa HTML predefinito anziché formato testo",
 		"PREFER_HTML_INFO": "Il messaggio a volte contiene entrambi i formati. Questa opzione agisce sulla visualizzazione del messaggio in HTML o della versione in formato testo.",
 		"REMOVE_COLORS": "Rimuovi lo sfondo e i colori del testo dal messaggio",
+		"ALLOW_STYLES": "Consenti formattazioni estese all'interno del messaggio (CSS <style>)",
 		"MESSAGE_PER_PAGE": "Messaggi per pagina",
+		"CHECK_MAIL_INTERVAL": "Controlla nuove mail ogni",
 		"MARK_MESSAGE_READ_AFTER": "Contrassegna il messaggio come letto dopo",
-		"MSG_DEFAULT_ACTION": "Default action",
-		"SECONDS": "seconds",
+		"MSG_DEFAULT_ACTION": "Azione di default",
+		"SECONDS": "secondi",
+		"MINUTES": "minuti",
 		"NOTIFICATIONS": "Notifiche",
 		"SOUND_NOTIFICATION": "Notifica sonora",
 		"CHROME_NOTIFICATION_DESC": "Mostra le notifiche in caso di nuovi messaggi",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Bloccate dal browser)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"COLLAPSE_BLOCKQUOTES": "Nascondi testo quotato",
+		"MAX_QUOTE_LEVEL": "Livelli massimi visibilità testo quotato",
+		"LIST_INLINE_ATTACHMENTS": "Visualizza lista degli allegati in linea",
+		"LIST_SIMPLE_ATTACHMENTS": "Lista semplice allegati",
+		"LIST_MESSAGES_GROUPED": "Lista messaggi raggruppati (quando riordinati per data o mittente)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Chiedi sempre",
+		"IMAGES_OPTION_WHITELIST": "Usa whitelist o chiedi",
+		"IMAGES_OPTION_ALWAYS": "Visualizza sempre",
+		"IMAGES_WHITELIST": "Whitelist per immagini"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Aggiungi automaticamente le persone che ti inviano mail alla rubrica",
@@ -420,7 +461,7 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Indirizzo della rubrica",
 		"LABEL_CONTACTS_SYNC_USER": "Utente",
-		"SYNC_READ": "Read only"
+		"SYNC_READ": "Sola lettura"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Temi",
@@ -447,7 +488,7 @@
 		"HELP_SHOW_HIDE_FOLDER": "Mostra\/nascondi cartella",
 		"HELP_CHECK_FOR_NEW_MESSAGES": "Controlla\/non controlla la presenza di nuovi messaggi",
 		"HIDE_UNSUBSCRIBED": "Nascondi le cartelle non sottoscritte",
-		"UNHIDE_KOLAB_FOLDERS": "Unhide Kolab folders",
+		"UNHIDE_KOLAB_FOLDERS": "Rendi visibili le cartelle Kolab",
 		"TYPE_CALENDAR": "Calendario",
 		"TYPE_CONFIGURATION": "Configurazione",
 		"TYPE_CONTACTS": "Contatti",
@@ -463,14 +504,13 @@
 		"BUTTON_ADD_ACCOUNT": "Aggiungi account",
 		"BUTTON_ADD_IDENTITY": "Aggiungi identità",
 		"LOADING_PROCESS": "Aggiornamento della lista degli account...",
-		"DEFAULT_IDENTITY_LABEL": "predefinito"
+		"SHOW_UNREAD": "Visualizza il numero di messaggi non letti dei account"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importa chiave",
 		"BUTTON_GENERATE_KEY_PAIR": "Genera chiave",
 		"TITLE_PRIVATE": "Privata",
 		"TITLE_PUBLIC": "Pubblica",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Salva automaticamente la bozza",
 		"GET_MAILVELOPE": "Installa l'estensione browser Mailvelope."
 	},
 	"SHORTCUTS_HELP": {
@@ -484,7 +524,6 @@
 		"LABEL_REPLY_ALL": "Rispondi a tutti",
 		"LABEL_FORWARD": "Inoltra",
 		"LABEL_FORWARD_MULTIPLY": "Inoltro multiplo",
-		"LABEL_HELP": "Aiuto",
 		"LABEL_CHECK_ALL": "Seleziona tutti i messaggi",
 		"LABEL_DELETE": "Elimina messaggio",
 		"LABEL_OPEN_THREAD": "Apri la conversazione selezionata",
@@ -512,9 +551,9 @@
 		"LABEL_CLOSE_COMPOSE": "Chiudi finestra di scrittura"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
+		"REQUEST_ERROR": "Richiesta fallita",
+		"REQUEST_ABORTED": "Richiesta annullata",
+		"REQUEST_TIMEOUT": "Richiesta scaduta",
 		"INVALID_TOKEN": "Token invalido",
 		"AUTH_ERROR": "Autenticazione fallita",
 		"CONNECTION_ERROR": "Impossibile connettersi al server",

@@ -7,6 +7,13 @@ class NextcloudContactsSuggestions implements \RainLoop\Providers\Suggestions\IS
 	 */
 	private $oLogger = null;
 
+	private bool $ignoreSystemAddressbook;
+
+	function __construct(bool $ignoreSystemAddressbook = true)
+	{
+		$this->ignoreSystemAddressbook = $ignoreSystemAddressbook;
+	}
+
 	public function Process(\RainLoop\Model\Account $oAccount, string $sQuery, int $iLimit = 20): array
 	{
 		try
@@ -19,6 +26,15 @@ class NextcloudContactsSuggestions implements \RainLoop\Providers\Suggestions\IS
 			$cm = \OC::$server->getContactsManager();
 			if (!$cm || !$cm->isEnabled()) {
 				return [];
+			}
+
+			// Unregister system addressbook so as to return only contacts in user's addressbooks
+			if ($this->ignoreSystemAddressbook) {
+				foreach($cm->getUserAddressBooks() as $addressBook) {
+					if($addressBook->isSystemAddressBook()) {
+						 $cm->unregisterAddressBook($addressBook);
+					}
+				}
 			}
 
 			$aSearchResult = $cm->search($sQuery, array('FN', 'NICKNAME', 'TITLE', 'EMAIL'));

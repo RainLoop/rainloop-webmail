@@ -1,18 +1,89 @@
 {
-    "imapHost": "localhost",
-    "imapPort": 143,
-    "imapSecure": 0,
-    "imapShortLogin": false,
-    "useSieve": false,
-    "sieveHost": "localhost",
-    "sievePort": 4190,
-    "sieveSecure": 0,
-    "smtpHost": "localhost",
-    "smtpPort": 25,
-    "smtpSecure": 0,
-    "smtpShortLogin": false,
-    "smtpAuth": true,
-    "smtpSetSender": false,
-    "smtpPhpMail": false,
+    "name": "*",
+    "IMAP": {
+        "host": "localhost",
+        "port": 143,
+        "type": 0,
+        "timeout": 300,
+        "shortLogin": false,
+        "sasl": [
+            "SCRAM-SHA3-512",
+            "SCRAM-SHA-512",
+            "SCRAM-SHA-256",
+            "SCRAM-SHA-1",
+            "PLAIN",
+            "LOGIN"
+        ],
+        "ssl": {
+            "verify_peer": false,
+            "verify_peer_name": false,
+            "allow_self_signed": false,
+            "SNI_enabled": true,
+            "disable_compression": true,
+            "security_level": 1
+        },
+        "disable_list_status": false,
+        "disable_metadata": false,
+        "disable_move": false,
+        "disable_sort": false,
+        "disable_thread": false,
+        "disable_binary": false,
+        "use_expunge_all_on_delete": false,
+        "fast_simple_search": true,
+        "force_select": false,
+        "message_all_headers": false,
+        "message_list_limit": 0,
+        "search_filter": ""
+    },
+    "SMTP": {
+        "host": "localhost",
+        "port": 25,
+        "type": 0,
+        "timeout": 60,
+        "shortLogin": false,
+        "sasl": [
+            "SCRAM-SHA3-512",
+            "SCRAM-SHA-512",
+            "SCRAM-SHA-256",
+            "SCRAM-SHA-1",
+            "PLAIN",
+            "LOGIN"
+        ],
+        "ssl": {
+            "verify_peer": false,
+            "verify_peer_name": false,
+            "allow_self_signed": false,
+            "SNI_enabled": true,
+            "disable_compression": true,
+            "security_level": 1
+        },
+        "useAuth": false,
+        "setSender": false,
+        "usePhpMail": false
+    },
+    "Sieve": {
+        "host": "localhost",
+        "port": 4190,
+        "type": 0,
+        "timeout": 10,
+        "shortLogin": false,
+        "sasl": [
+            "SCRAM-SHA3-512",
+            "SCRAM-SHA-512",
+            "SCRAM-SHA-256",
+            "SCRAM-SHA-1",
+            "PLAIN",
+            "LOGIN"
+        ],
+        "ssl": {
+            "verify_peer": false,
+            "verify_peer_name": false,
+            "allow_self_signed": false,
+            "SNI_enabled": true,
+            "disable_compression": true,
+            "security_level": 1
+        },
+        "enabled": false
+    },
     "whiteList": ""
 }

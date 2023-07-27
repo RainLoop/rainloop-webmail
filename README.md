@@ -34,14 +34,14 @@ And don't forget to read the [RainLoop documentation](https://www.rainloop.net/d
 **GNU AFFERO GENERAL PUBLIC LICENSE Version 3 (AGPL)**.
 http://www.gnu.org/licenses/agpl-3.0.html
 
-Copyright (c) 2020 - 2022 SnappyMail
+Copyright (c) 2020 - 2023 SnappyMail
 Copyright (c) 2013 - 2022 RainLoop
 
 ## Modifications
 
 This fork of RainLoop has the following changes:
 
-* Privacy/GDPR friendly (no: Social, Gravatar, Facebook, Google, Twitter, DropBox, OwnCloud, X-Mailer)
+* Privacy/GDPR friendly (no: Social, Gravatar, Facebook, Google, Twitter, DropBox, X-Mailer)
 * Admin uses password_hash/password_verify
 * Auth failed attempts written to syslog
 * Added Fail2ban instructions
@@ -57,10 +57,11 @@ This fork of RainLoop has the following changes:
 * Removed background video support
 * Removed Sentry (Application Monitoring and Error Tracking Software)
 * Removed Spyc yaml
+* Removed OwnCloud
 * Replaced gulp-uglify with gulp-terser
 * CRLF => LF line endings
 * Embed boot.js and boot.css into index.html
-* Ongoing removal of old JavaScript code (things are native these days)
+* Removal of old JavaScript code (things are native these days)
 * Added modified [Squire](https://github.com/neilj/Squire) HTML editor as replacement for CKEditor
 * Updated [Sabre/VObject](https://github.com/sabre-io/vobject)
 * Split Admin specific JavaScript code from User code
@@ -105,7 +106,6 @@ Supported are:
 The result is faster and smaller download code (good for mobile networks).
 
 * Added dev/prototype.js for some additional features
-* boot.js without webpack overhead
 * Modified Jua.js to be without jQuery
 * Replaced Autolinker with simple https/email detection
 * Replaced momentToNode with proper HTML5 `<time>`
@@ -118,6 +118,7 @@ The result is faster and smaller download code (good for mobile networks).
 * Replaced simplestatemanager with CSS @media
 * Replaced inputosaurus with own code
 * Replaced keymaster with own shortcuts handler
+* Replaced OpenPGP.js v2 with OpenPGP.js v5
 * Removed ifvisible.js
 * Removed pikaday
 * Removed underscore
@@ -140,28 +141,28 @@ RainLoop 1.17 vs SnappyMail
 
 |js/*           	|RainLoop 	|Snappy   	|
 |---------------	|--------:	|--------:	|
-|admin.js        	|2.170.153	|   81.545	|
-|app.js          	|4.207.787	|  406.032	|
-|boot.js         	|  868.735	|    2.050	|
-|libs.js         	|  658.812	|  192.965	|
-|sieve.js         	|        0	|   86.121	|
+|admin.js        	|2.170.153	|   80.102	|
+|app.js          	|4.207.787	|  407.874	|
+|boot.js         	|  868.735	|    4.142	|
+|libs.js         	|  658.812	|  187.076	|
+|sieve.js         	|        0	|   85.141	|
 |polyfills.js    	|  334.608	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|8.240.095	|  768.998	|
+|TOTAL           	|8.240.095	|  764.620	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
-|admin.min.js    	|  256.831	|   40.255	| 73.606	| 13.435	| 60.877  	| 12.047	|
-|app.min.js      	|  515.367	|  188.046	|139.456	| 62.537	|110.485  	| 53.693	|
-|boot.min.js     	|   84.659	|    1.252	| 26.998	|    778	| 23.643  	|    628	|
-|libs.min.js     	|  584.772	|   92.055	|180.901	| 34.113	|155.182  	| 30.641	|
-|sieve.min.js     	|        0	|   41.926	|      0	| 10.484	|      0  	|  9.451	|
+|admin.min.js    	|  256.831	|   39.350	| 73.606	| 13.163	| 60.877  	| 11.805	|
+|app.min.js      	|  515.367	|  186.311	|139.456	| 62.929	|110.485  	| 54.076	|
+|boot.min.js     	|   84.659	|    2.084	| 26.998	|  1.202	| 23.643  	|  1.003	|
+|libs.min.js     	|  584.772	|   90.808	|180.901	| 33.754	|155.182  	| 30.224	|
+|sieve.min.js     	|        0	|   41.399	|      0	| 10.394	|      0  	|  9.356	|
 |polyfills.min.js	|   32.837	|        0	| 11.406	|      0	| 10.175  	|      0	|
-|TOTAL user      	|1.217.635	|  281.353	|358.761	| 97.428	|299.485  	| 84.962	|
-|TOTAL user+sieve	|1.217.635	|  323.279	|358.761	|107.912	|299.485  	| 94.413	|
-|TOTAL admin     	|  959.099	|  133.562	|292.911	| 48.326	|249.877  	| 43.316	|
+|TOTAL user      	|1.217.635	|  279.203	|358.761	| 97.885	|299.485  	| 85.303	|
+|TOTAL user+sieve	|1.217.635	|  320.602	|358.761	|108.279	|299.485  	| 94.659	|
+|TOTAL admin     	|  959.099	|  132.242	|292.911	| 48.119	|249.877  	| 43.032	|
 
-For a user its around 70% smaller and faster than traditional RainLoop.
+For a user it is around 72% smaller and faster than traditional RainLoop.
 
 ### CSS changes
 
@@ -169,6 +170,7 @@ For a user its around 70% smaller and faster than traditional RainLoop.
 * Themes work in mobile mode
 * Bugfix invalid/conflicting css rules
 * Use flexbox
+* Use border-box
 * Split app.css to have separate admin.css
 * Remove oldschool 'float'
 * Remove unused css
@@ -187,12 +189,12 @@ For a user its around 70% smaller and faster than traditional RainLoop.
 
 |css/*       	|RainLoop	|Snappy   	|RL gzip	|SM gzip	|SM brotli	|
 |------------	|-------:	|------:	|------:	|------:	|--------:	|
-|app.css     	| 340.331	| 82.870	| 46.946	| 17.215	| 14.727	|
-|app.min.css 	| 274.947	| 66.646	| 39.647	| 15.260	| 13.322	|
+|app.css     	| 340.331	| 84.390	| 46.946	| 17.605	| 15.084	|
+|app.min.css 	| 274.947	| 67.774	| 39.647	| 15.487	| 13.527	|
 |boot.css    	|       	|  1.326	|       	|    664	|    545	|
 |boot.min.css	|       	|  1.071	|       	|    590	|    474	|
-|admin.css    	|       	| 30.506	|       	|  6.907	|  5.998	|
-|admin.min.css	|       	| 24.677	|       	|  6.267	|  5.498	|
+|admin.css    	|       	| 30.482	|       	|  6.988	|  6.092	|
+|admin.min.css	|       	| 24.607	|       	|  6.315	|  5.579	|
 
 ### PGP
 RainLoop uses the old OpenPGP.js v2
@@ -206,7 +208,7 @@ See https://github.com/the-djmaze/openpgpjs for development
 
 |OpenPGP        	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|-------:	|--------:	|--------:	|
-|openpgp.min.js 	|  330.742	|  539.257	|102.388	| 166.998	| 84.241  	|  137.186	|
+|openpgp.min.js 	|  330.742	|  541.176	|102.388	| 168.266	| 84.241  	|  138.278	|
 |openpgp.worker 	|    1.499	|         	|    824	|        	|    695 	|        	|
 
 
@@ -216,7 +218,6 @@ The [Squire](https://github.com/neilj/Squire) implementation is not 100% compati
 Still TODO:
 
 * support for tables (really needed?!?)
-* support BIDI (really needed?!?)
 
 |       	| normal	| min    	| gzip  	| min gzip	|
 |--------	|-------:	|-------:	|------:	|--------:	|

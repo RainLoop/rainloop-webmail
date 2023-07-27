@@ -1,4 +1,5 @@
 {
+	"LANG_DIR": "ltr",
 	"GLOBAL": {
 		"TO_ARCHIVE": "Arhiviranje",
 		"ARE_YOU_SURE": "Ste prepričani?",
@@ -19,9 +20,11 @@
 		"MOVE_TO": "Premakni v",
 		"NAME": "Prejeto",
 		"NONE": "Nobeno",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "Ni vsiljena pošta",
 		"USERNAME": "Uporabniško ime",
 		"PASSWORD": "Geslo",
+		"REMEMBER": "Remember",
 		"REPLY_TO": "Odgovor na",
 		"SAVE": "Shrani",
 		"SAVE_CHANGES": "Save changes?",
@@ -33,7 +36,11 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Da",
 		"NO": "Ne",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "privzeto",
+		"HELP": "Pomoč",
+		"TEXT": "Besedilo",
+		"ATTACHMENTS": "Priloge"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prijava",
@@ -41,13 +48,7 @@
 		"BUTTON_SIGN_IN": "Prijavi se"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Dodaj račun",
-		"BUTTON_SETTINGS": "Nastavitve",
-		"BUTTON_HELP": "Pomoč"
-	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobilna različica",
-		"BUTTON_DESKTOP_VERSION": "Namizna različica"
+		"BUTTON_ADD_ACCOUNT": "Dodaj račun"
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Napredno iskanje",
@@ -98,6 +99,7 @@
 		"MENU_SELECT_SEEN": "Prebrana",
 		"MENU_SELECT_FLAGGED": "Z zvezdico",
 		"MENU_SELECT_UNFLAGGED": "Brez zvezdice",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Prazen seznam.",
 		"EMPTY_SEARCH_LIST": "Brez ujemanj.",
 		"SEARCH_RESULT_FOR": "Ujemanja za \"%SEARCH%\"",
@@ -108,6 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "Imate %COUNT% novih sporočil!",
 		"QUOTA_SIZE": "Uporabljenih <strong>%SIZE% (%PROC%%)<\/strong> od <strong>%LIMIT%<\/strong>",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Date ascending",
 		"SORT_DATE_DESC": "Date descending",
 		"SORT_SIZE_ASC": "Size ascending",
@@ -224,11 +227,16 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Ni prilog.",
 		"ATTACHMENTS_ERROR_DESC": "Pozor! Priloge niso bile vse naložene.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Priloge še niso bile naložene v celoti.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Samodejno shrani osnutek",
 		"BUTTON_REQUEST_READ_RECEIPT": "Zahtevaj potrdilo o branju",
 		"BUTTON_MARK_AS_IMPORTANT": "Označi kot pomembno",
-		"BUTTON_REQUEST_DSN": "Zahtevaj potrdilo o dostavi"
+		"BUTTON_REQUEST_DSN": "Zahtevaj potrdilo o dostavi",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Želite zapreti to okno?",
 		"DESC_WANT_DELETE_MESSAGES": "Želite izbrisati sporočilo\/-a?"
 	},
@@ -312,7 +320,7 @@
 		"MARK_AS_READ_LABEL": "Označi kot prebrano",
 		"REPLY_INTERVAL_LABEL": "Interval odgovorov (dnevi)",
 		"KEEP_LABEL": "Obdrži",
-		"STOP_LABEL": "Ne prenehaj z obdelovanjem pravil",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Zadeva (izbirno)",
 		"VACATION_MESSAGE_LABEL": "Sporočilo",
 		"VACATION_RECIPIENTS_LABEL": "Prejemniki (ločeni z vejico)",
@@ -351,21 +359,43 @@
 		"ERROR_UNKNOWN": "Neznana napaka pri nalaganju datoteke"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> Navadno besedilo",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"PLAIN": "HTML <-> Navadno besedilo",
+		"SOURCE": "HTML <-> SOURCE",
+		"FONTFAMILY": "Font family",
+		"FONTSIZE": "Font size",
+		"DIR": "Text direction",
+		"DIR_LTR": "Left to right",
+		"DIR_RTL": "Right to left",
+		"DIR_AUTO": "Automatic",
+		"TEXTCOLOR": "Text color",
+		"BACKGROUNDCOLOR": "Background color",
+		"BOLD": "Bold",
+		"ITALIC": "Italic",
+		"UNDERLINE": "Underline",
+		"STRIKE": "Strikethrough",
+		"SUB": "Subscript",
+		"SUP": "Superscript",
+		"OL": "Ordered list",
+		"UL": "Unordered list",
+		"QUOTE": "Blockquote",
+		"INDENTDECREASE": "Decrease indent",
+		"INDENTINCREASE": "Increase indent",
+		"LINK": "Link",
+		"IMAGEURL": "Image URL",
+		"IMAGEUPLOAD": "Image select",
+		"UNDO": "Undo",
+		"REDO": "Redo"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Osebno",
-		"LABEL_GENERAL_NAME": "Splošno",
-		"LABEL_CONTACTS_NAME": "Stiki",
-		"LABEL_FOLDERS_NAME": "Mape",
-		"LABEL_ACCOUNTS_NAME": "Računi",
-		"LABEL_FILTERS_NAME": "Filtri",
-		"LABEL_SECURITY_NAME": "Varnost",
-		"LABEL_THEMES_NAME": "Teme"
+		"GENERAL": "Splošno",
+		"CONTACTS": "Stiki",
+		"FOLDERS": "Mape",
+		"ACCOUNTS": "Računi",
+		"FILTERS": "Filtri",
+		"SECURITY": "Varnost",
+		"THEMES": "Teme"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "Filtri",
 		"SIMPLE": "Simple",
 		"ADVANCED": "Advanced",
 		"BUTTON_ADD_SCRIPT": "Add a Script",
@@ -378,18 +408,18 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Varnost",
 		"LABEL_AUTOLOGOUT": "Samodejna odjava",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Nikoli",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minut",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% ur"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Nikoli"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Splošno",
 		"LANGUAGE": "Jezik",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identiteta",
 		"LAYOUT": "Postavitev",
 		"LAYOUT_NO_SPLIT": "Brez razdelitve",
 		"LAYOUT_VERTICAL_SPLIT": "Navpično razdeljeno",
 		"LAYOUT_HORIZONTAL_SPLIT": "Vodoravno razdeljeno",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Privzeta vrsta besedila",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Navadno besedilo",
@@ -399,19 +429,30 @@
 		"USE_CHECKBOXES_IN_LIST": "Na seznamu pokaži kvadratke za izbor",
 		"USE_THREADS": "Uporabi niti",
 		"REPLY_SAME_FOLDER": "Shrani odgovore v mapo sporočila, na katerega se odgovarja",
-		"SHOW_IMAGES": "Vedno prikaži zunanje slike v telesu sporočila",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"REMOVE_COLORS": "Remove background and text colors from message body",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "Sporočil na strani",
+		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Mark message as read after",
 		"MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
+		"MINUTES": "minutes",
 		"NOTIFICATIONS": "Obvestila",
 		"SOUND_NOTIFICATION": "Zvočno obvestilo",
 		"CHROME_NOTIFICATION_DESC": "Prikaži obvestila ob novih sporočilih",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Zavrnil brskalnik)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
+		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Samodejno dodaj prejemnike v imenik",
@@ -463,14 +504,13 @@
 		"BUTTON_ADD_ACCOUNT": "Dodaj račun",
 		"BUTTON_ADD_IDENTITY": "Dodaj identiteto",
 		"LOADING_PROCESS": "Posodabljanje...",
-		"DEFAULT_IDENTITY_LABEL": "privzeto"
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Uvozi ključ",
 		"BUTTON_GENERATE_KEY_PAIR": "Generiraj ključe",
 		"TITLE_PRIVATE": "Zasebni",
 		"TITLE_PUBLIC": "Javni",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Samodejno shrani osnutek",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
@@ -484,7 +524,6 @@
 		"LABEL_REPLY_ALL": "Odgovori vsem",
 		"LABEL_FORWARD": "Posreduj",
 		"LABEL_FORWARD_MULTIPLY": "Posreduj kot prilogo\/-e",
-		"LABEL_HELP": "Pomoč",
 		"LABEL_CHECK_ALL": "Izberi vsa sporočila",
 		"LABEL_DELETE": "Izbriši",
 		"LABEL_OPEN_THREAD": "Odpri izbrano nit",

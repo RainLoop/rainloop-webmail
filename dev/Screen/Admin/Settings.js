@@ -37,6 +37,6 @@ export class SettingsAdminScreen extends AbstractSettingsScreen {
 	}
 
 	onShow() {
-		rl.setWindowTitle();
+		rl.setTitle();
 	}
 }

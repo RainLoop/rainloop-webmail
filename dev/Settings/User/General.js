@@ -2,7 +2,8 @@ import ko from 'ko';
 
 import { SMAudio } from 'Common/Audio';
 import { SaveSettingStatus } from 'Common/Enums';
-import { EditorDefaultType, Layout } from 'Common/EnumsUser';
+import { LayoutSideView, LayoutBottomView } from 'Common/EnumsUser';
+import { setRefreshFoldersInterval } from 'Common/Folders';
 import { Settings, SettingsGet } from 'Common/Globals';
 import { isArray } from 'Common/Utils';
 import { addSubscribablesTo, addComputablesTo } from 'External/ko';
@@ -16,7 +17,6 @@ import { LanguageStore } from 'Stores/Language';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import { IdentityUserStore } from 'Stores/User/Identity';
 import { NotificationUserStore } from 'Stores/User/Notification';
-import { MessageUserStore } from 'Stores/User/Message';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
 
 import Remote from 'Remote/User/Fetch';
@@ -30,23 +30,26 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
+		this.hourCycle = LanguageStore.hourCycle;
 
 		this.soundNotification = SMAudio.notifications;
 		this.notificationSound = ko.observable(SettingsGet('NotificationSound'));
-		this.notificationSounds = ko.observableArray(SettingsGet('NewMailSounds'));
+		this.notificationSounds = ko.observableArray(SettingsGet('newMailSounds'));
 
-		this.desktopNotification = NotificationUserStore.enabled;
+		this.desktopNotifications = NotificationUserStore.enabled;
 		this.isDesktopNotificationAllowed = NotificationUserStore.allowed;
 
 		this.threadsAllowed = AppUserStore.threadsAllowed;
 
-		['layout', 'messageReadDelay', 'messagesPerPage',
-		 'editorDefaultType', 'requestReadReceipt', 'requestDsn', 'pgpSign', 'pgpEncrypt',
-		 'viewHTML', 'showImages', 'removeColors', 'hideDeleted', 'listInlineAttachments',
-		 'useCheckboxesInList', 'useThreads', 'replySameFolder', 'msgDefaultAction'
+		['layout', 'messageReadDelay', 'messagesPerPage', 'checkMailInterval',
+		 'editorDefaultType', 'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt',
+		 'viewHTML', 'viewImages', 'viewImagesWhitelist', 'removeColors', 'allowStyles', 'allowDraftAutosave',
+		 'hideDeleted', 'listInlineAttachments', 'simpleAttachmentsList', 'collapseBlockquotes', 'maxBlockquotesLevel',
+		 'useCheckboxesInList', 'listGrouped', 'useThreads', 'replySameFolder', 'msgDefaultAction', 'allowSpellcheck',
+		 'showNextMessage'
 		].forEach(name => this[name] = SettingsUserStore[name]);
 
-		this.allowLanguagesOnSettings = !!SettingsGet('AllowLanguagesOnSettings');
+		this.allowLanguagesOnSettings = !!SettingsGet('allowLanguagesOnSettings');
 
 		this.languageTrigger = ko.observable(SaveSettingStatus.Idle);
 
@@ -68,8 +71,8 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 			editorDefaultTypes: () => {
 				translateTrigger();
 				return [
-					{ id: EditorDefaultType.Html, name: i18n('SETTINGS_GENERAL/EDITOR_HTML') },
-					{ id: EditorDefaultType.Plain, name: i18n('SETTINGS_GENERAL/EDITOR_PLAIN') }
+					{ id: 'Html', name: i18n('SETTINGS_GENERAL/EDITOR_HTML') },
+					{ id: 'Plain', name: i18n('SETTINGS_GENERAL/EDITOR_PLAIN') }
 				];
 			},
 
@@ -84,9 +87,9 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 			layoutTypes: () => {
 				translateTrigger();
 				return [
-					{ id: Layout.NoPreview, name: i18n('SETTINGS_GENERAL/LAYOUT_NO_SPLIT') },
-					{ id: Layout.SidePreview, name: i18n('SETTINGS_GENERAL/LAYOUT_VERTICAL_SPLIT') },
-					{ id: Layout.BottomPreview, name: i18n('SETTINGS_GENERAL/LAYOUT_HORIZONTAL_SPLIT') }
+					{ id: 0, name: i18n('SETTINGS_GENERAL/LAYOUT_NO_SPLIT') },
+					{ id: LayoutSideView, name: i18n('SETTINGS_GENERAL/LAYOUT_VERTICAL_SPLIT') },
+					{ id: LayoutBottomView, name: i18n('SETTINGS_GENERAL/LAYOUT_HORIZONTAL_SPLIT') }
 				];
 			}
 		});
@@ -95,12 +98,14 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.addSetting('MsgDefaultAction');
 		this.addSetting('MessageReadDelay');
 		this.addSetting('MessagesPerPage');
+		this.addSetting('CheckMailInterval');
 		this.addSetting('Layout');
+		this.addSetting('MaxBlockquotesLevel');
 
-		this.addSettings(['ViewHTML', 'ShowImages', 'HideDeleted', 'ListInlineAttachments',
-			'UseCheckboxesInList', 'ReplySameFolder',
-			'requestReadReceipt', 'requestDsn', 'pgpSign', 'pgpEncrypt',
-			'DesktopNotifications', 'SoundNotification']);
+		this.addSettings(['ViewHTML', 'ViewImages', 'ViewImagesWhitelist', 'HideDeleted', 'RemoveColors', 'AllowStyles',
+			'ListInlineAttachments', 'simpleAttachmentsList', 'UseCheckboxesInList', 'listGrouped', 'ReplySameFolder',
+			'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt', 'allowSpellcheck',
+			'DesktopNotifications', 'SoundNotification', 'CollapseBlockquotes', 'AllowDraftAutosave', 'showNextMessage']);
 
 		const fReloadLanguageHelper = (saveSettingsStep) => () => {
 				this.languageTrigger(saveSettingsStep);
@@ -110,18 +115,13 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		addSubscribablesTo(this, {
 			language: value => {
 				this.languageTrigger(SaveSettingStatus.Saving);
-				translatorReload(false, value)
+				translatorReload(value)
 					.then(fReloadLanguageHelper(SaveSettingStatus.Success), fReloadLanguageHelper(SaveSettingStatus.Failed))
-					.then(() => Remote.saveSetting('Language', value));
+					.then(() => Remote.saveSetting('language', value));
 			},
 
-			removeColors: value => {
-				let dom = MessageUserStore.bodiesDom();
-				if (dom) {
-					dom.innerHTML = '';
-				}
-				Remote.saveSetting('RemoveColors', value);
-			},
+			hourCycle: value =>
+				Remote.saveSetting('hourCycle', value),
 
 			notificationSound: value => {
 				Remote.saveSetting('NotificationSound', value);
@@ -131,6 +131,10 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 			useThreads: value => {
 				MessagelistUserStore([]);
 				Remote.saveSetting('UseThreads', value);
+			},
+
+			checkMailInterval: () => {
+				setRefreshFoldersInterval(SettingsUserStore.checkMailInterval());
 			}
 		});
 	}

@@ -1,7 +1,7 @@
 :root {
-	--fontSans: Verdana, Geneva, "Bitstream Vera Sans", "DejaVu LGC Sans", Arial, sans-serif;
-	--fontSerif: "Nimbus Roman No9 L", "Times New Roman", Times, FreeSerif, serif;
-	--fontMono: "Liberation Mono", Monaco, Menlo, Consolas, "Courier New", FreeMono, Courier, monospace;
+	--fontSans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	--fontSerif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+	--fontMono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 #rl-app.fontArial {
@@ -38,15 +38,30 @@
 html, body {
 	margin: 0;
 	padding: 0;
+	-webkit-text-size-adjust: 100%; /* 2 */
+}
+
+#rl-app *, #rl-app *::before, #rl-app *::after {
+	box-sizing: border-box;
 }
 
 #rl-app {
 	background-color: var(--main-bg-color, #aaa);
 	color: var(--main-color, #333);
 	font-family: var(--fontSans);
+
+	-webkit-touch-callout: none;
+	font-size: var(--main-font-size, 14px);
+	line-height: 1.25; /* 1 */
+	position: relative;
+}
+body#rl-app {
+	height: 100vh;
+	height: 100dvh;
+	width: 100vw;
 }
 
-#rl-loading, #rl-loading-error {
+#rl-loading, #rl-loading-error, #rl-BadBrowser, #rl-NoCookie {
 	color: var(--loading-color, #000);
 	text-shadow: var(--loading-text-shadow);
 	font-size: 30px;

@@ -1,7 +1,5 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under MIT */
 const gulp = require('gulp');
-const header = require('gulp-header');
-const stripbom = require('gulp-stripbom');
 
 const { config } = require('./config');
 const { del } = require('./common');

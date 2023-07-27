@@ -1,5 +1,7 @@
 
 :root {
+	color-scheme: light;
+
 	/* MAIN */
 	--main-color: #333;
 	--main-bg-color: #e3e3e3;
@@ -9,7 +11,10 @@
 	--main-font-size: 14px;
 	--link-color: #369;
 	--border-color: #ddd;
+	--border-radius: 5px;
 	--hr-color: #eee;
+
+	--panel-bg-clr: #fff;
 
 	--warning-clr: #c09853;
 	--warning-bg-clr: #fcf8e3;
@@ -59,18 +64,15 @@
 	--unread-count-bg-color: #333;
 
 	/* SETTINGS */
-	--settings-bg-clr: #fff;
 	--settings-menu-color: #333;
 	--settings-menu-selected-color: #eee;
 	--settings-menu-selected-bg-color: #333;
 	--settings-menu-hover-color: #eee;
 	--settings-menu-hover-bg-color: #333;
 
-	/* MESSAGE LIST */
+	/* MESSAGES */
 	--message-list-toolbar-bg-color: #eee;
-
-	/* MESSAGE */
-	--message-bg-color: #fff;
+	--message-header-bg-clr: #f8f8f8;
 
 	/* DIALOGS */
 	--dialog-clr: #333;
@@ -82,6 +84,7 @@
 	--btn-clr: #333;
 	--btn-bg-clr: #fff;
 	--btn-border-clr: #fff;
+	--btn-border-radius: 3px;
 	--btn-success-bg-clr: #84AB04;
 	--btn-danger-bg-clr: #ee5f5b;
 
@@ -99,4 +102,6 @@
 	--tab-active-bg-clr: #fff;
 	--tab-hover-border-clr: #eee;
 
+	--smDialogShrink: 20px;
+	--smMainShadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }

@@ -33,21 +33,9 @@ class EmailCollection extends \MailSo\Base\Collection
 		parent::append($oEmail, $bToTop);
 	}
 
-	public function ToArray() : array
-	{
-		$aReturn = array();
-		foreach ($this as $oEmail)
-		{
-			$aReturn[] = $oEmail->ToArray();
-		}
-
-		return $aReturn;
-	}
-
 	public function MergeWithOtherCollection(EmailCollection $oEmails) : self
 	{
-		foreach ($oEmails as $oEmail)
-		{
+		foreach ($oEmails as $oEmail) {
 			$this->append($oEmail);
 		}
 
@@ -58,11 +46,9 @@ class EmailCollection extends \MailSo\Base\Collection
 	{
 		$aReturn = array();
 
-		foreach ($this as $oEmail)
-		{
+		foreach ($this as $oEmail) {
 			$sEmail = $oEmail->GetEmail();
-			if (!isset($aReturn[$sEmail]))
-			{
+			if (!isset($aReturn[$sEmail])) {
 				$aReturn[$sEmail] = $oEmail;
 			}
 		}
@@ -73,12 +59,16 @@ class EmailCollection extends \MailSo\Base\Collection
 	public function ToString(bool $bConvertSpecialsName = false, bool $bIdn = false) : string
 	{
 		$aReturn = array();
-		foreach ($this as $oEmail)
-		{
+		foreach ($this as $oEmail) {
 			$aReturn[] = $oEmail->ToString($bConvertSpecialsName, $bIdn);
 		}
 
 		return \implode(', ', $aReturn);
+	}
+
+	public function __toString() : string
+	{
+		return $this->ToString();
 	}
 
 	private function parseEmailAddresses(string $sRawEmails) : void
@@ -87,8 +77,7 @@ class EmailCollection extends \MailSo\Base\Collection
 		$sRawEmails = \trim($sRawEmails);
 
 		$sWorkingRecipientsLen = \strlen($sRawEmails);
-		if (!$sWorkingRecipientsLen)
-		{
+		if (!$sWorkingRecipientsLen) {
 			return;
 		}
 
@@ -102,59 +91,49 @@ class EmailCollection extends \MailSo\Base\Collection
 
 		$iCurrentPos = 0;
 
-		while ($iCurrentPos < $sWorkingRecipientsLen)
-		{
+		while ($iCurrentPos < $sWorkingRecipientsLen) {
 			switch ($sRawEmails[$iCurrentPos])
 			{
 				case '\'':
 				case '"':
-					if (!$bIsInQuotes)
-					{
+					if (!$bIsInQuotes) {
 						$sChQuote = $sRawEmails[$iCurrentPos];
 						$bIsInQuotes = true;
-					}
-					else if ($sChQuote == $sRawEmails[$iCurrentPos])
-					{
+					} else if ($sChQuote == $sRawEmails[$iCurrentPos]) {
 						$bIsInQuotes = false;
 					}
 					break;
 
 				case '<':
-					if (!$bIsInAngleBrackets)
-					{
+					if (!$bIsInAngleBrackets) {
 						$bIsInAngleBrackets = true;
-						if ($bIsInQuotes)
-						{
+						if ($bIsInQuotes) {
 							$bIsInQuotes = false;
 						}
 					}
 					break;
 
 				case '>':
-					if ($bIsInAngleBrackets)
-					{
+					if ($bIsInAngleBrackets) {
 						$bIsInAngleBrackets = false;
 					}
 					break;
 
 				case '(':
-					if (!$bIsInBrackets)
-					{
+					if (!$bIsInBrackets) {
 						$bIsInBrackets = true;
 					}
 					break;
 
 				case ')':
-					if ($bIsInBrackets)
-					{
+					if ($bIsInBrackets) {
 						$bIsInBrackets = false;
 					}
 					break;
 
 				case ',':
 				case ';':
-					if (!$bIsInAngleBrackets && !$bIsInBrackets && !$bIsInQuotes)
-					{
+					if (!$bIsInAngleBrackets && !$bIsInBrackets && !$bIsInQuotes) {
 						$iEmailEndPos = $iCurrentPos;
 
 						try
@@ -175,8 +154,7 @@ class EmailCollection extends \MailSo\Base\Collection
 			++$iCurrentPos;
 		}
 
-		if ($iEmailStartPos < $iCurrentPos)
-		{
+		if ($iEmailStartPos < $iCurrentPos) {
 			try
 			{
 				$this->append(
@@ -186,4 +164,11 @@ class EmailCollection extends \MailSo\Base\Collection
 			catch (\InvalidArgumentException $oException) {}
 		}
 	}
+
+	#[\ReturnTypeWillChange]
+	public function jsonSerialize()
+	{
+		return \array_slice($this->getArrayCopy(), 0, 100);
+	}
+
 }

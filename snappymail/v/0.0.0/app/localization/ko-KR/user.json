@@ -1,4 +1,5 @@
 {
+	"LANG_DIR": "ltr",
 	"GLOBAL": {
 		"TO_ARCHIVE": "아카이빙",
 		"ARE_YOU_SURE": "정말입니까?",
@@ -19,9 +20,11 @@
 		"MOVE_TO": "다음 위치로 이동",
 		"NAME": "받은 편지함",
 		"NONE": "없음",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "스팸 아님",
 		"USERNAME": "사용자 이름",
 		"PASSWORD": "비밀번호",
+		"REMEMBER": "Remember",
 		"REPLY_TO": "회신 주소",
 		"SAVE": "저장",
 		"SAVE_CHANGES": "Save changes?",
@@ -33,7 +36,11 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "예",
 		"NO": "아니요",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "default",
+		"HELP": "도움말",
+		"TEXT": "본문",
+		"ATTACHMENTS": "첨부파일"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "아이디",
@@ -41,13 +48,7 @@
 		"BUTTON_SIGN_IN": "로그인"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "계정 추가",
-		"BUTTON_SETTINGS": "설정",
-		"BUTTON_HELP": "도움말"
-	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "모바일 버전",
-		"BUTTON_DESKTOP_VERSION": "데스크탑 버전"
+		"BUTTON_ADD_ACCOUNT": "계정 추가"
 	},
 	"SEARCH": {
 		"TITLE_ADV": "고급 검색",
@@ -98,6 +99,7 @@
 		"MENU_SELECT_SEEN": "읽음",
 		"MENU_SELECT_FLAGGED": "중요",
 		"MENU_SELECT_UNFLAGGED": "일반",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "목록이 비어있습니다.",
 		"EMPTY_SEARCH_LIST": "검색 조건에 맞는 결과가 없습니다..",
 		"SEARCH_RESULT_FOR": "\"%SEARCH%\"에 대한 검색 결과",
@@ -108,6 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "%COUNT% 개의 새 메시지가 있습니다!",
 		"QUOTA_SIZE": "총 <strong>%LIMIT%<\/strong> 중 <strong>%PROC%%<\/strong>을(를) 사용 중입니다.",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Date ascending",
 		"SORT_DATE_DESC": "Date descending",
 		"SORT_SIZE_ASC": "Size ascending",
@@ -224,11 +227,16 @@
 		"NO_ATTACHMENTS_HERE_DESC": "첨부된 파일이 없습니다.",
 		"ATTACHMENTS_ERROR_DESC": "경고! 모든 첨부파일이 업로드 되지 않습니다.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "첨부파일이 아직 업로드되지 않았습니다.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "작성 중인 메시지 자동 저장",
 		"BUTTON_REQUEST_READ_RECEIPT": "수신 확인 요청",
 		"BUTTON_MARK_AS_IMPORTANT": "중요 표시",
-		"BUTTON_REQUEST_DSN": "수신 확인 요청"
+		"BUTTON_REQUEST_DSN": "수신 확인 요청",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "정말로 이 페이지를 닫으시겠습니까 ?",
 		"DESC_WANT_DELETE_MESSAGES": "정말로 선택한 메세지를 삭제하시겠습니까 ?"
 	},
@@ -312,7 +320,7 @@
 		"MARK_AS_READ_LABEL": "읽음 표시",
 		"REPLY_INTERVAL_LABEL": "회신 주기 (일)",
 		"KEEP_LABEL": "Keep",
-		"STOP_LABEL": "Don't stop processing rules",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "제목 (옵션)",
 		"VACATION_MESSAGE_LABEL": "메시지",
 		"VACATION_RECIPIENTS_LABEL": "수신인 (쉼표 분리)",
@@ -351,21 +359,43 @@
 		"ERROR_UNKNOWN": "알 수 없는 업로드 오류가 발생했습니다."
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> TEXT",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"PLAIN": "HTML <-> TEXT",
+		"SOURCE": "HTML <-> SOURCE",
+		"FONTFAMILY": "Font family",
+		"FONTSIZE": "Font size",
+		"DIR": "Text direction",
+		"DIR_LTR": "Left to right",
+		"DIR_RTL": "Right to left",
+		"DIR_AUTO": "Automatic",
+		"TEXTCOLOR": "Text color",
+		"BACKGROUNDCOLOR": "Background color",
+		"BOLD": "Bold",
+		"ITALIC": "Italic",
+		"UNDERLINE": "Underline",
+		"STRIKE": "Strikethrough",
+		"SUB": "Subscript",
+		"SUP": "Superscript",
+		"OL": "Ordered list",
+		"UL": "Unordered list",
+		"QUOTE": "Blockquote",
+		"INDENTDECREASE": "Decrease indent",
+		"INDENTINCREASE": "Increase indent",
+		"LINK": "Link",
+		"IMAGEURL": "Image URL",
+		"IMAGEUPLOAD": "Image select",
+		"UNDO": "Undo",
+		"REDO": "Redo"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "개인",
-		"LABEL_GENERAL_NAME": "일반",
-		"LABEL_CONTACTS_NAME": "연락처",
-		"LABEL_FOLDERS_NAME": "폴더",
-		"LABEL_ACCOUNTS_NAME": "계정",
-		"LABEL_FILTERS_NAME": "필터",
-		"LABEL_SECURITY_NAME": "보안",
-		"LABEL_THEMES_NAME": "테마"
+		"GENERAL": "일반",
+		"CONTACTS": "연락처",
+		"FOLDERS": "폴더",
+		"ACCOUNTS": "계정",
+		"FILTERS": "필터",
+		"SECURITY": "보안",
+		"THEMES": "테마"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "필터",
 		"SIMPLE": "Simple",
 		"ADVANCED": "Advanced",
 		"BUTTON_ADD_SCRIPT": "Add a Script",
@@ -378,18 +408,18 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "보안",
 		"LABEL_AUTOLOGOUT": "자동 로그아웃",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "설정하지 않음",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES%분",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS%시간"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "설정하지 않음"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "일반",
 		"LANGUAGE": "언어",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "신원",
 		"LAYOUT": "레이아웃",
 		"LAYOUT_NO_SPLIT": "분할 해제",
 		"LAYOUT_VERTICAL_SPLIT": "세로 분할",
 		"LAYOUT_HORIZONTAL_SPLIT": "가로 분할",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "기본 텍스트 편집기",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "평문",
@@ -399,19 +429,30 @@
 		"USE_CHECKBOXES_IN_LIST": "목록에서 확인상자 표시",
 		"USE_THREADS": "대화형 목록 사용",
 		"REPLY_SAME_FOLDER": "회신 메시지를 원본과 동일한 폴더 위치에 저장",
-		"SHOW_IMAGES": "메시지 본문에 포함된 외부 이미지를 항상 표시",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"REMOVE_COLORS": "Remove background and text colors from message body",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "페이지 당 메시지 개수",
+		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Mark message as read after",
 		"MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
+		"MINUTES": "minutes",
 		"NOTIFICATIONS": "알림",
 		"SOUND_NOTIFICATION": "소리 알림",
 		"CHROME_NOTIFICATION_DESC": "새 메시지 알림 팝업 사용",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(브라우저에 의해 차단됨)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
+		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "수신인을 주소록에 자동으로 추가",
@@ -463,14 +504,13 @@
 		"BUTTON_ADD_ACCOUNT": "계정 추가",
 		"BUTTON_ADD_IDENTITY": "신원 추가",
 		"LOADING_PROCESS": "업데이트 중...",
-		"DEFAULT_IDENTITY_LABEL": "default"
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "키 가져오기",
 		"BUTTON_GENERATE_KEY_PAIR": "키 생성",
 		"TITLE_PRIVATE": "비공개",
 		"TITLE_PUBLIC": "공개",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "작성 중인 메시지 자동 저장",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
@@ -484,7 +524,6 @@
 		"LABEL_REPLY_ALL": "전체 회신",
 		"LABEL_FORWARD": "전달",
 		"LABEL_FORWARD_MULTIPLY": "첨부파일로 전달",
-		"LABEL_HELP": "도움말",
 		"LABEL_CHECK_ALL": "전체 메시지  선택",
 		"LABEL_DELETE": "삭제",
 		"LABEL_OPEN_THREAD": "선택한 대화 열기",

@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html class="rl-started-trigger">
-
 <head>
-	<noscript>
-		<meta http-equiv="refresh" content="0; URL=./?/NoScript">
-	</noscript>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
 	<meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,17 +11,26 @@
 	<style id="app-boot-css">{{BaseAppBootCss}}</style>
 	<link type="text/css" rel="stylesheet" href="{{BaseAppMainCssLink}}">
 	<link rel="manifest" href="{{BaseAppManifestLink}}">
-	<style id="app-theme-style" data-href="{{BaseAppThemeCssLink}}">{{BaseAppThemeCss}}</style>
+	<link rel="icon" href="{{BaseFavIconSvg}}" type="image/svg+xml">
+	<style id="app-theme-style" data-name="{{BaseAppThemeName}}">{{BaseAppThemeCss}}</style>
 	{{BaseAppFaviconPngLinkTag}}
 	{{BaseAppFaviconTouchLinkTag}}
 </head>
-
 <body id="rl-app" data-admin='{{BaseAppAdmin}}' spellcheck="false">
 	<div id="rl-loading">
 		<div id="rl-loading-desc">{{LoadingDescriptionEsc}}</div>
 		<i class="icon-spinner"></i>
+		<noscript><div class="error-desc">{{NO_SCRIPT_DESC}}</div></noscript>
 	</div>
-	<div id="rl-loading-error" hidden="">An error occurred.<br>Please refresh the page and try again.</div>
+	<div id="rl-loading-error" hidden="">An error occurred.<br>Please refresh the page and try again.<br></div>
+	<div id="rl-BadBrowser" hidden="">
+		<h1>{{BAD_BROWSER_TITLE}}</h1>
+		<div class="error-desc">{{BAD_BROWSER_DESC}}</div>
+	</div>
+	<div id="rl-NoCookie" hidden="">
+		<h1>{{NO_COOKIE_TITLE}}</h1>
+		<div class="error-desc">{{NO_COOKIE_DESC}}</div>
+	</div>
 	<div id="rl-content" hidden="">
 		<div id="rl-left"></div>
 		<div id="rl-right"></div>
@@ -34,5 +39,4 @@
 	{{BaseTemplates}}
 	<script nonce="" type="text/javascript">{{BaseAppBootScript}}{{BaseLanguage}}</script>
 </body>
-
 </html>

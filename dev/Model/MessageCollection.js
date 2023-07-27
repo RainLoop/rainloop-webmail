@@ -1,9 +1,6 @@
 import { AbstractCollectionModel } from 'Model/AbstractCollection';
 import { MessageModel } from 'Model/Message';
-
-import {
-	MessageFlagsCache
-} from 'Common/Cache';
+import { MessageUserStore } from 'Stores/User/Message';
 
 'use strict';
 
@@ -12,19 +9,16 @@ export class MessageCollectionModel extends AbstractCollectionModel
 /*
 	constructor() {
 		super();
-		this.Filtered
-		this.Folder
-		this.FolderHash
-		this.FolderInfo
+		this.filtered
+		this.folder
 		this.totalEmails
-		this.unreadEmails
-		this.MessageResultCount
-		this.UidNext
-		this.ThreadUid
-		this.NewMessages
-		this.Offset
-		this.Limit
-		this.Search
+		this.totalThreads
+		this.threadUid
+		this.newMessages
+		this.offset
+		this.limit
+		this.search
+		this.limited
 	}
 */
 
@@ -32,12 +26,14 @@ export class MessageCollectionModel extends AbstractCollectionModel
 	 * @param {?Object} json
 	 * @returns {MessageCollectionModel}
 	 */
-	static reviveFromJson(object, cached) {
+	static reviveFromJson(object/*, cached*/) {
+		let msg = MessageUserStore.message();
 		return super.reviveFromJson(object, message => {
-			message = MessageModel.reviveFromJson(message);
+			// If message is currently viewed, use that.
+			// Maybe then use msg.revivePropertiesFromJson(message) ?
+			message = (msg && msg.hash === message.hash) ? msg : MessageModel.reviveFromJson(message);
 			if (message) {
 				message.deleted(false);
-				cached ? MessageFlagsCache.initMessage(message) : MessageFlagsCache.store(message);
 				return message;
 			}
 		});

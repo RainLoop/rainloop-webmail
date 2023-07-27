@@ -1,11 +1,10 @@
-import { Scope } from 'Common/Enums';
-import { keyScope, leftPanelDisabled, SettingsCapa } from 'Common/Globals';
+import { ScopeSettings } from 'Common/Enums';
+import { keyScope, SettingsCapa } from 'Common/Globals';
 import { runSettingsViewModelHooks } from 'Common/Plugins';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 
 import { AppUserStore } from 'Stores/User/App';
 import { AccountUserStore } from 'Stores/User/Account';
-import { ThemeStore } from 'Stores/Theme';
 
 import { AbstractSettingsScreen, settingsAddViewModel } from 'Screen/AbstractSettings';
 
@@ -23,7 +22,7 @@ import { SettingsPaneUserView } from 'View/User/Settings/Pane';
 
 export class SettingsUserScreen extends AbstractSettingsScreen {
 	constructor() {
-		super([SystemDropDownUserView, SettingsMenuUserView, SettingsPaneUserView]);
+		super([SettingsMenuUserView, SettingsPaneUserView, SystemDropDownUserView]);
 
 		const views = [
 			UserSettingsGeneral
@@ -37,6 +36,8 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 			views.push(UserSettingsAccounts);
 		}
 
+		// TODO: issue on account switch
+		// When current domain has sieve but the new has not, or current has not and the new has
 		if (SettingsCapa('Sieve')) {
 			views.push(UserSettingsFilters);
 		}
@@ -66,12 +67,11 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 
 	onShow() {
 		this.setSettingsTitle();
-		keyScope(Scope.Settings);
-		ThemeStore.isMobile() && leftPanelDisabled(true);
+		keyScope(ScopeSettings);
 	}
 
 	setSettingsTitle() {
 		const sEmail = AccountUserStore.email();
-		rl.setWindowTitle((sEmail ? sEmail + ' - ' :  '') + this.sSettingsTitle);
+		rl.setTitle((sEmail ? sEmail + ' - ' :  '') + this.sSettingsTitle);
 	}
 }

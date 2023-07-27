@@ -48,6 +48,12 @@
 						<span data-i18n="COMPOSE/BUTTON_REQUEST_DSN"></span>
 					</a>
 				</li>
+				<li data-bind="click: function () { requireTLS(!requireTLS()); }">
+					<a>
+						<i class="fontastic" data-bind="text: requireTLS() ? '☑' : '☐'"></i>
+						<span data-i18n="COMPOSE/BUTTON_REQUIRE_TLS"></span>
+					</a>
+				</li>
 				<li data-bind="click: function () { markAsImportant(!markAsImportant()); }">
 					<a>
 						<i class="fontastic" data-bind="text: markAsImportant() ? '☑' : '☐'"></i>
@@ -124,29 +130,12 @@
 			<tr>
 				<td data-i18n="GLOBAL/SUBJECT"></div>
 				<td>
-					<input type="text" size="70" autocomplete="off" data-bind="textInput: subject">
+					<input type="text" name="subject" autocomplete="off" data-bind="textInput: subject">
 				</td>
 			</tr>
 		</table>
 		<div style="display:flex">
-			<div class="btn-group" style="flex-grow:1" id="area-toggle">
-				<button type="button" class="btn" data-bind="click: bodyArea,
-					css: { 'active': 'body' == viewArea() }">
-					<i class="icon-file-text"></i>
-				</button>
-				<button type="button" class="btn" data-bind="click: attachmentsArea,
-					css: { 'btn-danger': attachmentsInErrorCount(), 'active': 'attachments' == viewArea() },
-					tooltipErrorTip: attachmentsErrorTooltip">
-					<span data-bind="visible: attachmentsCount()">
-						<b data-bind="text: attachmentsCount"></b>
-						&nbsp;&nbsp;
-					</span>
-					<i data-bind="css: { 'icon-attachment': !attachmentsInProcessCount(), 'icon-spinner': attachmentsInProcessCount()}"></i>
-				</button>
-				<button type="button" class="btn" data-bind="visible: canMailvelope, click: mailvelopeArea, css: { 'active': 'mailvelope' == viewArea() }">
-					<i class="mailvelope-icon"></i>
-				</button>
-			</div>
+			<div class="btn-group" style="flex-grow:1"></div>
 			<div class="btn-group">
 				<a class="btn fontastic" data-bind="click: togglePgpSign, visible: canPgpSign, css: {'btn-success': pgpSign()}" data-i18n="[title]OPENPGP/LABEL_SIGN">
 					✍
@@ -164,28 +153,64 @@
 		</div>
 	</div>
 
-	<div class="attachmentAreaParent" data-bind="visible: 'attachments' == viewArea()">
-		<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropVisible(), css: {'dragAndDropOver': dragAndDropOver}"
-			data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></div>
-		<ul class="attachmentList" data-bind="foreach: attachments">
-			<li class="attachmentItem" data-bind="attr: { 'title': title }, css: { 'waiting': waiting, 'error': '' !== error() }">
-				<div class="attachmentIconParent">
-					<i class="iconMain" data-bind="css: iconClass, visible: !uploading() || 0 === progress()"></i>
-					<div class="iconProgress" data-bind="attr: { 'style': progressStyle }, visible: uploading"></div>
-					<div class="iconBG" data-bind="text: progressText, visible: uploading"></div>
-				</div>
-				<div class="attachmentNameParent">
-					<a href="#" class="close pull-right" style="margin-top:-4px;" data-bind="click: cancel">×</a>
-					<div class="attachmentName" data-bind="text: fileName"></div>
-					<span class="attachmentSize" data-bind="text: friendlySize"></span>
-				</div>
-			</li>
-		</ul>
-		<div class="no-attachments-desc" data-bind="visible: 0 === attachments().length"
-			data-i18n="COMPOSE/NO_ATTACHMENTS_HERE_DESC"></div>
+	<div class="tabs">
+		<input type="radio" name="tabs" value="body" id="tab-body" data-bind="checked: viewArea">
+		<label for="tab-body"
+			role="tab"
+			aria-selected="true"
+			aria-controls="panel1"
+			tabindex="0">
+			<i class="icon-file-text"></i>
+			<span data-i18n="GLOBAL/TEXT"></span>
+		</label>
+		<div class="tab-content" role="tabpanel" aria-hidden="false" style="grid-column-end:4">
+			<div class="textAreaParent" data-bind="initDom: editorArea, attr:{spellcheck:allowSpellcheck()?'true':'false'}"></div>
+		</div>
+
+		<input type="radio" name="tabs" value="attachments" id="tab-attachments" data-bind="checked: viewArea">
+		<label for="tab-attachments"
+			role="tab"
+			aria-selected="false"
+			aria-controls="panel2"
+			tabindex="0"
+			data-bind="
+				css: { 'btn-danger': attachmentsInErrorCount() },
+				tooltipErrorTip: attachmentsErrorTooltip">
+			<b data-bind="visible: attachmentsCount, text: attachmentsCount"></b>
+			<i data-bind="css: { 'icon-attachment': !attachmentsInProcessCount(), 'icon-spinner': attachmentsInProcessCount()}"></i>
+			<span data-i18n="GLOBAL/ATTACHMENTS"></span>
+		</label>
+		<div class="tab-content attachmentAreaParent" role="tabpanel" aria-hidden="true" style="grid-column-end:4">
+			<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropVisible(), css: {'dragAndDropOver': dragAndDropOver}"
+				data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></div>
+			<ul class="attachmentList" data-bind="foreach: attachments">
+				<li class="attachmentItem" data-bind="attr: { 'title': title }, css: { 'waiting': waiting, 'error': '' !== error() }">
+					<div class="attachmentIcon">
+						<i class="iconMain" data-bind="css: iconClass, visible: !uploading() || 0 === progress()"></i>
+						<div class="iconProgress" data-bind="attr: { 'style': progressStyle }, visible: uploading"></div>
+						<div class="iconBG" data-bind="text: progressText, visible: uploading"></div>
+					</div>
+					<div class="attachmentNameParent">
+						<a href="#" class="close pull-right" style="margin-top:-4px;" data-bind="click: cancel">×</a>
+						<div class="attachmentName" data-bind="text: fileName"></div>
+						<span class="attachmentSize" data-bind="text: friendlySize"></span>
+					</div>
+				</li>
+			</ul>
+			<div class="no-attachments-desc" data-bind="visible: 0 === attachments().length"
+				data-i18n="COMPOSE/NO_ATTACHMENTS_HERE_DESC"></div>
+		</div>
+
+		<input type="radio" name="tabs" value="mailvelope" id="tab-mailvelope" data-bind="checked: viewArea">
+		<label for="tab-mailvelope"
+			role="tab"
+			aria-selected="false"
+			aria-controls="panel3"
+			tabindex="0"
+			data-bind="visible: canMailvelope">
+			<i class="mailvelope-icon"></i>
+			<span>Mailvelope</span>
+		</label>
+		<div class="tab-content textAreaParent" id="mailvelope-editor" role="tabpanel" aria-hidden="true" style="grid-column-end:4" data-bind="visible: canMailvelope"></div>
 	</div>
-
-	<div class="textAreaParent" data-bind="visible: 'body' == viewArea(), initDom: editorArea"></div>
-
-	<div class="textAreaParent" id="mailvelope-editor" data-bind="visible: 'mailvelope' == viewArea()"></div>
 </div>

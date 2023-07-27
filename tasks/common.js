@@ -14,4 +14,4 @@ exports.copy = (sFile, sNewFile, done) => {
 
 exports.getHead = () => config.head.agpl;
 
-exports.cleanStatic = () => del(config.paths.static);
+exports.cleanStatic = () => del(config.paths.staticJS) && del(config.paths.staticCSS);

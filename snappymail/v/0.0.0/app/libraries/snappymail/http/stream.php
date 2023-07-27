@@ -17,8 +17,9 @@ abstract class Stream
 	{
 		\set_time_limit(0);
 		\ob_implicit_flush();
-		\ini_set('implicit_flush',1);
-		\ini_set('output_buffering', 0);
+		\ini_set('implicit_flush', '1');
+		\ini_set('output_buffering', '0');
+		\ini_set('display_errors', '0');
 		if ($i = \ob_get_level()) {
 			# Clear buffers:
 			while ($i-- && \ob_end_clean());
@@ -28,7 +29,7 @@ abstract class Stream
 		// We just fake Drupal https://www.drupal.org/docs/8/core/modules/big-pipe/bigpipe-environment-requirements
 		\header('Surrogate-Control: no-store, content="BigPipe/1.0"');
 		// Explicitly disable caching so Varnish and other upstreams won't cache.
-		\header('Cache-Control: no-store, no-cache, must-revalidate');
+		\header('Cache-Control: no-store');
 		\header('Pragma: no-cache');
 
 		// Nginx: disable fastcgi_buffering and disable gzip for this request.

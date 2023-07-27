@@ -1,5 +1,5 @@
 <div class="b-folders g-ui-user-select-none" data-bind="css: {'single-root-inbox': foldersListWithSingleInboxRootFolder}">
-	<div class="b-toolbar btn-toolbar hide-mobile">
+	<div class="b-toolbar btn-toolbar">
 		<a class="btn buttonCompose" data-bind="click: composeClick, css: {'btn-warning': composeInEdit, 'btn-success': !composeInEdit()}" data-i18n="[title]FOLDER_LIST/BUTTON_NEW_MESSAGE">
 			<i class="icon-paper-plane"></i>
 			<span class="buttonComposeText" data-i18n="FOLDER_LIST/BUTTON_NEW_MESSAGE"></span>
@@ -11,7 +11,7 @@
 			<li>
 				<a data-bind="dropmessages: $data,
 					css: { 'selected': selected, 'selectable': selectable, 'anim-action-class': actionBlink, 'is-flagged': isFlagged },
-					attr: { 'data-unread': printableUnreadCount }">
+					attr: { 'data-unread': unreadCount }">
 					<!-- ko text: localName --><!-- /ko -->
 					<!-- ko if: isInbox -->
 					<span class="flag-icon fontastic"></span>
@@ -20,14 +20,16 @@
 			</li>
 		</ul>
 		<hr>
-		<input type="search" style="width:100%" data-bind="textInput: foldersFilter, visible: foldersFilterVisible" data-i18n="[placeholder]GLOBAL/SEARCH">
+		<div class="search-input-wrp" data-bind="visible: foldersFilterVisible">
+			<input type="search" id="folderSearchInput" data-bind="textInput: foldersFilter" data-i18n="[placeholder]GLOBAL/SEARCH">
+			<a data-bind="click: clearFolderSearch, visible: foldersFilter">✕</a>
+		</div>
 		<ul class="b-folders-user" data-bind="template: { name: 'MailFolderListItem', foreach: folderListVisible }"></ul>
 		<div class="move-action-content-wrapper" data-bind="visible: moveAction"></div>
 	</div>
-	<div class="b-content show-on-panel-disabled" data-bind="click: leftPanelDisabled.toggle()"></div>
-	<div class="b-footer btn-toolbar hide-mobile">
+	<div class="b-footer btn-toolbar">
 		<div class="btn-group">
-			<a class="btn" data-bind="click: leftPanelDisabled.toggle(), css: {'icon-resize-out': leftPanelDisabled(), 'icon-resize-in': !leftPanelDisabled()}"></a>
+			<a class="btn fontastic" data-bind="click: toggleLeftPanel, text: leftPanelDisabled() ? '❯' : '❮'"></a>
 		</div>
 		<div class="btn-group hide-on-panel-disabled">
 			<a class="btn icon-folder-add" data-bind="click: createFolder" data-i18n="[title]POPUPS_CREATE_FOLDER/TITLE_CREATE_FOLDER"></a>

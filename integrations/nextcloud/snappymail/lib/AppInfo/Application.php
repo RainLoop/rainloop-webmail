@@ -68,22 +68,9 @@ class Application extends App implements IBootstrap
 		if (!\is_dir(\rtrim(\trim(\OC::$server->getSystemConfig()->getValue('datadirectory', '')), '\\/') . '/appdata_snappymail')) {
 			return;
 		}
-/*
-		$container = $this->getContainer();
-		$container->query('OCP\INavigationManager')->add(function () use ($container) {
-			$urlGenerator = $container->query('OCP\IURLGenerator');
-			return [
-				'id' => 'snappymail',
-				'order' => 4,
-				'href' => $urlGenerator->linkToRoute('snappymail.page.index'),
-				'icon' => $urlGenerator->imagePath('snappymail', 'logo-white-64x64.png'),
-				'name' => \OCP\Util::getL10N('snappymail')->t('Email')
-			];
-		});
-*/
 
-		$dispatcher = $container->query('OCP\EventDispatcher\IEventDispatcher');
-		$this->dispatcher->addListener(PostLoginEvent::class, function (PostLoginEvent $Event) {
+		$dispatcher = $context->getAppContainer()->query('OCP\EventDispatcher\IEventDispatcher');
+		$dispatcher->addListener(PostLoginEvent::class, function (PostLoginEvent $Event) {
 			$config = \OC::$server->getConfig();
 			// Only store the user's password in the current session if they have
 			// enabled auto-login using Nextcloud username or email address.
@@ -95,27 +82,27 @@ class Application extends App implements IBootstrap
 			}
 		});
 
-		$this->dispatcher->addListener(BeforeUserLoggedOutEvent::class, function (BeforeUserLoggedOutEvent $Event) {
-			\OC::$server->getSession()['snappymail-password'] = '';
+		$dispatcher->addListener(BeforeUserLoggedOutEvent::class, function (BeforeUserLoggedOutEvent $Event) {
+			// https://github.com/nextcloud/server/issues/36083#issuecomment-1387370634
+//			\OC::$server->getSession()['snappymail-password'] = '';
 			SnappyMailHelper::loadApp();
 			\RainLoop\Api::Actions()->Logout(true);
 		});
-/*
+
 		// https://github.com/nextcloud/impersonate/issues/179
 		// https://github.com/nextcloud/impersonate/pull/180
-		$class = 'OCA\Impersonate\Events\ImpersonateEvent';
+		$class = 'OCA\Impersonate\Events\BeginImpersonateEvent';
 		if (\class_exists($class)) {
-			$this->dispatcher->addListener($class, function ($Event) {
+			$dispatcher->addListener($class, function ($Event) {
+				\OC::$server->getSession()['snappymail-password'] = '';
+				SnappyMailHelper::loadApp();
+				\RainLoop\Api::Actions()->Logout(true);
+			});
+			$dispatcher->addListener('OCA\Impersonate\Events\EndImpersonateEvent', function ($Event) {
 				\OC::$server->getSession()['snappymail-password'] = '';
 				SnappyMailHelper::loadApp();
 				\RainLoop\Api::Actions()->Logout(true);
 			});
 		}
-		\OC::$server->getUserSession()->listen('\OC\User', 'impersonate', function($user, $newUser) {
-			\OC::$server->getSession()['snappymail-password'] = '';
-			SnappyMailHelper::loadApp();
-			\RainLoop\Api::Actions()->Logout(true);
-		});
-*/
 	}
 }

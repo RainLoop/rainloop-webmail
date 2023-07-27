@@ -9,22 +9,28 @@ trait Raw
 	 */
 	public function RawViewAsPlain() : bool
 	{
-		$this->initMailClientConnection();
-
-		$sRawKey = (string) $this->GetActionParam('RawKey', '');
-		$aValues = $this->getDecodedRawKeyValue($sRawKey);
-
-		$sFolder = isset($aValues['Folder']) ? (string) $aValues['Folder'] : '';
-		$iUid = isset($aValues['Uid']) ? (int) $aValues['Uid'] : 0;
-		$sMimeIndex = isset($aValues['MimeIndex']) ? (string) $aValues['MimeIndex'] : '';
-
-		\header('Content-Type: text/plain');
-
-		return $this->MailClient()->MessageMimeStream(function ($rResource) {
-			if (\is_resource($rResource)) {
-				\MailSo\Base\Utils::FpassthruWithTimeLimitReset($rResource);
-			}
-		}, $sFolder, $iUid, $sMimeIndex);
+		$oAccount = $this->getAccountFromToken();
+		$sRawKey = $this->GetActionParam('RawKey', '');
+		$aValues = $this->decodeRawKey($sRawKey);
+		if (!empty($aValues['folder']) && !empty($aValues['uid'])
+		 && !empty($aValues['accountHash']) && $aValues['accountHash'] === $oAccount->Hash()
+		) {
+			$this->verifyCacheByKey($sRawKey);
+			$this->initMailClientConnection();
+			\header('Content-Type: text/plain');
+			return $this->MailClient()->MessageMimeStream(
+				function ($rResource) use ($sRawKey) {
+					if (\is_resource($rResource)) {
+						$this->cacheByKey($sRawKey);
+						\MailSo\Base\Utils::FpassthruWithTimeLimitReset($rResource);
+					}
+				},
+				(string) $aValues['folder'],
+				(int) $aValues['uid'],
+				isset($aValues['mimeIndex']) ? (string) $aValues['mimeIndex'] : ''
+			);
+		}
+		return false;
 	}
 
 	public function RawDownload() : bool
@@ -49,24 +55,19 @@ trait Raw
 
 		$oAccount = $this->getAccountFromToken();
 
-		$sData = $this->StorageProvider()->Get($oAccount,
+		$mData = $this->StorageProvider()->Get($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 			'background'
 		);
 
-		if (!empty($sData))
-		{
-			$aData = \json_decode($sData, true);
-			unset($sData);
-
-			if (!empty($aData['ContentType']) && !empty($aData['Raw']) &&
-				\in_array($aData['ContentType'], array('image/png', 'image/jpg', 'image/jpeg')))
-			{
+		if (!empty($mData)) {
+			$mData = \json_decode($mData, true);
+			if (!empty($mData['ContentType']) && !empty($mData['Raw'])) {
 				$this->cacheByKey($sRawKey);
 
-				\header('Content-Type: '.$aData['ContentType']);
-				echo \base64_decode($aData['Raw']);
-				unset($aData);
+				\header('Content-Type: '.$mData['ContentType']);
+				echo \base64_decode($mData['Raw']);
+				unset($mData);
 
 				return true;
 			}
@@ -75,88 +76,51 @@ trait Raw
 		return false;
 	}
 
-	public function RawPublic() : bool
-	{
-		$sRawKey = (string) $this->GetActionParam('RawKey', '');
-		$this->verifyCacheByKey($sRawKey);
-
-		$sHash = $sRawKey;
-		$sData = '';
-
-		if (!empty($sHash))
-		{
-			$sData = $this->StorageProvider()->Get(null,
-				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-				\RainLoop\KeyPathHelper::PublicFile($sHash)
-			);
-		}
-
-		$aMatch = array();
-		if (!empty($sData) && 0 === \strpos($sData, 'data:') &&
-			\preg_match('/^data:([^:]+):/', $sData, $aMatch) && !empty($aMatch[1]))
-		{
-			$sContentType = \trim($aMatch[1]);
-			if (\in_array($sContentType, array('image/png', 'image/jpg', 'image/jpeg')))
-			{
-				$this->cacheByKey($sRawKey);
-
-				\header('Content-Type: '.$sContentType);
-				echo \preg_replace('/^data:[^:]+:/', '', $sData);
-				unset($sData);
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
+	/**
+	 * Message, Message Attachment or Zip
+	 */
 	private function rawSmart(bool $bDownload, bool $bThumbnail = false) : bool
 	{
 		$sRawKey = (string) $this->GetActionParam('RawKey', '');
 
-		$aValues = $this->getDecodedRawKeyValue($sRawKey);
+		$oAccount = $this->getAccountFromToken();
+		$aValues = $this->decodeRawKey($sRawKey);
+		if (empty($aValues['accountHash']) || $aValues['accountHash'] !== $oAccount->Hash()) {
+			return false;
+		}
 
-		$sRange = $this->Http()->GetHeader('Range');
-
+		$sRange = \MailSo\Base\Http::GetHeader('Range');
 		$aMatch = array();
 		$sRangeStart = $sRangeEnd = '';
 		$bIsRangeRequest = false;
-
-		if (!empty($sRange) && 'bytes=0-' !== \strtolower($sRange) && \preg_match('/^bytes=([0-9]+)-([0-9]*)/i', \trim($sRange), $aMatch))
+		if (!empty($sRange) && 'bytes=0-' !== \strtolower($sRange)
+		 && \preg_match('/^bytes=([0-9]+)-([0-9]*)/i', \trim($sRange), $aMatch))
 		{
 			$sRangeStart = $aMatch[1];
 			$sRangeEnd = $aMatch[2];
-
 			$bIsRangeRequest = true;
 		}
 
-		$sFolder = isset($aValues['Folder']) ? (string) $aValues['Folder'] : '';
-		$iUid = isset($aValues['Uid']) ? (int) $aValues['Uid'] : 0;
-		$sMimeIndex = isset($aValues['MimeIndex']) ? (string) $aValues['MimeIndex'] : '';
+		$sMimeIndex = isset($aValues['mimeIndex']) ? (string) $aValues['mimeIndex'] : '';
+		$sContentTypeIn = isset($aValues['mimeType']) ? (string) $aValues['mimeType'] : '';
+		$sFileNameIn = isset($aValues['fileName']) ? (string) $aValues['fileName'] : '';
 
-		$sContentTypeIn = isset($aValues['MimeType']) ? (string) $aValues['MimeType'] : '';
-		$sFileNameIn = isset($aValues['FileName']) ? (string) $aValues['FileName'] : '';
-		$sFileHashIn = isset($aValues['FileHash']) ? (string) $aValues['FileHash'] : '';
-
-		if (!empty($sFileHashIn))
-		{
+		if (!empty($aValues['fileHash'])) {
 			$this->verifyCacheByKey($sRawKey);
-
-			$oAccount = $this->getAccountFromToken();
 
 			// https://github.com/the-djmaze/snappymail/issues/144
 			if ('.pdf' === \substr($sFileNameIn,-4)) {
 				$sContentTypeOut = 'application/pdf'; // application/octet-stream
 			} else {
-				$sContentTypeOut = $sContentTypeIn ?: \MailSo\Base\Utils::MimeContentType($sFileNameIn);
+				$sContentTypeOut = $sContentTypeIn
+					?: \SnappyMail\File\MimeType::fromFilename($sFileNameIn)
+					?: 'application/octet-stream';
 			}
 
 			$sFileNameOut = $this->MainClearFileName($sFileNameIn, $sContentTypeIn, $sMimeIndex);
 
-			$rResource = $this->FilesProvider()->GetFile($oAccount, $sFileHashIn);
-			if (\is_resource($rResource))
-			{
+			$rResource = $this->FilesProvider()->GetFile($oAccount, (string) $aValues['fileHash']);
+			if (\is_resource($rResource)) {
 				\header('Content-Type: '.$sContentTypeOut);
 				\header('Content-Disposition: attachment; '.
 					\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)));
@@ -170,24 +134,34 @@ trait Raw
 
 			return false;
 		}
-		else if (!empty($sFolder) && 0 < $iUid)
-		{
-			$this->verifyCacheByKey($sRawKey);
+
+		$sFolder = isset($aValues['folder']) ? (string) $aValues['folder'] : '';
+		$iUid = isset($aValues['uid']) ? (int) $aValues['uid'] : 0;
+		if (empty($sFolder) || 1 > $iUid) {
+			return false;
 		}
 
-		$oAccount = $this->initMailClientConnection();
+		$this->verifyCacheByKey($sRawKey);
+
+		$this->initMailClientConnection();
 
 		$self = $this;
 		return $this->MailClient()->MessageMimeStream(
 			function($rResource, $sContentType, $sFileName, $sMimeIndex = '') use (
-				$self, $oAccount, $sRawKey, $sContentTypeIn, $sFileNameIn, $bDownload, $bThumbnail,
+				$self, $sRawKey, $sContentTypeIn, $sFileNameIn, $bDownload, $bThumbnail,
 				$bIsRangeRequest, $sRangeStart, $sRangeEnd
 			) {
-				if ($oAccount && \is_resource($rResource))
-				{
+				if (\is_resource($rResource)) {
 					\MailSo\Base\Utils::ResetTimeLimit();
 
 					$self->cacheByKey($sRawKey);
+
+					$self->logWrite(\print_r([
+						$sFileName,
+						$sContentType,
+						$sFileNameIn,
+						$sContentTypeIn
+					],true), \LOG_DEBUG, 'RAW');
 
 					if ($sFileNameIn) {
 						$sFileName = $sFileNameIn;
@@ -197,30 +171,28 @@ trait Raw
 					if ('.pdf' === \substr($sFileName, -4)) {
 						// https://github.com/the-djmaze/snappymail/issues/144
 						$sContentType = 'application/pdf';
-					} else if ($sContentTypeIn) {
-						$sContentType = $sContentTypeIn;
-					} else if (!$sContentType) {
-						$sContentType = $sFileName ? \MailSo\Base\Utils::MimeContentType($sFileName) : 'text/plain';
+					} else {
+						$sContentType = $sContentTypeIn
+							?: $sContentType
+//							?: \SnappyMail\File\MimeType::fromStream($rResource, $sFileName)
+							?: \SnappyMail\File\MimeType::fromFilename($sFileName)
+							?: 'application/octet-stream';
 					}
 
-					if (!$bDownload)
-					{
+					if (!$bDownload) {
 						$bDetectImageOrientation = $self->Config()->Get('labs', 'image_exif_auto_rotate', false)
 							// Mostly only JPEG has EXIF metadata
 							&& 'image/jpeg' == $sContentType;
 						try
 						{
-							if ($bThumbnail)
-							{
+							if ($bThumbnail) {
 								$oImage = static::loadImage($rResource, $bDetectImageOrientation, 48);
 								\header('Content-Disposition: inline; '.
 									\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileName.'_thumb60x60.png')));
 								$oImage->show('png');
 //								$oImage->show('webp'); // Little Britain: "Safari says NO"
 								exit;
-							}
-							else if ($bDetectImageOrientation)
-							{
+							} else if ($bDetectImageOrientation) {
 								$oImage = static::loadImage($rResource, $bDetectImageOrientation);
 								\header('Content-Disposition: inline; '.
 									\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileName)));
@@ -259,24 +231,20 @@ trait Raw
 
 							\MailSo\Base\Http::StatusHeader(206);
 
-							$iRangeStart = (int) $sRangeStart;
-							$iRangeEnd = (int) $sRangeEnd;
+							$iRangeStart = \max(0, \intval($sRangeStart));
+							$iRangeEnd = \max(0, \intval($sRangeEnd));
 
-							if ('' === $sRangeEnd) {
-								$sLoadedData = 0 < $iRangeStart ? \substr($sLoadedData, $iRangeStart) : $sLoadedData;
-							} else {
-								if ($iRangeStart < $iRangeEnd) {
-									$sLoadedData = \substr($sLoadedData, $iRangeStart, $iRangeEnd - $iRangeStart);
-								} else {
-									$sLoadedData = 0 < $iRangeStart ? \substr($sLoadedData, $iRangeStart) : $sLoadedData;
-								}
+							if ($iRangeEnd && $iRangeStart < $iRangeEnd) {
+								$sLoadedData = \substr($sLoadedData, $iRangeStart, $iRangeEnd - $iRangeStart);
+							} else if ($iRangeStart) {
+								$sLoadedData = \substr($sLoadedData, $iRangeStart);
 							}
 
 							$iContentLength = \strlen($sLoadedData);
 
 							if (0 < $iContentLength) {
 								\header('Content-Length: '.$iContentLength);
-								\header('Content-Range: bytes '.$sRangeStart.'-'.(0 < $iRangeEnd ? $iRangeEnd : $iFullContentLength - 1).'/'.$iFullContentLength);
+								\header('Content-Range: bytes '.$sRangeStart.'-'.($iRangeEnd ?: $iFullContentLength - 1).'/'.$iFullContentLength);
 							}
 						} else {
 							\header('Content-Length: '.\strlen($sLoadedData));

@@ -1,5 +1,6 @@
 import ko from 'ko';
 import { isArray } from 'Common/Utils';
+import { getNotification } from 'Common/Translator';
 import Remote from 'Remote/Admin/Fetch';
 
 export const PackageAdminStore = ko.observableArray();
@@ -16,6 +17,11 @@ PackageAdminStore.fetch = () => {
 		PackageAdminStore.loading(false);
 		if (iError) {
 			PackageAdminStore.real(false);
+			PackageAdminStore.error(getNotification(iError));
+//			let error = getNotification(iError);
+//			if (data.message) { error = data.message + error; }
+//			if (data.reason) { error = data.reason + " " + error; }
+//			PackageAdminStore.error(error);
 		} else {
 			PackageAdminStore.real(!!data.Result.Real);
 			PackageAdminStore.error(data.Result.Error);

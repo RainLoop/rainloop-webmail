@@ -44,6 +44,7 @@ abstract class Header
 		CONTENT_DISPOSITION = 'Content-Disposition',
 		CONTENT_DESCRIPTION = 'Content-Description',
 		CONTENT_ID = 'Content-ID',
+//		CONTENT_BASE = 'Content-Base', // rfc2110
 		CONTENT_LOCATION = 'Content-Location',
 
 		RECEIVED_SPF = 'Received-SPF',

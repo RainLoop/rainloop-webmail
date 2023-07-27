@@ -112,33 +112,30 @@ abstract class Repository
 	{
 		$aResult = array();
 		try {
-			$notDev = '0.0.0' !== APP_VERSION;
 			foreach (static::getRepositoryDataByUrl($bReal) as $oItem) {
-				if ($oItem && isset($oItem->type, $oItem->id, $oItem->name,
-					$oItem->version, $oItem->release, $oItem->file, $oItem->description))
-				{
-					if ((!empty($oItem->required) && $notDev && \version_compare(APP_VERSION, $oItem->required, '<'))
-					 || (!empty($oItem->deprecated) && $notDev && \version_compare(APP_VERSION, $oItem->deprecated, '>='))
-					 || (isset($aResult[$oItem->id]) && \version_compare($aResult[$oItem->id]['version'], $oItem->version, '>'))
-					) {
-						continue;
-					}
-
-					if ('plugin' === $oItem->type) {
-						$aResult[$oItem->id] = array(
-							'type' => $oItem->type,
-							'id' => $oItem->id,
-							'name' => $oItem->name,
-							'installed' => '',
-							'enabled' => true,
-							'version' => $oItem->version,
-							'file' => $oItem->file,
-							'release' => $oItem->release,
-							'desc' => $oItem->description,
-							'canBeDeleted' => false,
-							'canBeUpdated' => true
-						);
-					}
+				if ($oItem
+				 && isset($oItem->type, $oItem->id, $oItem->name, $oItem->version, $oItem->release, $oItem->file, $oItem->description)
+				 && 'plugin' === $oItem->type
+				 // is this entry newer then an already defined one
+				 && (empty($aResult[$oItem->id]) || \version_compare($aResult[$oItem->id]['version'], $oItem->version, '<'))
+				 // does this entry require same or older app version
+				 && (SNAPPYMAIL_DEV || empty($oItem->required) || \version_compare(APP_VERSION, $oItem->required, '>='))
+				 // is this entry not deprecated for current app version?
+				 && (SNAPPYMAIL_DEV || empty($oItem->deprecated) || \version_compare(APP_VERSION, $oItem->deprecated, '<'))
+				) {
+					$aResult[$oItem->id] = array(
+						'type' => $oItem->type,
+						'id' => $oItem->id,
+						'name' => $oItem->name,
+						'installed' => '',
+						'enabled' => true,
+						'version' => $oItem->version,
+						'file' => $oItem->file,
+						'release' => $oItem->release,
+						'desc' => $oItem->description,
+						'canBeDeleted' => false,
+						'canBeUpdated' => true
+					);
 				}
 			}
 		} catch (\Throwable $e) {
@@ -181,6 +178,33 @@ abstract class Repository
 		return \array_map('trim',
 			\explode(',', \strtolower(\RainLoop\Api::Config()->Get('plugins', 'enabled_list', '')))
 		);
+	}
+
+	public static function enablePackage(string $sName, bool $bEnable = true) : bool
+	{
+		if (!\strlen($sName)) {
+			return false;
+		}
+
+		$oConfig = \RainLoop\Api::Config();
+
+		$aEnabledPlugins = static::getEnabledPackagesNames();
+
+		$aNewEnabledPlugins = array();
+		if ($bEnable) {
+			$aNewEnabledPlugins = $aEnabledPlugins;
+			$aNewEnabledPlugins[] = $sName;
+		} else {
+			foreach ($aEnabledPlugins as $sPlugin) {
+				if ($sName !== $sPlugin && \strlen($sPlugin)) {
+					$aNewEnabledPlugins[] = $sPlugin;
+				}
+			}
+		}
+
+		$oConfig->Set('plugins', 'enabled_list', \trim(\implode(',', \array_unique($aNewEnabledPlugins)), ' ,'));
+
+		return $oConfig->Save();
 	}
 
 	public static function getPackagesList() : array
@@ -231,6 +255,7 @@ abstract class Repository
 	public static function deletePackage(string $sId) : bool
 	{
 		\RainLoop\Api::Actions()->IsAdminLoggined();
+		static::enablePackage($sId, false);
 		return static::deletePackageDir($sId);
 	}
 
@@ -266,18 +291,18 @@ abstract class Repository
 			}
 
 			if ($sTmp) {
-				if (\class_exists('PharData')) {
-					$oArchive = new \PharData($sTmp, 0, $sRealFile);
-				} else {
-//					throw new \Exception('PHP Phar is disabled, you must enable it');
-					$oArchive = new \SnappyMail\TAR($sTmp);
-				}
 				if (!static::deletePackageDir($sId)) {
 					throw new \Exception('Cannot remove previous plugin folder: '.$sId);
 				}
 				if ('.phar' === \substr($sRealFile, -5)) {
 					$bResult = \copy($sTmp, APP_PLUGINS_PATH . \basename($sRealFile));
 				} else {
+					if (\class_exists('PharData')) {
+						$oArchive = new \PharData($sTmp, 0, $sRealFile);
+					} else {
+//						throw new \Exception('PHP Phar is disabled, you must enable it');
+						$oArchive = new \SnappyMail\TAR($sTmp);
+					}
 					$bResult = $oArchive->extractTo(\rtrim(APP_PLUGINS_PATH, '\\/'));
 				}
 				if (!$bResult) {

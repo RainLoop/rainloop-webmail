@@ -18,6 +18,9 @@ namespace MailSo\Base\StreamWrappers;
  */
 class TempFile
 {
+	/** @var resource|null */
+	public $context;
+
 	/**
 	 * @var string
 	 */
@@ -56,15 +59,11 @@ class TempFile
 			self::STREAM_NAME === $aPath['scheme'])
 		{
 			$sHashName = $aPath['host'];
-			if (isset(self::$aStreams[$sHashName]) &&
-				\is_resource(self::$aStreams[$sHashName]))
-			{
+			if (isset(self::$aStreams[$sHashName]) && \is_resource(self::$aStreams[$sHashName])) {
 				$this->rStream = self::$aStreams[$sHashName];
 				\fseek($this->rStream, 0);
 				$bResult = true;
-			}
-			else
-			{
+			} else {
 				$this->rStream = \fopen('php://temp', 'r+b');
 				self::$aStreams[$sHashName] = $this->rStream;
 

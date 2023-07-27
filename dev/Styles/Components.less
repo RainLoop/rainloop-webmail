@@ -42,7 +42,7 @@
 	}
 
 	span {
-		margin-left: 0.5em;
+		margin: 0 0.5em;
 		white-space: normal;
 	}
 
@@ -57,7 +57,7 @@
 	margin-bottom: 6px;
 	padding: 2px 0;
 
-	&:focus {
+	&:focus-within {
 		outline: 1px dotted;
 	}
 
@@ -70,23 +70,25 @@
 .e-checkbox.material-design {
 
 	line-height: 20px;
+	width: auto !important;
 
 	> div {
 		position: relative;
 		width: 18px;
-		height: 18px;
-		vertical-align: top;
 	}
 
 	> div > div {
 		position: absolute;
-		box-sizing: border-box;
-		margin-top: 1px;
-
+		.checkbox-box-sizes();
 		animation: checkmark-to-box 200ms ease-out forwards;
 	}
 
-	div.checked {
+	input {
+		opacity:0;
+	}
+
+	input:checked + div {
+		.checkbox-mark-sizes();
 		animation: box-to-checkmark 200ms ease-out forwards;
 	}
 }

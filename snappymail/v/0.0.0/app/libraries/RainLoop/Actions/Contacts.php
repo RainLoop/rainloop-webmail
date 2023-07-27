@@ -10,9 +10,8 @@ trait Contacts
 		$oAccount = $this->getAccountFromToken();
 
 		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
-		if (!$oAddressBookProvider || !$oAddressBookProvider->IsActive())
-		{
-			return $this->FalseResponse(__FUNCTION__);
+		if (!$oAddressBookProvider || !$oAddressBookProvider->IsActive()) {
+			return $this->FalseResponse();
 		}
 
 		$sPassword = $this->GetActionParam('Password', '');
@@ -22,12 +21,13 @@ trait Contacts
 		$bResult = $this->setContactsSyncData($oAccount, array(
 			'Mode' => \intval($this->GetActionParam('Mode', '0')),
 			'User' => $this->GetActionParam('User', ''),
-			'Password' => APP_DUMMY === $sPassword && isset($mData['Password'])
-				? $mData['Password'] : (APP_DUMMY === $sPassword ? '' : $sPassword),
+			'Password' => static::APP_DUMMY === $sPassword
+				? (isset($mData['Password']) ? $mData['Password'] : '')
+				: $sPassword,
 			'Url' => $this->GetActionParam('Url', '')
 		));
 
-		return $this->DefaultResponse(__FUNCTION__, $bResult);
+		return $this->DefaultResponse($bResult);
 	}
 
 	public function DoContactsSync() : array
@@ -35,15 +35,15 @@ trait Contacts
 		$oAccount = $this->getAccountFromToken();
 		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
 		if (!$oAddressBookProvider) {
-			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ContactsSyncError);
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ContactsSyncError, null, 'No AddressBookProvider');
 		}
 		\ignore_user_abort(true);
 		\SnappyMail\HTTP\Stream::start(/*$binary = false*/);
 		\SnappyMail\HTTP\Stream::JSON(['messsage'=>'start']);
 		if (!$oAddressBookProvider->Sync()) {
-			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ContactsSyncError);
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ContactsSyncError, null, 'AddressBookProvider->Sync() failed');
 		}
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->TrueResponse();
 	}
 
 	public function DoContacts() : array
@@ -60,13 +60,12 @@ trait Contacts
 		$mResult = array();
 
 		$oAbp = $this->AddressBookProvider($oAccount);
-		if ($oAbp->IsActive())
-		{
+		if ($oAbp->IsActive()) {
 			$iResultCount = 0;
 			$mResult = $oAbp->GetContacts($iOffset, $iLimit, $sSearch, $iResultCount);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, array(
+		return $this->DefaultResponse(array(
 			'Offset' => $iOffset,
 			'Limit' => $iLimit,
 			'Count' => $iResultCount,
@@ -78,17 +77,16 @@ trait Contacts
 	public function DoContactsDelete() : array
 	{
 		$oAccount = $this->getAccountFromToken();
-		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
+		$aUids = \explode(',', (string) $this->GetActionParam('uids', ''));
 
 		$aFilteredUids = \array_filter(\array_map('intval', $aUids));
 
 		$bResult = false;
-		if (\count($aFilteredUids) && $this->AddressBookProvider($oAccount)->IsActive())
-		{
+		if (\count($aFilteredUids) && $this->AddressBookProvider($oAccount)->IsActive()) {
 			$bResult = $this->AddressBookProvider($oAccount)->DeleteContacts($aFilteredUids);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $bResult);
+		return $this->DefaultResponse($bResult);
 	}
 
 	public function DoContactSave() : array
@@ -97,14 +95,14 @@ trait Contacts
 
 		$bResult = false;
 
-		if ($this->HasActionParam('Uid') && $this->HasActionParam('jCard')) {
+		if ($this->HasActionParam('uid') && $this->HasActionParam('jCard')) {
 			$oAddressBookProvider = $this->AddressBookProvider($oAccount);
 			if ($oAddressBookProvider && $oAddressBookProvider->IsActive()) {
 				$vCard = \Sabre\VObject\Reader::readJson($this->GetActionParam('jCard'));
 				if ($vCard && $vCard instanceof \Sabre\VObject\Component\VCard) {
 					$vCard->REV = \gmdate('Ymd\\THis\\Z');
 					$vCard->PRODID = 'SnappyMail-'.APP_VERSION;
-					$sUid = \trim($this->GetActionParam('Uid'));
+					$sUid = \trim($this->GetActionParam('uid'));
 					$oContact = $sUid ? $oAddressBookProvider->GetContactByID($sUid) : null;
 					if (!$oContact) {
 						$oContact = new \RainLoop\Providers\AddressBook\Classes\Contact();
@@ -115,75 +113,58 @@ trait Contacts
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, array(
+		return $this->DefaultResponse(array(
 			'ResultID' => $bResult ? $oContact->id : '',
 			'Result' => $bResult
 		));
 	}
 
-	public function UploadContacts() : array
+	public function UploadContacts(?array $aFile, int $iError) : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
 		$mResponse = false;
 
-		$aFile = $this->GetActionParam('File', null);
-		$iError = $this->GetActionParam('Error', \RainLoop\Enumerations\UploadError::UNKNOWN);
-
-		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile))
-		{
+		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile)) {
 			$sSavedName = 'upload-post-'.\md5($aFile['name'].$aFile['tmp_name']);
-			if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $aFile['tmp_name']))
-			{
+			if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $aFile['tmp_name'])) {
 				$iError = \RainLoop\Enumerations\UploadError::ON_SAVING;
-			}
-			else
-			{
-				\ini_set('auto_detect_line_endings', true);
+			} else {
+				\ini_set('auto_detect_line_endings', '1');
 				$mData = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
-				if ($mData)
-				{
-					$sFileStart = \fread($mData, 20);
+				if ($mData) {
+					$sFileStart = \fread($mData, 128);
 					\rewind($mData);
-
-					if (false !== $sFileStart)
-					{
+					if (false !== $sFileStart) {
 						$sFileStart = \trim($sFileStart);
-						if (false !== \strpos($sFileStart, 'BEGIN:VCARD'))
-						{
+						if (false !== \strpos($sFileStart, 'BEGIN:VCARD')) {
 							$mResponse = $this->importContactsFromVcfFile($oAccount, $mData);
-						}
-						else if (false !== \strpos($sFileStart, ',') || false !== \strpos($sFileStart, ';'))
-						{
+						} else if (false !== \strpos($sFileStart, ',') || false !== \strpos($sFileStart, ';')) {
 							$mResponse = $this->importContactsFromCsvFile($oAccount, $mData, $sFileStart);
 						}
 					}
 				}
 
-				if (\is_resource($mData))
-				{
+				if (\is_resource($mData)) {
 					\fclose($mData);
 				}
 
 				unset($mData);
 				$this->FilesProvider()->Clear($oAccount, $sSavedName);
 
-				\ini_set('auto_detect_line_endings', false);
+				\ini_set('auto_detect_line_endings', '0');
 			}
 		}
 
-		if (UPLOAD_ERR_OK !== $iError)
-		{
-			$iClientError = \RainLoop\Enumerations\UploadError::NORMAL;
-			$sError = $this->getUploadErrorMessageByCode($iError, $iClientError);
-
-			if (!empty($sError))
-			{
-				return $this->FalseResponse(__FUNCTION__, $iClientError, $sError);
+		if (UPLOAD_ERR_OK !== $iError) {
+			$iClientError = 0;
+			$sError = \RainLoop\Enumerations\UploadError::getUserMessage($iError, $iClientError);
+			if (!empty($sError)) {
+				return $this->FalseResponse($iClientError, $sError);
 			}
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $mResponse);
+		return $this->DefaultResponse($mResponse);
 	}
 
 	public function setContactsSyncData(\RainLoop\Model\Account $oAccount, array $aData) : bool
@@ -273,64 +254,45 @@ trait Contacts
 	private function importContactsFromVcfFile(\RainLoop\Model\Account $oAccount, /*resource*/ $rFile): int
 	{
 		$iCount = 0;
-		if ($oAccount && \is_resource($rFile)) {
-			$oAddressBookProvider = $this->AddressBookProvider($oAccount);
-			if ($oAddressBookProvider && $oAddressBookProvider->IsActive()) {
-				$sFile = \stream_get_contents($rFile);
-				if (\is_resource($rFile)) {
-					\fclose($rFile);
-				}
-
-				if (is_string($sFile) && 5 < \strlen($sFile)) {
-					$this->Logger()->Write('Import contacts from vcf');
-					$iCount = $oAddressBookProvider->ImportVcfFile($sFile);
+		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
+		if (\is_resource($rFile) && $oAddressBookProvider && $oAddressBookProvider->IsActive()) {
+			try
+			{
+				$this->logWrite('Import contacts from vcf');
+				foreach (\RainLoop\Providers\AddressBook\Utils::VcfStreamToContacts($rFile) as $oContact) {
+					if ($oAddressBookProvider->ContactSave($oContact)) {
+						++$iCount;
+					}
 				}
 			}
+			catch (\Throwable $oExc)
+			{
+				$this->logException($oExc);
+			}
 		}
-
 		return $iCount;
 	}
 
 	private function importContactsFromCsvFile(\RainLoop\Model\Account $oAccount, /*resource*/ $rFile, string $sFileStart): int
 	{
 		$iCount = 0;
-		$aHeaders = null;
-		$aData = array();
-
-		if ($oAccount && \is_resource($rFile)) {
-			$oAddressBookProvider = $this->AddressBookProvider($oAccount);
-			if ($oAddressBookProvider && $oAddressBookProvider->IsActive()) {
+		$oAddressBookProvider = $this->AddressBookProvider($oAccount);
+		if (\is_resource($rFile) && $oAddressBookProvider && $oAddressBookProvider->IsActive()) {
+			try
+			{
+				$this->logWrite('Import contacts from csv');
 				$sDelimiter = ((int)\strpos($sFileStart, ',') > (int)\strpos($sFileStart, ';')) ? ',' : ';';
-
-				\setlocale(LC_CTYPE, 'en_US.UTF-8');
-				while (false !== ($mRow = \fgetcsv($rFile, 5000, $sDelimiter, '"'))) {
-					if (null === $aHeaders) {
-						if (3 >= \count($mRow)) {
-							return 0;
-						}
-
-						$aHeaders = $mRow;
-
-						foreach ($aHeaders as $iIndex => $sHeaderValue) {
-							$aHeaders[$iIndex] = \MailSo\Base\Utils::Utf8Clear($sHeaderValue);
-						}
-					} else {
-						$aNewItem = array();
-						foreach ($aHeaders as $iIndex => $sHeaderValue) {
-							$aNewItem[$sHeaderValue] = isset($mRow[$iIndex]) ? $mRow[$iIndex] : '';
-						}
-
-						$aData[] = $aNewItem;
+				foreach (\RainLoop\Providers\AddressBook\Utils::CsvStreamToContacts($rFile, $sDelimiter) as $oContact) {
+					if ($oAddressBookProvider->ContactSave($oContact)) {
+						++$iCount;
 					}
 				}
-
-				if (\count($aData)) {
-					$this->oLogger->Write('Import contacts from csv');
-					$iCount = $oAddressBookProvider->ImportCsvArray($aData);
-				}
+			}
+			catch (\Throwable $oExc)
+			{
+				$this->logException($oExc);
 			}
 		}
-
 		return $iCount;
 	}
 

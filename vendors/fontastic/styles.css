@@ -38,16 +38,16 @@
   content: "\e005";
 }
 .icon-paper-plane::before {
-  content: "\e007";
+  content: "📧";
 }
 .icon-right-mini::before {
-  content: "\e01e"; /* › */
+  content: "›";
 }
 .icon-down-mini::before {
-  content: "\e01f"; /* › rotate 90 */
+  content: "⌄";
 }
-.icon-warning-alt::before {
-  content: "\e02a";
+.icon-cross::before {
+  content: "✖";
 }
 .icon-ok::before {
   content: "✔";
@@ -59,43 +59,37 @@
   content: "\e030";
 }
 .icon-file-presentation::before {
-  content: "\e031"; /* 📊 */
+  content: "📊";
 }
 .icon-file-archive::before {
-  content: "\e032";
+  content: "📦";
 }
 .icon-file-audio::before {
-  content: "\e033";
+  content: "🔊";
 }
 .icon-file-text::before {
   content: "📄";
 }
 .icon-file-image::before {
-  content: "\e036"; /* 🖻 */
+  content: "🖻";
 }
 .icon-file-certificate::before {
-  content: "\e038";
+  content: "\e038"; /* 🔏 🔐 */
 }
 .icon-attachment::before {
   content: "📎";
 }
 .icon-file-spreadsheet::before {
-  content: "\e03a";
+  content: "▦";
 }
 .icon-file-video::before {
-  content: "\e03b";
+  content: "🎬";
 }
 .icon-folder-add::before {
   content: "\e03c";
 }
 .icon-lock::before {
   content: "🔒";
-}
-.icon-popup::before {
-  content: "\e045";
-}
-.icon-mail::before {
-  content: "✉";
 }
 .icon-filter::before {
   content: "\e061"; /* ⊆ */
@@ -108,15 +102,6 @@
 }
 .icon-copy::before {
   content: "\e068";
-}
-.icon-help::before {
-  content: "\e06b";
-}
-.icon-resize-in::before {
-  content: "\e06c";
-}
-.icon-resize-out::before {
-  content: "⤢";
 }
 .icon-check-mark-circle-two::before {
   content: "\e073";

@@ -4,7 +4,7 @@ namespace RainLoop\Config;
 
 class Application extends \RainLoop\Config\AbstractConfig
 {
-	private $aReplaceEnv = null;
+	private ?array $aReplaceEnv = null;
 
 	public function __construct()
 	{
@@ -18,25 +18,43 @@ class Application extends \RainLoop\Config\AbstractConfig
 	{
 		$bResult = parent::Load();
 
+		$max = \floatval($this->Get('security', 'max_sys_getloadavg', 0));
+		if ($max && \is_callable('sys_getloadavg')) {
+			$load = \sys_getloadavg();
+			if ($load && $load[0] > $max) {
+				\header('HTTP/1.1 503 Service Unavailable', true, 503);
+				\header('Retry-After: 120');
+				exit("Mailserver too busy ({$load[0]}). Please try again later.");
+			}
+		}
+
 		$this->aReplaceEnv = null;
 		if ((isset($_ENV) && \is_array($_ENV) && \count($_ENV)) ||
 			(isset($_SERVER) && \is_array($_SERVER) && \count($_SERVER)))
 		{
 			$sEnvNames = $this->Get('labs', 'replace_env_in_configuration', '');
-			if (\strlen($sEnvNames))
-			{
+			if (\strlen($sEnvNames)) {
 				$this->aReplaceEnv = \explode(',', $sEnvNames);
-				if (\is_array($this->aReplaceEnv))
-				{
+				if (\is_array($this->aReplaceEnv)) {
 					$this->aReplaceEnv = \array_map('trim', $this->aReplaceEnv);
 					$this->aReplaceEnv = \array_map('strtolower', $this->aReplaceEnv);
 				}
 			}
 		}
 
-		if (!\is_array($this->aReplaceEnv) || 0 === \count($this->aReplaceEnv))
-		{
+		if (!\is_array($this->aReplaceEnv) || !\count($this->aReplaceEnv)) {
 			$this->aReplaceEnv = null;
+		}
+
+		$sCipher = $this->Get('security', 'encrypt_cipher', '');
+		if (!$sCipher || !\SnappyMail\Crypt::cipherSupported($sCipher)) {
+			$sCipher && \SnappyMail\Log::warning('Crypt', "OpenSSL no support for cipher '{$sCipher}'");
+			$aCiphers = \SnappyMail\Crypt::listCiphers();
+			$sCipher2 = $aCiphers ? $aCiphers[\array_rand($aCiphers)] : '';
+			if ($sCipher !== $sCipher2) {
+				$this->Set('security', 'encrypt_cipher', $sCipher2);
+				$this->Save();
+			}
 		}
 
 		return $bResult;
@@ -50,43 +68,50 @@ class Application extends \RainLoop\Config\AbstractConfig
 	public function Get(string $sSection, string $sName, $mDefault = null)
 	{
 		$mResult = parent::Get($sSection, $sName, $mDefault);
-		if ($this->aReplaceEnv && \is_string($mResult))
-		{
+		if ($this->aReplaceEnv && \is_string($mResult)) {
 			$sKey = \strtolower($sSection.'.'.$sName);
-			if (\in_array($sKey, $this->aReplaceEnv) && false !== strpos($mResult, '$'))
-			{
+			if (\in_array($sKey, $this->aReplaceEnv) && false !== strpos($mResult, '$')) {
 				$mResult = \preg_replace_callback('/\$([^\s]+)/', function($aMatch) {
-
-					if (!empty($aMatch[0]) && !empty($aMatch[1]))
-					{
-						if (!empty($_ENV[$aMatch[1]]))
-						{
+					if (!empty($aMatch[0]) && !empty($aMatch[1])) {
+						if (!empty($_ENV[$aMatch[1]])) {
+							return $_ENV[$aMatch[1]];
+						}
+						if (!empty($_SERVER[$aMatch[1]])) {
 							return $_SERVER[$aMatch[1]];
 						}
-
-						if (!empty($_SERVER[$aMatch[1]]))
-						{
-							return $_SERVER[$aMatch[1]];
-						}
-
 						return $aMatch[0];
 					}
-
 					return '';
-
 				}, $mResult);
 			}
 		}
-
 		return $mResult;
 	}
 
 	public function Set(string $sSectionKey, string $sParamKey, $mParamValue) : void
 	{
-		if ('labs' === $sSectionKey && \str_contains($sParamKey, 'imap_')) {
-			// This is a workaround for the changed application structure
-			$sSectionKey = 'imap';
-			$sParamKey = \str_replace('imap_', '', $sParamKey);
+		// Workarounds for the changed application structure
+		if ('labs' === $sSectionKey) {
+			if (\str_starts_with($sParamKey, 'imap_')) {
+				$sSectionKey = 'imap';
+				$sParamKey = \str_replace('imap_', '', $sParamKey);
+			}
+			if (\str_starts_with($sParamKey, 'use_app_debug_')) {
+				$sSectionKey = 'debug';
+				$sParamKey = \str_replace('use_app_debug_js', 'javascript', $sParamKey);
+				$sParamKey = \str_replace('use_app_debug_css', 'css', $sParamKey);
+			}
+			if ('cache_system_data' === $sParamKey) {
+				$sSectionKey = 'cache';
+				$sParamKey = 'system_data';
+			}
+			if ('force_https' === $sParamKey) {
+				$sSectionKey = 'security';
+			}
+			if ('check_new_messages' === $sParamKey) {
+				$sSectionKey = 'imap';
+				$sParamKey = 'fetch_new_messages';
+			}
 		}
 		parent::Set($sSectionKey, $sParamKey, $mParamValue);
 	}
@@ -125,12 +150,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 		}
 		$upload_max_filesize = $upload_max_filesize / 1024 / 1024;
 
-		$sCipher = 'aes-256-cbc-hmac-sha1';
-		$aCiphers = \SnappyMail\Crypt::listCiphers();
-		if (!\in_array($sCipher, $aCiphers)) {
-			$sCipher = $aCiphers[\array_rand($aCiphers)];
-		}
-
 		return array(
 
 			'webmail' => array(
@@ -155,7 +174,10 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'message_read_delay'          => array(5, 'Mark message read after N seconds'),
 
 				'attachment_size_limit'       => array(\min($upload_max_filesize, 25), 'File size limit (MB) for file upload on compose screen
-0 for unlimited.')
+0 for unlimited.'),
+
+				'compress_output' => array(false, 'brotli or gzip compress the output.
+Warning: only enable when server does not do this, else double compression errors occur')
 			),
 
 			'interface' => array(
@@ -170,29 +192,40 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'pdo_dsn'           => array('host=127.0.0.1;port=3306;dbname=snappymail'),
 				'pdo_user'          => array('root'),
 				'pdo_password'      => array(''),
-				'suggestions_limit' => array(30)
+				'mysql_ssl_ca'      => array('', 'PEM format certificate'),
+				'mysql_ssl_verify'  => array(true),
+				'mysql_ssl_ciphers' => array('', 'HIGH'),
+				'suggestions_limit' => array(20)
 			),
 
 			'security' => array(
-				'csrf_protection'    => array(true,
-				    'Enable CSRF protection (http://en.wikipedia.org/wiki/Cross-site_request_forgery)'),
+				'custom_server_signature' => array('SnappyMail'),
+				'x_xss_protection_header' => array('1; mode=block'),
 
-				'custom_server_signature'    => array('SnappyMail'),
-				'x_xss_protection_header'    => array('1; mode=block'),
+				'openpgp'                 => array(false),
 
-				'openpgp'                    => array(false),
+				'allow_admin_panel'       => array(true, 'Access settings'),
+				'admin_login'             => array('admin', 'Login and password for web admin panel'),
+				'admin_password'          => array(''),
+				'admin_totp'              => array(''),
+				'admin_panel_host'        => array(''),
+				'admin_panel_key'         => array('admin'),
 
-				'admin_login'                => array('admin', 'Login and password for web admin panel'),
-				'admin_password'             => array(''),
-				'admin_totp'                 => array(''),
-				'allow_admin_panel'          => array(true, 'Access settings'),
-				'hide_x_mailer_header'       => array(true),
-				'admin_panel_host'           => array(''),
-				'admin_panel_key'            => array('admin'),
-				'content_security_policy'    => array('', 'For example to allow all images use "img-src https:". More info at https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy#directives'),
-				'csp_report'                 => array(false, 'Report CSP errors to PHP and/or SnappyMail Log'),
-				'encrypt_cipher'             => array($sCipher, 'A valid cipher method from https://php.net/openssl_get_cipher_methods'),
-				'cookie_samesite'            => array('Strict', 'Strict, Lax or None')
+				'force_https'             => array(false),
+				'hide_x_mailer_header'    => array(true),
+				'max_sys_getloadavg'      => array(0.0, 'https://en.m.wikipedia.org/wiki/Load_(computing)'),
+				'content_security_policy' => array('', 'For example to allow all images use "img-src https:". More info at https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy#directives'),
+				'csp_report'              => array(false, 'Report CSP errors to PHP and/or SnappyMail Log'),
+				'encrypt_cipher'          => array('aes-256-cbc-hmac-sha1', 'A valid cipher method from https://php.net/openssl_get_cipher_methods'),
+				'cookie_samesite'         => array('Strict', 'Strict, Lax or None'),
+				'secfetch_allow'          => array('', 'Additional allowed Sec-Fetch combinations separated by ";".
+For example:
+* Allow iframe on same domain in any mode: dest=iframe,site=same-origin
+* Allow navigate to iframe on same domain: mode=navigate,dest=iframe,site=same-origin
+* Allow navigate to iframe on (sub)domain: mode=navigate,dest=iframe,site=same-site
+* Allow navigate to iframe from any domain: mode=navigate,dest=iframe,site=cross-site
+
+Default is "site=same-origin;site=none"')
 			),
 
 			'admin_panel' => array(
@@ -208,19 +241,19 @@ class Application extends \RainLoop\Config\AbstractConfig
 			),
 
 			'ssl' => array(
-				'verify_certificate' => array(false, 'Require verification of SSL certificate used.'),
-				'allow_self_signed'  => array(true, 'Allow self-signed certificates. Requires verify_certificate.'),
-				'security_level'     => array(1, 'https://www.openssl.org/docs/man1.1.1/man3/SSL_CTX_set_security_level.html'),
-				'cafile'             => array('', 'Location of Certificate Authority file on local filesystem (/etc/ssl/certs/ca-certificates.crt)'),
-				'capath'             => array('', 'capath must be a correctly hashed certificate directory. (/etc/ssl/certs/)'),
-				'client_cert'        => array('', 'Location of client certificate file (pem format with private key) on local filesystem'),
+				'verify_certificate'  => array(true, 'Require verification of SSL certificate used.'),
+				'allow_self_signed'   => array(false, 'Allow self-signed certificates. Requires verify_certificate.'),
+				'security_level'      => array(1, 'https://www.openssl.org/docs/man1.1.1/man3/SSL_CTX_set_security_level.html'),
+				'cafile'              => array('', 'Location of Certificate Authority file on local filesystem (/etc/ssl/certs/ca-certificates.crt)'),
+				'capath'              => array('', 'capath must be a correctly hashed certificate directory. (/etc/ssl/certs/)'),
+				'local_cert'          => array('', 'Location of client certificate file (pem format with private key) on local filesystem'),
+				'disable_compression' => array(true, 'This can help mitigate the CRIME attack vector.')
 			),
 
 			'capa' => array(
 				'quota' => array(true),
-				'dangerous_actions' => array(true),
-				'message_actions' => array(true),
-				'attachments_actions' => array(true)
+				'dangerous_actions' => array(true, 'Allow clear folder and delete messages without moving to trash'),
+				'attachments_actions' => array(true, 'Allow download attachments as Zip (and optionally others)')
 			),
 
 			'login' => array(
@@ -235,8 +268,8 @@ When this value is gethostname, the gethostname() value is used.
 				'allow_languages_on_login' => array(true,
 					'Allow language selection on webmail login screen'),
 
-				'determine_user_language' => array(true),
-				'determine_user_domain' => array(false),
+				'determine_user_language' => array(true, 'Detect language from browser header `Accept-Language`'),
+				'determine_user_domain' => array(false, 'Like default_domain but then HTTP_HOST/SERVER_NAME without www.'),
 
 				'login_lowercase' => array(true),
 
@@ -252,25 +285,33 @@ Values:
 
 			'plugins' => array(
 				'enable'       => array(false, 'Enable plugin support'),
-				'enabled_list' => array('', 'List of enabled plugins'),
+				'enabled_list' => array('', 'Comma-separated list of enabled plugins'),
 			),
 
 			'defaults' => array(
 				'view_editor_type'       => array('Html', 'Editor mode used by default (Plain, Html)'),
 				'view_layout'            => array(1, 'layout: 0 - no preview, 1 - side preview, 2 - bottom preview'),
 				'view_use_checkboxes'    => array(true),
+				'view_show_next_message' => array(true, 'Show next message when (re)move current message'),
 				'autologout'             => array(30),
 				'view_html'              => array(true),
 				'show_images'            => array(false),
+				'view_images'            => array('ask', 'View external images:
+  "ask" - always ask
+  "match" - whitelist or ask
+  "always" - show always'),
 				'contacts_autosave'      => array(true),
 				'mail_use_threads'       => array(false),
 				'allow_draft_autosave'   => array(true),
-				'mail_reply_same_folder' => array(false)
+				'mail_reply_same_folder' => array(false),
+				'msg_default_action'     => array(1, '1 - reply, 2 - reply all'),
 			),
 
 			'logs' => array(
 
 				'enable' => array(false, 'Enable logging'),
+
+				'path' => array('', 'Path where log files will be stored'),
 
 				'level' => array(4, 'Log messages of set RFC 5424 section 6.2.1 Severity level and higher (0 = highest, 7 = lowest).
 0 = Emergency
@@ -314,7 +355,8 @@ Examples:
   filename = "log-{date:Y-m-d}.txt"
   filename = "{date:Y-m-d}/{user:domain}/{user:email}_{user:uid}.log"
   filename = "{user:email}-{date:Y-m-d}.txt"
-  filename = "syslog"'),
+  filename = "syslog"
+  filename = "stderr"'),
 
 				'auth_logging' => array(false, 'Enable auth logging in a separate file (for fail2ban)'),
 				'auth_logging_filename' => array('fail2ban/auth-{date:Y-m-d}.txt'),
@@ -323,7 +365,11 @@ Examples:
 			),
 
 			'debug' => array(
-				'enable' => array(false, 'Special option required for development purposes')
+				'enable' => array(false, 'Special option required for development purposes'),
+				// use_app_debug_js
+				'javascript' => array(false),
+				// use_app_debug_css
+				'css' => array(false)
 			),
 
 			'cache' => array(
@@ -331,6 +377,8 @@ Examples:
 					'The section controls caching of the entire application.
 
 Enables caching in the system'),
+
+				'path' => array('', 'Path where cache files will be stored'),
 
 				'index' => array('v1', 'Additional caching key. If changed, cache is purged'),
 
@@ -340,60 +388,36 @@ Enables caching in the system'),
 				'http' => array(true, 'Browser-level cache. If enabled, caching is maintainted without using files'),
 				'http_expires' => array(3600, 'Browser-level cache time (seconds, Expires header)'),
 
-				'server_uids' => array(true, 'Caching message UIDs when searching and sorting (threading)')
+				'server_uids' => array(true, 'Caching message UIDs when searching and sorting (threading)'),
+
+				'system_data' => array(true)
 			),
 
 			'imap' => array(
-				'use_sort' => array(true),
 				'use_force_selection' => array(false),
-				'use_thread' => array(true),
-				'use_move' => array(false),
 				'use_expunge_all_on_delete' => array(false),
-				'body_text_limit' => array(555000),
 				'message_list_fast_simple_search' => array(true),
-				'message_list_count_limit_trigger' => array(0),
-				'message_list_date_filter' => array(0),
 				'message_list_permanent_filter' => array(''),
 				'message_all_headers' => array(false),
-				'large_thread_limit' => array(50),
-				'folder_list_limit' => array(200),
 				'show_login_alert' => array(true),
-				'use_list_status' => array(true),
-				'timeout' => array(300),
-				'disable_metadata' => array(false),
+				'fetch_new_messages' => array(true),
 			),
 
 			'labs' => array(
-				'cache_system_data' => array(true),
-				'date_from_headers' => array(true),
-				'autocreate_system_folders' => array(false),
+				'date_from_headers' => array(true, 'Display message RFC 2822 date and time header, instead of the arrival internal date.'),
 				'allow_message_append' => array(false),
-				'login_fault_delay' => array(1),
+				'login_fault_delay' => array(5, 'When login fails, wait N seconds before responding'),
 				'log_ajax_response_write_limit' => array(300),
-				'allow_html_editor_biti_buttons' => array(false),
-				'allow_ctrl_enter_on_compose' => array(true),
-				'try_to_detect_hidden_images' => array(false),
-				'use_app_debug_js' => array(false),
-				'use_app_debug_css' => array(false),
 				'smtp_show_server_errors' => array(false),
-				'smtp_timeout' => array(60),
 				'sieve_auth_plain_initial' => array(true),
 				'sieve_allow_fileinto_inbox' => array(false),
-				'sieve_timeout' => array(10),
-				'sasl_allow_plain' => array(true),
-				'sasl_allow_scram_sha' => array(false),
-				'sasl_allow_cram_md5' => array(false),
-				'mail_func_clear_headers' => array(true),
-				'mail_func_additional_parameters' => array(false),
+				'mail_func_clear_headers' => array(true, 'PHP mail() remove To and Subject headers'),
+				'mail_func_additional_parameters' => array(false, 'PHP mail() set -f emailaddress'),
 				'folders_spec_limit' => array(50),
 				'curl_proxy' => array(''),
 				'curl_proxy_auth' => array(''),
-				'force_https' => array(false),
 				'custom_login_link' => array(''),
 				'custom_logout_link' => array(''),
-				'allow_external_login' => array(false),
-				'allow_external_sso' => array(false),
-				'external_sso_key' => array(''),
 				'http_client_ip_check_proxy' => array(false),
 				'fast_cache_memcache_host' => array('127.0.0.1'),
 				'fast_cache_memcache_port' => array(11211),
@@ -403,7 +427,6 @@ Enables caching in the system'),
 				'image_exif_auto_rotate' => array(false),
 				'cookie_default_path' => array(''),
 				'cookie_default_secure' => array(false),
-				'check_new_messages' => array(true),
 				'replace_env_in_configuration' => array(''),
 				'boundary_prefix' => array(''),
 				'dev_email' => array(''),

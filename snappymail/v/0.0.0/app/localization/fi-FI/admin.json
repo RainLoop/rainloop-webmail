@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Halintapaneli"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Yleiset",
-		"LABEL_LOGIN_NAME": "Kirjautuminen",
-		"LABEL_BRANDING_NAME": "Brändäys",
-		"LABEL_CONTACTS_NAME": "Yhteystiedot",
-		"LABEL_DOMAINS_NAME": "Verkkotunnutkset",
-		"LABEL_SECURITY_NAME": "Turvallisuus",
-		"LABEL_PACKAGES_NAME": "Paketit",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "Tietoja"
+		"GENERAL": "Yleiset",
+		"LOGIN": "Kirjautuminen",
+		"BRANDING": "Brändäys",
+		"CONTACTS": "Yhteystiedot",
+		"DOMAINS": "Verkkotunnutkset",
+		"SECURITY": "Turvallisuus",
+		"PACKAGES": "Paketit",
+		"CONFIG": "Config",
+		"ABOUT": "Tietoja"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Käyttöliittymä",
@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "Käyttäjä",
 		"LABEL_STORAGE_PASSWORD": "Salasana",
 		"ALERT_NOTICE": "Huomio!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Älä käytä tätä tietokantatyyppiä suurella määrällä aktiivisia käyttäjiä.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Järjestelmäsi ei tue yhteystietoja.\n<br>\nAsenna tai aktivoi <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> lisäosa palvelimellasi.\n"
 	},
@@ -88,8 +89,7 @@
 		"LABEL_CURRENT_PASSWORD": "Nykyinen salasana",
 		"LABEL_NEW_PASSWORD": "Uusi salasana",
 		"LABEL_REPEAT_PASSWORD": "Toista",
-		"LEGEND_SSL": "SSL",
-		"LABEL_REQUIRE_VERIFICATION": "Vaadi SSL sertifikaatin varmistus (IMAP\/SMTP)",
+		"LABEL_REQUIRE_VERIFICATION": "Vaadi SSL sertifikaatin varmistus",
 		"LABEL_ALLOW_SELF_SIGNED": "Salli itse-allekirjoitetut sertifikaatit"
 	},
 	"TAB_PACKAGES": {
@@ -121,20 +121,21 @@
 		"TITLE_EDIT_DOMAIN": "Muokkaa verkkotunnusta \"%NAME%\"",
 		"LABEL_NAME": "Nimi",
 		"NAME_HELPER": "wildcard tuettu",
-		"LABEL_IMAP": "IMAP",
-		"LABEL_SMTP": "SMTP",
-		"LABEL_SIEVE": "SIEVE",
 		"LABEL_SERVER": "Palvelin",
 		"LABEL_PORT": "Portti",
 		"LABEL_SECURE": "Secure",
+		"TIMEOUT": "Timeout",
+		"DISABLE_CAPABILITIES": "Disable capabilities",
+		"LIMITS": "Limits",
+		"FOLDERS": "Folders",
+		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "Sallitut Lista",
 		"SECURE_OPTION_NONE": "Ei mitään",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Salli sieve skriptit",
 		"LABEL_USE_SHORT_LOGIN": "Käytä lyhyttä kirjautumista",
 		"LABEL_USE_AUTH": "Käytä tunnistautumista",
 		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "Käytä php mail() funktiota",
 		"BUTTON_WHITE_LIST": "Sallitut Lista",
 		"BUTTON_SIEVE_CONFIGURATION": "Sieve asetukset",
@@ -158,7 +159,6 @@
 	},
 	"HINTS": {
 		"BETA": "beta",
-		"UNSTABLE": "epävakaa",
 		"WARNING": "Varoitus!"
 	},
 	"ERRORS": {

@@ -10,19 +10,19 @@
 	<form class="form-horizontal plugin-form" action="#/" spellcheck="false" onsubmit="return false;">
 		<div class="alert alert-info" data-bind="visible: !hasConfiguration()" data-i18n="POPUPS_PLUGIN/DESC_NOTHING_TO_CONFIGURE"></div>
 		<div class="alert" data-bind="visible: '' !== saveError()">
-			<a href="#" class="close" data-bind="click: function () { saveError('') }">×</a>
+			<a href="#" class="close" data-bind="click: hideError">×</a>
 			<span data-bind="text: saveError"></span>
 		</div>
 		<div data-bind="foreach: config, visible: hasConfiguration">
-			<!-- ko if: 7 == Type -->
+			<!-- ko if: 7 == type -->
 			<details open="">
-				<summary class="legend" data-bind="text: Label"></summary>
+				<summary class="legend" data-bind="text: label"></summary>
 				<div data-bind="foreach: config">
 					<div class="control-group" data-bind="template: { name: 'AdminSettingsPluginProperty' }"></div>
 				</div>
 			</details>
 			<!-- /ko -->
-			<!-- ko if: 7 != Type -->
+			<!-- ko if: 7 != type -->
 			<div class="control-group" data-bind="template: { name: 'AdminSettingsPluginProperty' }"></div>
 			<!-- /ko -->
 		</div>

@@ -36,7 +36,7 @@
 					} else if (!script) {
 						script = doc.createElement('script');
 //						script.onload = ShowRecaptcha;
-						script.src = 'https://www.google.com/recaptcha/api.js?onload=ShowRecaptcha&render=explicit&hl=' + doc.documentElement.lang;
+						script.src = 'https://www.recaptcha.net/recaptcha/api.js?onload=ShowRecaptcha&render=explicit&hl=' + doc.documentElement.lang;
 						doc.head.append(script);
 					}
 				};

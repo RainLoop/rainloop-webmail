@@ -20,35 +20,38 @@ namespace MailSo\Imap\Requests;
  */
 class THREAD extends Request
 {
-	public
-		$sAlgorithm = '', // ORDEREDSUBJECT or REFERENCES or REFS
-		$sCriterias = 'ALL',
-		$bUid = true;
+	// ORDEREDSUBJECT or REFERENCES or REFS
+	private string $sAlgorithm = '';
+
+	public string $sCriterias = 'ALL';
+
+	public bool $bUid = true;
 
 	function __construct(\MailSo\Imap\ImapClient $oImapClient)
 	{
-		if ($oImapClient->IsSupported('THREAD=REFS')) {
+		if ($oImapClient->hasCapability('THREAD=REFS')) {
 			$this->sAlgorithm = 'REFS';
-		} else if ($oImapClient->IsSupported('THREAD=REFERENCES')) {
+		} else if ($oImapClient->hasCapability('THREAD=REFERENCES')) {
 			$this->sAlgorithm = 'REFERENCES';
-		} else if ($oImapClient->IsSupported('THREAD=ORDEREDSUBJECT')) {
+		} else if ($oImapClient->hasCapability('THREAD=ORDEREDSUBJECT')) {
 			$this->sAlgorithm = 'ORDEREDSUBJECT';
 		} else {
-			$oImapClient->writeLogException(
-				new \MailSo\RuntimeException('THREAD is not supported'),
-				\LOG_ERR, true);
+			$oImapClient->writeLogException(new \MailSo\RuntimeException('THREAD is not supported'), \LOG_ERR);
 		}
 		parent::__construct($oImapClient);
 	}
 
+	public function setAlgorithm(string $sAlgorithm) : void
+	{
+		$sAlgorithm = \strtoupper($sAlgorithm);
+		if (!$this->oImapClient->hasCapability("THREAD={$sAlgorithm}")) {
+			$this->oImapClient->writeLogException(new \MailSo\RuntimeException("THREAD={$sAlgorithm} is not supported"), \LOG_ERR);
+		}
+		$this->sAlgorithm = $sAlgorithm;
+	}
+
 	public function SendRequestIterateResponse() : iterable
 	{
-		if (!$this->oImapClient->IsSupported(\strtoupper("THREAD={$this->sAlgorithm}"))) {
-			$this->oImapClient->writeLogException(
-				new \MailSo\RuntimeException("THREAD={$this->sAlgorithm} is not supported"),
-				\LOG_ERR, true);
-		}
-
 		$this->oImapClient->SendRequest(
 			($this->bUid ? 'UID THREAD' : 'THREAD'),
 			array(

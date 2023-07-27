@@ -1,6 +1,6 @@
 import { koComputable, addObservablesTo } from 'External/ko';
 import { FolderUserStore } from 'Stores/User/Folder';
-import { SettingsGet } from 'Common/Globals';
+import { SettingsGet/*, SettingsCapa*/ } from 'Common/Globals';
 
 //export class UserSettingsFilters /*extends AbstractViewSettings*/ {
 export class UserSettingsFilters /*extends AbstractViewSettings*/ {
@@ -26,6 +26,14 @@ export class UserSettingsFilters /*extends AbstractViewSettings*/ {
 
 		this.scriptForDeletion = ko.observable(null).askDeleteHelper();
 	}
+
+/*
+	// TODO: issue on account switch
+	// When current domain has sieve but the new has not, or current has not and the new has
+	disabled() {
+		return !SettingsCapa('Sieve');
+	}
+*/
 
 	addScript() {
 		this.editScript();

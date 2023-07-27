@@ -1,6 +1,7 @@
 <?php
 
 use RainLoop\Providers\AddressBook\Classes\Contact;
+use Sabre\VObject\Component\VCard;
 
 class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInterface
 {
@@ -26,7 +27,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		$oActions = \RainLoop\Api::Actions();
 		$oMailClient = $oActions->MailClient();
 		if (!$oMailClient->IsLoggined()) {
-			$oActions->getAccountFromToken()->ImapConnectAndLoginHelper($oActions->Plugins(), $oMailClient, $oActions->Config());
+			$oActions->getAccountFromToken()->ImapConnectAndLogin($oActions->Plugins(), $oMailClient->ImapClient(), $oActions->Config());
 		}
 		return $oMailClient;
 	}
@@ -53,17 +54,17 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		return false;
 	}
 
-	protected function fetchXCardFromMessage(\MailSo\Mail\Message $oMessage) : ?\Sabre\VObject\Component\VCard
+	protected function fetchXCardFromMessage(\MailSo\Mail\Message $oMessage) : ?VCard
 	{
 		$xCard = null;
 		try {
 			foreach ($oMessage->Attachments() ?: [] as $oAttachment)  {
-				if ('application/vcard+xml' === $oAttachment->MimeType()) {
+				if ('application/vcard+xml' === $oAttachment->ContentType()) {
 					$result = $this->MailClient()->MessageMimeStream(function ($rResource) use (&$xCard) {
 						if (\is_resource($rResource)) {
 							$xCard = \Sabre\VObject\Reader::readXML($rResource);
 						}
-					}, $this->sFolderName, $oMessage->Uid(), $oAttachment->MimeIndex());
+					}, $this->sFolderName, $oMessage->Uid(), $oAttachment->PartID());
 					break;
 				}
 			}
@@ -94,7 +95,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 
 	public function IsSupported() : bool
 	{
-		// Check $this->ImapClient()->IsSupported('METADATA')
+		// Check $this->ImapClient()->hasCapability('METADATA')
 		return true;
 	}
 
@@ -132,12 +133,16 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 			$oParams->iLimit = 999; // Is the max
 			$oMessageList = $this->MailClient()->MessageList($oParams);
 			foreach ($oMessageList as $oMessage) {
-				if ($rCsv) {
-					$oContact = $this->MessageAsContact($oMessage);
-					\RainLoop\Providers\AddressBook\Utils::VCardToCsv($rCsv, $oContact, $bCsvHeader);
-					$bCsvHeader = false;
-				} else if ($xCard = $this->fetchXCardFromMessage($oMessage)) {
-					echo $xCard->serialize();
+				try {
+					if ($rCsv) {
+						$oContact = $this->MessageAsContact($oMessage);
+						\RainLoop\Providers\AddressBook\Utils::VCardToCsv($rCsv, $oContact->vCard, $bCsvHeader);
+						$bCsvHeader = false;
+					} else if ($xCard = $this->fetchXCardFromMessage($oMessage)) {
+						echo $xCard->serialize();
+					}
+				} catch (\Throwable $oExc) {
+					$this->oLogger && $this->oLogger->WriteException($oExc);
 				}
 			}
 		}
@@ -155,7 +160,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 			return false;
 		}
 
-		$id = $oContact->id;
+		$id = \intval($oContact->id);
 		$sUID = '';
 
 		$oVCard = $oContact->vCard;
@@ -295,9 +300,6 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 				$oParams->sSearch = 'from='.$sSearch;
 			}
 			$oParams->sSort = 'FROM';
-			$oParams->bUseSortIfSupported = !!\RainLoop\Api::Actions()->Config()->Get('labs', 'use_imap_sort', true);
-//			$oParams->iPrevUidNext = $this->GetActionParam('UidNext', 0);
-//			$oParams->bUseThreads = false;
 
 			$oMessageList = $this->MailClient()->MessageList($oParams);
 			foreach ($oMessageList as $oMessage) {
@@ -311,6 +313,12 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		}
 
 		return $aResult;
+	}
+
+	public function GetContactByEmail(string $sEmail) : ?Contact
+	{
+		// TODO
+		return null;
 	}
 
 	public function GetContactByID($mID, bool $bIsStrID = false) : ?Contact
@@ -350,6 +358,33 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 
 	public function IncFrec(array $aEmails, bool $bCreateAuto = true) : bool
 	{
+		if ($bCreateAuto) {
+			foreach ($aEmails as $sEmail => $sAddress) {
+				$sSearch = \MailSo\Imap\SearchCriterias::escapeSearchString($this->ImapClient(), $sEmail);
+				if (!$this->ImapClient()->MessageSimpleSearch("FROM {$sSearch}")) {
+					$oVCard = new VCard;
+					$oVCard->add('EMAIL', $sEmail);
+					$sFullName = \trim(\MailSo\Mime\Email::Parse(\trim($sAddress))->GetDisplayName());
+					if ('' !== $sFullName) {
+						$sFirst = $sLast = '';
+						if (false !== \strpos($sFullName, ' ')) {
+							$aNames = \explode(' ', $sFullName, 2);
+							$sFirst = isset($aNames[0]) ? $aNames[0] : '';
+							$sLast = isset($aNames[1]) ? $aNames[1] : '';
+						} else {
+							$sFirst = $sFullName;
+						}
+						if (\strlen($sFirst) || \strlen($sLast)) {
+							$oVCard->N = array($sLast, $sFirst, '', '', '');
+						}
+					}
+					$oContact = new Contact();
+					$oContact->setVCard($oVCard);
+					$this->ContactSave($oContact);
+				}
+			}
+			return true;
+		}
 		return false;
 	}
 

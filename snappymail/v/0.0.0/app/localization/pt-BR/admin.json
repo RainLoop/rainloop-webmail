@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Painel Administrativo"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Geral",
-		"LABEL_LOGIN_NAME": "Login",
-		"LABEL_BRANDING_NAME": "Personalizar",
-		"LABEL_CONTACTS_NAME": "Contatos",
-		"LABEL_DOMAINS_NAME": "Domínios",
-		"LABEL_SECURITY_NAME": "Segurança",
-		"LABEL_PACKAGES_NAME": "Pacotes",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "Sobre"
+		"GENERAL": "Geral",
+		"LOGIN": "Login",
+		"BRANDING": "Personalizar",
+		"CONTACTS": "Contatos",
+		"DOMAINS": "Domínios",
+		"SECURITY": "Segurança",
+		"PACKAGES": "Pacotes",
+		"CONFIG": "Config",
+		"ABOUT": "Sobre"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Interface",
@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "Usuário",
 		"LABEL_STORAGE_PASSWORD": "Senha",
 		"ALERT_NOTICE": "Aviso!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Não use este tipo de banco de dados com um grande número de usuários ativos.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "O seu sistema não suporta o uso dos contatos.\n<br>\nVocê precisa instalar ou habilitar a extensão <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> em seu servidor.\n"
 	},
@@ -88,8 +89,7 @@
 		"LABEL_CURRENT_PASSWORD": "Senha atual",
 		"LABEL_NEW_PASSWORD": "Nova senha",
 		"LABEL_REPEAT_PASSWORD": "Confirmar nova senha",
-		"LEGEND_SSL": "SSL",
-		"LABEL_REQUIRE_VERIFICATION": "Exigir verificação do certificado SSL (IMAP\/SMTP)",
+		"LABEL_REQUIRE_VERIFICATION": "Exigir verificação do certificado SSL",
 		"LABEL_ALLOW_SELF_SIGNED": "Permitir certificados auto-assinados"
 	},
 	"TAB_PACKAGES": {
@@ -121,20 +121,21 @@
 		"TITLE_EDIT_DOMAIN": "Editar Domínio \"%NAME%\"",
 		"LABEL_NAME": "Domínio",
 		"NAME_HELPER": "curinga (wildcard) suportado",
-		"LABEL_IMAP": "IMAP",
-		"LABEL_SMTP": "SMTP",
-		"LABEL_SIEVE": "SIEVE",
 		"LABEL_SERVER": "Servidor",
 		"LABEL_PORT": "Porta",
 		"LABEL_SECURE": "Criptografia",
+		"TIMEOUT": "Timeout",
+		"DISABLE_CAPABILITIES": "Disable capabilities",
+		"LIMITS": "Limits",
+		"FOLDERS": "Folders",
+		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "Lista branca",
 		"SECURE_OPTION_NONE": "Nenhuma",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Permitir scripts sieve",
 		"LABEL_USE_SHORT_LOGIN": "Usar login curto",
 		"LABEL_USE_AUTH": "Usar autenticação",
 		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "Usar função php mail()",
 		"BUTTON_WHITE_LIST": "Lista branca",
 		"BUTTON_SIEVE_CONFIGURATION": "Configurações Sieve",
@@ -158,7 +159,6 @@
 	},
 	"HINTS": {
 		"BETA": "beta",
-		"UNSTABLE": "instável",
 		"WARNING": "Aviso!"
 	},
 	"ERRORS": {

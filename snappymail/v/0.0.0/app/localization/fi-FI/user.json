@@ -1,4 +1,5 @@
 {
+	"LANG_DIR": "ltr",
 	"GLOBAL": {
 		"TO_ARCHIVE": "Arkistointi",
 		"ARE_YOU_SURE": "Oletko varma?",
@@ -19,9 +20,11 @@
 		"MOVE_TO": "Siirrä",
 		"NAME": "Postilaatikko",
 		"NONE": "Ei mitään",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "Ei roskapostia",
 		"USERNAME": "Käyttäjätunnus",
 		"PASSWORD": "Salasana",
+		"REMEMBER": "Remember",
 		"REPLY_TO": "Vastaa",
 		"SAVE": "Tallenna",
 		"SAVE_CHANGES": "Save changes?",
@@ -33,7 +36,11 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Kyllä",
 		"NO": "Ei",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "oletus",
+		"HELP": "Ohje",
+		"TEXT": "Teksti",
+		"ATTACHMENTS": "Liite"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Tunnus",
@@ -41,13 +48,7 @@
 		"BUTTON_SIGN_IN": "Kirjaudu"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Lisää tili",
-		"BUTTON_SETTINGS": "Asetukset",
-		"BUTTON_HELP": "Ohje"
-	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobiiliversio",
-		"BUTTON_DESKTOP_VERSION": "Työpöytäversio"
+		"BUTTON_ADD_ACCOUNT": "Lisää tili"
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Tarkka haku",
@@ -98,6 +99,7 @@
 		"MENU_SELECT_SEEN": "Luetut",
 		"MENU_SELECT_FLAGGED": "Merkityt",
 		"MENU_SELECT_UNFLAGGED": "Merkkaamattomat",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Tyhjä lista",
 		"EMPTY_SEARCH_LIST": "Yhtään viestiä ei löytynyt ehdoillasi.",
 		"SEARCH_RESULT_FOR": "Hakutulokset haulle \"%SEARCH%\"",
@@ -108,6 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "Sinulle on %COUNT% uutta viestiä!",
 		"QUOTA_SIZE": "Käytät <strong>%SIZE% (%PROC%%)<\/strong> sinulle varatusta <strong>%LIMIT%<\/strong>",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Date ascending",
 		"SORT_DATE_DESC": "Date descending",
 		"SORT_SIZE_ASC": "Size ascending",
@@ -224,11 +227,16 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Ei liitteitä",
 		"ATTACHMENTS_ERROR_DESC": "Huom! Yhtään liitetiedostoa ei ole ladattu.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Kaikkia liitetiedostoja ei ole vielä ladattu.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"BUTTON_REQUEST_READ_RECEIPT": "Pyydä kuittaus",
 		"BUTTON_MARK_AS_IMPORTANT": "Merkitse tärkeäksi",
-		"BUTTON_REQUEST_DSN": "Pyydä toimituskuittaus"
+		"BUTTON_REQUEST_DSN": "Pyydä toimituskuittaus",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Haluatko varmasti sulkea tämän ikkunan?",
 		"DESC_WANT_DELETE_MESSAGES": "Haluatko varmasti poistaa viestin\/viestit?"
 	},
@@ -312,7 +320,7 @@
 		"MARK_AS_READ_LABEL": "Merkitse luetuksi",
 		"REPLY_INTERVAL_LABEL": "Vastaus intervalli (päivissä)",
 		"KEEP_LABEL": "Säästä",
-		"STOP_LABEL": "Älä lopeta sääntöjen prosessointia",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Aihe (valinnainen)",
 		"VACATION_MESSAGE_LABEL": "Viesti",
 		"VACATION_RECIPIENTS_LABEL": "Vastaanottajat (erotettu pilkulla)",
@@ -351,21 +359,43 @@
 		"ERROR_UNKNOWN": "Tuntematon virhe ladattaessa"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> TEKSTI",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"PLAIN": "HTML <-> TEKSTI",
+		"SOURCE": "HTML <-> SOURCE",
+		"FONTFAMILY": "Font family",
+		"FONTSIZE": "Font size",
+		"DIR": "Text direction",
+		"DIR_LTR": "Left to right",
+		"DIR_RTL": "Right to left",
+		"DIR_AUTO": "Automatic",
+		"TEXTCOLOR": "Text color",
+		"BACKGROUNDCOLOR": "Background color",
+		"BOLD": "Bold",
+		"ITALIC": "Italic",
+		"UNDERLINE": "Underline",
+		"STRIKE": "Strikethrough",
+		"SUB": "Subscript",
+		"SUP": "Superscript",
+		"OL": "Ordered list",
+		"UL": "Unordered list",
+		"QUOTE": "Blockquote",
+		"INDENTDECREASE": "Decrease indent",
+		"INDENTINCREASE": "Increase indent",
+		"LINK": "Link",
+		"IMAGEURL": "Image URL",
+		"IMAGEUPLOAD": "Image select",
+		"UNDO": "Undo",
+		"REDO": "Redo"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Henkilökohtainen",
-		"LABEL_GENERAL_NAME": "Yleinen",
-		"LABEL_CONTACTS_NAME": "Yhteystiedot",
-		"LABEL_FOLDERS_NAME": "kansiot",
-		"LABEL_ACCOUNTS_NAME": "Tilit",
-		"LABEL_FILTERS_NAME": "Suodattimet",
-		"LABEL_SECURITY_NAME": "Turvallisuus",
-		"LABEL_THEMES_NAME": "Teemat"
+		"GENERAL": "Yleinen",
+		"CONTACTS": "Yhteystiedot",
+		"FOLDERS": "kansiot",
+		"ACCOUNTS": "Tilit",
+		"FILTERS": "Suodattimet",
+		"SECURITY": "Turvallisuus",
+		"THEMES": "Teemat"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "Suodattimet",
 		"SIMPLE": "Simple",
 		"ADVANCED": "Advanced",
 		"BUTTON_ADD_SCRIPT": "Add a Script",
@@ -378,18 +408,18 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Turvallisuus",
 		"LABEL_AUTOLOGOUT": "Automaattinen uloskirjautuminen",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Ei koskaan",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minuuttia",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% tuntia"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Ei koskaan"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Yleiset",
 		"LANGUAGE": "Kieli",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identiteetti",
 		"LAYOUT": "Asettelu",
 		"LAYOUT_NO_SPLIT": "Ei jakoa",
 		"LAYOUT_VERTICAL_SPLIT": "Pystysuora jako",
 		"LAYOUT_HORIZONTAL_SPLIT": "Vaakataso jako",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Oletus tekstieditori",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "Pelkkä teksti",
@@ -399,19 +429,30 @@
 		"USE_CHECKBOXES_IN_LIST": "Näytä valintaruudut listassa",
 		"USE_THREADS": "Käytä keskustelunäkymää",
 		"REPLY_SAME_FOLDER": "Siirrä vastaukset samaan kansioon vastattavien kanssa",
-		"SHOW_IMAGES": "Näytä aina ulkopuoliset kuvat viestissä",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"REMOVE_COLORS": "Remove background and text colors from message body",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "Viestiä sivulla",
+		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Mark message as read after",
 		"MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
+		"MINUTES": "minutes",
 		"NOTIFICATIONS": "Ilmoitukset",
 		"SOUND_NOTIFICATION": "Äänimerkit",
 		"CHROME_NOTIFICATION_DESC": "Näytä uusien viestien ponnahdusikkuna",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Estetty selaimessa)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
+		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Lisää yhetystieto automaattisesti osoitekirjaan",
@@ -463,14 +504,13 @@
 		"BUTTON_ADD_ACCOUNT": "Lisää Tili",
 		"BUTTON_ADD_IDENTITY": "Lisää identiteetti",
 		"LOADING_PROCESS": "Päivitetään...",
-		"DEFAULT_IDENTITY_LABEL": "oletus"
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Tuo avain",
 		"BUTTON_GENERATE_KEY_PAIR": "Luo avain",
 		"TITLE_PRIVATE": "Yksityinen",
 		"TITLE_PUBLIC": "Julkinen",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatically save draft",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
@@ -484,7 +524,6 @@
 		"LABEL_REPLY_ALL": "Vastaa kaikille",
 		"LABEL_FORWARD": "Lähetä edelleen",
 		"LABEL_FORWARD_MULTIPLY": "Lähetä edelleen liitteenä",
-		"LABEL_HELP": "Ohje",
 		"LABEL_CHECK_ALL": "Valitse kaikki viestit",
 		"LABEL_DELETE": "Poista",
 		"LABEL_OPEN_THREAD": "Avaa valittu ketju",

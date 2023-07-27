@@ -21,10 +21,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 	{
 		parent::__construct();
 
-		if (\strlen($sRawParams))
-		{
-			$this->Parse($sRawParams);
-		}
+		\strlen($sRawParams) && $this->Parse($sRawParams);
 	}
 
 	public function append($oParameter, bool $bToTop = false) : void
@@ -66,8 +63,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 
 		$aDataToParse = \explode(';', $sRawParams);
 
-		foreach ($aDataToParse as $sParam)
-		{
+		foreach ($aDataToParse as $sParam) {
 			$this->append(Parameter::CreateFromParameterLine($sParam));
 		}
 
@@ -79,17 +75,34 @@ class ParameterCollection extends \MailSo\Base\Collection
 	public function ToString(bool $bConvertSpecialsName = false) : string
 	{
 		$aResult = array();
-		foreach ($this as $oParam)
-		{
+		foreach ($this as $oParam) {
 			$sLine = $oParam->ToString($bConvertSpecialsName);
-			if (\strlen($sLine))
-			{
+			if (\strlen($sLine)) {
 				$aResult[] = $sLine;
 			}
 		}
-
 		return \count($aResult) ? \implode('; ', $aResult) : '';
 	}
+
+	public function __toString() : string
+	{
+		return $this->ToString();
+	}
+
+/*
+	#[\ReturnTypeWillChange]
+	public function jsonSerialize()
+	{
+		$aResult = array();
+		foreach ($this as $oParam) {
+			$aResult[$oParam->Name()] = $oParam->Value();
+		}
+		return array(
+			'@Object' => 'Collection/ParameterCollection',
+			'@Collection' => $aResult
+		);
+	}
+*/
 
 	private function reParseParameters() : void
 	{
@@ -99,26 +112,22 @@ class ParameterCollection extends \MailSo\Base\Collection
 		$this->Clear();
 
 		$aPreParams = array();
-		foreach ($aDataToReParse as $oParam)
-		{
+		foreach ($aDataToReParse as $oParam) {
 			$aMatch = array();
 			$sParamName = $oParam->Name();
 
 			if (\preg_match('/([^\*]+)\*([\d]{1,2})\*/', $sParamName, $aMatch) && isset($aMatch[1], $aMatch[2])
 				&& \strlen($aMatch[1]) && \is_numeric($aMatch[2]))
 			{
-				if (!isset($aPreParams[$aMatch[1]]))
-				{
+				if (!isset($aPreParams[$aMatch[1]])) {
 					$aPreParams[$aMatch[1]] = array();
 				}
 
 				$sValue = $oParam->Value();
 
-				if (false !== \strpos($sValue, "''"))
-				{
+				if (false !== \strpos($sValue, "''")) {
 					$aValueParts = \explode("''", $sValue, 2);
-					if (\is_array($aValueParts) && 2 === \count($aValueParts) && \strlen($aValueParts[1]))
-					{
+					if (\is_array($aValueParts) && 2 === \count($aValueParts) && \strlen($aValueParts[1])) {
 						$sCharset = $aValueParts[0];
 						$sValue = $aValueParts[1];
 					}
@@ -128,17 +137,14 @@ class ParameterCollection extends \MailSo\Base\Collection
 			}
 			else if (\preg_match('/([^\*]+)\*/', $sParamName, $aMatch) && isset($aMatch[1]))
 			{
-				if (!isset($aPreParams[$aMatch[1]]))
-				{
+				if (!isset($aPreParams[$aMatch[1]])) {
 					$aPreParams[$aMatch[1]] = array();
 				}
 
 				$sValue = $oParam->Value();
-				if (false !== \strpos($sValue, "''"))
-				{
+				if (false !== \strpos($sValue, "''")) {
 					$aValueParts = \explode("''", $sValue, 2);
-					if (\is_array($aValueParts) && 2 === \count($aValueParts) && \strlen($aValueParts[1]))
-					{
+					if (\is_array($aValueParts) && 2 === \count($aValueParts) && \strlen($aValueParts[1])) {
 						$sCharset = $aValueParts[0];
 						$sValue = $aValueParts[1];
 					}
@@ -152,14 +158,12 @@ class ParameterCollection extends \MailSo\Base\Collection
 			}
 		}
 
-		foreach ($aPreParams as $sName => $aValues)
-		{
-			ksort($aValues);
+		foreach ($aPreParams as $sName => $aValues) {
+			\ksort($aValues);
 			$sResult = \implode(\array_values($aValues));
 			$sResult = \urldecode($sResult);
 
-			if (\strlen($sCharset))
-			{
+			if (\strlen($sCharset)) {
 				$sResult = \MailSo\Base\Utils::ConvertEncoding($sResult,
 					$sCharset, \MailSo\Base\Enumerations\Charset::UTF_8);
 			}

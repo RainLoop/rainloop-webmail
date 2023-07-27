@@ -1,8 +1,6 @@
 
 #top-system-dropdown-id {
-	overflow: hidden;
-	padding-left: 8px;
-	padding-right: 6px;
+	padding: 0 6px;
 }
 
 .rl-left-panel-disabled #more-list-dropdown-id + .dropdown-menu {
@@ -15,25 +13,19 @@
 	position: absolute;
 	top: 0;
 	right: 0;
-	height: 30px;
 	padding: 10px @rlLowMargin;
 	z-index: 103;
 
 	.email-title {
-		display: inline-block;
-		max-width: 50vw;
-		text-align: left;
 		text-overflow: ellipsis;
 		overflow: hidden;
-		margin-right: 28px;
-		vertical-align: middle;
 	}
 
 	.audioPlace {
 		cursor: pointer;
 		display: inline-block;
 		font-size: 30px;
-		height: 30px;
+		height: 1em;
 		margin-right: 10px;
 		width: 1em;
 
@@ -55,29 +47,33 @@
 	}
 
 	.accountPlace {
-		background-color: rgba(0, 0, 0, 0.5);
-		border-radius: 4px;
-		color: #fff;
+		border-right: 1px solid var(--btn-border-clr, rgba(0, 0, 0, 0.2));
 		display: inline-block;
-		font-weight: bold;
-		font-size: 16px;
-		height: 29px;
-		line-height: 30px;
+		font-weight: 600;
+		line-height: 1.3;
+		margin: 0 6px -4px 0;
 		max-width: 25vw;
+/*		max-width: calc(100vw - 300px);*/
 		overflow: hidden;
-		padding: 1px 8px;
+		padding-right: 6px;
 		text-overflow: ellipsis;
-		text-shadow: 0 1px 0 #000;
-		white-space: nowrap;
 	}
 
-	.counter {
-		display: inline-block;
+	a[data-unread]::after {
+		content: attr(data-unread);
+		background-color: var(--unread-count-bg-color, #999);
+		border-radius: 1em;
+		color: var(--unread-count-color, #fff);
+		font-size: 11px;
+		line-height: 1.5em;
+		min-width: 1.7em;
+		padding: 1px 4px;
+		text-align: center;
+		text-shadow: 0 -1px 0 rgba(0,0,0,.25);
+		position: absolute;
+		right: 3px;
 	}
 
-	.dropdown-menu a.account-item {
-		padding-right: 5px;
-	}
 }
 
 @keyframes equaliserBar {

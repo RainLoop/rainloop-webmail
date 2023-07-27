@@ -1,69 +1,109 @@
 import ko from 'ko';
-import { doc, $htmlCL, elementById, leftPanelDisabled, Settings, SettingsGet } from 'Common/Globals';
-import { isArray } from 'Common/Utils';
-import { serverRequestRaw } from 'Common/Links';
+import { $htmlCL, appEl, elementById, leftPanelDisabled, Settings, SettingsGet } from 'Common/Globals';
+import { isArray, arrayLength } from 'Common/Utils';
+import { cssLink, serverRequestRaw } from 'Common/Links';
+import { SaveSettingStatus } from 'Common/Enums';
+import { addSubscribablesTo } from 'External/ko';
 
-export const ThemeStore = {
-	theme: ko.observable(''),
-	themes: ko.observableArray(),
-	userBackgroundName: ko.observable(''),
-	userBackgroundHash: ko.observable(''),
-	fontSansSerif: ko.observable(''),
-	fontSerif: ko.observable(''),
-	fontMono: ko.observable(''),
-	isMobile: ko.observable($htmlCL.contains('rl-mobile')),
+let __themeTimer = 0;
 
-	populate: () => {
-		const themes = Settings.app('themes');
+export const
+	// Also see Styles/_Values.less @maxMobileWidth
+	isMobile = matchMedia('(max-width: 799px)'),
+
+	ThemeStore = {
+		theme: ko.observable(''),
+		themes: ko.observableArray(),
+		userBackgroundName: ko.observable(''),
+		userBackgroundHash: ko.observable(''),
+		fontSansSerif: ko.observable(''),
+		fontSerif: ko.observable(''),
+		fontMono: ko.observable(''),
+		isMobile: ko.observable(false)
+	},
+
+	initThemes = () => {
+		const theme = SettingsGet('Theme'),
+			themes = Settings.app('themes');
 
 		ThemeStore.themes(isArray(themes) ? themes : []);
-		ThemeStore.theme(SettingsGet('Theme'));
+		ThemeStore.theme(theme);
+		changeTheme(theme);
 		if (!ThemeStore.isMobile()) {
-			ThemeStore.userBackgroundName(SettingsGet('UserBackgroundName'));
-			ThemeStore.userBackgroundHash(SettingsGet('UserBackgroundHash'));
+			ThemeStore.userBackgroundName(SettingsGet('userBackgroundName'));
+			ThemeStore.userBackgroundHash(SettingsGet('userBackgroundHash'));
 		}
 		ThemeStore.fontSansSerif(SettingsGet('fontSansSerif'));
 		ThemeStore.fontSerif(SettingsGet('fontSerif'));
 		ThemeStore.fontMono(SettingsGet('fontMono'));
 
 		leftPanelDisabled(ThemeStore.isMobile());
+	},
+
+	changeTheme = (value, themeTrigger = ()=>0) => {
+		const themeStyle = elementById('app-theme-style'),
+			clearTimer = () => {
+				__themeTimer = setTimeout(() => themeTrigger(SaveSettingStatus.Idle), 1000);
+			},
+			url = cssLink(value);
+
+		if (themeStyle.dataset.name != value) {
+			clearTimeout(__themeTimer);
+
+			themeTrigger(SaveSettingStatus.Saving);
+
+			rl.app.Remote.abort('theme').get('theme', url)
+				.then(data => {
+					if (2 === arrayLength(data)) {
+						themeStyle.textContent = data[1];
+						themeStyle.dataset.name = value;
+						themeTrigger(SaveSettingStatus.Success);
+					}
+					clearTimer();
+				}, clearTimer);
+		}
+	},
+
+	convertThemeName = theme => theme.replace(/@[a-z]+$/, '').replace(/([A-Z])/g, ' $1').trim();
+
+addSubscribablesTo(ThemeStore, {
+	fontSansSerif: value => {
+		if (null != value) {
+			let cl = appEl.classList;
+			cl.forEach(name => {
+				if (name.startsWith('font') && !/font(Serif|Mono)/.test(name)) {
+					cl.remove(name);
+				}
+			});
+			value && cl.add('font'+value);
+		}
+	},
+
+	fontSerif: value => {
+		if (null != value) {
+			let cl = appEl.classList;
+			cl.forEach(name => name.startsWith('fontSerif') && cl.remove(name));
+			value && cl.add('fontSerif'+value);
+		}
+	},
+
+	fontMono: value => {
+		if (null != value) {
+			let cl = appEl.classList;
+			cl.forEach(name => name.startsWith('fontMono') && cl.remove(name));
+			value && cl.add('fontMono'+value);
+		}
+	},
+
+	userBackgroundHash: value => {
+		appEl.classList.toggle('UserBackground', !!value);
+		appEl.style.backgroundImage = value ? "url("+serverRequestRaw('UserBackground', value)+")" : null;
 	}
+});
+
+isMobile.onchange = e => {
+	ThemeStore.isMobile(e.matches);
+	$htmlCL.toggle('rl-mobile', e.matches);
+	leftPanelDisabled(e.matches);
 };
-
-ThemeStore.isMobile.subscribe(value => $htmlCL.toggle('rl-mobile', value));
-
-ThemeStore.fontSansSerif.subscribe(value => {
-	if (null != value) {
-		let cl = elementById('rl-app').classList;
-		cl.forEach(name => {
-			if (name.startsWith('font') && !/font(Serif|Mono)/.test(name)) {
-				cl.remove(name);
-			}
-		});
-		value && cl.add('font'+value);
-	}
-});
-ThemeStore.fontSerif.subscribe(value => {
-	if (null != value) {
-		let cl = elementById('rl-app').classList;
-		cl.forEach(name => name.startsWith('fontSerif') && cl.remove(name));
-		value && cl.add('fontSerif'+value);
-	}
-});
-ThemeStore.fontMono.subscribe(value => {
-	if (null != value) {
-		let cl = elementById('rl-app').classList;
-		cl.forEach(name => name.startsWith('fontMono') && cl.remove(name));
-		value && cl.add('fontMono'+value);
-	}
-});
-
-ThemeStore.userBackgroundHash.subscribe(value => {
-	if (value) {
-		$htmlCL.add('UserBackground');
-		doc.body.style.backgroundImage = "url("+serverRequestRaw('UserBackground', value)+")";
-	} else {
-		$htmlCL.remove('UserBackground');
-		doc.body.removeAttribute('style');
-	}
-});
+isMobile.onchange(isMobile);

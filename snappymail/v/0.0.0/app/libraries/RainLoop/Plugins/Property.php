@@ -2,57 +2,39 @@
 
 namespace RainLoop\Plugins;
 
+use RainLoop\Enumerations\PluginPropertyType;
+
 class Property implements \JsonSerializable
 {
-	/**
-	 * @var string
-	 */
-	private $sName;
+	private string $sName;
 
 	/**
 	 * @var mixed
 	 */
 	private $mValue;
 
-	/**
-	 * @var string
-	 */
-	private $sLabel;
+	private string $sLabel = '';
 
-	/**
-	 * @var string
-	 */
-	private $sDesc;
+	private string $sDesc = '';
 
-	/**
-	 * @var int
-	 */
-	private $iType;
+	private int $iType = PluginPropertyType::STRING;
 
-	/**
-	 * @var bool
-	 */
-	private $bAllowedInJs;
+	private bool $bAllowedInJs = false;
 
 	/**
 	 * @var mixed
 	 */
-	private $mDefaultValue;
+	private $mDefaultValue = '';
 
-	/**
-	 * @var string
-	 */
-	private $sPlaceholder;
+	private array $aOptions = [];
+
+	private string $sPlaceholder = '';
+
+	public bool $encrypted = false;
 
 	function __construct(string $sName)
 	{
 		$this->sName = $sName;
-		$this->iType = \RainLoop\Enumerations\PluginPropertyType::STRING;
-		$this->mDefaultValue = '';
-		$this->sLabel = '';
-		$this->sDesc = '';
-		$this->bAllowedInJs = false;
-		$this->sPlaceholder = '';
 	}
 
 	public static function NewInstance(string $sName) : self
@@ -63,7 +45,6 @@ class Property implements \JsonSerializable
 	public function SetType(int $iType) : self
 	{
 		$this->iType = (int) $iType;
-
 		return $this;
 	}
 
@@ -72,7 +53,35 @@ class Property implements \JsonSerializable
 	 */
 	public function SetValue($mValue) : void
 	{
-		$this->mValue = $mValue;
+		$this->mValue = null;
+		switch ($this->iType) {
+			case PluginPropertyType::INT:
+				$this->mValue = (int) $mValue;
+				break;
+			case PluginPropertyType::BOOL:
+				$this->mValue = !empty($mValue);
+				break;
+			case PluginPropertyType::SELECT:
+				foreach ($this->aOptions as $option) {
+					if ($mValue == $option['id']) {
+						$this->mValue = (string) $mValue;
+					}
+				}
+				break;
+			case PluginPropertyType::SELECTION:
+				if ($this->aOptions && \in_array($mValue, $this->aOptions)) {
+					$this->mValue = (string) $mValue;
+				}
+				break;
+			case PluginPropertyType::PASSWORD:
+			case PluginPropertyType::STRING:
+			case PluginPropertyType::STRING_TEXT:
+			case PluginPropertyType::URL:
+				$this->mValue = (string) $mValue;
+				break;
+//			case PluginPropertyType::GROUP:
+//				throw new \Exception('Not allowed to set group value');
+		}
 	}
 
 	/**
@@ -80,36 +89,47 @@ class Property implements \JsonSerializable
 	 */
 	public function SetDefaultValue($mDefaultValue) : self
 	{
-		$this->mDefaultValue = $mDefaultValue;
+		if (\is_array($mDefaultValue)) {
+			$this->aOptions = $mDefaultValue;
+		} else {
+			$this->mDefaultValue = $mDefaultValue;
+		}
+		return $this;
+	}
 
+	public function SetOptions(array $aOptions) : self
+	{
+		$this->aOptions = $aOptions;
 		return $this;
 	}
 
 	public function SetPlaceholder(string $sPlaceholder) : self
 	{
 		$this->sPlaceholder = $sPlaceholder;
-
 		return $this;
 	}
 
 	public function SetLabel(string $sLabel) : self
 	{
 		$this->sLabel = $sLabel;
-
 		return $this;
 	}
 
 	public function SetDescription(string $sDesc) : self
 	{
 		$this->sDesc = $sDesc;
-
 		return $this;
 	}
 
 	public function SetAllowedInJs(bool $bValue = true) : self
 	{
 		$this->bAllowedInJs = $bValue;
+		return $this;
+	}
 
+	public function SetEncrypted(bool $bValue = true) : self
+	{
+		$this->encrypted = $bValue;
 		return $this;
 	}
 
@@ -146,23 +166,42 @@ class Property implements \JsonSerializable
 		return $this->mDefaultValue;
 	}
 
+	public function Options() : array
+	{
+		return $this->aOptions;
+	}
+
 	public function Placeholder() : string
 	{
 		return $this->sPlaceholder;
 	}
 
+	/**
+	 * @return mixed
+	 */
+	public function Value()
+	{
+		return $this->mValue;
+	}
+
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
+		$mValue = $this->mValue;
+		if ($this->encrypted && $mValue) try {
+			$mValue = \SnappyMail\Crypt::DecryptFromJSON($mValue, \APP_SALT);
+		} catch (\Throwable $e) {
+		}
 		return array(
 			'@Object' => 'Object/PluginProperty',
-			'value' => $this->mValue,
+			'value' => $mValue,
 			'placeholder' => $this->sPlaceholder,
-			'Name' => $this->sName,
-			'Type' => $this->iType,
-			'Label' => $this->sLabel,
-			'Default' => $this->mDefaultValue,
-			'Desc' => $this->sDesc
+			'name' => $this->sName,
+			'type' => $this->iType,
+			'label' => $this->sLabel,
+			'default' => $this->mDefaultValue,
+			'options' => $this->aOptions,
+			'desc' => $this->sDesc
 		);
 	}
 }

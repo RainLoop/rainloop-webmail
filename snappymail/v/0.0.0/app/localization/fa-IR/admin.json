@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "صفحه مدیریت"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "عمومی",
-		"LABEL_LOGIN_NAME": "ورود",
-		"LABEL_BRANDING_NAME": "برندسازی",
-		"LABEL_CONTACTS_NAME": "تماس‌ها",
-		"LABEL_DOMAINS_NAME": "دامنه‌ها",
-		"LABEL_SECURITY_NAME": "امنیت",
-		"LABEL_PACKAGES_NAME": "بسته‌ها",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "درباره"
+		"GENERAL": "عمومی",
+		"LOGIN": "ورود",
+		"BRANDING": "برندسازی",
+		"CONTACTS": "تماس‌ها",
+		"DOMAINS": "دامنه‌ها",
+		"SECURITY": "امنیت",
+		"PACKAGES": "بسته‌ها",
+		"CONFIG": "Config",
+		"ABOUT": "درباره"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "رابط",
@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "کاربر",
 		"LABEL_STORAGE_PASSWORD": "گذرواژه",
 		"ALERT_NOTICE": "توجه!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "از این پایگاه داده برای کاربران زیاد استفاده نکنید.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "سیستم از تماس‌ها پشتیبانی نمی‌کند\n<br>\nشما باید افزونه <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> را نصب کنید یا اینکه فعال کنید.\n"
 	},
@@ -88,8 +89,7 @@
 		"LABEL_CURRENT_PASSWORD": "گذرواژه فعلی",
 		"LABEL_NEW_PASSWORD": "گذرواژه جدید",
 		"LABEL_REPEAT_PASSWORD": "تکرار",
-		"LEGEND_SSL": "SSL",
-		"LABEL_REQUIRE_VERIFICATION": "به بررسی گواهینامه SSL نیاز داشته باشد (IMAP\/SMTP)",
+		"LABEL_REQUIRE_VERIFICATION": "به بررسی گواهینامه SSL نیاز داشته باشد",
 		"LABEL_ALLOW_SELF_SIGNED": "به گواهی‌نامه‌هایی که توسط خودشان امضاء شده‌اند اجازه بده"
 	},
 	"TAB_PACKAGES": {
@@ -121,20 +121,21 @@
 		"TITLE_EDIT_DOMAIN": "ویرایش دامنه \"%NAME%\"",
 		"LABEL_NAME": "نام",
 		"NAME_HELPER": "پشتیبانی از wildcard",
-		"LABEL_IMAP": "IMAP",
-		"LABEL_SMTP": "SMTP",
-		"LABEL_SIEVE": "SIEVE",
 		"LABEL_SERVER": "سرور",
 		"LABEL_PORT": "پورت",
 		"LABEL_SECURE": "امن",
+		"TIMEOUT": "Timeout",
+		"DISABLE_CAPABILITIES": "Disable capabilities",
+		"LIMITS": "Limits",
+		"FOLDERS": "Folders",
+		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "لیست سفید",
 		"SECURE_OPTION_NONE": "هیچ‌کدام",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "اجازه به اجرا‌شونده‌های sieve",
 		"LABEL_USE_SHORT_LOGIN": "استفاده از ورود کوتاه بدون دامنه",
 		"LABEL_USE_AUTH": "استفاده از احراز هویت",
 		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "استفاده از تابع mail() زبان PHP",
 		"BUTTON_WHITE_LIST": "لیست سفید",
 		"BUTTON_SIEVE_CONFIGURATION": "پیکربندی Sieve",
@@ -158,7 +159,6 @@
 	},
 	"HINTS": {
 		"BETA": "آزمایشی",
-		"UNSTABLE": "ناپایدار",
 		"WARNING": "هشدار!"
 	},
 	"ERRORS": {

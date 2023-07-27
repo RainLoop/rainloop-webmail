@@ -1,46 +1,62 @@
 
-html.rl-mobile,
-html.rl-no-preview-pane {
-	.message-selected #V-MailMessageList {
-		display: none;
-	}
+#V-MailMessageList {
+	position: relative;
+	height: 100%;
+	width: 100%;
 }
 
 #V-MailMessageList.focused .messageList {
 	border-color: #9d9d9d;
-	box-shadow: @rlMainShadow;
+	box-shadow: var(--smMainShadow);
 }
 
+#no-sort-list,
 #sort-list-dropdown-id {
 	padding-left: 6px;
 	padding-right: 6px;
 }
 
 #V-MailMessageList .btn-toolbar {
-	height: 30px;
 	padding: 10px 1px;
 	white-space: nowrap;
 }
 
 .messageList {
-	height: calc(100% - 50px);
-	background-color: #fff;
-	border: 1px solid @rlMainDarkColor;
-	border-radius: @rlMainBorderRadius;
+	height: calc(100% - 60px);
+	background-color: var(--panel-bg-clr, #fff);
+	border: 1px solid var(--border-color, #aaa);
+	border-radius: var(--border-radius, 5px);
 	display: flex;
 	flex-direction: column;
 
+	.groupLabel {
+		background:rgba(128,128,128,0.2);
+		cursor: pointer;
+		font-size: 12px;
+		line-height: 2;
+		opacity: 0.6;
+		text-align: center;
+		text-transform: capitalize;
+	}
+
+	.reply::before {
+		content: '↳';
+		line-height: 3;
+		position: absolute;
+		margin-left: -1em;
+	}
+
 	.b-footer {
-	    display: flex;
+		display: flex;
 		flex-shrink: 0;
 		padding: 7px;
 
 		background-color: var(--message-list-toolbar-bg-color, #eee);
 //		#gradient > .vertical(#f4f4f4, #dfdfdf);
 
-		border-bottom-right-radius: @rlMainBorderRadius;
-		border-bottom-left-radius: @rlMainBorderRadius;
-		border-top: 1px solid #bbb;
+		border-bottom-right-radius: var(--border-radius, 5px);
+		border-bottom-left-radius: var(--border-radius, 5px);
+		border-top: 1px solid var(--border-color, #bbb);
 
 		.e-quota {
 			border-bottom: 1px dashed #333;
@@ -54,7 +70,8 @@ html.rl-no-preview-pane {
 
 	.b-footer nav {
 		flex-grow: 1;
-		text-align: right;
+		display: flex;
+		justify-content: end;
 	}
 
 	.btn.buttonMoreSearch {
@@ -72,9 +89,9 @@ html.rl-no-preview-pane {
 		background-color: var(--message-list-toolbar-bg-color, #eee);
 //		#gradient > .vertical(#f4f4f4, #dfdfdf);
 
-		border-top-right-radius: @rlMainBorderRadius;
-		border-top-left-radius: @rlMainBorderRadius;
-		border-bottom: 1px solid #bbb;
+		border-top-right-radius: var(--border-radius, 5px);
+		border-top-left-radius: var(--border-radius, 5px);
+		border-bottom: 1px solid var(--border-color, #bbb);
 	}
 
 	.checkboxCheckAll {
@@ -84,26 +101,10 @@ html.rl-no-preview-pane {
 
 	.search-input-wrp {
 		flex-grow: 1;
-		position: relative;
-		text-align: right;
 	}
 
 	.inputSearch {
-		max-width: 300px;
 		width: 100%;
-	}
-
-	.closeSearch {
-		position: absolute;
-		right: 0;
-		top: 5px;
-		margin: 0 7px;
-		z-index: 100;
-		vertical-align: middle;
-		opacity: .4;
-		&:hover {
-			opacity: .6;
-		}
 	}
 
 	.b-content {
@@ -171,18 +172,6 @@ html.rl-no-preview-pane {
 	}
 }
 
-html:not(rl-mobile) {
-	.hideMessageListCheckbox {
-		.checkboxCheckAll {
-			visibility: hidden;
-		}
-
-		.messageCheckbox {
-			display: none;
-		}
-	}
-}
-
 .messageListItem > div + div {
 	display: flex;
 	overflow: hidden;
@@ -194,10 +183,11 @@ html:not(rl-mobile) {
 	cursor: pointer;
 	border: 0;
 	border-bottom: 1px solid rgba(153, 153, 153, 0.2);
-	border-left: 6px solid #eee;
+	border-left: 6px solid transparent;
 	display: flex;
 	font-size: 13px;
 	line-height: 2;
+	position: relative;
 /*
 	> * {
 		display: flex;
@@ -208,6 +198,7 @@ html:not(rl-mobile) {
 	&.focused {
 		background-color: rgba(128, 128, 128, 0.1);
 		border-left-color: #ccc;
+		border-right-color: #ccc !important;
 	}
 
 	&.priorityHigh .subjectParent::before {
@@ -223,21 +214,19 @@ html:not(rl-mobile) {
 	.messageCheckbox {
 		font-size: 16px;
 		padding: 5px .5em 0;
+		white-space: nowrap;
 	}
 	.checkboxMessage {
 		display: inline;
 	}
 
 	time, .sizeParent {
-		margin: 0 5px;
+		margin: 0 5px 0 0;
 		opacity: 0.7;
 		font-size: 11px;
 		white-space: nowrap;
-	}
-
-	.attachmentParent {
-		line-height: 1 !important;
-		margin: 0 10px 0 5px;
+		min-width: 3.5em;
+		text-align: var(--right, right);
 	}
 
 	.senderParent, .subjectParent {
@@ -267,7 +256,7 @@ html:not(rl-mobile) {
 		padding: 1px 5px;
 		margin-right: 5px;
 		border: 1px solid #ccc;
-		border-radius: 5px;
+		border-radius: var(--border-radius, 5px);
 	}
 
 	.threadsCountParent.lastSelected {
@@ -281,10 +270,10 @@ html:not(rl-mobile) {
 	}
 
 	.threads-len {
-		border-radius: 6px;
+		border-radius: var(--border-radius, 5px);
 		border: 1px solid #ccc;
 		font-size: 11px;
-		padding: 0 2px;
+		padding: 0 4px;
 		white-space: nowrap;
 		&:hover {
 			background-color: rgba(127,127,127,0.3);
@@ -299,31 +288,31 @@ html:not(rl-mobile) {
 		margin-right: 0.25em;
 	}
 
-	&.hasUnseenSubMessage {
-		background-color: rgba(255, 255, 64, 0.15);
-		border-left-color: lighten(orange, 30%);
-		&.focused {
-			border-left-color: darken(orange, 10%);
-		}
-	}
-
 	&.unseen {
 		background-color: rgba(255, 255, 64, 0.15);
 		border-left-color: orange;
+		border-right-color: orange !important;
 		.senderParent, .subjectParent {
 			font-weight: bold;
 		}
 
 		&.focused {
 			border-left-color: darken(orange, 10%);
+			border-right-color: darken(orange, 10%) !important;
 		}
+	}
+	[data-unseen] {
+		background-color: rgba(255, 255, 64, 0.15);
+		border-color: orange;
 	}
 
 	&.checked {
 		border-left-color: lighten(#398CF2, 10%);
+		border-right-color: lighten(#398CF2, 10%) !important;
 
 		&.focused {
 			border-left-color: darken(#398CF2, 5%);
+			border-right-color: darken(#398CF2, 5%) !important;
 		}
 	}
 
@@ -331,11 +320,13 @@ html:not(rl-mobile) {
 		background-color: rgba(140, 200, 255, 0.3);
 		border-bottom-color: rgba(57, 140, 242, 0.2);
 		border-left-color: #398CF2;
+		border-right-color: #398CF2 !important;
 		z-index: 101;
 	}
 
+	.attachmentParent,
 	.flagParent {
-		padding: 0 10px 0 5px;
+		margin: 0 10px 0 5px;
 	}
 	.flagParent::after {
 		content: '☆'; /*⚐*/
@@ -369,20 +360,55 @@ html:not(rl-mobile) {
 	}
 }
 
-@media screen and (min-width: 1000px) {
+html:not(.sm-msgView-bottom):not(.sm-msgView-side) .message-selected #V-MailMessageList {
+	display: none;
+}
+
+@media screen and (max-width: @maxMobileWidth) {
+	#V-MailMessageList .btn-toolbar:not(.hasChecked) .onCheckedShow,
+	#V-MailMessageList .hasChecked .onCheckedHide {
+		display: none;
+	}
+}
+
+@media screen and (min-width: @maxMobileWidth + 1px) {
 	.messageList {
 		.listDragOver {
 			transition: all 400ms ease;
 		}
 	}
-}
 
-/* desktop-large */
-@media screen and (min-width: 1401px) {
-	.messageListItem {
-		font-size: 13px;
-		time {
-			font-size: 13px;
+	.hideMessageListCheckbox {
+		.checkboxCheckAll {
+			visibility: hidden;
+		}
+		.checkboxMessage {
+			display: none;
+		}
+	}
+
+	.sm-msgView-side #V-MailMessageList {
+		width: unset;
+
+		.messageList {
+			max-width: 50vw;
+			min-width: 320px;
+			overflow: auto;
+			resize: horizontal;
+			width: 35vw;
+		}
+	}
+
+	.sm-msgView-bottom #V-MailMessageList {
+		height: unset;
+		width: unset;
+
+		.messageList {
+			height: 35vh;
+			max-height: 50vh;
+			min-height: 200px;
+			overflow: auto;
+			resize: vertical;
 		}
 	}
 }
@@ -398,7 +424,7 @@ html:not(rl-mobile) {
 	top: 0;
 }
 
-.rl-side-preview-pane, .rl-mobile {
+.sm-msgView-side, .rl-mobile {
 
 	.messageListItem > div + div {
 		flex-wrap: wrap;
@@ -412,7 +438,7 @@ html:not(rl-mobile) {
 		}
 
 		.senderParent {
-			flex: 1 0 45%;
+			flex: 1 0 25%;
 		}
 
 		.subjectParent {

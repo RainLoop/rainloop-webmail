@@ -4,7 +4,7 @@
 </header>
 <form id="openpgp-generate" class="modal-body form-horizontal" autocomplete="off" spellcheck="false" data-bind="submit: submitForm">
 	<div class="alert" data-bind="visible: '' !== submitError()">
-		<a href="#" class="close" data-bind="click: function () { submitError('') }">×</a>
+		<a href="#" class="close" data-bind="click: hideError">×</a>
 		<span data-bind="text: submitError"></span>
 	</div>
 	<!-- Disable stupid browser password autofill -->

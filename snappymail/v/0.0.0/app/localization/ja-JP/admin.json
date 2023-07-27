@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "管理画面"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "全般",
-		"LABEL_LOGIN_NAME": "ログイン",
-		"LABEL_BRANDING_NAME": "ブランド化",
-		"LABEL_CONTACTS_NAME": "連絡先",
-		"LABEL_DOMAINS_NAME": "ドメイン",
-		"LABEL_SECURITY_NAME": "セキュリティ",
-		"LABEL_PACKAGES_NAME": "パッケージ",
-		"LABEL_CONFIG_NAME": "詳細",
-		"LABEL_ABOUT_NAME": "SnappyMailについて"
+		"GENERAL": "全般",
+		"LOGIN": "ログイン",
+		"BRANDING": "ブランド化",
+		"CONTACTS": "連絡先",
+		"DOMAINS": "ドメイン",
+		"SECURITY": "セキュリティ",
+		"PACKAGES": "パッケージ",
+		"CONFIG": "詳細",
+		"ABOUT": "SnappyMailについて"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "インターフェース",
@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "ユーザー",
 		"LABEL_STORAGE_PASSWORD": "パスワード",
 		"ALERT_NOTICE": "注意！",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "アクティブユーザーの数が多いとき、このデータベース・タイプを使用しないでください。",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "このシステムでは連絡先はサポートされていません。\n<br>\nサーバーへ<strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong>\n拡張モジュールのインストールが必要です。\n"
 	},
@@ -88,8 +89,7 @@
 		"LABEL_CURRENT_PASSWORD": "現在のパスワード",
 		"LABEL_NEW_PASSWORD": "新しいパスワード",
 		"LABEL_REPEAT_PASSWORD": "再入力",
-		"LEGEND_SSL": "SSL",
-		"LABEL_REQUIRE_VERIFICATION": "(IMAP\/SMTP)のSSL証明書の検証を有効にする",
+		"LABEL_REQUIRE_VERIFICATION": "のSSL証明書の検証を有効にする",
 		"LABEL_ALLOW_SELF_SIGNED": "自己署名証明書を使う"
 	},
 	"TAB_PACKAGES": {
@@ -121,20 +121,21 @@
 		"TITLE_EDIT_DOMAIN": "ドメイン\"%NAME%\"を編集",
 		"LABEL_NAME": "名前",
 		"NAME_HELPER": "ワイルドカード利用可",
-		"LABEL_IMAP": "IMAP",
-		"LABEL_SMTP": "SMTP",
-		"LABEL_SIEVE": "SIEVE",
 		"LABEL_SERVER": "サーバー",
 		"LABEL_PORT": "ポート",
 		"LABEL_SECURE": "セキュリティ",
+		"TIMEOUT": "Timeout",
+		"DISABLE_CAPABILITIES": "Disable capabilities",
+		"LIMITS": "Limits",
+		"FOLDERS": "Folders",
+		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "ホワイトリスト",
 		"SECURE_OPTION_NONE": "なし",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "SIEVEスクリプトを使用する",
 		"LABEL_USE_SHORT_LOGIN": "短いログイン名を使う",
 		"LABEL_USE_AUTH": "認証を使用する",
 		"LABEL_SET_SENDER": "ログイン名を送信者として使う",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "PHPのmail()関数を使用する",
 		"BUTTON_WHITE_LIST": "ホワイトリスト",
 		"BUTTON_SIEVE_CONFIGURATION": "SIEVE設定",
@@ -158,7 +159,6 @@
 	},
 	"HINTS": {
 		"BETA": "beta",
-		"UNSTABLE": "unstable",
 		"WARNING": "警告！"
 	},
 	"ERRORS": {

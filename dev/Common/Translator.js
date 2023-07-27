@@ -1,9 +1,10 @@
 import ko from 'ko';
-import { Notification, UploadErrorCode } from 'Common/Enums';
+import { Notifications, UploadErrorCode } from 'Common/Enums';
 import { langLink } from 'Common/Links';
 import { doc, createElement } from 'Common/Globals';
 import { getKeyByValue, forEachObjectEntry } from 'Common/Utils';
 import { pInt } from 'Common/Utils';
+import { LanguageStore } from 'Stores/Language';
 
 let I18N_DATA = {};
 
@@ -11,8 +12,8 @@ const
 	init = () => {
 		if (rl.I18N) {
 			I18N_DATA = rl.I18N;
-			Date.defineRelativeTimeFormat(rl.relativeTime || {});
 			rl.I18N = null;
+			doc.documentElement.dir = I18N_DATA.LANG_DIR;
 			return 1;
 		}
 	},
@@ -20,12 +21,39 @@ const
 	i18nKey = key => key.replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase(),
 
 	getNotificationMessage = code => {
-		let key = getKeyByValue(Notification, code);
+		let key = getKeyByValue(Notifications, code);
 		return key ? I18N_DATA.NOTIFICATIONS[i18nKey(key).replace('_NOTIFICATION', '_ERROR')] : '';
-	};
+	},
+
+	fromNow = date => relativeTime(Math.round((date.getTime() - Date.now()) / 1000));
 
 export const
 	translateTrigger = ko.observable(false),
+
+	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
+	// see /snappymail/v/0.0.0/app/localization/relativetimeformat/
+	relativeTime = seconds => {
+		let unit = 'second',
+			t = [[60,'minute'],[3600,'hour'],[86400,'day'],[2628000,'month'],[31536000,'year']],
+			i = 5,
+			abs = Math.abs(seconds);
+		while (i--) {
+			if (t[i][0] <= abs) {
+				seconds = Math.round(seconds / t[i][0]);
+				unit = t[i][1];
+				break;
+			}
+		}
+		if (Intl.RelativeTimeFormat) {
+			let rtf = new Intl.RelativeTimeFormat(doc.documentElement.lang);
+			return rtf.format(seconds, unit);
+		}
+		// Safari < 14
+		abs = Math.abs(seconds);
+		let rtf = rl.relativeTime.long[unit][0 > seconds ? 'past' : 'future'],
+			plural = rl.relativeTime.plural(abs);
+		return (rtf[plural] || rtf).replace('{0}', abs);
+	},
 
 	/**
 	 * @param {string} key
@@ -77,27 +105,31 @@ export const
 			time = 0 < timeStampInUTC ? Math.min(now, timeStampInUTC * 1000) : (0 === timeStampInUTC ? now : 0);
 
 		if (31536000000 < time) {
-			const m = new Date(time);
+			const m = new Date(time), h = LanguageStore.hourCycle();
 			switch (formatStr) {
 				case 'FROMNOW':
-					return m.fromNow();
-				case 'SHORT': {
-					if (4 >= (now - time) / 3600000)
-						return m.fromNow();
-					const mt = m.getTime(), date = new Date,
+					return fromNow(m);
+				case 'AUTO': {
+					// 4 hours
+					if (14400000 >= now - time)
+						return fromNow(m);
+					const date = new Date,
 						dt = date.setHours(0,0,0,0);
-					if (mt > dt)
-						return i18n('MESSAGE_LIST/TODAY_AT', {TIME: m.format('LT')});
-					if (mt > dt - 86400000)
-						return i18n('MESSAGE_LIST/YESTERDAY_AT', {TIME: m.format('LT')});
-					if (date.getFullYear() === m.getFullYear())
-						return m.format('d M');
-					return m.format('LL');
+					return (time > dt - 86400000)
+						? i18n(
+							time > dt ? 'MESSAGE_LIST/TODAY_AT' : 'MESSAGE_LIST/YESTERDAY_AT',
+							{TIME: m.format('LT',0,h)}
+						)
+						: m.format(
+							date.getFullYear() === m.getFullYear()
+								? {day: '2-digit', month: 'short', hour: 'numeric', minute: 'numeric'}
+								: {dateStyle: 'medium', timeStyle: 'short'}
+							, 0, h);
 				}
 				case 'FULL':
-					return m.format('LLL');
+					return m.format('LLL',0,h);
 				default:
-					return m.format(formatStr);
+					return m.format(formatStr,0,h);
 			}
 		}
 
@@ -107,7 +139,7 @@ export const
 	timeToNode = (element, time) => {
 		try {
 			if (time) {
-				element.dateTime = (new Date(time * 1000)).format('Y-m-d\\TH:i:s');
+				element.dateTime = new Date(time * 1000).toISOString();
 			} else {
 				time = Date.parse(element.dateTime) / 1000;
 			}
@@ -115,10 +147,9 @@ export const
 			let key = element.dataset.momentFormat;
 			if (key) {
 				element.textContent = timestampToString(time, key);
-			}
-
-			if ((key = element.dataset.momentFormatTitle)) {
-				element.title = timestampToString(time, key);
+				if ('FULL' !== key && 'FROMNOW' !== key) {
+					element.title = timestampToString(time, 'FULL');
+				}
 			}
 		} catch (e) {
 			// prevent knockout crashes
@@ -126,9 +157,7 @@ export const
 		}
 	},
 
-	reloadTime = () => setTimeout(() =>
-			doc.querySelectorAll('time').forEach(element => timeToNode(element))
-			, 1),
+	reloadTime = () => doc.querySelectorAll('time').forEach(element => timeToNode(element)),
 
 	/**
 	 * @param {Function} startCallback
@@ -148,7 +177,7 @@ export const
 	 */
 	getNotification = (code, message = '', defCode = 0) => {
 		code = pInt(code);
-		if (Notification.ClientViewError === code && message) {
+		if (Notifications.ClientViewError === code && message) {
 			return message;
 		}
 
@@ -170,15 +199,15 @@ export const
 	 * @param {boolean} admin
 	 * @param {string} language
 	 */
-	translatorReload = (admin, language) =>
+	translatorReload = (language, admin) =>
 		new Promise((resolve, reject) => {
 			const script = createElement('script');
 			script.onload = () => {
 				// reload the data
 				if (init()) {
 					i18nToNodes(doc);
-					admin || reloadTime();
 					translateTrigger(!translateTrigger());
+//					admin || reloadTime();
 				}
 				script.remove();
 				resolve();

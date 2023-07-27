@@ -84,7 +84,10 @@
 	--main-font-size: 14px;
 	--link-color: #369;
 	--border-color: var(--color-border);
+	--border-radius: var(--border-radius);
 	--hr-color: var(--color-border);
+
+	--panel-bg-clr: var(--color-main-background);
 
 	--warning-clr: var(--color-warning);
 	--warning-bg-clr: #fcf8e3;
@@ -122,9 +125,9 @@
 	/* FOLDERS */
 	--folders-color: var(--color-main-text);
 	--folders-disabled-color: #999;
-	--folders-selected-color: var(--color-primary);
+	--folders-selected-color: var(--color-primary-text);
 	--folders-selected-bg-color: var(--color-background-darker);
-	--folders-focused-color: var(--color-primary);
+	--folders-focused-color: var(--color-primary-text);
 	--folders-focused-bg-color: var(--color-background-dark);
 	--folders-hover-color: var(--color-primary-hover);
 	--folders-hover-bg-color: var(--color-background-hover);

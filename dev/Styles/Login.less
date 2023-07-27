@@ -10,10 +10,6 @@
 	z-index: 5;
 }
 
-@glass-color: #fff;
-@glass-error-color: #f76260;
-@glass-m-color: rgba(255, 255, 255, .8);
-
 .LoginView {
 
 	.descWrapper {
@@ -29,18 +25,18 @@
 		border: var(--login-border, 1px solid rgba(255, 255, 255, .2));
 		border-radius: var(--login-border-radius, 7px);
 		box-shadow: var(--login-box-shadow);
-		color: var(--login-color, @glass-m-color);
+		color: var(--login-color, rgba(255, 255, 255, .8));
 		margin: 0;
 		padding: 40px 40px 20px 40px;
 		position: relative;
 
 		* {
-			color: var(--login-color, @glass-m-color);
+			color: var(--login-color, rgba(255, 255, 255, .8));
 		}
 
 		.controls.error * {
-			color: @glass-error-color;
-			border-color: @glass-error-color;
+			color: #f76260;
+			border-color: #f76260;
 		}
 
 		&.submitting > * {
@@ -77,21 +73,21 @@
 		padding-right: 30px;
 
 		&:placeholder {
-			color: @glass-color;
+			color: #fff;
 		}
 
 		&:focus, &:hover {
-			border-color: @glass-color;
+			border-color: #fff;
 		}
 	}
 
 	input, .btn {
 		background: none;
-		border: 1px solid @glass-m-color;
+		border: 1px solid rgba(255, 255, 255, .8);
 	}
 
 	.fontastic + input {
-		padding-left: 30px;
+		padding: 0 30px;
 	}
 
 	.controls > .fontastic:first-child {
@@ -107,12 +103,12 @@
 		font-size: 13px;
 
 		&:hover, &:active {
-			border-color: @glass-color;
+			border-color: #fff;
 		}
 	}
 
 	.buttonLogin {
-		margin: 0;
+		width: 100%;
 	}
 
 	.alert {
@@ -135,7 +131,7 @@
 
 	.language-buttons {
 		flex-grow: 1;
-		text-align: right;
+		text-align: var(--right, right);
 	}
 
 	.language-button {

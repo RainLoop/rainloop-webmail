@@ -1,12 +1,11 @@
 import 'External/User/ko';
 
 import { SMAudio } from 'Common/Audio';
-import { isArray, pString, changeTheme } from 'Common/Utils';
+import { isArray, pInt } from 'Common/Utils';
 import { mailToHelper, setLayoutResizer, dropdownsDetectVisibility } from 'Common/UtilsUser';
 
 import {
 	FolderType,
-	SetSystemFoldersNotification,
 	ClientSideKeyNameFolderListSize
 } from 'Common/EnumsUser';
 
@@ -38,7 +37,7 @@ import { IdentityUserStore } from 'Stores/User/Identity';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { PgpUserStore } from 'Stores/User/Pgp';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
-import { ThemeStore } from 'Stores/Theme';
+import { ThemeStore, initThemes } from 'Stores/Theme';
 import { LanguageStore } from 'Stores/Language';
 import { MessageUserStore } from 'Stores/User/Message';
 
@@ -62,7 +61,7 @@ import { AskPopupView } from 'View/Popup/Ask';
 import {
 	folderInformation,
 	folderInformationMultiply,
-	refreshFoldersInterval,
+	setRefreshFoldersInterval,
 	messagesMoveHelper,
 	messagesDeleteHelper
 } from 'Common/Folders';
@@ -80,7 +79,7 @@ export class AppUser extends AbstractApp {
 			(currentTime > (lastTime + interval + 1000))
 			&& Remote.request('Version',
 					iError => (100 < iError) && location.reload(),
-					{ Version: Settings.app('version') }
+					{ version: Settings.app('version') }
 				);
 			lastTime = currentTime;
 		}, interval);
@@ -91,6 +90,7 @@ export class AppUser extends AbstractApp {
 		addEventListener('click', dropdownsDetectVisibility);
 
 		this.folderList = FolderUserStore.folderList;
+		this.messageList = MessagelistUserStore;
 	}
 
 	/**
@@ -101,27 +101,27 @@ export class AppUser extends AbstractApp {
 	 */
 	moveMessagesToFolderType(iFolderType, sFromFolderFullName, oUids, bDelete) {
 		let oMoveFolder = null,
-			nSetSystemFoldersNotification = null;
+			nSetSystemFoldersNotification = 0;
 
 		switch (iFolderType) {
-			case FolderType.Spam:
+			case FolderType.Junk:
 				oMoveFolder = getFolderFromCacheList(FolderUserStore.spamFolder());
-				nSetSystemFoldersNotification = SetSystemFoldersNotification.Spam;
+				nSetSystemFoldersNotification = iFolderType;
 				bDelete = bDelete || UNUSED_OPTION_VALUE === FolderUserStore.spamFolder();
 				break;
-			case FolderType.NotSpam:
+			case FolderType.Inbox:
 				oMoveFolder = getFolderFromCacheList(getFolderInboxName());
 				break;
 			case FolderType.Trash:
 				oMoveFolder = getFolderFromCacheList(FolderUserStore.trashFolder());
-				nSetSystemFoldersNotification = SetSystemFoldersNotification.Trash;
+				nSetSystemFoldersNotification = iFolderType;
 				bDelete = bDelete || UNUSED_OPTION_VALUE === FolderUserStore.trashFolder()
 					|| sFromFolderFullName === FolderUserStore.spamFolder()
 					|| sFromFolderFullName === FolderUserStore.trashFolder();
 				break;
 			case FolderType.Archive:
 				oMoveFolder = getFolderFromCacheList(FolderUserStore.archiveFolder());
-				nSetSystemFoldersNotification = SetSystemFoldersNotification.Archive;
+				nSetSystemFoldersNotification = iFolderType;
 				bDelete = bDelete || UNUSED_OPTION_VALUE === FolderUserStore.archiveFolder();
 				break;
 			// no default
@@ -152,41 +152,18 @@ export class AppUser extends AbstractApp {
 			IdentityUserStore.loading(false);
 
 			if (!iError) {
-				const
-//					counts = {},
-					accounts = oData.Result.Accounts,
-					mainEmail = SettingsGet('MainEmail');
+				let items = oData.Result.Accounts;
+				AccountUserStore(isArray(items)
+					? items.map(oValue => new AccountModel(oValue.email, oValue.name))
+					: []
+				);
+				AccountUserStore.unshift(new AccountModel(SettingsGet('mainEmail'), '', false));
 
-				if (isArray(accounts)) {
-//					AccountUserStore.accounts.forEach(oAccount => counts[oAccount.email] = oAccount.count());
-
-					AccountUserStore.accounts(
-						accounts.map(
-							sValue => new AccountModel(sValue/*, counts[sValue]*/)
-						)
-					);
-//					accounts.length &&
-					AccountUserStore.accounts.unshift(new AccountModel(mainEmail/*, counts[mainEmail]*/, false));
-				}
-
-				if (isArray(oData.Result.Identities)) {
-					IdentityUserStore(
-						oData.Result.Identities.map(identityData => {
-							const identity = new IdentityModel(
-								pString(identityData.Id),
-								pString(identityData.Email)
-							);
-
-							identity.name(pString(identityData.Name));
-							identity.replyTo(pString(identityData.ReplyTo));
-							identity.bcc(pString(identityData.Bcc));
-							identity.signature(pString(identityData.Signature));
-							identity.signatureInsertBefore(!!identityData.SignatureInsertBefore);
-
-							return identity;
-						})
-					);
-				}
+				items = oData.Result.Identities;
+				IdentityUserStore(isArray(items)
+					? items.map(identityData => IdentityModel.reviveFromJson(identityData))
+					: []
+				);
 			}
 		});
 	}
@@ -200,31 +177,30 @@ export class AppUser extends AbstractApp {
 	}
 
 	logout() {
+		localStorage.removeItem('register_protocol_offered');
 		Remote.request('Logout', () => rl.logoutReload(Settings.app('customLogoutLink')));
 	}
 
 	bootstart() {
 		super.bootstart();
 
-		addEventListener('resize', () => leftPanelDisabled(ThemeStore.isMobile() || 1000 > innerWidth));
 		addEventListener('beforeunload', event => {
-			if (arePopupsVisible() || (ThemeStore.isMobile() && MessageUserStore.message())) {
+			if (arePopupsVisible() || (!SettingsUserStore.usePreviewPane() && MessageUserStore.message())) {
 				event.preventDefault();
-				return event.returnValue = "Are you sure you want to exit?";
+				return event.returnValue = i18n('POPUPS_ASK/EXIT_ARE_YOU_SURE');
 			}
 		}, {capture: true});
 	}
 
 	refresh() {
-		ThemeStore.populate();
-		LanguageStore.language(SettingsGet('Language'));
-		changeTheme(SettingsGet('Theme'));
+		initThemes();
+		LanguageStore.language(SettingsGet('language'));
 		this.start();
 	}
 
 	start() {
 		if (SettingsGet('Auth')) {
-			rl.setWindowTitle(i18n('GLOBAL/LOADING'));
+			rl.setTitle(i18n('GLOBAL/LOADING'));
 
 			SMAudio.notifications(!!SettingsGet('SoundNotification'));
 			NotificationUserStore.enabled(!!SettingsGet('DesktopNotifications'));
@@ -242,13 +218,7 @@ export class AppUser extends AbstractApp {
 							SettingsUserScreen
 						]);
 
-						setInterval(() => {
-							const cF = FolderUserStore.currentFolderFullName(),
-								iF = getFolderInboxName();
-							folderInformation(iF);
-							iF === cF || folderInformation(cF);
-							folderInformationMultiply();
-						}, refreshFoldersInterval);
+						setRefreshFoldersInterval(pInt(SettingsGet('CheckMailInterval')));
 
 						ContactUserStore.init();
 
@@ -269,30 +239,31 @@ export class AppUser extends AbstractApp {
 						// initLeftSideLayoutResizer
 						setTimeout(() => {
 							const left = elementById('rl-left'),
-								right = elementById('rl-right'),
 								fToggle = () =>
-									setLayoutResizer(left, right, ClientSideKeyNameFolderListSize,
+									setLayoutResizer(left, ClientSideKeyNameFolderListSize,
 										(ThemeStore.isMobile() || leftPanelDisabled()) ? 0 : 'Width');
-							if (left && right) {
+							if (left) {
 								fToggle();
 								leftPanelDisabled.subscribe(fToggle);
 							}
 						}, 1);
 
-						setInterval(reloadTime(), 60000);
+						setInterval(reloadTime, 60000);
 
 						PgpUserStore.init();
 
-						// When auto-login is active
-						try {
+						setTimeout(() => mailToHelper(SettingsGet('mailToEmail')), 500);
+
+						if (!localStorage.getItem('register_protocol_offered')) {
+							// When auto-login is active
 							navigator.registerProtocolHandler?.(
 								'mailto',
 								location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
-								(SettingsGet('Title') || 'SnappyMail')
+								(SettingsGet('title') || 'SnappyMail')
 							);
-						} catch (e) {} // eslint-disable-line no-empty
+							localStorage.setItem('register_protocol_offered', '1');
+						}
 
-						setTimeout(() => mailToHelper(SettingsGet('MailToEmail')), 500);
 					} else {
 						this.logout();
 					}

@@ -3,7 +3,7 @@
 	<span data-bind="saveTrigger: themeTrigger"></span>
 </div>
 <div data-bind="foreach: themesObjects">
-	<figure data-bind="click: function () { $root.theme(name); }, css: { 'selected': selected }">
+	<figure data-bind="click: $root.setTheme, css: { 'selected': selected }">
 		<figcaption data-bind="text: nameDisplay"></figcaption>
 		<img data-bind="attr: { 'src': themePreviewSrc }">
 	</figure>
@@ -15,7 +15,7 @@
 	<div class="control-group">
 		<label>Sans-serif</label>
 		<select data-bind="value: fontSansSerif">
-			<option value=""></option>
+			<option value="" data-i18n="GLOBAL/DEFAULT"></option>
 			<option value="Arial">Arial</option>
 			<option value="Lucida">Lucida</option>
 			<option value="Tahoma">Tahoma</option>
@@ -26,7 +26,7 @@
 	<div class="control-group">
 		<label>Serif</label>
 		<select data-bind="value: fontSerif">
-			<option value=""></option>
+			<option value="" data-i18n="GLOBAL/DEFAULT"></option>
 			<option value="Times">Times</option>
 			<option value="Palatino">Palatino</option>
 			<option value="Georgia">Georgia</option>
@@ -35,7 +35,7 @@
 	<div class="control-group">
 		<label>Mono</label>
 		<select data-bind="value: fontMono">
-			<option value=""></option>
+			<option value="" data-i18n="GLOBAL/DEFAULT"></option>
 			<option value="Courier">Courier</option>
 			<option value="Lucida">Lucida</option>
 		</select>

@@ -1,11 +1,12 @@
 {
+	"LANG_DIR": "ltr",
 	"GLOBAL": {
 		"TO_ARCHIVE": "Archiveren",
 		"ARE_YOU_SURE": "Weet u het zeker?",
 		"BACK": "Terug",
 		"BCC": "BCC",
 		"CANCEL": "Annuleer",
-		"CC": "Cc",
+		"CC": "CC",
 		"CLEAR": "Wissen",
 		"CLOSE": "Sluiten",
 		"CONTACTS": "Contactpersonen",
@@ -19,9 +20,11 @@
 		"MOVE_TO": "Verplaats naar",
 		"NAME": "Naam",
 		"NONE": "Geen",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "Geen ongewenste e-mail",
 		"USERNAME": "Gebruikersnaam",
 		"PASSWORD": "Wachtwoord",
+		"REMEMBER": "Onthouden",
 		"REPLY_TO": "Antwoordadres",
 		"SAVE": "Opslaan",
 		"SAVE_CHANGES": "Wijzigingen opslaan?",
@@ -33,7 +36,11 @@
 		"SERVER_MESSAGE": "Server bericht",
 		"YES": "Ja",
 		"NO": "Nee",
-		"INACTIVE": "Inactief"
+		"INACTIVE": "Inactief",
+		"DEFAULT": "standaard",
+		"HELP": "Help",
+		"TEXT": "Tekst",
+		"ATTACHMENTS": "Bijlagen"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Inlognaam",
@@ -41,13 +48,7 @@
 		"BUTTON_SIGN_IN": "Aanmelden"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Account toevoegen",
-		"BUTTON_SETTINGS": "Instellingen",
-		"BUTTON_HELP": "Help"
-	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Mobiele versie",
-		"BUTTON_DESKTOP_VERSION": "Desktop versie"
+		"BUTTON_ADD_ACCOUNT": "Account toevoegen"
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Geavanceerd zoeken",
@@ -63,12 +64,12 @@
 		"DATE_3_MONTHS": "Tot 3 maanden oud",
 		"DATE_6_MONTHS": "Tot 6 maanden oud",
 		"DATE_YEAR": "Tot 1 jaar oud",
-		"SUBFOLDERS": "Subfolders",
+		"SUBFOLDERS": "Submappen",
 		"SUBFOLDERS_NONE": "Geen",
 		"SUBFOLDERS_SUBTREE": "Alle",
 		"SUBFOLDERS_SUBTREE_ONE": "Één niveau",
 		"REPLIED": "Beantwoord",
-		"KEYWORD": "Tag"
+		"KEYWORD": "Label"
 	},
 	"FOLDER_LIST": {
 		"BUTTON_COMPOSE": "Nieuw bericht",
@@ -98,6 +99,7 @@
 		"MENU_SELECT_SEEN": "Gelezen",
 		"MENU_SELECT_FLAGGED": "Met Vlag",
 		"MENU_SELECT_UNFLAGGED": "Zonder Vlag",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download alle bijlagen",
 		"EMPTY_LIST": "Geen berichten",
 		"EMPTY_SEARCH_LIST": "Geen items gevonden",
 		"SEARCH_RESULT_FOR": "Zoekresultaten voor \"%SEARCH%\"",
@@ -108,6 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "U heeft %COUNT% nieuwe berichten!",
 		"QUOTA_SIZE": "U gebruikt <strong>%SIZE% (%PROC%%)<\/strong> van <strong>%LIMIT%<\/strong>",
 		"SORT": "Sorteren",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Datum oplopend",
 		"SORT_DATE_DESC": "Datum aflopend",
 		"SORT_SIZE_ASC": "Grootte oplopend",
@@ -149,8 +152,8 @@
 		"LINK_DOWNLOAD_AS_ZIP": "Download als zip",
 		"SPAM_SCORE": "Spamscore",
 		"HAS_VIRUS_WARNING": "WAARSCHUWING: virus gedetecteerd",
-		"TAGS": "Tags",
-		"NEW_TAG": "New tag"
+		"TAGS": "Labels",
+		"NEW_TAG": "Nieuwe label"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Belangrijk",
@@ -163,7 +166,7 @@
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "Ontvangstbevestiging (weergegeven) - %SUBJECT%",
-		"BODY": "Dit is een bevestiging dat uw bericht aan %READ-RECEIPT% is ontvangen.\n\nLet op: Deze ontvangstbevestiging bevestigd slechts dat uw bericht was weergegeven op het scherm van de ontvanger.\nEr is geen enkele garantie dat uw bericht is gelezen of begrepen.\n"
+		"BODY": "Dit is een bevestiging dat uw bericht aan %READ-RECEIPT% is ontvangen.\n\nLet op: Deze ontvangstbevestiging bevestigd slechts dat uw bericht was weergegeven op het scherm van de ontvanger.\nEr is geen enkele garantie dat uw bericht is gelezen of begrepen."
 	},
 	"SUGGESTIONS": {
 		"SEARCHING_DESC": "Zoeken..."
@@ -224,11 +227,16 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Er zijn geen bijlagen",
 		"ATTACHMENTS_ERROR_DESC": "Waarschuwing! Nog niet alle bijlagen zijn klaar met uploaden",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Toevoegen van bijlage(n) is nog niet gereed",
+		"ALLOW_SPELLCHECK": "De browser spellingcontrole toestaan",
+		"ALLOW_DRAFT_AUTOSAVE": "Automatisch opslaan as concept",
 		"BUTTON_REQUEST_READ_RECEIPT": "Leesbevestiging vragen",
 		"BUTTON_MARK_AS_IMPORTANT": "Markeer als belangrijk",
-		"BUTTON_REQUEST_DSN": "Ontvangstbevestiging vragen"
+		"BUTTON_REQUEST_DSN": "Ontvangstbevestiging vragen",
+		"BUTTON_REQUIRE_TLS": "Veilige bezorging vereisen",
+		"ERROR_EMPTY_BODY": "Bericht inhoud is leeg"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Weet u zeker dat u dit venster wilt sluiten?",
 		"DESC_WANT_DELETE_MESSAGES": "Weet u zeker dat u dit\/deze bericht\/berichten wilt verwijderen?"
 	},
@@ -246,7 +254,7 @@
 		"TITLE_UPDATE_IDENTITY": "Identiteit bijwerken?",
 		"BUTTON_ADD_IDENTITY": "Toevoegen",
 		"BUTTON_UPDATE_IDENTITY": "Bijwerken",
-		"LABEL_SIGNATURE_INSERT_BEFORE": "Insert this signature before quoted text in replies"
+		"LABEL_SIGNATURE_INSERT_BEFORE": "Plaats deze handtekening vóór geciteerde tekst in antwoorden"
 	},
 	"POPUPS_CREATE_FOLDER": {
 		"TITLE_CREATE_FOLDER": "Map aanmaken?",
@@ -271,12 +279,12 @@
 		"LABEL_KEY_TYPE": "Type",
 		"LABEL_SIGN": "Ondertekenen",
 		"LABEL_ENCRYPT": "Versleutelen",
-		"BUTTON_DECRYPT": "Decrypt",
-		"BUTTON_VERIFY": "Verify",
+		"BUTTON_DECRYPT": "Ontsleutelen",
+		"BUTTON_VERIFY": "Verifiëren",
 		"SIGNED_MESSAGE": "OpenPGP ondertekend bericht",
 		"ENCRYPTED_MESSAGE": "OpenPGP versleuteld bericht",
-		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"STORE_IN_GNUPG": "Bewaar op de server in GnuPG",
+		"BACKUP_ON_SERVER": "Bewaar (versleuteld) op de server",
 		"GOOD_SIGNATURE": "Juiste handtekening van %USER%",
 		"ERROR": "OpenPGP foutmelding: %ERROR%"
 	},
@@ -312,7 +320,7 @@
 		"MARK_AS_READ_LABEL": "Markeer als gelezen",
 		"REPLY_INTERVAL_LABEL": "Antwoord interval (dagen)",
 		"KEEP_LABEL": "Behoud",
-		"STOP_LABEL": "Stop niet met uitvoeren van volgende filters",
+		"STOP_LABEL": "Stop met het uitvoeren van de volgende filters",
 		"VACATION_SUBJECT_LABEL": "Onderwerp (optioneel)",
 		"VACATION_MESSAGE_LABEL": "Bericht",
 		"VACATION_RECIPIENTS_LABEL": "Ontvangers (comma gescheiden)",
@@ -331,10 +339,10 @@
 		"TITLE_SYSTEM_FOLDERS": "Selecteer systeem mappen",
 		"SELECT_CHOOSE_ONE": "Kies één",
 		"SELECT_UNUSE_NAME": "Niet gebruiken",
-		"NOTIFICATION_SENT": "U heeft nog geen \"Verzonden items\" folder aangeduid waar de berichten geplaatst worden na het versturen.\nIndien u geen verzonden berichten wilt bewaren, kies de \"Niet gebruiken\" optie.\n",
+		"NOTIFICATION_SENT": "U heeft nog geen \"Verzonden items\" folder aangeduid waar de berichten geplaatst worden na het versturen.\nIndien u geen verzonden berichten wilt bewaren, kies de \"Niet gebruiken\" optie.",
 		"NOTIFICATION_DRAFTS": "U heeft nog geen \"Concepten\" folder aangeduid waar de berichten bewaard worden tijdens het opstellen.",
-		"NOTIFICATION_SPAM": "U heeft nog geen \"Ongewenste e-mail\" folder aangeduid waar de spam berichten geplaatst worden.\nIndien u berichten permanent wilt verwijderen, kies de \"Niet gebruiken\" optie.\n",
-		"NOTIFICATION_TRASH": "U heeft nog geen \"Verwijderde items\" folder aangeduid waar de verwijderde berichten geplaatst worden.\nIndien u berichten permanent wilt verwijderen, kies de \"Niet gebruiken\" optie.\n",
+		"NOTIFICATION_SPAM": "U heeft nog geen \"Ongewenste e-mail\" folder aangeduid waar de spam berichten geplaatst worden.\nIndien u berichten permanent wilt verwijderen, kies de \"Niet gebruiken\" optie.",
+		"NOTIFICATION_TRASH": "U heeft nog geen \"Verwijderde items\" folder aangeduid waar de verwijderde berichten geplaatst worden.\nIndien u berichten permanent wilt verwijderen, kies de \"Niet gebruiken\" optie.",
 		"NOTIFICATION_ARCHIVE": "U heeft nog geen \"Archief\" map aangeduid waar de gearchiveerde berichten geplaatst worden."
 	},
 	"TITLES": {
@@ -351,21 +359,43 @@
 		"ERROR_UNKNOWN": "Er is een onbekende fout opgetreden"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> TEKST",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> BRONCODE"
+		"PLAIN": "HTML <-> TEKST",
+		"SOURCE": "HTML <-> BRONCODE",
+		"FONTFAMILY": "Lettertype",
+		"FONTSIZE": "Lettergrootte",
+		"DIR": "Tekstrichting",
+		"DIR_LTR": "Links naar rechts",
+		"DIR_RTL": "Rechts naar links",
+		"DIR_AUTO": "Automatisch",
+		"TEXTCOLOR": "Tekstkleur",
+		"BACKGROUNDCOLOR": "Achtergrondkleur",
+		"BOLD": "Dikgedrukt",
+		"ITALIC": "Cursief",
+		"UNDERLINE": "Onderstreept",
+		"STRIKE": "Doorgestreept",
+		"SUB": "Subscript",
+		"SUP": "Superscript",
+		"OL": "Genummerde lijst",
+		"UL": "Ongenummerde lijst",
+		"QUOTE": "Citaat",
+		"INDENTDECREASE": "Inspringing verkleinen",
+		"INDENTINCREASE": "Inspringing vergroten",
+		"LINK": "Link",
+		"IMAGEURL": "Afbeelding URL",
+		"IMAGEUPLOAD": "Upload afbeelding",
+		"UNDO": "Ongedaan maken",
+		"REDO": "Opnieuw"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Persoonlijk",
-		"LABEL_GENERAL_NAME": "Algemeen",
-		"LABEL_CONTACTS_NAME": "Contactpersonen",
-		"LABEL_FOLDERS_NAME": "Mappen",
-		"LABEL_ACCOUNTS_NAME": "Accounts",
-		"LABEL_FILTERS_NAME": "Filters",
-		"LABEL_SECURITY_NAME": "Beveiliging",
-		"LABEL_THEMES_NAME": "Thema's"
+		"GENERAL": "Algemeen",
+		"CONTACTS": "Contactpersonen",
+		"FOLDERS": "Mappen",
+		"ACCOUNTS": "Accounts",
+		"FILTERS": "Filters",
+		"SECURITY": "Beveiliging",
+		"THEMES": "Thema's"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "Filters",
 		"SIMPLE": "Simpel",
 		"ADVANCED": "Geavanceerd",
 		"BUTTON_ADD_SCRIPT": "Script toevoegen",
@@ -378,18 +408,18 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Beveiliging",
 		"LABEL_AUTOLOGOUT": "Automatisch uitloggen",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Nooit",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minuten",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% uur"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Nooit"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Algemeen",
 		"LANGUAGE": "Taal",
+		"HOUR_FORMAT": "Uur formaat",
 		"IDENTITY": "Identiteit",
 		"LAYOUT": "Indeling",
 		"LAYOUT_NO_SPLIT": "Geen splitsing",
 		"LAYOUT_VERTICAL_SPLIT": "Verticale splitsing",
 		"LAYOUT_HORIZONTAL_SPLIT": "Horizontale splitsing",
+		"SHOW_NEXT_MESSAGE": "Toon volgende bericht bij verplaatsen huidige bericht",
 		"EDITOR": "Standaard tekst editor",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Platte tekst",
@@ -397,21 +427,32 @@
 		"USE_PREVIEW_PANE": "Toon leesvenster",
 		"HIDE_DELETED_MESSAGES": "Berichten verbergen die zijn gemarkeerd voor verwijdering",
 		"USE_CHECKBOXES_IN_LIST": "Toon selectievakjes in de lijst",
-		"USE_THREADS": "Groepeer berichten",
+		"USE_THREADS": "Toon berichten in boomweergave",
 		"REPLY_SAME_FOLDER": "Plaats antwoorden in de map van het originele bericht",
-		"SHOW_IMAGES": "Afbeeldingen altijd weergeven in het bericht",
-		"PREFER_HTML": "Prefer HTML to plain text",
-		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
+		"PREFER_HTML": "Geef de voorkeur aan HTML boven platte tekst",
+		"PREFER_HTML_INFO": "Berichten komen soms in beide formaten. Deze optie bepaalt of u het HTML-gedeelte of het platte tekstgedeelte wilt weergeven.",
 		"REMOVE_COLORS": "Verwijder achtergrond- en tekstkleuren uit het bericht",
+		"ALLOW_STYLES": "CSS <style> toestaan",
 		"MESSAGE_PER_PAGE": "Berichten op pagina",
+		"CHECK_MAIL_INTERVAL": "Controleer mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Bericht markeren als gelezen na",
-		"MSG_DEFAULT_ACTION": "Default action",
+		"MSG_DEFAULT_ACTION": "Standaard actie",
 		"SECONDS": "seconden",
+		"MINUTES": "minuten",
 		"NOTIFICATIONS": "Notificaties",
 		"SOUND_NOTIFICATION": "Notificatie geluid",
 		"CHROME_NOTIFICATION_DESC": "Toon nieuwe berichten popup",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Geblokkeerd door de browser)",
-		"LIST_INLINE_ATTACHMENTS": "Toon inline bijlagen in lijst"
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
+		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
+		"LIST_INLINE_ATTACHMENTS": "Toon inline bijlagen in lijst",
+		"LIST_SIMPLE_ATTACHMENTS": "Simpele bijlagen lijst",
+		"LIST_MESSAGES_GROUPED": "Toon berichten gegroepeerd (bij sorteren op Datum of Van)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Automatisch ontvangers toevoegen aan uw adresboek",
@@ -420,12 +461,12 @@
 		"LABEL_CONTACTS_SYNC_SERVER": "Server",
 		"LABEL_CONTACTS_SYNC_AB_URL": "Adresboek URL",
 		"LABEL_CONTACTS_SYNC_USER": "Gebruikersnaam",
-		"SYNC_READ": "Read only"
+		"SYNC_READ": "Alleen lezen"
 	},
 	"SETTINGS_THEMES": {
 		"LEGEND_THEMES": "Thema's",
 		"LABEL_BACKGROUND": "Achtergrond",
-		"LABEL_FONTS": "Fonts",
+		"LABEL_FONTS": "Lettertypes",
 		"BUTTON_UPLOAD_BACKGROUND_IMAGE": "Upload achtergrond afbeelding (JPG, PNG)",
 		"ERROR_FILE_IS_TOO_BIG": "Bestand is te groot",
 		"ERROR_FILE_TYPE_ERROR": "Onjuist bestandstype (alleen JPG and PNG)",
@@ -463,14 +504,13 @@
 		"BUTTON_ADD_ACCOUNT": "Account toevoegen",
 		"BUTTON_ADD_IDENTITY": "Identiteit toevoegen",
 		"LOADING_PROCESS": "Account lijst aan het bijwerken",
-		"DEFAULT_IDENTITY_LABEL": "standaard"
+		"SHOW_UNREAD": "Toon het aantal ongelezen berichten"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importeer sleutel",
 		"BUTTON_GENERATE_KEY_PAIR": "Genereer sleutels",
 		"TITLE_PRIVATE": "Privé sleutel",
 		"TITLE_PUBLIC": "Publieke sleutel",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Automatisch opslaan as concept",
 		"GET_MAILVELOPE": "Verkrijg Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
@@ -484,7 +524,6 @@
 		"LABEL_REPLY_ALL": "Alle beantwoorden",
 		"LABEL_FORWARD": "Doorsturen",
 		"LABEL_FORWARD_MULTIPLY": "Doorsturen als bijlage(n)",
-		"LABEL_HELP": "Help",
 		"LABEL_CHECK_ALL": "Selecteer alle berichten",
 		"LABEL_DELETE": "Verwijderen",
 		"LABEL_OPEN_THREAD": "Open geselecteerde berichtenlijst",

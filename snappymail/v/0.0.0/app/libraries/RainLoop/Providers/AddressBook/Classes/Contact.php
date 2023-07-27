@@ -2,43 +2,26 @@
 
 namespace RainLoop\Providers\AddressBook\Classes;
 
+use Sabre\VObject\Component\VCard;
+
 class Contact implements \JsonSerializable
 {
-	/**
-	 * @var string
-	 */
-	public $id = '';
+	public string $id = '';
+
+	public string $IdContactStr = '';
+
+//	public string $Display;
+
+	public int $Changed;
+
+	public bool $ReadOnly = false;
 
 	/**
-	 * @var string
-	 */
-	public $IdContactStr = '';
-
-	/**
-	 * @var string
-	 */
-//	public $Display;
-
-	/**
-	 * @var int
-	 */
-	public $Changed;
-
-	/**
-	 * @var bool
-	 */
-	public $ReadOnly = false;
-
-	/**
-	 * @var string
 	 * Used for CardDAV synchronization
 	 */
-	public $Etag = '';
+	public string $Etag = '';
 
-	/**
-	 * @var \Sabre\VObject\Component\VCard
-	 */
-	protected $vCard = null;
+	protected ?VCard $vCard = null;
 
 	function __construct()
 	{
@@ -62,8 +45,15 @@ class Contact implements \JsonSerializable
 		return \array_unique($aResult);
 	}
 */
-	public function setVCard(\Sabre\VObject\Component\VCard $oVCard) : void
+	public function setVCard(VCard $oVCard) : void
 	{
+		if ($oVCard->PHOTO && $oVCard->PHOTO->parameters['ENCODING']) {
+			$oVCard->VERSION = '3.0';
+		}
+		if (VCard::VCARD40 != $oVCard->getDocumentType()) {
+			$oVCard = $oVCard->convert(VCard::VCARD40);
+		}
+
 		// KDE KAddressBook entry and used by SnappyMail
 		// https://github.com/sabre-io/vobject/issues/589
 		$oVCard->select('X-CRYPTO')

@@ -5,37 +5,10 @@ This stylesheet is used when SnappyMail runs in embed mode.
 	max-height: 100%;
 }
 #content #rl-app {
-	position: relative;
 	min-width: 100%;
 	min-height: 100%;
 }
 
-#content[class*="app-"] #rl-app * {
-	box-sizing: content-box;
-}
-#content[class*="app-"] #rl-app #V-Settings-Domains .domain-name,
-#content[class*="app-"] #rl-app #V-Settings-Domains .domain-alias
-#content[class*="app-"] #rl-app #rl-settings-subscreen,
-#content[class*="app-"] #rl-app .e-checkbox.material-design > div > div,
-#content[class*="app-"] #rl-app .attachmentItem .iconMain,
-#content[class*="app-"] #rl-app .attachmentItem .iconPreview,
-#content[class*="app-"] #rl-app #V-PopupsCompose .textAreaParent,
-#content[class*="app-"] #rl-app #V-PopupsCompose .attachmentAreaParent,
-#content[class*="app-"] #rl-app .emailaddresses,
-#content[class*="app-"] #rl-app .squire-wysiwyg,
-#content[class*="app-"] #rl-app .squire-plain,
-/* bootstrap */
-#content[class*="app-"] #rl-app .btn-block,
-#content[class*="app-"] #rl-app select,
-#content[class*="app-"] #rl-app .select,
-#content[class*="app-"] #rl-app textarea,
-#content[class*="app-"] #rl-app input,
-#content[class*="app-"] #rl-app .input-block-level,
-#content[class*="app-"] #rl-app .icon-spinner,
-#content[class*="app-"] #rl-app #V-AdminPane #rl-settings-subscreen
-{
-	box-sizing: border-box;
-}
 .squire-wysiwyg {
 	min-width: 100%;
 	min-height: 100%;
@@ -53,12 +26,16 @@ This stylesheet is used when SnappyMail runs in embed mode.
 	margin: 0;
 	padding: 3px;
 }
+#rl-app .select, #rl-app select {
+	padding-right: 1.5em !important;
+}
 
 #rl-app button.btn:not(.button-vue) {
 	min-height: auto;
 	height: auto;
 	margin: 0;
-	padding: 4px 12px;
+	padding: 0 12px;
+	line-height: 2;
 }
 
 #rl-app .form-horizontal .control-group > :not(label)
@@ -75,7 +52,6 @@ This stylesheet is used when SnappyMail runs in embed mode.
 }
 
 #rl-app .squire-plain, #rl-app .squire-wysiwyg {
-	box-sizing: border-box;
 	font-size: 13px;
 	height: 100%;
 	line-height: 16px;
@@ -88,6 +64,10 @@ This stylesheet is used when SnappyMail runs in embed mode.
 
 #rl-app table {
 	white-space: inherit;
+}
+
+#rl-app .b-text-part ul {
+	list-style: initial;
 }
 
 body > header ul {
@@ -103,6 +83,15 @@ body > header ul {
 }
 
 /**
+ * Firefox < 98
+ * https://github.com/the-djmaze/snappymail/issues/673
+ */
+#rl-app dialog.polyfill {
+	margin-top: 50px;
+	max-height: calc(100vh - 60px);
+}
+
+/**
  * hampoelz
  * https://github.com/the-djmaze/snappymail/issues/96#issuecomment-1279783076
  */
@@ -113,8 +102,7 @@ body > header ul {
 
 a.selectable {
 	margin: 2px;
-	height: 38px !important;
-	line-height: 38px !important;
+	line-height: inherit !important;
 	border-radius: var(--border-radius-pill);
 }
 
@@ -129,11 +117,29 @@ a.selectable::after {
 	border: initial !important;
 }
 
+.btn-group > .btn {
+	border-radius: 0;
+}
+.btn-group > .btn:first-child {
+	border-top-left-radius: var(--border-radius-pill, 3px);
+	border-bottom-left-radius: var(--border-radius-pill, 3px);
+}
+.btn-group > .btn:last-child {
+	border-top-right-radius: var(--border-radius-pill, 3px);
+	border-bottom-right-radius: var(--border-radius-pill, 3px);
+}
+
 @media print {
 	#body-user #header {
 		display: none;
 	}
 	#content {
 		padding-top: 0;
+	}
+}
+
+@media screen and (max-width: 799px) {
+	#body-user #rl-left {
+		top: 50px;
 	}
 }

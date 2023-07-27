@@ -1,4 +1,5 @@
 {
+	"LANG_DIR": "ltr",
 	"GLOBAL": {
 		"TO_ARCHIVE": "アーカイブ",
 		"ARE_YOU_SURE": "よろしいですか？",
@@ -19,9 +20,11 @@
 		"MOVE_TO": "移動",
 		"NAME": "受信トレイ",
 		"NONE": "なし",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "迷惑メールを解除",
 		"USERNAME": "ユーザー名",
 		"PASSWORD": "パスワード",
+		"REMEMBER": "Remember",
 		"REPLY_TO": "Reply-To",
 		"SAVE": "保存",
 		"SAVE_CHANGES": "Save changes?",
@@ -33,7 +36,11 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "はい",
 		"NO": "いいえ",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "デフォルト",
+		"HELP": "ヘルプ",
+		"TEXT": "キーワード",
+		"ATTACHMENTS": "添付ファイル"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ログイン",
@@ -41,13 +48,7 @@
 		"BUTTON_SIGN_IN": "サインイン"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "アカウントを追加",
-		"BUTTON_SETTINGS": "設定",
-		"BUTTON_HELP": "ヘルプ"
-	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "モバイル版",
-		"BUTTON_DESKTOP_VERSION": "デスクトップ版"
+		"BUTTON_ADD_ACCOUNT": "アカウントを追加"
 	},
 	"SEARCH": {
 		"TITLE_ADV": "高度な検索",
@@ -98,6 +99,7 @@
 		"MENU_SELECT_SEEN": "既読",
 		"MENU_SELECT_FLAGGED": "フラグ付き",
 		"MENU_SELECT_UNFLAGGED": "フラグなし",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "メッセージはありません",
 		"EMPTY_SEARCH_LIST": "検索条件に一致するメールは見つかりませんでした。高度な検索を試してみてください。",
 		"SEARCH_RESULT_FOR": "\"%SEARCH%\"の検索結果",
@@ -108,6 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "%COUNT%の新しいメッセージ!",
 		"QUOTA_SIZE": "<strong>%SIZE% (%PROC%%)<\/strong>\/<strong>%LIMIT%<\/strong>を使用中",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "日付で昇順",
 		"SORT_DATE_DESC": "日付で降順",
 		"SORT_SIZE_ASC": "サイズで昇順",
@@ -224,11 +227,16 @@
 		"NO_ATTACHMENTS_HERE_DESC": "添付ファイルがありません",
 		"ATTACHMENTS_ERROR_DESC": "警告！すべての添付ファイルがアップロードされているわけではありません。",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "すべての添付ファイルがアップロードされているわけではありません。",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "下書きを自動的に保存する",
 		"BUTTON_REQUEST_READ_RECEIPT": "開封確認を要求する",
 		"BUTTON_MARK_AS_IMPORTANT": "重要フラグをつける",
-		"BUTTON_REQUEST_DSN": "配信確認を要求する"
+		"BUTTON_REQUEST_DSN": "配信確認を要求する",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "このウインドウを閉じていいですか？",
 		"DESC_WANT_DELETE_MESSAGES": "メッセージを削除していいですか？"
 	},
@@ -312,7 +320,7 @@
 		"MARK_AS_READ_LABEL": "既読にする",
 		"REPLY_INTERVAL_LABEL": "返信間隔(日)",
 		"KEEP_LABEL": "保持",
-		"STOP_LABEL": "ルールの処理を止めない",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "件名(オプション)",
 		"VACATION_MESSAGE_LABEL": "メッセージ",
 		"VACATION_RECIPIENTS_LABEL": "受信者(カンマ区切り)",
@@ -351,21 +359,43 @@
 		"ERROR_UNKNOWN": "不明なファイルアップロードエラーが発生しました"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> TEXT",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"PLAIN": "HTML <-> TEXT",
+		"SOURCE": "HTML <-> SOURCE",
+		"FONTFAMILY": "Font family",
+		"FONTSIZE": "Font size",
+		"DIR": "Text direction",
+		"DIR_LTR": "Left to right",
+		"DIR_RTL": "Right to left",
+		"DIR_AUTO": "Automatic",
+		"TEXTCOLOR": "Text color",
+		"BACKGROUNDCOLOR": "Background color",
+		"BOLD": "Bold",
+		"ITALIC": "Italic",
+		"UNDERLINE": "Underline",
+		"STRIKE": "Strikethrough",
+		"SUB": "Subscript",
+		"SUP": "Superscript",
+		"OL": "Ordered list",
+		"UL": "Unordered list",
+		"QUOTE": "Blockquote",
+		"INDENTDECREASE": "Decrease indent",
+		"INDENTINCREASE": "Increase indent",
+		"LINK": "Link",
+		"IMAGEURL": "Image URL",
+		"IMAGEUPLOAD": "Image select",
+		"UNDO": "Undo",
+		"REDO": "Redo"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "個人",
-		"LABEL_GENERAL_NAME": "全般",
-		"LABEL_CONTACTS_NAME": "連絡先",
-		"LABEL_FOLDERS_NAME": "フォルダー",
-		"LABEL_ACCOUNTS_NAME": "アカウント",
-		"LABEL_FILTERS_NAME": "フィルター",
-		"LABEL_SECURITY_NAME": "セキュリティ",
-		"LABEL_THEMES_NAME": "テーマ"
+		"GENERAL": "全般",
+		"CONTACTS": "連絡先",
+		"FOLDERS": "フォルダー",
+		"ACCOUNTS": "アカウント",
+		"FILTERS": "フィルター",
+		"SECURITY": "セキュリティ",
+		"THEMES": "テーマ"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "フィルター",
 		"SIMPLE": "Simple",
 		"ADVANCED": "Advanced",
 		"BUTTON_ADD_SCRIPT": "スクリプトを追加",
@@ -378,18 +408,18 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "セキュリティ",
 		"LABEL_AUTOLOGOUT": "自動ログアウト",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "しない",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES%分",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS%時間"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "しない"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "全般",
 		"LANGUAGE": "言語",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "表示名",
 		"LAYOUT": "レイアウト",
 		"LAYOUT_NO_SPLIT": "分割しない",
 		"LAYOUT_VERTICAL_SPLIT": "縦に分割",
 		"LAYOUT_HORIZONTAL_SPLIT": "横に分割",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "メール形式",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "プレーンテキスト",
@@ -399,19 +429,30 @@
 		"USE_CHECKBOXES_IN_LIST": "リストにチェックボックスを表示",
 		"USE_THREADS": "スレッドを使う",
 		"REPLY_SAME_FOLDER": "返信したメッセージのフォルダに送信メールを置く",
-		"SHOW_IMAGES": "外部画像を常に表示する",
 		"PREFER_HTML": "プレーンテキストよりHTMLを優先する",
 		"PREFER_HTML_INFO": "メッセージがHTMLとプレーンテキストの両方の形式を含むことがあります。このオプションはそのような場合にどちらの形式を表示するかを制御します。",
 		"REMOVE_COLORS": "本文の文字色及び背景色の設定を無視する",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "1ページに表示する件数",
+		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "メッセージが既読となるまでの秒数",
 		"MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "秒",
+		"MINUTES": "minutes",
 		"NOTIFICATIONS": "通知設定",
 		"SOUND_NOTIFICATION": "サウンド通知",
 		"CHROME_NOTIFICATION_DESC": "新しいメッセージを受信したらポップアップで知らせる",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(ブラウザでブロックされています)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
+		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "返信したアドレスをアドレス帳へ自動的に追加する",
@@ -463,14 +504,13 @@
 		"BUTTON_ADD_ACCOUNT": "アカウントを追加",
 		"BUTTON_ADD_IDENTITY": "表示名を追加",
 		"LOADING_PROCESS": "更新中",
-		"DEFAULT_IDENTITY_LABEL": "デフォルト"
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "キーをインポート",
 		"BUTTON_GENERATE_KEY_PAIR": "キーを生成",
 		"TITLE_PRIVATE": "プライベート",
 		"TITLE_PUBLIC": "パブリック",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "下書きを自動的に保存する",
 		"GET_MAILVELOPE": "Mailvelopeのブラウザアドオンを入手する"
 	},
 	"SHORTCUTS_HELP": {
@@ -484,7 +524,6 @@
 		"LABEL_REPLY_ALL": "全員に返信",
 		"LABEL_FORWARD": "転送",
 		"LABEL_FORWARD_MULTIPLY": "転送(元のメッセージを添付)",
-		"LABEL_HELP": "ヘルプ",
 		"LABEL_CHECK_ALL": "すべてのメッセージを選択",
 		"LABEL_DELETE": "削除",
 		"LABEL_OPEN_THREAD": "選択したスレッドを開く",

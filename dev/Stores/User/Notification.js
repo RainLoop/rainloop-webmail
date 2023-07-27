@@ -1,4 +1,4 @@
-import * as Links from 'Common/Links';
+import { staticLink } from 'Common/Links';
 import { addObservablesTo } from 'External/ko';
 import { fireEvent } from 'Common/Globals';
 
@@ -11,7 +11,7 @@ const HTML5Notification = window.Notification,
 	NotificationsGranted = () => 'granted' === HTML5NotificationStatus(),
 	dispatchMessage = data => {
 		focus();
-		if (data.Folder && data.Uid) {
+		if (data.folder && data.uid) {
 			fireEvent('mailbox.message.show', data);
 		} else if (data.Url) {
 			hasher.setHash(data.Url);
@@ -22,15 +22,19 @@ let DesktopNotifications = false,
 	WorkerNotifications = navigator.serviceWorker;
 
 // Are Notifications supported in the service worker?
-if (WorkerNotifications && ServiceWorkerRegistration && ServiceWorkerRegistration.prototype.showNotification) {
-	/* Listen for close requests from the ServiceWorker */
-	WorkerNotifications.addEventListener('message', event => {
-		const obj = JSON.parse(event.data);
-		'notificationclick' === obj?.action && dispatchMessage(obj.data);
-	});
+if (WorkerNotifications) {
+	if (ServiceWorkerRegistration && ServiceWorkerRegistration.prototype.showNotification) {
+		/* Listen for close requests from the ServiceWorker */
+		WorkerNotifications.addEventListener('message', event => {
+			const obj = JSON.parse(event.data);
+			'notificationclick' === obj?.action && dispatchMessage(obj.data);
+		});
+	} else {
+		console.log('ServiceWorkerRegistration.showNotification undefined');
+		WorkerNotifications = null;
+	}
 } else {
-	WorkerNotifications = null;
-	console.log('ServiceWorker Notifications not supported');
+	console.log('ServiceWorker undefined');
 }
 
 export const NotificationUserStore = new class {
@@ -57,16 +61,15 @@ export const NotificationUserStore = new class {
 		if (DesktopNotifications && NotificationsGranted()) {
 			const options = {
 				body: text,
-				icon: imageSrc || Links.staticLink('css/images/icon-message-notification.png'),
+				icon: imageSrc || staticLink('images/icon-message-notification.png'),
 				data: messageData
 			};
-			if (messageData?.Uid) {
-				options.tag = messageData.Uid;
+			if (messageData?.uid) {
+				options.tag = messageData.uid;
 			}
 			if (WorkerNotifications) {
 				// Service-Worker-Allowed HTTP header to allow the scope.
-				WorkerNotifications.register('/serviceworker.js')
-//				WorkerNotifications.register(Links.staticLink('js/serviceworker.js'), {scope:'/'})
+				WorkerNotifications.register(staticLink('js/serviceworker.js'), {scope:'/'})
 				.then(() =>
 					WorkerNotifications.ready.then(registration =>
 						/* Show the notification */
@@ -80,7 +83,10 @@ export const NotificationUserStore = new class {
 							)
 					)
 				)
-				.catch(e => console.error(e));
+				.catch(e => {
+					console.error(e);
+					WorkerNotifications = null;
+				});
 			} else {
 				const notification = new HTML5Notification(title, options);
 				notification.show?.();

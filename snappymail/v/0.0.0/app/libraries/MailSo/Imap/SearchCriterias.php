@@ -19,8 +19,7 @@ namespace MailSo\Imap;
 abstract class SearchCriterias
 {
 	const
-		RegEx = 'in|e?mail|from|to|subject|has|is|date|since|before|text|body|size|larger|bigger|smaller|maxsize|minsize|keyword|older_than|newer_than';
-
+		RegEx = 'in|e?mail|from|to|subject|has|is|date|since|before|text|body|size|larger|bigger|smaller|maxsize|minsize|keyword|older_than|newer_than|on|senton|sentsince|sentbefore';
 	/**
 		https://datatracker.ietf.org/doc/html/rfc3501#section-6.4.4
 
@@ -66,22 +65,22 @@ abstract class SearchCriterias
 		☐ NOT <search-key>
 			Messages that do not match the specified search key.
 
-		☐ ON <date>
+		✔ ON <date>
 			Messages whose internal date (disregarding time and timezone)
 			is within the specified date.
 
 		✔ OR <search-key1> <search-key2>
 			Messages that match either search key.
 
-		☐ SENTBEFORE <date>
+		✔ SENTBEFORE <date>
 			Messages whose [RFC-2822] Date: header (disregarding time and
 			timezone) is earlier than the specified date.
 
-		☐ SENTON <date>
+		✔ SENTON <date>
 			Messages whose [RFC-2822] Date: header (disregarding time and
 			timezone) is within the specified date.
 
-		☐ SENTSINCE <date>
+		✔ SENTSINCE <date>
 			Messages whose [RFC-2822] Date: header (disregarding time and
 			timezone) is within or later than the specified date.
 
@@ -132,11 +131,6 @@ abstract class SearchCriterias
 		$iTimeFilter = 0;
 		$aCriteriasResult = array();
 
-		if (0 < \MailSo\Config::$MessageListDateFilter) {
-			$iD = \time() - 3600 * 24 * 30 * \MailSo\Config::$MessageListDateFilter;
-			$iTimeFilter = \gmmktime(1, 1, 1, \gmdate('n', $iD), 1, \gmdate('Y', $iD));
-		}
-
 		$sSearch = \trim($sSearch);
 		if (\strlen($sSearch)) {
 			$aLines = \preg_match('/^('.static::RegEx.'):/i', $sSearch)
@@ -146,7 +140,7 @@ abstract class SearchCriterias
 			if (!$aLines) {
 				$sValue = static::escapeSearchString($oImapClient, $sSearch);
 
-				if (\MailSo\Config::$MessageListFastSimpleSearch) {
+				if ($oImapClient->Settings->fast_simple_search) {
 					$aCriteriasResult[] = 'OR OR OR';
 					$aCriteriasResult[] = 'FROM';
 					$aCriteriasResult[] = $sValue;
@@ -161,7 +155,7 @@ abstract class SearchCriterias
 					$aCriteriasResult[] = $sValue;
 				}
 			} else {
-				if (isset($aLines['IN']) && $oImapClient->IsSupported('MULTISEARCH') && \in_array($aLines['IN'], ['subtree','subtree-one','mailboxes'])) {
+				if (isset($aLines['IN']) && $oImapClient->hasCapability('MULTISEARCH') && \in_array($aLines['IN'], ['subtree','subtree-one','mailboxes'])) {
 					$aCriteriasResult[] = "IN ({$aLines['IN']} \"{$sFolderName}\")";
 				}
 
@@ -242,10 +236,14 @@ abstract class SearchCriterias
 								$iTimeFilter = \max($iTimeFilter, $sValue);
 							}
 							break;
+						case 'ON':
+						case 'SENTON':
+						case 'SENTSINCE':
+						case 'SENTBEFORE':
 						case 'BEFORE':
 							$sValue = static::parseSearchDate($sRawValue);
 							if ($sValue) {
-								$aCriteriasResult[] = 'BEFORE';
+								$aCriteriasResult[] = $sName;
 								$aCriteriasResult[] = \gmdate('j-M-Y', $sValue);
 							}
 							break;
@@ -307,8 +305,8 @@ abstract class SearchCriterias
 			$aCriteriasResult[] = 'UNDELETED';
 		}
 
-		if (\MailSo\Config::$MessageListPermanentFilter) {
-			$aCriteriasResult[] = \MailSo\Config::$MessageListPermanentFilter;
+		if ($oImapClient->Settings->search_filter) {
+			$aCriteriasResult[] = $oImapClient->Settings->search_filter;
 		}
 
 		$sCriteriasResult = \trim(\implode(' ', $aCriteriasResult));
@@ -318,8 +316,12 @@ abstract class SearchCriterias
 
 	public static function escapeSearchString(\MailSo\Imap\ImapClient $oImapClient, string $sSearch) : string
 	{
-		return !\MailSo\Base\Utils::IsAscii($sSearch)
-			? '{'.\strlen($sSearch).'}'."\r\n".$sSearch : $oImapClient->EscapeString($sSearch);
+		// https://github.com/the-djmaze/snappymail/issues/836
+//		return $oImapClient->EscapeString($sSearch);
+//		return \MailSo\Base\Utils::IsAscii($sSearch) || $oImapClient->hasCapability('QQMail'))
+		return (\MailSo\Base\Utils::IsAscii($sSearch) || !$oImapClient->hasCapability('LITERAL+'))
+			? $oImapClient->EscapeString($sSearch)
+			: '{'.\strlen($sSearch).'}'."\r\n{$sSearch}";
 	}
 
 	private static function parseSearchDate(string $sDate) : int
@@ -379,6 +381,10 @@ abstract class SearchCriterias
 				case 'SMALLER':
 				case 'LARGER':
 				case 'SINCE':
+				case 'ON':
+				case 'SENTON':
+				case 'SENTSINCE':
+				case 'SENTBEFORE':
 				case 'BEFORE':
 					if (\strlen($mValue)) {
 						$aResult[$sName] = $mValue;

@@ -2,6 +2,8 @@
 
 namespace RainLoop\Actions;
 
+use SnappyMail\PGP\Backup;
+
 trait Pgp
 {
 	/**
@@ -74,15 +76,15 @@ trait Pgp
 	{
 		$GPG = $this->GnuPG();
 		if (!$GPG) {
-			return $this->FalseResponse(__FUNCTION__);
+			return $this->FalseResponse();
 		}
 
 		$GPG->addDecryptKey(
-			$this->GetActionParam('KeyId', ''),
-			$this->GetActionParam('Passphrase', '')
+			$this->GetActionParam('keyId', ''),
+			$this->GetActionParam('passphrase', '')
 		);
 
-		$sData = $this->GetActionParam('Data', '');
+		$sData = $this->GetActionParam('data', '');
 		$oPart = null;
 		$result = [
 			'data' => '',
@@ -102,9 +104,9 @@ trait Pgp
 //						$oPart = \MailSo\Mime\Part::FromStream($rStreamHandle);
 					}
 				},
-				$this->GetActionParam('Folder', ''),
-				(int) $this->GetActionParam('Uid', ''),
-				$this->GetActionParam('PartId', '')
+				$this->GetActionParam('folder', ''),
+				(int) $this->GetActionParam('uid', ''),
+				$this->GetActionParam('partId', '')
 			);
 		}
 
@@ -113,21 +115,21 @@ trait Pgp
 //			$result['signatures'] = $oPart->SubParts[0];
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $result);
+		return $this->DefaultResponse($result);
 	}
 
 	public function DoGnupgGetKeys() : array
 	{
 		$GPG = $this->GnuPG();
-		return $this->DefaultResponse(__FUNCTION__, $GPG ? $GPG->keyInfo('') : false);
+		return $this->DefaultResponse($GPG ? $GPG->keyInfo('') : false);
 	}
 
 	public function DoGnupgExportKey() : array
 	{
 		$GPG = $this->GnuPG();
-		return $this->DefaultResponse(__FUNCTION__, $GPG ? $GPG->export(
-			$this->GetActionParam('KeyId', ''),
-			$this->GetActionParam('Passphrase', '')
+		return $this->DefaultResponse($GPG ? $GPG->export(
+			$this->GetActionParam('keyId', ''),
+			$this->GetActionParam('passphrase', '')
 		) : false);
 	}
 
@@ -136,29 +138,29 @@ trait Pgp
 		$fingerprint = false;
 		$GPG = $this->GnuPG();
 		if ($GPG) {
-			$sName = $this->GetActionParam('Name', '');
-			$sEmail = $this->GetActionParam('Email', '');
+			$sName = $this->GetActionParam('name', '');
+			$sEmail = $this->GetActionParam('email', '');
 			$fingerprint = $GPG->generateKey(
 				$sName ? "{$sName} <{$sEmail}>" : $sEmail,
-				$this->GetActionParam('Passphrase', '')
+				$this->GetActionParam('passphrase', '')
 			);
 		}
-		return $this->DefaultResponse(__FUNCTION__, $fingerprint);
+		return $this->DefaultResponse($fingerprint);
 	}
 
 	public function DoGnupgDeleteKey() : array
 	{
 		$GPG = $this->GnuPG();
-		$sKeyId = $this->GetActionParam('KeyId', '');
+		$sKeyId = $this->GetActionParam('keyId', '');
 		$bPrivate = !!$this->GetActionParam('isPrivate', 0);
-		return $this->DefaultResponse(__FUNCTION__, $GPG ? $GPG->deleteKey($sKeyId, $bPrivate) : false);
+		return $this->DefaultResponse($GPG ? $GPG->deleteKey($sKeyId, $bPrivate) : false);
 	}
 
 	public function DoGnupgImportKey() : array
 	{
-		$sKey = $this->GetActionParam('Key', '');
-		$sKeyId = $this->GetActionParam('KeyId', '');
-		$sEmail = $this->GetActionParam('Email', '');
+		$sKey = $this->GetActionParam('key', '');
+		$sKeyId = $this->GetActionParam('keyId', '');
+		$sEmail = $this->GetActionParam('email', '');
 
 		if (!$sKey) {
 			try {
@@ -182,7 +184,7 @@ trait Pgp
 		}
 
 		$GPG = $sKey ? $this->GnuPG() : null;
-		return $this->DefaultResponse(__FUNCTION__, $GPG ? $GPG->import($sKey) : false);
+		return $this->DefaultResponse($GPG ? $GPG->import($sKey) : false);
 	}
 
 	/**
@@ -191,35 +193,7 @@ trait Pgp
 	 */
 	public function DoGetStoredPGPKeys() : array
 	{
-		$oAccount = $this->getMainAccountFromToken();
-		if (!$oAccount) {
-			return null;
-		}
-
-		$dir = $this->StorageProvider()->GenerateFilePath(
-			$oAccount,
-			\RainLoop\Providers\Storage\Enumerations\StorageType::PGP
-		);
-
-		$keys = [];
-		foreach (\glob("{$dir}/*") as $file) {
-			if (\is_file($file)) {
-				if ('.asc' === \substr($file, -4)) {
-					$keys[] = \file_get_contents($file);
-				} else if ('.key' === \substr($file, -4)) {
-					$key = \json_decode(\file_get_contents($file), true);
-					$mac = \array_pop($key);
-					$hash = $oAccount->CryptKey();
-					if ($mac === \hash_hmac('sha1', $key[2], $hash)) {
-						$key[1] = \base64_decode($key[1]);
-						$key[2] = \base64_decode($key[2]);
-						$keys[] = \SnappyMail\Crypt::Decrypt($key, $hash);
-					}
-				}
-			}
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $keys);
+		return $this->DefaultResponse(\SnappyMail\PGP\Backup::getKeys());
 	}
 
 	/**
@@ -232,16 +206,16 @@ trait Pgp
 		$privateKey = $this->GetActionParam('privateKey', '');
 
 		$result = [
-			'onServer' => [false, false, false],
-			'inGnuPG'  => [false, false, false]
+			'onServer' => [false, false],
+			'inGnuPG'  => [false, false]
 		];
 
 		$onServer = (int) $this->GetActionParam('onServer', 0);
 		if ($publicKey && $onServer & 1) {
-			$result['onServer'][0] = $this->StorePGPKey($publicKey);
+			$result['onServer'][0] = Backup::PGPKey($publicKey);
 		}
 		if ($privateKey && $onServer & 2) {
-			$result['onServer'][1] = $this->StorePGPKey($privateKey);
+			$result['onServer'][1] = Backup::PGPKey($privateKey);
 		}
 
 		$inGnuPG = (int) $this->GetActionParam('inGnuPG', 0);
@@ -256,7 +230,7 @@ trait Pgp
 		}
 
 //		$revocationCertificate = $this->GetActionParam('revocationCertificate', '');
-		return $this->DefaultResponse(__FUNCTION__, $result);
+		return $this->DefaultResponse($result);
 	}
 
 	/**
@@ -265,34 +239,8 @@ trait Pgp
 	 */
 	public function DoStorePGPKey() : array
 	{
-		$key = $this->GetActionParam('Key', '');
-		$keyId = $this->GetActionParam('KeyId', '');
-		return $this->DefaultResponse(__FUNCTION__, ($key && $keyId && $this->StorePGPKey($key, $keyId)));
+		$key = $this->GetActionParam('key', '');
+		$keyId = $this->GetActionParam('keyId', '');
+		return $this->DefaultResponse(($key && $keyId && Backup::PGPKey($key, $keyId)));
 	}
-
-	private function StorePGPKey(string $key, string $keyId = '') : bool
-	{
-		$oAccount = $this->getMainAccountFromToken();
-		if ($oAccount) {
-			$keyId = $keyId ? "0x{$keyId}" : \sha1($key);
-			$dir = $this->StorageProvider()->GenerateFilePath(
-				$oAccount,
-				\RainLoop\Providers\Storage\Enumerations\StorageType::PGP,
-				true
-			);
-			if (\str_contains($key, 'PGP PRIVATE KEY')) {
-				$hash = $oAccount->CryptKey();
-				$key = \SnappyMail\Crypt::Encrypt($key, $hash);
-				$key[1] = \base64_encode($key[1]);
-				$key[2] = \base64_encode($key[2]);
-				$key[] = \hash_hmac('sha1', $key[2], $hash);
-				return !!\file_put_contents("{$dir}{$keyId}.key", \json_encode($key));
-			}
-			if (\str_contains($key, 'PGP PUBLIC KEY')) {
-				return !!\file_put_contents("{$dir}{$keyId}_public.asc", $key);
-			}
-		}
-		return false;
-	}
-
 }

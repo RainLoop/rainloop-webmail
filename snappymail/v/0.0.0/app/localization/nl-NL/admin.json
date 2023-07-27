@@ -19,18 +19,18 @@
 		"LABEL_ADMIN_PANEL": "Beheer paneel"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Algemeen",
-		"LABEL_LOGIN_NAME": "Inlogscherm",
-		"LABEL_BRANDING_NAME": "Huisstijl",
-		"LABEL_CONTACTS_NAME": "Contactpersonen",
-		"LABEL_DOMAINS_NAME": "Domeinen",
-		"LABEL_SECURITY_NAME": "Beveiliging",
-		"LABEL_PACKAGES_NAME": "Extensies",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "Over"
+		"GENERAL": "Algemeen",
+		"LOGIN": "Inlogscherm",
+		"BRANDING": "Huisstijl",
+		"CONTACTS": "Contactpersonen",
+		"DOMAINS": "Domeinen",
+		"SECURITY": "Beveiliging",
+		"PACKAGES": "Extensies",
+		"CONFIG": "Configuratie",
+		"ABOUT": "Over"
 	},
 	"TAB_GENERAL": {
-		"LEGEND_INTERFACE": "Interface",
+		"LEGEND_INTERFACE": "Omgeving",
 		"LABEL_LANGUAGE": "Taal",
 		"LABEL_LANGUAGE_ADMIN": "Taal (admin)",
 		"LABEL_THEME": "Thema",
@@ -42,9 +42,9 @@
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "Maximale bijlage grootte",
 		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Sta extra accounts toe",
 		"LABEL_ALLOW_IDENTITIES": "Meerdere identiteiten toestaan",
-		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
+		"ALERT_DATA_ACCESS": "Gegevensmap is toegankelijk. Configureer uw webserver om de gegevensmap te verbergen voor externe toegang. Lees hier meer:",
 		"ALERT_WARNING": "Waarschuwing!",
-		"HTML_ALERT_WEAK_PASSWORD": "U gebruikt het standaard beheer wachtwoord.\n<br>\n<strong><a href=\"#\/security\">Wijzig<\/a><\/strong>\na.u.b. voor uw veiligheid direct het wachtwoord.\n"
+		"HTML_ALERT_WEAK_PASSWORD": "U gebruikt het standaard beheer wachtwoord.\n<br>\n<strong><a href=\"#\/security\">Wijzig<\/a><\/strong>\na.u.b. voor uw veiligheid direct het wachtwoord."
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Inlogscherm",
@@ -69,15 +69,16 @@
 		"LABEL_STORAGE_USER": "Gebruikersnaam",
 		"LABEL_STORAGE_PASSWORD": "Wachtwoord",
 		"ALERT_NOTICE": "Aandacht!",
+		"SUGGESTIONS_LIMIT": "Suggesties limiet",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Gegruik deze database soort niet met een groot aantal actieve gebrukers.",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "Uw systeem ondersteund geen contactpersonen.\n<br>\nU moet een <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> extentie op uw server installeren of activeren.\n"
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Uw systeem ondersteund geen contactpersonen.\n<br>\nU moet een <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> extentie op uw server installeren of activeren."
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "Domeinen",
 		"BUTTON_ADD_DOMAIN": "Domein toevoegen",
 		"BUTTON_ADD_ALIAS": "Voeg alias toe",
 		"DELETE_ARE_YOU_SURE": "Weet u het zeker?",
-		"HTML_DOMAINS_HELPER": "Lijst van toegestane domeinen.\n<br>\nKlik op de domeinnaam om deze te configureren.\n"
+		"HTML_DOMAINS_HELPER": "Lijst van toegestane domeinen.\n<br>\nKlik op de domeinnaam om deze te configureren."
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Beveiliging",
@@ -88,8 +89,7 @@
 		"LABEL_CURRENT_PASSWORD": "Huidig wachtwoord",
 		"LABEL_NEW_PASSWORD": "Nieuw wachtwoord",
 		"LABEL_REPEAT_PASSWORD": "Herhaal nieuw wachtwoord",
-		"LEGEND_SSL": "SSL",
-		"LABEL_REQUIRE_VERIFICATION": "Verificatie van SSL certificaten (IMAP\/SMTP)",
+		"LABEL_REQUIRE_VERIFICATION": "Verificatie van SSL certificaten",
 		"LABEL_ALLOW_SELF_SIGNED": "Sta zelf ondertekende certificaten toe"
 	},
 	"TAB_PACKAGES": {
@@ -108,7 +108,7 @@
 		"HTML_NEW_VERSION": "Een nieuwe versie <b>%VERSION%<\/b> is beschikbaar.",
 		"LABEL_UPDATING": "Bezig met updaten",
 		"LABEL_CHECKING": "Controleren op updates",
-		"BUTTON_RELEASES": "Releases"
+		"BUTTON_RELEASES": "Uitgaven"
 	},
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Voeg alias toe",
@@ -121,20 +121,21 @@
 		"TITLE_EDIT_DOMAIN": "Pas domein \"%NAME%\" aan",
 		"LABEL_NAME": "Naam",
 		"NAME_HELPER": "ondersteunt joker tekens",
-		"LABEL_IMAP": "IMAP",
-		"LABEL_SMTP": "SMTP",
-		"LABEL_SIEVE": "SIEVE",
 		"LABEL_SERVER": "Server",
 		"LABEL_PORT": "Poort",
 		"LABEL_SECURE": "Encryptie",
+		"TIMEOUT": "Time-out",
+		"DISABLE_CAPABILITIES": "Mogelijkheden uitschakelen",
+		"LIMITS": "Limieten",
+		"FOLDERS": "Mappen",
+		"MESSAGES": "Berichten",
 		"LABEL_WHITE_LIST": "Witte lijst",
 		"SECURE_OPTION_NONE": "Geen",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Sta Sieve scripts toe",
 		"LABEL_USE_SHORT_LOGIN": "Gebruik verkorte login",
 		"LABEL_USE_AUTH": "Gebruik authenticatie",
 		"LABEL_SET_SENDER": "Gebruik login als verzender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "Gebruik php mail() functie",
 		"BUTTON_WHITE_LIST": "Witte lijst",
 		"BUTTON_SIEVE_CONFIGURATION": "Sieve configuratie",
@@ -142,7 +143,7 @@
 		"BUTTON_BACK": "Terug",
 		"BUTTON_UPDATE": "Update",
 		"NEW_DOMAIN_DESC": "Dit domein stelt u in staat om <br>met <i>%NAME%<\/i> e-mail adressen te werken.",
-		"WHITE_LIST_ALERT": "Lijst van gebruikers die dit domein mogen gebruiken.\nGebruik een spatie als scheidingsteken.\n"
+		"WHITE_LIST_ALERT": "Lijst van gebruikers die dit domein mogen gebruiken.\nGebruik een spatie als scheidingsteken."
 	},
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Extensie",
@@ -158,7 +159,6 @@
 	},
 	"HINTS": {
 		"BETA": "bèta",
-		"UNSTABLE": "onstabiel",
 		"WARNING": "Waarschuwing!"
 	},
 	"ERRORS": {
@@ -166,9 +166,9 @@
 		"UNKNOWN_ERROR": "Onbekende fout"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
+		"REQUEST_ERROR": "Aanvraag mislukt",
+		"REQUEST_ABORTED": "Aanvraag is afgebroken",
+		"REQUEST_TIMEOUT": "Aanvraag verlopen",
 		"INVALID_TOKEN": "Onjuiste token",
 		"AUTH_ERROR": "Authenticatie mislukt",
 		"DOMAIN_ALREADY_EXISTS": "Domein bestaat al",
@@ -177,6 +177,6 @@
 		"CANT_DELETE_PACKAGE": "Extensie verwijderen mislukt",
 		"INVALID_PLUGIN_PACKAGE": "Onjuist extensie pakket",
 		"UNSUPPORTED_PLUGIN_PACKAGE": "Niet ondersteund extensie pakket",
-		"UNKNOWN_ERROR": "Unknown error"
+		"UNKNOWN_ERROR": "Onbekende fout"
 	}
 }

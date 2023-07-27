@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Administrační panel"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Základní",
-		"LABEL_LOGIN_NAME": "Login",
-		"LABEL_BRANDING_NAME": "Branding",
-		"LABEL_CONTACTS_NAME": "Kontakty",
-		"LABEL_DOMAINS_NAME": "Domény",
-		"LABEL_SECURITY_NAME": "Zabezpečení",
-		"LABEL_PACKAGES_NAME": "Balíčky",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "Info"
+		"GENERAL": "Základní",
+		"LOGIN": "Login",
+		"BRANDING": "Branding",
+		"CONTACTS": "Kontakty",
+		"DOMAINS": "Domény",
+		"SECURITY": "Zabezpečení",
+		"PACKAGES": "Balíčky",
+		"CONFIG": "Config",
+		"ABOUT": "Info"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Rozhraní",
@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "Uživatel",
 		"LABEL_STORAGE_PASSWORD": "Heslo",
 		"ALERT_NOTICE": "Upozornění!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Nepoužívejte tento typ databáze při velkém počtu aktivních uživatelů.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Váš systém nepodporuje kontakty.\n<br>\nJe potřeba nainstalovat nebo povolit <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong>\nrozšíření na vašem serveru.\n"
 	},
@@ -88,8 +89,7 @@
 		"LABEL_CURRENT_PASSWORD": "Současné heslo",
 		"LABEL_NEW_PASSWORD": "Nové heslo",
 		"LABEL_REPEAT_PASSWORD": "Znovu",
-		"LEGEND_SSL": "SSL",
-		"LABEL_REQUIRE_VERIFICATION": "Vyžadovat ověření SSL certifikátu (IMAP\/SMTP)",
+		"LABEL_REQUIRE_VERIFICATION": "Vyžadovat ověření SSL certifikátu",
 		"LABEL_ALLOW_SELF_SIGNED": "Povolit self-signed certifikáty"
 	},
 	"TAB_PACKAGES": {
@@ -121,20 +121,21 @@
 		"TITLE_EDIT_DOMAIN": "Editovat Doménu \"%NAME%\"",
 		"LABEL_NAME": "Název",
 		"NAME_HELPER": "wildcard podporovány",
-		"LABEL_IMAP": "IMAP",
-		"LABEL_SMTP": "SMTP",
-		"LABEL_SIEVE": "SIEVE",
 		"LABEL_SERVER": "Server",
 		"LABEL_PORT": "Port",
 		"LABEL_SECURE": "Zabezpečení",
+		"TIMEOUT": "Timeout",
+		"DISABLE_CAPABILITIES": "Disable capabilities",
+		"LIMITS": "Limits",
+		"FOLDERS": "Folders",
+		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "White List",
 		"SECURE_OPTION_NONE": "Žádné",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Povolit SIEVE skripty",
 		"LABEL_USE_SHORT_LOGIN": "Používat krátký login",
 		"LABEL_USE_AUTH": "Používat autorizaci",
 		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "Používat php mail() funkci",
 		"BUTTON_WHITE_LIST": "White List",
 		"BUTTON_SIEVE_CONFIGURATION": "SIEVE konfigurace",
@@ -158,7 +159,6 @@
 	},
 	"HINTS": {
 		"BETA": "beta",
-		"UNSTABLE": "unstable",
 		"WARNING": "Varování!"
 	},
 	"ERRORS": {

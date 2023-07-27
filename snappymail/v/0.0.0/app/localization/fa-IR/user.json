@@ -1,4 +1,5 @@
 {
+	"LANG_DIR": "rtl",
 	"GLOBAL": {
 		"TO_ARCHIVE": "بایگانی",
 		"ARE_YOU_SURE": "اطمینان دارید؟",
@@ -19,9 +20,11 @@
 		"MOVE_TO": "انتقال به",
 		"NAME": "صندوق ورودی",
 		"NONE": "هیچ‌کدام",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "هرزنامه نیست",
 		"USERNAME": "نام کاربری",
 		"PASSWORD": "گذرواژه",
+		"REMEMBER": "Remember",
 		"REPLY_TO": "پاسخ به",
 		"SAVE": "ذخیره کن",
 		"SAVE_CHANGES": "Save changes?",
@@ -33,7 +36,11 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "بلی",
 		"NO": "خیر",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "پیش‌فرض",
+		"HELP": "راهنما",
+		"TEXT": "متن",
+		"ATTACHMENTS": "پیوست‌ها"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ورود",
@@ -41,13 +48,7 @@
 		"BUTTON_SIGN_IN": "ورود"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "ساخت کاربر",
-		"BUTTON_SETTINGS": "تنظیمات",
-		"BUTTON_HELP": "راهنما"
-	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "نسخه موبایل",
-		"BUTTON_DESKTOP_VERSION": "نسخه رومیزی"
+		"BUTTON_ADD_ACCOUNT": "ساخت کاربر"
 	},
 	"SEARCH": {
 		"TITLE_ADV": "جستجوی پیشرفته",
@@ -98,6 +99,7 @@
 		"MENU_SELECT_SEEN": "خوانده",
 		"MENU_SELECT_FLAGGED": "پرچم‌دار کردن",
 		"MENU_SELECT_UNFLAGGED": "پرچم‌دار نشده",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "فهرست خالی",
 		"EMPTY_SEARCH_LIST": "پیامی مطابق جستجوی شما پیدا نشد",
 		"SEARCH_RESULT_FOR": "نتایج جستجو مطابق \"%SEARCH%\"",
@@ -108,6 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "شما تعداد %COUNT%  پیام جدید دارید!",
 		"QUOTA_SIZE": "استفاده <strong>%SIZE% (%PROC%%)<\/strong> از<strong>%LIMIT%<\/strong> برای شما",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Date ascending",
 		"SORT_DATE_DESC": "Date descending",
 		"SORT_SIZE_ASC": "Size ascending",
@@ -224,11 +227,16 @@
 		"NO_ATTACHMENTS_HERE_DESC": "هیچ پیوستی اینجا وجود ندارد.",
 		"ATTACHMENTS_ERROR_DESC": "اخطار! همه پیوست‌ها هنوز بارگذاری نشده است.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "همه پیوست‌ها هنوز بارگذاری نشده است.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "ذخیره خودکار پیش‌نویس",
 		"BUTTON_REQUEST_READ_RECEIPT": "درخواست دریافت رسید خواندن",
 		"BUTTON_MARK_AS_IMPORTANT": "علامت زدن به عنوان مهم",
-		"BUTTON_REQUEST_DSN": "درخواست دریافت رسید تحویل درمقصد"
+		"BUTTON_REQUEST_DSN": "درخواست دریافت رسید تحویل درمقصد",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "آیا از بستن این پنجره مطمئن هستید؟",
 		"DESC_WANT_DELETE_MESSAGES": "آیا از حذف این پیام(ها) اطمینان دارید؟"
 	},
@@ -312,7 +320,7 @@
 		"MARK_AS_READ_LABEL": "علامت بعنوان خوانده شده",
 		"REPLY_INTERVAL_LABEL": "دوره جواب (بر پایه روز)",
 		"KEEP_LABEL": "نگه‌داشتن",
-		"STOP_LABEL": "پردازش قوانین را متوقف نکن",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "موضوع (اختیاری)",
 		"VACATION_MESSAGE_LABEL": "پیام",
 		"VACATION_RECIPIENTS_LABEL": "گیرندگان (جداسازی با , )",
@@ -351,21 +359,43 @@
 		"ERROR_UNKNOWN": "یک خطای نامشخص در بارگذاری فایل روی داده است"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> TEXT",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"PLAIN": "HTML <-> TEXT",
+		"SOURCE": "HTML <-> SOURCE",
+		"FONTFAMILY": "Font family",
+		"FONTSIZE": "Font size",
+		"DIR": "Text direction",
+		"DIR_LTR": "Left to right",
+		"DIR_RTL": "Right to left",
+		"DIR_AUTO": "Automatic",
+		"TEXTCOLOR": "Text color",
+		"BACKGROUNDCOLOR": "Background color",
+		"BOLD": "Bold",
+		"ITALIC": "Italic",
+		"UNDERLINE": "Underline",
+		"STRIKE": "Strikethrough",
+		"SUB": "Subscript",
+		"SUP": "Superscript",
+		"OL": "Ordered list",
+		"UL": "Unordered list",
+		"QUOTE": "Blockquote",
+		"INDENTDECREASE": "Decrease indent",
+		"INDENTINCREASE": "Increase indent",
+		"LINK": "Link",
+		"IMAGEURL": "Image URL",
+		"IMAGEUPLOAD": "Image select",
+		"UNDO": "Undo",
+		"REDO": "Redo"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "شخصی",
-		"LABEL_GENERAL_NAME": "عمومی",
-		"LABEL_CONTACTS_NAME": "تماس‌ها",
-		"LABEL_FOLDERS_NAME": "پوشه‌ها",
-		"LABEL_ACCOUNTS_NAME": "حساب‌های کاربری",
-		"LABEL_FILTERS_NAME": "فیلترها",
-		"LABEL_SECURITY_NAME": "امنیت",
-		"LABEL_THEMES_NAME": "پوسته‌ها"
+		"GENERAL": "عمومی",
+		"CONTACTS": "تماس‌ها",
+		"FOLDERS": "پوشه‌ها",
+		"ACCOUNTS": "حساب‌های کاربری",
+		"FILTERS": "فیلترها",
+		"SECURITY": "امنیت",
+		"THEMES": "پوسته‌ها"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "فیلترها",
 		"SIMPLE": "Simple",
 		"ADVANCED": "Advanced",
 		"BUTTON_ADD_SCRIPT": "Add a Script",
@@ -378,18 +408,18 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "امنیت",
 		"LABEL_AUTOLOGOUT": "خروج خودکار",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "هرگز",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% دقیقه(ها)",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% ساعت‌(ها)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "هرگز"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "عمومی",
 		"LANGUAGE": "زبان",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "شناسه",
 		"LAYOUT": "لایه",
 		"LAYOUT_NO_SPLIT": "بدون تقسیم",
 		"LAYOUT_VERTICAL_SPLIT": "تقسیم عمودی",
 		"LAYOUT_HORIZONTAL_SPLIT": "تقسیم افقی",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "ویرایشگر پیش‌فرض",
 		"EDITOR_HTML": "تحت فرمت Html",
 		"EDITOR_PLAIN": "ساده",
@@ -399,19 +429,30 @@
 		"USE_CHECKBOXES_IN_LIST": "نمایش چک‌باکس در لیست",
 		"USE_THREADS": "استفاده از حالت موضوعی",
 		"REPLY_SAME_FOLDER": " جوابها را در پوشه‌ای که پیامها در آن جواب داده شده است قراردهید",
-		"SHOW_IMAGES": "همیشه تصاویر بیرونی را در بدنه پیام‌ها نشان بده",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"REMOVE_COLORS": "Remove background and text colors from message body",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "پیام‌ها در صفحه",
+		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Mark message as read after",
 		"MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
+		"MINUTES": "minutes",
 		"NOTIFICATIONS": "اطلاعیه‌ها",
 		"SOUND_NOTIFICATION": "آگاه‌سازی با صدا",
 		"CHROME_NOTIFICATION_DESC": "پنجره اعلان دریافت پیام جدید را نمایش بده",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(مسدود شده توسط مرورگر)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
+		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "اطلاعات تماس گیرندگان را بصورت خودکار در آدرس‌بوک ذخیره کن",
@@ -463,14 +504,13 @@
 		"BUTTON_ADD_ACCOUNT": "اضافه کردن یک حساب کاربری",
 		"BUTTON_ADD_IDENTITY": "اضافه کردن یک شناسه",
 		"LOADING_PROCESS": "بروزرسانی...",
-		"DEFAULT_IDENTITY_LABEL": "پیش‌فرض"
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "وارد کردن کلید",
 		"BUTTON_GENERATE_KEY_PAIR": "تولید کلیدهای",
 		"TITLE_PRIVATE": "خصوصی",
 		"TITLE_PUBLIC": "عمومی",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "ذخیره خودکار پیش‌نویس",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
@@ -484,7 +524,6 @@
 		"LABEL_REPLY_ALL": "پاسخ به همه",
 		"LABEL_FORWARD": "ارسال به دیگران",
 		"LABEL_FORWARD_MULTIPLY": "ارسال بصورت پیوست(ها)",
-		"LABEL_HELP": "راهنما",
 		"LABEL_CHECK_ALL": "انتخاب همه پیام‌ها",
 		"LABEL_DELETE": "حذف",
 		"LABEL_OPEN_THREAD": "باز کردن موضوع انتخاب شده",

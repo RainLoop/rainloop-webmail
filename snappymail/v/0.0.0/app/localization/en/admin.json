@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Admin Panel"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "General",
-		"LABEL_LOGIN_NAME": "Login",
-		"LABEL_BRANDING_NAME": "Branding",
-		"LABEL_CONTACTS_NAME": "Contacts",
-		"LABEL_DOMAINS_NAME": "Domains",
-		"LABEL_SECURITY_NAME": "Security",
-		"LABEL_PACKAGES_NAME": "Extensions",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "About"
+		"GENERAL": "General",
+		"LOGIN": "Login",
+		"BRANDING": "Branding",
+		"CONTACTS": "Contacts",
+		"DOMAINS": "Domains",
+		"SECURITY": "Security",
+		"PACKAGES": "Extensions",
+		"CONFIG": "Config",
+		"ABOUT": "About"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Interface",
@@ -65,10 +65,11 @@
 		"LABEL_ENABLE_CONTACTS": "Enable contacts",
 		"LABEL_ALLOW_SYNC": "Allow contacts sync (with external CardDAV server)",
 		"LABEL_STORAGE_TYPE": "Type",
-		"LABEL_STORAGE_DSN": "Dsn",
+		"LABEL_STORAGE_DSN": "Data Source Name (DSN)",
 		"LABEL_STORAGE_USER": "User",
 		"LABEL_STORAGE_PASSWORD": "Password",
 		"ALERT_NOTICE": "Notice!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Don't use this database type with a large number of active users.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Your system doesn't support contacts.\n<br>\nYou need to install or enable <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> extension on your server.\n"
 	},
@@ -88,8 +89,7 @@
 		"LABEL_CURRENT_PASSWORD": "Current password",
 		"LABEL_NEW_PASSWORD": "New password",
 		"LABEL_REPEAT_PASSWORD": "Repeat",
-		"LEGEND_SSL": "SSL",
-		"LABEL_REQUIRE_VERIFICATION": "Require verification of SSL certificate used (IMAP\/SMTP)",
+		"LABEL_REQUIRE_VERIFICATION": "Require verification of SSL certificate",
 		"LABEL_ALLOW_SELF_SIGNED": "Allow self signed certificates"
 	},
 	"TAB_PACKAGES": {
@@ -121,20 +121,21 @@
 		"TITLE_EDIT_DOMAIN": "Edit Domain \"%NAME%\"",
 		"LABEL_NAME": "Name",
 		"NAME_HELPER": "wildcard supported",
-		"LABEL_IMAP": "IMAP",
-		"LABEL_SMTP": "SMTP",
-		"LABEL_SIEVE": "SIEVE",
 		"LABEL_SERVER": "Server",
 		"LABEL_PORT": "Port",
 		"LABEL_SECURE": "Secure",
+		"TIMEOUT": "Timeout",
+		"DISABLE_CAPABILITIES": "Disable capabilities",
+		"LIMITS": "Limits",
+		"FOLDERS": "Folders",
+		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "White List",
 		"SECURE_OPTION_NONE": "None",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Allow sieve scripts",
 		"LABEL_USE_SHORT_LOGIN": "Use short login",
 		"LABEL_USE_AUTH": "Use authentication",
 		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "Use php mail() function",
 		"BUTTON_WHITE_LIST": "White List",
 		"BUTTON_SIEVE_CONFIGURATION": "Sieve configuration",
@@ -158,7 +159,6 @@
 	},
 	"HINTS": {
 		"BETA": "beta",
-		"UNSTABLE": "unstable",
 		"WARNING": "Warning!"
 	},
 	"ERRORS": {

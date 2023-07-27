@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Adminpanel"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Allmän",
-		"LABEL_LOGIN_NAME": "Logga in",
-		"LABEL_BRANDING_NAME": "Branding",
-		"LABEL_CONTACTS_NAME": "Kontakter",
-		"LABEL_DOMAINS_NAME": "Domäner",
-		"LABEL_SECURITY_NAME": "Säkerhet",
-		"LABEL_PACKAGES_NAME": "Tillägg",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "Om"
+		"GENERAL": "Allmän",
+		"LOGIN": "Logga in",
+		"BRANDING": "Branding",
+		"CONTACTS": "Kontakter",
+		"DOMAINS": "Domäner",
+		"SECURITY": "Säkerhet",
+		"PACKAGES": "Tillägg",
+		"CONFIG": "Config",
+		"ABOUT": "Om"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Gränssnitt",
@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "Användare",
 		"LABEL_STORAGE_PASSWORD": "Lösenord",
 		"ALERT_NOTICE": "Notis",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Använd inte denna typ av databas med ett stort antal aktiva användare.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Systemet stöder inte kontakter\n<br>\nDu behöver installera eller aktivera <strong>SUB (SQLite\/MySQL\/PostgreSQL)<\/strong> förlängning på server.\n"
 	},
@@ -88,8 +89,7 @@
 		"LABEL_CURRENT_PASSWORD": "Nuvarande lösenord",
 		"LABEL_NEW_PASSWORD": "Nytt lösenord",
 		"LABEL_REPEAT_PASSWORD": "Upprepa",
-		"LEGEND_SSL": "SSL",
-		"LABEL_REQUIRE_VERIFICATION": "Kräver verifiering av SSL-certifikat som används (IMAP\/SMTP)",
+		"LABEL_REQUIRE_VERIFICATION": "Kräver verifiering av SSL-certifikat som används",
 		"LABEL_ALLOW_SELF_SIGNED": "Låt självsignerade certifikat"
 	},
 	"TAB_PACKAGES": {
@@ -121,20 +121,21 @@
 		"TITLE_EDIT_DOMAIN": "Ändra domän \"%NAME%\"",
 		"LABEL_NAME": "Namn",
 		"NAME_HELPER": "jokertecken stöds",
-		"LABEL_IMAP": "IMAP",
-		"LABEL_SMTP": "SMTP",
-		"LABEL_SIEVE": "SIEVE",
 		"LABEL_SERVER": "Server",
 		"LABEL_PORT": "Port",
 		"LABEL_SECURE": "Säkerhet",
+		"TIMEOUT": "Timeout",
+		"DISABLE_CAPABILITIES": "Disable capabilities",
+		"LIMITS": "Limits",
+		"FOLDERS": "Folders",
+		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "Vitlista",
 		"SECURE_OPTION_NONE": "Ingen",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "StartTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Tillåta sikt skript",
 		"LABEL_USE_SHORT_LOGIN": "Använda korta inloggning",
 		"LABEL_USE_AUTH": "Använd autentisering",
 		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "Använd php mail() funktionen",
 		"BUTTON_WHITE_LIST": "Vitlista",
 		"BUTTON_SIEVE_CONFIGURATION": "sil-konfiguration",
@@ -158,7 +159,6 @@
 	},
 	"HINTS": {
 		"BETA": "beta",
-		"UNSTABLE": "instabil",
 		"WARNING": "Varning!"
 	},
 	"ERRORS": {

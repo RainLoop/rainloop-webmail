@@ -1,4 +1,5 @@
 {
+	"LANG_DIR": "ltr",
 	"GLOBAL": {
 		"TO_ARCHIVE": "Cho vào kho lưu trữ",
 		"ARE_YOU_SURE": "Bạn chắc chắn chứ?",
@@ -19,9 +20,11 @@
 		"MOVE_TO": "Chuyển đến",
 		"NAME": "Tên gọi",
 		"NONE": "Trống",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "Không phải thư rác",
 		"USERNAME": "Tên tài khoản",
 		"PASSWORD": "Mật khẩu",
+		"REMEMBER": "Remember",
 		"REPLY_TO": "Nhận thư phản hồi về",
 		"SAVE": "Lưu",
 		"SAVE_CHANGES": "Save changes?",
@@ -33,7 +36,11 @@
 		"SERVER_MESSAGE": "Tin nhắn từ máy chủ",
 		"YES": "Ok",
 		"NO": "Không",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "mặc định",
+		"HELP": "Hỗ trợ",
+		"TEXT": "Nội dung trong mail",
+		"ATTACHMENTS": "Phần đính kèm"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Đăng nhập",
@@ -41,13 +48,7 @@
 		"BUTTON_SIGN_IN": "Đăng nhập"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Thêm tài khoản",
-		"BUTTON_SETTINGS": "Cài đặt",
-		"BUTTON_HELP": "Hỗ trợ"
-	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Phiên bản điện thoại",
-		"BUTTON_DESKTOP_VERSION": "Phiên bản máy tính"
+		"BUTTON_ADD_ACCOUNT": "Thêm tài khoản"
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Tìm kiếm nâng cao",
@@ -98,6 +99,7 @@
 		"MENU_SELECT_SEEN": "Đã đọc",
 		"MENU_SELECT_FLAGGED": "Được đánh dấu sao",
 		"MENU_SELECT_UNFLAGGED": "Không được đánh dấu sao",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Danh sách trống.",
 		"EMPTY_SEARCH_LIST": "Không tìm thấy thư trùng khớp.",
 		"SEARCH_RESULT_FOR": "Kết quả tìm kiếm cho \"%SEARCH%\"",
@@ -108,6 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "Bạn có %COUNT% thư mới!",
 		"QUOTA_SIZE": "Đang sử dụng <strong>%SIZE% (%PROC%%)<\/strong> trong mức <strong>%LIMIT%<\/strong> của bạn",
 		"SORT": "Sắp xếp thư",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Thư mới hiện trước",
 		"SORT_DATE_DESC": "Thư cũ hiện trước",
 		"SORT_SIZE_ASC": "Kích cỡ thư nhỏ đến lớn",
@@ -224,11 +227,16 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Không có tập tin đính kèm.",
 		"ATTACHMENTS_ERROR_DESC": "Cảnh báo! Các tập tin đính kèm chưa được tải lên hết.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Các tập tin đính kèm chưa được tải lên hết.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Tự động lưu nháp",
 		"BUTTON_REQUEST_READ_RECEIPT": "Yêu cầu thông báo khi người nhận đã đọc thư",
 		"BUTTON_MARK_AS_IMPORTANT": "Đánh dấu thư quan trọng",
-		"BUTTON_REQUEST_DSN": "Yêu cầu thông báo thư đã gửi thành công"
+		"BUTTON_REQUEST_DSN": "Yêu cầu thông báo thư đã gửi thành công",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Bạn có chắc muốn đóng bảng này chứ?",
 		"DESC_WANT_DELETE_MESSAGES": "Bạn có chắc muốn xóa thư này chứ?"
 	},
@@ -312,7 +320,7 @@
 		"MARK_AS_READ_LABEL": "Đánh dấu đã đọc",
 		"REPLY_INTERVAL_LABEL": "Khoảng cách phản hồi (ngày)",
 		"KEEP_LABEL": "Giữ lại",
-		"STOP_LABEL": "Không dừng những quy định xử lý thư này",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Tiêu đề thư (không bắt buộc)",
 		"VACATION_MESSAGE_LABEL": "Nội dung thư thông báo bạn đang nghỉ lễ",
 		"VACATION_RECIPIENTS_LABEL": "Người nhận (phân ra bởi dấu phẩy)",
@@ -351,21 +359,43 @@
 		"ERROR_UNKNOWN": "Bị một lỗi chưa xác định khi tải tập tin lên"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAIN_TEXT": "DẠNG HTML <-> DẠNG CHỮ VIẾT THƯỜNG",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"PLAIN": "DẠNG HTML <-> DẠNG CHỮ VIẾT THƯỜNG",
+		"SOURCE": "HTML <-> SOURCE",
+		"FONTFAMILY": "Font family",
+		"FONTSIZE": "Font size",
+		"DIR": "Text direction",
+		"DIR_LTR": "Left to right",
+		"DIR_RTL": "Right to left",
+		"DIR_AUTO": "Automatic",
+		"TEXTCOLOR": "Text color",
+		"BACKGROUNDCOLOR": "Background color",
+		"BOLD": "Bold",
+		"ITALIC": "Italic",
+		"UNDERLINE": "Underline",
+		"STRIKE": "Strikethrough",
+		"SUB": "Subscript",
+		"SUP": "Superscript",
+		"OL": "Ordered list",
+		"UL": "Unordered list",
+		"QUOTE": "Blockquote",
+		"INDENTDECREASE": "Decrease indent",
+		"INDENTINCREASE": "Increase indent",
+		"LINK": "Link",
+		"IMAGEURL": "Image URL",
+		"IMAGEUPLOAD": "Image select",
+		"UNDO": "Undo",
+		"REDO": "Redo"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Cá nhân",
-		"LABEL_GENERAL_NAME": "Tổng quan",
-		"LABEL_CONTACTS_NAME": "Danh bạ",
-		"LABEL_FOLDERS_NAME": "Thư mục",
-		"LABEL_ACCOUNTS_NAME": "Thư mục",
-		"LABEL_FILTERS_NAME": "Lọc thư",
-		"LABEL_SECURITY_NAME": "An ninh",
-		"LABEL_THEMES_NAME": "Phông nền"
+		"GENERAL": "General",
+		"CONTACTS": "Contacts",
+		"FOLDERS": "Folders",
+		"ACCOUNTS": "Accounts",
+		"FILTERS": "Filters",
+		"SECURITY": "Security",
+		"THEMES": "Themes"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "Lọc thư",
 		"SIMPLE": "Đơn giản",
 		"ADVANCED": "Kỹ càng",
 		"BUTTON_ADD_SCRIPT": "Thêm vào một Script",
@@ -378,18 +408,18 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "An ninh",
 		"LABEL_AUTOLOGOUT": "Tự động đăng xuất",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Không tự động đăng xuất",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "Sau %MINUTES% phút",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "Sau %HOURS% tiếng"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Không tự động đăng xuất"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Tổng quan",
 		"LANGUAGE": "Ngôn ngữ",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Tên gọi",
 		"LAYOUT": "Bố cục",
 		"LAYOUT_NO_SPLIT": "Không phân màn hình",
 		"LAYOUT_VERTICAL_SPLIT": "Phân dọc màn hình",
 		"LAYOUT_HORIZONTAL_SPLIT": "Phân ngang màn hình",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Chỉnh dạng văn bản mặc định",
 		"EDITOR_HTML": "Dạng Html",
 		"EDITOR_PLAIN": "Dạng chữ viết thường",
@@ -399,19 +429,30 @@
 		"USE_CHECKBOXES_IN_LIST": "Hiển thị ô đánh dấu dưới dạng danh sách",
 		"USE_THREADS": "Nối thư qua lại cùng một tiêu đề thành một chuỗi hội thoại",
 		"REPLY_SAME_FOLDER": "Đặt thư phản hồi gửi đi vào chung thư mục của bức thư nhận được",
-		"SHOW_IMAGES": "Luôn hiển thị hình ảnh bên ngoài gửi vào trong phần thân của thư",
 		"PREFER_HTML": "Nghiêng về lựa chọn HTML hơn dạng chữ viết thường",
 		"PREFER_HTML_INFO": "Đôi lúc thư nhận được sẽ ở cả hai dạng. Lựa chọn này cho phép bạn chỉnh phần HTML hay phần chữ viết thường trong thư bạn muốn hiển thị lên.",
 		"REMOVE_COLORS": "Loại bỏ hình nền và màu chữ trong phần thân của thư",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "Số thư hiển thị trên trang",
+		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Đánh dấu thư là để đọc sau",
 		"MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "giây",
+		"MINUTES": "minutes",
 		"NOTIFICATIONS": "Thông báo",
 		"SOUND_NOTIFICATION": "Thông báo âm thanh",
 		"CHROME_NOTIFICATION_DESC": "Hiện thị thông báo nẩy lên nhanh khi có thư mới",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Đang bị chặn bởi trình duyệt web)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
+		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Tự động thêm người nhận thư vào sổ địa chỉ của bạn",
@@ -463,14 +504,13 @@
 		"BUTTON_ADD_ACCOUNT": "Thêm một tài khoản",
 		"BUTTON_ADD_IDENTITY": "Thêm một tên gọi",
 		"LOADING_PROCESS": "Đang cập nhật...",
-		"DEFAULT_IDENTITY_LABEL": "mặc định"
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Nhập mật mã",
 		"BUTTON_GENERATE_KEY_PAIR": "Tạo một đôi mật mã",
 		"TITLE_PRIVATE": "Mã lưu riêng",
 		"TITLE_PUBLIC": "Mã chia sẻ công cộng",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Tự động lưu nháp",
 		"GET_MAILVELOPE": "Tải về tiện ích trình duyệt cài thêm tên Mailvelope."
 	},
 	"SHORTCUTS_HELP": {
@@ -484,7 +524,6 @@
 		"LABEL_REPLY_ALL": "Phản hồi tất cả",
 		"LABEL_FORWARD": "Chuyển tiếp",
 		"LABEL_FORWARD_MULTIPLY": "Chuyển tiếp dưới dạng đính kèm",
-		"LABEL_HELP": "Hỗ trợ",
 		"LABEL_CHECK_ALL": "Chọn tất cả thư",
 		"LABEL_DELETE": "Xóa",
 		"LABEL_OPEN_THREAD": "Mở chuỗi hội thoại được chọn",

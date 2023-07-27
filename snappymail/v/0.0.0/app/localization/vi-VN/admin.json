@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Bảng quản trị"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Tổng quan",
-		"LABEL_LOGIN_NAME": "Đăng nhập",
-		"LABEL_BRANDING_NAME": "Thương hiệu",
-		"LABEL_CONTACTS_NAME": "Danh bạ",
-		"LABEL_DOMAINS_NAME": "Tên miền",
-		"LABEL_SECURITY_NAME": "An ninh",
-		"LABEL_PACKAGES_NAME": "Tiện ích mở rộng",
-		"LABEL_CONFIG_NAME": "Thiết lập",
-		"LABEL_ABOUT_NAME": "Giới thiệu"
+		"GENERAL": "Tổng quan",
+		"LOGIN": "Đăng nhập",
+		"BRANDING": "Thương hiệu",
+		"CONTACTS": "Danh bạ",
+		"DOMAINS": "Tên miền",
+		"SECURITY": "An ninh",
+		"PACKAGES": "Tiện ích mở rộng",
+		"CONFIG": "Thiết lập",
+		"ABOUT": "Giới thiệu"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Giao diện",
@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "Người dùng",
 		"LABEL_STORAGE_PASSWORD": "Mật khẩu",
 		"ALERT_NOTICE": "Chú ý!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Đừng nên sử dụng loại cơ sở dữ liệu này với lượng lớn người dùng mail đang hoạt động.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Hệ thống của bạn không hỗ trợ chế độ danh bạ.\n<br>\nBạn cần cài đặt hoặc bật lên tiện ích mở rộng <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> trên máy chủ của bạn.\n"
 	},
@@ -88,8 +89,7 @@
 		"LABEL_CURRENT_PASSWORD": "Mật khẩu hiện tại",
 		"LABEL_NEW_PASSWORD": "Mật khẩu mới",
 		"LABEL_REPEAT_PASSWORD": "Lập lại mật khẩu",
-		"LEGEND_SSL": "Chứng chỉ số SSL",
-		"LABEL_REQUIRE_VERIFICATION": "Yêu cầu xác minh chứng chỉ SSL được dùng (IMAP\/SMTP)",
+		"LABEL_REQUIRE_VERIFICATION": "Yêu cầu xác minh chứng chỉ SSL được dùng",
 		"LABEL_ALLOW_SELF_SIGNED": "Cho phép chứng chỉ tự ký"
 	},
 	"TAB_PACKAGES": {
@@ -121,20 +121,21 @@
 		"TITLE_EDIT_DOMAIN": "Chỉnh sửa tên miền \"%NAME%\"",
 		"LABEL_NAME": "Tên",
 		"NAME_HELPER": "Có hỗ trợ wildcard",
-		"LABEL_IMAP": "IMAP",
-		"LABEL_SMTP": "SMTP",
-		"LABEL_SIEVE": "SIEVE",
 		"LABEL_SERVER": "Máy chủ",
 		"LABEL_PORT": "Cổng",
 		"LABEL_SECURE": "An ninh",
+		"TIMEOUT": "Timeout",
+		"DISABLE_CAPABILITIES": "Disable capabilities",
+		"LIMITS": "Limits",
+		"FOLDERS": "Folders",
+		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "Danh sách trắng",
 		"SECURE_OPTION_NONE": "Không có",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Cho phép script của sieve",
 		"LABEL_USE_SHORT_LOGIN": "Dùng đăng nhập ngắn",
 		"LABEL_USE_AUTH": "Dùng xác minh",
 		"LABEL_SET_SENDER": "Dùng tên đăng nhập là email người dùng",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "Dùng phương trình php mail()",
 		"BUTTON_WHITE_LIST": "Danh sách trắng",
 		"BUTTON_SIEVE_CONFIGURATION": "Thiết lập Sieve",
@@ -158,7 +159,6 @@
 	},
 	"HINTS": {
 		"BETA": "đang thử nghiệm",
-		"UNSTABLE": "chưa ổn định",
 		"WARNING": "Cảnh báo!"
 	},
 	"ERRORS": {

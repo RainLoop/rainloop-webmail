@@ -80,13 +80,11 @@ export class AbstractModel {
 	}
 
 	revivePropertiesFromJson(json) {
-		let model = this.constructor;
-		if (!model.validJson(json)) {
-			return false;
-		}
-		forEachObjectEntry(json, (key, value) => {
+		const model = this.constructor,
+			valid = model.validJson(json);
+		valid && forEachObjectEntry(json, (key, value) => {
 			if ('@' !== key[0]) try {
-				key = key[0].toLowerCase() + key.slice(1);
+//				key = key[0].toLowerCase() + key.slice(1);
 				switch (typeof this[key])
 				{
 				case 'function':
@@ -102,9 +100,12 @@ export class AbstractModel {
 				case 'string':
 					this[key] = typeCast(this[key], value);
 					break;
-					// fall through
 				case 'undefined':
-				default:
+					console.log(`Undefined ${model.name}.${key} set`);
+					this[key] = value;
+					break;
+//				default:
+//					console.log((typeof this[key])+` ${model.name}.${key} not revived`);
 //					console.log((typeof this[key])+' '+(model.name)+'.'+key+' not revived');
 				}
 			} catch (e) {
@@ -112,7 +113,7 @@ export class AbstractModel {
 				console.error(e);
 			}
 		});
-		return true;
+		return valid;
 	}
 
 }

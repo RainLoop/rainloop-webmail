@@ -23,8 +23,7 @@ abstract class HtmlUtils
 	public static function BuildHtml(string $sHtml, array &$aFoundCids, array &$aFoundDataURL, array &$aFoundContentLocationUrls) : string
 	{
 		$bState = true;
-		if (\MailSo\Base\Utils::FunctionCallable('libxml_use_internal_errors'))
-		{
+		if (\MailSo\Base\Utils::FunctionCallable('libxml_use_internal_errors')) {
 			$bState = \libxml_use_internal_errors(true);
 		}
 
@@ -86,13 +85,11 @@ abstract class HtmlUtils
 
 		$oDoc->normalizeDocument();
 
-		if (\MailSo\Base\Utils::FunctionCallable('libxml_clear_errors'))
-		{
+		if (\MailSo\Base\Utils::FunctionCallable('libxml_clear_errors')) {
 			\libxml_clear_errors();
 		}
 
-		if (\MailSo\Base\Utils::FunctionCallable('libxml_use_internal_errors'))
-		{
+		if (\MailSo\Base\Utils::FunctionCallable('libxml_use_internal_errors')) {
 			\libxml_use_internal_errors($bState);
 		}
 
@@ -100,63 +97,62 @@ abstract class HtmlUtils
 		$oBody = $oDoc->getElementsByTagName('body')->item(0);
 
 		$aRemoveTags = array(
-			'svg', 'link', 'base', 'meta', 'title', 'x-script', 'script', 'bgsound', 'keygen', 'source',
+			'svg', 'link', 'base', 'meta', 'title', 'script', 'bgsound', 'keygen', 'source',
 			'object', 'embed', 'applet', 'mocha', 'iframe', 'frame', 'frameset', 'video', 'audio', 'area', 'map',
 			'head', 'style'
 		);
-
-		$aRemove = array();
-
-		$sIdRight = \md5(\microtime());
-
-		$aNodes = $oBody->getElementsByTagName('*');
-		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
-		{
-			$sTagNameLower = \strtolower($oElement->nodeName);
-
-			if (\in_array($sTagNameLower, $aRemoveTags))
-			{
-				$aRemove[] = $oElement;
-				continue;
-			}
-
-			// images
-			if ($oElement->hasAttribute('data-x-src-broken') || $oElement->hasAttribute('data-x-src-hidden')) {
-				$aRemove[] = $oElement;
-				continue;
-			}
-			if ($oElement->hasAttribute('data-x-src-cid')) {
-				$sCid = $oElement->getAttribute('data-x-src-cid');
-				$oElement->removeAttribute('data-x-src-cid');
-				if (!empty($sCid)) {
-					$aFoundCids[] = $sCid;
-					$oElement->setAttribute('src', 'cid:'.$sCid);
+		foreach ($aRemoveTags as $name) {
+			$aNodes = $oBody->getElementsByTagName($name);
+			foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement) {
+				if (isset($oElement->parentNode)) {
+					@$oElement->parentNode->removeChild($oElement);
 				}
 			}
-			if ($oElement->hasAttribute('data-x-src')) {
-				$oElement->setAttribute('src', $oElement->getAttribute('data-x-src'));
-				$oElement->removeAttribute('data-x-src');
-			}
+		}
 
-			// style attribute images
-			$aCid = array();
-			if ($oElement->hasAttribute('data-x-style-url')) {
-				$aCid = \array_merge($aCid, \json_decode($oElement->getAttribute('data-x-style-url'), true));
-				$oElement->removeAttribute('data-x-style-url');
+		$xpath = new \DomXpath($oDoc);
+
+		foreach ($xpath->query('//*[@data-x-src-broken]') as $oElement) {
+			if (isset($oElement->parentNode)) {
+				@$oElement->parentNode->removeChild($oElement);
 			}
+		}
+
+		foreach ($xpath->query('//*[@data-x-src-hidden]') as $oElement) {
+			if (isset($oElement->parentNode)) {
+				@$oElement->parentNode->removeChild($oElement);
+			}
+		}
+
+		foreach ($xpath->query('//*[@data-x-src-cid]') as $oElement) {
+			$sCid = $oElement->getAttribute('data-x-src-cid');
+			$oElement->removeAttribute('data-x-src-cid');
+			if (!empty($sCid)) {
+				$aFoundCids[] = $sCid;
+				$oElement->setAttribute('src', 'cid:'.$sCid);
+			}
+		}
+
+		foreach ($xpath->query('//*[@data-x-src]') as $oElement) {
+			$oElement->setAttribute('src', $oElement->getAttribute('data-x-src'));
+			$oElement->removeAttribute('data-x-src');
+		}
+
+		// style attribute images
+		foreach ($xpath->query('//*[@data-x-style-url]') as $oElement) {
+			$aCid = \json_decode($oElement->getAttribute('data-x-style-url'), true);
+			$oElement->removeAttribute('data-x-style-url');
 			if ($aCid) {
 				foreach ($aCid as $sCidName => $sCid) {
 					$sCidName = \strtolower(\preg_replace('/([A-Z])/', '-\1', $sCidName));
-					if (\in_array($sCidName, array('background-image', 'list-style-image', 'content')))
-					{
+					if (\in_array($sCidName, array('background-image', 'list-style-image', 'content'))) {
 						$sStyles = $oElement->hasAttribute('style')
 							? \trim(\trim($oElement->getAttribute('style')), ';')
 							: '';
 
 						$sBack = $sCidName.':url(cid:'.$sCid.')';
 						$sStyles = \preg_replace('/'.\preg_quote($sCidName).'\\s*:\\s*[^;]+/i', $sBack, $sStyles);
-						if (false === \strpos($sStyles, $sBack))
-						{
+						if (false === \strpos($sStyles, $sBack)) {
 							$sStyles .= ";{$sBack}";
 						}
 
@@ -165,121 +161,33 @@ abstract class HtmlUtils
 					}
 				}
 			}
+		}
 
-			// Remove all remaining data-* attributes
+		// Remove all remaining data-* attributes
+		foreach ($xpath->query('//*[@*[starts-with(name(), "data-")]]') as $oElement) {
+			$sTagNameLower = \strtolower($oElement->nodeName);
 			if ($oElement->hasAttributes()) {
 				foreach ($oElement->attributes as $oAttr) {
-					if ('data-' === \substr(\strtolower($oAttr->nodeName), 0, 5))
-					{
+					if ('data-' === \substr(\strtolower($oAttr->nodeName), 0, 5)) {
 						$oElement->removeAttribute($oAttr->nodeName);
 					}
 				}
 			}
-
-			if ('img' === $sTagNameLower)
-			{
-				$sSrc = $oElement->getAttribute('src');
-				if ('data:image/' === \strtolower(\substr($sSrc, 0, 11)))
-				{
-					$sHash = \md5($sSrc) . '@' . $sIdRight;
-					$aFoundDataURL[$sHash] = $sSrc;
-
-					$oElement->setAttribute('src', 'cid:'.$sHash);
-				}
-			}
 		}
 
-		foreach ($aRemove as /* @var $oElement \DOMElement */ $oElement)
-		{
-			if (isset($oElement->parentNode))
-			{
-				@$oElement->parentNode->removeChild($oElement);
+		$sIdRight = \md5(\microtime());
+		$aNodes = $oBody->getElementsByTagName('img');
+		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement) {
+			$sSrc = $oElement->getAttribute('src');
+			if ('data:image/' === \strtolower(\substr($sSrc, 0, 11))) {
+				$sHash = \md5($sSrc) . '@' . $sIdRight;
+				$aFoundDataURL[$sHash] = $sSrc;
+				$oElement->setAttribute('src', 'cid:'.$sHash);
 			}
 		}
 
 		return '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'
 			. $oDoc->saveHTML($oBody) . '</html>';
-	}
-
-	public static function ConvertPlainToHtml(string $sText, bool $bLinksWithTargetBlank = true) : string
-	{
-		$sText = \trim($sText);
-		if (!\strlen($sText))
-		{
-			return '';
-		}
-
-		$sText = (new \MailSo\Base\LinkFinder)
-			->Text($sText)
-			->UseDefaultWrappers($bLinksWithTargetBlank)
-			->CompileText()
-		;
-
-		$sText = \str_replace("\r", '', $sText);
-
-		$aText = \explode("\n", $sText);
-		unset($sText);
-
-		$bIn = false;
-		$bDo = true;
-		do
-		{
-			$bDo = false;
-			$aNextText = array();
-			foreach ($aText as $sTextLine)
-			{
-				$bStart = 0 === \strpos(\ltrim($sTextLine), '&gt;');
-				if ($bStart && !$bIn)
-				{
-					$bDo = true;
-					$bIn = true;
-					$aNextText[] = '<blockquote>';
-					$aNextText[] = \substr(\ltrim($sTextLine), 4);
-				}
-				else if (!$bStart && $bIn)
-				{
-					$bIn = false;
-					$aNextText[] = '</blockquote>';
-					$aNextText[] = $sTextLine;
-				}
-				else if ($bStart && $bIn)
-				{
-					$aNextText[] = \substr(\ltrim($sTextLine), 4);
-				}
-				else
-				{
-					$aNextText[] = $sTextLine;
-				}
-			}
-
-			if ($bIn)
-			{
-				$bIn = false;
-				$aNextText[] = '</blockquote>';
-			}
-
-			$aText = $aNextText;
-		}
-		while ($bDo);
-
-		$sText = \join("\n", $aText);
-		unset($aText);
-
-		$sText = \preg_replace('/[\n][ ]+/', "\n", $sText);
-//		$sText = \preg_replace('/[\s]+([\s])/', '\\1', $sText);
-
-		$sText = \preg_replace('/<blockquote>[\s]+/i', '<blockquote>', $sText);
-		$sText = \preg_replace('/[\s]+<\/blockquote>/i', '</blockquote>', $sText);
-
-		$sText = \preg_replace('/<\/blockquote>([\n]{0,2})<blockquote>/i', '\\1', $sText);
-		$sText = \preg_replace('/[\n]{3,}/', "\n\n", $sText);
-
-		$sText = \strtr($sText, array(
-			"\t" => "\xC2\xA0\xC2\xA0\xC2\xA0\xC2\xA0",
-			'  ' => "\xC2\xA0\xC2\xA0"
-		));
-
-		return \nl2br($sText);
 	}
 
 	public static function ConvertHtmlToPlain(string $sText) : string

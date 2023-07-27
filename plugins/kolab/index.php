@@ -4,11 +4,11 @@ class KolabPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Kolab',
-		VERSION = '2.0',
-		RELEASE  = '2022-09-06',
+		VERSION = '2.6',
+		RELEASE  = '2023-02-10',
 		CATEGORY = 'Contacts',
 		DESCRIPTION = 'Use an Address Book of Kolab.',
-		REQUIRED = '2.18.0';
+		REQUIRED = '2.26.0';
 
 	public function Init() : void
 	{
@@ -59,7 +59,7 @@ class KolabPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	public function FilterAppData($bAdmin, &$aResult) : void
 	{
-//		if ImapClient->IsSupported('METADATA')
+//		if ImapClient->hasCapability('METADATA')
 		if (!$bAdmin && \is_array($aResult) && !empty($aResult['Auth'])) {
 			$aResult['Capa']['Kolab'] = true;
 			$aResult['KolabContactFolder'] = (string) $this->Settings()->GetConf('KolabContactFolder', '');

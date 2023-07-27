@@ -5,90 +5,32 @@
 		return this.filter((v, i, a) => (fn ? fn(v) : v) && a.indexOf(v) === i);
 	};
 
-	Date.defineRelativeTimeFormat = config => relativeTime = config;
-
+	// full = Monday, December 12, 2022 at 12:16:21 PM Central European Standard Time
+	// long = December 12, 2022 at 12:16:21 PM GMT+1
+	// medium = Dec 12, 2022, 12:16:21 PM
+	// short = 12/12/22, 12:16 PM
 	let formats = {
+//		LT   : {timeStyle: 'short'}, // Issue in Safari
 		LT   : {hour: 'numeric', minute: 'numeric'},
-		L    : {},
-		LL   : {year: 'numeric', month: 'short', day: 'numeric'},
-		LLL  : {year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'},
-		LLLL : {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'},
-		'd M': {day: '2-digit', month: 'short'}
-	},
-	phpFormats = {
-		// Day
-		d: {day: '2-digit'},
-		D: {weekday: 'short'},
-		j: {day: 'numeric'},
-		l: {weekday: 'long'},
-		z: {},
-		// Month
-		F: {month: 'long'},
-		m: {month: '2-digit'},
-		M: {month: 'short'},
-		n: {month: 'numeric'},
-		Y: {year: 'numeric'},
-		y: {year: '2-digit'},
-		// Time
-		A: {hour12: true},
-		G: {hour: 'numeric'},
-		H: {hour: '2-digit'},
-		i: {minute: '2-digit'},
-		s: {second: '2-digit'},
-		u: {fractionalSecondDigits: 3},
-		Z: {timeZone: 'UTC'}
-	},
-	relativeTime = {
-		// see /snappymail/v/0.0.0/app/localization/relativetimeformat/
-	},
-	pad2 = v => 10 > v ? '0' + v : v;
+		LLL  : {dateStyle: 'long', timeStyle: 'short'}
+	};
 
 	// Format momentjs/PHP date formats to Intl.DateTimeFormat
 	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat
-	Date.prototype.format = function (options, UTC) {
+	Date.prototype.format = function (options, UTC, hourCycle) {
 		if (typeof options == 'string') {
-			if ('Y-m-d\\TH:i:s' == options) {
-				return this.getFullYear() + '-' + pad2(1 + this.getMonth()) + '-' + pad2(this.getDate())
-					+ 'T' + pad2(this.getHours()) + ':' + pad2(this.getMinutes()) + ':' + pad2(this.getSeconds());
-			}
 			if (formats[options]) {
 				options = formats[options];
 			} else {
-				let o, s = options + (UTC?'Z':''), i = s.length;
-				console.log('Date.format('+s+')');
+				console.log('Date.format('+options+')');
 				options = {};
-				while (i--) {
-					o = phpFormats[s[i]] || phpFormats[s[i].toUpperCase()];
-					o && Object.entries(o).forEach(([k,v])=>options[k]=v);
-				}
-				formats[s] = options;
 			}
 		}
-		return new Intl.DateTimeFormat(doc.documentElement.lang, options).format(this);
-	};
-
-	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
-	Date.prototype.fromNow = function() {
-		let unit = 'second',
-			value = Math.round((this.getTime() - Date.now()) / 1000),
-			t = [[60,'minute'],[3600,'hour'],[86400,'day'],[2628000,'month'],[31536000,'year']],
-			i = 5,
-			abs = Math.abs(value);
-		while (i--) {
-			if (t[i][0] <= abs) {
-				value = Math.round(value / t[i][0]);
-				unit = t[i][1];
-				break;
-			}
+		if (hourCycle) {
+			options.hourCycle = hourCycle;
 		}
-		if (Intl.RelativeTimeFormat) {
-			let rtf = new Intl.RelativeTimeFormat(doc.documentElement.lang);
-			return rtf.format(value, unit);
-		}
-		abs = Math.abs(value);
-		let rtf = relativeTime.long[unit][0 > value ? 'past' : 'future'],
-			plural = relativeTime.plural(abs);
-		return (rtf[plural] || rtf).replace('{0}', abs);
+		let el = doc.documentElement;
+		return this.toLocaleString(el.dataset.dateLang || el.lang, options);
 	};
 
 	Element.prototype.closestWithin = function(selector, parent) {
@@ -112,7 +54,7 @@
 			return function(...args) {
 				timer && clearTimeout(timer);
 				timer = setTimeout(()=>{
-					func.apply(this, args)
+					func.apply(this, args);
 					timer = 0;
 				}, ms);
 			};
@@ -127,12 +69,10 @@
 		Function.prototype.throttle = function(ms) {
 			let func = this, timer;
 			return function(...args) {
-				if (!timer) {
-					timer = setTimeout(()=>{
-						func.apply(this, args)
+				timer = timer || setTimeout(()=>{
+						func.apply(this, args);
 						timer = 0;
 					}, ms);
-				}
 			};
 		};
 	}

@@ -22,84 +22,94 @@ namespace MailSo\Imap\Traits;
  */
 trait Status
 {
-	public
-		/**
-		 * The number of messages in the mailbox.
-		 * This response is named EXISTS as a result of a SELECT or EXAMINE command.
-		 * @var int
-		 */
-		$MESSAGES,
+	public string $FullName;
 
-		/**
-		 * The number of messages with the \Recent flag set.
-		 * This response also occurs as a result of a SELECT or EXAMINE command.
-		 * IMAP4rev2 deprecated.
-		 * @var int
-		 */
-		$RECENT,
+	public bool $hasStatus = false;
 
-		/**
-		 * The next unique identifier value of the mailbox.
-		 * A 32-bit value
-		 * This response also occurs as a result of a SELECT or EXAMINE command.
-		 * @var int
-		 */
-		$UIDNEXT,
+	/**
+	 * The number of messages in the mailbox.
+	 * This response is named EXISTS as a result of a SELECT or EXAMINE command.
+	 */
+	public ?int $MESSAGES = null;
 
-		/**
-		 * The unique identifier validity value of the mailbox.
-		 * This response also occurs as a result of a SELECT or EXAMINE command.
-		 * @var int
-		 */
-		$UIDVALIDITY,
+	/**
+	 * The number of messages with the \Recent flag set.
+	 * This response also occurs as a result of a SELECT or EXAMINE command.
+	 * IMAP4rev2 deprecated.
+	 */
+	public ?int $RECENT = null;
 
-		/**
-		 * The number of messages which do not have the \Seen flag set.
-		 * This response also occurs as a result of a IMAP4rev1 SELECT or EXAMINE command,
-		 * but then it is the message sequence number of the first unseen message.
-		 * IMAP4rev2 deprecated on SELECT/EXAMINE.
-		 * @var int
-		 */
-		$UNSEEN,
+	/**
+	 * The next unique identifier value of the mailbox.
+	 * A 32-bit value
+	 * This response also occurs as a result of a SELECT or EXAMINE command.
+	 */
+	public ?int $UIDNEXT = null;
 
-		/**
-		 * RFC 4551
-		 * The highest mod-sequence value of all messages in the mailbox.
-		 * This response also occurs as a result of a SELECT or EXAMINE command.
-		 * @var int 1*DIGIT Positive unsigned 64-bit integer
-		 */
-		$HIGHESTMODSEQ,
+	/**
+	 * The unique identifier validity value of the mailbox.
+	 * This response also occurs as a result of a SELECT or EXAMINE command.
+	 */
+	public ?int $UIDVALIDITY = null;
 
-		/**
-		 * RFC 7889
-		 * Message upload size limit.
-		 * @var int
-		 */
-		$APPENDLIMIT,
+	/**
+	 * The number of messages which do not have the \Seen flag set.
+	 * This response also occurs as a result of a IMAP4rev1 SELECT or EXAMINE command,
+	 * but then it is the message sequence number of the first unseen message.
+	 * IMAP4rev2 deprecated on SELECT/EXAMINE.
+	 */
+	public ?int $UNSEEN = null;
 
-		/**
-		 * RFC 8474
-		 * A server-allocated unique identifier for the mailbox.
-		 * This response also occurs as a result of a CREATE, SELECT or EXAMINE command.
-		 * @var string
-		 */
-		$MAILBOXID,
+	/**
+	 * RFC 4551
+	 * The highest mod-sequence value of all messages in the mailbox.
+	 * This response also occurs as a result of a SELECT or EXAMINE command.
+	 * 1*DIGIT Positive unsigned 64-bit integer
+	 */
+	public ?int $HIGHESTMODSEQ = null;
 
-		/**
-		 * RFC 9051
-		 * The total size of the mailbox in octets.
-		 * @var int
-		 */
-		$SIZE;
+	/**
+	 * RFC 7889
+	 * Message upload size limit.
+	 */
+	public ?int $APPENDLIMIT = null;
 
-	public function getStatusItems() : array
+	/**
+	 * RFC 8474
+	 * A server-allocated unique identifier for the mailbox.
+	 * This response also occurs as a result of a CREATE, SELECT or EXAMINE command.
+	 */
+	public ?string $MAILBOXID = null;
+
+	/**
+	 * RFC 9051
+	 * The total size of the mailbox in octets.
+	 */
+	public ?int $SIZE = null;
+
+	public ?string $etag = null;
+	public function generateETag(\MailSo\Imap\ImapClient $oImapClient) : void
 	{
-		return \array_filter(\get_object_vars($this), function($v, $k){
-			return \property_exists(__TRAIT__, $k);
-		}, ARRAY_FILTER_USE_BOTH);
+		if (!$this->hasStatus) {
+			// UNSEEN undefined when only SELECT/EXAMINE is used
+			\error_log("{$this->FullName} STATUS missing " . \print_r(\debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS),true));
+			return;
+		}
+		if (!isset($this->MESSAGES, $this->UIDNEXT)) {
+			return;
+		}
+		$this->etag = \md5('FolderHash/'. \implode('-', [
+			$this->FullName,
+			$this->MESSAGES,
+			$this->UIDNEXT,
+			$this->UIDVALIDITY,
+			$this->UNSEEN,
+			$this->HIGHESTMODSEQ,
+			$oImapClient->Hash()
+		]));
 	}
 
-	public function setStatus(string $name, $value) : bool
+	private function setStatusItem(string $name, $value) : bool
 	{
 		if ('EXISTS' === $name) {
 			$name = 'MESSAGES';
@@ -107,10 +117,11 @@ trait Status
 			$name = 'MAILBOXID';
 		}
 		if (\property_exists(__TRAIT__, $name)) {
-			if ('MAILBOXID' !== $name) {
-				$value = (int) $value;
+			if ('MAILBOXID' === $name) {
+				$this->MAILBOXID = \base64_encode(\is_array($value) ? $value[0] : $value);
+			} else {
+				$this->$name = (int) $value;
 			}
-			$this->$name = $value;
 			return true;
 		}
 		return false;
@@ -137,7 +148,7 @@ trait Status
 		// OK untagged responses
 		if (\is_array($oResponse->OptionalResponse)) {
 			if (\count($oResponse->OptionalResponse) > 1) {
-				$bResult = $this->setStatus($oResponse->OptionalResponse[0], $oResponse->OptionalResponse[1]);
+				$bResult = $this->setStatusItem($oResponse->OptionalResponse[0], $oResponse->OptionalResponse[1]);
 			}
 		}
 
@@ -149,16 +160,18 @@ trait Status
 			 && \is_array($oResponse->ResponseList[3])) {
 				$c = \count($oResponse->ResponseList[3]);
 				for ($i = 0; $i < $c; $i += 2) {
-					$bResult |= $this->setStatus(
+					$bResult |= $this->setStatusItem(
 						$oResponse->ResponseList[3][$i],
 						$oResponse->ResponseList[3][$i+1]
 					);
 				}
+				$this->hasStatus = $bResult;
 			}
 			// SELECT or EXAMINE command
 			else if (\is_numeric($oResponse->ResponseList[1]) && \is_string($oResponse->ResponseList[2])) {
+				// UNSEEN deprecated in IMAP4rev2
 				if ('UNSEEN' !== $oResponse->ResponseList[2]) {
-					$bResult |= $this->setStatus($oResponse->ResponseList[2], $oResponse->ResponseList[1]);
+					$bResult |= $this->setStatusItem($oResponse->ResponseList[2], $oResponse->ResponseList[1]);
 				}
 			}
 		}

@@ -43,7 +43,7 @@ export class FolderClearPopupView extends AbstractViewPopup {
 				this.clearing(false);
 				iError ? alert(getNotification(iError)) : this.close();
 			}, {
-				Folder: folder.fullName
+				folder: folder.fullName
 			});
 		}
 	}

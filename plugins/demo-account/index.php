@@ -5,7 +5,7 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 	const
 		NAME     = 'Demo Account Extension',
 		CATEGORY = 'Login',
-		REQUIRED = '2.14.0',
+		REQUIRED = '2.25',
 		DESCRIPTION = 'Extension to enable a demo account';
 
 	/**
@@ -15,7 +15,7 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		$this->addHook('filter.app-data', 'FilterAppData');
 		$this->addHook('filter.action-params', 'FilterActionParams');
-		$this->addHook('json.action-pre-call', 'JsonActionPreCall');
+		$this->addHook('json.before-accountsetup', 'BeforeAccountSetup');
 		$this->addHook('filter.send-message', 'FilterSendMessage');
 		$this->addHook('main.fabrica', 'MainFabrica');
 	}
@@ -42,7 +42,7 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		if (!$bAdmin && \is_array($aResult) && empty($aResult['Auth'])) {
 			$aResult['DevEmail'] = $this->Config()->Get('plugin', 'email', $aResult['DevEmail']);
-			$aResult['DevPassword'] = APP_DUMMY;
+			$aResult['DevPassword'] = '********';
 		}
 	}
 
@@ -59,9 +59,9 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 		else if ('DoFolderCreate' === $sMethodName || 'DoFolderRename' === $sMethodName) {
 			// Block spam https://github.com/the-djmaze/snappymail/issues/371
-			$latin = transliterator_transliterate('Any-Latin; Latin-ASCII; Lower()', $aActionParams['Folder']);
+			$latin = transliterator_transliterate('Any-Latin; Latin-ASCII; Lower()', $aActionParams['folder']);
 			if (false !== \strpos($latin, 'nigger')) {
-				\error_log("blocked {$sMethodName} {$aActionParams['Folder']}");
+				\error_log("blocked {$sMethodName} {$aActionParams['folder']}");
 				exit;
 			}
 		}
@@ -78,11 +78,9 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 		return ($oAccount && $oAccount->Email() === $this->Config()->Get('plugin', 'email'));
 	}
 
-	public function JsonActionPreCall($sAction)
+	public function BeforeAccountSetup()
 	{
-		if ('AccountSetup' === $sAction && $this->isDemoAccount()) {
-			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DemoAccountError);
-		}
+		throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DemoAccountError);
 	}
 
 	public function FilterSendMessage($oMessage)

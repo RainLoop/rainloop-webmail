@@ -7,9 +7,10 @@
 }
 
 #V-PopupsCompose {
-	height: calc(100vh - 52px);
+	height: 100vh;
+	height: 100dvh;
 	max-width: 1000px;
-	width: 98%;
+	width: 99%;
 
 	.modal-body {
 		padding: 0;
@@ -18,8 +19,15 @@
 		height: 100%;
 	}
 
+	.tabs {
+		height: 100%;
+	}
+
+	.tabs > label > * + * {
+		margin-left: 0.5em;
+	}
+
 	.textAreaParent, .attachmentAreaParent {
-		box-sizing: border-box;
 		height: 100%;
 		min-height: 200px;
 		position: relative;
@@ -45,7 +53,7 @@
 		padding-top: 50px;
 		text-align: center;
 		font-size: 24px;
-		color: #666;
+		opacity: 0.5;
 		text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 	}
 
@@ -91,7 +99,7 @@
 		}
 		td:first-child {
 			padding: 0 10px 0 0;
-			text-align: right;
+			text-align: var(--right, right);
 			white-space: nowrap;
 			width: 4em;
 		}
@@ -131,26 +139,21 @@
 		top: 5px;
 		bottom: 5px;
 
-		border: 2px #777 dashed;
+		border: 2px var(--border-color, #ddd) dashed;
 		z-index: 300;
 
 		line-height: 119px;
 		text-align: center;
-		background-color: #efefef;
+		background-color: var(--dialog-bg-clr, #fff);
 		font-size: 24px;
 
 		border-radius: 10px;
 
+		opacity: 0.9;
 		&.dragAndDropOver {
-			background-color: #fff;
+			border-color: var(--main-color, #fff);
+			opacity: 1;
 		}
-	}
-}
-
-@media screen and (max-width: 999px) {
-	#V-PopupsCompose {
-		border: 0;
-		width: 100%;
 	}
 }
 

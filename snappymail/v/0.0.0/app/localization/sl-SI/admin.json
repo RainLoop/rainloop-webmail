@@ -19,15 +19,15 @@
 		"LABEL_ADMIN_PANEL": "Administracijska plošča"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_GENERAL_NAME": "Splošno",
-		"LABEL_LOGIN_NAME": "Prijava",
-		"LABEL_BRANDING_NAME": "Prilagoditev",
-		"LABEL_CONTACTS_NAME": "Stiki",
-		"LABEL_DOMAINS_NAME": "Domene",
-		"LABEL_SECURITY_NAME": "Varnost",
-		"LABEL_PACKAGES_NAME": "Paketi",
-		"LABEL_CONFIG_NAME": "Config",
-		"LABEL_ABOUT_NAME": "Več o"
+		"GENERAL": "Splošno",
+		"LOGIN": "Prijava",
+		"BRANDING": "Prilagoditev",
+		"CONTACTS": "Stiki",
+		"DOMAINS": "Domene",
+		"SECURITY": "Varnost",
+		"PACKAGES": "Paketi",
+		"CONFIG": "Config",
+		"ABOUT": "Več o"
 	},
 	"TAB_GENERAL": {
 		"LEGEND_INTERFACE": "Vmesnik",
@@ -69,6 +69,7 @@
 		"LABEL_STORAGE_USER": "Uporabnik",
 		"LABEL_STORAGE_PASSWORD": "Geslo",
 		"ALERT_NOTICE": "Obvestilo!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Ta tip podatkovne baze ni priporočljiv za večje število uporabnikov.",
 		"HTML_ALERT_DOES_NOT_SUPPORTED": "Sistem ne podpira stikov.\n<br>\nNamestite ali omogočite <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> razširitev na strežniku.\n"
 	},
@@ -88,8 +89,7 @@
 		"LABEL_CURRENT_PASSWORD": "Trenutno geslo",
 		"LABEL_NEW_PASSWORD": "Novo geslo",
 		"LABEL_REPEAT_PASSWORD": "Ponovno",
-		"LEGEND_SSL": "SSL",
-		"LABEL_REQUIRE_VERIFICATION": "Obvezno overjanje uporabljenega SSL certifikata (IMAP\/SMTP)",
+		"LABEL_REQUIRE_VERIFICATION": "Obvezno overjanje uporabljenega SSL certifikata",
 		"LABEL_ALLOW_SELF_SIGNED": "Dovoli samopodpisane certifikate"
 	},
 	"TAB_PACKAGES": {
@@ -121,20 +121,21 @@
 		"TITLE_EDIT_DOMAIN": "Urejanje domene \"%NAME%\"",
 		"LABEL_NAME": "Ime",
 		"NAME_HELPER": "podpora za nadomestne znake",
-		"LABEL_IMAP": "IMAP",
-		"LABEL_SMTP": "SMTP",
-		"LABEL_SIEVE": "SIEVE",
 		"LABEL_SERVER": "Strežnik",
 		"LABEL_PORT": "Vrata",
 		"LABEL_SECURE": "Varno",
+		"TIMEOUT": "Timeout",
+		"DISABLE_CAPABILITIES": "Disable capabilities",
+		"LIMITS": "Limits",
+		"FOLDERS": "Folders",
+		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "Bela lista",
 		"SECURE_OPTION_NONE": "Nobeno",
-		"SECURE_OPTION_SSL": "SSL\/TLS",
-		"SECURE_OPTION_STARTTLS": "STARTTLS",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Dovoljene sieve skripte",
 		"LABEL_USE_SHORT_LOGIN": "Uporaba uporabniškega imena brez domene",
 		"LABEL_USE_AUTH": "Uporaba overjanja",
 		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
 		"LABEL_USE_PHP_MAIL": "Uporaba php mail() funkcije",
 		"BUTTON_WHITE_LIST": "Dodaj na belo listo",
 		"BUTTON_SIEVE_CONFIGURATION": "Konfiguriraj Sieve",
@@ -158,7 +159,6 @@
 	},
 	"HINTS": {
 		"BETA": "beta",
-		"UNSTABLE": "nestabilno",
 		"WARNING": "Pozor!"
 	},
 	"ERRORS": {

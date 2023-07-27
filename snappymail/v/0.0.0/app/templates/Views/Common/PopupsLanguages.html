@@ -4,7 +4,7 @@
 </header>
 <div class="modal-body" style="min-height: 150px;" data-bind="foreach: languages">
 	<label data-bind="click: function () { $root.changeLanguage(key); }, css: {'selected': selected, 'user': user},
-		attr: { title: $root.languageTooltipName(key) },
+		attr: { title: title },
 		text: fullName">
 	</label>
 </div>

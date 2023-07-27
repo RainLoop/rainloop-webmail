@@ -1,4 +1,5 @@
 {
+	"LANG_DIR": "ltr",
 	"GLOBAL": {
 		"TO_ARCHIVE": "Skjalavörsla",
 		"ARE_YOU_SURE": "Ertu viss?",
@@ -19,9 +20,11 @@
 		"MOVE_TO": "Færa í",
 		"NAME": "Innhólf",
 		"NONE": "Ekkert",
+		"TO_SPAM": "Move message(s) to Spam",
 		"NOT_SPAM": "Ekki ruslpóstur",
 		"USERNAME": "Notendanafn",
 		"PASSWORD": "Lykilorð",
+		"REMEMBER": "Remember",
 		"REPLY_TO": "Svara-til",
 		"SAVE": "Vista",
 		"SAVE_CHANGES": "Save changes?",
@@ -33,7 +36,11 @@
 		"SERVER_MESSAGE": "Server message",
 		"YES": "Já",
 		"NO": "Nei",
-		"INACTIVE": "Inactive"
+		"INACTIVE": "Inactive",
+		"DEFAULT": "sjálfgefið",
+		"HELP": "Hjálp",
+		"TEXT": "Texti",
+		"ATTACHMENTS": "Viðhengi"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Innskráning",
@@ -41,13 +48,7 @@
 		"BUTTON_SIGN_IN": "Skrá inn"
 	},
 	"TOP_TOOLBAR": {
-		"BUTTON_ADD_ACCOUNT": "Bæta við aðgangi",
-		"BUTTON_SETTINGS": "Stillingar",
-		"BUTTON_HELP": "Hjálp"
-	},
-	"MOBILE": {
-		"BUTTON_MOBILE_VERSION": "Farsímaútgáfa",
-		"BUTTON_DESKTOP_VERSION": "Vinnutölvuútgáfa"
+		"BUTTON_ADD_ACCOUNT": "Bæta við aðgangi"
 	},
 	"SEARCH": {
 		"TITLE_ADV": "Ítarleg leit",
@@ -98,6 +99,7 @@
 		"MENU_SELECT_SEEN": "Lesið",
 		"MENU_SELECT_FLAGGED": "Flaggað",
 		"MENU_SELECT_UNFLAGGED": "Afflaggað",
+		"DOWNLOAD_ALL_ATTACHMENTS": "Download all attachments",
 		"EMPTY_LIST": "Tómur listi.",
 		"EMPTY_SEARCH_LIST": "Engin skilaboð stemmdu við leitina þína.",
 		"SEARCH_RESULT_FOR": "Leitarniðurstöður fyrir \"%SEARCH%\"",
@@ -108,6 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "Þú átt %COUNT% ný skilaboð!",
 		"QUOTA_SIZE": "Notar <strong>%SIZE% (%PROC%%)<\/strong> af <strong>%LIMIT%<\/strong>",
 		"SORT": "Sort",
+		"NO_SORT": "Mail server does not support sorting",
 		"SORT_DATE_ASC": "Date ascending",
 		"SORT_DATE_DESC": "Date descending",
 		"SORT_SIZE_ASC": "Size ascending",
@@ -224,11 +227,16 @@
 		"NO_ATTACHMENTS_HERE_DESC": "Engin viðhengi hér.",
 		"ATTACHMENTS_ERROR_DESC": "Aðvörun! Ekki er búið að senda inn öll viðhengi.",
 		"ATTACHMENTS_UPLOAD_ERROR_DESC": "Ekki er búið að senda inn öll viðhengi.",
+		"ALLOW_SPELLCHECK": "Enable browser spelling checker",
+		"ALLOW_DRAFT_AUTOSAVE": "Vista drög sjálfkrafa",
 		"BUTTON_REQUEST_READ_RECEIPT": "Biðja um staðfestingu á lestri",
 		"BUTTON_MARK_AS_IMPORTANT": "Merkja sem mikilvægt",
-		"BUTTON_REQUEST_DSN": "Biðja um staðfestingu á afhendingu"
+		"BUTTON_REQUEST_DSN": "Biðja um staðfestingu á afhendingu",
+		"BUTTON_REQUIRE_TLS": "Require secure delivery",
+		"ERROR_EMPTY_BODY": "Message body is empty"
 	},
 	"POPUPS_ASK": {
+		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Ertu viss um að þú viljir loka þessum glugga?",
 		"DESC_WANT_DELETE_MESSAGES": "Ertu viss um að þú viljir eyða skeytunum?"
 	},
@@ -312,7 +320,7 @@
 		"MARK_AS_READ_LABEL": "Merkja sem lesið",
 		"REPLY_INTERVAL_LABEL": "Bil milli svara (dagar)",
 		"KEEP_LABEL": "Halda",
-		"STOP_LABEL": "Ekki hætta að vinna með reglur",
+		"STOP_LABEL": "Stop further processing of rules",
 		"VACATION_SUBJECT_LABEL": "Viðfangsefni (valkvætt)",
 		"VACATION_MESSAGE_LABEL": "Skilaboð",
 		"VACATION_RECIPIENTS_LABEL": "Viðtakendur (aðgreindir með kommu)",
@@ -351,21 +359,43 @@
 		"ERROR_UNKNOWN": "Óþekkt innsendingarvilla kom upp"
 	},
 	"EDITOR": {
-		"TEXT_SWITCHER_PLAIN_TEXT": "HTML <-> TEXTI",
-		"TEXT_SWITCHER_SOURCE": "HTML <-> SOURCE"
+		"PLAIN": "HTML <-> TEXTI",
+		"SOURCE": "HTML <-> SOURCE",
+		"FONTFAMILY": "Font family",
+		"FONTSIZE": "Font size",
+		"DIR": "Text direction",
+		"DIR_LTR": "Left to right",
+		"DIR_RTL": "Right to left",
+		"DIR_AUTO": "Automatic",
+		"TEXTCOLOR": "Text color",
+		"BACKGROUNDCOLOR": "Background color",
+		"BOLD": "Bold",
+		"ITALIC": "Italic",
+		"UNDERLINE": "Underline",
+		"STRIKE": "Strikethrough",
+		"SUB": "Subscript",
+		"SUP": "Superscript",
+		"OL": "Ordered list",
+		"UL": "Unordered list",
+		"QUOTE": "Blockquote",
+		"INDENTDECREASE": "Decrease indent",
+		"INDENTINCREASE": "Increase indent",
+		"LINK": "Link",
+		"IMAGEURL": "Image URL",
+		"IMAGEUPLOAD": "Image select",
+		"UNDO": "Undo",
+		"REDO": "Redo"
 	},
 	"SETTINGS_LABELS": {
-		"LABEL_PERSONAL_NAME": "Persónulegt",
-		"LABEL_GENERAL_NAME": "Almennt",
-		"LABEL_CONTACTS_NAME": "Tengiliðir",
-		"LABEL_FOLDERS_NAME": "Möppur",
-		"LABEL_ACCOUNTS_NAME": "Aðgangar",
-		"LABEL_FILTERS_NAME": "Síur",
-		"LABEL_SECURITY_NAME": "Öryggi",
-		"LABEL_THEMES_NAME": "Þemu"
+		"GENERAL": "Almennt",
+		"CONTACTS": "Tengiliðir",
+		"FOLDERS": "Möppur",
+		"ACCOUNTS": "Aðgangar",
+		"FILTERS": "Síur",
+		"SECURITY": "Öryggi",
+		"THEMES": "Þemu"
 	},
 	"SETTINGS_FILTERS": {
-		"LEGEND_FILTERS": "Síur",
 		"SIMPLE": "Simple",
 		"ADVANCED": "Advanced",
 		"BUTTON_ADD_SCRIPT": "Add a Script",
@@ -378,18 +408,18 @@
 	"SETTINGS_SECURITY": {
 		"LEGEND_SECURITY": "Öryggi",
 		"LABEL_AUTOLOGOUT": "Sjálfvirk útskráning",
-		"AUTOLOGIN_NEVER_OPTION_NAME": "Aldrei",
-		"AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% mínútu(r)",
-		"AUTOLOGIN_HOURS_OPTION_NAME": "%HOURS% klukkustund(ir)"
+		"AUTOLOGIN_NEVER_OPTION_NAME": "Aldrei"
 	},
 	"SETTINGS_GENERAL": {
 		"LEGEND_GENERAL": "Almennt",
 		"LANGUAGE": "Tungumál",
+		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Auðkenni",
 		"LAYOUT": "Framsetning",
 		"LAYOUT_NO_SPLIT": "Ekki klofið",
 		"LAYOUT_VERTICAL_SPLIT": "Klofið lóðrétt",
 		"LAYOUT_HORIZONTAL_SPLIT": "Klofið lárétt",
+		"SHOW_NEXT_MESSAGE": "Show next message when (re)move current message",
 		"EDITOR": "Sjálfgefinn textaritill",
 		"EDITOR_HTML": "HTML",
 		"EDITOR_PLAIN": "Venjulegt",
@@ -399,19 +429,30 @@
 		"USE_CHECKBOXES_IN_LIST": "Sýna valkassa í listanum",
 		"USE_THREADS": "Nota þræði",
 		"REPLY_SAME_FOLDER": "Setja svör í möppu skilaboðanna sem er verið að svara",
-		"SHOW_IMAGES": "Sýna ávallt myndir í skilaboðum",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
 		"REMOVE_COLORS": "Remove background and text colors from message body",
+		"ALLOW_STYLES": "Allow <style> CSS",
 		"MESSAGE_PER_PAGE": "Skilaboð á síðu",
+		"CHECK_MAIL_INTERVAL": "Check mail interval",
 		"MARK_MESSAGE_READ_AFTER": "Mark message as read after",
 		"MSG_DEFAULT_ACTION": "Default action",
 		"SECONDS": "seconds",
+		"MINUTES": "minutes",
 		"NOTIFICATIONS": "Tilkynningar",
 		"SOUND_NOTIFICATION": "Tilkynningarhljóð",
 		"CHROME_NOTIFICATION_DESC": "Sýna tilkynningarglugga fyrir ný skilaboð",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Lokað af vafra)",
-		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list"
+		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
+		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
+		"LIST_INLINE_ATTACHMENTS": "Show inline attachments in list",
+		"LIST_SIMPLE_ATTACHMENTS": "Simple attachments list",
+		"LIST_MESSAGES_GROUPED": "List messages grouped (when sorting by date or from)",
+		"EXTERNAL_IMAGES": "External images",
+		"IMAGES_OPTION_ASK": "Always ask",
+		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
+		"IMAGES_OPTION_ALWAYS": "Show always",
+		"IMAGES_WHITELIST": "Images whitelist"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Bæta viðtakendum sjálfkrafa í nafnaskrá",
@@ -463,14 +504,13 @@
 		"BUTTON_ADD_ACCOUNT": "Bæta við aðgangi",
 		"BUTTON_ADD_IDENTITY": "Bæta við auðkenni",
 		"LOADING_PROCESS": "Uppfæri aðgangslista",
-		"DEFAULT_IDENTITY_LABEL": "sjálfgefið"
+		"SHOW_UNREAD": "Show unread messages count"
 	},
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Flytja inn lykil",
 		"BUTTON_GENERATE_KEY_PAIR": "Búa til lykla",
 		"TITLE_PRIVATE": "Einkalykill",
 		"TITLE_PUBLIC": "Dreifilykill",
-		"LABEL_ALLOW_DRAFT_AUTOSAVE": "Vista drög sjálfkrafa",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."
 	},
 	"SHORTCUTS_HELP": {
@@ -484,7 +524,6 @@
 		"LABEL_REPLY_ALL": "Svara öllum",
 		"LABEL_FORWARD": "Áframsenda",
 		"LABEL_FORWARD_MULTIPLY": "Áframsenda sem viðhengi",
-		"LABEL_HELP": "Hjálp",
 		"LABEL_CHECK_ALL": "Velja öll skilaboð",
 		"LABEL_DELETE": "Eyða",
 		"LABEL_OPEN_THREAD": "Opna valinn þráð",

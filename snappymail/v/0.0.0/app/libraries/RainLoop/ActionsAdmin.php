@@ -7,6 +7,8 @@ use RainLoop\Exceptions\ClientException;
 
 class ActionsAdmin extends Actions
 {
+	use Actions\AdminDomains;
+	use Actions\AdminExtensions;
 
 	public function DoAdminClearCache() : array
 	{
@@ -14,14 +16,14 @@ class ActionsAdmin extends Actions
 		if (\is_dir(APP_PRIVATE_DATA . 'cache')) {
 			\MailSo\Base\Utils::RecRmDir(APP_PRIVATE_DATA.'cache');
 		}
-		return $this->TrueResponse(__FUNCTION__);
+		return $this->TrueResponse();
 	}
 
 	public function DoAdminSettingsGet() : array
 	{
 		$aConfig = $this->Config()->jsonSerialize();
 		unset($aConfig['version']);
-		return $this->DefaultResponse(__FUNCTION__, $aConfig);
+		return $this->DefaultResponse($aConfig);
 	}
 
 	public function DoAdminSettingsSet() : array
@@ -32,13 +34,13 @@ class ActionsAdmin extends Actions
 				$oConfig->Set($sSection, $sKey, $mValue);
 			}
 		}
-		return $this->DefaultResponse(__FUNCTION__, $oConfig->Save());
+		return $this->DefaultResponse($oConfig->Save());
 	}
 
 	public function DoAdminSettingsUpdate() : array
 	{
 //		sleep(3);
-//		return $this->DefaultResponse(__FUNCTION__, false);
+//		return $this->DefaultResponse(false);
 
 		$this->IsAdminLoggined();
 
@@ -46,11 +48,11 @@ class ActionsAdmin extends Actions
 
 		$self = $this;
 
-		$this->setConfigFromParams($oConfig, 'Language', 'webmail', 'language', 'string', function ($sLanguage) use ($self) {
+		$this->setConfigFromParams($oConfig, 'language', 'webmail', 'language', 'string', function ($sLanguage) use ($self) {
 			return $self->ValidateLanguage($sLanguage, '', false);
 		});
 
-		$this->setConfigFromParams($oConfig, 'LanguageAdmin', 'webmail', 'language_admin', 'string', function ($sLanguage) use ($self) {
+		$this->setConfigFromParams($oConfig, 'languageAdmin', 'webmail', 'language_admin', 'string', function ($sLanguage) use ($self) {
 			return $self->ValidateLanguage($sLanguage, '', true);
 		});
 
@@ -58,25 +60,25 @@ class ActionsAdmin extends Actions
 			return $self->ValidateTheme($sTheme);
 		});
 
-		$this->setConfigFromParams($oConfig, 'VerifySslCertificate', 'ssl', 'verify_certificate', 'bool');
-		$this->setConfigFromParams($oConfig, 'AllowSelfSigned', 'ssl', 'allow_self_signed', 'bool');
+		$this->setConfigFromParams($oConfig, 'useLocalProxyForExternalImages', 'labs', 'use_local_proxy_for_external_images', 'bool');
 
-		$this->setConfigFromParams($oConfig, 'UseLocalProxyForExternalImages', 'labs', 'use_local_proxy_for_external_images', 'bool');
+		$this->setConfigFromParams($oConfig, 'allowLanguagesOnSettings', 'webmail', 'allow_languages_on_settings', 'bool');
+		$this->setConfigFromParams($oConfig, 'allowLanguagesOnLogin', 'login', 'allow_languages_on_login', 'bool');
+		$this->setConfigFromParams($oConfig, 'attachmentLimit', 'webmail', 'attachment_size_limit', 'int');
 
-		$this->setConfigFromParams($oConfig, 'AllowLanguagesOnSettings', 'webmail', 'allow_languages_on_settings', 'bool');
-		$this->setConfigFromParams($oConfig, 'AllowLanguagesOnLogin', 'login', 'allow_languages_on_login', 'bool');
-		$this->setConfigFromParams($oConfig, 'AttachmentLimit', 'webmail', 'attachment_size_limit', 'int');
+		$this->setConfigFromParams($oConfig, 'loginDefaultDomain', 'login', 'default_domain', 'string');
 
-		$this->setConfigFromParams($oConfig, 'LoginDefaultDomain', 'login', 'default_domain', 'string');
-
-		$this->setConfigFromParams($oConfig, 'ContactsEnable', 'contacts', 'enable', 'bool');
-		$this->setConfigFromParams($oConfig, 'ContactsSync', 'contacts', 'allow_sync', 'bool');
-		$this->setConfigFromParams($oConfig, 'ContactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
-		$this->setConfigFromParams($oConfig, 'ContactsPdoUser', 'contacts', 'pdo_user', 'string');
-		$this->setConfigFromParams($oConfig, 'ContactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
-
-		$this->setConfigFromParams($oConfig, 'ContactsPdoType', 'contacts', 'type', 'string', function ($sType) use ($self) {
-			return \RainLoop\Providers\AddressBook\PdoAddressBook::validPdoType($sType);
+		$this->setConfigFromParams($oConfig, 'contactsEnable', 'contacts', 'enable', 'bool');
+		$this->setConfigFromParams($oConfig, 'contactsSync', 'contacts', 'allow_sync', 'bool');
+		$this->setConfigFromParams($oConfig, 'contactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
+		$this->setConfigFromParams($oConfig, 'contactsPdoUser', 'contacts', 'pdo_user', 'string');
+		$this->setConfigFromParams($oConfig, 'contactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
+		$this->setConfigFromParams($oConfig, 'contactsMySQLSSLCA', 'contacts', 'mysql_ssl_ca', 'string');
+		$this->setConfigFromParams($oConfig, 'contactsMySQLSSLVerify', 'contacts', 'mysql_ssl_verify', 'bool');
+		$this->setConfigFromParams($oConfig, 'contactsMySQLSSLCiphers', 'contacts', 'mysql_ssl_ciphers', 'string');
+		$this->setConfigFromParams($oConfig, 'contactsSuggestionsLimit', 'contacts', 'suggestions_limit', 'int');
+		$this->setConfigFromParams($oConfig, 'contactsPdoType', 'contacts', 'type', 'string', function ($sType) use ($self) {
+			return Providers\AddressBook\PdoAddressBook::validPdoType($sType);
 		});
 
 		$this->setConfigFromParams($oConfig, 'CapaAdditionalAccounts', 'webmail', 'allow_additional_accounts', 'bool');
@@ -86,17 +88,16 @@ class ActionsAdmin extends Actions
 		$this->setConfigFromParams($oConfig, 'CapaUserBackground', 'webmail', 'allow_user_background', 'bool');
 		$this->setConfigFromParams($oConfig, 'CapaOpenPGP', 'security', 'openpgp', 'bool');
 
-		$this->setConfigFromParams($oConfig, 'DetermineUserLanguage', 'login', 'determine_user_language', 'bool');
-		$this->setConfigFromParams($oConfig, 'DetermineUserDomain', 'login', 'determine_user_domain', 'bool');
+		$this->setConfigFromParams($oConfig, 'determineUserLanguage', 'login', 'determine_user_language', 'bool');
+		$this->setConfigFromParams($oConfig, 'determineUserDomain', 'login', 'determine_user_domain', 'bool');
 
-		$this->setConfigFromParams($oConfig, 'Title', 'webmail', 'title', 'string');
-		$this->setConfigFromParams($oConfig, 'LoadingDescription', 'webmail', 'loading_description', 'string');
-		$this->setConfigFromParams($oConfig, 'FaviconUrl', 'webmail', 'favicon_url', 'string');
+		$this->setConfigFromParams($oConfig, 'title', 'webmail', 'title', 'string');
+		$this->setConfigFromParams($oConfig, 'loadingDescription', 'webmail', 'loading_description', 'string');
+		$this->setConfigFromParams($oConfig, 'faviconUrl', 'webmail', 'favicon_url', 'string');
 
-		$this->setConfigFromParams($oConfig, 'TokenProtection', 'security', 'csrf_protection', 'bool');
-		$this->setConfigFromParams($oConfig, 'EnabledPlugins', 'plugins', 'enable', 'bool');
+		$this->setConfigFromParams($oConfig, 'pluginsEnable', 'plugins', 'enable', 'bool');
 
-		return $this->DefaultResponse(__FUNCTION__, $oConfig->Save());
+		return $this->DefaultResponse($oConfig->Save());
 	}
 
 	/**
@@ -107,7 +108,7 @@ class ActionsAdmin extends Actions
 		$sLogin = trim($this->GetActionParam('Login', ''));
 		$sPassword = $this->GetActionParam('Password', '');
 
-		$this->Logger()->AddSecret($sPassword);
+		$this->logMask($sPassword);
 
 		$totp = $this->Config()->Get('security', 'admin_totp', '');
 
@@ -123,10 +124,9 @@ class ActionsAdmin extends Actions
 			throw new ClientException(Notifications::AuthError);
 		}
 
-		$sToken = $this->getAdminToken();
-		$this->setAdminAuthToken($sToken);
+		$sToken = $this->setAdminAuthToken();
 
-		return $this->DefaultResponse(__FUNCTION__, $sToken ? $this->AppData(true) : false);
+		return $this->DefaultResponse($sToken ? $this->AppData(true) : false);
 	}
 
 	public function DoAdminLogout() : array
@@ -135,8 +135,8 @@ class ActionsAdmin extends Actions
 		if ($sAdminKey) {
 			$this->Cacher(null, true)->Delete(KeyPathHelper::SessionAdminKey($sAdminKey));
 		}
-		Utils::ClearCookie(static::$AUTH_ADMIN_TOKEN_KEY);
-		return $this->TrueResponse(__FUNCTION__);
+		\SnappyMail\Cookies::clear(static::$AUTH_ADMIN_TOKEN_KEY);
+		return $this->TrueResponse();
 	}
 
 	public function DoAdminContactsTest() : array
@@ -144,18 +144,27 @@ class ActionsAdmin extends Actions
 		$this->IsAdminLoggined();
 
 		$oConfig = $this->Config();
-
-		$this->setConfigFromParams($oConfig, 'ContactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
-		$this->setConfigFromParams($oConfig, 'ContactsPdoUser', 'contacts', 'pdo_user', 'string');
-		$this->setConfigFromParams($oConfig, 'ContactsPdoPassword', 'contacts', 'pdo_password', 'dummy');
-
-		$self = $this;
-		$this->setConfigFromParams($oConfig, 'ContactsPdoType', 'contacts', 'type', 'string', function ($sType) use ($self) {
-			return \RainLoop\Providers\AddressBook\PdoAddressBook::validPdoType($sType);
+		$this->setConfigFromParams($oConfig, 'PdoDsn', 'contacts', 'pdo_dsn', 'string');
+		$this->setConfigFromParams($oConfig, 'PdoUser', 'contacts', 'pdo_user', 'string');
+		$this->setConfigFromParams($oConfig, 'PdoPassword', 'contacts', 'pdo_password', 'dummy');
+		$this->setConfigFromParams($oConfig, 'PdoType', 'contacts', 'type', 'string', function ($sType) {
+			return Providers\AddressBook\PdoAddressBook::validPdoType($sType);
 		});
+		$this->setConfigFromParams($oConfig, 'MySQLSSLCA', 'contacts', 'mysql_ssl_ca', 'string');
+		$this->setConfigFromParams($oConfig, 'MySQLSSLVerify', 'contacts', 'mysql_ssl_verify', 'bool');
+		$this->setConfigFromParams($oConfig, 'MySQLSSLCiphers', 'contacts', 'mysql_ssl_ciphers', 'string');
 
-		$sTestMessage = $this->AddressBookProvider(null, true)->Test();
-		return $this->DefaultResponse(__FUNCTION__, array(
+		$sTestMessage = '';
+		try {
+			$AddressBook = new Providers\AddressBook(new Providers\AddressBook\PdoAddressBook());
+			$AddressBook->SetLogger($this->oLogger);
+			$sTestMessage = $AddressBook->Test();
+		} catch (\Throwable $e) {
+			\SnappyMail\LOG::error('AddressBook', $e->getMessage()."\n".$e->getTraceAsString());
+			$sTestMessage = $e->getMessage();
+		}
+
+		return $this->DefaultResponse(array(
 			'Result' => '' === $sTestMessage,
 			'Message' => \MailSo\Base\Utils::Utf8Clear($sTestMessage)
 		));
@@ -169,11 +178,11 @@ class ActionsAdmin extends Actions
 		$oConfig = $this->Config();
 
 		$sPassword = $this->GetActionParam('Password', '');
-		$this->Logger()->AddSecret($sPassword);
+		$this->logMask($sPassword);
 
-		$sNewPassword = $this->GetActionParam('NewPassword', '');
+		$sNewPassword = $this->GetActionParam('newPassword', '');
 		if (\strlen($sNewPassword)) {
-			$this->Logger()->AddSecret($sNewPassword);
+			$this->logMask($sNewPassword);
 		}
 
 		$passfile = APP_PRIVATE_DATA.'admin_password.txt';
@@ -196,251 +205,9 @@ class ActionsAdmin extends Actions
 			$bResult = $oConfig->Save();
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $bResult
+		return $this->DefaultResponse($bResult
 			? array('Weak' => \is_file($passfile))
 			: false);
-	}
-
-	public function DoAdminDomainLoad() : array
-	{
-		$this->IsAdminLoggined();
-
-		return $this->DefaultResponse(__FUNCTION__,
-			$this->DomainProvider()->Load($this->GetActionParam('Name', ''), false, false));
-	}
-
-	public function DoAdminDomainList() : array
-	{
-		$this->IsAdminLoggined();
-		$bIncludeAliases = !empty($this->GetActionParam('IncludeAliases', '1'));
-		return $this->DefaultResponse(__FUNCTION__, $this->DomainProvider()->GetList($bIncludeAliases));
-	}
-
-	public function DoAdminDomainDelete() : array
-	{
-		$this->IsAdminLoggined();
-
-		return $this->DefaultResponse(__FUNCTION__,
-			$this->DomainProvider()->Delete((string) $this->GetActionParam('Name', '')));
-	}
-
-	public function DoAdminDomainDisable() : array
-	{
-		$this->IsAdminLoggined();
-
-		return $this->DefaultResponse(__FUNCTION__, $this->DomainProvider()->Disable(
-			(string) $this->GetActionParam('Name', ''),
-			'1' === (string) $this->GetActionParam('Disabled', '0')
-		));
-	}
-
-	public function DoAdminDomainSave() : array
-	{
-		$this->IsAdminLoggined();
-
-		$oDomain = $this->DomainProvider()->LoadOrCreateNewFromAction($this);
-
-		return $this->DefaultResponse(__FUNCTION__,
-			$oDomain ? $this->DomainProvider()->Save($oDomain) : false);
-	}
-
-	public function DoAdminDomainAliasSave() : array
-	{
-		$this->IsAdminLoggined();
-
-		return $this->DefaultResponse(__FUNCTION__, $this->DomainProvider()->SaveAlias(
-			(string) $this->GetActionParam('Name', ''),
-			(string) $this->GetActionParam('Alias', '')
-		));
-	}
-
-	public function DoAdminDomainTest() : array
-	{
-		$this->IsAdminLoggined();
-
-		$bImapResult = false;
-		$sImapErrorDesc = '';
-		$bSmtpResult = false;
-		$sSmtpErrorDesc = '';
-		$bSieveResult = false;
-		$sSieveErrorDesc = '';
-
-		$iConnectionTimeout = 5;
-
-		$oDomain = $this->DomainProvider()->LoadOrCreateNewFromAction($this, 'test.example.com');
-		if ($oDomain)
-		{
-			try
-			{
-				$oImapClient = new \MailSo\Imap\ImapClient();
-				$oImapClient->SetLogger($this->Logger());
-				$oImapClient->SetTimeOuts($iConnectionTimeout);
-
-				$iTime = \microtime(true);
-				$oSettings = \MailSo\Net\ConnectSettings::fromArray($oDomain->ImapSettings());
-				$oImapClient->Connect($oSettings);
-
-				$sUsername = $this->GetActionParam('username', '');
-				if ($sUsername) {
-					$aSASLMechanisms = [];
-					$oConfig = $this->Config();
-					if ($oConfig->Get('labs', 'sasl_allow_scram_sha', false)) {
-						// https://github.com/the-djmaze/snappymail/issues/182
-						\array_push($aSASLMechanisms, 'SCRAM-SHA3-512', 'SCRAM-SHA-512', 'SCRAM-SHA-256', 'SCRAM-SHA-1');
-					}
-					if ($oConfig->Get('labs', 'sasl_allow_cram_md5', false)) {
-						$aSASLMechanisms[] = 'CRAM-MD5';
-					}
-					if ($oConfig->Get('labs', 'sasl_allow_plain', true)) {
-						$aSASLMechanisms[] = 'PLAIN';
-					}
-					$oImapClient->Login([
-						'Login' => $sUsername,
-						'Password' => $this->GetActionParam('password', ''),
-						'SASLMechanisms' => $aSASLMechanisms
-					]);
-				}
-
-				$oImapClient->Disconnect();
-				$bImapResult = true;
-			}
-			catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
-			{
-				$this->Logger()->WriteException($oException, \LOG_ERR);
-				$sImapErrorDesc = $oException->getSocketMessage();
-				if (empty($sImapErrorDesc))
-				{
-					$sImapErrorDesc = $oException->getMessage();
-				}
-			}
-			catch (\Throwable $oException)
-			{
-				$this->Logger()->WriteException($oException, \LOG_ERR);
-				$sImapErrorDesc = $oException->getMessage();
-			}
-
-			if ($oDomain->OutUsePhpMail())
-			{
-				$bSmtpResult = \MailSo\Base\Utils::FunctionCallable('mail');
-				if (!$bSmtpResult)
-				{
-					$sSmtpErrorDesc = 'PHP: mail() function is undefined';
-				}
-			}
-			else
-			{
-				try
-				{
-					$oSmtpClient = new \MailSo\Smtp\SmtpClient();
-					$oSmtpClient->SetLogger($this->Logger());
-					$oSmtpClient->SetTimeOuts($iConnectionTimeout);
-
-					$iTime = \microtime(true);
-					$oSettings = \MailSo\Net\ConnectSettings::fromArray($oDomain->SmtpSettings());
-					$oSmtpClient->Connect($oSettings, \MailSo\Smtp\SmtpClient::EhloHelper());
-
-					$oSmtpClient->Disconnect();
-					$bSmtpResult = true;
-				}
-				catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
-				{
-					$this->Logger()->WriteException($oException, \LOG_ERR);
-					$sSmtpErrorDesc = $oException->getSocketMessage();
-					if (empty($sSmtpErrorDesc))
-					{
-						$sSmtpErrorDesc = $oException->getMessage();
-					}
-				}
-				catch (\Throwable $oException)
-				{
-					$this->Logger()->WriteException($oException, \LOG_ERR);
-					$sSmtpErrorDesc = $oException->getMessage();
-				}
-			}
-
-			if ($oDomain->UseSieve())
-			{
-				try
-				{
-					$oSieveClient = new \MailSo\Sieve\ManageSieveClient();
-					$oSieveClient->SetLogger($this->Logger());
-					$oSieveClient->SetTimeOuts($iConnectionTimeout);
-
-					$iTime = \microtime(true);
-					$oSettings = \MailSo\Net\ConnectSettings::fromArray($oDomain->SieveSettings());
-					$oSieveClient->Connect($oSettings);
-
-					$oSieveClient->Disconnect();
-					$bSieveResult = true;
-				}
-				catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
-				{
-					$this->Logger()->WriteException($oException, \LOG_ERR);
-					$sSieveErrorDesc = $oException->getSocketMessage();
-					if (empty($sSieveErrorDesc))
-					{
-						$sSieveErrorDesc = $oException->getMessage();
-					}
-				}
-				catch (\Throwable $oException)
-				{
-					$this->Logger()->WriteException($oException, \LOG_ERR);
-					$sSieveErrorDesc = $oException->getMessage();
-				}
-			}
-			else
-			{
-				$bSieveResult = true;
-			}
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, array(
-			'Imap' => $bImapResult ? true : $sImapErrorDesc,
-			'Smtp' => $bSmtpResult ? true : $sSmtpErrorDesc,
-			'Sieve' => $bSieveResult ? true : $sSieveErrorDesc
-		));
-	}
-
-	public function DoAdminPHPExtensions() : array
-	{
-		$aResult = [
-			[
-				'name' => 'PHP ' . PHP_VERSION,
-				'loaded' => true
-			]
-		];
-		foreach (['APCu', 'cURL','GnuPG','GD','Gmagick','Imagick','iconv','intl','LDAP','OpenSSL','pdo_mysql','pdo_pgsql','pdo_sqlite','redis','Sodium','Tidy','uuid','XXTEA','Zip'] as $name) {
-			$aResult[] = [
-				'name' => $name,
-				'loaded' => \extension_loaded(\strtolower($name))
-			];
-		}
-		return $this->DefaultResponse(__FUNCTION__, $aResult);
-	}
-
-	public function DoAdminPackagesList() : array
-	{
-		return $this->DefaultResponse(__FUNCTION__, \SnappyMail\Repository::getPackagesList());
-	}
-
-	public function DoAdminPackageDelete() : array
-	{
-		$sId = $this->GetActionParam('Id', '');
-		$bResult = \SnappyMail\Repository::deletePackage($sId);
-		static::pluginEnable($sId, false);
-		return $this->DefaultResponse(__FUNCTION__, $bResult);
-	}
-
-	public function DoAdminPackageInstall() : array
-	{
-		$sType = $this->GetActionParam('Type', '');
-		$bResult = \SnappyMail\Repository::installPackage(
-			$sType,
-			$this->GetActionParam('Id', ''),
-			$this->GetActionParam('File', '')
-		);
-		return $this->DefaultResponse(__FUNCTION__, $bResult ?
-			('plugin' !== $sType ? array('Reload' => true) : true) : false);
 	}
 
 	// /?admin/Backup
@@ -465,7 +232,7 @@ class ActionsAdmin extends Actions
 		exit;
 	}
 
-	public function DoAdminUpdateInfo() : array
+	public function DoAdminInfo() : array
 	{
 		$this->IsAdminLoggined();
 
@@ -474,7 +241,7 @@ class ActionsAdmin extends Actions
 		$sVersion = empty($info->version) ? '' : $info->version;
 
 		$bShowWarning = false;
-		if (!empty($info->warnings) && APP_VERSION !== APP_DEV_VERSION) {
+		if (!empty($info->warnings) && !SNAPPYMAIL_DEV) {
 			foreach ($info->warnings as $sWarningVersion) {
 				$sWarningVersion = \trim($sWarningVersion);
 
@@ -498,228 +265,135 @@ class ActionsAdmin extends Actions
 			$aWarnings[] = 'Can not edit: ' . APP_INDEX_ROOT_PATH . 'index.php';
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, array(
-			 'Updatable' => \SnappyMail\Repository::canUpdateCore(),
-			 'Warning' => $bShowWarning,
-			 'Version' => $sVersion,
-			 'VersionCompare' => \version_compare(APP_VERSION, $sVersion),
-			 'Warnings' => $aWarnings
-		));
+		$aResult = [
+			'system' => [
+				'load' => \is_callable('sys_getloadavg') ? \sys_getloadavg() : null
+			],
+			'core' => [
+				 'updatable' => \SnappyMail\Repository::canUpdateCore(),
+				 'warning' => $bShowWarning,
+				 'version' => $sVersion,
+				 'versionCompare' => \version_compare(APP_VERSION, $sVersion),
+				 'warnings' => $aWarnings
+			],
+			'php' => [
+				[
+					'name' => 'PHP ' . PHP_VERSION,
+					'loaded' => true,
+					'version' => PHP_VERSION
+				],
+				[
+					'name' => 'PHP 64bit',
+					'loaded' => PHP_INT_SIZE == 8,
+					'version' => PHP_INT_SIZE
+				]
+			]
+		];
+
+		foreach (['APCu', 'cURL','GnuPG','GD','Gmagick','Imagick','iconv','intl','LDAP','OpenSSL','pdo_mysql','pdo_pgsql','pdo_sqlite','redis','Sodium','Tidy','uuid','XXTEA','Zip'] as $name) {
+			$aResult['php'][] = [
+				'name' => ('OpenSSL' === $name && \defined('OPENSSL_VERSION_TEXT')) ? OPENSSL_VERSION_TEXT : $name,
+				'loaded' => \extension_loaded(\strtolower($name)),
+				'version' => \phpversion($name)
+			];
+		}
+		$aResult['php'][] = [
+			'name' => 'Fileinfo',
+			'loaded' => \class_exists('finfo'),
+			'version' => \phpversion('fileinfo')
+		];
+		$aResult['php'][] = [
+			'name' => 'Phar',
+			'loaded' => \class_exists('PharData'),
+			'version' => \phpversion('phar')
+		];
+
+		return $this->DefaultResponse($aResult);
 	}
 
 	public function DoAdminUpgradeCore() : array
 	{
-		return $this->DefaultResponse(__FUNCTION__, \SnappyMail\Upgrade::core());
-	}
-
-	public function DoAdminPluginDisable() : array
-	{
-		$this->IsAdminLoggined();
-
-		$sId = (string) $this->GetActionParam('Id', '');
-		$bDisable = '1' === (string) $this->GetActionParam('Disabled', '1');
-
-		if (!$bDisable)
-		{
-			$oPlugin = $this->Plugins()->CreatePluginByName($sId);
-			if ($oPlugin)
-			{
-				$sValue = $oPlugin->Supported();
-				if (\strlen($sValue))
-				{
-					return $this->FalseResponse(__FUNCTION__, Notifications::UnsupportedPluginPackage, $sValue);
-				}
-			}
-			else
-			{
-				return $this->FalseResponse(__FUNCTION__, Notifications::InvalidPluginPackage);
-			}
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $this->pluginEnable($sId, !$bDisable));
-	}
-
-	public function DoAdminPluginLoad() : array
-	{
-		$this->IsAdminLoggined();
-
-		$mResult = false;
-		$sId = (string) $this->GetActionParam('Id', '');
-
-		if (!empty($sId)) {
-			$oPlugin = $this->Plugins()->CreatePluginByName($sId);
-			if ($oPlugin) {
-				$mResult = array(
-					'@Object' => 'Object/Plugin',
-					'Id' => $sId,
-					'Name' => $oPlugin->Name(),
-					'Readme' => $oPlugin->Description(),
-					'Config' => array()
-				);
-
-				$aMap = $oPlugin->ConfigMap();
-				if (\is_array($aMap)) {
-					$oConfig = $oPlugin->Config();
-					foreach ($aMap as $oItem) {
-						if ($oItem) {
-							if ($oItem instanceof \RainLoop\Plugins\Property) {
-								if (PluginPropertyType::PASSWORD === $oItem->Type()) {
-									$oItem->SetValue(APP_DUMMY);
-								} else {
-									$oItem->SetValue($oConfig->Get('plugin', $oItem->Name(), ''));
-								}
-								$mResult['Config'][] = $oItem;
-							} else if ($oItem instanceof \RainLoop\Plugins\PropertyCollection) {
-								foreach ($oItem as $oSubItem) {
-									if ($oSubItem && $oSubItem instanceof \RainLoop\Plugins\Property) {
-										if (PluginPropertyType::PASSWORD === $oSubItem->Type()) {
-											$oSubItem->SetValue(APP_DUMMY);
-										} else {
-											$oSubItem->SetValue($oConfig->Get('plugin', $oSubItem->Name(), ''));
-										}
-									}
-								}
-								$mResult['Config'][] = $oItem;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $mResult);
-	}
-
-	public function DoAdminPluginSettingsUpdate() : array
-	{
-		$this->IsAdminLoggined();
-
-		$mResult = false;
-		$sId = (string) $this->GetActionParam('Id', '');
-
-		if (!empty($sId))
-		{
-			$oPlugin = $this->Plugins()->CreatePluginByName($sId);
-			if ($oPlugin)
-			{
-				$oConfig = $oPlugin->Config();
-				$aMap = $oPlugin->ConfigMap(true);
-				if (\is_array($aMap))
-				{
-					$aSettings = (array) $this->GetActionParam('Settings', []);
-					foreach ($aMap as $oItem)
-					{
-						$sKey = $oItem->Name();
-						$sValue = $aSettings[$sKey] ?? $oConfig->Get('plugin', $sKey);
-						if (PluginPropertyType::PASSWORD !== $oItem->Type() || APP_DUMMY !== $sValue)
-						{
-							$mResultValue = null;
-							switch ($oItem->Type()) {
-								case PluginPropertyType::INT:
-									$mResultValue  = (int) $sValue;
-									break;
-								case PluginPropertyType::BOOL:
-									$mResultValue  = '1' === (string) $sValue;
-									break;
-								case PluginPropertyType::SELECTION:
-									if (is_array($oItem->DefaultValue()) && in_array($sValue, $oItem->DefaultValue()))
-									{
-										$mResultValue = (string) $sValue;
-									}
-									break;
-								case PluginPropertyType::PASSWORD:
-								case PluginPropertyType::STRING:
-								case PluginPropertyType::STRING_TEXT:
-								case PluginPropertyType::URL:
-									$mResultValue = (string) $sValue;
-									break;
-							}
-
-							if (null !== $mResultValue)
-							{
-								$oConfig->Set('plugin', $sKey, $mResultValue);
-							}
-						}
-					}
-				}
-
-				$mResult = $oConfig->Save();
-			}
-		}
-
-		if (!$mResult)
-		{
-			throw new ClientException(Notifications::CantSavePluginSettings);
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, true);
+		\header('Connection: close');
+		return $this->DefaultResponse(\SnappyMail\Upgrade::core());
 	}
 
 	public function DoAdminQRCode() : array
 	{
 		$user = (string) $this->GetActionParam('username', '');
 		$secret = (string) $this->GetActionParam('TOTP', '');
-		$issuer = \rawurlencode(\RainLoop\API::Config()->Get('webmail', 'title', 'SnappyMail'));
+		$issuer = \rawurlencode(API::Config()->Get('webmail', 'title', 'SnappyMail'));
 		$QR = \SnappyMail\QRCode::getMinimumQRCode(
 			"otpauth://totp/{$issuer}:{$user}?secret={$secret}&issuer={$issuer}",
 //			"otpauth://totp/{$user}?secret={$secret}",
 			\SnappyMail\QRCode::ERROR_CORRECT_LEVEL_M
 		);
-		return $this->DefaultResponse(__FUNCTION__, $QR->__toString());
+		return $this->DefaultResponse($QR->__toString());
 	}
 
-	private function setAdminAuthToken(string $sToken) : void
+/*
+	public function AdminAppData(array &$aResult): void
 	{
-		Utils::SetCookie(static::$AUTH_ADMIN_TOKEN_KEY, $sToken);
-	}
+		$oConfig = $this->oConfig;
+		$aResult['Auth'] = $this->IsAdminLoggined(false);
+		if ($aResult['Auth']) {
+			$aResult['adminLogin'] = (string)$oConfig->Get('security', 'admin_login', '');
+			$aResult['adminTOTP'] = (string)$oConfig->Get('security', 'admin_totp', '');
+			$aResult['pluginsEnable'] = (bool)$oConfig->Get('plugins', 'enable', false);
 
-	private function getAdminToken() : string
-	{
-		$sRand = \MailSo\Base\Utils::Sha1Rand();
-		if (!$this->Cacher(null, true)->Set(KeyPathHelper::SessionAdminKey($sRand), \time()))
-		{
-			$this->oLogger->Write('Cannot store an admin token',
-				\LOG_WARNING);
-			return '';
-		}
+			$aResult['loginDefaultDomain'] = $oConfig->Get('login', 'default_domain', '');
+			$aResult['determineUserLanguage'] = (bool)$oConfig->Get('login', 'determine_user_language', true);
+			$aResult['determineUserDomain'] = (bool)$oConfig->Get('login', 'determine_user_domain', false);
 
-		return Utils::EncodeKeyValuesQ(array('token', $sRand));
-	}
+			$aResult['supportedPdoDrivers'] = \RainLoop\Pdo\Base::getAvailableDrivers();
 
-	private function pluginEnable(string $sName, bool $bEnable = true) : bool
-	{
-		if (!\strlen($sName))
-		{
-			return false;
-		}
+			$aResult['contactsEnable'] = (bool)$oConfig->Get('contacts', 'enable', false);
+			$aResult['contactsSync'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
+			$aResult['contactsPdoType'] = Providers\AddressBook\PdoAddressBook::validPdoType($oConfig->Get('contacts', 'type', 'sqlite'));
+			$aResult['contactsPdoDsn'] = (string)$oConfig->Get('contacts', 'pdo_dsn', '');
+			$aResult['contactsPdoType'] = (string)$oConfig->Get('contacts', 'type', '');
+			$aResult['contactsPdoUser'] = (string)$oConfig->Get('contacts', 'pdo_user', '');
+			$aResult['contactsPdoPassword'] = static::APP_DUMMY;
+			$aResult['contactsMySQLSSLCA'] = (string) $oConfig->Get('contacts', 'mysql_ssl_ca', '');
+			$aResult['contactsMySQLSSLVerify'] = !!$oConfig->Get('contacts', 'mysql_ssl_verify', true);
+			$aResult['contactsMySQLSSLCiphers'] = (string) $oConfig->Get('contacts', 'mysql_ssl_ciphers', '');
+			$aResult['contactsSuggestionsLimit'] = (int)$oConfig->Get('contacts', 'suggestions_limit', 20);
 
-		$oConfig = $this->Config();
+			$aResult['faviconUrl'] = $oConfig->Get('webmail', 'favicon_url', '');
 
-		$aEnabledPlugins = \SnappyMail\Repository::getEnabledPackagesNames();
+			$aResult['weakPassword'] = \is_file(APP_PRIVATE_DATA.'admin_password.txt');
 
-		$aNewEnabledPlugins = array();
-		if ($bEnable)
-		{
-			$aNewEnabledPlugins = $aEnabledPlugins;
-			$aNewEnabledPlugins[] = $sName;
-		}
-		else
-		{
-			foreach ($aEnabledPlugins as $sPlugin)
-			{
-				if ($sName !== $sPlugin && \strlen($sPlugin))
-				{
-					$aNewEnabledPlugins[] = $sPlugin;
-				}
+			$aResult['System']['languagesAdmin'] = \SnappyMail\L10n::getLanguages(true);
+			$aResult['languageAdmin'] = $this->ValidateLanguage($oConfig->Get('webmail', 'language_admin', 'en'), '', true);
+			$aResult['languageUsers'] = $this->ValidateLanguage($this->detectUserLanguage(true), '', true, true);
+		} else {
+			$passfile = APP_PRIVATE_DATA.'admin_password.txt';
+			$sPassword = $oConfig->Get('security', 'admin_password', '');
+			if (!$sPassword) {
+				$sPassword = \substr(\base64_encode(\random_bytes(16)), 0, 12);
+				Utils::saveFile($passfile, $sPassword . "\n");
+//				\chmod($passfile, 0600);
+				$oConfig->SetPassword($sPassword);
+				$oConfig->Save();
 			}
 		}
+	}
+*/
 
-		$oConfig->Set('plugins', 'enabled_list', \trim(\implode(',', \array_unique($aNewEnabledPlugins)), ' ,'));
-
-		return $oConfig->Save();
+	private function setAdminAuthToken() : string
+	{
+		$sRand = \MailSo\Base\Utils::Sha1Rand();
+		if (!$this->Cacher(null, true)->Set(KeyPathHelper::SessionAdminKey($sRand), \time())) {
+			throw new \RuntimeException('Failed to store admin token');
+		}
+		$sToken = Utils::EncodeKeyValuesQ(array('token', $sRand));
+		if (!$sToken) {
+			throw new \RuntimeException('Failed to encode admin token');
+		}
+		\SnappyMail\Cookies::set(static::$AUTH_ADMIN_TOKEN_KEY, $sToken);
+		return $sToken;
 	}
 
-	private function setConfigFromParams(\RainLoop\Config\Application $oConfig, string $sParamName, string $sConfigSector, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null): void
+	private function setConfigFromParams(Config\Application $oConfig, string $sParamName, string $sConfigSector, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null): void
 	{
 		if ($this->HasActionParam($sParamName)) {
 			$sValue = $this->GetActionParam($sParamName, '');
@@ -735,8 +409,8 @@ class ActionsAdmin extends Actions
 					break;
 
 				case 'dummy':
-					$sValue = (string) $this->GetActionParam($sParamName, APP_DUMMY);
-					if (APP_DUMMY !== $sValue) {
+					$sValue = (string) $this->GetActionParam($sParamName, static::APP_DUMMY);
+					if (static::APP_DUMMY !== $sValue) {
 						$oConfig->Set($sConfigSector, $sConfigName, $sValue);
 					}
 					break;
