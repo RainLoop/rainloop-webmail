@@ -165,7 +165,9 @@ export class EmailAddressesComponent {
 
 	_parseInput(force) {
 		let val = this.input.value;
-		if ((force || val.includes(',') || val.includes(';')) && this._parseValue(val)) {
+		if ((force || val.includes(',') || val.includes(';')
+				|| (val.charAt(val.length-1)===' ' && this._simpleEmailMatch(val)))
+			&& this._parseValue(val)) {
 			this.input.value = '';
 		}
 		this._resizeInput();
@@ -282,6 +284,13 @@ export class EmailAddressesComponent {
 			this.element.value = value;
 			this.options.onChange(value);
 		}
+	}
+
+	_simpleEmailMatch(value) {
+		// A very SIMPLE test to check if the value might be an email
+		const val = value.trim();
+		return /^[^@]*<[^\s@]{1,128}@[^\s@]{1,256}\.[\w]{2,32}>$/g.test(val)
+			|| /^[^\s@]{1,128}@[^\s@]{1,256}\.[\w]{2,32}$/g.test(val);
 	}
 
 	_renderTags() {
