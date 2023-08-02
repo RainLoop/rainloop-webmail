@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { ScopeFolderList, ScopeMessageList } from 'Common/Enums';
-import { addShortcut, stopEvent } from 'Common/Globals';
+import { addShortcut, leftPanelDisabled, stopEvent } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
 //import { setFolderETag } from 'Common/Cache';
 import { addComputablesTo } from 'External/ko';
@@ -21,6 +21,7 @@ import { ContactsPopupView } from 'View/Popup/Contacts';
 import { ComposePopupView } from 'View/Popup/Compose';
 
 import { setExpandedFolder, foldersFilter } from 'Model/FolderCollection';
+import { ThemeStore } from '../../../Stores/Theme';
 
 export class MailFolderList extends AbstractViewLeft {
 	constructor() {
@@ -112,6 +113,9 @@ export class MailFolderList extends AbstractViewLeft {
 							search = 'unseen';
 						}
 						hasher.setHash(mailBox(folder.fullNameHash, 1, search));
+
+						// in mobile mode hide the panel when a folder is clicked
+						ThemeStore.isMobile() && leftPanelDisabled()===false && leftPanelDisabled(true);
 					}
 
 					AppUserStore.focusedState(ScopeMessageList);
