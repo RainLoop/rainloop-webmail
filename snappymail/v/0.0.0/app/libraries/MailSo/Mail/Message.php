@@ -13,6 +13,7 @@ namespace MailSo\Mail;
 
 use MailSo\Base\Utils;
 use MailSo\Imap\Enumerations\FetchType;
+use MailSo\Mime\Enumerations\Header as MimeHeader;
 
 /**
  * @category MailSo
@@ -160,7 +161,7 @@ class Message implements \JsonSerializable
 		$oHeaders = \strlen($sHeaders) ? new \MailSo\Mime\HeaderCollection($sHeaders, false, $sCharset) : null;
 		if ($oHeaders) {
 			$sContentTypeCharset = $oHeaders->ParameterValue(
-				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+				MimeHeader::CONTENT_TYPE,
 				\MailSo\Mime\Enumerations\Parameter::CHARSET
 			);
 
@@ -174,31 +175,31 @@ class Message implements \JsonSerializable
 
 			$bCharsetAutoDetect = !\strlen($sCharset);
 
-			$oMessage->sSubject = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::SUBJECT, $bCharsetAutoDetect);
-			$oMessage->sMessageId = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::MESSAGE_ID);
-			$oMessage->sContentType = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE);
+			$oMessage->sSubject = $oHeaders->ValueByName(MimeHeader::SUBJECT, $bCharsetAutoDetect);
+			$oMessage->sMessageId = $oHeaders->ValueByName(MimeHeader::MESSAGE_ID);
+			$oMessage->sContentType = $oHeaders->ValueByName(MimeHeader::CONTENT_TYPE);
 
-			$oMessage->oFrom = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::FROM_, $bCharsetAutoDetect);
-			$oMessage->oTo = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::TO_, $bCharsetAutoDetect);
-			$oMessage->oCc = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::CC, $bCharsetAutoDetect);
-			$oMessage->oBcc = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::BCC, $bCharsetAutoDetect);
+			$oMessage->oFrom = $oHeaders->GetAsEmailCollection(MimeHeader::FROM_, $bCharsetAutoDetect);
+			$oMessage->oTo = $oHeaders->GetAsEmailCollection(MimeHeader::TO_, $bCharsetAutoDetect);
+			$oMessage->oCc = $oHeaders->GetAsEmailCollection(MimeHeader::CC, $bCharsetAutoDetect);
+			$oMessage->oBcc = $oHeaders->GetAsEmailCollection(MimeHeader::BCC, $bCharsetAutoDetect);
 
-			$oMessage->oSender = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::SENDER, $bCharsetAutoDetect);
-			$oMessage->oReplyTo = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::REPLY_TO, $bCharsetAutoDetect);
-			$oMessage->oDeliveredTo = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::DELIVERED_TO, $bCharsetAutoDetect);
+			$oMessage->oSender = $oHeaders->GetAsEmailCollection(MimeHeader::SENDER, $bCharsetAutoDetect);
+			$oMessage->oReplyTo = $oHeaders->GetAsEmailCollection(MimeHeader::REPLY_TO, $bCharsetAutoDetect);
+			$oMessage->oDeliveredTo = $oHeaders->GetAsEmailCollection(MimeHeader::DELIVERED_TO, $bCharsetAutoDetect);
 
-			$oMessage->InReplyTo = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::IN_REPLY_TO);
+			$oMessage->InReplyTo = $oHeaders->ValueByName(MimeHeader::IN_REPLY_TO);
 			$oMessage->References = Utils::StripSpaces(
-				$oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::REFERENCES));
+				$oHeaders->ValueByName(MimeHeader::REFERENCES));
 
 			$oMessage->iHeaderTimeStampInUTC = \MailSo\Base\DateTimeHelper::ParseRFC2822DateString(
-				$oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::DATE)
+				$oHeaders->ValueByName(MimeHeader::DATE)
 			);
 
 			// Priority
-			$sPriority = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_MSMAIL_PRIORITY)
-				?: $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::IMPORTANCE)
-				?: $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_PRIORITY);
+			$sPriority = $oHeaders->ValueByName(MimeHeader::X_MSMAIL_PRIORITY)
+				?: $oHeaders->ValueByName(MimeHeader::IMPORTANCE)
+				?: $oHeaders->ValueByName(MimeHeader::X_PRIORITY);
 			if (\strlen($sPriority)) {
 				switch (\substr(\trim($sPriority), 0, 1))
 				{
@@ -217,16 +218,16 @@ class Message implements \JsonSerializable
 			}
 
 			// Delivery Receipt
-			$oMessage->sDeliveryReceipt = \trim($oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::RETURN_RECEIPT_TO));
+			$oMessage->sDeliveryReceipt = \trim($oHeaders->ValueByName(MimeHeader::RETURN_RECEIPT_TO));
 
 			// Read Receipt
-			$oMessage->ReadReceipt = \trim($oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::DISPOSITION_NOTIFICATION_TO));
+			$oMessage->ReadReceipt = \trim($oHeaders->ValueByName(MimeHeader::DISPOSITION_NOTIFICATION_TO));
 			if (empty($oMessage->ReadReceipt)) {
-				$oMessage->ReadReceipt = \trim($oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_CONFIRM_READING_TO));
+				$oMessage->ReadReceipt = \trim($oHeaders->ValueByName(MimeHeader::X_CONFIRM_READING_TO));
 			}
 
 			// Unsubscribe links
-			$UnsubsribeLinks = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::LIST_UNSUBSCRIBE);
+			$UnsubsribeLinks = $oHeaders->ValueByName(MimeHeader::LIST_UNSUBSCRIBE);
 			if ($UnsubsribeLinks) {
 				$oMessage->UnsubsribeLinks = \array_map(
 					function ($link) {
@@ -236,7 +237,7 @@ class Message implements \JsonSerializable
 				);
 			}
 
-			if ($spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAMD_RESULT)) {
+			if ($spam = $oHeaders->ValueByName(MimeHeader::X_SPAMD_RESULT)) {
 				if (\preg_match('/\\[([\\d\\.-]+)\\s*\\/\\s*([\\d\\.]+)\\];/', $spam, $match)) {
 					if ($threshold = \floatval($match[2])) {
 						$oMessage->setSpamScore(100 * \floatval($match[1]) / $threshold);
@@ -244,13 +245,13 @@ class Message implements \JsonSerializable
 					}
 				}
 				$oMessage->bIsSpam = false !== \stripos($oMessage->sSubject, '*** SPAM ***');
-			} else if ($spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_BOGOSITY)) {
+			} else if ($spam = $oHeaders->ValueByName(MimeHeader::X_BOGOSITY)) {
 				$oMessage->sSpamResult = $spam;
 				$oMessage->bIsSpam = !\str_contains($spam, 'Ham');
 				if (\preg_match('/spamicity=([\\d\\.]+)/', $spam, $spamicity)) {
 					$oMessage->setSpamScore(100 * \floatval($spamicity[1]));
 				}
-			} else if ($spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAM_STATUS)) {
+			} else if ($spam = $oHeaders->ValueByName(MimeHeader::X_SPAM_STATUS)) {
 				$oMessage->sSpamResult = $spam;
 				if (\preg_match('/(?:hits|score)=([\\d\\.-]+)/', $spam, $value)
 				 && \preg_match('/required=([\\d\\.-]+)/', $spam, $required)) {
@@ -259,26 +260,33 @@ class Message implements \JsonSerializable
 						$oMessage->sSpamResult = "{$value[1]} / {$required[1]}";
 					}
 				}
-				$oMessage->bIsSpam = 'Yes' === \substr($spam, 0, 3);
-//				$spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAM_FLAG);
-//				$oMessage->bIsSpam = false !== \stripos($spam, 'YES');
+				// https://github.com/the-djmaze/snappymail/issues/1228
+				else if (\preg_match('@([\\d\\.]+)/([\\d\\.]+)@', $spam, $value)
+				  || \preg_match('@([\\d\\.]+)/([\\d\\.]+)@', $oHeaders->ValueByName(MimeHeader::X_SPAM_INFO), $value)
+				) {
+					$oMessage->sSpamResult = "{$value[1]} / {$value[2]}";
+					$oMessage->setSpamScore(100 * \floatval($value[1]) / \floatval($value[2]));
+				}
+
+				$oMessage->bIsSpam = 'Yes' === \substr($spam, 0, 3)
+					|| false !== \stripos($oHeaders->ValueByName(MimeHeader::X_SPAM_FLAG), 'YES');
 			}
 
-			if ($virus = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_VIRUS)) {
+			if ($virus = $oHeaders->ValueByName(MimeHeader::X_VIRUS)) {
 				$oMessage->bHasVirus = true;
 			}
-			if ($virus = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_VIRUS_STATUS)) {
+			if ($virus = $oHeaders->ValueByName(MimeHeader::X_VIRUS_STATUS)) {
 				if (false !== \stripos($spam, 'infected')) {
 					$oMessage->bHasVirus = true;
 				} else if (false !== \stripos($spam, 'clean')) {
 					$oMessage->bHasVirus = false;
 				}
 			}
-			if ($virus = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_VIRUS_SCANNED)) {
+			if ($virus = $oHeaders->ValueByName(MimeHeader::X_VIRUS_SCANNED)) {
 				$oMessage->sVirusScanned = $virus;
 			}
 
-			$sDraftInfo = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_DRAFT_INFO);
+			$sDraftInfo = $oHeaders->ValueByName(MimeHeader::X_DRAFT_INFO);
 			if (\strlen($sDraftInfo)) {
 				$sType = '';
 				$sFolder = '';
@@ -320,7 +328,7 @@ class Message implements \JsonSerializable
 				}
 			}
 
-			$oMessage->sAutocrypt = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::AUTOCRYPT);
+			$oMessage->sAutocrypt = $oHeaders->ValueByName(MimeHeader::AUTOCRYPT);
 		}
 		else if ($oFetchResponse->GetEnvelope())
 		{
@@ -360,7 +368,7 @@ class Message implements \JsonSerializable
 					// /?/Raw/&q[]=/0/View/&q[]=/...
 					'bodyPartId' => $oPart->SubParts()[0]->PartID(),
 					'sigPartId' => $oPgpSignaturePart->PartID(),
-					'micAlg' => $oHeaders ? (string) $oHeaders->ParameterValue(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE, 'micalg') : ''
+					'micAlg' => $oHeaders ? (string) $oHeaders->ParameterValue(MimeHeader::CONTENT_TYPE, 'micalg') : ''
 				];
 /*
 				// An empty section specification refers to the entire message, including the header.

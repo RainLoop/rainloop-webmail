@@ -77,7 +77,8 @@ class MailClient
 			MimeHeader::AUTOCRYPT,
 			// SPAM
 			MimeHeader::X_SPAM_STATUS,
-//			MimeHeader::X_SPAM_FLAG,
+			MimeHeader::X_SPAM_FLAG,
+			MimeHeader::X_SPAM_INFO,
 			MimeHeader::X_SPAMD_RESULT,
 			MimeHeader::X_BOGOSITY,
 			// Virus
