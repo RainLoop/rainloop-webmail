@@ -679,16 +679,17 @@ class Actions
 
 					'contactsAllowed' => $this->AddressBookProvider($oAccount)->IsActive(),
 
+                    'allowSpellcheck' => $oConfig->Get('defaults', 'allow_spellcheck', false),
 					'ViewHTML' => (bool) $oConfig->Get('defaults', 'view_html', true),
 					'ViewImages' => $oConfig->Get('defaults', 'view_images', 'ask'),
 					'ViewImagesWhitelist' => '',
 					'RemoveColors' => (bool) $oConfig->Get('defaults', 'remove_colors', false),
 					'AllowStyles' => false,
 					'ListInlineAttachments' => false,
-					'CollapseBlockquotes' => true,
+					'CollapseBlockquotes' => $oConfig->Get('defaults', 'collapse_blockquotes', true),
 					'MaxBlockquotesLevel' => 0,
 					'simpleAttachmentsList' => false,
-					'listGrouped' => false,
+					'listGrouped' => $oConfig->Get('defaults', 'mail_list_grouped', false),
 					'MessagesPerPage' => (int) $oConfig->Get('webmail', 'messages_per_page', 25),
 					'MessageReadDelay' => (int) $oConfig->Get('webmail', 'message_read_delay', 5),
 					'MsgDefaultAction' => (int) $oConfig->Get('defaults', 'msg_default_action', 1),
@@ -773,7 +774,7 @@ class Actions
 					$aResult['requireTLS'] = (bool) $oSettings->GetConf('requireTLS', false);
 					$aResult['pgpSign'] = (bool) $oSettings->GetConf('pgpSign', false);
 					$aResult['pgpEncrypt'] = (bool) $oSettings->GetConf('pgpEncrypt', false);
-					$aResult['allowSpellcheck'] = (bool) $oSettings->GetConf('allowSpellcheck', false);
+					$aResult['allowSpellcheck'] = (bool) $oSettings->GetConf('allowSpellcheck', $aResult['allowSpellcheck']);
 //					$aResult['allowCtrlEnterOnCompose'] = (bool) $oSettings->GetConf('allowCtrlEnterOnCompose', true);
 
 					$aResult['ViewHTML'] = (bool)$oSettings->GetConf('ViewHTML', $aResult['ViewHTML']);
