@@ -128,6 +128,11 @@ export class MessageModel extends AbstractModel {
 			threadsLen: () => rl.app.messageList.threadUid() ? 0 : this.threads().length,
 			threadUnseenLen: () => rl.app.messageList.threadUid() ? 0 : this.threadUnseen().length,
 
+			threadsLenText: () => {
+				const unseenLen = this.threadUnseenLen();
+				return this.threadsLen() + (unseenLen > 0 ? '/' + unseenLen : '');
+			},
+
 			isUnseen: () => !this.flags().includes('\\seen'),
 			isFlagged: () => this.flags().includes('\\flagged'),
 //			isJunk: () => this.flags().includes('$junk') && !this.flags().includes('$nonjunk'),
