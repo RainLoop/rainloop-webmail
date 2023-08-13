@@ -2412,6 +2412,24 @@ html.rl-mobile #rl-app #V-AdminPane>.b-toolbar {
 /* #endregion */
 
 /*
+ * Extensions
+ */
+
+/* #region extensions */
+
+/* #region avatars */
+
+#rl-app .messageCheckbox .fromPic {
+    margin: -5px 0 -9px 8px;
+    height: 32px;
+    width: 32px;
+}
+
+/* #endregion */
+
+/* #endregion */
+
+/*
  * Message Flags
  */
 
