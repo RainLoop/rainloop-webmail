@@ -80,7 +80,9 @@ class SnappyMailHelper
 				if ($doLogin && $aCredentials[1] && $aCredentials[2]) {
 					try {
 						$oActions->Logger()->AddSecret($aCredentials[2]);
-						$oAccount = $oActions->LoginProcess($aCredentials[1], $aCredentials[2], false);
+
+						$bSignMe = $oConfig->Get('login', 'sign_me_auto', \RainLoop\Enumerations\SignMeType::DEFAULT_OFF) === \RainLoop\Enumerations\SignMeType::DEFAULT_ON;
+						$oAccount = $oActions->LoginProcess($aCredentials[1], $aCredentials[2], $bSignMe);
 						if ($oAccount) {
 							$oActions->Plugins()->RunHook('login.success', array($oAccount));
 							$oActions->SetAuthToken($oAccount);

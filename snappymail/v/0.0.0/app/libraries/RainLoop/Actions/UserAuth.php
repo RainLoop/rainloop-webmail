@@ -139,7 +139,14 @@ trait UserAuth
 
 		$this->imapConnect($oAccount, true);
 		if ($bMainAccount) {
-			$bSignMe && $this->SetSignMeToken($oAccount);
+			if($bSignMe){
+				// SetAuthToken token needs to be called before SetSignMeToken
+				// because $_COOKIE['smctoken'] is used by Crypt::Passphrase.
+				// If the $_COOKIE['smctoken'] is not set then SetSignMeToken
+				// throws an exception
+				$this->SetAuthToken($oAccount);
+				$this->SetSignMeToken($oAccount);
+			}
 			$this->StorageProvider()->Put($oAccount, StorageType::SESSION, Utils::GetSessionToken(), 'true');
 		}
 
