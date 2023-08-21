@@ -36,7 +36,7 @@ abort = (sAction, sReason, bClearOnly) => {
 	oRequests[sAction] = null;
 	if (controller) {
 		clearTimeout(controller.timeoutId);
-		bClearOnly || controller.abort(sReason || 'AbortError');
+		bClearOnly || controller.abort(new DOMException(sAction, sReason || 'AbortError'));
 	}
 },
 
@@ -61,7 +61,6 @@ fetchJSON = (action, sUrl, params, timeout, jsonCallback) => {
 	}).catch(err => {
 		clearTimeout(controller.timeoutId);
 		err.aborted = signal.aborted;
-		err.reason = signal.reason;
 		return Promise.reject(err);
 	});
 };
@@ -165,7 +164,7 @@ export class AbstractFetchRemote
 		.catch(err => {
 			console.error({fetchError:err});
 			fCallback && fCallback(
-				'TimeoutError' == err.reason ? 3 : (err.name == 'AbortError' ? 2 : 1),
+				'TimeoutError' == err.name ? 3 : (err.name == 'AbortError' ? 2 : 1),
 				err
 			);
 		});

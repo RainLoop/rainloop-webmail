@@ -222,7 +222,7 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 		fCallback = (iError, oData, bCached) => {
 			let error = '';
 			if (iError) {
-				if ('reload' != oData?.reason) {
+				if ('reload' != oData?.name) {
 					error = getNotification(iError);
 					MessagelistUserStore.loading(false);
 //					if (Notifications.RequestAborted !== iError) {
