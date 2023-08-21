@@ -607,8 +607,8 @@ class MailClient
 			$aResultUids = $this->oImapClient->MessageSimpleSort($aSortTypes, $sSearchCriterias, $bReturnUid);
 		} else {
 //			$this->oImapClient->hasCapability('ESEARCH')
-//			$aResultUids = $this->oImapClient->MessageSimpleESearch($sSearchCriterias, null, $bReturnUid, \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? '' : 'UTF-8')
-			$aResultUids = $this->oImapClient->MessageSimpleSearch($sSearchCriterias,        $bReturnUid, \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? '' : 'UTF-8');
+//			$aResultUids = $this->oImapClient->MessageSimpleESearch($sSearchCriterias, null, $bReturnUid)
+			$aResultUids = $this->oImapClient->MessageSimpleSearch($sSearchCriterias,        $bReturnUid);
 		}
 
 		if ($bUseCacheAfterSearch) {

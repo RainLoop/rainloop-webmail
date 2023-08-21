@@ -384,14 +384,17 @@ trait Messages
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function MessageSimpleESearch(string $sSearchCriterias = 'ALL', array $aSearchReturn = null, bool $bReturnUid = true, string $sCharset = '', string $sLimit = '') : array
+	public function MessageSimpleESearch(string $sSearchCriterias = 'ALL', array $aSearchReturn = null, bool $bReturnUid = true, string $sLimit = '') : array
 	{
 		$oESearch = new \MailSo\Imap\Requests\ESEARCH($this);
 		$oESearch->sCriterias = $sSearchCriterias;
 		$oESearch->aReturn = $aSearchReturn;
 		$oESearch->bUid = $bReturnUid;
 		$oESearch->sLimit = $sLimit;
-		$oESearch->sCharset = $sCharset;
+//		if (!$this->UTF8Mode() && !\mb_check_encoding($sSearchCriterias, 'UTF-8')) {
+		if (!$this->UTF8Mode() && !\MailSo\Base\Utils::IsAscii($sSearchCriterias)) {
+			$oESearch->sCharset = 'UTF-8';
+		}
 		$oESearch->SendRequest();
 		return $this->getSimpleESearchOrESortResult($bReturnUid);
 	}
@@ -420,12 +423,13 @@ trait Messages
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function MessageSimpleSearch(string $sSearchCriterias = 'ALL', bool $bReturnUid = true, string $sCharset = '') : array
+	public function MessageSimpleSearch(string $sSearchCriterias = 'ALL', bool $bReturnUid = true) : array
 	{
 		$aRequest = array();
-		if (\strlen($sCharset)) {
+//		if (!$this->UTF8Mode() && !\mb_check_encoding($sSearchCriterias, 'UTF-8')) {
+		if (!$this->UTF8Mode() && !\MailSo\Base\Utils::IsAscii($sSearchCriterias)) {
 			$aRequest[] = 'CHARSET';
-			$aRequest[] = \strtoupper($sCharset);
+			$aRequest[] = 'UTF-8';
 		}
 
 		$aRequest[] = !\strlen($sSearchCriterias) || '*' === $sSearchCriterias ? 'ALL' : $sSearchCriterias;

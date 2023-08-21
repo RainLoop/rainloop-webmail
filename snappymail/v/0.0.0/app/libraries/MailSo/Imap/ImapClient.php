@@ -49,6 +49,9 @@ class ImapClient extends \MailSo\Net\NetClient
 
 	private bool $bIsLoggined = false;
 
+	/**
+	 * RFC 6855 UTF8 mode
+	 */
 	private bool $UTF8 = false;
 
 	public function Hash() : string
@@ -685,5 +688,4 @@ class ImapClient extends \MailSo\Net\NetClient
 	{
 		return $this->UTF8 ? $sText : \MailSo\Base\Utils::Utf7ModifiedToUtf8($sText);
 	}
-
 }
