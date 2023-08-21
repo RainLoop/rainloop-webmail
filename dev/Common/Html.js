@@ -50,7 +50,7 @@ const
 	 * https://github.com/M66B/FairEmail/blob/master/app/src/main/java/eu/faircode/email/UriHelper.java
 	 */
 	// eslint-disable-next-line max-len
-	stripParams = /^(utm_|ec_|fbclid|mc_eid|mkt_tok|_hsenc|vero_id|oly_enc_id|oly_anon_id|__s|Referrer|mailing|elq|bch|trc|ref|correlation_id|pd_|pf_|email_hash)/i,
+	stripParams = /^(utm_|ec_|fbclid|mc_eid|mkt_tok|_hsenc|vero_id|oly_enc_id|oly_anon_id|__s|Referrer|mailing|elq|bch|trc|ref|correlation_id|pd_|pf_|email_hash)$/i,
 	urlGetParam = (url, name) => new URL(url).searchParams.get(name) || url,
 	base64Url = data => atob(data.replace(/_/g,'/').replace(/-/g,'+')),
 	decode = decodeURIComponent,
