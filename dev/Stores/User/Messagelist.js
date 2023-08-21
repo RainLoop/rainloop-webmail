@@ -166,9 +166,9 @@ MessagelistUserStore.notifyNewMessages = (folder, newMessages) => {
 }
 
 MessagelistUserStore.canAutoSelect = () =>
-	!/is:unseen/.test(MessagelistUserStore.mainSearch())
-	&& !disableAutoSelect()
+	!disableAutoSelect()
 	&& SettingsUserStore.usePreviewPane();
+//	&& !SettingsUserStore.showNextMessage();
 
 let prevFolderName;
 
@@ -399,53 +399,92 @@ MessagelistUserStore.setAction = (sFolderFullName, iSetAction, messages) => {
  * @param {string=} toFolderFullName = ''
  * @param {boolean=} copy = false
  */
-MessagelistUserStore.removeMessagesFromList = (
+MessagelistUserStore.moveMessages = (
 	fromFolderFullName, oUids, toFolderFullName = '', copy = false
 ) => {
+	const fromFolder = getFolderFromCacheList(fromFolderFullName);
+
+	if (!fromFolder || !oUids?.size) return;
+
 	let unseenCount = 0,
 		setPage = 0,
 		currentMessage = MessageUserStore.message();
 
-	const trashFolder = FolderUserStore.trashFolder(),
+	const toFolder = toFolderFullName ? getFolderFromCacheList(toFolderFullName) : null,
+		trashFolder = FolderUserStore.trashFolder(),
 		spamFolder = FolderUserStore.spamFolder(),
-		fromFolder = getFolderFromCacheList(fromFolderFullName),
-		toFolder = toFolderFullName ? getFolderFromCacheList(toFolderFullName) : null,
+		page = MessagelistUserStore.page(),
 		messages =
 			FolderUserStore.currentFolderFullName() === fromFolderFullName
 				? MessagelistUserStore.filter(item => item && oUids.has(item.uid))
-				: [];
+				: [],
+		moveOrDeleteResponseHelper = (iError, oData) => {
+			if (iError) {
+				setFolderETag(FolderUserStore.currentFolderFullName(), '');
+				alert(getNotification(iError));
+			} else if (FolderUserStore.currentFolder()) {
+				if (2 === arrayLength(oData.Result)) {
+					setFolderETag(oData.Result[0], oData.Result[1]);
+				} else {
+					setFolderETag(FolderUserStore.currentFolderFullName(), '');
+				}
+
+				MessagelistUserStore.count(MessagelistUserStore.count() - oUids.size);
+				if (page > MessagelistUserStore.pageCount()) {
+					setPage = MessagelistUserStore.pageCount();
+				}
+				if (MessagelistUserStore.threadUid()
+				 && MessagelistUserStore.length
+				 && MessagelistUserStore.find(item => item?.deleted() && item.uid == MessagelistUserStore.threadUid())
+				) {
+					const message = MessagelistUserStore.find(item => item && !item.deleted());
+					if (!message) {
+						if (1 < page) {
+							setPage = page - 1;
+						} else {
+							MessagelistUserStore.threadUid(0);
+							setPage = MessagelistUserStore.pageBeforeThread();
+						}
+					} else if (MessagelistUserStore.threadUid() != message.uid) {
+						MessagelistUserStore.threadUid(message.uid);
+						setPage = page;
+					}
+				}
+				if (setPage) {
+					MessagelistUserStore.page(setPage);
+					replaceHash(
+						mailBox(
+							FolderUserStore.currentFolderFullNameHash(),
+							setPage,
+							MessagelistUserStore.listSearch(),
+							MessagelistUserStore.threadUid()
+						)
+					);
+				}
+
+				MessagelistUserStore.reload(!MessagelistUserStore.count());
+			}
+		};
 
 	messages.forEach(item => item?.isUnseen() && ++unseenCount);
 
-	if (fromFolder) {
+	if (!copy) {
 		fromFolder.etag = '';
-		if (!copy) {
-			fromFolder.totalEmails(
-				0 <= fromFolder.totalEmails() - oUids.size ? fromFolder.totalEmails() - oUids.size : 0
-			);
-
-			if (0 < unseenCount) {
-				fromFolder.unreadEmails(Math.max(0, fromFolder.unreadEmails() - unseenCount));
-			}
-		}
+		fromFolder.totalEmails(Math.max(0, fromFolder.totalEmails() - oUids.size));
+		fromFolder.unreadEmails(Math.max(0, fromFolder.unreadEmails() - unseenCount));
 	}
 
 	if (toFolder) {
 		toFolder.etag = '';
-
-		if (trashFolder === toFolder.fullName || spamFolder === toFolder.fullName) {
-			unseenCount = 0;
-		}
-
 		toFolder.totalEmails(toFolder.totalEmails() + oUids.size);
-		if (0 < unseenCount) {
+		if (trashFolder !== toFolder.fullName && spamFolder !== toFolder.fullName) {
 			toFolder.unreadEmails(toFolder.unreadEmails() + unseenCount);
 		}
-
 		toFolder.actionBlink(true);
 	}
 
 	if (messages.length) {
+		disableAutoSelect(true);
 		if (copy) {
 			messages.forEach(item => item.checked(false));
 		} else {
@@ -468,49 +507,37 @@ MessagelistUserStore.removeMessagesFromList = (
 					currentMessage = null;
 					MessageUserStore.message(null);
 				}
-
 				item.deleted(true);
+				MessagelistUserStore.remove(item);
 			});
-
-			setTimeout(() => messages.forEach(item => MessagelistUserStore.remove(item)), 350);
-
-			const
-				count = MessagelistUserStore.count() - messages.length,
-				page = MessagelistUserStore.page();
-			MessagelistUserStore.count(count);
-			if (page > MessagelistUserStore.pageCount()) {
-				setPage = MessagelistUserStore.pageCount();
-			}
 		}
 	}
 
-	if (MessagelistUserStore.threadUid()
-	 && MessagelistUserStore.length
-	 && MessagelistUserStore.find(item => item?.deleted() && item.uid == MessagelistUserStore.threadUid())
-	) {
-		const message = MessagelistUserStore.find(item => item && !item.deleted());
-		if (!message) {
-			if (1 < MessagelistUserStore.page()) {
-				setPage = MessagelistUserStore.page() - 1;
+	if (toFolderFullName) {
+		if (toFolder && fromFolderFullName != toFolderFullName) {
+			const params =  {
+				fromFolder: fromFolderFullName,
+				toFolder: toFolderFullName,
+				uids: [...oUids].join(',')
+			};
+			if (copy) {
+				Remote.request('MessageCopy', null, params);
 			} else {
-				MessagelistUserStore.threadUid(0);
-				setPage = MessagelistUserStore.pageBeforeThread();
+				const
+					isSpam = spamFolder === toFolderFullName,
+					isHam = !isSpam && spamFolder === fromFolderFullName && getFolderInboxName() === toFolderFullName;
+				params.markAsRead = (isSpam || FolderUserStore.trashFolder() === toFolderFullName) ? 1 : 0;
+				params.learning = isSpam ? 'SPAM' : isHam ? 'HAM' : '';
+				Remote.abort('MessageList', 'reload').request('MessageMove', moveOrDeleteResponseHelper, params);
 			}
-		} else if (MessagelistUserStore.threadUid() != message.uid) {
-			MessagelistUserStore.threadUid(message.uid);
-			setPage = MessagelistUserStore.page();
 		}
-	}
-
-	if (setPage) {
-		MessagelistUserStore.page(setPage);
-		replaceHash(
-			mailBox(
-				FolderUserStore.currentFolderFullNameHash(),
-				setPage,
-				MessagelistUserStore.listSearch(),
-				MessagelistUserStore.threadUid()
-			)
+	} else {
+		Remote.abort('MessageList', 'reload').request('MessageDelete',
+			moveOrDeleteResponseHelper,
+			{
+				folder: fromFolderFullName,
+				uids: [...oUids].join(',')
+			}
 		);
 	}
 };

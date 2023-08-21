@@ -61,9 +61,7 @@ import { AskPopupView } from 'View/Popup/Ask';
 import {
 	folderInformation,
 	folderInformationMultiply,
-	setRefreshFoldersInterval,
-	messagesMoveHelper,
-	messagesDeleteHelper
+	setRefreshFoldersInterval
 } from 'Common/Folders';
 import { loadFolders } from 'Model/FolderCollection';
 
@@ -133,13 +131,11 @@ export class AppUser extends AbstractApp {
 			showScreenPopup(AskPopupView, [
 				i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'),
 				() => {
-					messagesDeleteHelper(sFromFolderFullName, oUids);
-					MessagelistUserStore.removeMessagesFromList(sFromFolderFullName, oUids);
+					MessagelistUserStore.moveMessages(sFromFolderFullName, oUids);
 				}
 			]);
 		} else if (oMoveFolder) {
-			messagesMoveHelper(sFromFolderFullName, oMoveFolder.fullName, oUids);
-			MessagelistUserStore.removeMessagesFromList(sFromFolderFullName, oUids, oMoveFolder.fullName);
+			MessagelistUserStore.moveMessages(sFromFolderFullName, oUids, oMoveFolder.fullName);
 		}
 	}
 

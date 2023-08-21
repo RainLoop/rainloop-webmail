@@ -1,13 +1,11 @@
 import { isArray, arrayLength } from 'Common/Utils';
 import {
-	setFolderETag,
 	getFolderInboxName,
 	getFolderFromCacheList
 } from 'Common/Cache';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
-import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -195,76 +193,6 @@ folderInformationMultiply = (boot = false) => {
 			folders: folders
 		});
 	}
-},
-
-moveOrDeleteResponseHelper = (iError, oData) => {
-	if (iError) {
-		setFolderETag(FolderUserStore.currentFolderFullName(), '');
-		alert(getNotification(iError));
-	} else if (FolderUserStore.currentFolder()) {
-		if (2 === arrayLength(oData.Result)) {
-			setFolderETag(oData.Result[0], oData.Result[1]);
-		} else {
-			setFolderETag(FolderUserStore.currentFolderFullName(), '');
-		}
-		MessagelistUserStore.reload(!MessagelistUserStore.length);
-	}
-},
-
-messagesMoveHelper = (fromFolderFullName, toFolderFullName, uidsForMove) => {
-	const
-		sSpamFolder = FolderUserStore.spamFolder(),
-		isSpam = sSpamFolder === toFolderFullName,
-		isHam = !isSpam && sSpamFolder === fromFolderFullName && getFolderInboxName() === toFolderFullName;
-
-	Remote.abort('MessageList', 'reload').request('MessageMove',
-		moveOrDeleteResponseHelper,
-		{
-			fromFolder: fromFolderFullName,
-			toFolder: toFolderFullName,
-			uids: [...uidsForMove].join(','),
-			markAsRead: (isSpam || FolderUserStore.trashFolder() === toFolderFullName) ? 1 : 0,
-			learning: isSpam ? 'SPAM' : isHam ? 'HAM' : ''
-		}
-	);
-},
-
-messagesDeleteHelper = (sFromFolderFullName, aUidForRemove) => {
-	Remote.abort('MessageList', 'reload').request('MessageDelete',
-		moveOrDeleteResponseHelper,
-		{
-			folder: sFromFolderFullName,
-			uids: [...aUidForRemove].join(',')
-		}
-	);
-},
-
-/**
- * @param {string} sFromFolderFullName
- * @param {Set} oUids
- * @param {string} sToFolderFullName
- * @param {boolean=} bCopy = false
- */
-moveMessagesToFolder = (sFromFolderFullName, oUids, sToFolderFullName, bCopy) => {
-	if (sFromFolderFullName !== sToFolderFullName && oUids?.size) {
-		const oFromFolder = getFolderFromCacheList(sFromFolderFullName),
-			oToFolder = getFolderFromCacheList(sToFolderFullName);
-
-		if (oFromFolder && oToFolder) {
-			bCopy
-				? Remote.request('MessageCopy', null, {
-						fromFolder: oFromFolder.fullName,
-						toFolder: oToFolder.fullName,
-						uids: [...oUids].join(',')
-					})
-				: messagesMoveHelper(oFromFolder.fullName, oToFolder.fullName, oUids);
-
-			MessagelistUserStore.removeMessagesFromList(oFromFolder.fullName, oUids, oToFolder.fullName, bCopy);
-			return true;
-		}
-	}
-
-	return false;
 },
 
 dropFilesInFolder = (sFolderFullName, files) => {

@@ -20,8 +20,6 @@ import { FolderCreatePopupView } from 'View/Popup/FolderCreate';
 import { ContactsPopupView } from 'View/Popup/Contacts';
 import { ComposePopupView } from 'View/Popup/Compose';
 
-import { moveMessagesToFolder } from 'Common/Folders';
-
 import { setExpandedFolder, foldersFilter } from 'Model/FolderCollection';
 
 export class MailFolderList extends AbstractViewLeft {
@@ -92,7 +90,7 @@ export class MailFolderList extends AbstractViewLeft {
 				if (folder) {
 					if (moveAction()) {
 						moveAction(false);
-						moveMessagesToFolder(
+						MessagelistUserStore.moveMessages(
 							FolderUserStore.currentFolderFullName(),
 							MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails(),
 							folder.fullName,

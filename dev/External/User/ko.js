@@ -6,7 +6,7 @@ import { doc, elementById, addEventsListeners, dropdowns, leftPanelDisabled } fr
 import { dropdownsDetectVisibility } from 'Common/UtilsUser';
 import { EmailAddressesComponent } from 'Component/EmailAddresses';
 import { ThemeStore } from 'Stores/Theme';
-import { moveMessagesToFolder, dropFilesInFolder } from 'Common/Folders';
+import { dropFilesInFolder } from 'Common/Folders';
 import { setExpandedFolder } from 'Model/FolderCollection';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
@@ -63,7 +63,9 @@ const rlContentType = 'snappymail/action',
 	dragDrop = (e, element, folder, dragData) => {
 		dragStop(e, element);
 		if (dragMessages() && 'copyMove' == e.dataTransfer.effectAllowed) {
-			moveMessagesToFolder(FolderUserStore.currentFolderFullName(), dragData.data, folder.fullName, e.ctrlKey);
+			MessagelistUserStore.moveMessages(
+				FolderUserStore.currentFolderFullName(), dragData.data, folder.fullName, e.ctrlKey
+			);
 		} else if (e.dataTransfer.types.includes('Files')) {
 			dropFilesInFolder(folder.fullName, e.dataTransfer.files);
 		}

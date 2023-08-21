@@ -65,8 +65,8 @@ export class Selector {
 		this.listChecked.subscribe(items => {
 			if (items.length) {
 				koSelectedItem() ? koSelectedItem(null) : koSelectedItem.valueHasMutated?.();
-			} else if (this.autoSelect()) {
-				koSelectedItem(koFocusedItem());
+			} else {
+				this.autoSelect();
 			}
 		});
 
@@ -174,9 +174,7 @@ export class Selector {
 					this.iFocusedNextHelper = 0;
 				}
 
-				if (this.autoSelect() && !isChecked && !koSelectedItem()) {
-					koSelectedItem(koFocusedItem());
-				}
+				!isChecked && !koSelectedItem() && this.autoSelect();
 			}
 
 			aCheckedCache = [];
@@ -250,8 +248,10 @@ export class Selector {
 	/**
 	 * @returns {boolean}
 	 */
-	autoSelect() {
-		return (this.oCallbacks.AutoSelect || (()=>1))() && this.focusedItem();
+	autoSelect(bForce) {
+		(bForce || (this.oCallbacks.AutoSelect || (()=>1))())
+		&& this.focusedItem()
+		&& this.selectedItem(this.focusedItem());
 	}
 
 	/**
@@ -327,9 +327,7 @@ export class Selector {
 
 			if (result) {
 				this.focusedItem(result);
-				if ((this.autoSelect() || bForceSelect) && !this.list.hasChecked()) {
-					this.selectedItem(result);
-				}
+				!this.list.hasChecked() && this.autoSelect(bForceSelect);
 				this.scrollToFocused();
 			}
 		}

@@ -15,7 +15,7 @@ import { encodeHtml, HtmlEditor, htmlToPlain } from 'Common/Html';
 import { koArrayWithDestroy, addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { folderInformation, messagesDeleteHelper } from 'Common/Folders';
+import { folderInformation } from 'Common/Folders';
 import { serverRequest } from 'Common/Links';
 import { i18n, getNotification, getUploadErrorDescByCode, timestampToString } from 'Common/Translator';
 import { setFolderETag } from 'Common/Cache';
@@ -586,8 +586,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				const
 					sFromFolderFullName = this.draftsFolder(),
 					oUids = new Set([this.draftUid()]);
-				messagesDeleteHelper(sFromFolderFullName, oUids);
-				MessagelistUserStore.removeMessagesFromList(sFromFolderFullName, oUids);
+				MessagelistUserStore.moveMessages(sFromFolderFullName, oUids);
 				this.close();
 			}
 		]);
