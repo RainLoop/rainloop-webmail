@@ -391,8 +391,8 @@ trait Messages
 		$oESearch->aReturn = $aSearchReturn;
 		$oESearch->bUid = $bReturnUid;
 		$oESearch->sLimit = $sLimit;
-//		if (!$this->UTF8Mode() && !\mb_check_encoding($sSearchCriterias, 'UTF-8')) {
-		if (!$this->UTF8Mode() && !\MailSo\Base\Utils::IsAscii($sSearchCriterias)) {
+//		if (!$this->UTF8 && !\mb_check_encoding($sSearchCriterias, 'UTF-8')) {
+		if (!$this->UTF8 && !\MailSo\Base\Utils::IsAscii($sSearchCriterias)) {
 			$oESearch->sCharset = 'UTF-8';
 		}
 		$oESearch->SendRequest();
@@ -426,8 +426,8 @@ trait Messages
 	public function MessageSimpleSearch(string $sSearchCriterias = 'ALL', bool $bReturnUid = true) : array
 	{
 		$aRequest = array();
-//		if (!$this->UTF8Mode() && !\mb_check_encoding($sSearchCriterias, 'UTF-8')) {
-		if (!$this->UTF8Mode() && !\MailSo\Base\Utils::IsAscii($sSearchCriterias)) {
+//		if (!$this->UTF8 && !\mb_check_encoding($sSearchCriterias, 'UTF-8')) {
+		if (!$this->UTF8 && !\MailSo\Base\Utils::IsAscii($sSearchCriterias)) {
 			$aRequest[] = 'CHARSET';
 			$aRequest[] = 'UTF-8';
 		}
