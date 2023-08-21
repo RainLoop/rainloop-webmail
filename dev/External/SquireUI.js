@@ -69,6 +69,8 @@ class SquireUI
 
 				clr.value = '';
 				clr.onchange = () => squire.setStyle({[name]:clr.value});
+				// Chrome 110+ https://github.com/the-djmaze/snappymail/issues/1199
+//				clr.oninput = () => squire.setStyle({[name]:clr.value});
 				setTimeout(()=>clr.click(),1);
 			},
 
