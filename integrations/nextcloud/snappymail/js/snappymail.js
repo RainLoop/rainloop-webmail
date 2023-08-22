@@ -1,7 +1,7 @@
 /**
  * Nextcloud - SnappyMail mail plugin
  *
- * @author RainLoop Team, Nextgen-Networks (@nextgen-networks), Tab Fitts (@tabp0le), Pierre-Alain Bandinelli (@pierre-alain-b), SnappyMail
+ * @author RainLoop Team, Nextgen-Networks (@nextgen-networks), Tab Fitts (@tabp0le), Pierre-Alain Bandinelli (@pierre-alain-b), SnappyMail, Rene Hampölz (@hampoelz)
  *
  * Based initially on https://github.com/RainLoop/rainloop-webmail/tree/master/build/owncloud/rainloop-app
  */
@@ -10,10 +10,46 @@
 document.onreadystatechange = () => {
 	if (document.readyState === 'complete') {
 		watchIFrameTitle();
+		passThemesToIFrame();
 		let form = document.querySelector('form.snappymail');
 		form && SnappyMailFormHelper(form);
 	}
 };
+
+// Pass Nextcloud themes and theme attributes to SnappyMail on
+// first load and when the SnappyMail iframe is reloaded. 
+function passThemesToIFrame() {
+	const iframe = document.getElementById('rliframe');
+	if (!iframe) return;
+
+	let firstLoad = true;
+
+	iframe.addEventListener('load', event => {
+		// repass theme styles when iframe is reloaded
+		if (!firstLoad) {
+			passThemes(event.target);
+		}
+		firstLoad = false;
+	});
+
+	passThemes(iframe);
+}
+
+// Pass Nextcloud themes and theme attributes to SnappyMail.
+function passThemes(iframe) {
+	if (!iframe) return;
+	
+	const target = iframe.contentWindow.document;
+
+	const ncStylesheets = [...document.querySelectorAll('link.theme')];
+	ncStylesheets.forEach(ncSheet => {
+		const smSheet = target.importNode(ncSheet, true);
+		target.head.appendChild(smSheet);
+	});
+
+	const themes = [...document.body.attributes].filter(att => att.name.startsWith('data-theme'));
+	themes.forEach(theme => target.body.setAttribute(theme.name, theme.value));
+}
 
 // The SnappyMail application is already configured to modify the <title> element
 // of its root document with the number of unread messages in the inbox.
