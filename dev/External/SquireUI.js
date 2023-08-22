@@ -281,6 +281,27 @@ class SquireUI
 
 		clr.type = 'color';
 		toolbar.append(clr);
+		// Chrome https://github.com/the-djmaze/snappymail/issues/1199
+		let clrid = 'squire-colors',
+			colorlist = doc.getElementById(clrid),
+			add = hex => colorlist.append(new Option(hex));
+		if (!colorlist) {
+			colorlist = createElement('datalist');
+			colorlist.id = clrid;
+			// Color blind safe Tableau 10 by Maureen Stone
+			add('#4E79A7');
+			add('#F28E2B');
+			add('#E15759');
+			add('#76B7B2');
+			add('#59A14F');
+			add('#EDC948');
+			add('#B07AA1');
+			add('#FF9DA7');
+			add('#9C755F');
+			add('#BAB0AC');
+			doc.body.append(colorlist);
+		}
+		clr.setAttribute('list', clrid);
 
 		browseImage.type = 'file';
 		browseImage.accept = 'image/*';
