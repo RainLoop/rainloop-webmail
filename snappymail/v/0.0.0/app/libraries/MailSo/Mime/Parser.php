@@ -225,7 +225,7 @@ abstract class Parser
 
 						$oSubPart = new Part;
 
-						$oSubPart->parseStreamRecursive($rStreamHandle,
+						static::parseStreamRecursive($oSubPart, $rStreamHandle,
 							$iOffset, $sPrevBuffer, $sBuffer, $aBoundaryStack, $bIsOef, true);
 
 						$oPart->SubParts->append($oSubPart);
