@@ -99,7 +99,7 @@ const
 	},
 
 	cleanCSS = source =>
-		source.trim().replace(/-(ms|webkit)-[^;]+(;|$)/g, '')
+		source.trim().replace(/(^|;)\s*-(ms|webkit)-[^;]+(;|$)/g, '')
 			.replace(/white-space[^;]+(;|$)/g, '')
 			// Drop Microsoft Office style properties
 //			.replace(/mso-[^:;]+:[^;]+/gi, '')
