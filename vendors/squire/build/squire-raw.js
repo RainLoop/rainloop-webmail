@@ -1800,7 +1800,8 @@ function onKey(event) {
 
 	let key = event.key.toLowerCase(),
 		modifiers = '',
-		range = this.getSelection();
+		range = this.getSelection(),
+		root = this._root;
 
 	// We need to apply the backspace/delete handlers regardless of
 	// control key modifiers.
@@ -1819,13 +1820,13 @@ function onKey(event) {
 		// Record undo checkpoint.
 		this.saveUndoState(range);
 		// Delete the selection
-		deleteContentsOfRange(range, this._root);
+		deleteContentsOfRange(range, root);
 		this._ensureBottomLine();
 		this.setSelection(range);
 		this._updatePath(range, true);
 	} else if (range.collapsed
-		&& range.startContainer === this._root
-		&& this._root.children.length > 0) {
+		&& range.startContainer === root
+		&& root.children.length > 0) {
 
 		// Under certain conditions, cursor/range can be positioned directly
 		// under this._root (not wrapped) and when this happens, an inline(TEXT)
@@ -1836,25 +1837,20 @@ function onKey(event) {
 		// Therefor, we try to detect this case here and wrap the cursor/range
 		// before the text is inserted.
 
-		const nextElement = this._root.children[range.startOffset];
-		if (nextElement.tagName === blockTag
-			&& nextElement.children.length === 1
-			&& nextElement.children[0].tagName === 'BR') {
-			// this is a suitable '<div<br></div>' wrapper, move selection to here
-			range = createRange(nextElement, 0);
-		} else {
+		const nextElement = root.children[range.startOffset];
+		if (nextElement && !isBlock(nextElement)) {
 			// create a new wrapper
-			range = createRange(this._root.insertBefore(
+			range = createRange(root.insertBefore(
 				this.createDefaultBlock(), nextElement
 			), 0);
 			if (nextElement.tagName === 'BR') {
 				// delete it because a new <br> is created by createDefaultBlock()
-				this._root.removeChild(nextElement);
+				root.removeChild(nextElement);
 			}
+			const restore = this._restoreSelection;
+			this.setSelection(range);
+			this._restoreSelection = restore;
 		}
-		const restore = this._restoreSelection;
-		this.setSelection(range);
-		this._restoreSelection = restore;
 	}
 }
 
