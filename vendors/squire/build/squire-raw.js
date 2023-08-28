@@ -1846,6 +1846,38 @@ function onKey(event) {
 		this._ensureBottomLine();
 		this.setSelection(range);
 		this._updatePath(range, true);
+	} else if (range.collapsed
+		&& range.startContainer === this._root
+		&& this._root.children.length > 0) {
+
+		// Under certain conditions, cursor/range can be positioned directly
+		// under this._root (not wrapped) and when this happens, an inline(TEXT)
+		// element is attached directly to this._root. There might be other
+		// issues, but squire.makeUnorderedList(), squire.makeOrderedList() and
+		// maybe other functions that call squire.modifyBlocks() do NOT work
+		// on inline(TEXT) nodes that are direct children of this._root.
+		// Therefor, we try to detect this case here and wrap the cursor/range
+		// before the text is inserted.
+
+		const nextElement = this._root.children[range.startOffset];
+		if (nextElement.tagName === blockTag
+			&& nextElement.children.length === 1
+			&& nextElement.children[0].tagName === 'BR') {
+			// this is a suitable '<div<br></div>' wrapper, move selection to here
+			range = createRange(nextElement, 0);
+		} else {
+			// create a new wrapper
+			range = createRange(this._root.insertBefore(
+				this.createDefaultBlock(), nextElement
+			), 0);
+			if (nextElement.tagName === 'BR') {
+				// delete it because a new <br> is created by createDefaultBlock()
+				this._root.removeChild(nextElement);
+			}
+		}
+		const restore = this._restoreSelection;
+		this.setSelection(range);
+		this._restoreSelection = restore;
 	}
 }
 
