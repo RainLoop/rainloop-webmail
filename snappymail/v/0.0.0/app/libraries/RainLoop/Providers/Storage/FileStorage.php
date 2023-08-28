@@ -85,6 +85,9 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 		return $this->bLocal;
 	}
 
+	/**
+	 * @param \RainLoop\Model\Account|string|null $mAccount
+	 */
 	public function GenerateFilePath($mAccount, int $iStorageType, bool $bMkDir = false) : string
 	{
 		$sEmail = $sSubFolder = '';
