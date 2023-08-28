@@ -220,52 +220,36 @@ const
 	},
 
 	fixCursor = (node, root) => {
-		// In Webkit and Gecko, block level elements are collapsed and
-		// unfocusable if they have no content (:empty). To remedy this, a <BR> must be
-		// inserted. In Opera and IE, we just need a textnode in order for the
-		// cursor to appear.
-		let self = root.__squire__;
-		let originalNode = node;
-		let fixer, child;
-
-		if (node === root) {
-			if (!(child = node.firstChild) || child.nodeName === 'BR') {
-				fixer = self.createDefaultBlock();
-				if (child) {
-					child.replaceWith(fixer);
-				}
-				else {
-					node.append(fixer);
-				}
-				node = fixer;
-				fixer = null;
-			}
+		let fixer = null;
+		if (node instanceof Text) {
+			return node;
 		}
-
-		if (node.nodeType === TEXT_NODE) {
-			return originalNode;
-		}
-
 		if (isInline(node)) {
-			child = node.firstChild;
-			while (isWebKit && child?.nodeType === TEXT_NODE && !child.data) {
-				child.remove();
-				child = node.firstChild;
+			let child = node.firstChild;
+			if (cantFocusEmptyTextNodes) {
+				while (child && child instanceof Text && !child.data) {
+					node.removeChild(child);
+					child = node.firstChild;
+				}
 			}
 			if (!child) {
-				fixer = self._addZWS();
+				if (cantFocusEmptyTextNodes) {
+					fixer = document.createTextNode(ZWS);
+				} else {
+					fixer = document.createTextNode("");
+				}
 			}
-//		} else if (!node.querySelector('BR')) {
-//		} else if (!node.innerText.trim().length) {
-		} else if (node.matches(':empty')) {
-			fixer = createElement('BR');
-			while ((child = node.lastElementChild) && !isInline(child)) {
-				node = child;
+		} else if (node instanceof Element && !node.querySelector("BR")) {
+			fixer = createElement("BR");
+			let parent = node;
+			let child;
+			while ((child = parent.lastElementChild) && !isInline(child)) {
+				parent = child;
 			}
 		}
 		if (fixer) {
 			try {
-				node.append(fixer);
+				node.appendChild(fixer);
 			} catch (error) {
 				didError({
 					name: 'Squire: fixCursor – ' + error,
@@ -274,8 +258,7 @@ const
 				});
 			}
 		}
-
-		return originalNode;
+		return node;
 	},
 
 	// Recursively examine container nodes and wrap any inline children.
@@ -959,36 +942,30 @@ const
 		let startBlock = getStartBlockOfRange(range, root);
 		let nodeAfterCursor;
 
-		if (!startBlock) {
-			return false;
-		}
-
-		// If in the middle or end of a text node, we're not at the boundary.
-		if (startContainer.nodeType === TEXT_NODE) {
-			if (startOffset) {
-				return false;
-			}
-			nodeAfterCursor = startContainer;
-		} else {
-			nodeAfterCursor = getNodeAfter(startContainer, startOffset);
-			if (nodeAfterCursor && !root.contains(nodeAfterCursor)) {
-				nodeAfterCursor = null;
-			}
-			// The cursor was right at the end of the document
-			if (!nodeAfterCursor) {
-				nodeAfterCursor = getNodeBefore(startContainer, startOffset);
-				if (nodeAfterCursor.nodeType === TEXT_NODE &&
-						nodeAfterCursor.length) {
+		if (startBlock) {
+			// If in the middle or end of a text node, we're not at the boundary.
+			if (startContainer.nodeType === TEXT_NODE) {
+				if (startOffset) {
 					return false;
 				}
+				nodeAfterCursor = startContainer;
+			} else {
+				nodeAfterCursor = getNodeAfter(startContainer, startOffset);
+				// The cursor was right at the end of the document
+				if (!nodeAfterCursor || !root.contains(nodeAfterCursor)) {
+					nodeAfterCursor = getNodeBefore(startContainer, startOffset);
+					if (nodeAfterCursor.nodeType === TEXT_NODE && nodeAfterCursor.length) {
+						return false;
+					}
+				}
 			}
+
+			// Otherwise, look for any previous content in the same block.
+			contentWalker = newContentWalker(getStartBlockOfRange(range, root));
+			contentWalker.currentNode = nodeAfterCursor;
+
+			return !contentWalker.previousNode();
 		}
-
-		// Otherwise, look for any previous content in the same block.
-		contentWalker = newContentWalker(getStartBlockOfRange(range, root));
-		contentWalker.currentNode = nodeAfterCursor;
-
-		return !contentWalker.previousNode();
 	},
 
 	rangeDoesEndAtBlockBoundary = (range, root) => {
