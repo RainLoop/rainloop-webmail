@@ -4,6 +4,13 @@ html.list-loading body {
 	cursor: progress;
 }
 
+.toggleLeft::before {
+	content: '❮';
+}
+html.rl-left-panel-disabled .toggleLeft::before {
+	content: '❯';
+}
+
 @media screen and (min-width: @maxMobileWidth + 1px) {
 	#rl-app {
 		background-image: var(--main-bg-image);

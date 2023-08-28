@@ -8,9 +8,6 @@ import { AbstractViewRight } from 'Knoin/AbstractViews';
 export class SettingsPaneUserView extends AbstractViewRight {
 	constructor() {
 		super();
-
-		this.leftPanelDisabled = leftPanelDisabled;
-		this.toggleLeftPanel = toggleLeftPanel;
 	}
 
 	onShow() {
@@ -18,8 +15,12 @@ export class SettingsPaneUserView extends AbstractViewRight {
 	}
 
 	onBuild(dom) {
-		dom.addEventListener('click', () =>
-			ThemeStore.isMobile() && !event.target.closestWithin('.toggleLeft', dom) && leftPanelDisabled(true)
-		);
+		dom.addEventListener('click', () => {
+			if (event.target.closestWithin('.toggleLeft', dom)) {
+				toggleLeftPanel();
+			} else {
+				ThemeStore.isMobile() && leftPanelDisabled(true);
+			}
+		});
 	}
 }

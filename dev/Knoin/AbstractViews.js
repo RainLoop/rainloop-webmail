@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
-import { keyScope, addShortcut, SettingsGet, leftPanelDisabled, toggleLeftPanel, elementById } from 'Common/Globals';
+import { keyScope, addShortcut, SettingsGet, toggleLeftPanel, elementById } from 'Common/Globals';
 import { ViewTypePopup, showScreenPopup } from 'Knoin/Knoin';
 
 import { SaveSettingStatus } from 'Common/Enums';
@@ -95,7 +95,6 @@ export class AbstractViewLeft extends AbstractView
 	constructor(templateID)
 	{
 		super(templateID, 'left');
-		this.leftPanelDisabled = leftPanelDisabled;
 		this.toggleLeftPanel = toggleLeftPanel;
 	}
 }

@@ -88,8 +88,6 @@ export class MailMessageList extends AbstractViewRight {
 		this.composeInEdit = ComposePopupView.inEdit;
 
 		this.isMobile = ThemeStore.isMobile; // Obsolete
-		this.leftPanelDisabled = leftPanelDisabled;
-		this.toggleLeftPanel = toggleLeftPanel;
 
 		this.popupVisibility = arePopupsVisible;
 
@@ -582,7 +580,11 @@ export class MailMessageList extends AbstractViewRight {
 
 		addEventsListeners(dom, {
 			click: event => {
-				ThemeStore.isMobile() && !eqs(event, '.toggleLeft') && leftPanelDisabled(true);
+				if (eqs(event, '.toggleLeft')) {
+					toggleLeftPanel();
+				} else {
+					ThemeStore.isMobile() && leftPanelDisabled(true);
+				}
 
 				if (eqs(event, '.messageList') && ScopeMessageView === AppUserStore.focusedState()) {
 					AppUserStore.focusedState(ScopeMessageList);

@@ -15,6 +15,7 @@
 
 	.b-toolbar {
 		padding: 10px 0 10px @rlLowMargin;
+		white-space: nowrap;
 	}
 }
 
@@ -189,7 +190,7 @@ html.rl-left-panel-disabled {
 
 /* desktop */
 @media screen and (min-width: @maxMobileWidth + 1px) {
-	.toggleLeft,
+	#rl-right .toggleLeft,
 	#V-MailMessageList .buttonCompose {
 		display: none !important;
 	}
