@@ -1,59 +1,59 @@
 <?php
 
-if (defined('APP_VERSION')) {
-	if (PHP_VERSION_ID < 70400) {
-		echo '<p style="color: red">';
-		echo '[301] Your PHP version ('.PHP_VERSION.') is lower than the minimal required 7.4.0!';
-		echo '</p>';
-		exit(301);
-	}
+if (PHP_VERSION_ID < 70400) {
+	echo '<p style="color: red">';
+	echo '[301] Your PHP version ('.PHP_VERSION.') is lower than the minimal required 7.4.0!';
+	echo '</p>';
+	exit(301);
+}
 
-	$aOptional = array(
-		'cURL'    => extension_loaded('curl'),
-		'exif'    => extension_loaded('exif'),
-		'finfo'   => class_exists('finfo'),
-		'gd'      => extension_loaded('gd'),
-		'gnupg'   => extension_loaded('gnupg'),
-		'gmagick' => extension_loaded('gmagick'),
-		'imagick' => extension_loaded('imagick'),
-		'iconv'   => function_exists('iconv'),
-		'intl'    => function_exists('idn_to_ascii'),
-		'ldap'    => extension_loaded('ldap'),
-		'OpenSSL' => extension_loaded('openssl'),
-		'mysql'   => extension_loaded('pdo_mysql'),
-		'pgsql'   => extension_loaded('pdo_pgsql'),
-		'redis'   => extension_loaded('redis'),
-		'Sodium'  => extension_loaded('sodium'),
-		'sqlite'  => extension_loaded('pdo_sqlite'),
-		'tidy'    => extension_loaded('tidy'),
-		'uuid'    => extension_loaded('uuid'),
-		'xxtea'   => extension_loaded('xxtea'),
-		'zip'     => extension_loaded('zip')
-	);
+$aOptional = array(
+	'cURL'    => extension_loaded('curl'),
+	'exif'    => extension_loaded('exif'),
+	'finfo'   => class_exists('finfo'),
+	'gd'      => extension_loaded('gd'),
+	'gnupg'   => extension_loaded('gnupg'),
+	'gmagick' => extension_loaded('gmagick'),
+	'imagick' => extension_loaded('imagick'),
+	'iconv'   => function_exists('iconv'),
+	'intl'    => function_exists('idn_to_ascii'),
+	'ldap'    => extension_loaded('ldap'),
+	'OpenSSL' => extension_loaded('openssl'),
+	'mysql'   => extension_loaded('pdo_mysql'),
+	'pgsql'   => extension_loaded('pdo_pgsql'),
+	'redis'   => extension_loaded('redis'),
+	'Sodium'  => extension_loaded('sodium'),
+	'sqlite'  => extension_loaded('pdo_sqlite'),
+	'tidy'    => extension_loaded('tidy'),
+	'uuid'    => extension_loaded('uuid'),
+	'xxtea'   => extension_loaded('xxtea'),
+	'zip'     => extension_loaded('zip')
+);
 
-	$aRequirements = array(
-		'mbstring' => extension_loaded('mbstring'),
-		'Zlib'     => extension_loaded('zlib'),
-		// enabled by default:
-		'json'     => function_exists('json_decode'),
-		'libxml'   => function_exists('libxml_use_internal_errors'),
-		'dom'      => class_exists('DOMDocument')
-		// https://github.com/the-djmaze/snappymail/issues/392
-//		'phar'     => class_exists('PharData')
-	);
+$aRequirements = array(
+	'mbstring' => extension_loaded('mbstring'),
+	'Zlib'     => extension_loaded('zlib'),
+	// enabled by default:
+	'json'     => function_exists('json_decode'),
+	'libxml'   => function_exists('libxml_use_internal_errors'),
+	'dom'      => class_exists('DOMDocument')
+	// https://github.com/the-djmaze/snappymail/issues/392
+//	'phar'     => class_exists('PharData')
+);
 
-	if (in_array(false, $aRequirements)) {
-		echo '<p>[302] The following PHP extensions are not available in your PHP configuration!</p>';
-		echo '<ul>';
-		foreach ($aRequirements as $sKey => $bValue) {
-			if (!$bValue) {
-				echo '<li>'.$sKey.'</li>';
-			}
+if (in_array(false, $aRequirements)) {
+	echo '<p>[302] The following PHP extensions are not available in your PHP configuration!</p>';
+	echo '<ul>';
+	foreach ($aRequirements as $sKey => $bValue) {
+		if (!$bValue) {
+			echo '<li>'.$sKey.'</li>';
 		}
-		echo '</ul>';
-		exit(302);
 	}
+	echo '</ul>';
+	exit(302);
+}
 
+if (defined('APP_VERSION')) {
 	$sCheckName = 'delete_if_you_see_it_after_install';
 	$sCheckFolder = APP_DATA_FOLDER_PATH.$sCheckName;
 	$sCheckFilePath = APP_DATA_FOLDER_PATH.$sCheckName.'/'.$sCheckName.'.file';
