@@ -464,7 +464,7 @@ export class MessageModel extends AbstractModel {
 			clone.querySelectorAll('.sm-bq-switcher').forEach(
 				node => node.replaceWith(node.lastElementChild)
 			);
-			return clone.innerHTML;
+			return (clone.querySelector('.mail-body') || clone).innerHTML;
 		}
 		let result = msgHtml(this);
 		return result.html || plainToHtml(this.plain());

@@ -346,7 +346,7 @@ export const
 				let i = oElement.attributes.length;
 				while (i--) {
 					let sAttrName = oElement.attributes[i].name.toLowerCase();
-					if (!allowedAttributes.includes(sAttrName)) {
+					if (!allowedAttributes.includes(sAttrName) && ('class' !== sAttrName || 'mail-body' !== className)) {
 						delAttribute(sAttrName);
 						aAttrsForRemove.push(sAttrName);
 					}
@@ -542,7 +542,7 @@ export const
 					oStyle.removeProperty('color');
 				}
 
-				oStyle.cssText = cleanCSS(oStyle.cssText);
+				oStyle.cssText && (oStyle.cssText = cleanCSS(oStyle.cssText));
 			}
 
 			if (debug && aAttrsForRemove.length) {
