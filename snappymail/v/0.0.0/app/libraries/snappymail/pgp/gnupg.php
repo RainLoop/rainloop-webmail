@@ -299,13 +299,13 @@ class GnuPG
 			'private' => []
 		];
 		// Public
-		foreach ($this->handler()->keyinfo($pattern) as $key) {
+		foreach (($this->handler()->keyinfo($pattern) ?: []) as $key) {
 			$key['can_verify'] = $key['can_sign'];
 			unset($key['can_sign']);
 			$keys['public'][] = $key;
 		}
 		// Private, read https://github.com/php-gnupg/php-gnupg/issues/5
-		foreach ($this->handler()->keyinfo($pattern, 1) as $key) {
+		foreach (($this->handler()->keyinfo($pattern, 1) ?: []) as $key) {
 			$key['can_decrypt'] = $key['can_encrypt'];
 			unset($key['can_encrypt']);
 			$keys['private'][] = $key;
