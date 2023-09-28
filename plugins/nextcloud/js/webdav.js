@@ -29,13 +29,14 @@ const
 </propfind>`,
 
 	propfindCal = `<?xml version="1.0"?>
-<propfind xmlns="DAV:">
-	<prop>
-		<resourcetype/>
-		<current-user-privilege-set/>
-		<displayname/>
-	</prop>
-</propfind>`,
+<d:propfind xmlns:d="DAV:" xmlns:x1="http://apple.com/ns/ical/">
+	<d:prop>
+		<d:resourcetype/>
+		<d:current-user-privilege-set/>
+		<d:displayname/>
+		<x1:calendar-color/>
+	</d:prop>
+</d:propfind>`,
 
 	xmlParser = new DOMParser(),
 	pathRegex = /.*\/remote.php\/dav\/[^/]+\/[^/]+/g,
@@ -285,7 +286,51 @@ class NextcloudFilesPopupView extends rl.pluginPopupView {
 			}
 		});
 	}
+	createCalendarListItem(calendarData, treeElement) {
+		const {
+			displayName,
+			href,
+			calendarColor
+		} = calendarData;
 
+		const li = document.createElement('li');
+		li.style.display = 'flex';
+
+		const span = document.createElement('span');
+		span.setAttribute('role', 'img');
+		span.className = 'material-design-icon checkbox-blank-circle-icon';
+		span.style.fill = calendarColor;
+		span.style.width = '20px';
+		span.style.height = '20px';
+
+		const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+		svg.setAttribute('width', '20');
+		svg.setAttribute('height', '20');
+		svg.setAttribute('viewBox', '0 0 24 24');
+
+		const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+		path.setAttribute('d', 'M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z');
+		svg.appendChild(path);
+
+		span.appendChild(svg);
+
+		const button = document.createElement('button');
+		button.className = 'button-vue';
+		button.style.backgroundColor = 'transparent';
+		button.style.border = '0';
+		button.style.fontSize = 'large';
+		button.style.padding = '0';
+		button.style.cursor = 'pointer';
+		button.style.marginLeft = '5px';
+		button.href = href.replace(pathRegex, '').replace(/\/$/, '');
+		button.textContent = displayName;
+		button.style.color = '#1968DF';
+
+		li.appendChild(span);
+		li.appendChild(button);
+
+		treeElement.appendChild(li);
+	}
 	// Happens after showModal()
 	beforeShow(files, fResolve) {
 		this.select = '';
@@ -341,26 +386,30 @@ class NextcloudCalendarsPopupView extends rl.pluginPopupView {
 		})
 		.then(response => (response.status < 400) ? response.text() : Promise.reject(new Error({ response })))
 		.then(text => {
-			const
-				responseList = getDavElementsByTagName(
-					xmlParser.parseFromString(text, 'application/xml').documentElement,
-					'response'
-				);
+			// Parse the XML text
+			const xmlDoc = xmlParser.parseFromString(text, 'application/xml').documentElement;
+			const responseList = getElementsInNamespaces(xmlDoc, 'response');
 			for (let i = 0; i < responseList.length; ++i) {
-				const e = responseList.item(i);
+				const e = responseList[i];
 				if (getDavElementByTagName(e, 'resourcetype').getElementsByTagNameNS(nsCalDAV, 'calendar').length) {
-//				 && getDavElementsByTagName(getDavElementByTagName(e, 'current-user-privilege-set'), 'write').length) {
-					const li = document.createElement('li'),
-						btn = document.createElement('button');
-					li.dataset.icon = '📅';
-					li.textContent = getDavElementByTagName(e, 'displayname').textContent;
-					btn.href = getDavElementByTagName(e, 'href').textContent
-						.replace(pathRegex, '').replace(/\/$/, '');
-					btn.textContent = 'select';
-					btn.className = 'button-vue';
-					btn.style.marginLeft = '1em';
-					li.append(btn);
-					this.tree.append(li);
+					const displayNameElement = getElementsInNamespaces(e, 'displayname')[0];
+					const displayName = displayNameElement ? displayNameElement.textContent.trim() : '';
+
+					const hrefElement = getElementsInNamespaces(e, 'href')[0];
+					const href = hrefElement ? hrefElement.textContent.trim() : '';
+
+					const calendarColorElement = getElementsInNamespaces(e, 'calendar-color')[0];
+					const calendarColor = calendarColorElement ? calendarColorElement.textContent.trim() : '#000000';
+
+					// Create an object to hold calendar data
+					const calendarData = {
+						displayName,
+						href,
+						calendarColor
+					};
+
+					// Call the function to create and append the list item
+					this.createCalendarListItem(calendarData, this.tree);
 				}
 			}
 		})
@@ -433,3 +482,19 @@ rl.nextcloud = {
 };
 
 })(window.rl);
+
+function getElementsInNamespaces(xmlDocument, tagName) {
+	const namespaces = {
+		d: 'DAV:',
+		x1: 'http://apple.com/ns/ical/',
+	};
+	const results = [];
+	for (const prefix in namespaces) {
+		const namespaceURI = namespaces[prefix];
+		const elements = xmlDocument.getElementsByTagNameNS(namespaceURI, tagName);
+		for (const element of elements) {
+			results.push(element);
+		}
+	}
+	return results;
+}
