@@ -83,7 +83,7 @@ class Cookies
 		if ($cookie_remove) {
 			\header_remove('Set-Cookie');
 			foreach ($cookies as $cookie) {
-				\header($cookie);
+				\header($cookie,false);
 			}
 		}
 
@@ -118,14 +118,14 @@ class Cookies
 		foreach (\str_split($sValue, $iMaxSize) as $i => $sPart) {
 			$sCookieName = $i ? "{$sName}~{$i}" : $sName;
 			Log::debug('COOKIE', "set {$sCookieName}");
-			static::_set($sCookieName, $sPart, $iExpire);
+			static::_set($sCookieName, $sPart, $iExpire, $httponly);
 		}
 		// Delete unused old 4K split cookie parts
 		foreach (\array_keys($_COOKIE) as $sCookieName) {
 			$aSplit = \explode('~', $sCookieName);
 			if (isset($aSplit[1]) && $aSplit[0] == $sName && $aSplit[1] > $i) {
 				Log::debug('COOKIE', "unset {$sCookieName}");
-				static::_set($sCookieName, '', 0);
+				static::_set($sCookieName, '', 0, $httponly);
 			}
 		}
 	}

@@ -493,6 +493,19 @@ export class ComposePopupView extends AbstractViewPopup {
 										|| getNotification(Notifications.CantSendMessage));
 								}
 							} else {
+								if (arrayLength(this.aDraftInfo) > 0) {
+									const flag = {
+										'reply': '\\answered',
+										'forward': '$forwarded'
+									}[this.aDraftInfo[0]];
+									if (flag) {
+										const aFlags = MessageUserStore.message().flags();
+										if (aFlags.indexOf(flag) === -1) {
+											aFlags.push(flag);
+											MessageUserStore.message().flags(aFlags);
+										}
+									}
+								}
 								this.close();
 							}
 							setFolderETag(this.draftsFolder(), '');

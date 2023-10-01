@@ -301,10 +301,13 @@ Values:
   "match" - whitelist or ask
   "always" - show always'),
 				'contacts_autosave'      => array(true),
-				'mail_use_threads'       => array(false),
+                'mail_list_grouped'      => array(false),
+                'mail_use_threads'       => array(false),
 				'allow_draft_autosave'   => array(true),
 				'mail_reply_same_folder' => array(false),
 				'msg_default_action'     => array(1, '1 - reply, 2 - reply all'),
+                'collapse_blockquotes'   => array(true),
+                'allow_spellcheck'       => array(false)
 			),
 
 			'logs' => array(

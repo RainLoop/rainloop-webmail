@@ -254,6 +254,7 @@
 		"TITLE_UPDATE_IDENTITY": "Update Identity?",
 		"BUTTON_ADD_IDENTITY": "Add",
 		"BUTTON_UPDATE_IDENTITY": "Update",
+		"LABEL_SIGNATURE_ADD": "Add/Edit signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Insert this signature before quoted text in replies"
 	},
 	"POPUPS_CREATE_FOLDER": {
