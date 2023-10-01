@@ -1345,6 +1345,7 @@ const
 				color = node.color,
 				newTag = createElement('SPAN'),
 				css = newTag.style;
+			newTag.style.cssText = node.style.cssText;
 			if (face) {
 				css.fontFamily = face;
 			}

@@ -141,3 +141,10 @@ function SnappyMailFormHelper(oForm)
 		console.error(e);
 	}
 }
+
+addEventListener('hashchange', (event) => {
+	const search = event.newURL.substring(event.newURL.lastIndexOf('/') + 1);
+	if (search && search.length < 25) {
+		document.getElementById('rliframe').contentWindow.rl.app.messageList.mainSearch(search);
+	}
+});

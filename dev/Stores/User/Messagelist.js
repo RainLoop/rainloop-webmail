@@ -344,13 +344,23 @@ MessagelistUserStore.setAction = (sFolderFullName, iSetAction, messages) => {
 		length;
 
 	if (iSetAction == MessageSetAction.SetSeen) {
-		messages.forEach(oMessage =>
-			oMessage.isUnseen() && rootUids.push(oMessage.uid) && oMessage.flags.push('\\seen')
-		);
+		messages.forEach(oMessage => {
+			if (oMessage.isUnseen() && rootUids.push(oMessage.uid)) {
+				oMessage.flags.push('\\seen');
+				if (oMessage.threads().length > 0 && oMessage.threadUnseen().includes(oMessage.uid)) {
+					oMessage.threadUnseen.remove(oMessage.uid);
+				}
+			}
+		});
 	} else if (iSetAction == MessageSetAction.UnsetSeen) {
-		messages.forEach(oMessage =>
-			!oMessage.isUnseen() && rootUids.push(oMessage.uid) && oMessage.flags.remove('\\seen')
-		);
+		messages.forEach(oMessage => {
+			if (!oMessage.isUnseen() && rootUids.push(oMessage.uid)) {
+				oMessage.flags.remove('\\seen');
+				if (oMessage.threads().length > 0 && !oMessage.threadUnseen().includes(oMessage.uid)) {
+					oMessage.threadUnseen.push(oMessage.uid);
+				}
+			}
+		});
 	} else if (iSetAction == MessageSetAction.SetFlag) {
 		messages.forEach(oMessage =>
 			!oMessage.isFlagged() && rootUids.push(oMessage.uid) && oMessage.flags.push('\\flagged')

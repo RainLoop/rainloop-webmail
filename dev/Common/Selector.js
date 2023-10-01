@@ -200,8 +200,16 @@ export class Selector {
 
 			addEventsListeners(contentScrollable, {
 				click: event => {
-					let el = event.target.closestWithin(this.sItemSelector, contentScrollable);
-					el && this.actionClick(ko.dataFor(el), event);
+
+					const lowerClassName = event.target.className.toLowerCase();
+					if (this.sItemSelector !== '.messageListItem'
+						|| (lowerClassName.indexOf('flagparent') === -1
+							&& lowerClassName.indexOf('checkbox') === -1)) {
+
+						let el = event.target.closestWithin(this.sItemSelector, contentScrollable);
+						el && this.actionClick(ko.dataFor(el), event);
+
+					}
 
 					const item = getItem(this.sItemCheckedSelector);
 					if (item) {
