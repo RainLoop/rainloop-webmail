@@ -7,7 +7,7 @@ import { koComputable } from 'External/ko';
 	oCallbacks:
 		ItemSelect
 		MiddleClick
-		AutoSelect
+		canSelect
 		ItemGetUid
 		UpOrDown
 */
@@ -200,18 +200,11 @@ export class Selector {
 
 			addEventsListeners(contentScrollable, {
 				click: event => {
+					const el = event.target.closestWithin(this.sItemSelector, contentScrollable);
+					let item = el && ko.dataFor(el);
+					el && (this.oCallbacks.click || (()=>1))(event, item) && this.actionClick(item, event);
 
-					const lowerClassName = event.target.className.toLowerCase();
-					if (this.sItemSelector !== '.messageListItem'
-						|| (lowerClassName.indexOf('flagparent') === -1
-							&& lowerClassName.indexOf('checkbox') === -1)) {
-
-						let el = event.target.closestWithin(this.sItemSelector, contentScrollable);
-						el && this.actionClick(ko.dataFor(el), event);
-
-					}
-
-					const item = getItem(this.sItemCheckedSelector);
+					item = getItem(this.sItemCheckedSelector);
 					if (item) {
 						if (event.shiftKey) {
 							this.actionClick(item, event);
@@ -257,7 +250,7 @@ export class Selector {
 	 * @returns {boolean}
 	 */
 	autoSelect(bForce) {
-		(bForce || (this.oCallbacks.AutoSelect || (()=>1))())
+		(bForce || (this.oCallbacks.canSelect || (()=>1))())
 		&& this.focusedItem()
 		&& this.selectedItem(this.focusedItem());
 	}

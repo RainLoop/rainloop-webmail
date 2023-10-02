@@ -237,7 +237,25 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.selector.on('ItemGetUid', message => (message ? message.generateUid() : ''));
 
-		this.selector.on('AutoSelect', () => MessagelistUserStore.canAutoSelect());
+		this.selector.on('canSelect', () => MessagelistUserStore.canSelect());
+
+		this.selector.on('click', (event, currentMessage) => {
+			const el = event.target;
+			if (el.closest('.flagparent')) {
+				if (currentMessage) {
+					const checked = MessagelistUserStore.listCheckedOrSelected();
+					listAction(
+						currentMessage.folder,
+						currentMessage.isFlagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
+						checked.find(message => message.uid == currentMessage.uid) ? checked : [currentMessage]
+					);
+				}
+			} else if (el.closest('.threads-len')) {
+				this.gotoThread(currentMessage);
+			} else {
+				return 1;
+			}
+		});
 
 		this.selector.on('UpOrDown', up => {
 			if (MessagelistUserStore.hasChecked()) {
@@ -594,20 +612,6 @@ export class MailMessageList extends AbstractViewRight {
 				el && this.gotoPage(ko.dataFor(el));
 
 				eqs(event, '.checkboxCheckAll') && this.checkAll(!this.checkAll());
-
-				el = eqs(event, '.flagParent');
-				let currentMessage = el && ko.dataFor(el);
-				if (currentMessage) {
-					const checked = MessagelistUserStore.listCheckedOrSelected();
-					listAction(
-						currentMessage.folder,
-						currentMessage.isFlagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
-						checked.find(message => message.uid == currentMessage.uid) ? checked : [currentMessage]
-					);
-				}
-
-				el = eqs(event, '.threads-len');
-				el && this.gotoThread(ko.dataFor(el));
 			},
 			dblclick: event => {
 				let el = eqs(event, '.actionHandle');
@@ -674,7 +678,7 @@ export class MailMessageList extends AbstractViewRight {
 				MessagelistUserStore.mainSearch(sLastSearchValue);
 				return false;
 			}
-			if (MessageUserStore.message() && MessagelistUserStore.canAutoSelect()) {
+			if (MessageUserStore.message() && MessagelistUserStore.canSelect()) {
 				isFullscreen() || toggleFullscreen();
 				return false;
 			}

@@ -165,7 +165,7 @@ MessagelistUserStore.notifyNewMessages = (folder, newMessages) => {
 	}
 }
 
-MessagelistUserStore.canAutoSelect = () =>
+MessagelistUserStore.canSelect = () =>
 	!disableAutoSelect()
 	&& SettingsUserStore.usePreviewPane();
 //	&& !SettingsUserStore.showNextMessage();

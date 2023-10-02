@@ -137,14 +137,14 @@
 					<div class="checkboxMessage fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
 				</div><div>
 					<div class="flagParent fontastic"></div>
-					<div class="senderParent actionHandle" data-bind="attr: {'title': senderClearEmailsString}, text: senderEmailsString"></div>
-					<div class="subjectParent actionHandle" data-bind="text: subject"></div>
+					<div class="senderParent" data-bind="attr: {'title': senderClearEmailsString}, text: senderEmailsString"></div>
+					<div class="subjectParent" data-bind="text: subject"></div>
 					<div class="threads-len" data-bind="visible: 1 < threadsLen(), text: threadsLenText(), attr: {'data-unseen': threadUnseenLen() || null}"></div>
-					<div class="attachmentParent actionHandle">
+					<div class="attachmentParent">
 						<i data-bind="css: attachmentIconClass"></i>
 					</div>
-					<div class="sizeParent actionHandle" data-bind="text: friendlySize()"></div>
-					<time class="actionHandle" data-bind="attr:{'data-moment-format':$root.timeFormat()}, moment: dateTimestamp"></time>
+					<div class="sizeParent" data-bind="text: friendlySize()"></div>
+					<time data-bind="attr:{'data-moment-format':$root.timeFormat()}, moment: dateTimestamp"></time>
 				</div>
 			</div>
 			<!-- /ko -->
@@ -157,14 +157,14 @@
 					<div class="checkboxMessage fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
 				</div><div data-bind="attr:{style:indent()}, css:{reply:indent()}">
 					<div class="flagParent fontastic"></div>
-					<div class="senderParent actionHandle" data-bind="attr: {'title': senderClearEmailsString}, text: senderEmailsString"></div>
-					<div class="subjectParent actionHandle" data-bind="text: subject"></div>
+					<div class="senderParent" data-bind="attr: {'title': senderClearEmailsString}, text: senderEmailsString"></div>
+					<div class="subjectParent" data-bind="text: subject"></div>
 					<div class="threads-len" data-bind="visible: 1 < threadsLen(), text: threadsLenText(), attr: {'data-unseen': threadUnseenLen() || null}"></div>
-					<div class="attachmentParent actionHandle">
+					<div class="attachmentParent">
 						<i data-bind="css: attachmentIconClass"></i>
 					</div>
-					<div class="sizeParent actionHandle" data-bind="text: friendlySize()"></div>
-					<time class="actionHandle" data-moment-format="AUTO" data-bind="moment: dateTimestamp"></time>
+					<div class="sizeParent" data-bind="text: friendlySize()"></div>
+					<time data-moment-format="AUTO" data-bind="moment: dateTimestamp"></time>
 				</div>
 			</div>
 		</div>
