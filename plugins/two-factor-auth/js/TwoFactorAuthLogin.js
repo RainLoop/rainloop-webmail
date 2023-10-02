@@ -17,7 +17,7 @@
 					+ '<span class="fontastic">⏱</span>'
 					+ '<input name="totp_code" type="text" class="input-block-level"'
 					+ ' pattern="[0-9]*" inputmode="numeric"'
-					+ ' autocomplete="off" autocorrect="off" autocapitalize="none"'
+					+ ' autocomplete="one-time-code" autocorrect="off" autocapitalize="none"'
 					+ ' data-bind="textInput: totp, disable: submitRequest" data-i18n="[placeholder]'+placeholder
 					+ '" placeholder="'+rl.i18n(placeholder)+'">'
 				+ '</div>'));
