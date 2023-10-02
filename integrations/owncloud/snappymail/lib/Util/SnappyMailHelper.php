@@ -137,7 +137,7 @@ class SnappyMailHelper
 */
 				if ($doLogin && $aCredentials[1] && $aCredentials[2]) {
 					$oActions->Logger()->AddSecret($aCredentials[2]);
-					$oAccount = $oActions->LoginProcess($aCredentials[1], $aCredentials[2], false);
+					$oAccount = $oActions->LoginProcess($aCredentials[1], $aCredentials[2]);
 					if ($oAccount) {
 						$oActions->Plugins()->RunHook('login.success', array($oAccount));
 						$oActions->SetAuthToken($oAccount);

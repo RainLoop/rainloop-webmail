@@ -89,7 +89,7 @@ class LoginOAuth2Plugin extends \RainLoop\Plugins\AbstractPlugin
 		$iErrorCode = \RainLoop\Notifications::UnknownError;
 		try
 		{
-			$oAccount = $oActions->LoginProcess($sEmail, $sPassword, '', '', false, true);
+			$oAccount = $oActions->LoginProcess($sEmail, $sPassword);
 			if ($oAccount instanceof \RainLoop\Model\Account) {
 				$oActions->AuthToken($oAccount);
 				$iErrorCode = 0;

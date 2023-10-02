@@ -93,7 +93,7 @@ trait Accounts
 		}
 
 		if ($bNew || $sPassword) {
-			$oNewAccount = $this->LoginProcess($sEmail, $sPassword, false, false);
+			$oNewAccount = $this->LoginProcess($sEmail, $sPassword, false);
 			$aAccounts[$sEmail] = $oNewAccount->asTokenArray($oMainAccount);
 		} else {
 			$aAccounts[$sEmail] = \RainLoop\Model\AdditionalAccount::convertArray($aAccounts[$sEmail]);

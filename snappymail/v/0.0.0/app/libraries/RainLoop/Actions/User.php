@@ -36,18 +36,18 @@ trait User
 	{
 		$sEmail = \MailSo\Base\Utils::Trim($this->GetActionParam('Email', ''));
 		$sPassword = $this->GetActionParam('Password', '');
-		$bSignMe = !empty($this->GetActionParam('signMe', 0));
 
 		$this->logMask($sPassword);
 
 		try {
-			$oAccount = $this->LoginProcess($sEmail, $sPassword, $bSignMe);
+			$oAccount = $this->LoginProcess($sEmail, $sPassword);
 		} catch (\Throwable $oException) {
 			$this->loginErrorDelay();
 			throw $oException;
 		}
 
 		$this->SetAuthToken($oAccount);
+		empty($this->GetActionParam('signMe', 0)) || $this->SetSignMeToken($oAccount);
 
 		$this->Plugins()->RunHook('login.success', array($oAccount));
 
