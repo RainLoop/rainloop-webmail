@@ -294,9 +294,6 @@ trait UserAuth
 	{
 		$this->oAdditionalAuthAccount = false;
 		$this->oMainAuthAccount = $oAccount;
-		if (!isset($_COOKIE['smctoken'])) {
-			Cookies::set('smctoken', \base64_encode(\random_bytes(16)), 0, false);
-		}
 		static::SetAccountCookie(self::AUTH_SPEC_TOKEN_KEY, $oAccount);
 	}
 

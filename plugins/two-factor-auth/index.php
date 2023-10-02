@@ -1,6 +1,7 @@
 <?php
 
 use \RainLoop\Exceptions\ClientException;
+use \RainLoop\Model\Account;
 use \RainLoop\Model\MainAccount;
 
 class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
@@ -20,7 +21,8 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->addJs('js/TwoFactorAuthLogin.js');
 		$this->addJs('js/TwoFactorAuthSettings.js');
 
-		$this->addHook('login.success', 'DoLogin');
+//		$this->addHook('login.success', 'DoLogin');
+		$this->addHook('imap.after-login', 'DoLogin');
 		$this->addHook('filter.app-data', 'FilterAppData');
 
 		$this->addJsonHook('GetTwoFactorInfo', 'DoGetTwoFactorInfo');
@@ -57,7 +59,8 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 	}
 
-	public function DoLogin(MainAccount $oAccount)
+//	public function DoLogin(MainAccount $oAccount)
+	public function DoLogin(Account $oAccount)
 	{
 		if ($this->TwoFactorAuthProvider($oAccount)) {
 			$aData = $this->getTwoFactorInfo($oAccount);
@@ -240,10 +243,10 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		return $this->Manager()->Actions()->StorageProvider();
 	}
 
-	private $oTwoFactorAuthProvider;
+	private $oTwoFactorAuthProvider = null;
 	protected function TwoFactorAuthProvider(MainAccount $oAccount) : ?TwoFactorAuthInterface
 	{
-		if (!$this->oTwoFactorAuthProvider) {
+		if (!$this->oTwoFactorAuthProvider && $oAccount instanceof MainAccount) {
 			require __DIR__ . '/providers/interface.php';
 			require __DIR__ . '/providers/totp.php';
 			$this->oTwoFactorAuthProvider = new TwoFactorAuthTotp();

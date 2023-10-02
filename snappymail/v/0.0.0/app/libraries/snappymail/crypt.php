@@ -41,13 +41,14 @@ abstract class Crypt
 	}
 
 	/**
-	 * When $key is empty, it will use a fingerprint of the user agent.
+	 * When $key is empty, it will use the smctoken.
 	 */
 	private static function Passphrase(?string $key) : string
 	{
 		if (!$key) {
 			if (empty($_COOKIE['smctoken'])) {
-				throw new \RuntimeException('Missing smctoken');
+				\SnappyMail\Cookies::set('smctoken', \base64_encode(\random_bytes(16)), 0, false);
+//				throw new \RuntimeException('Missing smctoken');
 			}
 			$key = $_COOKIE['smctoken'] . APP_VERSION;
 		}
