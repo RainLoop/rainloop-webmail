@@ -220,8 +220,7 @@ export class MailMessageList extends AbstractViewRight {
 			MessagelistUserStore.selectedMessage,
 			MessagelistUserStore.focusedMessage,
 			'.messageListItem',
-			'.messageListItem .messageCheckbox',
-			'.messageListItem.focused'
+			'.messageListItem .messageCheckbox'
 		);
 
 		this.selector.on('ItemSelect', message => {
@@ -614,7 +613,7 @@ export class MailMessageList extends AbstractViewRight {
 				eqs(event, '.checkboxCheckAll') && this.checkAll(!this.checkAll());
 			},
 			dblclick: event => {
-				let el = eqs(event, '.actionHandle');
+				let el = eqs(event, '.messageListItem');
 				el && this.gotoThread(ko.dataFor(el));
 			}
 		});

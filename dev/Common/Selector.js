@@ -21,15 +21,13 @@ export class Selector {
 	 * @param {koProperty} koFocusedItem
 	 * @param {string} sItemSelector
 	 * @param {string} sItemCheckedSelector
-	 * @param {string} sItemFocusedSelector
 	 */
 	constructor(
 		koList,
 		koSelectedItem,
 		koFocusedItem,
 		sItemSelector,
-		sItemCheckedSelector,
-		sItemFocusedSelector
+		sItemCheckedSelector
 	) {
 		koFocusedItem = (koFocusedItem || ko.observable(null)).extend({ toggleSubscribeProperty: [this, 'focused'] });
 		koSelectedItem = (koSelectedItem || ko.observable(null)).extend({ toggleSubscribeProperty: [null, 'selected'] });
@@ -46,7 +44,7 @@ export class Selector {
 
 		this.sItemSelector = sItemSelector;
 		this.sItemCheckedSelector = sItemCheckedSelector;
-		this.sItemFocusedSelector = sItemFocusedSelector;
+		this.sItemFocusedSelector = sItemSelector + '.focused';
 
 		this.sLastUid = '';
 		this.oCallbacks = {};

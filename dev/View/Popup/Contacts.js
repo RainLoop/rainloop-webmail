@@ -56,9 +56,8 @@ export class ContactsPopupView extends AbstractViewPopup {
 			ContactUserStore,
 			this.selectorContact,
 			null,
-			'.e-contact-item .actionHandle',
-			'.e-contact-item .checkboxItem',
-			'.e-contact-item.focused'
+			'.e-contact-item',
+			'.e-contact-item .checkboxItem'
 		);
 
 		this.selector.on('ItemSelect', contact => this.populateViewContact(contact));
