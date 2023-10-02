@@ -22,7 +22,7 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->addJs('js/TwoFactorAuthSettings.js');
 
 //		$this->addHook('login.success', 'DoLogin');
-		$this->addHook('imap.after-login', 'DoLogin');
+		$this->addHook('imap.after-login', 'AfterImapLogin');
 		$this->addHook('filter.app-data', 'FilterAppData');
 
 		$this->addJsonHook('GetTwoFactorInfo', 'DoGetTwoFactorInfo');
@@ -60,9 +60,9 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 	}
 
 //	public function DoLogin(MainAccount $oAccount)
-	public function DoLogin(Account $oAccount)
+	public function AfterImapLogin(Account $oAccount, \MailSo\Imap\ImapClient $oImapClient, bool $bSuccess)
 	{
-		if ($this->TwoFactorAuthProvider($oAccount)) {
+		if ($bSuccess && $this->TwoFactorAuthProvider($oAccount)) {
 			$aData = $this->getTwoFactorInfo($oAccount);
 			if (isset($aData['IsSet'], $aData['Enable']) && !empty($aData['Secret']) && $aData['IsSet'] && $aData['Enable']) {
 				$sCode = \trim($this->jsonParam('totp_code', ''));
