@@ -1,3 +1,9 @@
+## 2.29.1 – 2023-10-02
+
+## Fixed
+- Some small messages list bugs
+
+
 ## 2.29.0 – 2023-10-02
 
 ## Added
