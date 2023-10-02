@@ -74,7 +74,7 @@ export class Selector {
 
 		koSelectedItem.subscribe(item => {
 			if (item) {
-				koList.forEach(subItem => subItem.checked(false));
+//				koList.forEach(subItem => subItem.checked(false));
 				selectedItemUseCallback && itemSelectedThrottle(item);
 			} else {
 				selectedItemUseCallback && itemSelected();
