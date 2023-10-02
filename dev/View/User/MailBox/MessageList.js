@@ -241,7 +241,7 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.selector.on('click', (event, currentMessage) => {
 			const el = event.target;
-			if (el.closest('.flagparent')) {
+			if (el.closest('.flagParent')) {
 				if (currentMessage) {
 					const checked = MessagelistUserStore.listCheckedOrSelected();
 					listAction(
