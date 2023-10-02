@@ -115,7 +115,7 @@ export class MailFolderList extends AbstractViewLeft {
 						hasher.setHash(mailBox(folder.fullNameHash, 1, search));
 
 						// in mobile mode hide the panel when a folder is clicked
-						ThemeStore.isMobile() && leftPanelDisabled()===false && leftPanelDisabled(true);
+						ThemeStore.isMobile() && leftPanelDisabled(true);
 					}
 
 					AppUserStore.focusedState(ScopeMessageList);
