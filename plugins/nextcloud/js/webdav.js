@@ -286,47 +286,6 @@ class NextcloudFilesPopupView extends rl.pluginPopupView {
 			}
 		});
 	}
-	// Happens after showModal()
-	beforeShow(files, fResolve) {
-		this.select = '';
-		this.files(!!files);
-		this.fResolve = fResolve;
-
-		this.tree.innerHTML = '';
-		fetchFiles('/').then(items => {
-			buildTree(this, this.tree, items, '/');
-		}).catch(err => console.error(err))
-	}
-
-	onHide() {
-		this.fResolve(this.select);
-	}
-/*
-beforeShow() {} // Happens before showModal()
-onShow() {}     // Happens after  showModal()
-afterShow() {}  // Happens after  showModal() animation transitionend
-onHide() {}     // Happens before animation transitionend
-afterHide() {}  // Happens after  animation transitionend
-close() {}
-*/
-}
-
-class NextcloudCalendarsPopupView extends rl.pluginPopupView {
-	constructor() {
-		super('NextcloudCalendars');
-	}
-
-	onBuild(dom) {
-		this.tree = dom.querySelector('#sm-nc-calendars');
-		this.tree.addEventListener('click', event => {
-			let el = event.target;
-			if (el.matches('button')) {
-				this.select = el.href;
-				this.close();
-			}
-		});
-	}
-
 	createCalendarListItem(calendarData, treeElement) {
 		const {
 			displayName,
@@ -372,7 +331,47 @@ class NextcloudCalendarsPopupView extends rl.pluginPopupView {
 
 		treeElement.appendChild(li);
 	}
-	
+	// Happens after showModal()
+	beforeShow(files, fResolve) {
+		this.select = '';
+		this.files(!!files);
+		this.fResolve = fResolve;
+
+		this.tree.innerHTML = '';
+		fetchFiles('/').then(items => {
+			buildTree(this, this.tree, items, '/');
+		}).catch(err => console.error(err))
+	}
+
+	onHide() {
+		this.fResolve(this.select);
+	}
+/*
+beforeShow() {} // Happens before showModal()
+onShow() {}     // Happens after  showModal()
+afterShow() {}  // Happens after  showModal() animation transitionend
+onHide() {}     // Happens before animation transitionend
+afterHide() {}  // Happens after  animation transitionend
+close() {}
+*/
+}
+
+class NextcloudCalendarsPopupView extends rl.pluginPopupView {
+	constructor() {
+		super('NextcloudCalendars');
+	}
+
+	onBuild(dom) {
+		this.tree = dom.querySelector('#sm-nc-calendars');
+		this.tree.addEventListener('click', event => {
+			let el = event.target;
+			if (el.matches('button')) {
+				this.select = el.href;
+				this.close();
+			}
+		});
+	}
+
 	// Happens after showModal()
 	beforeShow(fResolve) {
 		this.select = '';
