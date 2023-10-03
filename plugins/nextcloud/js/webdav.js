@@ -409,7 +409,7 @@ class NextcloudCalendarsPopupView extends rl.pluginPopupView {
 					};
 
 					// Call the function to create and append the list item
-					this.createCalendarListItem(calendarData, this.tree);
+					// this.createCalendarListItem(calendarData, this.tree);
 				}
 			}
 		})
