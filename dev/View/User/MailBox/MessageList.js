@@ -71,7 +71,6 @@ const
 	Ymd = dt => dt.getFullYear() + pad2(1 + dt.getMonth()) + pad2(dt.getDate());
 
 let
-	iGoToUpOrDownTimeout = 0,
 	sLastSearchValue = '';
 
 export class MailMessageList extends AbstractViewRight {
@@ -257,20 +256,17 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.selector.on('UpOrDown', up => {
 			if (!MessagelistUserStore.hasChecked()) {
-				clearTimeout(iGoToUpOrDownTimeout);
-				iGoToUpOrDownTimeout = setTimeout(() => {
-					let page = MessagelistUserStore.page();
-					up ? --page : ++page;
-					if (page > 0 && page <= MessagelistUserStore.pageCount()) {
-						if (SettingsUserStore.usePreviewPane() || MessageUserStore.message()) {
-							this.selector.iSelectNextHelper = up ? -1 : 1;
-						} else {
-							this.selector.iFocusedNextHelper = up ? -1 : 1;
-						}
-						this.selector.unselect();
-						this.gotoPage(page);
+				let page = MessagelistUserStore.page();
+				up ? --page : ++page;
+				if (page > 0 && page <= MessagelistUserStore.pageCount()) {
+					if (SettingsUserStore.usePreviewPane() || MessageUserStore.message()) {
+						this.selector.iSelectNextHelper = up ? -1 : 1;
+					} else {
+						this.selector.iFocusedNextHelper = up ? -1 : 1;
 					}
-				}, 350);
+					this.selector.unselect();
+					this.gotoPage(page);
+				}
 			}
 		});
 
