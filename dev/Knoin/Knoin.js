@@ -59,13 +59,11 @@ const
 								vmDom.before(vmDom.backdrop = createElement('div',{class:'dialog-backdrop'}));
 							vmDom.setAttribute('open','');
 							vmDom.open = true;
-							vmDom.returnValue = null;
 							vmDom.backdrop.hidden = false;
 						};
-						vmDom.close = v => {
+						vmDom.close = () => {
 //							if (vmDom.dispatchEvent(new CustomEvent('cancel', {cancelable:true}))) {
 								vmDom.backdrop.hidden = true;
-								vmDom.returnValue = v;
 								vmDom.removeAttribute('open', null);
 								vmDom.open = false;
 //								vmDom.dispatchEvent(new CustomEvent('close'));
