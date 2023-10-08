@@ -256,13 +256,13 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.selector.on('UpOrDown', up => {
 			if (!MessagelistUserStore.hasChecked()) {
-				let page = MessagelistUserStore.page();
-				up ? --page : ++page;
+				up = up ? -1 : 1;
+				const page = MessagelistUserStore.page() + up;
 				if (page > 0 && page <= MessagelistUserStore.pageCount()) {
 					if (SettingsUserStore.usePreviewPane() || MessageUserStore.message()) {
-						this.selector.iSelectNextHelper = up ? -1 : 1;
+						this.selector.iSelectNextHelper = up;
 					} else {
-						this.selector.iFocusedNextHelper = up ? -1 : 1;
+						this.selector.iFocusedNextHelper = up;
 					}
 					this.selector.unselect();
 					this.gotoPage(page);
