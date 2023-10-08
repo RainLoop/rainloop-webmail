@@ -94,7 +94,7 @@ export class MailMessageView extends AbstractViewRight {
 					const message = currentMessage();
 					if (message) {
 						currentMessage(null);
-						rl.app.moveMessagesToFolderType(folderType, message.folder, [message.uid], bDelete);
+						rl.app.moveMessagesToFolderType(folderType, message.folder, new Set([message.uid]), bDelete);
 					}
 				}, this.messageVisibility);
 
