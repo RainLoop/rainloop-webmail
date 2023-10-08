@@ -120,8 +120,7 @@ export class MailMessageList extends AbstractViewRight {
 				return value ? i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', { SEARCH: value }) : ''
 			},
 
-			messageListPaginator: computedPaginatorHelper(MessagelistUserStore.page,
-				MessagelistUserStore.pageCount),
+			messageListPaginator: computedPaginatorHelper(MessagelistUserStore.page, MessagelistUserStore.pageCount),
 
 			checkAll: {
 				read: () => MessagelistUserStore.hasChecked(),
@@ -257,47 +256,22 @@ export class MailMessageList extends AbstractViewRight {
 		});
 
 		this.selector.on('UpOrDown', up => {
-			if (MessagelistUserStore.hasChecked()) {
-				return false;
+			if (!MessagelistUserStore.hasChecked()) {
+				clearTimeout(iGoToUpOrDownTimeout);
+				iGoToUpOrDownTimeout = setTimeout(() => {
+					let page = MessagelistUserStore.page();
+					up ? --page : ++page;
+					if (page > 0 && page <= MessagelistUserStore.pageCount()) {
+						if (SettingsUserStore.usePreviewPane() || MessageUserStore.message()) {
+							this.selector.iSelectNextHelper = up ? -1 : 1;
+						} else {
+							this.selector.iFocusedNextHelper = up ? -1 : 1;
+						}
+						this.selector.unselect();
+						this.gotoPage(page);
+					}
+				}, 350);
 			}
-
-			clearTimeout(iGoToUpOrDownTimeout);
-			iGoToUpOrDownTimeout = setTimeout(() => {
-				let prev, next, temp, current;
-
-				this.messageListPaginator().find(item => {
-					if (item) {
-						if (current) {
-							next = item;
-						}
-
-						if (item.current) {
-							current = item;
-							prev = temp;
-						}
-
-						if (next) {
-							return true;
-						}
-
-						temp = item;
-					}
-
-					return false;
-				});
-
-				if (up ? prev : next) {
-					if (SettingsUserStore.usePreviewPane() || MessageUserStore.message()) {
-						this.selector.iSelectNextHelper = up ? -1 : 1;
-					} else {
-						this.selector.iFocusedNextHelper = up ? -1 : 1;
-					}
-					this.selector.unselect();
-					this.gotoPage(up ? prev : next);
-				}
-			}, 350);
-
-			return true;
 		});
 
 		addEventListener('mailbox.message-list.selector.go-down',
@@ -547,7 +521,7 @@ export class MailMessageList extends AbstractViewRight {
 		page && hasher.setHash(
 			mailBox(
 				FolderUserStore.currentFolderFullNameHash(),
-				page.value,
+				page,
 				MessagelistUserStore.listSearch(),
 				MessagelistUserStore.threadUid()
 			)
@@ -601,16 +575,16 @@ export class MailMessageList extends AbstractViewRight {
 					toggleLeftPanel();
 				} else {
 					ThemeStore.isMobile() && leftPanelDisabled(true);
+
+					if (eqs(event, '.messageList') && ScopeMessageView === AppUserStore.focusedState()) {
+						AppUserStore.focusedState(ScopeMessageList);
+					}
+
+					let el = eqs(event, '.e-paginator a');
+					el && this.gotoPage(ko.dataFor(el)?.value);
+
+					eqs(event, '.checkboxCheckAll') && this.checkAll(!this.checkAll());
 				}
-
-				if (eqs(event, '.messageList') && ScopeMessageView === AppUserStore.focusedState()) {
-					AppUserStore.focusedState(ScopeMessageList);
-				}
-
-				let el = eqs(event, '.e-paginator a');
-				el && this.gotoPage(ko.dataFor(el));
-
-				eqs(event, '.checkboxCheckAll') && this.checkAll(!this.checkAll());
 			},
 			dblclick: event => {
 				let el = eqs(event, '.messageListItem');

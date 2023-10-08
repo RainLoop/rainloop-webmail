@@ -118,7 +118,8 @@ export class Selector {
 
 			if (isArray(aItems)) {
 				let temp,
-					isChecked;
+					isChecked,
+					next = this.iFocusedNextHelper || this.iSelectNextHelper;
 
 				aItems.forEach(item => {
 					const uid = this.getItemUid(item);
@@ -143,24 +144,10 @@ export class Selector {
 
 				selectedItemUseCallback = true;
 
-				if (
-					(this.iSelectNextHelper || this.iFocusedNextHelper) &&
-					aItems.length &&
-					!koFocusedItem()
-				) {
-					temp = null;
-					if (this.iFocusedNextHelper) {
-						temp = aItems[-1 === this.iFocusedNextHelper ? aItems.length - 1 : 0];
-					}
-
-					if (!temp && this.iSelectNextHelper) {
-						temp = aItems[-1 === this.iSelectNextHelper ? aItems.length - 1 : 0];
-					}
-
+				if (next && aItems.length && !koFocusedItem()) {
+					temp = aItems[-1 === next ? aItems.length - 1 : 0];
 					if (temp) {
-						if (this.iSelectNextHelper) {
-							koSelectedItem(temp);
-						}
+						this.iSelectNextHelper && koSelectedItem(temp);
 
 						koFocusedItem(temp);
 
@@ -267,10 +254,11 @@ export class Selector {
 	 * @param {boolean=} bForceSelect = false
 	 */
 	newSelectPosition(sEventKey, bShiftKey, bForceSelect) {
-		let isArrow = 'ArrowUp' === sEventKey || 'ArrowDown' === sEventKey,
-			result;
+		let result;
 
-		const pageStep = 10,
+		const up = 'ArrowUp' === sEventKey,
+			isArrow = up || 'ArrowDown' === sEventKey,
+			pageStep = 10,
 			list = this.list(),
 			listLen = list.length,
 			focused = this.focusedItem();
@@ -282,8 +270,7 @@ export class Selector {
 		} else if (listLen) {
 			if (focused) {
 				if (isArrow) {
-					let i = list.indexOf(focused),
-						up = 'ArrowUp' == sEventKey;
+					let i = list.indexOf(focused);
 					if (bShiftKey) {
 						shiftStart = -1 < shiftStart ? shiftStart : i;
 						shiftStart == i
