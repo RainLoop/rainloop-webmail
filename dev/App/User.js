@@ -125,9 +125,7 @@ export class AppUser extends AbstractApp {
 			// no default
 		}
 
-		if (!oMoveFolder && !bDelete) {
-			showScreenPopup(FolderSystemPopupView, [nSetSystemFoldersNotification]);
-		} else if (bDelete) {
+		if (bDelete) {
 			showScreenPopup(AskPopupView, [
 				i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'),
 				() => {
@@ -136,6 +134,8 @@ export class AppUser extends AbstractApp {
 			]);
 		} else if (oMoveFolder) {
 			MessagelistUserStore.moveMessages(sFromFolderFullName, oUids, oMoveFolder.fullName);
+		} else {
+			showScreenPopup(FolderSystemPopupView, [nSetSystemFoldersNotification]);
 		}
 	}
 
