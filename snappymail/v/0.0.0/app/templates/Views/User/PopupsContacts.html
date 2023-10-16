@@ -134,6 +134,11 @@
 					<div class="control-group" data-bind="email().length">
 						<label class="fontastic iconsize24" data-i18n="[title]GLOBAL/EMAIL">@</label>
 						<div>
+							<div id="send-to-all" class="property-line"  data-bind="visible: sendToAllDisplayStatus()">
+								<input type="checkbox" data-bind="checked: sendToAll, css: sendToAllDefaultValue()">
+								<lable data-i18n="CONTACTS/SEND_TO_ALL_CONTACT_EMAILS"></lable>
+							</div>
+
 							<div data-bind="foreach: email">
 								<div class="property-line">
 									<span data-bind="text: value"></span>

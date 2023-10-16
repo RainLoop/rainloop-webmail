@@ -86,6 +86,7 @@ export class ContactModel extends AbstractModel {
 			focused: false,
 			selected: false,
 			checked: false,
+			sendToAll: true,
 
 			deleted: false,
 			readOnly: false,
@@ -139,7 +140,16 @@ export class ContactModel extends AbstractModel {
 	 */
 	getNameAndEmailHelper() {
 		let name = (this.givenName() + ' ' + this.surName()).trim(),
+			email;
+
+		if (this.sendToAll()) {
+			email = [];
+			this.email().forEach(function (key){
+				email.push(key?.value())
+			});
+		} else {
 			email = this.email()[0]?.value();
+		}
 /*
 //		this.jCard.getOne('fn')?.notEmpty() ||
 		this.jCard.parseFullName({set:true});
@@ -222,6 +232,9 @@ export class ContactModel extends AbstractModel {
 			value: ko.observable('')
 //			type: prop.params.type
 		});
+
+		if (this.sendToAllDisplayStatus())
+			document.getElementById('send-to-all').style.display = 'block';
 	}
 
 	addTel() {
@@ -318,4 +331,13 @@ export class ContactModel extends AbstractModel {
 			+ (this.checked() ? ' checked' : '')
 			+ (this.focused() ? ' focused' : '');
 	}
+
+	sendToAllDefaultValue() {
+		return (this.sendToAll() ? ' checked' : '');
+	}
+
+	sendToAllDisplayStatus() {
+		return this.email.length > 1
+	}
+
 }
