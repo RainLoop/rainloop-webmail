@@ -46,10 +46,11 @@ trait User
 			throw $oException;
 		}
 
+		// Must be here due to bug #1241
+		$this->Plugins()->RunHook('login.success', array($oAccount));
+
 		$this->SetAuthToken($oAccount);
 		empty($this->GetActionParam('signMe', 0)) || $this->SetSignMeToken($oAccount);
-
-		$this->Plugins()->RunHook('login.success', array($oAccount));
 
 		$sLanguage = $this->GetActionParam('language', '');
 		if ($oAccount && $sLanguage) {
