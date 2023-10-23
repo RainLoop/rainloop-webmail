@@ -8,8 +8,8 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Two Factor Authentication',
-		VERSION  = '2.16.5',
-		RELEASE  = '2023-10-08',
+		VERSION  = '2.16.6',
+		RELEASE  = '2023-10-24',
 		REQUIRED = '2.15.2',
 		CATEGORY = 'Login',
 		DESCRIPTION = 'Provides support for TOTP 2FA';
@@ -21,8 +21,7 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->addJs('js/TwoFactorAuthLogin.js');
 		$this->addJs('js/TwoFactorAuthSettings.js');
 
-//		$this->addHook('login.success', 'DoLogin');
-		$this->addHook('imap.after-login', 'AfterImapLogin');
+		$this->addHook('login.success', 'DoLogin');
 		$this->addHook('filter.app-data', 'FilterAppData');
 
 		$this->addJsonHook('GetTwoFactorInfo', 'DoGetTwoFactorInfo');
@@ -59,10 +58,9 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 	}
 
-//	public function DoLogin(MainAccount $oAccount)
-	public function AfterImapLogin(Account $oAccount, \MailSo\Imap\ImapClient $oImapClient, bool $bSuccess)
+	public function DoLogin(MainAccount $oAccount)
 	{
-		if ($bSuccess && $this->TwoFactorAuthProvider($oAccount)) {
+		if ($this->TwoFactorAuthProvider($oAccount)) {
 			$aData = $this->getTwoFactorInfo($oAccount);
 			if (isset($aData['IsSet'], $aData['Enable']) && !empty($aData['Secret']) && $aData['IsSet'] && $aData['Enable']) {
 				$sCode = \trim($this->jsonParam('totp_code', ''));
@@ -239,9 +237,9 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 	}
 
 	private $oTwoFactorAuthProvider = null;
-	protected function TwoFactorAuthProvider(Account $oAccount) : ?TwoFactorAuthInterface
+	protected function TwoFactorAuthProvider(MainAccount $oAccount) : ?TwoFactorAuthInterface
 	{
-		if (!$this->oTwoFactorAuthProvider && $oAccount instanceof MainAccount) {
+		if (!$this->oTwoFactorAuthProvider) {
 			require __DIR__ . '/providers/interface.php';
 			require __DIR__ . '/providers/totp.php';
 			$this->oTwoFactorAuthProvider = new TwoFactorAuthTotp();
@@ -271,8 +269,7 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 				'two_factor'
 			);
 
-			if ($sData)
-			{
+			if ($sData) {
 				$mData = static::DecodeKeyValues($sData);
 			}
 		}
