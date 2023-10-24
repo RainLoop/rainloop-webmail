@@ -1,11 +1,13 @@
 <?php
 
+use RainLoop\Model\MainAccount;
+
 class ProxyauthLoginExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Proxy Auth Login Example',
 		VERSION  = '2.2',
-		RELEASE  = '2022-12-08',
+		RELEASE  = '2023-10-24',
 		REQUIRED = '2.23.0',
 		CATEGORY = 'General',
 		DESCRIPTION = '';
@@ -27,32 +29,15 @@ class ProxyauthLoginExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
 	 */
-	public function EventLoginPostLoginProvide(&$oAccount)
+	public function EventLoginPostLoginProvide(MainAccount $oAccount)
 	{
-		if ($oAccount instanceof \RainLoop\Model\Account)
-		{
-			// Verify logic
-			$bValid = $this->isValidAccount($oAccount->IncLogin(), $oAccount->IncPassword());
-
-			/**
-			 * $oAccount->Email();             // Email (It is not a IMAP login)
-			 * $oAccount->IncLogin();          // IMAP login
-			 * $oAccount->IncPassword();       // IMAP password
-			 * $oAccount->Domain()->IncHost(); // IMAP host
-			 *
-			 * @see \RainLoo\Model\Account for more
-			 */
-
-			if (!$bValid) // if verify failed
-			{
-				// throw a Auth Error Exception
-				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
-			}
-			else // Or setup your proxyauth admin account credentials
-			{
-				$oAccount->SetProxyAuthUser('admin@domain.com');
-				$oAccount->SetProxyAuthPassword('secret-admin-password');
-			}
+		// Verify logic
+		if (!$this->isValidAccount($oAccount->IncLogin(), $oAccount->IncPassword())) {
+			// throw a Auth Error Exception
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
 		}
+
+		$oAccount->SetProxyAuthUser('admin@domain.com');
+		$oAccount->SetProxyAuthPassword('secret-admin-password');
 	}
 }

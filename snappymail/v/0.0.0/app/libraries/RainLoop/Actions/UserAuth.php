@@ -290,10 +290,15 @@ trait UserAuth
 		return $this->oMainAuthAccount;
 	}
 
-	public function SetAuthToken(MainAccount $oAccount): void
+	public function SetMainAuthAccount(MainAccount $oAccount): void
 	{
 		$this->oAdditionalAuthAccount = false;
 		$this->oMainAuthAccount = $oAccount;
+	}
+
+	public function SetAuthToken(MainAccount $oAccount): void
+	{
+		$this->SetMainAuthAccount($oAccount);
 		static::SetAccountCookie(self::AUTH_SPEC_TOKEN_KEY, $oAccount);
 	}
 

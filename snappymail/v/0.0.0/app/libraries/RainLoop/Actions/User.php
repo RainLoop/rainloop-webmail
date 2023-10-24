@@ -47,6 +47,7 @@ trait User
 		}
 
 		// Must be here due to bug #1241
+		$this->SetMainAuthAccount($oAccount);
 		$this->Plugins()->RunHook('login.success', array($oAccount));
 
 		$this->SetAuthToken($oAccount);
