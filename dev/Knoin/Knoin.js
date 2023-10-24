@@ -25,13 +25,13 @@ const
 	screen = screenName => (screenName && SCREENS.get(screenName)) || null,
 
 	/**
+	 * Creates the extended AbstractView model
 	 * @param {Function} ViewModelClass
 	 * @param {Object=} vmScreen
 	 * @returns {*}
 	 */
 	buildViewModel = (ViewModelClass, vmScreen) => {
-		if (ViewModelClass && !ViewModelClass.__builded) {
-			let vmDom = null;
+		if (ViewModelClass && !ViewModelClass.__vm) {
 			const
 				vm = new ViewModelClass(vmScreen),
 				id = vm.viewModelTemplateID,
@@ -39,11 +39,10 @@ const
 				dialog = ViewTypePopup === vm.viewType,
 				vmPlace = doc.getElementById(position);
 
-			ViewModelClass.__builded = true;
-			ViewModelClass.__vm = vm;
-
 			if (vmPlace) {
-				vmDom = dialog
+				ViewModelClass.__vm = vm;
+
+				let vmDom = dialog
 					? createElement('dialog',{id:'V-'+id})
 					: createElement('div',{id:'V-'+id,hidden:''})
 				vmPlace.append(vmDom);
@@ -136,7 +135,7 @@ const
 	forEachViewModel = (screen, fn) => {
 		screen.viewModels.forEach(ViewModelClass => {
 			if (
-				ViewModelClass.__vm?.viewModelDom &&
+				ViewModelClass.__vm &&
 				ViewTypePopup !== ViewModelClass.__vm.viewType
 			) {
 				fn(ViewModelClass.__vm, ViewModelClass.__vm.viewModelDom);
@@ -227,7 +226,7 @@ export const
 	 */
 	showScreenPopup = (ViewModelClassToShow, params = []) => {
 		const vm = buildViewModel(ViewModelClassToShow);
-		if (vm && vm.viewModelDom) {
+		if (vm) {
 			params = params || [];
 			vm.beforeShow?.(...params);
 			vm.modalVisible(true);
