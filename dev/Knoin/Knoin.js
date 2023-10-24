@@ -48,7 +48,7 @@ const
 					: createElement('div',{id:'V-'+id,hidden:''})
 				vmPlace.append(vmDom);
 
-				vm.viewModelDom = ViewModelClass.__dom = vmDom;
+				vm.viewModelDom = vmDom;
 
 				if (dialog) {
 					// Firefox < 98 / Safari < 15.4 HTMLDialogElement not defined
@@ -136,11 +136,10 @@ const
 	forEachViewModel = (screen, fn) => {
 		screen.viewModels.forEach(ViewModelClass => {
 			if (
-				ViewModelClass.__vm &&
-				ViewModelClass.__dom &&
+				ViewModelClass.__vm?.viewModelDom &&
 				ViewTypePopup !== ViewModelClass.__vm.viewType
 			) {
-				fn(ViewModelClass.__vm, ViewModelClass.__dom);
+				fn(ViewModelClass.__vm, ViewModelClass.__vm.viewModelDom);
 			}
 		});
 	},
@@ -150,7 +149,7 @@ const
 		forEachViewModel(screenToHide, (vm, dom) => {
 			dom.hidden = true;
 			vm.onHide?.();
-			destroy && vm.viewModelDom.remove();
+			destroy && dom.remove();
 		});
 		ThemeStore.isMobile() && leftPanelDisabled(true);
 	},
@@ -227,15 +226,11 @@ export const
 	 * @returns {void}
 	 */
 	showScreenPopup = (ViewModelClassToShow, params = []) => {
-		const vm = buildViewModel(ViewModelClassToShow) && ViewModelClassToShow.__dom && ViewModelClassToShow.__vm;
-
-		if (vm) {
+		const vm = buildViewModel(ViewModelClassToShow);
+		if (vm && vm.viewModelDom) {
 			params = params || [];
-
 			vm.beforeShow?.(...params);
-
 			vm.modalVisible(true);
-
 			vm.onShow?.(...params);
 		}
 	},

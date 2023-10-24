@@ -30,7 +30,7 @@ export class AbstractSettingsScreen extends AbstractScreen {
 
 		if (RoutedSettingsViewModel) {
 //			const vmPlace = elementById('V-SettingsPane') || elementById('V-AdminPane);
-			const vmPlace = this.viewModels[1].__dom,
+			const vmPlace = this.viewModels[1].__vm.viewModelDom,
 				SettingsViewModelClass = RoutedSettingsViewModel.vmc;
 			if (SettingsViewModelClass.__vm) {
 				settingsScreen = SettingsViewModelClass.__vm;
@@ -46,7 +46,6 @@ export class AbstractSettingsScreen extends AbstractScreen {
 				settingsScreen.viewModelDom = viewModelDom;
 				settingsScreen.viewModelTemplateID = RoutedSettingsViewModel.template;
 
-				SettingsViewModelClass.__dom = viewModelDom;
 				SettingsViewModelClass.__vm = settingsScreen;
 
 				fireEvent('rl-view-model.create', settingsScreen);
