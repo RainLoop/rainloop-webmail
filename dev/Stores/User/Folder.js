@@ -70,7 +70,7 @@ FolderUserStore = new class {
 			trashFolder: '',
 			archiveFolder: '',
 
-			folderListOptimized: false,
+			optimized: false,
 			folderListError: '',
 
 			foldersLoading: false,

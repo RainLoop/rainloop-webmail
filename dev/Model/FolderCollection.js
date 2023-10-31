@@ -273,7 +273,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 		// 'THREAD=REFS', 'THREAD=REFERENCES', 'THREAD=ORDEREDSUBJECT'
 		AppUserStore.threadsAllowed(!!this.capabilities.some(capa => capa.startsWith('THREAD=')));
 
-//		FolderUserStore.folderListOptimized(!!this.optimized);
+//		FolderUserStore.optimized(!!this.optimized);
 		FolderUserStore.quotaUsage(this.quotaUsage);
 		FolderUserStore.quotaLimit(this.quotaLimit);
 		FolderUserStore.capabilities(this.capabilities);

@@ -41,7 +41,7 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 
 		this.displaySpecSetting = FolderUserStore.displaySpecSetting;
 		this.folderList = FolderUserStore.folderList;
-		this.folderListOptimized = FolderUserStore.folderListOptimized;
+		this.folderListOptimized = FolderUserStore.optimized;
 		this.folderListError = FolderUserStore.folderListError;
 		this.hideUnsubscribed = SettingsUserStore.hideUnsubscribed;
 		this.unhideKolabFolders = SettingsUserStore.unhideKolabFolders;
