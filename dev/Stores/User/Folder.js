@@ -71,7 +71,7 @@ FolderUserStore = new class {
 			archiveFolder: '',
 
 			optimized: false,
-			folderListError: '',
+			error: '',
 
 			foldersLoading: false,
 			foldersCreating: false,

@@ -505,7 +505,7 @@ export class FolderModel extends AbstractModel {
 					}
 				})
 				.catch(error => {
-					FolderUserStore.folderListError(
+					FolderUserStore.error(
 						getNotification(error.code, '', Notifications.CantRenameFolder)
 						+ '.\n' + error.message);
 				});

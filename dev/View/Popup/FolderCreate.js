@@ -63,7 +63,7 @@ export class FolderCreatePopupView extends AbstractViewPopup {
 */
 					},
 					error => {
-						FolderUserStore.folderListError(
+						FolderUserStore.error(
 							getNotification(error.code, '', Notifications.CantCreateFolder)
 							+ '.\n' + error.message);
 					}
