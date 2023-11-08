@@ -864,7 +864,7 @@ export class ComposePopupView extends AbstractViewPopup {
 					this.prepareMessageAttachments(oLastMessage, options.mode);
 					this.aDraftInfo = ['reply', oLastMessage.uid, oLastMessage.folder];
 					this.sInReplyTo = oLastMessage.messageId;
-					this.sReferences = (oLastMessage.messageId + ' ' + oLastMessage.references).trim();
+					this.sReferences = (oLastMessage.references + ' ' + oLastMessage.messageId).trim();
 					// OpenPGP “Transferable Public Key”
 //					oLastMessage.autocrypt?.keydata
 					break;
@@ -875,7 +875,7 @@ export class ComposePopupView extends AbstractViewPopup {
 					this.prepareMessageAttachments(oLastMessage, options.mode);
 					this.aDraftInfo = ['forward', oLastMessage.uid, oLastMessage.folder];
 					this.sInReplyTo = oLastMessage.messageId;
-					this.sReferences = (oLastMessage.messageId + ' ' + oLastMessage.references).trim();
+					this.sReferences = (oLastMessage.references + ' ' + oLastMessage.messageId).trim();
 					break;
 
 				case ComposeType.Draft:
