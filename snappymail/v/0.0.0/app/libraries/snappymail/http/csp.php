@@ -22,6 +22,7 @@ class CSP
 		// Knockout.js requires unsafe-inline?
 //		'script-src' => ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
 		'img-src' => ["'self'", 'data:'],
+		'media-src' => ["'self'", 'data:'],
 		'style-src' => ["'self'", "'unsafe-inline'"],
 	];
 
