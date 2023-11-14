@@ -134,7 +134,7 @@ XML;
      * $reader->parseInnerTree() will parse the entire sub-tree, and advance to
      * the next element.
      */
-    public static function xmlDeserialize(Reader $reader): XmlFragment
+    public static function xmlDeserialize(Reader $reader)
     {
         $result = new self($reader->readInnerXml());
         $reader->next();

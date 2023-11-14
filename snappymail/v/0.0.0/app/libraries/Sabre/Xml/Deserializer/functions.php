@@ -145,6 +145,7 @@ function keyValue(Reader $reader, string $namespace = null): array
  * ];
  *
  * @return string[]
+ *
  * @phpstan-return list<string>
  */
 function enum(Reader $reader, string $namespace = null): array
@@ -186,7 +187,7 @@ function enum(Reader $reader, string $namespace = null): array
 }
 
 /**
- * The valueObject deserializer turns an xml element into a PHP object of
+ * The valueObject deserializer turns an XML element into a PHP object of
  * a specific class.
  *
  * This is primarily used by the mapValueObject function from the Service
@@ -195,6 +196,7 @@ function enum(Reader $reader, string $namespace = null): array
  * @template C of object
  *
  * @param class-string<C> $className
+ *
  * @phpstan-return C
  */
 function valueObject(Reader $reader, string $className, string $namespace): object
@@ -222,7 +224,7 @@ function valueObject(Reader $reader, string $className, string $namespace): obje
                 $reader->next();
             }
         } else {
-            if (!$reader->read()) {
+            if (Reader::END_ELEMENT !== $reader->nodeType && !$reader->read()) {
                 break;
             }
         }

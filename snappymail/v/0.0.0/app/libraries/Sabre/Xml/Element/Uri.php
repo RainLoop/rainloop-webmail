@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Sabre\Xml\Element;
 
-use function Sabre\Uri\resolve;
-
 use Sabre\Xml;
+
+use function Sabre\Uri\resolve;
 
 /**
  * Uri element.
@@ -59,7 +59,7 @@ class Uri implements Xml\Element
     {
         $writer->text(
             resolve(
-                $writer->contextUri,
+                $writer->contextUri ?? '',
                 $this->value
             )
         );
@@ -83,7 +83,7 @@ class Uri implements Xml\Element
      * $reader->parseSubTree() will parse the entire sub-tree, and advance to
      * the next element.
      */
-    public static function xmlDeserialize(Xml\Reader $reader): Uri
+    public static function xmlDeserialize(Xml\Reader $reader)
     {
         return new self(
             resolve(

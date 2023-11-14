@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Sabre\Xml\Serializer;
 
-use InvalidArgumentException;
 use Sabre\Xml\Writer;
 use Sabre\Xml\XmlSerializable;
 
@@ -48,7 +47,7 @@ function enum(Writer $writer, array $values): void
 /**
  * The valueObject serializer turns a simple PHP object into a classname.
  *
- * Every public property will be encoded as an xml element with the same
+ * Every public property will be encoded as an XML element with the same
  * name, in the XML namespace as specified.
  *
  * Values that are set to null or an empty array are not serialized. To
@@ -173,12 +172,12 @@ function standardSerializer(Writer $writer, $value): void
                 $writer->write($item);
                 $writer->endElement();
             } else {
-                throw new InvalidArgumentException('The writer does not know how to serialize arrays with keys of type: '.gettype($name));
+                throw new \InvalidArgumentException('The writer does not know how to serialize arrays with keys of type: '.gettype($name));
             }
         }
     } elseif (is_object($value)) {
-        throw new InvalidArgumentException('The writer cannot serialize objects of class: '.get_class($value));
+        throw new \InvalidArgumentException('The writer cannot serialize objects of class: '.get_class($value));
     } elseif (!is_null($value)) {
-        throw new InvalidArgumentException('The writer cannot serialize values of type: '.gettype($value));
+        throw new \InvalidArgumentException('The writer cannot serialize values of type: '.gettype($value));
     }
 }

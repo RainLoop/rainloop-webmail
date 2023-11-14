@@ -72,6 +72,7 @@ class KeyValue implements Xml\Element
      */
     public function xmlSerialize(Xml\Writer $writer): void
     {
+        require_once __DIR__ . '/Serializer/functions.php';
         $writer->write($this->value);
     }
 
@@ -95,7 +96,7 @@ class KeyValue implements Xml\Element
      *
      * @return array<string, mixed>
      */
-    public static function xmlDeserialize(Xml\Reader $reader): array
+    public static function xmlDeserialize(Xml\Reader $reader)
     {
         require_once __DIR__ . '/../Deserializer/functions.php';
         return Deserializer\keyValue($reader);

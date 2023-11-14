@@ -30,7 +30,7 @@ use XMLWriter;
  * @author Evert Pot (http://evertpot.com/)
  * @license http://sabre.io/license/ Modified BSD License
  */
-class Writer extends XMLWriter
+class Writer extends \XMLWriter
 {
     use ContextStackTrait;
 
@@ -92,7 +92,7 @@ class Writer extends XMLWriter
      *    ]
      * ]
      *
-     * @param mixed $value
+     * @param mixed $value PHP value to be written
      */
     public function write($value): void
     {
@@ -125,6 +125,7 @@ class Writer extends XMLWriter
         if ('{' === $name[0]) {
             list($namespace, $localName) =
                 Service::parseClarkNotation($name);
+            $namespace = $namespace ?? '';
 
             if (array_key_exists($namespace, $this->namespaceMap)) {
                 $result = $this->startElementNS(
@@ -135,7 +136,7 @@ class Writer extends XMLWriter
             } else {
                 // An empty namespace means it's the global namespace. This is
                 // allowed, but it mustn't get a prefix.
-                if ('' === $namespace || null === $namespace) {
+                if ('' === $namespace) {
                     $result = $this->startElement($localName);
                     $this->writeAttribute('xmlns', '');
                 } else {
@@ -239,6 +240,7 @@ class Writer extends XMLWriter
             $localName
         ) = Service::parseClarkNotation($name);
 
+        $namespace = $namespace ?? '';
         if (array_key_exists($namespace, $this->namespaceMap)) {
             // It's an attribute with a namespace we know
             return $this->writeAttribute(

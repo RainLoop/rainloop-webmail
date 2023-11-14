@@ -63,7 +63,7 @@ trait ContextStackTrait
      * The writer may use this if you attempt to serialize an object with a
      * class that does not implement XmlSerializable.
      *
-     * Instead it will look at this classmap to see if there is a custom
+     * Instead, it will look at this classmap to see if there is a custom
      * serializer here. This is useful if you don't want your value objects
      * to be responsible for serializing themselves.
      *

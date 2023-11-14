@@ -20,16 +20,14 @@ use Sabre\Xml;
 class Base implements Xml\Element
 {
     /**
-     * PHP value to serialize.
-     *
-     * @var mixed
+     * @var mixed PHP value to serialize
      */
     protected $value;
 
     /**
      * Constructor.
      *
-     * @param mixed $value
+     * @param mixed $value PHP value to serialize
      */
     public function __construct($value = null)
     {
@@ -75,7 +73,7 @@ class Base implements Xml\Element
      * $reader->parseInnerTree() will parse the entire sub-tree, and advance to
      * the next element.
      *
-     * @return mixed
+     * @return array<int,array<string, mixed>>|string|null
      */
     public static function xmlDeserialize(Xml\Reader $reader)
     {

@@ -96,7 +96,7 @@ class Elements implements Xml\Element
      *
      * @return string[]
      */
-    public static function xmlDeserialize(Xml\Reader $reader): array
+    public static function xmlDeserialize(Xml\Reader $reader)
     {
         require_once __DIR__ . '/../Deserializer/functions.php';
         return Deserializer\enum($reader);
