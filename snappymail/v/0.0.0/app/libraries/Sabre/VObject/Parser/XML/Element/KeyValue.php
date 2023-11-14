@@ -32,12 +32,8 @@ class KeyValue extends SabreXml\Element\KeyValue
      *
      * $reader->parseInnerTree() will parse the entire sub-tree, and advance to
      * the next element.
-     *
-     * @param XML\Reader $reader
-     *
-     * @return mixed
      */
-    public static function xmlDeserialize(SabreXml\Reader $reader)
+    public static function xmlDeserialize(SabreXml\Reader $reader): array
     {
         // If there's no children, we don't do anything.
         if ($reader->isEmptyElement) {

@@ -3,7 +3,6 @@
 namespace Sabre\VObject\Property;
 
 use Sabre\VObject\Parameter;
-use Sabre\VObject\Property;
 
 /**
  * URI property.
@@ -19,30 +18,24 @@ class Uri extends Text
     /**
      * In case this is a multi-value property. This string will be used as a
      * delimiter.
-     *
-     * @var string
      */
-    public $delimiter = '';
+    public string $delimiter = '';
 
     /**
      * Returns the type of value.
      *
      * This corresponds to the VALUE= parameter. Every property also has a
      * 'default' valueType.
-     *
-     * @return string
      */
-    public function getValueType()
+    public function getValueType(): string
     {
         return 'URI';
     }
 
     /**
      * Returns an iterable list of children.
-     *
-     * @return array
      */
-    public function parameters()
+    public function parameters(): array
     {
         $parameters = parent::parameters();
         if (!isset($parameters['VALUE']) && in_array($this->name, ['URL', 'PHOTO'])) {
@@ -65,13 +58,11 @@ class Uri extends Text
      *
      * This has been 'unfolded', so only 1 line will be passed. Unescaping is
      * not yet done, but parameters are not included.
-     *
-     * @param string $val
      */
-    public function setRawMimeDirValue($val)
+    public function setRawMimeDirValue(string $val): void
     {
         // Normally we don't need to do any type of unescaping for these
-        // properties, however.. we've noticed that Google Contacts
+        // properties, however, we've noticed that Google Contacts
         // specifically escapes the colon (:) with a backslash. While I have
         // no clue why they thought that was a good idea, I'm unescaping it
         // anyway.
@@ -100,10 +91,8 @@ class Uri extends Text
 
     /**
      * Returns a raw mime-dir representation of the value.
-     *
-     * @return string
      */
-    public function getRawMimeDirValue()
+    public function getRawMimeDirValue(): string
     {
         if (is_array($this->value)) {
             $value = $this->value[0];

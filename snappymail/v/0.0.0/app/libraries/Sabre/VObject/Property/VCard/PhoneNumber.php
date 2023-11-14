@@ -13,17 +13,15 @@ use Sabre\VObject\Property;
  */
 class PhoneNumber extends Property\Text
 {
-    protected $structuredValues = [];
+    protected array $structuredValues = [];
 
     /**
      * Returns the type of value.
      *
      * This corresponds to the VALUE= parameter. Every property also has a
      * 'default' valueType.
-     *
-     * @return string
      */
-    public function getValueType()
+    public function getValueType(): string
     {
         return 'PHONE-NUMBER';
     }

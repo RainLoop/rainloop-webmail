@@ -20,20 +20,16 @@ class LanguageTag extends Property
      *
      * This has been 'unfolded', so only 1 line will be passed. Unescaping is
      * not yet done, but parameters are not included.
-     *
-     * @param string $val
      */
-    public function setRawMimeDirValue($val)
+    public function setRawMimeDirValue(string $val): void
     {
         $this->setValue($val);
     }
 
     /**
      * Returns a raw mime-dir representation of the value.
-     *
-     * @return string
      */
-    public function getRawMimeDirValue()
+    public function getRawMimeDirValue(): string
     {
         return $this->getValue();
     }
@@ -43,10 +39,8 @@ class LanguageTag extends Property
      *
      * This corresponds to the VALUE= parameter. Every property also has a
      * 'default' valueType.
-     *
-     * @return string
      */
-    public function getValueType()
+    public function getValueType(): string
     {
         return 'LANGUAGE-TAG';
     }

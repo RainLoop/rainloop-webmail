@@ -25,7 +25,7 @@ class Settings
      * use-cases. In particular, it covers birthdates for virtually everyone
      * alive on earth, which is less than 5 people at the time of writing.
      */
-    public static $minDate = '1900-01-01';
+    public static string $minDate = '1900-01-01';
 
     /**
      * The maximum date we accept for various calculations with dates, such as
@@ -34,7 +34,7 @@ class Settings
      * The choice of 2100 is pretty arbitrary, but should cover most
      * appointments made for many years to come.
      */
-    public static $maxDate = '2100-01-01';
+    public static string $maxDate = '2100-01-01';
 
     /**
      * The maximum number of recurrences that will be generated.
@@ -51,5 +51,5 @@ class Settings
      *
      * Set this value to -1 to disable this control altogether.
      */
-    public static $maxRecurrences = 3500;
+    public static int $maxRecurrences = 3500;
 }

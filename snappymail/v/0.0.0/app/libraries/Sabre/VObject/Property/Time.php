@@ -3,6 +3,7 @@
 namespace Sabre\VObject\Property;
 
 use Sabre\VObject\DateTimeParser;
+use Sabre\VObject\InvalidDataException;
 
 /**
  * Time property.
@@ -18,20 +19,16 @@ class Time extends Text
     /**
      * In case this is a multi-value property. This string will be used as a
      * delimiter.
-     *
-     * @var string
      */
-    public $delimiter = '';
+    public string $delimiter = '';
 
     /**
      * Returns the type of value.
      *
      * This corresponds to the VALUE= parameter. Every property also has a
      * 'default' valueType.
-     *
-     * @return string
      */
-    public function getValueType()
+    public function getValueType(): string
     {
         return 'TIME';
     }
@@ -41,7 +38,7 @@ class Time extends Text
      *
      * The value must always be an array.
      */
-    public function setJsonValue(array $value)
+    public function setJsonValue(array $value): void
     {
         // Removing colons from value.
         $value = str_replace(
@@ -62,9 +59,9 @@ class Time extends Text
      *
      * This method must always return an array.
      *
-     * @return array
+     * @throws InvalidDataException
      */
-    public function getJsonValue()
+    public function getJsonValue(): array
     {
         $parts = DateTimeParser::parseVCardTime($this->getValue());
         $timeStr = '';
@@ -115,10 +112,10 @@ class Time extends Text
     }
 
     /**
-     * Hydrate data from a XML subtree, as it would appear in a xCard or xCal
+     * Hydrate data from an XML subtree, as it would appear in a xCard or xCal
      * object.
      */
-    public function setXmlValue(array $value)
+    public function setXmlValue(array $value): void
     {
         $value = array_map(
             function ($value) {

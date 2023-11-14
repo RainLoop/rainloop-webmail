@@ -2,6 +2,8 @@
 
 namespace Sabre\VObject\ITip;
 
+use Sabre\VObject\Component\VCalendar;
+
 /**
  * This class represents an iTip message.
  *
@@ -18,32 +20,24 @@ class Message
 {
     /**
      * The object's UID.
-     *
-     * @var string
      */
-    public $uid;
+    public string $uid;
 
     /**
      * The component type, such as VEVENT.
-     *
-     * @var string
      */
-    public $component;
+    public string $component;
 
     /**
      * Contains the ITip method, which is something like REQUEST, REPLY or
      * CANCEL.
-     *
-     * @var string
      */
-    public $method;
+    public ?string $method;
 
     /**
      * The current sequence number for the event.
-     *
-     * @var int
      */
-    public $sequence;
+    public ?int $sequence;
 
     /**
      * The senders' email address.
@@ -51,33 +45,25 @@ class Message
      * Note that this does not imply that this has to be used in a From: field
      * if the message is sent by email. It may also be populated in Reply-To:
      * or not at all.
-     *
-     * @var string
      */
-    public $sender;
+    public string $sender;
 
     /**
      * The name of the sender. This is often populated from a CN parameter from
      * either the ORGANIZER or ATTENDEE, depending on the message.
-     *
-     * @var string|null
      */
-    public $senderName;
+    public ?string $senderName;
 
     /**
      * The recipient's email address.
-     *
-     * @var string
      */
-    public $recipient;
+    public string $recipient;
 
     /**
      * The name of the recipient. This is usually populated with the CN
      * parameter from the ATTENDEE or ORGANIZER property, if it's available.
-     *
-     * @var string|null
      */
-    public $recipientName;
+    public ?string $recipientName;
 
     /**
      * After the message has been delivered, this should contain a string such
@@ -87,17 +73,13 @@ class Message
      *
      * See:
      * http://tools.ietf.org/html/rfc6638#section-7.3
-     *
-     * @var string
      */
-    public $scheduleStatus;
+    public ?string $scheduleStatus = null;
 
     /**
      * The iCalendar / iTip body.
-     *
-     * @var \Sabre\VObject\Component\VCalendar
      */
-    public $message;
+    public VCalendar $message;
 
     /**
      * This will be set to true, if the iTip broker considers the change
@@ -110,10 +92,8 @@ class Message
      *
      * To see the list of properties that are considered 'significant', check
      * out Sabre\VObject\ITip\Broker::$significantChangeProperties.
-     *
-     * @var bool
      */
-    public $significantChange = true;
+    public bool $significantChange = true;
 
     /**
      * Returns the schedule status as a string.

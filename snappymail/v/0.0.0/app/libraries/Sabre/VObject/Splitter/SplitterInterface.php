@@ -2,6 +2,8 @@
 
 namespace Sabre\VObject\Splitter;
 
+use Sabre\VObject\Component;
+
 /**
  * VObject splitter.
  *
@@ -20,7 +22,7 @@ interface SplitterInterface
     /**
      * Constructor.
      *
-     * The splitter should receive an readable file stream as its input.
+     * The splitter should receive a readable file stream as its input.
      *
      * @param resource $input
      */
@@ -31,8 +33,6 @@ interface SplitterInterface
      * hit the end of the stream.
      *
      * When the end is reached, null will be returned.
-     *
-     * @return \Sabre\VObject\Component|null
      */
-    public function getNext();
+    public function getNext(): ?Component;
 }

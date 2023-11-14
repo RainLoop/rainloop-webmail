@@ -2,8 +2,6 @@
 
 namespace Sabre\VObject\Recur;
 
-use Exception;
-
 /**
  * This exception gets thrown when a recurrence iterator produces 0 instances.
  *
@@ -13,6 +11,6 @@ use Exception;
  * @author Evert Pot (http://evertpot.com/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class NoInstancesException extends Exception
+class NoInstancesException extends \Exception
 {
 }

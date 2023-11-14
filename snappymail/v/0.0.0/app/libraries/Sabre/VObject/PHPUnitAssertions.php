@@ -30,9 +30,8 @@ trait PHPUnitAssertions
      *
      * @param resource|string|Component $expected
      * @param resource|string|Component $actual
-     * @param string                    $message
      */
-    public function assertVObjectEqualsVObject($expected, $actual, $message = '')
+    public function assertVObjectEqualsVObject($expected, $actual, string $message = ''): void
     {
         $getObj = function ($input) {
             if (is_resource($input)) {

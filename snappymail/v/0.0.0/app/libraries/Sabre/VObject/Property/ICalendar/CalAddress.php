@@ -18,20 +18,16 @@ class CalAddress extends Text
     /**
      * In case this is a multi-value property. This string will be used as a
      * delimiter.
-     *
-     * @var string
      */
-    public $delimiter = '';
+    public string $delimiter = '';
 
     /**
      * Returns the type of value.
      *
      * This corresponds to the VALUE= parameter. Every property also has a
      * 'default' valueType.
-     *
-     * @return string
      */
-    public function getValueType()
+    public function getValueType(): string
     {
         return 'CAL-ADDRESS';
     }
@@ -43,10 +39,8 @@ class CalAddress extends Text
      * uris to lower-case.
      *
      * Evolution in particular tends to encode mailto: as MAILTO:.
-     *
-     * @return string
      */
-    public function getNormalizedValue()
+    public function getNormalizedValue(): string
     {
         $input = $this->getValue();
         if (!strpos($input, ':')) {

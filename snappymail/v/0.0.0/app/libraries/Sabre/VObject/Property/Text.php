@@ -4,6 +4,7 @@ namespace Sabre\VObject\Property;
 
 use Sabre\VObject\Component;
 use Sabre\VObject\Document;
+use Sabre\VObject\InvalidDataException;
 use Sabre\VObject\Parser\MimeDir;
 use Sabre\VObject\Property;
 use Sabre\Xml;
@@ -22,17 +23,13 @@ class Text extends Property
     /**
      * In case this is a multi-value property. This string will be used as a
      * delimiter.
-     *
-     * @var string
      */
-    public $delimiter = ',';
+    public string $delimiter = ',';
 
     /**
      * List of properties that are considered 'structured'.
-     *
-     * @var array
      */
-    protected $structuredValues = [
+    protected array $structuredValues = [
         // vCard
         'N',
         'ADR',
@@ -49,10 +46,8 @@ class Text extends Property
      *
      * N must for instance be represented as 5 components, separated by ;, even
      * if the last few components are unused.
-     *
-     * @var array
      */
-    protected $minimumPropertyValues = [
+    protected array $minimumPropertyValues = [
         'N' => 5,
         'ADR' => 7,
     ];
@@ -65,18 +60,17 @@ class Text extends Property
      * Parameter objects.
      *
      * @param Component         $root       The root document
-     * @param string            $name
      * @param string|array|null $value
      * @param array             $parameters List of parameters
-     * @param string            $group      The vcard property group
+     * @param string|null       $group      The vcard property group
      */
-    public function __construct(Component $root, $name, $value = null, array $parameters = [], $group = null)
+    public function __construct(Component $root, string $name, $value = null, array $parameters = [], string $group = null)
     {
         // There's two types of multi-valued text properties:
         // 1. multivalue properties.
         // 2. structured value properties
         //
-        // The former is always separated by a comma, the latter by semi-colon.
+        // The former is always separated by a comma, the latter by semicolon.
         if (in_array($name, $this->structuredValues)) {
             $this->delimiter = ';';
         }
@@ -90,19 +84,17 @@ class Text extends Property
      * This has been 'unfolded', so only 1 line will be passed. Unescaping is
      * not yet done, but parameters are not included.
      *
-     * @param string $val
+     * @throws InvalidDataException
      */
-    public function setRawMimeDirValue($val)
+    public function setRawMimeDirValue(string $val): void
     {
         $this->setValue(MimeDir::unescapeValue($val, $this->delimiter));
     }
 
     /**
      * Sets the value as a quoted-printable encoded string.
-     *
-     * @param string $val
      */
-    public function setQuotedPrintableValue($val)
+    public function setQuotedPrintableValue(string $val): void
     {
         $val = quoted_printable_decode($val);
 
@@ -119,15 +111,13 @@ class Text extends Property
 
     /**
      * Returns a raw mime-dir representation of the value.
-     *
-     * @return string
      */
-    public function getRawMimeDirValue()
+    public function getRawMimeDirValue(): string
     {
         $val = $this->getParts();
 
         if (isset($this->minimumPropertyValues[$this->name])) {
-            $val = array_pad($val, $this->minimumPropertyValues[$this->name], '');
+            $val = \array_pad($val, $this->minimumPropertyValues[$this->name], '');
         }
 
         foreach ($val as &$item) {
@@ -136,7 +126,7 @@ class Text extends Property
             }
 
             foreach ($item as &$subItem) {
-                if (!is_null($subItem)) {
+                if (!\is_null($subItem)) {
                     $subItem = strtr(
                         $subItem,
                         [
@@ -149,20 +139,18 @@ class Text extends Property
                     );
                 }
             }
-            $item = implode(',', $item);
+            $item = \implode(',', $item);
         }
 
-        return implode($this->delimiter, $val);
+        return \implode($this->delimiter, $val);
     }
 
     /**
      * Returns the value, in the format it should be encoded for json.
      *
      * This method must always return an array.
-     *
-     * @return array
      */
-    public function getJsonValue()
+    public function getJsonValue(): array
     {
         // Structured text values should always be returned as a single
         // array-item. Multi-value text should be returned as multiple items in
@@ -179,20 +167,16 @@ class Text extends Property
      *
      * This corresponds to the VALUE= parameter. Every property also has a
      * 'default' valueType.
-     *
-     * @return string
      */
-    public function getValueType()
+    public function getValueType(): string
     {
         return 'TEXT';
     }
 
     /**
      * Turns the object back into a serialized blob.
-     *
-     * @return string
      */
-    public function serialize()
+    public function serialize(): string
     {
         // We need to kick in a special type of encoding, if it's a 2.1 vcard.
         if (Document::VCARD21 !== $this->root->getDocumentType()) {
@@ -232,7 +216,7 @@ class Text extends Property
         if (false !== \strpos($val, "\n")) {
             $str .= ';ENCODING=QUOTED-PRINTABLE:';
             $lastLine = $str;
-            $out = null;
+            $out = '';
 
             // The PHP built-in quoted-printable-encode does not correctly
             // encode newlines for us. Specifically, the \r\n sequence must in
@@ -278,14 +262,12 @@ class Text extends Property
     /**
      * This method serializes only the value of a property. This is used to
      * create xCard or xCal documents.
-     *
-     * @param Xml\Writer $writer XML writer
      */
-    protected function xmlSerializeValue(Xml\Writer $writer)
+    protected function xmlSerializeValue(Xml\Writer $writer): void
     {
         $values = $this->getParts();
 
-        $map = function ($items) use ($values, $writer) {
+        $map = function (array $items) use ($values, $writer): void {
             foreach ($items as $i => $item) {
                 $writer->writeElement(
                     $item,
@@ -362,26 +344,22 @@ class Text extends Property
      *    * level - (number between 1 and 3 with severity information)
      *    * message - (human readable message)
      *    * node - (reference to the offending node)
-     *
-     * @param int $options
-     *
-     * @return array
      */
-    public function validate($options = 0)
+    public function validate(int $options = 0): array
     {
         $warnings = parent::validate($options);
 
         if (isset($this->minimumPropertyValues[$this->name])) {
             $minimum = $this->minimumPropertyValues[$this->name];
             $parts = $this->getParts();
-            if (count($parts) < $minimum) {
+            if (\count($parts) < $minimum) {
                 $warnings[] = [
                     'level' => $options & self::REPAIR ? 1 : 3,
-                    'message' => 'The '.$this->name.' property must have at least '.$minimum.' values. It only has '.count($parts),
+                    'message' => 'The '.$this->name.' property must have at least '.$minimum.' values. It only has '.\count($parts),
                     'node' => $this,
                 ];
                 if ($options & self::REPAIR) {
-                    $parts = array_pad($parts, $minimum, '');
+                    $parts = \array_pad($parts, $minimum, '');
                     $this->setParts($parts);
                 }
             }

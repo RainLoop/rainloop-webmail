@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Sabre\VObject\TimezoneGuesser;
 
-use DateTimeZone;
 use Sabre\VObject\Component\VTimeZone;
 use Sabre\VObject\TimeZoneUtil;
 
@@ -13,7 +12,7 @@ use Sabre\VObject\TimeZoneUtil;
  */
 class GuessFromLicEntry implements TimezoneGuesser
 {
-    public function guess(VTimeZone $vtimezone, bool $failIfUncertain = false): ?DateTimeZone
+    public function guess(VTimeZone $vtimezone, ?bool $failIfUncertain = false): ?\DateTimeZone
     {
         if (!isset($vtimezone->{'X-LIC-LOCATION'})) {
             return null;

@@ -2,6 +2,8 @@
 
 namespace Sabre\VObject;
 
+use Sabre\VObject;
+
 /**
  * Document.
  *
@@ -15,68 +17,62 @@ namespace Sabre\VObject;
  * @copyright Copyright (C) fruux GmbH (https://fruux.com/)
  * @author Evert Pot (http://evertpot.com/)
  * @license http://sabre.io/license/ Modified BSD License
+ *
+ * @property VObject\Property\FlatText VERSION
  */
 abstract class Document extends Component
 {
     /**
      * Unknown document type.
      */
-    const UNKNOWN = 1;
+    public const UNKNOWN = 1;
 
     /**
      * vCalendar 1.0.
      */
-    const VCALENDAR10 = 2;
+    public const VCALENDAR10 = 2;
 
     /**
      * iCalendar 2.0.
      */
-    const ICALENDAR20 = 3;
+    public const ICALENDAR20 = 3;
 
     /**
      * vCard 2.1.
      */
-    const VCARD21 = 4;
+    public const VCARD21 = 4;
 
     /**
      * vCard 3.0.
      */
-    const VCARD30 = 5;
+    public const VCARD30 = 5;
 
     /**
      * vCard 4.0.
      */
-    const VCARD40 = 6;
+    public const VCARD40 = 6;
 
     /**
      * The default name for this component.
      *
      * This should be 'VCALENDAR' or 'VCARD'.
-     *
-     * @var string
      */
-    public static $defaultName;
+    public static ?string $defaultName = null;
 
     /**
      * List of properties, and which classes they map to.
-     *
-     * @var array
      */
-    public static $propertyMap = [];
+    public static array $propertyMap = [];
 
     /**
      * List of components, along with which classes they map to.
-     *
-     * @var array
      */
-    public static $componentMap = [];
+    public static array $componentMap = [];
 
     /**
      * List of value-types, and which classes they map to.
-     *
-     * @var array
      */
-    public static $valueMap = [];
+    public static array $valueMap = [];
 
     /**
      * Creates a new document.
@@ -97,22 +93,20 @@ abstract class Document extends Component
         $args = func_get_args();
         $name = static::$defaultName;
         if (0 === count($args) || is_array($args[0])) {
-            $children = isset($args[0]) ? $args[0] : [];
-            $defaults = isset($args[1]) ? $args[1] : true;
+            $children = $args[0] ?? [];
+            $defaults = $args[1] ?? true;
         } else {
             $name = $args[0];
-            $children = isset($args[1]) ? $args[1] : [];
-            $defaults = isset($args[2]) ? $args[2] : true;
+            $children = $args[1] ?? [];
+            $defaults = $args[2] ?? true;
         }
         parent::__construct($this, $name, $children, $defaults);
     }
 
     /**
      * Returns the current document type.
-     *
-     * @return int
      */
-    public function getDocumentType()
+    public function getDocumentType(): int
     {
         return self::UNKNOWN;
     }
@@ -122,13 +116,8 @@ abstract class Document extends Component
      *
      * If it's a known component, we will automatically call createComponent.
      * otherwise, we'll assume it's a property and call createProperty instead.
-     *
-     * @param string $name
-     * @param string $arg1,... Unlimited number of args
-     *
-     * @return mixed
      */
-    public function create($name)
+    public function create(string $name)
     {
         if (isset(static::$componentMap[strtoupper($name)])) {
             return call_user_func_array([$this, 'createComponent'], func_get_args());
@@ -150,14 +139,8 @@ abstract class Document extends Component
      * By default, a set of sensible values will be added to the component. For
      * an iCalendar object, this may be something like CALSCALE:GREGORIAN. To
      * ensure that this does not happen, set $defaults to false.
-     *
-     * @param string $name
-     * @param array  $children
-     * @param bool   $defaults
-     *
-     * @return Component
      */
-    public function createComponent($name, array $children = null, $defaults = true)
+    public function createComponent(string $name, array $children = null, bool $defaults = true): Component
     {
         $name = strtoupper($name);
         $class = Component::class;
@@ -182,16 +165,13 @@ abstract class Document extends Component
      * parameters will automatically be created, or you can just pass a list of
      * Parameter objects.
      *
-     * @param string $name
-     * @param mixed  $value
-     * @param array  $parameters
-     * @param string $valueType  Force a specific valuetype, such as URI or TEXT
+     * @param string|null $valueType Force a specific valueType, such as URI or TEXT
      *
-     * @return Property
+     * @throws InvalidDataException
      */
-    public function createProperty($name, $value = null, array $parameters = null, $valueType = null)
+    public function createProperty(string $name, $value = null, array $parameters = null, string $valueType = null): Property
     {
-        // If there's a . in the name, it means it's prefixed by a groupname.
+        // If there's a . in the name, it means it's prefixed by a group name.
         if (false !== ($i = strpos($name, '.'))) {
             $group = substr($name, 0, $i);
             $name = strtoupper(substr($name, $i + 1));
@@ -234,11 +214,9 @@ abstract class Document extends Component
      *
      * This method returns null if we don't have a specialized class.
      *
-     * @param string $valueParam
-     *
-     * @return string|null
+     * @return string|void|null
      */
-    public function getClassNameForPropertyValue($valueParam)
+    public function getClassNameForPropertyValue(string $valueParam)
     {
         $valueParam = strtoupper($valueParam);
         if (isset(static::$valueMap[$valueParam])) {
@@ -248,17 +226,9 @@ abstract class Document extends Component
 
     /**
      * Returns the default class for a property name.
-     *
-     * @param string $propertyName
-     *
-     * @return string
      */
-    public function getClassNameForPropertyName($propertyName)
+    public function getClassNameForPropertyName(string $propertyName): string
     {
-        if (isset(static::$propertyMap[$propertyName])) {
-            return static::$propertyMap[$propertyName];
-        } else {
-            return Property\Unknown::class;
-        }
+        return static::$propertyMap[$propertyName] ?? Property\Unknown::class;
     }
 }

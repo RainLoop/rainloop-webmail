@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Sabre\VObject\TimezoneGuesser;
 
-use DateTimeZone;
-
 /**
  * Some clients add 'X-LIC-LOCATION' with the olson name.
  */
 class FindFromOffset implements TimezoneFinder
 {
-    public function find(string $tzid, bool $failIfUncertain = false): ?DateTimeZone
+    public function find(string $tzid, ?bool $failIfUncertain = false): ?\DateTimeZone
     {
         // Maybe the author was hyper-lazy and just included an offset. We
         // support it, but we aren't happy about it.
@@ -22,7 +20,7 @@ class FindFromOffset implements TimezoneFinder
             // for versions under PHP 5.5.10, this bit can be taken out of the
             // source.
             // @codeCoverageIgnoreStart
-            return new DateTimeZone('Etc/GMT'.$matches[1].ltrim(substr($matches[2], 0, 2), '0'));
+            return new \DateTimeZone('Etc/GMT'.$matches[1].ltrim(substr($matches[2], 0, 2), '0'));
             // @codeCoverageIgnoreEnd
         }
 

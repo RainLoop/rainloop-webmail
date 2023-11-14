@@ -13,12 +13,8 @@ class StringUtil
 {
     /**
      * Returns true or false depending on if a string is valid UTF-8.
-     *
-     * @param string $str
-     *
-     * @return bool
      */
-    public static function isUTF8($str)
+    public static function isUTF8(string $str): bool
     {
         // Control characters
         if (preg_match('%[\x00-\x08\x0B-\x0C\x0E\x0F]%', $str)) {
@@ -33,12 +29,8 @@ class StringUtil
      *
      * Currently only ISO-5991-1 input and UTF-8 input is supported, but this
      * may be expanded upon if we receive other examples.
-     *
-     * @param string $str
-     *
-     * @return string
      */
-    public static function convertToUTF8($str)
+    public static function convertToUTF8(string $str): string
     {
         if (!mb_check_encoding($str, 'UTF-8') && mb_check_encoding($str, 'ISO-8859-1')) {
             $str = mb_convert_encoding($str, 'UTF-8', 'ISO-8859-1');

@@ -5,7 +5,9 @@ namespace Sabre\VObject\Parser;
 use Sabre\VObject\Component;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VCard;
+use Sabre\VObject\Document;
 use Sabre\VObject\EofException;
+use Sabre\VObject\InvalidDataException;
 use Sabre\VObject\ParseException;
 use Sabre\Xml as SabreXml;
 
@@ -20,39 +22,32 @@ use Sabre\Xml as SabreXml;
  */
 class XML extends Parser
 {
-    const XCAL_NAMESPACE = 'urn:ietf:params:xml:ns:icalendar-2.0';
-    const XCARD_NAMESPACE = 'urn:ietf:params:xml:ns:vcard-4.0';
+    public const XCAL_NAMESPACE = 'urn:ietf:params:xml:ns:icalendar-2.0';
+    public const XCARD_NAMESPACE = 'urn:ietf:params:xml:ns:vcard-4.0';
 
     /**
      * The input data.
-     *
-     * @var array
      */
-    protected $input;
+    protected ?array $input;
 
     /**
      * A pointer/reference to the input.
-     *
-     * @var array
      */
-    private $pointer;
+    private ?array $pointer;
 
     /**
      * Document, root component.
-     *
-     * @var \Sabre\VObject\Document
      */
-    protected $root;
+    protected ?Document $root;
 
     /**
      * Creates the parser.
      *
      * Optionally, it's possible to parse the input stream here.
      *
-     * @param mixed $input
-     * @param int   $options any parser options (OPTION constants)
+     * @param int $options any parser options (OPTION constants)
      */
-    public function __construct($input = null, $options = 0)
+    public function __construct($input = null, int $options = 0)
     {
         if (0 === $options) {
             $options = parent::OPTION_FORGIVING;
@@ -64,14 +59,14 @@ class XML extends Parser
     /**
      * Parse xCal or xCard.
      *
-     * @param resource|string $input
-     * @param int             $options
+     * @param resource|string|null $input
      *
-     * @throws \Exception
-     *
-     * @return \Sabre\VObject\Document
+     * @throws EofException
+     * @throws InvalidDataException
+     * @throws ParseException
+     * @throws SabreXml\LibXMLException
      */
-    public function parse($input = null, $options = 0)
+    public function parse($input = null, int $options = 0): ?Document
     {
         if (!is_null($input)) {
             $this->setInput($input);
@@ -112,8 +107,10 @@ class XML extends Parser
 
     /**
      * Parse a xCalendar component.
+     *
+     * @throws InvalidDataException
      */
-    protected function parseVCalendarComponents(Component $parentComponent)
+    protected function parseVCalendarComponents(Component $parentComponent): void
     {
         foreach ($this->pointer['value'] ?: [] as $children) {
             switch (static::getTagName($children['name'])) {
@@ -132,8 +129,10 @@ class XML extends Parser
 
     /**
      * Parse a xCard component.
+     *
+     * @throws InvalidDataException
      */
-    protected function parseVCardComponents(Component $parentComponent)
+    protected function parseVCardComponents(Component $parentComponent): void
     {
         $this->pointer = &$this->pointer['value'];
         $this->parseProperties($parentComponent);
@@ -142,9 +141,9 @@ class XML extends Parser
     /**
      * Parse xCalendar and xCard properties.
      *
-     * @param string $propertyNamePrefix
+     * @throws InvalidDataException
      */
-    protected function parseProperties(Component $parentComponent, $propertyNamePrefix = '')
+    protected function parseProperties(Component $parentComponent, string $propertyNamePrefix = ''): void
     {
         foreach ($this->pointer ?: [] as $xmlProperty) {
             list($namespace, $tagName) = SabreXml\Service::parseClarkNotation($xmlProperty['name']);
@@ -318,8 +317,10 @@ class XML extends Parser
 
     /**
      * Parse a component.
+     *
+     * @throws InvalidDataException
      */
-    protected function parseComponent(Component $parentComponent)
+    protected function parseComponent(Component $parentComponent): void
     {
         $components = $this->pointer['value'] ?: [];
 
@@ -341,12 +342,9 @@ class XML extends Parser
     /**
      * Create a property.
      *
-     * @param string $name
-     * @param array  $parameters
-     * @param string $type
-     * @param mixed  $value
+     * @throws InvalidDataException
      */
-    protected function createProperty(Component $parentComponent, $name, $parameters, $type, $value)
+    protected function createProperty(Component $parentComponent, string $name, array $parameters, string $type, $value): void
     {
         $property = $this->root->createProperty(
             $name,
@@ -361,9 +359,11 @@ class XML extends Parser
     /**
      * Sets the input data.
      *
-     * @param resource|string $input
+     * @param resource|string|array $input
+     *
+     * @throws SabreXml\LibXMLException
      */
-    public function setInput($input)
+    public function setInput($input): void
     {
         if (is_resource($input)) {
             $input = stream_get_contents($input);
@@ -384,12 +384,8 @@ class XML extends Parser
 
     /**
      * Get tag name from a Clark notation.
-     *
-     * @param string $clarkedTagName
-     *
-     * @return string
      */
-    protected static function getTagName($clarkedTagName)
+    protected static function getTagName(string $clarkedTagName): string
     {
         list(, $tagName) = SabreXml\Service::parseClarkNotation($clarkedTagName);
 

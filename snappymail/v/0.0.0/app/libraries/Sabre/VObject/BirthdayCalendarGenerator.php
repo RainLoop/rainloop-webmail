@@ -15,31 +15,25 @@ class BirthdayCalendarGenerator
 {
     /**
      * Input objects.
-     *
-     * @var array
      */
-    protected $objects = [];
+    protected array $objects = [];
 
     /**
      * Default year.
      * Used for dates without a year.
      */
-    const DEFAULT_YEAR = 2000;
+    public const DEFAULT_YEAR = 2000;
 
     /**
      * Output format for the SUMMARY.
-     *
-     * @var string
      */
-    protected $format = '%1$s\'s Birthday';
+    protected string $format = '%1$s\'s Birthday';
 
     /**
      * Creates the generator.
      *
      * Check the setTimeRange and setObjects methods for details about the
      * arguments.
-     *
-     * @param mixed $objects
      */
     public function __construct($objects = null)
     {
@@ -53,10 +47,8 @@ class BirthdayCalendarGenerator
      *
      * You must either supply a vCard as a string or as a Component/VCard object.
      * It's also possible to supply an array of strings or objects.
-     *
-     * @param mixed $objects
      */
-    public function setObjects($objects)
+    public function setObjects($objects): void
     {
         if (!is_array($objects)) {
             $objects = [$objects];
@@ -81,20 +73,16 @@ class BirthdayCalendarGenerator
 
     /**
      * Sets the output format for the SUMMARY.
-     *
-     * @param string $format
      */
-    public function setFormat($format)
+    public function setFormat(string $format): void
     {
         $this->format = $format;
     }
 
     /**
      * Parses the input data and returns a VCALENDAR.
-     *
-     * @return Component/VCalendar
      */
-    public function getResult()
+    public function getResult(): VCalendar
     {
         $calendar = new VCalendar();
 
@@ -111,7 +99,7 @@ class BirthdayCalendarGenerator
                 continue;
             }
 
-            // We're always converting to vCard 4.0 so we can rely on the
+            // We're always converting to vCard 4.0, so we can rely on the
             // VCardConverter handling the X-APPLE-OMIT-YEAR property for us.
             $object = $object->convert(Document::VCARD40);
 

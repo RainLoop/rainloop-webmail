@@ -2,11 +2,14 @@
 
 namespace Sabre\VObject\Parser;
 
+use Sabre\VObject\Component;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VCard;
 use Sabre\VObject\Document;
 use Sabre\VObject\EofException;
+use Sabre\VObject\InvalidDataException;
 use Sabre\VObject\ParseException;
+use Sabre\VObject\Property;
 use Sabre\VObject\Property\FlatText;
 use Sabre\VObject\Property\Text;
 
@@ -23,17 +26,13 @@ class Json extends Parser
 {
     /**
      * The input data.
-     *
-     * @var array
      */
-    protected $input;
+    protected ?array $input;
 
     /**
      * Root component.
-     *
-     * @var Document
      */
-    protected $root;
+    protected ?Document $root;
 
     /**
      * This method starts the parsing process.
@@ -44,11 +43,12 @@ class Json extends Parser
      * If either input or options are not supplied, the defaults will be used.
      *
      * @param resource|string|array|null $input
-     * @param int                        $options
      *
-     * @return \Sabre\VObject\Document
+     * @throws EofException
+     * @throws ParseException
+     * @throws InvalidDataException
      */
-    public function parse($input = null, $options = 0)
+    public function parse($input = null, int $options = 0): ?Document
     {
         if (!is_null($input)) {
             $this->setInput($input);
@@ -80,7 +80,7 @@ class Json extends Parser
             }
         }
 
-        // Resetting the input so we can throw an feof exception the next time.
+        // Resetting the input so that we can throw an feof exception the next time.
         $this->input = null;
 
         return $this->root;
@@ -89,9 +89,9 @@ class Json extends Parser
     /**
      * Parses a component.
      *
-     * @return \Sabre\VObject\Component
+     * @throws InvalidDataException
      */
-    public function parseComponent(array $jComp)
+    public function parseComponent(array $jComp): Component
     {
         // We can remove $self from PHP 5.4 onward.
         $self = $this;
@@ -117,16 +117,16 @@ class Json extends Parser
         return $this->root->createComponent(
             $jComp[0],
             array_merge($properties, $components),
-            $defaults = false
+            false
         );
     }
 
     /**
      * Parses properties.
      *
-     * @return \Sabre\VObject\Property
+     * @throws InvalidDataException
      */
-    public function parseProperty(array $jProp)
+    public function parseProperty(array $jProp): Property
     {
         list(
             $propertyName,
@@ -181,7 +181,7 @@ class Json extends Parser
      *
      * @param resource|string|array $input
      */
-    public function setInput($input)
+    public function setInput($input): void
     {
         if (is_resource($input)) {
             $input = stream_get_contents($input);
