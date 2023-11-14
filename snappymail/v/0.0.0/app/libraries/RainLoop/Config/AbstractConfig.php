@@ -300,7 +300,7 @@ abstract class AbstractConfig implements \ArrayAccess, \JsonSerializable
 								break;
 							case 'string':
 							default:
-								$sValue = '"'.\str_replace('"', '\\"', $mParamValue[0]).'"';
+								$sValue = '"'.\addcslashes($mParamValue[0], '\\"').'"';
 								break;
 						}
 

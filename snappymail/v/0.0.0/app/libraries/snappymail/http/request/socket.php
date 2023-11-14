@@ -126,7 +126,7 @@ class Socket extends \SnappyMail\HTTP\Request
 						$digest = \md5($a1 . ':' . $challenge['nonce'] . ':' . $nc . ':' . $challenge['cnonce'] . ':auth:' . $a2);
 					}
 					$extra_headers['Authorization'] = "Authorization: Digest "
-						. ' username="' . \str_replace(array('\\', '"'), array('\\\\', '\\"'), $this->auth['user']) . '",'
+						. ' username="' . \addcslashes($this->auth['user'], '\\"') . '",'
 						. ' realm="' . $challenge['realm'] . '",'
 						. ' nonce="' . $challenge['nonce'] . '",'
 						. ' uri="' . $request_url . '",'
