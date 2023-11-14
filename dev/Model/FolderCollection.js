@@ -25,6 +25,8 @@ import { /*koComputable,*/ addObservablesTo } from 'External/ko';
 
 import Remote from 'Remote/User/Fetch';
 
+import { FileInfo } from 'Common/File';
+
 const
 //	isPosNumeric = value => null != value && /^[0-9]*$/.test(value.toString()),
 
@@ -304,6 +306,7 @@ export class FolderModel extends AbstractModel {
 		this.etag = '';
 		this.id = 0;
 		this.uidNext = 0;
+		this.size = 0;
 
 		addObservablesTo(this, {
 			name: '',
@@ -455,6 +458,8 @@ export class FolderModel extends AbstractModel {
 				}
 				return '';
 			},
+
+			friendlySize: () => FileInfo.friendlySize(this.size),
 
 			detailedName: () => this.name() + ' ' + this.nameInfo(),
 

@@ -325,6 +325,10 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 			if (8 > PHP_INT_SIZE) {
 				$aList = \array_diff($aList, ['CONDSTORE']);
+				$aList = \array_diff($aList, ['STATUS=SIZE']);
+			}
+			if ($this->Settings->disable_status_size) {
+				$aList = \array_diff($aList, ['STATUS=SIZE']);
 			}
 		}
 		$this->aCapabilityItems = $aList;

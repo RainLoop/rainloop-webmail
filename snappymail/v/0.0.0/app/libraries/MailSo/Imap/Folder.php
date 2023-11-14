@@ -164,6 +164,7 @@ class Folder implements \JsonSerializable
 			'totalEmails' => $this->MESSAGES,
 			'unreadEmails' => $this->UNSEEN,
 			'id' => $this->MAILBOXID,
+			'size' => $this->SIZE,
 			'role' => $this->Role()
 /*
 			'myRights' => [

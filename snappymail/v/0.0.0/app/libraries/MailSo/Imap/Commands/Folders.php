@@ -143,6 +143,10 @@ trait Folders
 		if ($this->hasCapability('APPENDLIMIT')) {
 			$aStatusItems[] = FolderStatus::APPENDLIMIT;
 		}
+		// RFC 8438
+		if ($this->hasCapability('STATUS=SIZE')) {
+			$aStatusItems[] = FolderStatus::SIZE;
+		}
 		// RFC 8474
 		if ($this->hasCapability('OBJECTID')) {
 			$aStatusItems[] = FolderStatus::MAILBOXID;
@@ -151,11 +155,6 @@ trait Folders
 			$aStatusItems[] = 'X-GUID';
 */
 		}
-/*		// STATUS SIZE can take a significant amount of time, therefore not active
-		if ($this->hasCapability('IMAP4rev2')) {
-			$aStatusItems[] = FolderStatus::SIZE;
-		}
-*/
 		return $aStatusItems;
 	}
 

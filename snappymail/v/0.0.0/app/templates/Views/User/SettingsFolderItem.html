@@ -7,6 +7,7 @@
 			autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 			data-bind="textInput: nameForEdit, visible: editing, hasfocus: editing, onEnter: rename, onEsc: unedit">
 		<span class="folder-system-name" data-bind="text: nameInfo, visible: isSystemFolder"></span>
+		<span class="folder-size" data-bind="text: friendlySize, visible: size"></span>
 	</td>
 	<td data-i18n="[title]SETTINGS_FOLDERS/HELP_DELETE_FOLDER">
 		<a class="btn btn-small btn-danger button-confirm-delete" data-bind="css: {'delete-access': askDelete()}, click: $root.deleteFolder"

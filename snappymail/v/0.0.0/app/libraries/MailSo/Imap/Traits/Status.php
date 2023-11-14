@@ -82,7 +82,7 @@ trait Status
 	public ?string $MAILBOXID = null;
 
 	/**
-	 * RFC 9051
+	 * RFC 8438
 	 * The total size of the mailbox in octets.
 	 */
 	public ?int $SIZE = null;
