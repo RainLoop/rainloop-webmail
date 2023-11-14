@@ -156,8 +156,9 @@ class Header
 			}
 		}
 
-		// https://www.rfc-editor.org/rfc/rfc2822#section-2.1.1
-		return \wordwrap($this->NameWithDelimitrom() . $sResult, 78, "\r\n ");
+		// https://www.rfc-editor.org/rfc/rfc2822#section-2.1.1, avoid folding immediately after the header name
+                return $this->NameWithDelimitrom() . \wordwrap($sResult, 78 - \strlen($this->NameWithDelimitrom()) - 1, "\r\n ");
+
 	}
 
 	public function IsSubject() : bool
