@@ -1,3 +1,18 @@
+## 2.29.2 – 2023-10-02
+
+## Added
+- Show size of folders in folders list #1303
+  [#1303](https://github.com/the-djmaze/snappymail/issues/1303)
+
+## Fixed
+- Configuration failed when using special chars in MySQL password #1308
+  [#1308](https://github.com/the-djmaze/snappymail/issues/1308)
+- With email open, "delete" doesn't delete #1274
+  [#1274](https://github.com/the-djmaze/snappymail/issues/1274)
+- Fix threading view in Thunderbird (others?) by @tkasch
+  [#1304](https://github.com/the-djmaze/snappymail/pull/1304)
+
+
 ## 2.29.1 – 2023-10-02
 
 ## Fixed
