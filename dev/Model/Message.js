@@ -321,7 +321,7 @@ export class MessageModel extends AbstractModel {
 						? this.plain()
 							.replace(/-----BEGIN PGP (SIGNED MESSAGE-----(\r?\n[^\r\n]+)+|SIGNATURE-----[\s\S]*)/sg, '')
 							.trim()
-						: htmlToPlain(body.innerHTML)
+						: htmlToPlain(body.innerHTML || msgHtml(this).html)
 					)
 				);
 				this.hasImages(false);
@@ -331,6 +331,7 @@ export class MessageModel extends AbstractModel {
 			this.isHtml(html);
 			return true;
 		}
+
 	}
 
 	viewHtml() {
