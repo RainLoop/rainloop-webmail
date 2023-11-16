@@ -317,12 +317,12 @@ trait UserAuth
 		$sSignMeToken = Cookies::get(self::AUTH_SIGN_ME_TOKEN_KEY);
 		if ($sSignMeToken) {
 			\SnappyMail\Log::notice(self::AUTH_SIGN_ME_TOKEN_KEY, 'decrypt');
-			$aResult = \SnappyMail\Crypt::DecryptUrlSafe($sSignMeToken);
+			$aResult = \SnappyMail\Crypt::DecryptUrlSafe($sSignMeToken, 'signme');
 			if (isset($aResult['e'], $aResult['u']) && \SnappyMail\UUID::isValid($aResult['u'])) {
 				return $aResult;
 			}
 			\SnappyMail\Log::notice(self::AUTH_SIGN_ME_TOKEN_KEY, 'invalid');
-			// Don't clear due to smctoken cookie missing at initialization and login checkbox
+			// Don't clear due to login checkbox
 //			Cookies::clear(self::AUTH_SIGN_ME_TOKEN_KEY);
 		}
 		return null;
@@ -330,22 +330,16 @@ trait UserAuth
 
 	public function SetSignMeToken(MainAccount $oAccount): void
 	{
-		// SetAuthToken token needs to be called first
-		// because $_COOKIE['smctoken'] is used by Crypt::Passphrase.
-		// If the $_COOKIE['smctoken'] is not set then SetSignMeToken
-		// throws an exception
-//		$this->SetAuthToken($oAccount);
-
 		$this->ClearSignMeData();
 		$uuid = \SnappyMail\UUID::generate();
-		$data = \SnappyMail\Crypt::Encrypt($oAccount);
+		$data = \SnappyMail\Crypt::Encrypt($oAccount, 'signme');
 		Cookies::set(
 			self::AUTH_SIGN_ME_TOKEN_KEY,
 			\SnappyMail\Crypt::EncryptUrlSafe([
 				'e' => $oAccount->Email(),
 				'u' => $uuid,
 				$data[0] => \base64_encode($data[1])
-			]),
+			], 'signme'),
 			\time() + 3600 * 24 * 30 // 30 days
 		);
 		$this->StorageProvider()->Put($oAccount, StorageType::SIGN_ME, $uuid, $data[2]);
@@ -369,7 +363,7 @@ trait UserAuth
 					\array_key_last($aTokenData),
 					\base64_decode(\end($aTokenData)),
 					$sAuthToken
-				]);
+				], 'signme');
 				if (!\is_array($aAccountHash)) {
 					throw new \RuntimeException('token decrypt failed');
 				}
