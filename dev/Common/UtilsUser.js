@@ -301,10 +301,14 @@ populateMessageBody = (oMessage, popup) => {
 				} else {
 					let json = oData?.Result;
 					if (json
-					 && oMessage.hash === json.hash
-//					 && oMessage.folder === json.folder
-//					 && oMessage.uid == json.uid
-					 && oMessage.revivePropertiesFromJson(json)
+						&& ((
+								oMessage.hash && oMessage.hash === json.hash
+							) || (
+								!oMessage.hash
+								&& oMessage.folder === json.folder
+								&& oMessage.uid == json.uid)
+						)
+						&& oMessage.revivePropertiesFromJson(json)
 					) {
 /*
 						if (bCached) {
