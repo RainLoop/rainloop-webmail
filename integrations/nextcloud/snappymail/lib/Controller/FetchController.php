@@ -12,8 +12,9 @@ use OCP\IL10N;
 use OCP\IRequest;
 
 class FetchController extends Controller {
-	private $config;
-	private $appManager;
+	private IConfig $config;
+	private IAppManager $appManager;
+	private IL10N $l;
 
 	public function __construct(string $appName, IRequest $request, IAppManager $appManager, IConfig $config, IL10N $l) {
 		parent::__construct($appName, $request);
