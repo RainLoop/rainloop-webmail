@@ -520,7 +520,7 @@ trait Folders
 				$oFolderCollection[$sFullName]->setStatusFromResponse($oResponse);
 				$oFolderCollection[$sFullName]->generateETag($this);
 			}
-			else if ($sCmd === $oResponse->StatusOrIndex && 5 === \count($oResponse->ResponseList)) {
+			else if ($sCmd === $oResponse->StatusOrIndex && 5 <= \count($oResponse->ResponseList)) {
 				try
 				{
 					$sFullName = $this->toUTF8($oResponse->ResponseList[4]);
