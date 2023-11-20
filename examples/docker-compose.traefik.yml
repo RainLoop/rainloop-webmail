@@ -1,0 +1,86 @@
+version: '2'
+services:
+  # The reverse proxy for our web containers
+  # See https://github.com/traefik/traefik/tree/v2.7/docs/content/user-guides/docker-compose for some examples for enabling HTTPS using ACME
+  # You will need a domain name. E.g. 'example.com'
+  # This example requests TLS certs via ACME via DNS challenge using OVHcloud as the DNS provider.
+  # For a list of supported DNS providers, see: https://doc.traefik.io/traefik/https/acme/#providers
+  traefik:
+    image: traefik:v2
+    environment:
+      - OVH_ENDPOINT=xxx
+      - OVH_APPLICATION_KEY=xxx
+      - OVH_APPLICATION_SECRET=xxx
+      - OVH_CONSUMER_KEY=xxx
+    volumes:
+      # Allow traefik to listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - acme-volume:/letsencrypt
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - traefik-network
+    restart: unless-stopped
+    command:
+      - --global.checknewversion=false
+      - --global.sendanonymoususage=false
+      # - --log.level=DEBUG
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.myresolver.acme.dnschallenge=true
+      - --certificatesresolvers.myresolver.acme.dnschallenge.provider=ovh
+      # - --certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+      - --certificatesresolvers.myresolver.acme.email=postmaster@example.com
+      - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
+
+  # snappymail will be available at: https://snappymail.example.com
+  snappymail:
+    image: leojonathanoh/snappymail:pr-1
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-network"
+      # traefik v2
+      # http
+      - "traefik.http.routers.snappymail-http.entrypoints=web"
+      - "traefik.http.routers.snappymail-http.rule=Host(`snappymail.example.com`)"
+      - "traefik.http.routers.snappymail-http.middlewares=snappymail-http-myRedirectScheme" # Redirect http to https
+      - "traefik.http.middlewares.snappymail-http-myRedirectScheme.redirectScheme.scheme=https" # Redirect http to https
+      # https
+      - "traefik.http.routers.snappymail.entrypoints=websecure"
+      - "traefik.http.routers.snappymail.tls"
+      - "traefik.http.routers.snappymail.rule=Host(`snappymail.example.com`)"
+      - "traefik.http.services.snappymail.loadbalancer.server.port=8888"
+    expose:
+      - 8888
+    environment:
+      - DEBUG=true
+    volumes:
+      - snappymail:/var/lib/snappymail
+    networks:
+      - default
+      - traefik-network
+    restart: unless-stopped
+
+  # This provides prometheus metrics for snappymail's php-fpm
+  php-fpm-exporter:
+    image: hipages/php-fpm_exporter:2.2.0
+    ports:
+      - 9253:9253
+    environment:
+      - PHP_FPM_SCRAPE_URI=tcp://snappymail:9000/status
+    networks:
+      - default
+
+networks:
+  default:
+  traefik-network:
+    name: traefik-network
+
+volumes:
+  acme-volume:
+    driver: local
+  snappymail:
+    driver: local

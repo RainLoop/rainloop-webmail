@@ -5,6 +5,10 @@
   <br>
   <h1>SnappyMail</h1>
   <br>
+
+[![github-actions](https://github.com/the-djmaze/snappymail/workflows/ci/badge.svg)](https://github.com/the-djmaze/snappymail/actions)
+[![docker-image-size](https://img.shields.io/docker/image-size/the-djmaze/snappymail/master)](https://hub.docker.com/r/the-djmaze/snappymail)
+
   <p>
     Simple, modern, lightweight &amp; fast web-based email client.
   </p>
