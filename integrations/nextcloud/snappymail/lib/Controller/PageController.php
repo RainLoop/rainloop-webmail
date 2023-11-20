@@ -38,7 +38,7 @@ class PageController extends Controller
 			SnappyMailHelper::loadApp();
 			$bAdmin = \RainLoop\Api::Config()->Get('security', 'admin_panel_key', 'admin') == $_SERVER['QUERY_STRING'];
 			if (!$bAdmin) {
-				SnappyMailHelper::startApp(true);
+				return SnappyMailHelper::startApp(true);
 			}
 		}
 
@@ -109,7 +109,7 @@ class PageController extends Controller
 	 */
 	public function appGet()
 	{
-		SnappyMailHelper::startApp(true);
+		return SnappyMailHelper::startApp(true);
 	}
 
 	/**
@@ -118,7 +118,7 @@ class PageController extends Controller
 	 */
 	public function appPost()
 	{
-		SnappyMailHelper::startApp(true);
+		return SnappyMailHelper::startApp(true);
 	}
 
 	/**
@@ -127,6 +127,6 @@ class PageController extends Controller
 	 */
 	public function indexPost()
 	{
-		SnappyMailHelper::startApp(true);
+		return SnappyMailHelper::startApp(true);
 	}
 }

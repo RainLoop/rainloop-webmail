@@ -2,6 +2,19 @@
 
 namespace OCA\SnappyMail\Util;
 
+class SnappyMailResponse extends \OCP\AppFramework\Http\Response
+{
+    public function render(): string
+    {
+		$data = '';
+		$i = \ob_get_level();
+		while ($i--) {
+			$data .= \ob_get_clean();
+		}
+		return $data;
+    }
+}
+
 class SnappyMailHelper
 {
 
@@ -31,7 +44,7 @@ class SnappyMailHelper
 		require_once $app_dir . '/index.php';
 	}
 
-	public static function startApp(bool $handle = false) : void
+	public static function startApp(bool $handle = false)
 	{
 		static::loadApp();
 
@@ -105,6 +118,7 @@ class SnappyMailHelper
 				\RainLoop\Service::Handle();
 				// https://github.com/the-djmaze/snappymail/issues/1069
 				exit;
+//				return new SnappyMailResponse();
 			}
 		} catch (\Throwable $e) {
 			// Ignore login failure
