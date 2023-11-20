@@ -15,3 +15,6 @@ Then, enable the SnappyMail plugin that is in the "Social & communication" secti
 After a quick wait, SnappyMail is installed. Even if it is really attractive, it is too soon to click on the newly appeared "Email" icon in the apps list. You should configure SnappyMail before using it (which makes some sense, doesn'it): go to Nextcloud admin panel (upper-right corner dropdown menu) and go to "Additionnal settings". There click on the "Go to SnappyMail Webmail admin panel".
 In the SnappyMail admin prompt, the default login is "admin" and the default password will be generated in "[nextcloud-data]/app_snappymail/_data_/_default_/admin_password.txt". No need to advise you to change it once in the admin panel!
 This is it, you are now free to configure SnappyMail as you wish. One important point is the Domains section when you will set up the IMAP/SMTP parameters that shall be associated with the email adresses of your users.
+
+STUCK IN MAINTENANCE:
+https://github.com/the-djmaze/snappymail/issues/929

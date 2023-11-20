@@ -21,13 +21,17 @@ class InstallStep implements IRepairStep
 
 	public function run(IOutput $output) {
 
+		$output->info('clearstatcache');
 		\clearstatcache();
 		\clearstatcache(true);
+		$output->info('opcache_reset');
 		// opcache_reset is a terrible solution, but certain Nextcloud setups have issues
 		\is_callable('opcache_reset') && \opcache_reset();
 
+		$output->info('Load App');
 		\OCA\SnappyMail\Util\SnappyMailHelper::loadApp();
 
+		$output->info('Fix permissions');
 		\SnappyMail\Upgrade::fixPermissions();
 
 		$app_dir = \dirname(\dirname(__DIR__)) . '/app';
@@ -48,11 +52,13 @@ class InstallStep implements IRepairStep
 		$bSave = false;
 
 		if (!$oConfig->Get('webmail', 'app_path')) {
+			$output->info('Set config [webmail]app_path');
 			$oConfig->Set('webmail', 'app_path', \OC::$server->getAppManager()->getAppWebPath('snappymail') . '/app/');
 			$bSave = true;
 		}
 
 		if (!\is_dir(APP_PLUGINS_PATH . 'nextcloud')) {
+			$output->info('Install extension: nextcloud');
 			\SnappyMail\Repository::installPackage('plugin', 'nextcloud');
 			$oConfig->Set('plugins', 'enable', true);
 			$aList = \SnappyMail\Repository::getEnabledPackagesNames();
@@ -64,6 +70,7 @@ class InstallStep implements IRepairStep
 
 		$sPassword = $oConfig->Get('security', 'admin_password');
 		if ('12345' == $sPassword || !$sPassword) {
+			$output->info('Generate admin password');
 			$sPassword = \substr(\base64_encode(\random_bytes(16)), 0, 12);
 			$oConfig->SetPassword($sPassword);
 			\RainLoop\Utils::saveFile(APP_PRIVATE_DATA . 'admin_password.txt', $sPassword . "\n");
@@ -74,6 +81,7 @@ class InstallStep implements IRepairStep
 		$oProvider = \RainLoop\Api::Actions()->DomainProvider();
 		$oDomain = $oProvider->Load('nextcloud');
 		if (!$oDomain) {
+			$output->info('Add nextcloud as domain');
 //			$oDomain = \RainLoop\Model\Domain::fromIniArray('nextcloud', []);
 			$oDomain = new \RainLoop\Model\Domain('nextcloud');
 			$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::NONE;
@@ -89,7 +97,13 @@ class InstallStep implements IRepairStep
 			}
 		}
 
-		$bSave && $oConfig->Save();
+		if ($bSave) {
+			$oConfig->Save()
+				? $output->info('Config saved')
+				: $output->info('Config failed');
+		} else {
+			$output->info('Config not changed');
+		}
 
 		// check if admins provided additional/custom initial config file
 		// https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/occ_command.html#setting-a-single-configuration-value
@@ -100,6 +114,7 @@ class InstallStep implements IRepairStep
 			$ncConfig = \OC::$server->get(IConfig::class);
 			$customConfigFile = $ncConfig->getAppValue(Application::APP_ID, 'custom_config_file');
 			if ($customConfigFile) {
+				$output->info("Load custom config: {$customConfigFile}");
 				if (!\str_contains($customConfigFile, ':') && \is_readable($customConfigFile)) {
 					require $customConfigFile;
 				} else {
