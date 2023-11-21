@@ -24,9 +24,6 @@ $file = ROOT_DIR . '/integrations/cloudron/Dockerfile';
 file_put_contents($file, preg_replace('/VERSION=[0-9.]+/', "VERSION={$package->version}", file_get_contents($file)));
 $file = ROOT_DIR . '/integrations/cloudron/DESCRIPTION.md';
 file_put_contents($file, preg_replace('/<upstream>[^<]*</', "<upstream>{$package->version}<", file_get_contents($file)));
-// docker
-$file = ROOT_DIR . '/.docker/release/files/usr/local/include/application.ini';
-file_put_contents($file, preg_replace('/current = "[0-9.]+"/', "current = \"{$package->version}\"", file_get_contents($file)));
 // virtualmin
 $file = ROOT_DIR . '/integrations/virtualmin/snappymail.pl';
 file_put_contents($file, preg_replace('/return \\( "[0-9]+\\.[0-9]+\\.[0-9]+" \\)/', "return ( \"{$package->version}\" )", file_get_contents($file)));
