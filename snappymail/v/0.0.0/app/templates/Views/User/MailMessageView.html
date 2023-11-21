@@ -127,51 +127,9 @@
 				<span class="subject" data-bind="text: message().subject"></span>
 				<a href="#" class="close" data-bind="click: closeMessage" style="margin-top: -8px;">×</a>
 			</div>
-			<div class="informationShort" data-bind="hidden: showFullInfo">
+			<div class="informationShort">
 				<span class="from" data-bind="html: viewFromShort, title: message().from"></span>
 				<i data-bind="visible: viewDkimIcon, css: dkimIconClass, title: dkimTitle"></i>
-			</div>
-			<div class="informationFull" data-bind="visible: showFullInfo, with: message">
-				<table>
-					<tr data-bind="visible: from.length">
-						<td data-i18n="GLOBAL/FROM"></td>
-						<td><span data-bind="text: from"></span>
-							<i data-bind="visible: $parent.viewDkimIcon, css: $parent.dkimIconClass, title: $parent.dkimTitle"></i>
-						</td>
-					</tr>
-					<tr data-bind="visible: to.length">
-						<td data-i18n="GLOBAL/TO"></td>
-						<td data-bind="text: to"></td>
-					</tr>
-					<tr data-bind="visible: cc.length">
-						<td data-i18n="GLOBAL/CC"></td>
-						<td data-bind="text: cc"></td>
-					</tr>
-					<tr data-bind="visible: bcc.length">
-						<td data-i18n="GLOBAL/BCC"></td>
-						<td data-bind="text: bcc"></td>
-					</tr>
-					<tr data-bind="visible: replyTo.length">
-						<td data-i18n="GLOBAL/REPLY_TO"></td>
-						<td data-bind="text: replyTo"></td>
-					</tr>
-					<tr data-bind="visible: dateTimestamp">
-						<td data-i18n="MESSAGE/LABEL_DATE"></td>
-						<td>
-							<time data-moment-format="FULL" data-bind="moment: dateTimestamp"></time>
-							&nbsp;
-							(<time data-moment-format="FROMNOW" data-bind="moment: dateTimestamp"></time>)
-						</td>
-					</tr>
-					<tr data-bind="visible: spamResult">
-						<td data-i18n="GLOBAL/SPAM"></td>
-						<td data-bind="text: spamStatus()"></td>
-					</tr>
-					<tr data-bind="visible: friendlySize()">
-						<td data-i18n="POPUPS_FILTER/SELECT_FIELD_SIZE"></td>
-						<td class="size" data-bind="text: friendlySize()"></td>
-					</tr>
-				</table>
 			</div>
 		</div>
 		<div id="messageItem">
@@ -192,6 +150,48 @@
 						<span data-i18n="MESSAGE/SPAM_SCORE"></span>:
 						<meter min="0" max="100" optimum="0" low="33" high="66" data-bind="value: message().spamScore(), title: message().spamStatus()"></meter>
 					</div>
+				</div>
+				<div class="informationFull" data-bind="visible: showFullInfo, with: message">
+					<table>
+						<tr data-bind="visible: from.length">
+							<td data-i18n="GLOBAL/FROM"></td>
+							<td><span data-bind="text: from"></span>
+								<i data-bind="visible: $parent.viewDkimIcon, css: $parent.dkimIconClass, title: $parent.dkimTitle"></i>
+							</td>
+						</tr>
+						<tr data-bind="visible: to.length">
+							<td data-i18n="GLOBAL/TO"></td>
+							<td data-bind="text: to"></td>
+						</tr>
+						<tr data-bind="visible: cc.length">
+							<td data-i18n="GLOBAL/CC"></td>
+							<td data-bind="text: cc"></td>
+						</tr>
+						<tr data-bind="visible: bcc.length">
+							<td data-i18n="GLOBAL/BCC"></td>
+							<td data-bind="text: bcc"></td>
+						</tr>
+						<tr data-bind="visible: replyTo.length">
+							<td data-i18n="GLOBAL/REPLY_TO"></td>
+							<td data-bind="text: replyTo"></td>
+						</tr>
+						<tr data-bind="visible: dateTimestamp">
+							<td data-i18n="MESSAGE/LABEL_DATE"></td>
+							<td>
+								<time data-moment-format="FULL" data-bind="moment: dateTimestamp"></time>
+								&nbsp;
+								(<time data-moment-format="FROMNOW" data-bind="moment: dateTimestamp"></time>)
+							</td>
+						</tr>
+						<tr data-bind="visible: spamResult">
+							<td data-i18n="GLOBAL/SPAM"></td>
+							<td data-bind="text: spamStatus()"></td>
+						</tr>
+						<tr data-bind="visible: friendlySize()">
+							<td data-i18n="POPUPS_FILTER/SELECT_FIELD_SIZE"></td>
+							<td class="size" data-bind="text: friendlySize()"></td>
+						</tr>
+					</table>
 				</div>
 				<div class="hasVirus" data-bind="visible: message().hasVirus()" data-i18n="MESSAGE/HAS_VIRUS_WARNING"></div>
 				<!-- ko if: tagsAllowed -->
