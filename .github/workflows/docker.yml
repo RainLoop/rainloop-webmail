@@ -33,9 +33,7 @@ jobs:
         tags: |
           type=ref,suffix=-{{sha}},event=pr
           type=ref,event=branch
-          type=ref,suffix=-{{sha}},event=branch
           type=ref,event=tag
-          type=ref,suffix=-{{sha}},event=tag
         # The rest of the org.opencontainers.image.xxx labels are dynamically generated
         labels: |
           org.opencontainers.image.description=SnappyMail
