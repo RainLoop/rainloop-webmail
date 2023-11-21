@@ -25,10 +25,8 @@ class XCrypto extends Property
      *
      * This corresponds to the VALUE= parameter. Every property also has a
      * 'default' valueType.
-     *
-     * @return string
      */
-    public function getValueType()
+    public function getValueType(): string
     {
         return 'X-CRYPTO';
     }
@@ -38,10 +36,8 @@ class XCrypto extends Property
      *
      * This has been 'unfolded', so only 1 line will be passed. Unescaping is
      * not yet done, but parameters are not included.
-     *
-     * @param string $val
      */
-    public function setRawMimeDirValue($val)
+    public function setRawMimeDirValue($val): void
     {
         error_log("setRawMimeDirValue({$val})");
 //        $this->setValue(MimeDir::unescapeValue($val, $this->delimiter));
@@ -49,10 +45,8 @@ class XCrypto extends Property
 
     /**
      * Returns a raw mime-dir representation of the value.
-     *
-     * @return string
      */
-    public function getRawMimeDirValue()
+    public function getRawMimeDirValue(): string
     {
         $result = [];
         foreach ($this->parameters as $parameter) {
