@@ -1,14 +1,21 @@
+## 2.29.4 – 2023-11-21
+
+### Fixed
+- Contacts not work
+  [#1319](https://github.com/the-djmaze/snappymail/issues/1319)
+
+
 ## 2.29.3 – 2023-11-21
 
-## Added
+### Added
 - Docker Hub image
   [#965](https://github.com/the-djmaze/snappymail/pull/965) by @leojonathanoh
 
-## Changed
+### Changed
 - Sabre/VObject 4.5.4 and Sabre/Xml 4.0.4
   [#1311](https://github.com/the-djmaze/snappymail/issues/1311)
 
-## Fixed
+### Fixed
 - '#/mailbox/folder/mUID/search' uri/route handling
   [#1301](https://github.com/the-djmaze/snappymail/pull/1301) by @SergeyMosin
 - "Remember me" doesn't work when browser is closed
@@ -20,7 +27,7 @@
 - Large detailed header don't display body
   [#1284](https://github.com/the-djmaze/snappymail/issues/1284)
 
-## Nextcloud
+### Nextcloud
 - Improvements for Install / update issues #929
   [#929](https://github.com/the-djmaze/snappymail/issues/929)
 - Should use language as defined in cloud settings #1293
@@ -29,11 +36,11 @@
 
 ## 2.29.2 – 2023-11-14
 
-## Added
+### Added
 - Show size of folders in folders list #1303
   [#1303](https://github.com/the-djmaze/snappymail/issues/1303)
 
-## Fixed
+### Fixed
 - Configuration failed when using special chars in MySQL password #1308
   [#1308](https://github.com/the-djmaze/snappymail/issues/1308)
 - With email open, "delete" doesn't delete #1274
@@ -44,13 +51,13 @@
 
 ## 2.29.1 – 2023-10-02
 
-## Fixed
+### Fixed
 - Some small messages list bugs
 
 
 ## 2.29.0 – 2023-10-02
 
-## Added
+### Added
 - Modern UI / Nextcloud Theme
   [#629](https://github.com/the-djmaze/snappymail/pull/629) by @hampoelz
 - "Add/Edit signature" label to PopupsIdentity.html by @SergeyMosin
@@ -68,7 +75,7 @@
 - Browser support for autocompleting TOTP code
   [#1251](https://github.com/the-djmaze/snappymail/issues/1251)
 
-## Changed
+### Changed
 - URL strip tracking for
   [#1225](https://github.com/the-djmaze/snappymail/issues/1225)
 - Color picker use color blind palette "Tableau 10" by Maureen Stone by default
@@ -80,7 +87,7 @@
 - if applicable set '\\answered' or '$forwarded' flag after a message is sent so the proper icon is shown in the message list view by @SergeyMosin
   [#1248](https://github.com/the-djmaze/snappymail/pull/1248)
 
-## Fixed
+### Fixed
 - CHARSET is not valid in UTF8 mode
   [#1230](https://github.com/the-djmaze/snappymail/issues/1230)
 - Spam score is always "acceptable"
@@ -104,7 +111,7 @@
 - TOTP plugin is dependent on ctype
   [#1250](https://github.com/the-djmaze/snappymail/issues/1250)
 
-## Nextcloud
+### Nextcloud
 - iFrame mode: click on unified search result opens inner iFrame by @SergeyMosin
   [#1248](https://github.com/the-djmaze/snappymail/pull/1248)
 - set 'smremember' cookie if 'sign_me_auto' is set to 'DefaultOn' when using 'snappymail-autologin*', otherwise nextcloud users need to re-login when the browser is re-opened. by @SergeyMosin
@@ -115,7 +122,7 @@
 
 ## 2.28.4 – 2023-07-10
 
-## Added
+### Added
 - application.ini msg_default_action by @SergeyMosin
   [#1204](https://github.com/the-djmaze/snappymail/pull/1204)
 - application.ini view_show_next_message by @SergeyMosin
@@ -127,14 +134,14 @@
 - Support plugin for Squire editor
   [#1192](https://github.com/the-djmaze/snappymail/issues/1192)
 
-## Changed
+### Changed
 - only show 'Add "domain.tld" as an application for mailto links?' message after login (firefox shows the message on every reload otherwise).
   [#1204](https://github.com/the-djmaze/snappymail/issues/1204)
 - Convert getPdoAccessData() : array to a RainLoop\Pdo\Settings object instance
 - New bidi buttons to Squire editor by @rezaei92
   [#1200](https://github.com/the-djmaze/snappymail/pull/1200)
 
-## Fixed
+### Fixed
 - Undefined constant PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT
   [#1205](https://github.com/the-djmaze/snappymail/issues/1205)
 - 'reloadTime' function result is passed into 'setInterval' instead of the function by @SergeyMosin
@@ -145,15 +152,15 @@
 
 ## 2.28.3 – 2023-06-22
 
-## Added
+### Added
 - Attachments in "new window" view
   [#1166](https://github.com/the-djmaze/snappymail/issues/1166)
 
-## Changed
+### Changed
 - Update Portuguese by @ner00
 - Update French by @hguilbert
 
-## Fixed
+### Fixed
 - Some emails with inline CSS break the UI
   [#1187](https://github.com/the-djmaze/snappymail/issues/1187)
 - Remote.get() Promise broken by previous change
@@ -166,7 +173,7 @@
 
 ## 2.28.2 – 2023-06-19
 
-## Added
+### Added
 - Detailed error for "Cannot access the repository at the moment"
   [#1164](https://github.com/the-djmaze/snappymail/issues/1164)
 - Bidi in Squire editor
@@ -175,7 +182,7 @@
 - Nextcloud 27 compatibility by @LarsBel
 - JWT class for handling JSON Web Tokens
 
-## Changed
+### Changed
 - Update German by @cm-schl
 - Update French by @hguilbert
 - Update Polish by @tinola
@@ -183,7 +190,7 @@
   [#1170](https://github.com/the-djmaze/snappymail/issues/1170)
 - Image max-width now 100% instead of 90vw
 
-## Fixed
+### Fixed
 - Cannot modify header information
   [#929](https://github.com/the-djmaze/snappymail/issues/929) (comment)
 - Admin Panel broken when admin_panel_host is set
@@ -198,7 +205,7 @@
 
 ## 2.28.1 – 2023-06-05
 
-## Changed
+### Changed
 - Optical issue with input fields for mail and folder search
   [#1149](https://github.com/the-djmaze/snappymail/issues/1149)
 - Update Chinese translation by @mayswind
@@ -206,14 +213,14 @@
 - Update Polish translation by @tinola
   [#1156](https://github.com/the-djmaze/snappymail/pull/1156)
 
-## Fixed
+### Fixed
 - Undefined SIG constants
   [#1147](https://github.com/the-djmaze/snappymail/issues/1147)
 
 
 ## 2.28.0 – 2023-05-30
 
-## Added
+### Added
 - Threaded view make number orange when unread sub-messages
   [#1028](https://github.com/the-djmaze/snappymail/issues/1028)
 - Handle PHP pctnl messages
@@ -221,7 +228,7 @@
   [#1013](https://github.com/the-djmaze/snappymail/issues/1013)
 - CSS `--btn-border-radius`
 
-## Changed
+### Changed
 - Improved RTL languages support
   [#1056](https://github.com/the-djmaze/snappymail/issues/1056)
 - Composer text/attachments as tabs
@@ -246,7 +253,7 @@
 - Update German by @cm-schl
   [#1087](https://github.com/the-djmaze/snappymail/pull/1087)
 
-## Fixed
+### Fixed
 - Show messagelist timeout/abort error for
   [#1071](https://github.com/the-djmaze/snappymail/issues/1071)
 - DesktopNotifications setting not saved
@@ -289,7 +296,7 @@
 
 ## 2.27.3 – 2023-04-04
 
-## Added
+### Added
 - Squire visualize some active buttons states
 - Hard coded string "Message body is empty"
   [#1048](https://github.com/the-djmaze/snappymail/issues/1048)
@@ -300,7 +307,7 @@
 - Log \nonexistent folder for
   [#1008](https://github.com/the-djmaze/snappymail/issues/1008)
 
-## Changed
+### Changed
 - Cleanup some enums to consts
 - Workaround Upgrade with Nextcloud stuck in Maintenance mode
   [#1046](https://github.com/the-djmaze/snappymail/issues/1046)
@@ -312,7 +319,7 @@
 - Allow saving draft with empty body
   [#1052](https://github.com/the-djmaze/snappymail/issues/1052)
 
-## Fixed
+### Fixed
 - GnuPG decrypt failed
 - Clear folder link should be hidden if "dangerous actions" is not active
   [#1037](https://github.com/the-djmaze/snappymail/issues/1037)
@@ -333,26 +340,26 @@
 
 ## 2.27.2 – 2023-03-22
 
-## Added
+### Added
 - authentication with smtp freenet.de
   [#1038](https://github.com/the-djmaze/snappymail/issues/1038)
 
-## Changed
+### Changed
 - SASL always base64 by default
 
-## Fixed
+### Fixed
 - Cache issue with index
   [#1024](https://github.com/the-djmaze/snappymail/issues/1024)
 
 
 ## 2.27.1 – 2023-03-21
 
-## Changed
+### Changed
 - Improved attachmentIcon glyph coloring
 - Better design for .accountPlace text
   [#1025](https://github.com/the-djmaze/snappymail/issues/1025)
 
-## Fixed
+### Fixed
 - Reply is broken
   [#1027](https://github.com/the-djmaze/snappymail/issues/1027)
 - Endless loop at login - Cannot assign array to property MailSo\Imap\Folder::$MAILBOXID
@@ -361,13 +368,13 @@
 
 ## 2.27.0 – 2023-03-20
 
-## Added
+### Added
 - Unique attachments.zip filename
   [#992](https://github.com/the-djmaze/snappymail/issues/992)
 - Select next email after (re)move current
   [#968](https://github.com/the-djmaze/snappymail/issues/968)
 
-## Changed
+### Changed
 - Improved FolderCollection handling
 - MODSEQ requires 64-bit int
 - Update russian language by @Akrobs
@@ -385,7 +392,7 @@
   [#1004](https://github.com/the-djmaze/snappymail/issues/1004)
 - Better line-height for QR code
 
-## Fixed
+### Fixed
 - Composer src is null
 - Image in Signature disappears in Sent/Draft
   [#932](https://github.com/the-djmaze/snappymail/issues/932)
@@ -415,11 +422,11 @@
 
 ## 2.26.4 – 2023-02-24
 
-## Added
+### Added
 - Add CSP frame-ancestors for
   [#537](https://github.com/the-djmaze/snappymail/issues/537)
 
-## Changed
+### Changed
 - Reduce/simplify CSS footprint
 - Use the System/Browser font by default by @HeySora
   [#988](https://github.com/the-djmaze/snappymail/pull/988)
@@ -432,7 +439,7 @@
 - Updated French by @hguilbert
   [#985](https://github.com/the-djmaze/snappymail/pull/985)
 
-## Fixed
+### Fixed
 - unset border-box for message body
   [#990](https://github.com/the-djmaze/snappymail/issues/990)
 - Unread email count badge shows -1
@@ -449,17 +456,17 @@
 
 ## 2.26.3 – 2023-02-21
 
-## Added
+### Added
 - Translate "Are you sure you want to exit?"
 - stderr as Logger
 
-## Changed
+### Changed
 - Moved rl.fetch and rl.fetchJSON to boot.js so that AppData can be fetched as JSON
 - Many AppData properties to JavaScript camelCase
 - Cleanup Identity handling
 - Merge GnuPG and OpenPGP.js passphrases
 
-## Fixed
+### Fixed
 - Notification enum conflicts with window.Notification
 - language selector didn't show current language in green
 - Threads indicator got lost with new message cache handling
@@ -479,14 +486,14 @@
 
 ## 2.26.2 – 2023-02-17
 
-## Added
+### Added
 - Remove CSS white-space from messages to prevent annoying side scrolling
 - Show error when trying to send empty message
   [#974](https://github.com/the-djmaze/snappymail/issues/974)
 - max_sys_loadavg as setting
   [#971](https://github.com/the-djmaze/snappymail/issues/971)
 
-## Changed
+### Changed
 - Speedup and improved cleanHtml() and cleanCSS() handling
 - Better handling of upload .eml files to a mailbox
 - Rename Folder Hash to ETag as it is the more obvious name
@@ -495,7 +502,7 @@
 - Improved handling of `<style>` elements in messages
 - French updated by @hguilbert
 
-## Fixed
+### Fixed
 - Remove SVG elements properly from messages
   [#972](https://github.com/the-djmaze/snappymail/issues/972)
 - Sending large HTML messages slow/fail
@@ -515,11 +522,11 @@
 
 ## 2.26.1 – 2023-02-14
 
-## Added
+### Added
 - Option to allow `<style>` in messages (beta)
 - Message in new tab/window was missing BCC
 
-## Changed
+### Changed
 - Don't clone message for viewing, so that there is instant interaction with messagelist item
 - emailArrayToStringLineHelper() now filters addresses without email address
 - Cleanup EmailModel and better email address parsing and handling
@@ -530,7 +537,7 @@
   [#948](https://github.com/the-djmaze/snappymail/pull/948)
 - Replace Element.fromHTML() with createElement()
 
-## Fixed
+### Fixed
 - New subfolder not visible
   [#937](https://github.com/the-djmaze/snappymail/issues/937)
 - OpenPGP decrypted attachments `friendlySize` not a function
@@ -545,14 +552,14 @@
 
 ## 2.26.0 – 2023-02-10
 
-## Added
+### Added
 - Whitelist advanced SPF/DKIM/DMARC valid feature
   [#938](https://github.com/the-djmaze/snappymail/issues/938)
 
-## Changed
+### Changed
 - \RainLoop\Providers\AddressBook\Utils functions param `Contact` changed to `VCard`
 
-## Fixed
+### Fixed
 - Issue with themes and Chrome cache
   [#188](https://github.com/the-djmaze/snappymail/issues/188)
 - Settings panel width due to display:flex
@@ -574,7 +581,7 @@
 
 ## 2.25.5 – 2023-02-09
 
-## Added
+### Added
 - New dark themes by @TheCuteFoxxy
   [#925](https://github.com/the-djmaze/snappymail/pull/925)
 - External images option 'Always when DKIM is valid' for
@@ -582,7 +589,7 @@
 - Image whitelist menu on message for
   [#201](https://github.com/the-djmaze/snappymail/issues/201)
 
-## Changed
+### Changed
 - pt-PT translation by @ner00
   [#917](https://github.com/the-djmaze/snappymail/issues/917) and
   [#920](https://github.com/the-djmaze/snappymail/issues/920)
@@ -595,7 +602,7 @@
 - Speedup cleanHtml() parser
 - Reduce memory usage on addressbook import
 
-## Fixed
+### Fixed
 - Prevent loading loop between MessageList and FolderInformation requests
 - Admin -> Config layout
 - Inline images sometimes failed
@@ -613,13 +620,13 @@
 
 ## 2.25.4 – 2023-02-06
 
-## Added
+### Added
 - message maximum quoted text level for speed.
   [#902](https://github.com/the-djmaze/snappymail/issues/902)
 - LoveDark Theme by @TheCuteFoxxy
   [#913](https://github.com/the-djmaze/snappymail/pull/913)
 
-## Changed
+### Changed
 - Moved pluginEnable() to \SnappyMail\Repository::enablePackage()
 - Updrate French language by @hguilbert
 - Cleanup material-design checkbox
@@ -630,7 +637,7 @@
 - Enhance Add domain dialog
   [#916](https://github.com/the-djmaze/snappymail/issues/916)
 
-## Fixed
+### Fixed
 - Fixed arrows in thread view while scrolling
   [#908](https://github.com/the-djmaze/snappymail/issues/908)
 - CSS btn-thin were too high
@@ -653,18 +660,18 @@
 
 ## 2.25.3 – 2023-02-03
 
-## Added
+### Added
 - Make message collapse quotes optional
   [#902](https://github.com/the-djmaze/snappymail/issues/902)
 
-## Changed
+### Changed
 - Improved loginErrorDelay to prevent timing attacks and default to 5 seconds
 - Moved message collapse quotes to HTML parser
 - Moved some application.ini settings to other sections
 - Moved source "/assets/*" to proper location in /snappymail/v/0.0.0/static/
 - Set checkMailInterval to 15 minutes by default (now that it is configurable)
 
-## Fixed
+### Fixed
 - Prevent plugin property decrypt error
   [#859](https://github.com/the-djmaze/snappymail/issues/859)
 - Index.html cache issue
@@ -681,7 +688,7 @@
 
 ## 2.25.2 – 2023-02-02
 
-## Added
+### Added
 - Refresh frequency of the mailboxes
   [#486](https://github.com/the-djmaze/snappymail/issues/486)
 - Temporarily save password for private key during session
@@ -694,7 +701,7 @@
   [#262](https://github.com/the-djmaze/snappymail/issues/262)
 - SnappyMail\TAR::extractTo support the $files and $overwrite parameters
 
-## Changed
+### Changed
 - Issue with themes when Chrome crashes
   [#188](https://github.com/the-djmaze/snappymail/issues/188)
 - /static/.htaccess as mentioned by @dbiczo in
@@ -704,7 +711,7 @@
 - \RainLoop\Utils::SetCookie() to \SnappyMail\Cookies::set()
 - Merge \MailSo\Base\Utils::RecRmDir() and \MailSo\Base\Utils::RecTimeDirRemove()
 
-## Fixed
+### Fixed
 - Two issues with images being delivered via ProxyExternal
   [#887](https://github.com/the-djmaze/snappymail/issues/887)
 - Multiple accounts conflicts when using multiple tabs
@@ -721,20 +728,20 @@
 
 ## 2.25.1 – 2023-01-30
 
-## Added
+### Added
 - Support RFC 8689
 - Nextcloud move themes outside of app folder
   [#875](https://github.com/the-djmaze/snappymail/issues/875)
 - Add check to unregister system addressbook by @akhil1508
   [#879](https://github.com/the-djmaze/snappymail/pull/879)
 
-## Changed
+### Changed
 - material-design checkbox use hidden input for accessibility
 - Always subscribe to new folder by default
 - Merge NoScript, NoCookie and BadBrowser pages in Index.html
 - Cleanup translations. Also see https://snappymail.eu/translate.php
 
-## Fixed
+### Fixed
 - PHP < 8.1 ini_set() only accepts strings when `declare(strict_types=1);` is used
 - Nextcloud also fix settings on upgrade
 - Nextcloud workaround upgrade OPCache issue
@@ -749,7 +756,7 @@
 
 ## 2.25.0 – 2023-01-26
 
-## Changed
+### Changed
 - Right margin to folder search input wrapper by @codiflow
   [#871](https://github.com/the-djmaze/snappymail/pull/871)
 - Almost all request params now use JavaScript camelCase instead of CamelCase
@@ -760,7 +767,7 @@
 - Improve MailSo\Imap\BodyStructure
 - Cleanup MIME part FileName handling
 
-## Fixed
+### Fixed
 - CardDAV sync error - Request aborted
   [#866](https://github.com/the-djmaze/snappymail/issues/866)
 - PDF not possible to be viewed in the browser
@@ -777,7 +784,7 @@
 
 ## 2.24.6 – 2023-01-18
 
-## Added
+### Added
 - Preparations for RFC 8689
 - Add admin setting for the contacts suggestions limit
 - A button to clear folder search input field by @codiflow
@@ -788,7 +795,7 @@
   [#431](https://github.com/the-djmaze/snappymail/issues/431)
   [#233](https://github.com/the-djmaze/snappymail/issues/233)
 
-## Changed
+### Changed
 - Display the time of emails, not just the size and date
   [#843](https://github.com/the-djmaze/snappymail/issues/843)
 - Made thread number a bit wider
@@ -804,7 +811,7 @@
 - Cleanup messages cache handling
 - Improved visibility Admin Domain Test errors
 
-## Fixed
+### Fixed
 - LiteSpeed does not disable compression although .htaccess says so
   [#525](https://github.com/the-djmaze/snappymail/issues/525)
   [#855](https://github.com/the-djmaze/snappymail/issues/855)
@@ -821,7 +828,7 @@
 
 ## 2.24.5 – 2023-01-12
 
-## Added
+### Added
 - Support for search criterias ON, SENTON, SENTSINCE and SENTBEFORE
 - New 'forward as attachment' glyph
 - NC integration app metadata: add links to admin and dev docs by @p-bo
@@ -831,7 +838,7 @@
 - Nextcloud Improved file picker layout
   [#825](https://github.com/the-djmaze/snappymail/issues/825)
 
-## Changed
+### Changed
 - Move release.php to cli/release.php
 - Moved sort options "FROM" direct below "DATE" for better understanding
 - Added DAV path error to log for
@@ -842,7 +849,7 @@
 - Improve german and italian translation by @cm-schl
   [#846](https://github.com/the-djmaze/snappymail/pull/846)
 
-## Fixed
+### Fixed
 - Searching on Nextcloud search
   [#787](https://github.com/the-djmaze/snappymail/issues/787)
 - Workaround another Nextcloud disallowed .htaccess
@@ -866,16 +873,16 @@
 
 ## 2.24.4 – 2022-12-30
 
-## Added
+### Added
 - Check PHP_INT_SIZE if SnappyMail runs on 64bit
 
-## Changed
+### Changed
 - A lot of MessageList sorting improvements
   [#796](https://github.com/the-djmaze/snappymail/issues/796)
 - On upgrade also update plugins in Nextcloud due to many misunderstandings and prevent invalid open issues
 - Moved application.ini labs.use_app_debug_* to debug.*
 
-## Fixed
+### Fixed
 - Dutch translation for confusing message (threads vs grouped)
 - Workaround Nextcloud disallowed .htaccess
   [#790](https://github.com/the-djmaze/snappymail/issues/790)
@@ -885,10 +892,10 @@
 
 ## 2.24.3 – 2022-12-28
 
-## Changed
+### Changed
 - When sorting on FROM also sort on REVERSE DATE
 
-## Fixed
+### Fixed
 - F5 and Ctrl-F5 reload logs out of Snappymail in Chrome.
   [#800](https://github.com/the-djmaze/snappymail/issues/800)
 - Switching accounts does not work anymore with 2.24.2
