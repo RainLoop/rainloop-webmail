@@ -26,7 +26,7 @@ jobs:
         DOCKER_METADATA_PR_HEAD_SHA: 'true'
       with:
         images: |
-          ${{ github.repository }}
+          djmaze/snappymail
           ghcr.io/${{ github.repository }}
         # type=ref,event=branch generates tag(s) on branch only. E.g. 'master', 'master-abc0123'
         # type=ref,event=tag generates tag(s) on tags only. E.g. 'v0.0.0', 'v0.0.0-abc0123', and 'latest'
