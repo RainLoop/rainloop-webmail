@@ -6,10 +6,6 @@ on:
     - master
     tags:
     - '**'
-  # TODO: Remove this before merging PR
-  pull_request:
-    branches:
-    - master
 
 # This is needed to push to GitHub Container Registry. See https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry
 permissions:
@@ -24,7 +20,6 @@ jobs:
       uses: actions/checkout@v3
 
     # This step generates the docker tags
-    # TODO: Remove type=ref,event=pr before merging PR
     - name: Docker meta
       id: meta
       uses: docker/metadata-action@v4
@@ -35,11 +30,9 @@ jobs:
         images: |
           ${{ github.repository }}
           ghcr.io/${{ github.repository }}
-        # type=ref,event=pr generates tag(s) on PRs only. E.g. 'pr-123', 'pr-123-abc0123'
         # type=ref,event=branch generates tag(s) on branch only. E.g. 'master', 'master-abc0123'
         # type=ref,event=tag generates tag(s) on tags only. E.g. 'v0.0.0', 'v0.0.0-abc0123', and 'latest'
         tags: |
-          type=ref,event=pr
           type=ref,suffix=-{{sha}},event=pr
           type=ref,event=branch
           type=ref,suffix=-{{sha}},event=branch
