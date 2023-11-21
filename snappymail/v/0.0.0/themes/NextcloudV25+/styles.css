@@ -624,7 +624,7 @@
 #rl-app .select,
 #rl-app .emailaddresses,
 #rl-app input:not([type="checkbox"]) {
-    padding: 0 12px;
+    padding: 0 30px;
     font-size: var(--nc-default-font-size);
     color: var(--nc-color-main-text);
     background-color: unset;
@@ -2112,7 +2112,7 @@ html.rl-mobile #rl-app #V-AdminPane>.b-toolbar {
     #rl-app #V-PopupsAdvancedSearch .e-component.e-checkbox {
         margin-left: -100%;
     }
-    
+
     #rl-app #V-PopupsLanguages label {
         margin-left: 0;
         margin-right: 0;
