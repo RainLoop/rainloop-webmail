@@ -1,4 +1,33 @@
-## 2.29.2 – 2023-10-02
+## 2.29.3 – 2023-11-21
+
+## Added
+- Docker Hub image
+  [#965](https://github.com/the-djmaze/snappymail/pull/965) by @leojonathanoh
+
+## Changed
+- Sabre/VObject 4.5.4 and Sabre/Xml 4.0.4
+  [#1311](https://github.com/the-djmaze/snappymail/issues/1311)
+
+## Fixed
+- '#/mailbox/folder/mUID/search' uri/route handling
+  [#1301](https://github.com/the-djmaze/snappymail/pull/1301) by @SergeyMosin
+- "Remember me" doesn't work when browser is closed
+  [#1313](https://github.com/the-djmaze/snappymail/issues/1313)
+- Blank email displayed when "Prefer HTML to plain text" is unchecked and the message is html only
+  [#1302](https://github.com/the-djmaze/snappymail/issues/1302)
+- Parent folder of Sub folder not useable.
+  [#1008](https://github.com/the-djmaze/snappymail/issues/1008)
+- Large detailed header don't display body
+  [#1284](https://github.com/the-djmaze/snappymail/issues/1284)
+
+## Nextcloud
+- Improvements for Install / update issues #929
+  [#929](https://github.com/the-djmaze/snappymail/issues/929)
+- Should use language as defined in cloud settings #1293
+  [#1293](https://github.com/the-djmaze/snappymail/issues/1293)
+
+
+## 2.29.2 – 2023-11-14
 
 ## Added
 - Show size of folders in folders list #1303
