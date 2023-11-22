@@ -62,17 +62,17 @@ sed 's/^auth_logging_format = .*/auth_logging_format = "[{date:Y-m-d H:i:s}] Aut
 sed 's/^auth_syslog = .*/auth_syslog = Off/' -i $SNAPPYMAIL_CONFIG_FILE
 
 (
-    while ! nc -vz -w 1 localhost 8888 > /dev/null 2>&1; do echo "[INFO] Checking whether nginx is alive"; sleep 1; done
-    while ! nc -vz -w 1 localhost 9000 > /dev/null 2>&1; do echo "[INFO] Checking whether php-fpm is alive"; sleep 1; done
+    while ! nc -vz -w 1 127.0.0.1 8888 > /dev/null 2>&1; do echo "[INFO] Checking whether nginx is alive"; sleep 1; done
+    while ! nc -vz -w 1 127.0.0.1 9000 > /dev/null 2>&1; do echo "[INFO] Checking whether php-fpm is alive"; sleep 1; done
     # Create snappymail admin password if absent
     SNAPPYMAIL_ADMIN_PASSWORD_FILE=/var/lib/snappymail/_data_/_default_/admin_password.txt
     if [ ! -f "$SNAPPYMAIL_ADMIN_PASSWORD_FILE" ]; then
         echo "[INFO] Creating Snappymail admin password file: $SNAPPYMAIL_ADMIN_PASSWORD_FILE"
-        wget -T 1 -qO- 'http://localhost:8888/?/AdminAppData/0/12345/' > /dev/null
+        wget -T 1 -qO- 'http://127.0.0.1:8888/?/AdminAppData/0/12345/' > /dev/null
         echo "[INFO] Snappymail Admin Panel ready at http://localhost:8888/?admin. Login using password in $SNAPPYMAIL_ADMIN_PASSWORD_FILE"
     fi
 
-    wget -T 1 -qO- 'http://localhost:8888/' > /dev/null
+    wget -T 1 -qO- 'http://127.0.0.1:8888/' > /dev/null
     echo "[INFO] Snappymail ready at http://localhost:8888/"
 ) &
 
