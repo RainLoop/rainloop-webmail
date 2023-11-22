@@ -22,10 +22,7 @@ abstract class HtmlUtils
 	 */
 	public static function BuildHtml(string $sHtml, array &$aFoundCids, array &$aFoundDataURL, array &$aFoundContentLocationUrls) : string
 	{
-		$bState = true;
-		if (\MailSo\Base\Utils::FunctionCallable('libxml_use_internal_errors')) {
-			$bState = \libxml_use_internal_errors(true);
-		}
+		$bState = \libxml_use_internal_errors(true);
 
 		$sHtml = \str_replace('<o:p></o:p>', '', $sHtml);
 		$sHtml = \str_replace('<o:p>', '<span>', $sHtml);
@@ -89,9 +86,7 @@ abstract class HtmlUtils
 			\libxml_clear_errors();
 		}
 
-		if (\MailSo\Base\Utils::FunctionCallable('libxml_use_internal_errors')) {
-			\libxml_use_internal_errors($bState);
-		}
+		\libxml_use_internal_errors($bState);
 
 		$sHtml = '';
 		$oBody = $oDoc->getElementsByTagName('body')->item(0);
