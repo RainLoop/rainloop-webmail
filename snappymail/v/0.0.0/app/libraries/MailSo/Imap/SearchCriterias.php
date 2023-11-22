@@ -292,14 +292,26 @@ abstract class SearchCriterias
 							$bUseCache = false;
 							break;
 						case 'OLDER_THAN':
-							$aCriteriasResult[] = 'BEFORE';
-							$aCriteriasResult[] = (new \DateTime())->sub(new \DateInterval("P{$sRawValue}"))->format('j-M-Y');
+							$oDate = (new \DateTime())->sub(new \DateInterval("P{$sRawValue}"));
+							if ($oImapClient->hasCapability('WITHIN')) {
+								$aCriteriasResult[] = 'OLDER';
+								$aCriteriasResult[] = \time() - $oDate->getTimestamp();
+							} else {
+								$aCriteriasResult[] = 'BEFORE';
+								$aCriteriasResult[] = $oDate->format('j-M-Y');
+							}
 							break;
 						case 'NEWER_THAN':
-							$iTimeFilter = \max(
-								$iTimeFilter,
-								(new \DateTime())->sub(new \DateInterval("P{$sRawValue}"))->getTimestamp()
-							);
+							$oDate = (new \DateTime())->sub(new \DateInterval("P{$sRawValue}"));
+							if ($oImapClient->hasCapability('WITHIN')) {
+								$aCriteriasResult[] = 'YOUNGER';
+								$aCriteriasResult[] = \time() - $oDate->getTimestamp();
+							} else {
+								$iTimeFilter = \max(
+									$iTimeFilter,
+									(new \DateTime())->sub(new \DateInterval("P{$sRawValue}"))->getTimestamp()
+								);
+							}
 							break;
 					}
 				}
@@ -397,6 +409,8 @@ abstract class SearchCriterias
 				case 'SENTSINCE':
 				case 'SENTBEFORE':
 				case 'BEFORE':
+				case 'OLDER':
+				case 'YOUNGER':
 					if (\strlen($mValue)) {
 						$aResult[$sName] = $mValue;
 					}
