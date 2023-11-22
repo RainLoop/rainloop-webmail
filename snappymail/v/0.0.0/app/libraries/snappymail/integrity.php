@@ -41,9 +41,9 @@ abstract class Integrity
 			echo '<details><summary>Status: ' . $response->status . '</summary><pre>' . \print_r($response->headers, 1) . '</pre></details>';
 			$size = \filesize(APP_VERSION_ROOT_PATH.$file);
 			if ($size == intval($response->getHeader('content-length'))) {
-				echo 'content-length matches size ' . $size;
+				echo '<div>content-length matches size ' . $size . '</div>';
 			} else {
-				echo 'content-length mismatch, should be ' . $size;
+				echo '<div style="color: red">content-length mismatch, should be: ' . $size . '</div>';
 			}
 /*
 			echo "<h3>encoding</h3>";
@@ -55,9 +55,14 @@ abstract class Integrity
 			echo '<details><summary>Status: ' . $response->status . '</summary><pre>' . \print_r($response->headers, 1) . '</pre></details>';
 			$size = \filesize(APP_VERSION_ROOT_PATH.$file . '.gz');
 			if ($size == intval($response->getHeader('content-length'))) {
-				echo 'content-length matches size ' . $size;
+				echo '<div>content-length matches size ' . $size . '</div>';
 			} else {
-				echo 'content-length mismatch, should be ' . $size;
+				echo '<div style="color: red">content-length mismatch, should be: ' . $size . '</div>';
+			}
+			if ('gzip' == $response->getHeader('content-encoding')) {
+				echo '<div>content-encoding matches</div>';
+			} else {
+				echo '<div style="color: red">content-encoding mismatch, should be: gzip</div>';
 			}
 
 			echo "<h3>brotli encoded</h3>";
@@ -65,9 +70,14 @@ abstract class Integrity
 			echo '<details><summary>Status: ' . $response->status . '</summary><pre>' . \print_r($response->headers, 1) . '</pre></details>';
 			$size = \filesize(APP_VERSION_ROOT_PATH.$file . '.br');
 			if ($size == intval($response->getHeader('content-length'))) {
-				echo 'content-length matches size ' . $size;
+				echo '<div>content-length matches size ' . $size . '</div>';
 			} else {
-				echo 'content-length mismatch, should be ' . $size;
+				echo '<div style="color: red">content-length mismatch, should be: ' . $size . '</div>';
+			}
+			if ('br' == $response->getHeader('content-encoding')) {
+				echo '<div>content-encoding matches</div>';
+			} else {
+				echo '<div style="color: red">content-encoding mismatch, should be: br</div>';
 			}
 		}
 	}
