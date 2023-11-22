@@ -274,6 +274,17 @@ abstract class SearchCriterias
 							}
 							break;
 
+						// https://www.rfc-editor.org/rfc/rfc5032.html
+						case 'OLDER':
+						case 'YOUNGER':
+							// time interval in seconds
+							$sValue = \intval($sRawValue);
+							if (0 < $sValue && $oImapClient->hasCapability('WITHIN')) {
+								$aCriteriasResult[] = $sName;
+								$aCriteriasResult[] = $sValue;
+							}
+							break;
+
 						// https://github.com/the-djmaze/snappymail/issues/625
 						case 'READ':
 						case 'UNREAD':
