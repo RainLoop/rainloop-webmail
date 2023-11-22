@@ -454,10 +454,7 @@ trait Folders
 		$aParameters = array();
 		$aReturnParams = array();
 
-		if ($bIsSubscribeList) {
-			// IMAP4rev2 deprecated
-			$sCmd = 'LSUB';
-		} else if ($this->hasCapability('LIST-EXTENDED')) {
+		if ($this->hasCapability('LIST-EXTENDED')) {
 			// RFC 5258
 			$aReturnParams[] = 'SUBSCRIBED';
 //			$aReturnParams[] = 'CHILDREN';
@@ -470,6 +467,9 @@ trait Folders
 			if ($this->hasCapability('SPECIAL-USE')) {
 				$aReturnParams[] = 'SPECIAL-USE';
 			}
+		} else if ($bIsSubscribeList) {
+			// IMAP4rev2 deprecated
+			$sCmd = 'LSUB';
 		}
 
 		$aParameters[] = $this->EscapeFolderName($sParentFolderName);
