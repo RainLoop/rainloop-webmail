@@ -31,6 +31,8 @@ class Folder implements \JsonSerializable
 	 */
 	private array $aMetadata = array();
 
+	public ?Responses\ACL $myRights = null;
+
 	/**
 	 * @throws \InvalidArgumentException
 	 */
@@ -146,12 +148,6 @@ class Folder implements \JsonSerializable
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
-/*
-		if ($this->ImapClient->hasCapability('ACL') || $this->ImapClient->CapabilityValue('RIGHTS')) {
-			// MailSo\Imap\Responses\ACL
-			$rights = $this->ImapClient->FolderMyRights($this->FullName);
-		}
-*/
 		$result = array(
 			'@Object' => 'Object/Folder',
 			'name' => $this->Name(),
@@ -165,20 +161,19 @@ class Folder implements \JsonSerializable
 			'unreadEmails' => $this->UNSEEN,
 			'id' => $this->MAILBOXID,
 			'size' => $this->SIZE,
-			'role' => $this->Role()
-/*
+			'role' => $this->Role(),
+
 			'myRights' => [
-				'mayReadItems'   => !$rights || ($rights->hasRight('l') && $rights->hasRight('r')),
-				'mayAddItems'    => !$rights || $rights->hasRight('i'),
-				'mayRemoveItems' => !$rights || ($rights->hasRight('t') && $rights->hasRight('e')),
-				'maySetSeen'     => !$rights || $rights->hasRight('s'),
-				'maySetKeywords' => !$rights || $rights->hasRight('w'),
-				'mayCreateChild' => !$rights || $rights->hasRight('k'),
-				'mayRename'      => !$rights || $rights->hasRight('x'),
-				'mayDelete'      => !$rights || $rights->hasRight('x'),
-				'maySubmit'      => !$rights || $rights->hasRight('p')
+				'mayReadItems'   => !$this->myRights || ($this->myRights->hasRight('l') && $this->myRights->hasRight('r')),
+				'mayAddItems'    => !$this->myRights || $this->myRights->hasRight('i'),
+				'mayRemoveItems' => !$this->myRights || ($this->myRights->hasRight('t') && $this->myRights->hasRight('e')),
+				'maySetSeen'     => !$this->myRights || $this->myRights->hasRight('s'),
+				'maySetKeywords' => !$this->myRights || $this->myRights->hasRight('w'),
+				'mayCreateChild' => !$this->myRights || $this->myRights->hasRight('k'),
+				'mayRename'      => !$this->myRights || $this->myRights->hasRight('x'),
+				'mayDelete'      => !$this->myRights || $this->myRights->hasRight('x'),
+				'maySubmit'      => !$this->myRights || $this->myRights->hasRight('p')
 			]
-*/
 		);
 		if ($this->etag) {
 			$result['etag'] = $this->etag;

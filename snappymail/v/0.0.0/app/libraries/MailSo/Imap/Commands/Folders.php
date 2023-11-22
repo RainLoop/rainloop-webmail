@@ -575,6 +575,12 @@ trait Folders
 			}
 		}
 
+		if ($this->hasCapability('ACL') || $this->CapabilityValue('RIGHTS')) {
+			foreach ($oFolderCollection as $oFolder) {
+				$oFolder->myRights = $this->FolderMyRights($oFolder->FullName);
+			}
+		}
+
 		if (!$bInbox && !$sParentFolderName && !isset($oFolderCollection['INBOX'])) {
 			$oFolderCollection['INBOX'] = new Folder('INBOX', $sDelimiter);
 		}
