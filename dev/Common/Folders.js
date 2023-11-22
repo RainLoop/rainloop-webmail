@@ -50,15 +50,14 @@ folderListOptionsBuilder = (
 	aDisabled,
 	aHeaderLines,
 	fRenameCallback,
-	fDisableCallback,
-	bNoSelectSelectable,
-	aList = FolderUserStore.folderList()
+	fDisableCallback
 ) => {
 	const
 		aResult = [],
 		sDeepPrefix = '\u00A0\u00A0\u00A0',
 		// FolderSystemPopupView should always be true
 		showUnsubscribed = fRenameCallback ? !SettingsUserStore.hideUnsubscribed() : true,
+		isDisabled = fDisableCallback || (item => !item.selectable() || aDisabled.includes(item.fullName)),
 
 		foldersWalk = folders => {
 			folders.forEach(oItem => {
@@ -69,10 +68,7 @@ folderListOptionsBuilder = (
 							sDeepPrefix.repeat(oItem.deep) +
 							fRenameCallback(oItem),
 						system: false,
-						disabled: !bNoSelectSelectable && (
-							!oItem.selectable() ||
-							aDisabled.includes(oItem.fullName) ||
-							fDisableCallback(oItem))
+						disabled: isDisabled(oItem)
 					});
 				}
 				foldersWalk(oItem.subFolders());
@@ -93,7 +89,7 @@ folderListOptionsBuilder = (
 		})
 	);
 
-	foldersWalk(aList);
+	foldersWalk(FolderUserStore.folderList());
 
 	return aResult;
 },

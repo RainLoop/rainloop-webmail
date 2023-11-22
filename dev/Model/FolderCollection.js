@@ -548,6 +548,8 @@ export class FolderModel extends AbstractModel {
 
 			folder.isSubscribed(attr('\\subscribed'));
 			folder.exists = !attr('\\nonexistent');
+			folder.subFolders.allow = !attr('\\noinferiors');
+//			folder.subFolders.exist = attr('\\haschildren') || !attr('\\hasnochildren');
 			folder.selectable(folder.exists && !attr('\\noselect'));
 
 			type && 'mail' != type && folder.kolabType(type);

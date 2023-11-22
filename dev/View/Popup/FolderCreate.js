@@ -29,10 +29,8 @@ export class FolderCreatePopupView extends AbstractViewPopup {
 				[],
 				[['', '']],
 				oItem => oItem ? oItem.detailedName() : '',
-				FolderUserStore.namespace
-					? item => !item.fullName.startsWith(FolderUserStore.namespace)
-					: null,
-				true
+				item => !item.subFolders.allow
+					|| (FolderUserStore.namespace && !item.fullName.startsWith(FolderUserStore.namespace))
 			)
 		);
 
