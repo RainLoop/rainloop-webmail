@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . 'app/libraries/snappymail/integrity.php';
+require_once __DIR__ . '/app/libraries/snappymail/integrity.php';
 
 $result = \SnappyMail\Integrity::phpVersion();
 if ($result) {
