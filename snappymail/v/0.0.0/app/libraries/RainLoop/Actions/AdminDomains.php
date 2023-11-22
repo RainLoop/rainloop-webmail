@@ -78,11 +78,11 @@ trait AdminDomains
 	{
 		$this->IsAdminLoggined();
 
-		$bImapResult = false;
+		$mImapResult = false;
 		$sImapErrorDesc = '';
-		$bSmtpResult = false;
+		$mSmtpResult = false;
 		$sSmtpErrorDesc = '';
-		$bSieveResult = false;
+		$mSieveResult = false;
 		$sSieveErrorDesc = '';
 
 		$oDomain = $this->DomainProvider()->LoadOrCreateNewFromAction($this, 'test.example.com');
@@ -96,15 +96,18 @@ trait AdminDomains
 
 				$oSettings = $oDomain->ImapSettings();
 				$oImapClient->Connect($oSettings);
+				$mImapResult = [
+					'connectCapa' => $oImapClient->Capability()
+				];
 
 				if (!empty($aAuth['user'])) {
 					$oSettings->Login = $aAuth['user'];
 					$oSettings->Password = $aAuth['pass'];
 					$oImapClient->Login($oSettings);
+					$mImapResult['authCapa'] = $oImapClient->Capability();
 				}
 
 				$oImapClient->Disconnect();
-				$bImapResult = true;
 			}
 			catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
 			{
@@ -121,8 +124,8 @@ trait AdminDomains
 			}
 
 			if ($oDomain->OutUsePhpMail()) {
-				$bSmtpResult = \MailSo\Base\Utils::FunctionCallable('mail');
-				if (!$bSmtpResult) {
+				$mSmtpResult = \MailSo\Base\Utils::FunctionCallable('mail');
+				if (!$mSmtpResult) {
 					$sSmtpErrorDesc = 'PHP: mail() function is undefined';
 				}
 			} else {
@@ -134,15 +137,18 @@ trait AdminDomains
 					$oSettings = $oDomain->SmtpSettings();
 					$oSettings->Ehlo = \MailSo\Smtp\SmtpClient::EhloHelper();
 					$oSmtpClient->Connect($oSettings);
+					$mSmtpResult = [
+						'connectCapa' => $oSmtpClient->Capability()
+					];
 
 					if (!empty($aAuth['user'])) {
 						$oSettings->Login = $aAuth['user'];
 						$oSettings->Password = $aAuth['pass'];
 						$oSmtpClient->Login($oSettings);
+						$mSmtpResult['authCapa'] = $oSmtpClient->Capability();
 					}
 
 					$oSmtpClient->Disconnect();
-					$bSmtpResult = true;
 				}
 				catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
 				{
@@ -167,15 +173,18 @@ trait AdminDomains
 
 					$oSettings = $oDomain->SieveSettings();
 					$oSieveClient->Connect($oSettings);
+					$mSieveResult = [
+						'connectCapa' => $oSieveClient->Capability()
+					];
 
 					if (!empty($aAuth['user'])) {
 						$oSettings->Login = $aAuth['user'];
 						$oSettings->Password = $aAuth['pass'];
 						$oSieveClient->Login($oSettings);
+						$mSieveResult['authCapa'] = $oSieveClient->Capability();
 					}
 
 					$oSieveClient->Disconnect();
-					$bSieveResult = true;
 				}
 				catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
 				{
@@ -191,14 +200,17 @@ trait AdminDomains
 					$sSieveErrorDesc = $oException->getMessage();
 				}
 			} else {
-				$bSieveResult = true;
+				$mSieveResult = true;
 			}
 		}
 
 		return $this->DefaultResponse(array(
-			'Imap' => $bImapResult ? true : $sImapErrorDesc,
-			'Smtp' => $bSmtpResult ? true : $sSmtpErrorDesc,
-			'Sieve' => $bSieveResult ? true : $sSieveErrorDesc
+			'Imap' => $mImapResult ? true : $sImapErrorDesc,
+			'Smtp' => $mSmtpResult ? true : $sSmtpErrorDesc,
+			'Sieve' => $mSieveResult ? true : $sSieveErrorDesc,
+			'ImapResult' => $mImapResult,
+			'SmtpResult' => $mSmtpResult,
+			'SieveResult' => $mSieveResult
 		));
 	}
 

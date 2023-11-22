@@ -38,6 +38,11 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 	private array $aResults = array();
 
+	public function Capability() : array
+	{
+		return $this->aCapa;
+	}
+
 	public function hasCapability(string $sCapa) : bool
 	{
 		return \in_array(\strtoupper($sCapa), $this->aCapa);
@@ -478,6 +483,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		250-DSN\r\n
 		250 SMTPUTF8\r\n
 		*/
+		$this->aCapa = [];
 		foreach ($this->aResults as $sLine) {
 			$aMatch = array();
 			if (\preg_match('/[\d]+[ \-](.+)$/', $sLine, $aMatch) && isset($aMatch[1]) && \strlen($aMatch[1])) {
@@ -510,7 +516,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		$this->sendRequestWithCheck('HELO', 250, $sHost);
 		$this->aAuthTypes = array();
 		$this->iSizeCapaValue = 0;
-		$this->aCapa = array();
+		$this->aCapa = [];
 	}
 
 	/**

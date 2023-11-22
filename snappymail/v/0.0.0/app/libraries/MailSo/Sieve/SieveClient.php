@@ -213,12 +213,13 @@ class SieveClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Sieve\Exceptions\*
 	 */
-	public function Capability() : array
+	public function Capability(bool $force = false) : array
 	{
-		$this->sendRequest('CAPABILITY');
-		$aResponse = $this->parseResponse();
-		$this->parseStartupResponse($aResponse);
-
+		if (!$this->aCapa || $force) {
+			$this->sendRequest('CAPABILITY');
+			$aResponse = $this->parseResponse();
+			$this->parseStartupResponse($aResponse);
+		}
 		return $this->aCapa;
 	}
 
@@ -348,6 +349,7 @@ class SieveClient extends \MailSo\Net\NetClient
 	 */
 	private function parseStartupResponse(array $aResponse) : void
 	{
+		$this->aCapa = [];
 		foreach ($aResponse as $sLine) {
 			$aTokens = $this->parseLine($sLine);
 			if (empty($aTokens[0]) || \in_array(\substr($sLine, 0, 2), array('OK', 'NO'))) {
