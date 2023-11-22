@@ -1,56 +1,17 @@
 <?php
 
-if (PHP_VERSION_ID < 70400) {
-	echo '<p style="color: red">';
-	echo '[301] Your PHP version ('.PHP_VERSION.') is lower than the minimal required 7.4.0!';
-	echo '</p>';
+require_once __DIR__ . 'app/libraries/snappymail/integrity.php';
+
+$result = \SnappyMail\Integrity::phpVersion();
+if ($result) {
+	echo '<p style="color: red">[301] ' . $result . '</p>';
 	exit(301);
 }
 
-$aOptional = array(
-	'cURL'    => extension_loaded('curl'),
-	'exif'    => extension_loaded('exif'),
-	'finfo'   => class_exists('finfo'),
-	'gd'      => extension_loaded('gd'),
-	'gnupg'   => extension_loaded('gnupg'),
-	'gmagick' => extension_loaded('gmagick'),
-	'imagick' => extension_loaded('imagick'),
-	'iconv'   => function_exists('iconv'),
-	'intl'    => function_exists('idn_to_ascii'),
-	'ldap'    => extension_loaded('ldap'),
-	'OpenSSL' => extension_loaded('openssl'),
-	'mysql'   => extension_loaded('pdo_mysql'),
-	'pgsql'   => extension_loaded('pdo_pgsql'),
-	'redis'   => extension_loaded('redis'),
-	'Sodium'  => extension_loaded('sodium'),
-	'sqlite'  => extension_loaded('pdo_sqlite'),
-	'tidy'    => extension_loaded('tidy'),
-	'uuid'    => extension_loaded('uuid'),
-	'xxtea'   => extension_loaded('xxtea'),
-	'zip'     => extension_loaded('zip')
-);
-
-$aRequirements = array(
-	'mbstring' => extension_loaded('mbstring'),
-	'Zlib'     => extension_loaded('zlib'),
-	// enabled by default:
-	'ctype'    => extension_loaded('ctype'),
-	'json'     => function_exists('json_decode'),
-	'libxml'   => function_exists('libxml_use_internal_errors'),
-	'dom'      => class_exists('DOMDocument')
-	// https://github.com/the-djmaze/snappymail/issues/392
-//	'phar'     => class_exists('PharData')
-);
-
-if (in_array(false, $aRequirements)) {
+$result = \SnappyMail\Integrity::phpExtensions();
+if ($result) {
 	echo '<p>[302] The following PHP extensions are not available in your PHP configuration!</p>';
-	echo '<ul>';
-	foreach ($aRequirements as $sKey => $bValue) {
-		if (!$bValue) {
-			echo '<li>'.$sKey.'</li>';
-		}
-	}
-	echo '</ul>';
+	echo '<ul><li>' . \implode('</li>li><li>', $result) . '</li></ul>';
 	exit(302);
 }
 

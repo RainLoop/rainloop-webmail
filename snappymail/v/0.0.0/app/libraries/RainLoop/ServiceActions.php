@@ -528,6 +528,13 @@ class ServiceActions
 		return 'Pong';
 	}
 
+	public function ServiceTest() : string
+	{
+		$this->oHttp->ServerNoCache();
+		\SnappyMail\Integrity::test();
+		return '';
+	}
+
 	/**
 	 * Login with the \RainLoop\API::CreateUserSsoHash() generated hash
 	 */
