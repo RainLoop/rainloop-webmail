@@ -120,6 +120,8 @@ export class FilterPopupView extends rl.pluginPopupView {
 					id: FilterAction.MoveTo,
 					name: i18nFilter('ACTION_MOVE_TO')
 				});
+			}
+			if (capa.includes('redirect')) {
 				this.actionTypeOptions.push({
 					id: FilterAction.Forward,
 					name: i18nFilter('ACTION_FORWARD_TO')
