@@ -405,7 +405,7 @@ export class MailMessageList extends AbstractViewRight {
 	}
 
 	moveCommand(vm, event) {
-		if (MessagelistUserStore.hasChecked()) {
+		if (canBeMovedHelper()) {
 			if (vm && event?.preventDefault) {
 				stopEvent(event);
 			}
