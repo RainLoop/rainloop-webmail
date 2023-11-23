@@ -121,12 +121,12 @@ export class FilterPopupView extends rl.pluginPopupView {
 					name: i18nFilter('ACTION_MOVE_TO')
 				});
 			}
-			if (capa.includes('redirect')) {
-				this.actionTypeOptions.push({
-					id: FilterAction.Forward,
-					name: i18nFilter('ACTION_FORWARD_TO')
-				});
-			}
+
+			// redirect command
+			this.actionTypeOptions.push({
+				id: FilterAction.Forward,
+				name: i18nFilter('ACTION_FORWARD_TO')
+			});
 
 			if (capa.includes('reject')) {
 				this.actionTypeOptions.push({ id: FilterAction.Reject, name: i18nFilter('ACTION_REJECT') });
