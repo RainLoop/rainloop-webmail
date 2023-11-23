@@ -135,7 +135,7 @@
 		"LABEL_USE_SHORT_LOGIN": "Kurze Benutzernamen verwenden",
 		"LABEL_USE_AUTH": "Authentifizierung verwenden",
 		"LABEL_SET_SENDER": "Verwenden Sie die Anmeldung als Absender",
-		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
+		"LABEL_AUTH_PLAIN_LINE": "Erzwinge einzelnen AUTH PLAIN Befehl bei der Anmeldung",
 		"LABEL_USE_PHP_MAIL": "PHPs mail()-Funktion verwenden",
 		"BUTTON_WHITE_LIST": "Whitelist",
 		"BUTTON_SIEVE_CONFIGURATION": "Sieve-Konfiguration",
