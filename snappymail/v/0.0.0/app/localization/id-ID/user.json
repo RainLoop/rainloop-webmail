@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Sisipkan tanda tangan ini sebelum teks kutipan pada balasan"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Buat folder?",
+		"TITLE_CREATE_FOLDER": "Buat folder",
 		"LABEL_PARENT": "Folder induk",
 		"BUTTON_CREATE": "Buat",
 		"TITLE_CREATING_PROCESS": "Membuat folder"

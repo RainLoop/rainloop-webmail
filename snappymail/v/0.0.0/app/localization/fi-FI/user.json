@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Lisää tämä allekirjoitus ennen lainattua tekstiä vastauksissa"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Luo kansio?",
+		"TITLE_CREATE_FOLDER": "Luo kansio",
 		"LABEL_PARENT": "Emo-kansio",
 		"BUTTON_CREATE": "Luo",
 		"TITLE_CREATING_PROCESS": "Luodaan kansiota"

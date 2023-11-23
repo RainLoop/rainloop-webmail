@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Txertatu sinadura hau erantzuteko testuaren aurretik"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Karpeta sortu?",
+		"TITLE_CREATE_FOLDER": "Karpeta sortu",
 		"LABEL_PARENT": "Karpeta gurasoa",
 		"BUTTON_CREATE": "Sortu",
 		"TITLE_CREATING_PROCESS": "Karpeta sortzen"

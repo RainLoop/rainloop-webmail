@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "회신 시 이 서명을 인용문 이전에 삽입"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "폴더를 생성할까요?",
+		"TITLE_CREATE_FOLDER": "폴더를 생성할까요",
 		"LABEL_PARENT": "상위 폴더",
 		"BUTTON_CREATE": "생성",
 		"TITLE_CREATING_PROCESS": "폴더 생성 중"

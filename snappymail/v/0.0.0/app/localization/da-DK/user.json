@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Indsæt signatur før citeret tekst"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Opret ny mappe?",
+		"TITLE_CREATE_FOLDER": "Opret ny mappe",
 		"LABEL_PARENT": "Hovedmappe",
 		"BUTTON_CREATE": "Opret ny mappe",
 		"TITLE_CREATING_PROCESS": "Opretter mappe"

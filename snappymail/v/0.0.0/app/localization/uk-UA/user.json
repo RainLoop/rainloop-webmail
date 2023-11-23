@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Insert this signature before quoted text in replies"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Створити теку?",
+		"TITLE_CREATE_FOLDER": "Створити теку",
 		"LABEL_PARENT": "Батьківська тека",
 		"BUTTON_CREATE": "Створити",
 		"TITLE_CREATING_PROCESS": "Створення теки"

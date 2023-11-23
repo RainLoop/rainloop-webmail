@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Nas respostas, inserir esta assinatura acima da mensagem citada"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Criar uma pasta?",
+		"TITLE_CREATE_FOLDER": "Criar uma pasta",
 		"LABEL_PARENT": "Pasta principal",
 		"BUTTON_CREATE": "Criar",
 		"TITLE_CREATING_PROCESS": "A criar pasta"

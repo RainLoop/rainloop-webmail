@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Setja þessa undirskrift inn á undan tilvitnuðum texta þegar verið er að svara"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Búa til möppu?",
+		"TITLE_CREATE_FOLDER": "Búa til möppu",
 		"LABEL_PARENT": "Undirmappa",
 		"BUTTON_CREATE": "Búa til",
 		"TITLE_CREATING_PROCESS": "Bý til möppu"

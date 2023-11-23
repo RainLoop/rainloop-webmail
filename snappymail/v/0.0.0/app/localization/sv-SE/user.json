@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Sätt denna signatur före citerad text i svar"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Skapa mapp?",
+		"TITLE_CREATE_FOLDER": "Skapa mapp",
 		"LABEL_PARENT": "Överliggande mapp",
 		"BUTTON_CREATE": "Skapa",
 		"TITLE_CREATING_PROCESS": "Skapar mapp"

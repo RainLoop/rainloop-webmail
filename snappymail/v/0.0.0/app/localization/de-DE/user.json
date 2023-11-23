@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Diese Signatur in Antworten vor dem zitierten Text einfügen"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Ordner anlegen?",
+		"TITLE_CREATE_FOLDER": "Ordner anlegen",
 		"LABEL_PARENT": "Übergeordneter Ordner",
 		"BUTTON_CREATE": "Anlegen",
 		"TITLE_CREATING_PROCESS": "Ordner wird angelegt"

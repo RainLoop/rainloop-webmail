@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Plaats deze handtekening vóór geciteerde tekst in antwoorden"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Map aanmaken?",
+		"TITLE_CREATE_FOLDER": "Map aanmaken",
 		"LABEL_PARENT": "Bovenliggende map",
 		"BUTTON_CREATE": "Maken",
 		"TITLE_CREATING_PROCESS": "Maak een nieuwe map"

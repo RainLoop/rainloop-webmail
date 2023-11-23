@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Sisesta see signatuur kirjades enne tsiteeritud teksti"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Loon kausta?",
+		"TITLE_CREATE_FOLDER": "Loon kausta",
 		"LABEL_PARENT": "Ülemkaust",
 		"BUTTON_CREATE": "Loo",
 		"TITLE_CREATING_PROCESS": "Loon kausta"

@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "返信の引用テキストの前に署名を挿入する"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "フォルダを作成しますか？",
+		"TITLE_CREATE_FOLDER": "フォルダを作成しますか",
 		"LABEL_PARENT": "親フォルダ",
 		"BUTTON_CREATE": "作成",
 		"TITLE_CREATING_PROCESS": "フォルダを作成中"

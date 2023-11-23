@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Insérer la signature avant le texte cité dans les réponses"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Créer un dossier ?",
+		"TITLE_CREATE_FOLDER": "Créer un dossier",
 		"LABEL_PARENT": "Dossier parent",
 		"BUTTON_CREATE": "Créer",
 		"TITLE_CREATING_PROCESS": "Création du dossier"

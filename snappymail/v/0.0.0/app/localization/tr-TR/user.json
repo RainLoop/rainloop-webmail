@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Insert this signature before quoted text in replies"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Klasör Oluştur?",
+		"TITLE_CREATE_FOLDER": "Klasör Oluştur",
 		"LABEL_PARENT": "Üst Klasör",
 		"BUTTON_CREATE": "Oluştur",
 		"TITLE_CREATING_PROCESS": "Klasör Oluştur"

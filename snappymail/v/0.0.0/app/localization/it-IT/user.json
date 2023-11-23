@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Inserisci questa firma prima del messaggio citato nelle risposte"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Creo una cartella?",
+		"TITLE_CREATE_FOLDER": "Creo una cartella",
 		"LABEL_PARENT": "Genitore",
 		"BUTTON_CREATE": "Crea",
 		"TITLE_CREATING_PROCESS": "Creazione cartella..."

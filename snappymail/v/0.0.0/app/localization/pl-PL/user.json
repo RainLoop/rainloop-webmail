@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Umieszczaj ten podpis przed cytowanym tekstem w odpowiedziach"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Czy stworzyć folder?",
+		"TITLE_CREATE_FOLDER": "Czy stworzyć folder",
 		"LABEL_PARENT": "Folder nadrzędny",
 		"BUTTON_CREATE": "Utwórz",
 		"TITLE_CREATING_PROCESS": "Tworzenie folderu"

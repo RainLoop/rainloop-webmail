@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Вставлять подпись перед цитированием текста в ответах"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Создать папку?",
+		"TITLE_CREATE_FOLDER": "Создать папку",
 		"LABEL_PARENT": "Родительская папка",
 		"BUTTON_CREATE": "Создать",
 		"TITLE_CREATING_PROCESS": "Создание папки"

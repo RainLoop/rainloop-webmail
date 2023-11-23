@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Insert this signature before quoted text in replies"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Izveidot mapi?",
+		"TITLE_CREATE_FOLDER": "Izveidot mapi",
 		"LABEL_PARENT": "Zem kuras mapes",
 		"BUTTON_CREATE": "Izveidot",
 		"TITLE_CREATING_PROCESS": "Izveidot mapi"

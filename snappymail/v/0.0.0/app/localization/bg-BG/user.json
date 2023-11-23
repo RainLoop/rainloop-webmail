@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Подписа да се поставя преди цитирания текст при отговор"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Създаване на папка?",
+		"TITLE_CREATE_FOLDER": "Създаване на папка",
 		"LABEL_PARENT": "Родителска папка",
 		"BUTTON_CREATE": "Създай",
 		"TITLE_CREATING_PROCESS": "Създаване на папка"

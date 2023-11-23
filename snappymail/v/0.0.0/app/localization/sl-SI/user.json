@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Vstavi ta podpis pred citirano besedilo v odgovorih"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Ustvarim mapo?",
+		"TITLE_CREATE_FOLDER": "Ustvarim mapo",
 		"LABEL_PARENT": "Nadrejena mapa",
 		"BUTTON_CREATE": "Ustvari",
 		"TITLE_CREATING_PROCESS": "Ustvarjam mapo"

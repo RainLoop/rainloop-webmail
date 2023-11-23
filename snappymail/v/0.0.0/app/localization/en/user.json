@@ -258,7 +258,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Insert this signature before quoted text in replies"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Create a folder?",
+		"TITLE_CREATE_FOLDER": "Create a folder",
 		"LABEL_PARENT": "Parent folder",
 		"BUTTON_CREATE": "Create",
 		"TITLE_CREATING_PROCESS": "Creating a folder"

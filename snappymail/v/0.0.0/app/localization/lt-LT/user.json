@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Įterpti šį parašą prieš citatą rašant atsakymą"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Sukurti aplanką?",
+		"TITLE_CREATE_FOLDER": "Sukurti aplanką",
 		"LABEL_PARENT": "Pirminis katalogas",
 		"BUTTON_CREATE": "Sukurti",
 		"TITLE_CREATING_PROCESS": "Kuriamas katalogas"

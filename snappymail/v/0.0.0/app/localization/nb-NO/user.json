@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Legg til denne signaturen før sitert tekst"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Vil du lage en mappe?",
+		"TITLE_CREATE_FOLDER": "Vil du lage en mappe",
 		"LABEL_PARENT": "Forelder",
 		"BUTTON_CREATE": "Lag",
 		"TITLE_CREATING_PROCESS": "Lager mappe"

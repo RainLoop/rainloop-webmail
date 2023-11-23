@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Szúrja be ezt az aláírást az idézett szöveg elé a válaszokban"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Létrehozzuk a mappát?",
+		"TITLE_CREATE_FOLDER": "Létrehozzuk a mappát",
 		"LABEL_PARENT": "Szülő mappa",
 		"BUTTON_CREATE": "Létrehozás",
 		"TITLE_CREATING_PROCESS": "Mappa létrehozás"

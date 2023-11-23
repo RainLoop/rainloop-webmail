@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "V odpovědích vložit podpis před citovaný text."
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Vytvořit složku?",
+		"TITLE_CREATE_FOLDER": "Vytvořit složku",
 		"LABEL_PARENT": "Nadřazená složka",
 		"BUTTON_CREATE": "Vytvořit",
 		"TITLE_CREATING_PROCESS": "Vytvářím složku"

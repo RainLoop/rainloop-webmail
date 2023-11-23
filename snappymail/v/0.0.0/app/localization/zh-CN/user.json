@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "在回信中插入签名再引用来信"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "创建文件夹？",
+		"TITLE_CREATE_FOLDER": "创建文件夹",
 		"LABEL_PARENT": "父文件夹",
 		"BUTTON_CREATE": "创建",
 		"TITLE_CREATING_PROCESS": "文件夹创建中"

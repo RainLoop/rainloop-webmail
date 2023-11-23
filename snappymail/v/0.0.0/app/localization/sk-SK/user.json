@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "V odpovediach vložiť tento podpis nad citovaný text"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Vytvoriť priečinok?",
+		"TITLE_CREATE_FOLDER": "Vytvoriť priečinok",
 		"LABEL_PARENT": "Nadradený priečinok",
 		"BUTTON_CREATE": "Vytvoriť",
 		"TITLE_CREATING_PROCESS": "Vytváram priečinok"

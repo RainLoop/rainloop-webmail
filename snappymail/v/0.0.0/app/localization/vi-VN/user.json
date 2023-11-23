@@ -257,7 +257,7 @@
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Thêm chữ ký cuối thư này vào trước phần văn bản trích dẫn trong thư phản hồi"
 	},
 	"POPUPS_CREATE_FOLDER": {
-		"TITLE_CREATE_FOLDER": "Tạo một thư mục mới?",
+		"TITLE_CREATE_FOLDER": "Tạo một thư mục mới",
 		"LABEL_PARENT": "Thư mục chính",
 		"BUTTON_CREATE": "Tạo",
 		"TITLE_CREATING_PROCESS": "Đang tạo một thư mục"
