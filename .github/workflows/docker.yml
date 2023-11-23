@@ -107,8 +107,8 @@ jobs:
         file: ./.docker/release/Dockerfile
         # TODO: Add more arches?
         # platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
-        platforms: linux/386,linux/amd64
-        push: startsWith(github.ref, 'refs/tags/')  # Push only on tags
+        platforms: linux/386,linux/amd64,linux/arm64
+        push: ${{ startsWith(github.ref, 'refs/tags/') }}  # Push only on tags
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=local,src=/tmp/.buildx-cache
