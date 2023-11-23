@@ -6,7 +6,7 @@
   <h1>SnappyMail</h1>
   <br>
 
-[![github-actions](https://github.com/the-djmaze/snappymail/workflows/docker/badge.svg)](https://github.com/the-djmaze/snappymail/actions/workflows/docker.yml)
+[![github-actions](https://github.com/the-djmaze/snappymail/actions/workflows/docker.yml/badge.svg)](https://github.com/the-djmaze/snappymail/actions/workflows/docker.yml)
 [![docker-image-size](https://img.shields.io/docker/image-size/djmaze/snappymail/latest)](https://hub.docker.com/r/djmaze/snappymail/tags)
 
   <p>
