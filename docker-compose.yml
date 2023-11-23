@@ -1,16 +1,53 @@
+#
+# Note: Before starting, ensure you run gulp once, to generate static assets in ./snappymail/v/0.0.0/static/css and ./snappymail/v/0.0.0/static/js
+#
 version: '3.0'
-
 services:
 
-  # Mail server running on separate image
-  mail:
-    image: tvial/docker-mailserver:latest
-    restart: always
-    domainname: example.com
+  # Generate self-signed certs
+  # See: https://docker-mailserver.github.io/docker-mailserver/latest/config/security/ssl/#self-signed-certificates
+  step-ca:
+    image: smallstep/step-ca:latest
+    working_dir: /certs
     volumes:
-      - maildata:/var/mail
-      - mailstate:/var/mail-state
-      - ./.docker/dev/mail/config/:/tmp/docker-mailserver/
+      - certs:/certs
+    entrypoint:
+      - /bin/sh
+    user: 0:0
+    command:
+      - -c
+      - |
+          set -eu
+          if [ ! -d demoCA ]; then
+              mkdir -p demoCA
+
+              step certificate create "Smallstep Root CA" "demoCA/cacert.pem" "demoCA/cakey.pem" \
+                --no-password --insecure \
+                --profile root-ca \
+                --not-before "2021-01-01T00:00:00+00:00" \
+                --not-after "2031-01-01T00:00:00+00:00" \
+                --san "example.com" \
+                --san "mail.example.com" \
+                --kty RSA --size 2048
+
+              step certificate create "Smallstep Leaf" mail.example.com-cert.pem mail.example.com-key.pem \
+                --no-password --insecure \
+                --profile leaf \
+                --ca "demoCA/cacert.pem" \
+                --ca-key "demoCA/cakey.pem" \
+                --not-before "2021-01-01T00:00:00+00:00" \
+                --not-after "2031-01-01T00:00:00+00:00" \
+                --san "example.com" \
+                --san "mail.example.com" \
+                --kty RSA --size 2048
+          fi
+
+  # Mail server
+  # See: https://docker-mailserver.github.io/docker-mailserver/latest
+  # Add an account: echo 'test' | docker exec -i $( docker-compose ps -q docker-mailserver ) setup email add test@example.com
+  docker-mailserver:
+    image: docker.io/mailserver/docker-mailserver:12
+    domainname: mail.example.com
     environment:
       - ENABLE_SPAMASSASSIN=0
       - ENABLE_CLAMAV=0
@@ -19,9 +56,46 @@ services:
       - ENABLE_MANAGESIEVE=1
       - ONE_DIR=1
       - DMS_DEBUG=0
-    cap_add:
-      - NET_ADMIN
-      - SYS_PTRACE
+      - POSTFIX_INET_PROTOCOLS=ipv4
+      - DOVECOT_INET_PROTOCOLS=ipv4
+      - SSL_TYPE=manual
+      - SSL_CERT_PATH=/certs/mail.example.com-cert.pem
+      - SSL_KEY_PATH=/certs/mail.example.com-key.pem
+    volumes:
+      - certs:/certs
+      - dms-mail-data:/var/mail
+      - dms-mail-state:/var/mail-state
+      - dms-mail-logs:/var/log/mail
+      - dms-config:/tmp/docker-mailserver
+    networks:
+      default:
+        aliases:
+          - example.com
+          - mail.example.com
+          - imap.example.com
+          - smtp.example.com
+    depends_on:
+      - step-ca
+
+  # Snappymail: http://localhost:8888
+  # Admin panel: http://localhost:8888/?admin
+  # Get the Admin Panel password: docker exec -it $( docker-compose ps -q snappymail ) cat /var/lib/snappymail/_data_/_default_/admin_password.txt
+  snappymail:
+    build:
+      dockerfile: ./.docker/release/Dockerfile
+      context: .
+    # environment:
+    #   - DEBUG=true
+    volumes:
+      - ./snappymail:/snappymail/snappymail:ro
+      - ./index.php:/snappymail/index.php:ro
+      - snappymail:/var/lib/snappymail
+    ports:
+      - 8888:8888
+    networks:
+      - default
+    depends_on:
+      - db
 
   # MySQL database
   db:
@@ -35,36 +109,17 @@ services:
       - MYSQL_DATABASE=snappymail
     volumes:
       - mysql:/var/lib/mysql
-      
-  # PHP FPM Server
-  php:
-    build:
-      context: ./.docker/dev/php
-    depends_on:
-      - db
-      - mail
-    volumes:
-      - ./:/var/www
-      - ./.docker/dev/php/snappymail.ini:/usr/local/etc/php/conf.d/snappymail.ini
-
-  # Nginx load balancer translating to PHP FPM
-  nginx:
-    image: nginx:latest
-    hostname: nginx
-    depends_on:
-      - php
-    ports:
-      - "${HTTPS_PORT}:443"
-      - "${HTTP_PORT}:80"
-    volumes:
-      - ./:/var/www
-      - ./.docker/dev/nginx/ssl:/etc/nginx/ssl
-      - ./.docker/dev/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - default
 
 volumes:
+  certs:
+  dms-mail-data:
+  dms-mail-state:
+  dms-mail-logs:
+  dms-config:
+  snappymail:
   mysql:
-    driver: local
-  maildata:
-    driver: local
-  mailstate:
-    driver: local
+
+networks:
+  default:
