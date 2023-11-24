@@ -39,6 +39,8 @@ services:
                 --not-after "2031-01-01T00:00:00+00:00" \
                 --san "example.com" \
                 --san "mail.example.com" \
+                --san "imap.example.com" \
+                --san "smtp.example.com" \
                 --kty RSA --size 2048
           fi
 
@@ -75,7 +77,18 @@ services:
           - imap.example.com
           - smtp.example.com
     depends_on:
-      - step-ca
+      step-ca:
+        condition: service_completed_successfully
+    entrypoint:
+      - /bin/sh
+    command:
+      - -c
+      - |
+          set -eu
+          echo "Trusting demoCA certificate"
+          cp -v /certs/demoCA/cacert.pem /usr/local/share/ca-certificates/cacert.crt  # Debian expects certs to end with .crt
+          update-ca-certificates
+          exec supervisord -c /etc/supervisor/supervisord.conf
 
   # Snappymail: http://localhost:8888
   # Admin panel: http://localhost:8888/?admin
@@ -87,6 +100,7 @@ services:
     # environment:
     #   - DEBUG=true
     volumes:
+      - certs:/certs:ro
       - ./snappymail:/snappymail/snappymail:ro
       - ./index.php:/snappymail/index.php:ro
       - snappymail:/var/lib/snappymail
@@ -95,12 +109,24 @@ services:
     networks:
       - default
     depends_on:
-      - db
+      step-ca:
+        condition: service_completed_successfully
+      db:
+        condition: service_started
+    entrypoint:
+      - /bin/sh
+    command:
+      - -c
+      - |
+          set -eu
+          echo "Trusting demoCA certificate"
+          cp -v /certs/demoCA/cacert.pem /usr/local/share/ca-certificates/
+          update-ca-certificates
+          exec /entrypoint.sh
 
   # MySQL database
   db:
     image: mysql:5.7
-    hostname: db
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=root
