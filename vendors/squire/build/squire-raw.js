@@ -219,7 +219,7 @@ const
 		return el;
 	},
 
-	fixCursor = (node, root) => {
+	fixCursor = (node) => {
 		let fixer = null;
 		if (node instanceof Text) {
 			return node;
