@@ -1337,9 +1337,13 @@ const
 			}
 		});
 
-		if (newTreeTop) {
+		if (newTreeTop && newTreeBottom) {
 			newTreeBottom.append(empty(node));
-			node.append(newTreeTop);
+			if (node.style.cssText) {
+				node.append(newTreeTop);
+			} else {
+				node.replaceWith(newTreeTop);
+			}
 		}
 
 		return newTreeBottom || node;
