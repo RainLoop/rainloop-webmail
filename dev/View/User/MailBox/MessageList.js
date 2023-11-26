@@ -59,13 +59,15 @@ const
 	 */
 	listAction = (...args) => MessagelistUserStore.setAction(...args),
 
-	moveMessagesToFolderType = (toFolderType, bDelete) =>
-		rl.app.moveMessagesToFolderType(
+	moveMessagesToFolderType = (toFolderType, bDelete) => {
+		let messages = MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails();
+		messages.size && rl.app.moveMessagesToFolderType(
 			toFolderType,
-			FolderUserStore.currentFolderFullName(),
-			MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails(),
+			messages.folder,
+			messages,
 			bDelete
-		),
+		)
+	},
 
 	pad2 = v => 10 > v ? '0' + v : '' + v,
 	Ymd = dt => dt.getFullYear() + pad2(1 + dt.getMonth()) + pad2(dt.getDate()),

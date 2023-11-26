@@ -114,6 +114,7 @@ addComputablesTo(MessagelistUserStore, {
 		let result = new Set;
 		MessagelistUserStore.listCheckedOrSelected().forEach(message => {
 			result.add(message.uid);
+			result.folder = message.folder;
 			if (1 < message.threadsLen()) {
 				message.threads().forEach(result.add, result);
 			}

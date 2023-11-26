@@ -91,9 +91,10 @@ export class MailFolderList extends AbstractViewLeft {
 				if (folder) {
 					if (moveAction()) {
 						moveAction(false);
-						MessagelistUserStore.moveMessages(
-							FolderUserStore.currentFolderFullName(),
-							MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails(),
+						let messages = MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails();
+						messages.size && MessagelistUserStore.moveMessages(
+							messages.folder,
+							messages,
 							folder.fullName,
 							event.ctrlKey
 						);
