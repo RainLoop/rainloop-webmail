@@ -3,7 +3,6 @@ import ko from 'ko';
 import { HtmlEditor } from 'Common/Html';
 import { timeToNode } from 'Common/Translator';
 import { doc, elementById, addEventsListeners, dropdowns, leftPanelDisabled } from 'Common/Globals';
-import { dropdownsDetectVisibility } from 'Common/UtilsUser';
 import { EmailAddressesComponent } from 'Component/EmailAddresses';
 import { ThemeStore } from 'Stores/Theme';
 import { dropFilesInFolder } from 'Common/Folders';
@@ -246,19 +245,6 @@ Object.assign(ko.bindingHandlers, {
 		init: element => {
 			dropdowns.push(element);
 			element.ddBtn = new BSN.Dropdown(element.querySelector('.dropdown-toggle'));
-		}
-	},
-
-	openDropdownTrigger: {
-		update: (element, fValueAccessor) => {
-			if (ko.unwrap(fValueAccessor())) {
-				const el = element.ddBtn;
-				el.open || el.toggle();
-	//			el.focus();
-
-				dropdownsDetectVisibility();
-				fValueAccessor()(false);
-			}
 		}
 	}
 });

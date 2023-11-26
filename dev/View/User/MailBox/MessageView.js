@@ -105,8 +105,6 @@ export class MailMessageView extends AbstractViewRight {
 			showAttachmentControls: !!Local.get(ClientSideKeyNameMessageAttachmentControls),
 			downloadAsZipLoading: false,
 			showFullInfo: '1' === Local.get(ClientSideKeyNameMessageHeaderFullInfo),
-			moreDropdownTrigger: false,
-
 			// viewer
 			viewFromShort: '',
 			dkimData: ['none', '', '']

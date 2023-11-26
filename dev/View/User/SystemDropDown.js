@@ -36,7 +36,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 
 		addObservablesTo(this, {
 			currentAudio: '',
-			accountMenuDropdownTrigger: false
+			accountMenu: false
 		});
 
 		this.allowContacts = AppUserStore.allowContacts();
@@ -115,7 +115,7 @@ export class SystemDropDownUserView extends AbstractViewRight {
 		registerShortcut('m', '', [ScopeMessageList, ScopeMessageView, ScopeSettings], () => {
 			if (!this.viewModelDom.hidden) {
 //				exitFullscreen();
-				this.accountMenuDropdownTrigger(true);
+				this.accountMenu().ddBtn.toggle();
 				return false;
 			}
 		});

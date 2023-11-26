@@ -89,7 +89,7 @@
 					<!-- /ko -->
 					<span class="e-identity" data-bind="hidden: allowIdentities, text: from"></span>
 					<!-- ko if: 1 < identitiesOptions().length -->
-					<div class="dropdown" style="display:inline-block" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: identitiesDropdownTrigger">
+					<div class="dropdown" style="display:inline-block" data-bind="registerBootstrapDropdown: true, initDom: identitiesMenu">
 						<a class="dropdown-toggle" href="#" tabindex="-1" id="identity-toggle" role="button"></a>
 						<menu class="dropdown-menu right-edge" role="menu" aria-labelledby="identity-toggle" data-bind="foreach: identitiesOptions">
 							<li role="presentation">

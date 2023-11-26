@@ -207,7 +207,7 @@ export class ComposePopupView extends AbstractViewPopup {
 		this.allowSpellcheck = SettingsUserStore.allowSpellcheck;
 
 		addObservablesTo(this, {
-			identitiesDropdownTrigger: false,
+			identitiesMenu: false,
 
 			from: '',
 			to: '',
@@ -1136,7 +1136,7 @@ export class ComposePopupView extends AbstractViewPopup {
 		addShortcut('w', 'meta', ScopeCompose, ()=>false);
 
 		addShortcut('m', 'meta', ScopeCompose, () => {
-			this.identitiesDropdownTrigger(true);
+			this.identitiesMenu().ddBtn.toggle();
 			return false;
 		});
 

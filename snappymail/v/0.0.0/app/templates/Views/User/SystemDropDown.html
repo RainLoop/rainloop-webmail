@@ -4,7 +4,7 @@
 		<div class="playIcon"><div></div></div>
 		<i class="stopIcon fontastic">⏸</i>
 	</div>
-	<div class="btn-group dropdown" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: accountMenuDropdownTrigger">
+	<div class="btn-group dropdown" data-bind="registerBootstrapDropdown: true, initDom: accountMenu">
 		<a id="top-system-dropdown-id" href="#" tabindex="-1" class="btn single btn-block dropdown-toggle">
 			<span class="accountPlace hide-mobile" data-bind="text: accountName(), title: accountEmail"></span>
 			<i class="fontastic" data-bind="css: {'icon-spinner': accountsLoading()}">👤</i>

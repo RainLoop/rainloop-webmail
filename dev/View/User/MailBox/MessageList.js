@@ -112,9 +112,6 @@ export class MailMessageList extends AbstractViewRight {
 		this.userUsageProc = FolderUserStore.quotaPercentage;
 
 		addObservablesTo(this, {
-			moreDropdownTrigger: false,
-			sortDropdownTrigger: false,
-
 			focusSearch: false
 		});
 
