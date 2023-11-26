@@ -207,7 +207,8 @@ export class ComposePopupView extends AbstractViewPopup {
 		this.allowSpellcheck = SettingsUserStore.allowSpellcheck;
 
 		addObservablesTo(this, {
-			identitiesMenu: false,
+			// bootstrap dropdown
+			identitiesMenu: null,
 
 			from: '',
 			to: '',

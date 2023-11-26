@@ -36,7 +36,8 @@ export class SystemDropDownUserView extends AbstractViewRight {
 
 		addObservablesTo(this, {
 			currentAudio: '',
-			accountMenu: false
+			// bootstrap dropdown
+			accountMenu: null
 		});
 
 		this.allowContacts = AppUserStore.allowContacts();
