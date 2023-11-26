@@ -368,7 +368,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		if (\is_string($mCapabilityNames)) {
 			$mCapabilityNames = [$mCapabilityNames];
 		}
-		if (\is_array($mCapabilityNames)) {
+		if (\is_array($mCapabilityNames) /*&& $this->hasCapability('ENABLE')*/) {
 			$this->SendRequestGetResponse('ENABLE', $mCapabilityNames);
 		}
 	}
