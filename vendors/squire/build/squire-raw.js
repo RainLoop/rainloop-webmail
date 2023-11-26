@@ -36,6 +36,7 @@ const
 	isIOS = /iP(?:ad|hone|od)/.test(ua) || (isMac && !!navigator.maxTouchPoints),
 
 	isWebKit = /WebKit\//.test(ua),
+	cantFocusEmptyTextNodes = isWebKit,
 
 	ctrlKey = isMac ? 'meta-' : 'ctrl-',
 	osKey = isMac ? 'metaKey' : 'ctrlKey',
