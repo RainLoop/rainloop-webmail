@@ -790,17 +790,15 @@ const
 			if (!child || isLeaf(child)) {
 				if (startOffset) {
 					child = startContainer.childNodes[startOffset - 1];
-					let prev = child.previousSibling;
-					// If we have an empty text node next to another text node,
-					// just skip and remove it.
-					while (child instanceof Text && !child.length && prev && prev instanceof Text) {
-						child.remove();
-						child = prev;
-						continue;
-					}
 					if (child instanceof Text) {
-						startContainer = child;
-						startOffset = child.data.length;
+						let textChild = child;
+						let prev;
+						while (!textChild.length && (prev = textChild.previousSibling) && prev instanceof Text) {
+							textChild.remove();
+							textChild = prev;
+						}
+						startContainer = textChild;
+						startOffset = textChild.data.length;
 					}
 				}
 				break;
@@ -2478,12 +2476,6 @@ class Squire
 		// Grammarly breaks the editor, *sigh*
 		root.setAttribute('data-gramm', 'false');
 
-		// Remove Firefox's built-in controls
-		try {
-			doc.execCommand('enableObjectResizing', false, 'false');
-			doc.execCommand('enableInlineTableEditing', false, 'false');
-		} catch (error) {}
-
 		root.__squire__ = this;
 
 		// Need to register instance before calling setHTML, so that the fixCursor
@@ -2618,18 +2610,12 @@ class Squire
 					win.focus();
 				}
 				let sel = win.getSelection();
-				if (sel?.setBaseAndExtent) {
-					sel.setBaseAndExtent(
-						range.startContainer,
-						range.startOffset,
-						range.endContainer,
-						range.endOffset,
-					);
-				} else if (sel) {
-					// This is just for IE11
-					sel.removeAllRanges();
-					sel.addRange(range);
-				}
+				sel.setBaseAndExtent(
+					range.startContainer,
+					range.startOffset,
+					range.endContainer,
+					range.endOffset,
+				);
 			} else {
 				this._restoreSelection = true;
 			}
@@ -2823,10 +2809,12 @@ class Squire
 
 	undo() {
 		this.editStack.undo();
+//		this.focus();
 	}
 
 	redo() {
 		this.editStack.redo();
+//		this.focus();
 	}
 
 	// --- Inline formatting ---
