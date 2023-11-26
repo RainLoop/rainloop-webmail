@@ -780,24 +780,36 @@ const
 	},
 
 	moveRangeBoundariesDownTree = range => {
-		let startContainer = range.startContainer,
-			startOffset = range.startOffset,
-			endContainer = range.endContainer,
-			endOffset = range.endOffset,
-			maySkipBR = true,
+		let { startContainer, startOffset, endContainer, endOffset } = range;
+		let maySkipBR = true,
 			child;
 
-		while (startContainer.nodeType !== TEXT_NODE) {
-			child = startContainer.childNodes[ startOffset ];
+		while (!(startContainer instanceof Text)) {
+			child = startContainer.childNodes[startOffset];
 			if (!child || isLeaf(child)) {
+				if (startOffset) {
+					child = startContainer.childNodes[startOffset - 1];
+					let prev = child.previousSibling;
+					// If we have an empty text node next to another text node,
+					// just skip and remove it.
+					while (child instanceof Text && !child.length && prev && prev instanceof Text) {
+						child.remove();
+						child = prev;
+						continue;
+					}
+					if (child instanceof Text) {
+						startContainer = child;
+						startOffset = child.data.length;
+					}
+				}
 				break;
 			}
 			startContainer = child;
 			startOffset = 0;
 		}
 		if (endOffset) {
-			while (endContainer.nodeType !== TEXT_NODE) {
-				child = endContainer.childNodes[ endOffset - 1 ];
+			while (!(endContainer instanceof Text)) {
+				child = endContainer.childNodes[endOffset - 1];
 				if (!child || isLeaf(child)) {
 					if (maySkipBR && child?.nodeName === 'BR') {
 						--endOffset;
@@ -810,7 +822,7 @@ const
 				endOffset = getLength(endContainer);
 			}
 		} else {
-			while (endContainer.nodeType !== TEXT_NODE) {
+			while (!(endContainer instanceof Text)) {
 				child = endContainer.firstChild;
 				if (!child || isLeaf(child)) {
 					break;
