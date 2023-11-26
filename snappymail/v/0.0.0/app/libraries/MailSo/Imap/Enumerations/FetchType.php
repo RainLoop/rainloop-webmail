@@ -56,6 +56,8 @@ abstract class FetchType
 	// RFC 8474
 	const EMAILID = 'EMAILID';
 	const THREADID = 'THREADID';
+	// RFC 8970
+	const PREVIEW = 'PREVIEW';
 
 	public static function BuildBodyCustomHeaderRequest(array $aHeaders, bool $bPeek = true) : string
 	{
