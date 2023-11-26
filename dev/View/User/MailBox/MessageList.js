@@ -68,7 +68,24 @@ const
 		),
 
 	pad2 = v => 10 > v ? '0' + v : '' + v,
-	Ymd = dt => dt.getFullYear() + pad2(1 + dt.getMonth()) + pad2(dt.getDate());
+	Ymd = dt => dt.getFullYear() + pad2(1 + dt.getMonth()) + pad2(dt.getDate()),
+
+	setMessage = msg => {
+		populateMessageBody(msg);
+/* This will replace url hash, and then load message
+ * It's working properly yet
+//		let hash = msg.href;
+		let hash = mailBox(
+			msg.folder,
+			MessagelistUserStore.page(),
+			MessagelistUserStore.listSearch(),
+			MessagelistUserStore.threadUid(),
+			msg.uid
+		);
+		MessageUserStore.message() ? hasher.replaceHash(hash) : hasher.setHash(hash);
+*/
+	};
+
 
 let
 	sLastSearchValue = '';
@@ -223,8 +240,8 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.selector.on('ItemSelect', message => {
 			if (message) {
-//				populateMessageBody(message.clone());
-				populateMessageBody(message);
+//				setMessage(message.clone());
+				setMessage(message);
 			} else {
 				MessageUserStore.message(null);
 			}
@@ -299,7 +316,7 @@ export class MailMessageList extends AbstractViewRight {
 					let message = new MessageModel;
 					message.folder = sFolder;
 					message.uid = iUid;
-					populateMessageBody(message);
+					setMessage(message);
 				} else {
 					MessageUserStore.message(null);
 				}
