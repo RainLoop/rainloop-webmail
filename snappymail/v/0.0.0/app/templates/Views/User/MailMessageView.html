@@ -40,7 +40,7 @@
 					<a class="btn btn-thin btn-transparent buttonReplyAll fontastic"
 						data-bind="visible: 2 == msgDefaultAction(), command: replyAllCommand" data-i18n="[title]MESSAGE/BUTTON_REPLY_ALL">↞</a>
 				</span>
-				<div class="btn-group" data-bind="registerBootstrapDropdown: true" style="display: inline-block">
+				<div class="btn-group" data-bind="registerBootstrapDropdown: true, initDom: actionsMenu" style="display: inline-block">
 					<a class="btn btn-thin btn-transparent dropdown-toggle fontastic" id="more-view-dropdown-id" href="#" tabindex="-1">☰</a>
 					<menu class="dropdown-menu right-edge" role="menu" aria-labelledby="more-view-dropdown-id">
 						<div data-bind="visible: !isDraftFolder()">
@@ -75,6 +75,9 @@
 									<i class="icon-check-mark-circle-two"></i>
 									<span data-i18n="GLOBAL/NOT_SPAM"></span>
 								</a>
+							</li>
+							<li role="presentation">
+								<a href="#" tabindex="-1" data-bind="command: moveCommand" data-icon="📁" data-i18n="GLOBAL/MOVE_TO"></a>
 							</li>
 							<li role="presentation">
 								<a href="#" tabindex="-1" data-bind="command: deleteCommand" data-icon="🗑" data-i18n="GLOBAL/DELETE"></a>

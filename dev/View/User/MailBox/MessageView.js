@@ -1,7 +1,7 @@
 import ko from 'ko';
 import { addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
 
-import { ScopeMessageList, ScopeMessageView } from 'Common/Enums';
+import { ScopeFolderList, ScopeMessageList, ScopeMessageView } from 'Common/Enums';
 
 import {
 	ComposeType,
@@ -105,6 +105,8 @@ export class MailMessageView extends AbstractViewRight {
 			showAttachmentControls: !!Local.get(ClientSideKeyNameMessageAttachmentControls),
 			downloadAsZipLoading: false,
 			showFullInfo: '1' === Local.get(ClientSideKeyNameMessageHeaderFullInfo),
+			// bootstrap dropdown
+			actionsMenu: null,
 			// viewer
 			viewFromShort: '',
 			dkimData: ['none', '', '']
@@ -229,6 +231,7 @@ export class MailMessageView extends AbstractViewRight {
 
 		decorateKoCommands(this, {
 			editCommand: self => self.messageVisibility(),
+			moveCommand: self => self.messageVisibility(),
 			goUpCommand: self => !self.messageListOrViewLoading(),
 			goDownCommand: self => !self.messageListOrViewLoading()
 		});
@@ -244,6 +247,15 @@ export class MailMessageView extends AbstractViewRight {
 
 	editCommand() {
 		currentMessage() && showMessageComposer([ComposeType.Draft, currentMessage()]);
+	}
+
+	moveCommand(vm, event) {
+		if (vm && event?.preventDefault) {
+			stopEvent(event);
+		}
+		this.actionsMenu().ddBtn.hide();
+		AppUserStore.focusedState(ScopeFolderList);
+		moveAction(true);
 	}
 
 	setUnseen() {
