@@ -200,11 +200,14 @@ class ZIP
 		return true;
 	}
 
-	public function addRecursive($dir, $ignore = '#/(\\.hg(/|$)|\\.hgignore)#') : void
+	public function addRecursive(string $dir, string $target_dir = '', string $ignore = '#/(\\.hg(/|$)|\\.hgignore)#') : void
 	{
 		\clearstatcache();
 		$dir = \rtrim($dir,'\\/') . '/';
 		$dirl = \strlen($dir);
+		if ($target_dir) {
+			$target_dir = \rtrim($target_dir,'\\/') . '/';
+		}
 		$iterator = new \RecursiveIteratorIterator(
 			new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS /*| \FilesystemIterator::FOLLOW_SYMLINKS*/),
 			\RecursiveIteratorIterator::SELF_FIRST,
@@ -215,7 +218,7 @@ class ZIP
 				continue;
 			}
 			if (!$ignore || !\preg_match($ignore, $name)) {
-				$this->addFile($name, \substr($name, $dirl));
+				$this->addFile($name, $target_dir . \substr($name, $dirl));
 			}
 			// like: tar --exclude-caches -czf file.tgz *
 			if (\strpos($name, 'CACHEDIR.TAG')) {
