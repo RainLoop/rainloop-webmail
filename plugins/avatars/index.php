@@ -10,8 +10,8 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Avatars',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.11',
-		RELEASE  = '2023-02-23',
+		VERSION  = '1.12',
+		RELEASE  = '2023-11-27',
 		REQUIRED = '2.25.0',
 		CATEGORY = 'Contacts',
 		LICENSE  = 'MIT',
@@ -37,7 +37,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function JsonMessage(array &$aResponse)
 	{
 		if ($icon = $this->JsonAvatar($aResponse['Result'])) {
-			$aResponse['Result']['Avatar'] = $icon;
+			$aResponse['Result']['avatar'] = $icon;
 		}
 	}
 
@@ -46,7 +46,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		if (!empty($aResponse['Result']['@Collection'])) {
 			foreach ($aResponse['Result']['@Collection'] as &$message) {
 				if ($icon = $this->JsonAvatar($message)) {
-					$message['Avatar'] = $icon;
+					$message['avatar'] = $icon;
 				}
 			}
 		}
