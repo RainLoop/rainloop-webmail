@@ -201,6 +201,7 @@ trait User
 		$this->setSettingsFromParams($oSettings, 'UseCheckboxesInList', 'bool');
 		$this->setSettingsFromParams($oSettings, 'AllowDraftAutosave', 'bool');
 		$this->setSettingsFromParams($oSettings, 'AutoLogout', 'int');
+		$this->setSettingsFromParams($oSettings, 'messageReadAuto', 'bool');
 		$this->setSettingsFromParams($oSettings, 'MessageReadDelay', 'int');
 		$this->setSettingsFromParams($oSettings, 'MsgDefaultAction', 'int');
 		$this->setSettingsFromParams($oSettings, 'showNextMessage', 'bool');

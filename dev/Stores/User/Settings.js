@@ -35,6 +35,7 @@ export const SettingsUserStore = new class {
 			unhideKolabFolders: 0,
 			autoLogout: 0,
 			showUnreadCount: 0,
+			messageReadAuto: 0,
 
 			requestReadReceipt: 0,
 			requestDsn: 0,
@@ -78,39 +79,44 @@ export const SettingsUserStore = new class {
 		const self = this;
 		self.editorDefaultType(SettingsGet('EditorDefaultType'));
 
+		[
+			'messageReadAuto',
+			'MsgDefaultAction',
+			'ViewHTML',
+			'ViewImages',
+			'ViewImagesWhitelist',
+			'RemoveColors',
+			'AllowStyles',
+			'CollapseBlockquotes',
+			'MaxBlockquotesLevel',
+			'ListInlineAttachments',
+			'simpleAttachmentsList',
+			'UseCheckboxesInList',
+			'listGrouped',
+			'showNextMessage',
+			'AllowDraftAutosave',
+			'UseThreads',
+			'ReplySameFolder',
+			'HideUnsubscribed',
+			'HideDeleted',
+			'ShowUnreadCount',
+			'UnhideKolabFolders',
+			'requestReadReceipt',
+			'requestDsn',
+			'requireTLS',
+			'pgpSign',
+			'pgpEncrypt',
+			'allowSpellcheck'
+		].forEach(name => {
+			let value = SettingsGet(name);
+			name = name[0].toLowerCase() + name.slice(1);
+			self[name](value);
+		});
+
 		self.layout(pInt(SettingsGet('Layout')));
 		self.messagesPerPage(pInt(SettingsGet('MessagesPerPage')));
 		self.checkMailInterval(pInt(SettingsGet('CheckMailInterval')));
 		self.messageReadDelay(pInt(SettingsGet('MessageReadDelay')));
 		self.autoLogout(pInt(SettingsGet('AutoLogout')));
-		self.msgDefaultAction(SettingsGet('MsgDefaultAction'));
-
-		self.viewHTML(SettingsGet('ViewHTML'));
-		self.viewImages(SettingsGet('ViewImages'));
-		self.viewImagesWhitelist(SettingsGet('ViewImagesWhitelist'));
-		self.removeColors(SettingsGet('RemoveColors'));
-		self.allowStyles(SettingsGet('AllowStyles'));
-		self.collapseBlockquotes(SettingsGet('CollapseBlockquotes'));
-		self.maxBlockquotesLevel(SettingsGet('MaxBlockquotesLevel'));
-		self.listInlineAttachments(SettingsGet('ListInlineAttachments'));
-		self.simpleAttachmentsList(SettingsGet('simpleAttachmentsList'));
-		self.useCheckboxesInList(SettingsGet('UseCheckboxesInList'));
-		self.listGrouped(SettingsGet('listGrouped'));
-		self.showNextMessage(SettingsGet('showNextMessage'));
-		self.allowDraftAutosave(SettingsGet('AllowDraftAutosave'));
-		self.useThreads(SettingsGet('UseThreads'));
-		self.replySameFolder(SettingsGet('ReplySameFolder'));
-
-		self.hideUnsubscribed(SettingsGet('HideUnsubscribed'));
-		self.hideDeleted(SettingsGet('HideDeleted'));
-		self.showUnreadCount(SettingsGet('ShowUnreadCount'));
-		self.unhideKolabFolders(SettingsGet('UnhideKolabFolders'));
-
-		self.requestReadReceipt(SettingsGet('requestReadReceipt'));
-		self.requestDsn(SettingsGet('requestDsn'));
-		self.requireTLS(SettingsGet('requireTLS'));
-		self.pgpSign(SettingsGet('pgpSign'));
-		self.pgpEncrypt(SettingsGet('pgpEncrypt'));
-		self.allowSpellcheck(SettingsGet('allowSpellcheck'));
 	}
 };

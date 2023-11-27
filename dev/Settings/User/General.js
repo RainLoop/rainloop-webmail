@@ -104,7 +104,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 
 		this.addSettings(['ViewHTML', 'ViewImages', 'ViewImagesWhitelist', 'HideDeleted', 'RemoveColors', 'AllowStyles',
 			'ListInlineAttachments', 'simpleAttachmentsList', 'UseCheckboxesInList', 'listGrouped', 'ReplySameFolder',
-			'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt', 'allowSpellcheck',
+			'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt', 'allowSpellcheck', 'messageReadAuto',
 			'DesktopNotifications', 'SoundNotification', 'CollapseBlockquotes', 'AllowDraftAutosave', 'showNextMessage']);
 
 		const fReloadLanguageHelper = (saveSettingsStep) => () => {

@@ -276,7 +276,7 @@ viewMessage = (oMessage, popup) => {
 		MessageUserStore.loading(false);
 		oMessage.body.hidden = false;
 
-		if (oMessage.isUnseen()) {
+		if (oMessage.isUnseen() && SettingsUserStore.messageReadAuto()) {
 			MessageUserStore.MessageSeenTimer = setTimeout(
 				() => MessagelistUserStore.setAction(oMessage.folder, MessageSetAction.SetSeen, [oMessage]),
 				SettingsUserStore.messageReadDelay() * 1000 // seconds

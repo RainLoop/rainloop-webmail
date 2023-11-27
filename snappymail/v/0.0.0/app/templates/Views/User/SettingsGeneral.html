@@ -175,7 +175,13 @@
 
 	<div class="legend" data-i18n="SHORTCUTS_HELP/TAB_MESSAGE_VIEW"></div>
 	<div class="control-group">
-		<label data-i18n="SETTINGS_GENERAL/MARK_MESSAGE_READ_AFTER"></label>
+		<div data-bind="component: {
+			name: 'Checkbox',
+			params: {
+				label: 'SETTINGS_GENERAL/MARK_MESSAGE_READ_AFTER',
+				value: messageReadAuto
+			}
+		}"></div>
 		<div>
 			<input type="number" min="0" step="1" class="span1" data-bind="textInput: messageReadDelay">
 			&nbsp;
