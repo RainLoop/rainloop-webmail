@@ -24,7 +24,8 @@ class MessageListParams
 	public bool
 		$bUseSort = true,
 		$bUseThreads = false,
-		$bHideDeleted = true;
+		$bHideDeleted = true,
+		$bIgnoreLimit = false;
 
 	protected int
 		$iOffset = 0,

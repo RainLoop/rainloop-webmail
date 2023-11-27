@@ -673,108 +673,117 @@ class MailClient
 			throw new \InvalidArgumentException('THREAD not supported');
 		}
 
+		if (!$oInfo->MESSAGES) {
+			$this->logWrite('No messages in '.$oMessageCollection->FolderName);
+			return $oMessageCollection;
+		}
+
 		if (!$oParams->iThreadUid) {
 			$oMessageCollection->NewMessages = $this->getFolderNextMessageInformation(
 				$oParams->sFolderName, $oParams->iPrevUidNext, $oInfo->UIDNEXT
 			);
 		}
 
-		if ($oInfo->MESSAGES) {
-			$bUseSort = $oParams->bUseSort || $oParams->sSort;
-			$aAllThreads = [];
-			$aUnseenUIDs = [];
-			$aUids = [];
+		$bUseSort = $oParams->bUseSort || $oParams->sSort;
+		$aAllThreads = [];
+		$aUnseenUIDs = [];
+		$aUids = [];
 
-			$message_list_limit = $this->oImapClient->Settings->message_list_limit;
-			if (0 < $message_list_limit && $message_list_limit < $oInfo->MESSAGES) {
-//			if ((0 < $message_list_limit && $message_list_limit < $oInfo->MESSAGES)
-//			 || (!$this->oImapClient->hasCapability('SORT') && !$this->oImapClient->CapabilityValue('THREAD'))) {
-				// Don't use THREAD for speed
-				$oMessageCollection->Limited = true;
-				$this->logWrite('List optimization (count: '.$oInfo->MESSAGES.', limit:'.$message_list_limit.')');
-				if (\strlen($sSearch)) {
-					// Don't use SORT for speed
-					$aUids = $this->GetUids($oParams, $sSearch, $oInfo/*, $bUseSort*/);
-				} else {
-					$bUseSort = $this->oImapClient->hasCapability('SORT');
-					if (2 > $oInfo->MESSAGES) {
-						$aRequestIndexes = \array_slice([1], $oParams->iOffset, 1);
-					} else if ($bUseSort) {
-						// Attempt to sort REVERSE DATE with a bigger range then $oParams->iLimit
-						$end = \min($oInfo->MESSAGES, \max(1, $oInfo->MESSAGES - $oParams->iOffset + $oParams->iLimit));
-						$start = \max(1, $end - ($oParams->iLimit * 3) + 1);
-						$oParams->oSequenceSet = new SequenceSet(\range($end, $start), false);
-						$aRequestIndexes = $this->GetUids($oParams, '', $oInfo, $bUseSort);
-						// Attempt to get the correct $oParams->iLimit slice
-						$aRequestIndexes = \array_slice($aRequestIndexes, $oParams->iOffset ? $oParams->iLimit : 0, $oParams->iLimit);
-					} else {
-						// Fetch ID's from high to low
-						$end = \max(1, $oInfo->MESSAGES - $oParams->iOffset);
-						$start = \max(1, $end - $oParams->iLimit + 1);
-						$aRequestIndexes = \range($end, $start);
-					}
-					$this->MessageListByRequestIndexOrUids($oMessageCollection, new SequenceSet($aRequestIndexes, false));
-				}
+		$message_list_limit = $oParams->bIgnoreLimit ? 0 : $this->oImapClient->Settings->message_list_limit;
+		if (0 < $message_list_limit && $message_list_limit < $oInfo->MESSAGES) {
+/*
+			// TODO: Idea to fetch all UID's in background
+			// Must know what is cached so needs more thought
+			\SnappyMail\Shutdown::add(function($oMailClient, $oParams) {
+				$oParams->bIgnoreLimit = true;
+				$oMailClient->MessageList($oParams);
+			}, [$this, $oParams]);
+*/
+//		if ((0 < $message_list_limit && $message_list_limit < $oInfo->MESSAGES)
+//		 || (!$this->oImapClient->hasCapability('SORT') && !$this->oImapClient->CapabilityValue('THREAD'))) {
+			// Don't use THREAD for speed
+			$oMessageCollection->Limited = true;
+			$this->logWrite('List optimization (count: '.$oInfo->MESSAGES.', limit:'.$message_list_limit.')');
+			if (\strlen($sSearch)) {
+				// Don't use SORT for speed
+				$aUids = $this->GetUids($oParams, $sSearch, $oInfo/*, $bUseSort*/);
 			} else {
-				$aUids = ($bUseThreads && $oParams->iThreadUid)
-					? [$oParams->iThreadUid]
-					: $this->GetUids($oParams, '', $oInfo, $bUseSort);
-
-				if ($bUseThreads) {
-					$aAllThreads = $this->MessageListThreadsMap($oMessageCollection, $oParams->oCacher);
-					$oMessageCollection->totalThreads = \count($aAllThreads);
-//					$iThreadLimit = $this->oImapClient->Settings->thread_limit;
-					if ($oParams->iThreadUid) {
-						// Only show the selected thread messages
-						foreach ($aAllThreads as $aMap) {
-							if (\in_array($oParams->iThreadUid, $aMap)) {
-								$aUids = $aMap;
-								break;
-							}
-						}
-						$aAllThreads = [$aUids];
-						// This only speeds up the search when not cached
-//						$oParams->oSequenceSet = new SequenceSet($aUids);
-					} else {
-						// Remove all threaded UID's except the most recent of each thread
-						$threadedUids = [];
-						foreach ($aAllThreads as $aMap) {
-							unset($aMap[\array_key_last($aMap)]);
-							$threadedUids = \array_merge($threadedUids, $aMap);
-						}
-						$aUids = \array_diff($aUids, $threadedUids);
-						// Get all unseen
-						$aUnseenUIDs = $this->MessageListUnseen($oParams, $oInfo);
-					}
+				$bUseSort = $this->oImapClient->hasCapability('SORT');
+				if (2 > $oInfo->MESSAGES) {
+					$aRequestIndexes = \array_slice([1], $oParams->iOffset, 1);
+				} else if ($bUseSort) {
+					// Attempt to sort REVERSE DATE with a bigger range then $oParams->iLimit
+					$end = \min($oInfo->MESSAGES, \max(1, $oInfo->MESSAGES - $oParams->iOffset + $oParams->iLimit));
+					$start = \max(1, $end - ($oParams->iLimit * 3) + 1);
+					$oParams->oSequenceSet = new SequenceSet(\range($end, $start), false);
+					$aRequestIndexes = $this->GetUids($oParams, '', $oInfo, $bUseSort);
+					// Attempt to get the correct $oParams->iLimit slice
+					$aRequestIndexes = \array_slice($aRequestIndexes, $oParams->iOffset ? $oParams->iLimit : 0, $oParams->iLimit);
+				} else {
+					// Fetch ID's from high to low
+					$end = \max(1, $oInfo->MESSAGES - $oParams->iOffset);
+					$start = \max(1, $end - $oParams->iLimit + 1);
+					$aRequestIndexes = \range($end, $start);
 				}
-
-				if ($aUids && \strlen($sSearch)) {
-					$aSearchedUids = $this->GetUids($oParams, $sSearch, $oInfo/*, $bUseSort*/);
-					if ($bUseThreads && !$oParams->iThreadUid) {
-						$matchingThreadUids = [];
-						foreach ($aAllThreads as $aMap) {
-							if (\array_intersect($aSearchedUids, $aMap)) {
-								$matchingThreadUids = \array_merge($matchingThreadUids, $aMap);
-							}
-						}
-						$aUids = \array_filter($aUids, function($iUid) use ($aSearchedUids, $matchingThreadUids) {
-							return \in_array($iUid, $aSearchedUids) || \in_array($iUid, $matchingThreadUids);
-						});
-					} else {
-						$aUids = \array_filter($aUids, function($iUid) use ($aSearchedUids) {
-							return \in_array($iUid, $aSearchedUids);
-						});
-					}
-				}
-			}
-
-			if (\count($aUids)) {
-				$oMessageCollection->totalEmails = \count($aUids);
-				$aUids = \array_slice($aUids, $oParams->iOffset, $oParams->iLimit);
-				$this->MessageListByRequestIndexOrUids($oMessageCollection, new SequenceSet($aUids), $aAllThreads, $aUnseenUIDs);
+				$this->MessageListByRequestIndexOrUids($oMessageCollection, new SequenceSet($aRequestIndexes, false));
 			}
 		} else {
-			$this->logWrite('No messages in '.$oMessageCollection->FolderName);
+			$aUids = ($bUseThreads && $oParams->iThreadUid)
+				? [$oParams->iThreadUid]
+				: $this->GetUids($oParams, '', $oInfo, $bUseSort);
+
+			if ($bUseThreads) {
+				$aAllThreads = $this->MessageListThreadsMap($oMessageCollection, $oParams->oCacher);
+				$oMessageCollection->totalThreads = \count($aAllThreads);
+//				$iThreadLimit = $this->oImapClient->Settings->thread_limit;
+				if ($oParams->iThreadUid) {
+					// Only show the selected thread messages
+					foreach ($aAllThreads as $aMap) {
+						if (\in_array($oParams->iThreadUid, $aMap)) {
+							$aUids = $aMap;
+							break;
+						}
+					}
+					$aAllThreads = [$aUids];
+					// This only speeds up the search when not cached
+//					$oParams->oSequenceSet = new SequenceSet($aUids);
+				} else {
+					// Remove all threaded UID's except the most recent of each thread
+					$threadedUids = [];
+					foreach ($aAllThreads as $aMap) {
+						unset($aMap[\array_key_last($aMap)]);
+						$threadedUids = \array_merge($threadedUids, $aMap);
+					}
+					$aUids = \array_diff($aUids, $threadedUids);
+					// Get all unseen
+					$aUnseenUIDs = $this->MessageListUnseen($oParams, $oInfo);
+				}
+			}
+
+			if ($aUids && \strlen($sSearch)) {
+				$aSearchedUids = $this->GetUids($oParams, $sSearch, $oInfo/*, $bUseSort*/);
+				if ($bUseThreads && !$oParams->iThreadUid) {
+					$matchingThreadUids = [];
+					foreach ($aAllThreads as $aMap) {
+						if (\array_intersect($aSearchedUids, $aMap)) {
+							$matchingThreadUids = \array_merge($matchingThreadUids, $aMap);
+						}
+					}
+					$aUids = \array_filter($aUids, function($iUid) use ($aSearchedUids, $matchingThreadUids) {
+						return \in_array($iUid, $aSearchedUids) || \in_array($iUid, $matchingThreadUids);
+					});
+				} else {
+					$aUids = \array_filter($aUids, function($iUid) use ($aSearchedUids) {
+						return \in_array($iUid, $aSearchedUids);
+					});
+				}
+			}
+		}
+
+		if (\count($aUids)) {
+			$oMessageCollection->totalEmails = \count($aUids);
+			$aUids = \array_slice($aUids, $oParams->iOffset, $oParams->iLimit);
+			$this->MessageListByRequestIndexOrUids($oMessageCollection, new SequenceSet($aUids), $aAllThreads, $aUnseenUIDs);
 		}
 
 		return $oMessageCollection;
