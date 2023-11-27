@@ -146,6 +146,8 @@ class ServiceActions
 			}
 
 			if (\is_array($aResponse)) {
+				// Everything must converted to array
+				$aResponse = \json_decode(Utils::jsonEncode($aResponse), true);
 				$this->Plugins()->RunHook("json.after-{$sAction}", array(&$aResponse));
 			}
 
