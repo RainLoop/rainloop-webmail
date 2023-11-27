@@ -408,14 +408,34 @@ and called in JavaScript using rl.pluginRemoteRequest().
 ### mailbox.inbox-unread-count
 ### mailbox.message-list.selector.go-up
 ### mailbox.message-list.selector.go-down
+
 ### mailbox.message.show
+	Use to show a specific message.
+``` JavaScript
+	dispatchEvent(
+		new CustomEvent(
+			'mailbox.message.show',
+			{
+				detail: {
+					folder: 'INBOX',
+					uid: 1
+				},
+				cancelable: false
+			}
+		)
+	);
+```
+
 ## audio
 ### audio.start
 ### audio.stop
 ### audio.api.stop
 ## Misc
-### idle
 ### rl-layout
+	event.detail value is one of:
+	0. NoPreview
+	1. SidePreview
+	2. BottomPreview
 
 ### rl-view-model.create
 	event.detail = the ViewModel class

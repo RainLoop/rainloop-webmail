@@ -160,7 +160,7 @@ const
 	 */
 	screenOnRoute = (screenName, subPart) => {
 		screenName = screenName || defaultScreenName;
-		if (screenName && fireEvent('sm-show-screen', screenName, 1)) {
+		if (screenName && fireEvent('sm-show-screen', screenName + (subPart ?  '/' + subPart : ''), 1)) {
 			// Close all popups
 			for (let vm of visiblePopups) {
 				(false === vm.onClose()) || vm.close();

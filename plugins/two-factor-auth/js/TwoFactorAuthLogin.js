@@ -27,7 +27,7 @@
 
 	// https://github.com/the-djmaze/snappymail/issues/349
 	addEventListener('sm-show-screen', e => {
-		if ('settings' !== e.detail && rl.settings.get('SetupTwoFactor')) {
+		if (!e.detail.startsWith('settings') && rl.settings.get('SetupTwoFactor')) {
 			e.preventDefault();
 			forceTOTP();
 		}

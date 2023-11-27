@@ -37,6 +37,9 @@ class ExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 
 		$this->UseLangs(true); // start use langs folder
 
+		$this->addJs('example.js'); // add js file
+		$this->addJs('example.js', true); // add js file
+
 		// User Settings tab
 		$this->addJs('js/ExampleUserSettings.js'); // add js file
 		$this->addJsonHook('JsonGetExampleUserData', 'JsonGetExampleUserData');
