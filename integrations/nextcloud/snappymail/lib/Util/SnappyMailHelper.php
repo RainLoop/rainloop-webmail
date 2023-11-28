@@ -32,7 +32,6 @@ class SnappyMailHelper
 			}
 		});
 
-		$_ENV['SNAPPYMAIL_NEXTCLOUD'] = true; // Obsolete
 		$_ENV['SNAPPYMAIL_INCLUDE_AS_API'] = true;
 
 //		define('APP_VERSION', '0.0.0');
