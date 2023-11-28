@@ -48,7 +48,7 @@ class ExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 
 		// Admin Settings tab
 		$this->addJs('js/ExampleAdminSettings.js', true); // add js file
-		$this->addJsonHook('JsonAdminGetData', 'JsonAdminGetData');
+		$this->addJsonHook('JsonAdminGetData', 'JsonAdminGetData', true);
 		$this->addTemplate('templates/ExampleAdminSettingsTab.html', true);
 	}
 
@@ -82,6 +82,9 @@ class ExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	public function JsonAdminGetData()
 	{
+		if ($this->Manager()->Actions() instanceof \RainLoop\ActionsAdmin) {
+			return $this->jsonResponse(__FUNCTION__, false);
+		}
 		return $this->jsonResponse(__FUNCTION__, array(
 			'PHP' => \phpversion()
 		));
@@ -172,7 +175,6 @@ class ExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	protected function configMapping() : array
 	protected function jsonResponse(string $sFunctionName, $mData)
-	protected function replaceTemplate(string $sFile, bool $bAdminScope = false) : self
 
 	$this->Manager()
 	$this->Manager()->Actions()

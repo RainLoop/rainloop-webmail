@@ -22,7 +22,7 @@
 					});
 				} else {
 					var link = document.createElement("a");
-					link.download = 'backup.zip';
+					link.download = 'backup-' + Date.now() + '.zip';
 					link.href = 'data:application/zip;base64,' + oData.Result.zip;
 					link.textContent = 'backup.zip';
 					this.viewModelDom.append(link);
@@ -31,6 +31,13 @@
 				}
 
 			}, 'JsonAdminGetData');
+		}
+
+		submitForm(form) {
+			form.reportValidity()
+			&& rl.pluginRemoteRequest((iError, oData) => {
+				console.dir(oData);
+			}, 'JsonAdminRestoreData', new FormData(form));
 		}
 	}
 
