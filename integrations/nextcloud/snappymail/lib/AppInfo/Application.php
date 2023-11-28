@@ -5,6 +5,7 @@ namespace OCA\SnappyMail\AppInfo;
 use OCA\SnappyMail\Util\SnappyMailHelper;
 use OCA\SnappyMail\Controller\FetchController;
 use OCA\SnappyMail\Controller\PageController;
+use OCA\SnappyMail\Dashboard\UnreadMailWidget;
 use OCA\SnappyMail\Search\Provider;
 
 use OCP\AppFramework\App;
@@ -62,6 +63,9 @@ class Application extends App implements IBootstrap
 		);
 
 		$context->registerSearchProvider(Provider::class);
+
+		// TODO: Not working yet, needs a Vue UI
+//		$context->registerDashboardWidget(UnreadMailWidget::class);
 	}
 
 	public function boot(IBootContext $context): void
