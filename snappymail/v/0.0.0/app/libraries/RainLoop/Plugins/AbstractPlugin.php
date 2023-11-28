@@ -200,10 +200,10 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	final protected function addJsonHook(string $sActionName, string $sFunctionName) : self
+	final protected function addJsonHook(string $sActionName, string $sFunctionName = '') : self
 	{
 		if ($this->oPluginManager) {
-			$this->oPluginManager->AddAdditionalJsonAction($sActionName, array($this, $sFunctionName));
+			$this->oPluginManager->AddAdditionalJsonAction($sActionName, array($this, $sFunctionName ?: $sActionName));
 		}
 
 		return $this;
