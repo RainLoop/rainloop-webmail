@@ -467,14 +467,18 @@ class MailClient
 		array &$aAllThreads = [], array &$aUnseenUIDs = []) : void
 	{
 		if (\count($oRange)) {
-			$aFetchIterator = $this->oImapClient->FetchIterate(array(
+			$aFetchItems = array(
 				FetchType::UID,
 				FetchType::RFC822_SIZE,
 				FetchType::INTERNALDATE,
 				FetchType::FLAGS,
-				FetchType::BODYSTRUCTURE,
-				$this->getEnvelopeOrHeadersRequestString()
-			), (string) $oRange, $oRange->UID);
+				FetchType::BODYSTRUCTURE
+			);
+			if ($this->oImapClient->hasCapability('PREVIEW')) {
+				$aFetchItems[] = FetchType::PREVIEW;
+			}
+			$aFetchItems[] = $this->getEnvelopeOrHeadersRequestString();
+			$aFetchIterator = $this->oImapClient->FetchIterate($aFetchItems, (string) $oRange, $oRange->UID);
 			// FETCH does not respond in the id order of the SequenceSet, so we prefill $aCollection for the right sort order.
 			$aCollection = \array_fill_keys($oRange->getArrayCopy(), null);
 			foreach ($aFetchIterator as /* @var $oFetchResponseItem \MailSo\Imap\FetchResponse */ $oFetchResponseItem) {

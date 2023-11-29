@@ -30,6 +30,8 @@ class Settings extends \MailSo\Net\ConnectSettings
 		$disable_binary = false,
 		// STATUS SIZE can take a significant amount of time, therefore not active by default
 		$disable_status_size = true,
+		// RFC 8970
+		$disable_preview = true,
 		$expunge_all_on_delete = false,
 		$fast_simple_search = true,
 		$fetch_new_messages = true,
@@ -56,6 +58,7 @@ class Settings extends \MailSo\Net\ConnectSettings
 			'disable_thread',
 			'disable_binary',
 			'disable_status_size',
+			'disable_preview',
 			'expunge_all_on_delete',
 			'fast_simple_search',
 			'fetch_new_messages',
@@ -95,6 +98,7 @@ class Settings extends \MailSo\Net\ConnectSettings
 				'disable_thread' => $this->disable_thread,
 				'disable_binary' => $this->disable_binary,
 				'disable_status_size' => $this->disable_status_size,
+				'disable_preview' => $this->disable_preview,
 				'use_expunge_all_on_delete' => $this->expunge_all_on_delete,
 //				'body_text_limit' => $this->body_text_limit,
 				'fast_simple_search' => $this->fast_simple_search,

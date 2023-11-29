@@ -41,6 +41,10 @@ class Message implements \JsonSerializable
 		 */
 		$sEmailId = null,
 		$sThreadId = null,
+		/**
+		 * https://www.rfc-editor.org/rfc/rfc8970
+		 */
+		$sPreview = null,
 		// https://autocrypt.org/level1.html#the-autocrypt-header
 		$sAutocrypt = '';
 
@@ -154,7 +158,7 @@ class Message implements \JsonSerializable
 //		$oMessage->sEmailId = $oMessage->sEmailId ?: $oFetchResponse->GetFetchValue('X-GUID');
 		$aThreadId = $oFetchResponse->GetFetchValue(FetchType::THREADID);
 		$oMessage->sThreadId = $aThreadId ? $aThreadId[0] : $oFetchResponse->GetFetchValue('X-GM-THRID');
-
+		$oMessage->sPreview = $oFetchResponse->GetFetchValue(FetchType::PREVIEW) ?: null;
 		$sCharset = $oBodyStructure ? Utils::NormalizeCharset($oBodyStructure->SearchCharset()) : '';
 
 		$sHeaders = $oFetchResponse->GetHeaderFieldsValue();
@@ -461,6 +465,10 @@ class Message implements \JsonSerializable
 			}
 		}
 
+		if (\str_starts_with($oMessage->sSubject, '[Preview]')) {
+			$oMessage->sSubject = \mb_substr($oMessage->sSubject, 10);
+		}
+
 		return $oMessage;
 	}
 
@@ -566,7 +574,9 @@ class Message implements \JsonSerializable
 //			'threadId' => $this->sThreadId,
 //			'mailboxIds' => ['mailboxid'=>true],
 //			'keywords' => $keywords,
-			'size' => $this->iSize
+			'size' => $this->iSize,
+
+			'preview' => $this->sPreview
 		);
 
 		if ($this->DraftInfo) {

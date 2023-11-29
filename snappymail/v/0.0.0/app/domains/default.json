@@ -29,6 +29,7 @@
         "disable_thread": false,
         "disable_binary": false,
         "disable_status_size": true,
+        "disable_preview": true,
         "use_expunge_all_on_delete": false,
         "fast_simple_search": true,
         "force_select": false,

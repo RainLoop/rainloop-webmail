@@ -330,6 +330,9 @@ class ImapClient extends \MailSo\Net\NetClient
 			if ($this->Settings->disable_status_size) {
 				$aList = \array_diff($aList, ['STATUS=SIZE']);
 			}
+			if ($this->Settings->disable_preview) {
+				$aList = \array_diff($aList, ['PREVIEW']);
+			}
 		}
 		$this->aCapabilityItems = $aList;
 	}

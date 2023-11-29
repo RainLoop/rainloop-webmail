@@ -79,6 +79,7 @@ export class MessageModel extends AbstractModel {
 			subject: '',
 			plain: '',
 			html: '',
+			preview: null,
 			size: 0,
 			spamScore: 0,
 			spamResult: '',
