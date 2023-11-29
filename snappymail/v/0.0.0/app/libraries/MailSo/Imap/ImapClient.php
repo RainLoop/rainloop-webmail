@@ -355,10 +355,6 @@ class ImapClient extends \MailSo\Net\NetClient
 		$sExtentionName = \trim($sExtentionName);
 		return $sExtentionName && \in_array(\strtoupper($sExtentionName), $this->Capability() ?: []);
 	}
-	public function IsSupported(string $sExtentionName) : bool
-	{
-		return $this->hasCapability($sExtentionName);
-	}
 
 	/**
 	 * RFC 5161
