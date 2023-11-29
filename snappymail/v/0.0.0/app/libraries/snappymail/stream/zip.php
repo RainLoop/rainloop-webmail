@@ -291,6 +291,7 @@ class ZipEntry
 		$name,
 		$time,
 		$flags = 0,
+		$compression,
 		$crc32 = self::NO_CRC32;
 
 	function __construct(string $name, int $time, string $compression)
