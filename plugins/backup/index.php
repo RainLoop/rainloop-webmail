@@ -24,7 +24,9 @@ class BackupPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	public function JsonAdminGetData()
 	{
-		if (!($this->Manager()->Actions() instanceof \RainLoop\ActionsAdmin)) {
+		if (!($this->Manager()->Actions() instanceof \RainLoop\ActionsAdmin)
+		 || !$this->Manager()->Actions()->IsAdminLoggined()
+		) {
 			return $this->jsonResponse(__FUNCTION__, false);
 		}
 
