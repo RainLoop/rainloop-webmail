@@ -132,10 +132,10 @@
 		<div class="messageListPlace" data-bind="dragmessages: 1, i18nUpdate: groupedList, foreach: groupedList" draggable="true">
 			<div class="groupLabel" data-bind="text: label, click: $root.groupSearch" data-i18n="[title]GLOBAL/SEARCH"></div>
 			<!-- ko foreach: messages -->
-			<div class="messageListItem" data-bind="css: lineAsCss()">
+			<div class="messageListItem" data-bind="css: lineAsCss(), attr: {'title':preview}">
 				<div class="messageCheckbox">
 					<div class="checkboxMessage fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
-				</div><div data-bind="attr: {'title':preview}">
+				</div><div>
 					<div class="flagParent fontastic"></div>
 					<div class="senderParent" data-bind="attr: {'title': senderClearEmailsString}, text: senderEmailsString"></div>
 					<div class="subjectParent" data-bind="text: subject"></div>
@@ -152,10 +152,10 @@
 		<!-- /ko -->
 		<!-- ko ifnot: listGrouped -->
 		<div class="messageListPlace" data-bind="dragmessages: 1, foreach: messageList" draggable="true">
-			<div class="messageListItem" data-bind="css: lineAsCss()">
+			<div class="messageListItem" data-bind="css: lineAsCss(), 'title':preview">
 				<div class="messageCheckbox">
 					<div class="checkboxMessage fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
-				</div><div data-bind="attr:{style:indent(), 'title':preview}, css:{reply:indent()}">
+				</div><div data-bind="attr:{style:indent()}, css:{reply:indent()}">
 					<div class="flagParent fontastic"></div>
 					<div class="senderParent" data-bind="attr: {'title': senderClearEmailsString}, text: senderEmailsString"></div>
 					<div class="subjectParent" data-bind="text: subject"></div>

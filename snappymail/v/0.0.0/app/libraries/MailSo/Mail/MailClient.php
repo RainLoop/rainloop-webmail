@@ -475,7 +475,7 @@ class MailClient
 				FetchType::BODYSTRUCTURE
 			);
 			if ($this->oImapClient->hasCapability('PREVIEW')) {
-				$aFetchItems[] = FetchType::PREVIEW;
+				$aFetchItems[] = FetchType::PREVIEW; // . ' (LAZY)';
 			}
 			$aFetchItems[] = $this->getEnvelopeOrHeadersRequestString();
 			$aFetchIterator = $this->oImapClient->FetchIterate($aFetchItems, (string) $oRange, $oRange->UID);
