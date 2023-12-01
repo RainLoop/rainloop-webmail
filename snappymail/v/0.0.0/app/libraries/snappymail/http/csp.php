@@ -12,6 +12,9 @@ class CSP
 		$report_to = [],
 		$report_only = false;
 
+	/**
+	 * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy#directives
+	 */
 	private $directives = [
 		'base-uri' => ["'self'"],
 		'default-src' => ["'self'", 'data:'],
@@ -79,7 +82,7 @@ class CSP
 		} else {
 			\header('Content-Security-Policy: ' . $this);
 		}
-		if (empty($this->directives['frame-ancestors'])) {
+		if (empty($this->directives['frame-ancestors']) || \in_array('none', $this->directives['frame-ancestors'])) {
 			\header('X-Frame-Options: DENY');
 		} else {
 //			\header('X-Frame-Options: SAMEORIGIN');
