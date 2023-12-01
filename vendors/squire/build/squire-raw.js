@@ -268,7 +268,7 @@ const
 		// Not live, and fast
 		[...container.childNodes].forEach(child => {
 			isBR = child.nodeName === 'BR';
-			if (!isBR && isInline(child)
+			if (!isBR && child.parentNode == root && isInline(child)
 //			 && (blockTag !== 'DIV' || (child.matches && !child.matches(phrasingElements)))
 			) {
 				wrapper = wrapper || createElement('div');
