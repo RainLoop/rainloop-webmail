@@ -254,6 +254,7 @@
 		"TITLE_UPDATE_IDENTITY": "是否要更新識別檔？",
 		"BUTTON_ADD_IDENTITY": "新增",
 		"BUTTON_UPDATE_IDENTITY": "更新",
+		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "在回覆引用的訊息前插入此簽名"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -452,7 +453,8 @@
 		"IMAGES_OPTION_ASK": "每次都要詢問",
 		"IMAGES_OPTION_WHITELIST": "白名單或詢問",
 		"IMAGES_OPTION_ALWAYS": "永遠顯示",
-		"IMAGES_WHITELIST": "圖片白名單"
+		"IMAGES_WHITELIST": "圖片白名單",
+		"MESSAGE_POPUP_WINDOW": "Popup in new window instead of tab"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "自動新增收件者至通訊錄",

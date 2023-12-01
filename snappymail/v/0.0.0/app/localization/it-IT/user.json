@@ -254,6 +254,7 @@
 		"TITLE_UPDATE_IDENTITY": "Aggiorno identità?",
 		"BUTTON_ADD_IDENTITY": "Aggiungi",
 		"BUTTON_UPDATE_IDENTITY": "Aggiorna",
+		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Inserisci questa firma prima del messaggio citato nelle risposte"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -452,7 +453,8 @@
 		"IMAGES_OPTION_ASK": "Chiedi sempre",
 		"IMAGES_OPTION_WHITELIST": "Usa whitelist o chiedi",
 		"IMAGES_OPTION_ALWAYS": "Visualizza sempre",
-		"IMAGES_WHITELIST": "Whitelist per immagini"
+		"IMAGES_WHITELIST": "Whitelist per immagini",
+		"MESSAGE_POPUP_WINDOW": "Popup in new window instead of tab"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Aggiungi automaticamente le persone che ti inviano mail alla rubrica",

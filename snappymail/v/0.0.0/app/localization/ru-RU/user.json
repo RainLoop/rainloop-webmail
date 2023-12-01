@@ -254,6 +254,7 @@
 		"TITLE_UPDATE_IDENTITY": "Обновить Профиль?",
 		"BUTTON_ADD_IDENTITY": "Добавить",
 		"BUTTON_UPDATE_IDENTITY": "Обновить",
+		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Вставлять подпись перед цитированием текста в ответах"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -452,7 +453,8 @@
 		"IMAGES_OPTION_ASK": "Всегда спрашивать",
 		"IMAGES_OPTION_WHITELIST": "Белый список или спрашивать",
 		"IMAGES_OPTION_ALWAYS": "Показать всегда",
-		"IMAGES_WHITELIST": "Форматы из белого списка"
+		"IMAGES_WHITELIST": "Форматы из белого списка",
+		"MESSAGE_POPUP_WINDOW": "Popup in new window instead of tab"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Автоматически добавлять получателей писем в адресную книгу",

@@ -254,6 +254,7 @@
 		"TITLE_UPDATE_IDENTITY": "신원을 업데이트할까요?",
 		"BUTTON_ADD_IDENTITY": "추가",
 		"BUTTON_UPDATE_IDENTITY": "업데이트",
+		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "회신 시 이 서명을 인용문 이전에 삽입"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -452,7 +453,8 @@
 		"IMAGES_OPTION_ASK": "Always ask",
 		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
 		"IMAGES_OPTION_ALWAYS": "Show always",
-		"IMAGES_WHITELIST": "Images whitelist"
+		"IMAGES_WHITELIST": "Images whitelist",
+		"MESSAGE_POPUP_WINDOW": "Popup in new window instead of tab"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "수신인을 주소록에 자동으로 추가",

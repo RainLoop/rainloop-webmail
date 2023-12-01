@@ -254,6 +254,7 @@
 		"TITLE_UPDATE_IDENTITY": "Atnaujinti tapatybę?",
 		"BUTTON_ADD_IDENTITY": "Pridėti",
 		"BUTTON_UPDATE_IDENTITY": "Atnaujinti",
+		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Įterpti šį parašą prieš citatą rašant atsakymą"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -452,7 +453,8 @@
 		"IMAGES_OPTION_ASK": "Always ask",
 		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
 		"IMAGES_OPTION_ALWAYS": "Show always",
-		"IMAGES_WHITELIST": "Images whitelist"
+		"IMAGES_WHITELIST": "Images whitelist",
+		"MESSAGE_POPUP_WINDOW": "Popup in new window instead of tab"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Automatiškai pridėti gavėjus į adresų knygą",

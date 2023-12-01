@@ -254,6 +254,7 @@
 		"TITLE_UPDATE_IDENTITY": "Mettre à jour l'identité ?",
 		"BUTTON_ADD_IDENTITY": "Ajouter",
 		"BUTTON_UPDATE_IDENTITY": "Mettre à jour",
+		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Insérer la signature avant le texte cité dans les réponses"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -452,7 +453,8 @@
 		"IMAGES_OPTION_ASK": "Toujours demander",
 		"IMAGES_OPTION_WHITELIST": "Ajouter à la liste blanche ou demander",
 		"IMAGES_OPTION_ALWAYS": "Toujours afficher",
-		"IMAGES_WHITELIST": "Liste blanche Images"
+		"IMAGES_WHITELIST": "Liste blanche Images",
+		"MESSAGE_POPUP_WINDOW": "Popup in new window instead of tab"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Ajouter automatiquement les destinataires à votre carnet d'adresses",

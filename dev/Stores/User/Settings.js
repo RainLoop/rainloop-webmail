@@ -35,6 +35,7 @@ export const SettingsUserStore = new class {
 			unhideKolabFolders: 0,
 			autoLogout: 0,
 			showUnreadCount: 0,
+			messageNewWindow: 0,
 			messageReadAuto: 0,
 
 			requestReadReceipt: 0,
@@ -80,6 +81,7 @@ export const SettingsUserStore = new class {
 		self.editorDefaultType(SettingsGet('EditorDefaultType'));
 
 		[
+			'messageNewWindow',
 			'messageReadAuto',
 			'MsgDefaultAction',
 			'ViewHTML',

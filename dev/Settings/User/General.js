@@ -41,12 +41,16 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 
 		this.threadsAllowed = AppUserStore.threadsAllowed;
 
-		['layout', 'messageReadDelay', 'messagesPerPage', 'checkMailInterval',
-		 'editorDefaultType', 'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt',
+		['useThreads',
+		 // These use addSetting()
+		 'layout', 'messageReadDelay', 'messagesPerPage', 'checkMailInterval',
+		 'editorDefaultType', 'msgDefaultAction', 'maxBlockquotesLevel',
+		 // These are in addSettings()
+		 'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt',
 		 'viewHTML', 'viewImages', 'viewImagesWhitelist', 'removeColors', 'allowStyles', 'allowDraftAutosave',
-		 'hideDeleted', 'listInlineAttachments', 'simpleAttachmentsList', 'collapseBlockquotes', 'maxBlockquotesLevel',
-		 'useCheckboxesInList', 'listGrouped', 'useThreads', 'replySameFolder', 'msgDefaultAction', 'allowSpellcheck',
-		 'showNextMessage'
+		 'hideDeleted', 'listInlineAttachments', 'simpleAttachmentsList', 'collapseBlockquotes',
+		 'useCheckboxesInList', 'listGrouped', 'replySameFolder', 'allowSpellcheck',
+		 'messageReadAuto', 'showNextMessage', 'messageNewWindow'
 		].forEach(name => this[name] = SettingsUserStore[name]);
 
 		this.allowLanguagesOnSettings = !!SettingsGet('allowLanguagesOnSettings');
@@ -102,10 +106,13 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.addSetting('Layout');
 		this.addSetting('MaxBlockquotesLevel');
 
-		this.addSettings(['ViewHTML', 'ViewImages', 'ViewImagesWhitelist', 'HideDeleted', 'RemoveColors', 'AllowStyles',
-			'ListInlineAttachments', 'simpleAttachmentsList', 'UseCheckboxesInList', 'listGrouped', 'ReplySameFolder',
-			'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt', 'allowSpellcheck', 'messageReadAuto',
-			'DesktopNotifications', 'SoundNotification', 'CollapseBlockquotes', 'AllowDraftAutosave', 'showNextMessage']);
+		this.addSettings([
+			'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt',
+			'ViewHTML', 'ViewImages', 'ViewImagesWhitelist', 'RemoveColors', 'AllowStyles', 'AllowDraftAutosave',
+			'HideDeleted', 'ListInlineAttachments', 'simpleAttachmentsList', 'CollapseBlockquotes',
+			'UseCheckboxesInList', 'listGrouped', 'ReplySameFolder', 'allowSpellcheck',
+			'messageReadAuto', 'showNextMessage', 'messageNewWindow',
+			'DesktopNotifications', 'SoundNotification']);
 
 		const fReloadLanguageHelper = (saveSettingsStep) => () => {
 				this.languageTrigger(saveSettingsStep);

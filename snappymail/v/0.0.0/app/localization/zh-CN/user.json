@@ -254,6 +254,7 @@
 		"TITLE_UPDATE_IDENTITY": "更新身份？",
 		"BUTTON_ADD_IDENTITY": "添加",
 		"BUTTON_UPDATE_IDENTITY": "更新",
+		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "在回信中插入签名再引用来信"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -452,7 +453,8 @@
 		"IMAGES_OPTION_ASK": "总是询问",
 		"IMAGES_OPTION_WHITELIST": "白名单或询问",
 		"IMAGES_OPTION_ALWAYS": "总是显示",
-		"IMAGES_WHITELIST": "图片白名单"
+		"IMAGES_WHITELIST": "图片白名单",
+		"MESSAGE_POPUP_WINDOW": "Popup in new window instead of tab"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "自动添加到您的地址簿",

@@ -254,6 +254,7 @@
 		"TITLE_UPDATE_IDENTITY": "بروزرسانی هویت؟",
 		"BUTTON_ADD_IDENTITY": "اضافه‌کردن",
 		"BUTTON_UPDATE_IDENTITY": "بروزرسانی",
+		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "قراردادن امضاء‌ قبل از متن مشخص شده در جواب"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -452,7 +453,8 @@
 		"IMAGES_OPTION_ASK": "Always ask",
 		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
 		"IMAGES_OPTION_ALWAYS": "Show always",
-		"IMAGES_WHITELIST": "Images whitelist"
+		"IMAGES_WHITELIST": "Images whitelist",
+		"MESSAGE_POPUP_WINDOW": "Popup in new window instead of tab"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "اطلاعات تماس گیرندگان را بصورت خودکار در آدرس‌بوک ذخیره کن",

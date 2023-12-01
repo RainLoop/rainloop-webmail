@@ -691,6 +691,7 @@ class Actions
 					'simpleAttachmentsList' => false,
 					'listGrouped' => $oConfig->Get('defaults', 'mail_list_grouped', false),
 					'MessagesPerPage' => (int) $oConfig->Get('webmail', 'messages_per_page', 25),
+					'messageNewWindow' => false,
 					'messageReadAuto' => true, // (bool) $oConfig->Get('webmail', 'message_read_auto', true),
 					'MessageReadDelay' => (int) $oConfig->Get('webmail', 'message_read_delay', 5),
 					'MsgDefaultAction' => (int) $oConfig->Get('defaults', 'msg_default_action', 1),
@@ -791,6 +792,7 @@ class Actions
 					$aResult['listGrouped'] = (bool)$oSettings->GetConf('listGrouped', $aResult['listGrouped']);
 					$aResult['ContactsAutosave'] = (bool)$oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);
 					$aResult['MessagesPerPage'] = (int)$oSettings->GetConf('MessagesPerPage', $aResult['MessagesPerPage']);
+					$aResult['messageNewWindow'] = (int)$oSettings->GetConf('messageNewWindow', $aResult['messageNewWindow']);
 					$aResult['messageReadAuto'] = (int)$oSettings->GetConf('messageReadAuto', $aResult['messageReadAuto']);
 					$aResult['MessageReadDelay'] = (int)$oSettings->GetConf('MessageReadDelay', $aResult['MessageReadDelay']);
 					$aResult['MsgDefaultAction'] = (int)$oSettings->GetConf('MsgDefaultAction', $aResult['MsgDefaultAction']);

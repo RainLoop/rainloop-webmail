@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { i18n } from 'Common/Translator';
 
-import { doc, SettingsGet } from 'Common/Globals';
+import { doc, elementById, SettingsGet } from 'Common/Globals';
 import { encodeHtml, plainToHtml, htmlToPlain, cleanHtml } from 'Common/Html';
 import { forEachObjectEntry, b64EncodeJSONSafe } from 'Common/Utils';
 import { serverRequestRaw, proxy } from 'Common/Links';
@@ -353,7 +353,7 @@ export class MessageModel extends AbstractModel {
 			bccLine = this.bcc.toString(),
 			m = 0 < timeStampInUTC ? new Date(timeStampInUTC * 1000) : null,
 			win = open('', 'sm-msg-'+this.requestHash
-				/*,newWindow ? 'innerWidth=' + elementById('V-MailMessageView').clientWidth : ''*/
+				,SettingsUserStore.messageNewWindow() ? 'innerWidth=' + elementById('V-MailMessageView').clientWidth : ''
 			),
 			sdoc = win.document,
 			subject = encodeHtml(this.subject()),

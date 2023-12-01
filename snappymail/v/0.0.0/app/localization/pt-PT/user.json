@@ -254,6 +254,7 @@
 		"TITLE_UPDATE_IDENTITY": "Atualizar identidade?",
 		"BUTTON_ADD_IDENTITY": "Adicionar",
 		"BUTTON_UPDATE_IDENTITY": "Atualizar",
+		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Nas respostas, inserir esta assinatura acima da mensagem citada"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -452,7 +453,8 @@
 		"IMAGES_OPTION_ASK": "Perguntar sempre",
 		"IMAGES_OPTION_WHITELIST": "Lista Branca ou perguntar",
 		"IMAGES_OPTION_ALWAYS": "Mostrar sempre",
-		"IMAGES_WHITELIST": "Lista Branca de imagens"
+		"IMAGES_WHITELIST": "Lista Branca de imagens",
+		"MESSAGE_POPUP_WINDOW": "Popup in new window instead of tab"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Adicionar destinatários automaticamente à sua lista de endereços",
