@@ -248,7 +248,7 @@ setLayoutResizer = (source, sClientSideKeyName, mode) =>
 
 viewMessage = (oMessage, popup) => {
 	if (popup) {
-		oMessage.viewPopupMessage();
+		oMessage.popupMessage();
 	} else {
 		MessageUserStore.error('');
 		let id = 'rl-msg-' + oMessage.hash,

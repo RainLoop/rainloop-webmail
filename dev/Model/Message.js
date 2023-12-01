@@ -343,7 +343,10 @@ export class MessageModel extends AbstractModel {
 		return this.viewBody(false);
 	}
 
-	viewPopupMessage(print) {
+	/**
+	 * @param {boolean=} print = false
+	 */
+	popupMessage(print) {
 		const
 			timeStampInUTC = this.dateTimestamp() || 0,
 			ccLine = this.cc.toString(),
@@ -371,18 +374,11 @@ export class MessageModel extends AbstractModel {
 			.replace('</body>', `<div id="attachments">${attachments}</div></body>`)
 		);
 		sdoc.close();
-		print && setTimeout(() => win.print(), 100);
-	}
-
-	/**
-	 * @param {boolean=} print = false
-	 */
-	popupMessage() {
-		this.viewPopupMessage();
+		(true === print) && setTimeout(() => win.print(), 100);
 	}
 
 	printMessage() {
-		this.viewPopupMessage(true);
+		this.popupMessage(true);
 	}
 
 	/**

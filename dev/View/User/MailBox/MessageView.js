@@ -332,7 +332,7 @@ export class MailMessageView extends AbstractViewRight {
 							const oMessage = new MessageModel();
 							MimeToMessage(text, oMessage);
 							// cleanHTML
-							oMessage.viewPopupMessage();
+							oMessage.popupMessage();
 						});
 					} else {
 						download(url, attachment.fileName);
