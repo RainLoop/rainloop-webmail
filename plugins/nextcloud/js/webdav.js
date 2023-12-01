@@ -113,6 +113,8 @@ const
 				}
 				elemList.push(elem);
 			}
+			// https://github.com/the-djmaze/snappymail/issues/1177
+//			elemList.sort((a, b) => a.isFile != b.isFile ? (a.isFile ? 1 : -1) : a.name.localeCompare(b.name));
 			return Promise.resolve(elemList);
 		});
 	},
@@ -286,7 +288,7 @@ class NextcloudFilesPopupView extends rl.pluginPopupView {
 			}
 		});
 	}
-	
+
 	// Happens after showModal()
 	beforeShow(files, fResolve) {
 		this.select = '';
