@@ -279,9 +279,12 @@ export class DomainPopupView extends AbstractViewPopup {
 							this.testingSieveError(true !== result.Sieve ? result.Sieve : false);
 							this.testingSmtpError(true !== result.Smtp ? result.Smtp : false);
 							// result.ImapResult.connectCapa
-							if (true === result.Imap && result.ImapResult.authCapa) {
-								result.ImapResult.authCapa.sort();
-								this.imapCapabilities(result.ImapResult.authCapa);
+							if (true === result.Imap) {
+								let capa = result.ImapResult.authCapa
+									|| ['LIST-STATUS','METADATA','MOVE','SORT','THREAD','BINARY','STATUS=SIZE','PREVIEW'];
+								capa = capa.concat(result.ImapResult.connectCapa).unique();
+								capa.sort();
+								this.imapCapabilities(capa);
 							}
 							// result.SmtpResult.connectCapa
 							// result.SmtpResult.authCapa
