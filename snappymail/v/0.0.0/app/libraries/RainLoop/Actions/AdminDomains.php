@@ -97,9 +97,8 @@ trait AdminDomains
 				$oSettings = $oDomain->ImapSettings();
 				$oImapClient->Connect($oSettings);
 				$mImapResult = [
-					'connectCapa' => $oImapClient->Capabilities()
+					'connectCapa' => \array_values(\array_diff($oImapClient->Capabilities(), ['STARTTLS']))
 				];
-
 				if (!empty($aAuth['user'])) {
 					$oSettings->Login = $aAuth['user'];
 					$oSettings->Password = $aAuth['pass'];
