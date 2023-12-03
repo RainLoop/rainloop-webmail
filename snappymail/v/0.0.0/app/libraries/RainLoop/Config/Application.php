@@ -116,12 +116,18 @@ class Application extends \RainLoop\Config\AbstractConfig
 		parent::Set($sSectionKey, $sParamKey, $mParamValue);
 	}
 
-	public function SetPassword(string $sPassword) : void
+	public function SetPassword(
+		#[\SensitiveParameter]
+		string $sPassword
+	) : void
 	{
 		$this->Set('security', 'admin_password', \password_hash($sPassword, PASSWORD_DEFAULT));
 	}
 
-	public function ValidatePassword(string $sPassword) : bool
+	public function ValidatePassword(
+		#[\SensitiveParameter]
+		string $sPassword
+	) : bool
 	{
 		$sConfigPassword = (string) $this->Get('security', 'admin_password', '');
 		if (32 == \strlen($sPassword) && \md5(APP_SALT.$sPassword.APP_SALT) === $sConfigPassword) {

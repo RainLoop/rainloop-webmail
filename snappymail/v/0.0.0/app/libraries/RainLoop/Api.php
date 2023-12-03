@@ -77,7 +77,11 @@ abstract class Api
 		return APP_VERSION;
 	}
 
-	public static function CreateUserSsoHash(string $sEmail, string $sPassword, array $aAdditionalOptions = array(), bool $bUseTimeout = true) : ?string
+	public static function CreateUserSsoHash(string $sEmail,
+		#[\SensitiveParameter]
+		string $sPassword,
+		array $aAdditionalOptions = array(), bool $bUseTimeout = true
+	) : ?string
 	{
 		$sSsoHash = \MailSo\Base\Utils::Sha1Rand(\sha1($sPassword.$sEmail));
 
