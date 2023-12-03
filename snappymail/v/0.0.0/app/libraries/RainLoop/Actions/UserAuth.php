@@ -22,7 +22,10 @@ trait UserAuth
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function resolveLoginCredentials(string &$sEmail, string &$sPassword, string &$sLogin): void
+	public function resolveLoginCredentials(string &$sEmail,
+		#[\SensitiveParameter]
+		string &$sPassword,
+		string &$sLogin): void
 	{
 		$this->Plugins()->RunHook('login.credentials.step-1', array(&$sEmail));
 
@@ -113,7 +116,11 @@ trait UserAuth
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function LoginProcess(string &$sEmail, string &$sPassword, bool $bMainAccount = true): Account
+	public function LoginProcess(string &$sEmail,
+		#[\SensitiveParameter]
+		string &$sPassword,
+		bool $bMainAccount = true
+	): Account
 	{
 		$sInputEmail = $sEmail;
 

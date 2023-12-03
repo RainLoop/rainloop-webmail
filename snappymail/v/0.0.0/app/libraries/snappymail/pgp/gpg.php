@@ -136,7 +136,10 @@ class GPG
 	/**
 	 * Add a key for decryption
 	 */
-	public function addDecryptKey(string $fingerprint, string $passphrase) : bool
+	public function addDecryptKey(string $fingerprint,
+		#[\SensitiveParameter]
+		string $passphrase
+	) : bool
 	{
 		$this->decryptKeys[$fingerprint] = $passphrase;
 //		$this->decryptKeys[\substr($fingerprint, -16)] = $passphrase;
@@ -155,7 +158,10 @@ class GPG
 	/**
 	 * Add a key for signing
 	 */
-	public function addSignKey(string $fingerprint, string $passphrase) : bool
+	public function addSignKey(string $fingerprint,
+		#[\SensitiveParameter]
+		string $passphrase
+	) : bool
 	{
 		$this->signKeys[$fingerprint] = $passphrase;
 //		$this->signKeys[\substr($fingerprint, -16)] = $passphrase;
@@ -419,7 +425,10 @@ class GPG
 		return 0;
 	}
 
-	public function addPassphrase($keyId, $passphrase)
+	public function addPassphrase($keyId,
+		#[\SensitiveParameter]
+		$passphrase
+	)
 	{
 		$this->passphrases[$keyId] = $passphrase;
 		return $this;

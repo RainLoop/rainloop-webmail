@@ -84,7 +84,10 @@ class GnuPG
 	/**
 	 * Add a key for decryption
 	 */
-	public function addDecryptKey(string $fingerprint, string $passphrase) : bool
+	public function addDecryptKey(string $fingerprint,
+		#[\SensitiveParameter]
+		string $passphrase
+	) : bool
 	{
 		return $this->handler()->adddecryptkey($fingerprint, $passphrase);
 	}
@@ -100,7 +103,10 @@ class GnuPG
 	/**
 	 * Add a key for signing
 	 */
-	public function addSignKey(string $fingerprint, ?string $passphrase) : bool
+	public function addSignKey(string $fingerprint,
+		#[\SensitiveParameter]
+		?string $passphrase
+	) : bool
 	{
 		return $this->handler()->addsignkey($fingerprint, $passphrase);
 	}
@@ -218,7 +224,10 @@ class GnuPG
 	/**
 	 * Exports a key
 	 */
-	public function export(string $fingerprint, string $passphrase = '') /*: string|false*/
+	public function export(string $fingerprint,
+		#[\SensitiveParameter]
+		string $passphrase = ''
+	) /*: string|false*/
 	{
 		if ($passphrase) {
 			return $this->getGPG()
@@ -265,7 +274,10 @@ class GnuPG
 	/**
 	 * Generates a key
 	 */
-	public function generateKey(string $uid, string $passphrase) /*: string|false*/
+	public function generateKey(string $uid,
+		#[\SensitiveParameter]
+		string $passphrase
+	) /*: string|false*/
 	{
 		$GPG = $this->getGPG(false);
 		return $GPG ? $GPG->generateKey($uid, $passphrase) : false;

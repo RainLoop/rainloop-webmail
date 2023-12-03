@@ -2,19 +2,24 @@
 
 namespace SnappyMail\SASL;
 
+use SnappyMail\SensitiveString;
+
 class Login extends \SnappyMail\SASL
 {
 	protected
-		$passphrase;
+		SensitiveString $passphrase;
 
-	public function authenticate(string $username, string $passphrase, ?string $challenge = null) : string
+	public function authenticate(string $username,
+		#[\SensitiveParameter]
+		string $passphrase,
+		?string $challenge = null) : string
 	{
 		// $challenge should be 'VXNlcm5hbWU6', but broken on some systems
 		// See https://github.com/the-djmaze/snappymail/issues/693
 		if ($challenge && !\str_starts_with($this->decode($challenge), 'Username:')) {
 			throw new \Exception("Invalid response: {$this->decode($challenge)}");
 		}
-		$this->passphrase = $passphrase;
+		$this->passphrase = new SensitiveString($passphrase);
 		return $this->encode($username);
 	}
 
@@ -24,7 +29,7 @@ class Login extends \SnappyMail\SASL
 		if ($challenge && 'Password:' !== $this->decode($challenge)) {
 			throw new \Exception("invalid response: {$challenge}");
 		}
-		return $this->encode($this->passphrase);
+		return $this->encode($this->passphrase->getValue());
 	}
 
 	public static function isSupported(string $param) : bool

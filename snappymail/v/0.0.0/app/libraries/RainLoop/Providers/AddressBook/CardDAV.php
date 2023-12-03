@@ -130,7 +130,10 @@ trait CardDAV
 		return null;
 	}
 
-	private function getContactsPaths(DAVClient $oClient, string $sPath, string $sUser, string $sPassword, string $sProxy = '') : array
+	private function getContactsPaths(DAVClient $oClient, string $sPath, string $sUser,
+		#[\SensitiveParameter]
+		string $sPassword,
+		string $sProxy = '') : array
 	{
 		$aContactsPaths = array();
 
@@ -291,7 +294,11 @@ trait CardDAV
 		return $bGood;
 	}
 
-	private function getDavClientFromUrl(string $sUrl, string $sUser, string $sPassword, string $sProxy = '') : DAVClient
+	private function getDavClientFromUrl(string $sUrl, string $sUser,
+		#[\SensitiveParameter]
+		string $sPassword,
+		string $sProxy = ''
+	) : DAVClient
 	{
 		if (!\preg_match('/^http[s]?:\/\//i', $sUrl)) {
 			$sUrl = \preg_replace('/^fruux\.com/i', 'dav.fruux.com', $sUrl);

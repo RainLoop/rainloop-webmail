@@ -107,7 +107,10 @@ class Logger extends \SplFixedArray
 		return 0 < $this->count();
 	}
 
-	public function AddSecret(string $sWord) : void
+	public function AddSecret(
+		#[\SensitiveParameter]
+		string $sWord
+	) : void
 	{
 //		$this->bShowSecrets && $this->Write("AddSecret '{$sWord}'", \LOG_INFO, '', false);
 		$sWord = \trim($sWord);
