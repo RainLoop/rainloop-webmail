@@ -30,14 +30,6 @@ const
 		imapSslVerify_peer: false,
 		imapSslAllow_self_signed: false,
 		// Options
-		imapDisable_list_status: false,
-		imapDisable_metadata: false,
-		imapDisable_move: false,
-		imapDisable_sort: false,
-		imapDisable_thread: false,
-		imapDisable_binary: false,
-		imapDisable_status_size: true,
-		imapDisable_preview: true,
 		imapExpunge_all_on_delete: false,
 		imapFast_simple_search: true,
 		imapFetch_new_messages: true,
@@ -82,14 +74,7 @@ const
 				verify_peer_name: !!oDomain.imapSslVerify_peer(),
 				allow_self_signed: !!oDomain.imapSslAllow_self_signed()
 			},
-			disable_list_status: !!oDomain.imapDisable_list_status(),
-			disable_metadata: !!oDomain.imapDisable_metadata(),
-			disable_move: !!oDomain.imapDisable_move(),
-			disable_sort: !!oDomain.imapDisable_sort(),
-			disable_thread:  !!oDomain.imapDisable_thread(),
-			disable_binary:  !!oDomain.imapDisable_binary(),
-			disable_status_size:  !!oDomain.imapDisable_status_size(),
-			disable_preview:  !!oDomain.imapDisable_preview(),
+			disabled_capabilities:  oDomain.imapDisabled_capabilities(),
 			folder_list_limit: pInt(oDomain.imapFolder_list_limit()),
 			message_list_limit: pInt(oDomain.imapMessage_list_limit())
 /*
@@ -153,6 +138,8 @@ export class DomainPopupView extends AbstractViewPopup {
 			sieveHostFocus: false,
 			smtpHostFocus: false,
 		});
+		this.imapDisabled_capabilities = ko.observableArray();
+		this.imapCapabilities = ko.observableArray();
 
 		addComputablesTo(this, {
 			headerText: () => {
@@ -286,10 +273,22 @@ export class DomainPopupView extends AbstractViewPopup {
 							this.testingSieveError(getNotification(iError));
 							this.testingSmtpError(getNotification(iError));
 						} else {
+							const result = oData.Result;
 							this.testingDone(true);
-							this.testingImapError(true !== oData.Result.Imap ? oData.Result.Imap : false);
-							this.testingSieveError(true !== oData.Result.Sieve ? oData.Result.Sieve : false);
-							this.testingSmtpError(true !== oData.Result.Smtp ? oData.Result.Smtp : false);
+							this.testingImapError(true !== result.Imap ? result.Imap : false);
+							this.testingSieveError(true !== result.Sieve ? result.Sieve : false);
+							this.testingSmtpError(true !== result.Smtp ? result.Smtp : false);
+/*
+							// result.ImapResult.connectCapa
+							if (true === result.Imap && result.ImapResult.authCapa) {
+								result.ImapResult.authCapa.sort();
+								this.imapCapabilities(result.ImapResult.authCapa);
+							}
+							// result.SmtpResult.connectCapa
+							// result.SmtpResult.authCapa
+							// result.SieveResult.connectCapa
+							// result.SieveResult.authCapa
+*/
 						}
 					},
 					params
@@ -310,6 +309,17 @@ export class DomainPopupView extends AbstractViewPopup {
 		this.saving(false);
 		this.clearTesting();
 		this.edit(false);
+		this.imapCapabilities([
+			'LIST-STATUS',
+			'METADATA',
+			'MOVE',
+			'SORT',
+			'THREAD',
+			'BINARY',
+			'STATUS=SIZE',
+			'PREVIEW'
+		]);
+		this.imapDisabled_capabilities(['PREVIEW','STATUS=SIZE']);
 		forEachObjectEntry(domainDefaults, (key, value) => this[key](value));
 		this.enableSmartPorts(true);
 		if (oDomain) {

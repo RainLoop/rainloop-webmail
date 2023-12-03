@@ -79,62 +79,18 @@
 				}"></div>
 
 				<h4 data-i18n="POPUPS_DOMAIN/DISABLE_CAPABILITIES"></h4>
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: {
-						value: imapDisable_list_status,
-						label: 'LIST-STATUS'
-					}
-				}"></div>
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: {
-						value: imapDisable_metadata,
-						label: 'METADATA'
-					}
-				}"></div>
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: {
-						value: imapDisable_move,
-						label: 'MOVE'
-					}
-				}"></div>
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: {
-						value: imapDisable_sort,
-						label: 'SORT'
-					}
-				}"></div>
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: {
-						value: imapDisable_thread,
-						label: 'THREAD'
-					}
-				}"></div>
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: {
-						value: imapDisable_binary,
-						label: 'BINARY'
-					}
-				}"></div>
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: {
-						value: imapDisable_status_size,
-						label: 'STATUS SIZE'
-					}
-				}"></div>
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: {
-						value: imapDisable_preview,
-						label: 'PREVIEW'
-					}
-				}"></div>
+
+				<div data-bind="foreach: imapCapabilities">
+					<div style="display: inline-block; width: 33%; min-width: 16em">
+						<label class="e-component e-checkbox material-design">
+							<div>
+								<input type="checkbox" data-bind="checked: $parent.imapDisabled_capabilities,  value: $data"/>
+								<div role="checkbox"></div>
+							</div>
+							<span data-bind="text: $data"></span>
+						</label>
+					</div>
+				</div>
 
 				<h4 data-i18n="POPUPS_DOMAIN/LIMITS"></h4>
 				<div class="control-group">

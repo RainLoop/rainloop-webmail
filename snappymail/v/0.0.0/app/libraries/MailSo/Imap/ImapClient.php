@@ -30,15 +30,10 @@ class ImapClient extends \MailSo\Net\NetClient
 
 	private int $iTagCount = 0;
 
-	/**
-	 * @var array
-	 */
-	private $aCapabilityItems = null;
+	private ?array $aCapa = null;
+	private ?array $aCapaRaw = null;
 
-	/**
-	 * @var FolderInformation
-	 */
-	private $oCurrentFolderInfo = null;
+	private ?FolderInformation $oCurrentFolderInfo = null;
 
 	/**
 	 * Used by \MailSo\Mail\MailClient::MessageMimeStream
@@ -89,7 +84,8 @@ class ImapClient extends \MailSo\Net\NetClient
 		if ($this->hasCapability('STARTTLS')) {
 			$this->SendRequestGetResponse('STARTTLS');
 			$this->EnableCrypto();
-			$this->aCapabilityItems = null;
+			$this->aCapa = null;
+			$this->aCapaRaw = null;
 		} else {
 			$this->writeLogException(
 				new \MailSo\Net\Exceptions\SocketUnsuppoterdSecureConnectionException('STARTTLS is not supported'),
@@ -281,13 +277,21 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function Capability() : ?array
 	{
-		if (!$this->aCapabilityItems) {
+		if (!$this->aCapa) {
 			$this->setCapabilities($this->SendRequestGetResponse('CAPABILITY'));
 		}
 /*
-		$this->aCapabilityItems[] = 'X-DOVECOT';
+		$this->aCapa[] = 'X-DOVECOT';
 */
-		return $this->aCapabilityItems;
+		return $this->aCapa;
+	}
+
+	public function Capabilities() : ?array
+	{
+		if (!$this->aCapa) {
+			$this->setCapabilities($this->SendRequestGetResponse('CAPABILITY'));
+		}
+		return $this->aCapaRaw;
 	}
 
 	public function CapabilityValue(string $sExtentionName) : ?string
@@ -306,37 +310,17 @@ class ImapClient extends \MailSo\Net\NetClient
 	{
 		$aList = $oResponseCollection->getCapabilityResult();
 		if ($aList) {
-			if ($this->Settings->disable_metadata) {
-				// Issue #365: Many folders on Cyrus IMAP breaks login
-				$aList = \array_diff($aList, ['METADATA']);
-			}
-			if ($this->Settings->disable_move) {
-				$aList = \array_diff($aList, ['MOVE']);
-			}
-			if ($this->Settings->disable_sort) {
-				$aList = \array_diff($aList, ['SORT','ESORT']);
-			}
-			if ($this->Settings->disable_thread) {
+			// Strip unused capabilities
+			$aList = \array_diff($aList, ['PREVIEW=FUZZY', 'SNIPPET=FUZZY', 'SORT=DISPLAY']);
+			// Set raw response capabilities
+			$this->aCapaRaw = $aList;
+			// Set active capabilities
+			$aList = \array_diff($aList, $this->Settings->disabled_capabilities);
+			if (\in_array('THREAD', $this->Settings->disabled_capabilities)) {
 				$aList = \array_filter($aList, function ($item) { \str_starts_with($item, 'THREAD='); });
 			}
-			if ($this->Settings->disable_list_status) {
-				$aList = \array_diff($aList, ['LIST-STATUS']);
-			}
-			if ($this->Settings->disable_binary) {
-				$aList = \array_diff($aList, ['BINARY']);
-			}
-			if (8 > PHP_INT_SIZE) {
-				$aList = \array_diff($aList, ['CONDSTORE']);
-				$aList = \array_diff($aList, ['STATUS=SIZE']);
-			}
-			if ($this->Settings->disable_status_size) {
-				$aList = \array_diff($aList, ['STATUS=SIZE']);
-			}
-			if ($this->Settings->disable_preview) {
-				$aList = \array_diff($aList, ['PREVIEW']);
-			}
 		}
-		$this->aCapabilityItems = $aList;
+		$this->aCapa = $aList;
 	}
 
 	/**

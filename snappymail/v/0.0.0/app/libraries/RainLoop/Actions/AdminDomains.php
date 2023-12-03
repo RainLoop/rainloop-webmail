@@ -97,14 +97,18 @@ trait AdminDomains
 				$oSettings = $oDomain->ImapSettings();
 				$oImapClient->Connect($oSettings);
 				$mImapResult = [
-					'connectCapa' => $oImapClient->Capability()
+					'connectCapa' => $oImapClient->Capabilities()
 				];
 
 				if (!empty($aAuth['user'])) {
 					$oSettings->Login = $aAuth['user'];
 					$oSettings->Password = $aAuth['pass'];
 					$oImapClient->Login($oSettings);
-					$mImapResult['authCapa'] = $oImapClient->Capability();
+					$mImapResult['authCapa'] = \array_values(\array_unique(\array_map(function($n){
+							return \str_starts_with($n, 'THREAD=') ? 'THREAD' : $n;
+						},
+						$oImapClient->Capabilities()
+					)));
 				}
 
 				$oImapClient->Disconnect();

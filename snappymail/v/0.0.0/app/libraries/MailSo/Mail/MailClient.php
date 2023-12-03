@@ -808,7 +808,6 @@ class MailClient
 
 	public function Folders(string $sParent, string $sListPattern, bool $bUseListSubscribeStatus) : ?FolderCollection
 	{
-//		$this->oImapClient->Settings->disable_list_status
 		$oFolderCollection = $this->oImapClient->FolderStatusList($sParent, $sListPattern);
 		if (!$oFolderCollection->count()) {
 			return null;
