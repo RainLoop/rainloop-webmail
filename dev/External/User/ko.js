@@ -193,10 +193,6 @@ Object.assign(ko.bindingHandlers, {
 				};
 			addEventsListeners(element, {
 				dragstart: e => {
-					dragData = {
-						action: 'sortable',
-						element: element
-					};
 					setDragAction(e, 'sortable', 'move', element, element);
 					element.style.opacity = 0.25;
 				},
