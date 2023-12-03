@@ -14,6 +14,7 @@ abstract class Account implements \JsonSerializable
 
 	private string $sLogin = '';
 
+	 #[\SensitiveParameter]
 	private string $sPassword = '';
 
 	private string $sSmtpLogin = '';
