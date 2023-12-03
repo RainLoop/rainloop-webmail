@@ -158,7 +158,13 @@ class ImapClient extends \MailSo\Net\NetClient
 		{
 			if (\str_starts_with($type, 'SCRAM-'))
 			{
-				$this->sendRaw($this->SendRequestGetResponse('AUTHENTICATE', array($type, $SASL->authenticate($sLogin, $sPassword))));
+				$sAuth = $SASL->authenticate($sLogin, $sPassword);
+				if ($this->hasCapability('SASL-IR')) {
+					$this->sendRaw($this->SendRequestGetResponse('AUTHENTICATE', array($type, $sAuth)));
+				} else {
+					$this->SendRequestGetResponse('AUTHENTICATE', array($type));
+					$this->sendRaw($sAuth);
+				}
 				$sChallenge = $SASL->challenge($this->getResponseValue($this->getResponse(), Enumerations\ResponseType::CONTINUATION));
 				$this->logMask($sChallenge);
 				$this->sendRaw($sChallenge);
