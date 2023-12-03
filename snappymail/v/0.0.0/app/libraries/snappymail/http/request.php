@@ -48,7 +48,10 @@ abstract class Request
 		$this->user_agent = 'SnappyMail/' . APP_VERSION;
 	}
 
-	public function setAuth(int $type, string $user, string $pass) : void
+	public function setAuth(int $type, string $user,
+		#[\SensitiveParameter]
+		string $pass
+	) : void
 	{
 		$this->auth = [
 			'type' => $type,

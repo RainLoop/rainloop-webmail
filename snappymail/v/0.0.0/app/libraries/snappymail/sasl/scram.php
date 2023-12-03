@@ -31,7 +31,11 @@ class Scram extends \SnappyMail\SASL
 		$this->algo = $algo;
 	}
 
-	public function authenticate(string $authcid, string $passphrase, ?string $authzid = null) : string
+	public function authenticate(string $authcid,
+		#[\SensitiveParameter]
+		string $passphrase,
+		?string $authzid = null
+	) : string
 	{
 		// SASLprep
 		$authcid = \str_replace(array('=',','), array('=3D','=2C'), $authcid);

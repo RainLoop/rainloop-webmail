@@ -7,7 +7,10 @@ class Login extends \SnappyMail\SASL
 	protected
 		$passphrase;
 
-	public function authenticate(string $username, string $passphrase, ?string $challenge = null) : string
+	public function authenticate(string $username,
+		#[\SensitiveParameter]
+		string $passphrase,
+		?string $challenge = null) : string
 	{
 		// $challenge should be 'VXNlcm5hbWU6', but broken on some systems
 		// See https://github.com/the-djmaze/snappymail/issues/693

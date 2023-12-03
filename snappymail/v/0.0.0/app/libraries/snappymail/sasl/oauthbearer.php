@@ -9,7 +9,11 @@ namespace SnappyMail\SASL;
 
 class OAuthBearer extends \SnappyMail\SASL
 {
-	public function authenticate(string $username, string $passphrase, ?string $authzid = null) : string
+	public function authenticate(string $username,
+		#[\SensitiveParameter]
+		string $passphrase,
+		?string $authzid = null
+	) : string
 	{
 		return $this->encode("n,a={$username},\x01auth=Bearer {$passphrase}\x01\x01");
 	}
