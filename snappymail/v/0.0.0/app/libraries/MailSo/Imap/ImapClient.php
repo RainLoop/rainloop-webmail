@@ -131,6 +131,9 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 
 		$type = '';
+		if ($this->Encrypted()) {
+			\array_unshift($oSettings->SASLMechanisms, 'PLAIN', 'LOGIN');
+		}
 		foreach ($oSettings->SASLMechanisms as $sasl_type) {
 			if ($this->hasCapability("AUTH={$sasl_type}") && \SnappyMail\SASL::isSupported($sasl_type)) {
 				$type = $sasl_type;
@@ -159,8 +162,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		{
 			if (\str_starts_with($type, 'SCRAM-'))
 			{
-				$sAuthzid = $this->getResponseValue($this->SendRequestGetResponse('AUTHENTICATE', array($type)), Enumerations\ResponseType::CONTINUATION);
-				$this->sendRaw($SASL->authenticate($sLogin, $sPassword/*, $sAuthzid*/), true);
+				$this->sendRaw($this->SendRequestGetResponse('AUTHENTICATE', array($type, $SASL->authenticate($sLogin, $sPassword))));
 				$sChallenge = $SASL->challenge($this->getResponseValue($this->getResponse(), Enumerations\ResponseType::CONTINUATION));
 				$this->logMask($sChallenge);
 				$this->sendRaw($sChallenge);

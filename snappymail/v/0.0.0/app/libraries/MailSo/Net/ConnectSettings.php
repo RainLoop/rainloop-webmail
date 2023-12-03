@@ -72,7 +72,7 @@ class ConnectSettings implements \JsonSerializable
 		}
 		$object->shortLogin = !empty($aSettings['shortLogin']);
 		$object->ssl = SSLContext::fromArray($aSettings['ssl'] ?? []);
-		if (isset($aSettings['sasl'])) {
+		if (!empty($aSettings['sasl']) && \is_array($aSettings['sasl'])) {
 			$object->SASLMechanisms = $aSettings['sasl'];
 		}
 //		$object->tls_weak = !empty($aSettings['tls_weak']);
