@@ -44,9 +44,9 @@ abstract class Account implements \JsonSerializable
 			: $this->sLogin;
 	}
 
-	public function IncPassword() : SensitiveString
+	public function IncPassword() : string
 	{
-		return $this->sPassword;
+		return $this->sPassword ? $this->sPassword->getValue() : '';
 	}
 
 	public function OutLogin() : string
@@ -103,30 +103,31 @@ abstract class Account implements \JsonSerializable
 	public function jsonSerialize()
 	{
 		$result = [
-//			'account',                   // 0
-			'email' => $this->sEmail,    // 1
-			'login' => $this->sLogin,    // 2
-			'pass'  => $this->sPassword, // 3
-//			'',                          // 4 sClientCert
+			'email' => $this->sEmail,
+			'login' => $this->sLogin,
+			'pass'  => $this->IncPassword(),
 			'name' => $this->sName
 		];
 		if ($this->sSmtpLogin && $this->sSmtpPassword) {
 			$result['smtp'] = [
 				'user' => $this->sSmtpLogin,
-				'pass' => $this->sSmtpPassword
+				'pass' => $this->sSmtpPassword->getValue()
 			];
 		}
 		if ($this->sProxyAuthUser && $this->sProxyAuthPassword) {
 			$result['proxy'] = [
-				'user' => $this->sProxyAuthUser,    // 5
-				'pass' => $this->sProxyAuthPassword // 6
+				'user' => $this->sProxyAuthUser,
+				'pass' => $this->sProxyAuthPassword->getValue()
 			];
 		}
 		return $result;
 	}
 
 	public static function NewInstanceFromCredentials(\RainLoop\Actions $oActions,
-		string $sEmail, string $sLogin, string $sPassword, bool $bThrowException = false): ?self
+		string $sEmail, string $sLogin,
+		#[\SensitiveParameter]
+		string $sPassword,
+		bool $bThrowException = false): ?self
 	{
 		$oAccount = null;
 		if ($sEmail && $sLogin && $sPassword) {
@@ -200,7 +201,7 @@ abstract class Account implements \JsonSerializable
 				if (isset($aAccountHash['name'])) {
 					$oAccount->sName = $aAccountHash['name'];
 				}
-				$oActions->logMask($oAccount->sPassword);
+				$oActions->logMask($oAccount->IncPassword());
 				// init smtp user/password
 				if (isset($aAccountHash['smtp'])) {
 					$oAccount->sSmtpLogin = $aAccountHash['smtp']['user'];
@@ -218,11 +219,6 @@ abstract class Account implements \JsonSerializable
 		return $oAccount;
 	}
 
-	// Deprecated
-	public function ImapConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Imap\ImapClient $oImapClient, \RainLoop\Config\Application $oConfig) : bool
-	{
-		return $this->ImapConnectAndLogin($oPlugins, $oImapClient, $oConfig);
-	}
 	public function ImapConnectAndLogin(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Imap\ImapClient $oImapClient, \RainLoop\Config\Application $oConfig) : bool
 	{
 		$oSettings = $this->Domain()->ImapSettings();
@@ -300,7 +296,7 @@ abstract class Account implements \JsonSerializable
 */
 		$oSettings = $oClient->Settings;
 		$oSettings->ProxyAuthUser = $this->sProxyAuthUser;
-		$oSettings->ProxyAuthPassword = $this->sProxyAuthPassword ?: '';
+		$oSettings->ProxyAuthPassword = $this->sProxyAuthPassword;
 
 		$client_name = \strtolower($oClient->getLogName());
 

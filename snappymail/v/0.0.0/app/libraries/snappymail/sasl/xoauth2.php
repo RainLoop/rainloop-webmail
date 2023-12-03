@@ -4,7 +4,6 @@
  * https://developers.google.com/gmail/imap/xoauth2-protocol
  */
 
-
 namespace SnappyMail\SASL;
 
 class XOAuth2 extends \SnappyMail\SASL

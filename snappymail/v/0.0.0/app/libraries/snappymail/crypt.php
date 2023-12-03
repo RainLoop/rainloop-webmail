@@ -43,7 +43,10 @@ abstract class Crypt
 	/**
 	 * When $key is empty, it will use the smctoken.
 	 */
-	private static function Passphrase(?string $key) : string
+	private static function Passphrase(
+		#[\SensitiveParameter]
+		?string $key
+	) : string
 	{
 		if (!$key) {
 			if (empty($_COOKIE['smctoken'])) {
@@ -55,7 +58,10 @@ abstract class Crypt
 		return \sha1($key . APP_SALT, true);
 	}
 
-	public static function Decrypt(array $data, string $key = null) /* : mixed */
+	public static function Decrypt(array $data,
+		#[\SensitiveParameter]
+		string $key = null
+	) /* : mixed */
 	{
 		if (3 === \count($data) && isset($data[0], $data[1], $data[2]) && \strlen($data[0])) {
 			try {
@@ -75,7 +81,10 @@ abstract class Crypt
 		}
 	}
 
-	public static function DecryptFromJSON(string $data, string $key = null) /* : mixed */
+	public static function DecryptFromJSON(string $data,
+		#[\SensitiveParameter]
+		string $key = null
+	) /* : mixed */
 	{
 		$data = static::jsonDecode($data);
 		if (!\is_array($data)) {
@@ -85,7 +94,10 @@ abstract class Crypt
 		return static::Decrypt(\array_map('base64_decode', $data), $key);
 	}
 
-	public static function DecryptUrlSafe(string $data, string $key = null) /* : mixed */
+	public static function DecryptUrlSafe(string $data,
+		#[\SensitiveParameter]
+		string $key = null
+	) /* : mixed */
 	{
 		$data = \explode('.', $data);
 		if (!\is_array($data)) {
@@ -95,7 +107,12 @@ abstract class Crypt
 		return static::Decrypt(\array_map('MailSo\\Base\\Utils::UrlSafeBase64Decode', $data), $key);
 	}
 
-	public static function Encrypt($data, string $key = null) : array
+	public static function Encrypt(
+		#[\SensitiveParameter]
+		$data,
+		#[\SensitiveParameter]
+		string $key = null
+	) : array
 	{
 		$data = \json_encode($data);
 
@@ -128,17 +145,30 @@ abstract class Crypt
 */
 	}
 
-	public static function EncryptToJSON($data, string $key = null) : string
+	public static function EncryptToJSON(
+		#[\SensitiveParameter]
+		$data,
+		#[\SensitiveParameter]
+		string $key = null
+	) : string
 	{
 		return \json_encode(\array_map('base64_encode', static::Encrypt($data, $key)));
 	}
 
-	public static function EncryptUrlSafe($data, string $key = null) : string
+	public static function EncryptUrlSafe(
+		#[\SensitiveParameter]
+		$data,
+		#[\SensitiveParameter]
+		string $key = null
+	) : string
 	{
 		return \implode('.', \array_map('MailSo\\Base\\Utils::UrlSafeBase64Encode', static::Encrypt($data, $key)));
 	}
 
-	public static function SodiumDecrypt(string $data, string $nonce, string $key = null) /* : string|false */
+	public static function SodiumDecrypt(string $data, string $nonce,
+		#[\SensitiveParameter]
+		string $key = null
+	) /* : string|false */
 	{
 		if (!\is_callable('sodium_crypto_aead_xchacha20poly1305_ietf_decrypt')) {
 			throw new \Exception('sodium_crypto_aead_xchacha20poly1305_ietf_decrypt not callable');
@@ -151,7 +181,13 @@ abstract class Crypt
 		);
 	}
 
-	public static function SodiumEncrypt(string $data, string $nonce, string $key = null) : string
+	public static function SodiumEncrypt(
+		#[\SensitiveParameter]
+		string $data,
+		string $nonce,
+		#[\SensitiveParameter]
+		string $key = null
+	) : string
 	{
 		if (!\is_callable('sodium_crypto_aead_xchacha20poly1305_ietf_encrypt')) {
 			throw new \Exception('sodium_crypto_aead_xchacha20poly1305_ietf_encrypt not callable');
@@ -168,7 +204,10 @@ abstract class Crypt
 		return $result;
 	}
 
-	public static function OpenSSLDecrypt(string $data, string $iv, string $key = null) /* : string|false */
+	public static function OpenSSLDecrypt(string $data, string $iv,
+		#[\SensitiveParameter]
+		string $key = null
+	) /* : string|false */
 	{
 		if (!$data || !$iv) {
 			throw new \InvalidArgumentException('$data or $iv is empty string');
@@ -189,7 +228,13 @@ abstract class Crypt
 		);
 	}
 
-	public static function OpenSSLEncrypt(string $data, string $iv, string $key = null) : string
+	public static function OpenSSLEncrypt(
+		#[\SensitiveParameter]
+		string $data,
+		string $iv,
+		#[\SensitiveParameter]
+		string $key = null
+	) : string
 	{
 		if (!$data || !$iv) {
 			throw new \InvalidArgumentException('$data or $iv is empty string');
@@ -214,7 +259,10 @@ abstract class Crypt
 		return $result;
 	}
 
-	public static function XxteaDecrypt(string $data, string $salt, string $key = null) /* : mixed */
+	public static function XxteaDecrypt(string $data, string $salt,
+		#[\SensitiveParameter]
+		string $key = null
+	) /* : mixed */
 	{
 		if (!$data || !$salt) {
 			throw new \InvalidArgumentException('$data or $salt is empty string');
@@ -225,7 +273,13 @@ abstract class Crypt
 			: \MailSo\Base\Xxtea::decrypt($data, $key);
 	}
 
-	public static function XxteaEncrypt(string $data, string $salt, string $key = null) : string
+	public static function XxteaEncrypt(
+		#[\SensitiveParameter]
+		string $data,
+		string $salt,
+		#[\SensitiveParameter]
+		string $key = null
+	) : string
 	{
 		if (!$data || !$salt) {
 			throw new \InvalidArgumentException('$data or $salt is empty string');

@@ -40,7 +40,10 @@ trait Inherit
 		$this->oLogger && $this->oLogger->WriteException($oException, $iType, $sName);
 	}
 
-	public function logMask(string $sWord): void
+	public function logMask(
+		#[\SensitiveParameter]
+		string $sWord
+	): void
 	{
 		$this->oLogger && $this->oLogger->AddSecret($sWord);
 	}

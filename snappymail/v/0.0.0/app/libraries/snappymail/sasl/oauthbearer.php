@@ -4,7 +4,6 @@
  * https://developers.google.com/gmail/imap/xoauth2-protocol
  */
 
-
 namespace SnappyMail\SASL;
 
 class OAuthBearer extends \SnappyMail\SASL

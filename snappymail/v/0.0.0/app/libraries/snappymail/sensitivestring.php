@@ -20,9 +20,20 @@ class SensitiveString /* extends SensitiveParameterValue | SensitiveParameter */
 {
 	private string $value, $nonce;
 
-	public function __construct(string $value)
+	public function __construct(
+		#[\SensitiveParameter]
+		string $value
+	)
 	{
 		$this->setValue($value);
+	}
+
+	public function getValue(): string
+	{
+		if (\is_callable('sodium_crypto_secretbox')) {
+			return \sodium_crypto_secretbox_open($this->value, $this->nonce, APP_SALT);
+		}
+		return xorIt($this->value);
 	}
 
 	public function setValue(
@@ -39,11 +50,23 @@ class SensitiveString /* extends SensitiveParameterValue | SensitiveParameter */
 		}
 	}
 
-	public function __toString() : string
+	public function __toString(): string
 	{
-		if (\is_callable('sodium_crypto_secretbox')) {
-			return \sodium_crypto_secretbox_open($this->value, $this->nonce, APP_SALT);
-		}
-		return xorIt($this->value);
+		return $this->getValue();
+	}
+
+	public function __debugInfo(): array
+	{
+		return [];
+	}
+
+	public function __serialize(): array
+	{
+		throw new \Exception("Serialization of 'SensitiveString' is not allowed");
+	}
+
+	public function __unserialize(array $data): void
+	{
+		throw new \Exception("Unserialization of 'SensitiveString' is not allowed");
 	}
 }

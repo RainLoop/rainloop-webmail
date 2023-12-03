@@ -110,9 +110,9 @@ class ImapClient extends \MailSo\Net\NetClient
 			return $this;
 		}
 
-		if (!empty($oSettings->ProxyAuthUser) && !empty($oSettings->ProxyAuthPassword)) {
+		if (!empty($oSettings->ProxyAuthUser) && $oSettings->ProxyAuthPassword) {
 			$sLogin = $oSettings->ProxyAuthUser;
-			$sPassword = $oSettings->ProxyAuthPassword;
+			$sPassword = $oSettings->ProxyAuthPassword->getValue();
 			$sProxyAuthUser = $oSettings->Login;
 		} else {
 			$sLogin = $oSettings->Login;

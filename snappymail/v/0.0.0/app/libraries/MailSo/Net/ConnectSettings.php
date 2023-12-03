@@ -11,6 +11,8 @@
 
 namespace MailSo\Net;
 
+use SnappyMail\SensitiveString;
+
 /**
  * @category MailSo
  * @package Net
@@ -47,13 +49,27 @@ class ConnectSettings implements \JsonSerializable
 		'LOGIN'
 	];
 	public string $Login = '';
-	public string $Password = '';
+	private ?SensitiveString $Password = null;
 	public string $ProxyAuthUser = '';
-	public string $ProxyAuthPassword = '';
+	public ?SensitiveString $ProxyAuthPassword = null;
 
 	public function __construct()
 	{
 		$this->ssl = new SSLContext;
+	}
+
+	public function __get(string $name)
+	{
+		if ('Password' === $name) {
+			return $this->Password ? $this->Password->getValue() : '';
+		}
+	}
+
+	public function __set(string $name, $value)
+	{
+		if ('Password' === $name) {
+			$this->Password = \is_string($value) ? new SensitiveString($value) : $value;
+		}
 	}
 
 	public static function Host() : string
