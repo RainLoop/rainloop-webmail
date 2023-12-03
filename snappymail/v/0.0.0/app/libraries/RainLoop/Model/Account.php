@@ -5,6 +5,7 @@ namespace RainLoop\Model;
 use RainLoop\Utils;
 use RainLoop\Notifications;
 use RainLoop\Exceptions\ClientException;
+use SnappyMail\SensitiveString;
 
 abstract class Account implements \JsonSerializable
 {
@@ -14,15 +15,15 @@ abstract class Account implements \JsonSerializable
 
 	private string $sLogin = '';
 
-	private string $sPassword = '';
+	private ?SensitiveString $sPassword = null;
 
 	private string $sSmtpLogin = '';
 
-	private string $sSmtpPassword = '';
+	private ?SensitiveString $sSmtpPassword = null;
 
 	private string $sProxyAuthUser = '';
 
-	private string $sProxyAuthPassword = '';
+	private ?SensitiveString $sProxyAuthPassword = null;
 
 	private Domain $oDomain;
 
@@ -43,7 +44,7 @@ abstract class Account implements \JsonSerializable
 			: $this->sLogin;
 	}
 
-	public function IncPassword() : string
+	public function IncPassword() : SensitiveString
 	{
 		return $this->sPassword;
 	}
@@ -69,14 +70,20 @@ abstract class Account implements \JsonSerializable
 		]));
 	}
 
-	public function SetPassword(string $sPassword) : void
+	public function SetPassword(
+		#[\SensitiveParameter]
+		string $sPassword
+	) : void
 	{
-		$this->sPassword = $sPassword;
+		$this->sPassword = new SensitiveString($sPassword);
 	}
 
-	public function SetSmtpPassword(string $sPassword) : void
+	public function SetSmtpPassword(
+		#[\SensitiveParameter]
+		string $sPassword
+	) : void
 	{
-		$this->sSmtpLogin = $sPassword;
+		$this->sSmtpPassword = new SensitiveString($sPassword);
 	}
 
 	public function SetProxyAuthUser(string $sProxyAuthUser) : void
@@ -84,9 +91,12 @@ abstract class Account implements \JsonSerializable
 		$this->sProxyAuthUser = $sProxyAuthUser;
 	}
 
-	public function SetProxyAuthPassword(string $sProxyAuthPassword) : void
+	public function SetProxyAuthPassword(
+		#[\SensitiveParameter]
+		string $sProxyAuthPassword
+	) : void
 	{
-		$this->sProxyAuthPassword = $sProxyAuthPassword;
+		$this->sProxyAuthPassword = new SensitiveString($sProxyAuthPassword);
 	}
 
 	#[\ReturnTypeWillChange]
@@ -127,7 +137,7 @@ abstract class Account implements \JsonSerializable
 
 					$oAccount->sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
 					$oAccount->sLogin = \MailSo\Base\Utils::IdnToAscii($sLogin);
-					$oAccount->sPassword = $sPassword;
+					$oAccount->SetPassword($sPassword);
 					$oAccount->oDomain = $oDomain;
 
 					$oActions->Plugins()->RunHook('filter.account', array($oAccount));
@@ -194,13 +204,13 @@ abstract class Account implements \JsonSerializable
 				// init smtp user/password
 				if (isset($aAccountHash['smtp'])) {
 					$oAccount->sSmtpLogin = $aAccountHash['smtp']['user'];
-					$oAccount->sSmtpPassword = $aAccountHash['smtp']['pass'];
+					$oAccount->SetSmtpPassword($aAccountHash['smtp']['pass']);
 					$oActions->logMask($oAccount->sSmtpPassword);
 				}
 				// init proxy user/password
 				if (isset($aAccountHash['proxy'])) {
 					$oAccount->sProxyAuthUser = $aAccountHash['proxy']['user'];
-					$oAccount->sProxyAuthPassword = $aAccountHash['proxy']['pass'];
+					$oAccount->SetProxyAuthPassword($aAccountHash['proxy']['pass']);
 					$oActions->logMask($oAccount->sProxyAuthPassword);
 				}
 			}
@@ -234,7 +244,7 @@ abstract class Account implements \JsonSerializable
 		$oImapClient->Connect($oSettings);
 		$oPlugins->RunHook('imap.after-connect', array($this, $oImapClient, $oSettings));
 
-		$oSettings->Password = $this->IncPassword();
+		$oSettings->Password = $this->sPassword;
 		return $this->netClientLogin($oImapClient, $oPlugins);
 	}
 
@@ -273,7 +283,7 @@ abstract class Account implements \JsonSerializable
 		$oSieveClient->Connect($oSettings);
 		$oPlugins->RunHook('sieve.after-connect', array($this, $oSieveClient, $oSettings));
 
-		$oSettings->Password = $this->IncPassword();
+		$oSettings->Password = $this->sPassword;
 		return $this->netClientLogin($oSieveClient, $oPlugins);
 	}
 
@@ -290,7 +300,7 @@ abstract class Account implements \JsonSerializable
 */
 		$oSettings = $oClient->Settings;
 		$oSettings->ProxyAuthUser = $this->sProxyAuthUser;
-		$oSettings->ProxyAuthPassword = $this->sProxyAuthPassword;
+		$oSettings->ProxyAuthPassword = $this->sProxyAuthPassword ?: '';
 
 		$client_name = \strtolower($oClient->getLogName());
 
