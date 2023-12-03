@@ -76,7 +76,7 @@ abstract class Account implements \JsonSerializable
 
 	public function SetSmtpPassword(string $sPassword) : void
 	{
-		$this->sSmtpLogin = $sPassword;
+		$this->sSmtpPassword = $sPassword;
 	}
 
 	public function SetProxyAuthUser(string $sProxyAuthUser) : void
