@@ -1097,7 +1097,7 @@ const
 
 		// Move range down into text nodes.
 		moveRangeBoundariesDownTree(range);
-		range.collapse(false); // collapse to end
+		range.collapse(); // collapse to end
 
 		// Where will we split up to? First blockquote parent, otherwise root.
 		stopPoint = getClosest(range.endContainer, root, 'BLOCKQUOTE') || root;
@@ -1158,7 +1158,7 @@ const
 		if (getLength(frag)) {
 			if (replaceBlock && block) {
 				range.setEndBefore(block);
-				range.collapse(false);
+				range.collapse();
 				detach(block);
 			}
 			moveRangeBoundariesUpTree(range, stopPoint, stopPoint, root);
@@ -1916,7 +1916,7 @@ const
 			// If inside an <a>, move focus out
 			moveRangeBoundaryOutOf(range, 'A', root);
 			insertNodeInRange(range, createElement('BR'));
-			range.collapse(false);
+			range.collapse();
 			self.setSelection(range);
 			self._updatePath(range, true);
 			return;
@@ -2660,7 +2660,7 @@ class Squire
 			temp;
 
 		insertNodeInRange(range, startNode);
-		range.collapse(false);
+		range.collapse();
 		insertNodeInRange(range, endNode);
 
 		// In a collapsed range, the start is sometimes inserted after the end!
@@ -3046,7 +3046,7 @@ class Squire
 
 		// Merge adjacent inlines:
 		this._getRangeAndRemoveBookmark(range);
-		fixer && range.collapse(false);
+		fixer && range.collapse();
 		mergeInlines(root, range);
 
 		return range;
@@ -3398,7 +3398,7 @@ class Squire
 			}
 
 			insertTreeFragmentIntoRange(range, frag, root);
-			range.collapse(false);
+			range.collapse();
 
 			// After inserting the fragment, check whether the cursor is inside
 			// an <a> element and if so if there is an equivalent cursor
