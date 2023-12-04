@@ -83,12 +83,7 @@ This fork of RainLoop has the following changes:
 * Added [Fetch Metadata Request Headers](https://www.w3.org/TR/fetch-metadata/) checks
 * Reduced excessive DOM size
 * Support [Kolab groupware](https://kolab.org/)
-* Support IMAP RFC 2971 ID extension
-* Support IMAP RFC 5258 LIST-EXTENDED
-* Support IMAP RFC 5464 METADATA
-* Support IMAP RFC 5819 LIST-STATUS
-* Support IMAP RFC 7628 SASL OAUTHBEARER aka XOAUTH2
-* Support IMAP4rev2 RFC 9051
+* Support many more [IMAP RFC's](https://snappymail.eu/comparison#IMAP)
 * Support Sodium and OpenSSL for encryption
 * Much better PGP support
 
@@ -145,28 +140,28 @@ RainLoop 1.17 vs SnappyMail
 
 |js/*           	|RainLoop 	|Snappy   	|
 |---------------	|--------:	|--------:	|
-|admin.js        	|2.170.153	|   80.124	|
-|app.js          	|4.207.787	|  407.460	|
+|admin.js        	|2.170.153	|   80.467	|
+|app.js          	|4.207.787	|  407.482	|
 |boot.js         	|  868.735	|    4.142	|
-|libs.js         	|  658.812	|  192.239	|
-|sieve.js         	|        0	|   85.141	|
+|libs.js         	|  658.812	|  192.885	|
+|sieve.js         	|        0	|   85.085	|
 |polyfills.js    	|  334.608	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|8.240.095	|  769.391	|
+|TOTAL           	|8.240.095	|  770.346	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
-|admin.min.js    	|  256.831	|   39.273	| 73.606	| 13.136	| 60.877  	| 11.760	|
-|app.min.js      	|  515.367	|  186.288	|139.456	| 62.975	|110.485  	| 54.194	|
+|admin.min.js    	|  256.831	|   39.328	| 73.606	| 13.191	| 60.877  	| 11.815	|
+|app.min.js      	|  515.367	|  186.025	|139.456	| 63.148	|110.485  	| 54.152	|
 |boot.min.js     	|   84.659	|    2.084	| 26.998	|  1.202	| 23.643  	|  1.003	|
-|libs.min.js     	|  584.772	|   92.375	|180.901	| 34.331	|155.182  	| 30.746	|
-|sieve.min.js     	|        0	|   41.399	|      0	| 10.394	|      0  	|  9.356	|
+|libs.min.js     	|  584.772	|   92.854	|180.901	| 34.489	|155.182  	| 30.939	|
+|sieve.min.js     	|        0	|   41.316	|      0	| 10.364	|      0  	|  9.352	|
 |polyfills.min.js	|   32.837	|        0	| 11.406	|      0	| 10.175  	|      0	|
-|TOTAL user      	|1.217.635	|  280.747	|358.761	| 98.508	|299.485  	| 85.943	|
-|TOTAL user+sieve	|1.217.635	|  322.146	|358.761	|108.902	|299.485  	| 95.299	|
-|TOTAL admin     	|  959.099	|  133.732	|292.911	| 48.669	|249.877  	| 43.509	|
+|TOTAL user      	|1.217.635	|  280.963	|358.761	| 98.839	|299.485  	| 86.094	|
+|TOTAL user+sieve	|1.217.635	|  322.279	|358.761	|109.203	|299.485  	| 95.446	|
+|TOTAL admin     	|  959.099	|  134.266	|292.911	| 48.882	|249.877  	| 43.757	|
 
-For a user it is around 72% smaller and faster than traditional RainLoop.
+For a user it is around 70% smaller and faster than traditional RainLoop.
 
 ### CSS changes
 
@@ -193,8 +188,8 @@ For a user it is around 72% smaller and faster than traditional RainLoop.
 
 |css/*       	|RainLoop	|Snappy   	|RL gzip	|SM gzip	|SM brotli	|
 |------------	|-------:	|------:	|------:	|------:	|--------:	|
-|app.css     	| 340.331	| 84.569	| 46.946	| 17.645	| 15.111	|
-|app.min.css 	| 274.947	| 67.927	| 39.647	| 15.528	| 13.541	|
+|app.css     	| 340.331	| 84.570	| 46.946	| 17.646	| 15.118	|
+|app.min.css 	| 274.947	| 67.928	| 39.647	| 15.529	| 13.548	|
 |boot.css    	|       	|  1.326	|       	|    664	|    545	|
 |boot.min.css	|       	|  1.071	|       	|    590	|    474	|
 |admin.css    	|       	| 30.645	|       	|  7.024	|  6.117	|

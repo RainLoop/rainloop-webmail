@@ -1,3 +1,58 @@
+## 2.30.0 – 2023-12-04
+
+### Added
+- SnappyMail\SensitiveString class to secure passwords
+- Allow to disable all IMAP features through Admin -> Domain
+- Setting to open mails in a tab or new window
+  [#951](https://github.com/the-djmaze/snappymail/issues/951)
+- Fully support IMAP PREVIEW
+  [#1338](https://github.com/the-djmaze/snappymail/issues/1338)
+- Disable "Mark message as read after", offer manual toggle
+  [#1289](https://github.com/the-djmaze/snappymail/issues/1289)
+- A "Move to" button inside message view as an icon/button and in the drop down menu.
+  [#1295](https://github.com/the-djmaze/snappymail/issues/1295)
+- Support for IMAP WITHIN
+- Support \noinferiors to disallow creating subfolders
+- A test due to Failed loading libs.min.js
+  [#358](https://github.com/the-djmaze/snappymail/issues/358),
+  [#862](https://github.com/the-djmaze/snappymail/issues/862),
+  [#890](https://github.com/the-djmaze/snappymail/issues/890),
+  [#895](https://github.com/the-djmaze/snappymail/issues/895),
+  [#1238](https://github.com/the-djmaze/snappymail/issues/1238),
+  [#1320](https://github.com/the-djmaze/snappymail/issues/1320)
+
+### Changed
+- Split PHP 8 polyfills from include.php
+- Disable snappymail/v/0.0.0/static/.htaccess for now as many servers have issues with it
+- Merged all Domain `disable_*` settings into `disabled_capabilities:[]`
+- Prioritize LIST-EXTENDED over LSUB (LSUB deprecated in IMAP4rev2)
+- Removed unused ImapClient::IsSupported()
+- Removed obsolete `$_ENV['SNAPPYMAIL_NEXTCLOUD']`
+- Removed unused Plugin->replaceTemplate()
+- Removed openDropdownTrigger
+
+### Fixed
+- Move to button does not work
+  [#1328](https://github.com/the-djmaze/snappymail/issues/1328)
+- Mark passwords as sensitive information
+  [#1343](https://github.com/the-djmaze/snappymail/issues/1343)
+- Account sSmtpPassword wrong value
+- SCRAM sign-in failed
+  [#1245](https://github.com/the-djmaze/snappymail/issues/1245)
+- Squire generates to many `<div><br></div>`
+  [#1339](https://github.com/the-djmaze/snappymail/issues/1339)
+- Creation of dynamic property SnappyMail\Stream\ZipEntry::$compression is deprecated
+- `json.after-*` hooks didn't send $aResponse as recursive array
+- Sieve: Move to folder with trailing space does not work
+  [#1329](https://github.com/the-djmaze/snappymail/issues/1329)
+- Squire: cantFocusEmptyTextNodes var is always undefined
+  [#1337](https://github.com/the-djmaze/snappymail/issues/1337)
+- Squire: Remove redundant <span> after replacing styles
+- Squire: Handle empty nodes in moveRangeBoundariesDownTree
+- Theme "Nextcloud V25+" can't be translated
+  [#1331](https://github.com/the-djmaze/snappymail/issues/1331)
+
+
 ## 2.29.4 – 2023-11-21
 
 ### Fixed
