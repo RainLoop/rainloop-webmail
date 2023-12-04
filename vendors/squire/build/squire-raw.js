@@ -673,7 +673,7 @@ const
 	*/
 	cleanTree = (node, preserveWS) => {
 		let children = node.childNodes,
-			nonInlineParent, i, l, child, nodeName, childLength;
+			nonInlineParent, i = children.length, child, nodeName, childLength;
 //			startsWithWS, endsWithWS, data, sibling;
 
 		nonInlineParent = node;
@@ -682,7 +682,7 @@ const
 		}
 //		let walker = createTreeWalker(nonInlineParent, SHOW_ELEMENT_OR_TEXT);
 
-		for (i = 0, l = children.length; i < l; ++i) {
+		while (i--) {
 			child = children[i];
 			nodeName = child.nodeName;
 			if (isElement(child)) {
@@ -691,12 +691,9 @@ const
 					child = stylesRewriters[nodeName](child);
 				} else if (blacklist.has(nodeName)) {
 					child.remove();
-					--i;
-					--l;
 					continue;
 				} else if (!allowedBlock.test(nodeName) && !isInline(child)) {
-					--i;
-					l += childLength - 1;
+					i += childLength;
 					child.replaceWith(empty(child));
 					continue;
 				}
@@ -747,8 +744,6 @@ const
 					}
 				}
 				child.remove();
-				--i;
-				--l;
 */
 			}
 		}
