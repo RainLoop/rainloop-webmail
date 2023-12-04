@@ -20,7 +20,7 @@ use MailSo\Net\Enumerations\ConnectionSecurityType;
 class ImapClient extends \MailSo\Net\NetClient
 {
 	use Traits\ResponseParser;
-//	use Commands\ACL;
+	use Commands\ACL;
 	use Commands\Folders;
 	use Commands\Messages;
 	use Commands\Metadata;
