@@ -109,7 +109,7 @@ class UnreadMailWidget implements IAPIWidget, IIconWidget/*, IOptionWidget*/
 
 			$oMailClient = $oActions->MailClient();
 			if (!$oMailClient->IsLoggined()) {
-				$oAccount->ImapConnectAndLoginHelper($oActions->Plugins(), $oMailClient->ImapClient(), $oConfig);
+				$oAccount->ImapConnectAndLogin($oActions->Plugins(), $oMailClient->ImapClient(), $oConfig);
 			}
 
 			// instanceof \MailSo\Mail\MessageCollection
