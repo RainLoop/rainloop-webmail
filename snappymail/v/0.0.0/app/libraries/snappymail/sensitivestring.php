@@ -2,23 +2,10 @@
 
 namespace SnappyMail;
 
-function xorIt(
-	#[\SensitiveParameter]
-	string $value
-) : string
-{
-	$key = APP_SALT;
-	$kl = \strlen($key);
-	$i = \strlen($value);
-	while ($i--) {
-		$value[$i] = $value[$i] ^ $key[$i % $kl];
-	}
-	return $value;
-}
-
 class SensitiveString /* extends SensitiveParameterValue | SensitiveParameter */ implements \Stringable
 {
 	private string $value, $nonce;
+	private static ?string $key = null;
 
 	public function __construct(
 		#[\SensitiveParameter]
@@ -31,9 +18,9 @@ class SensitiveString /* extends SensitiveParameterValue | SensitiveParameter */
 	public function getValue(): string
 	{
 		if (\is_callable('sodium_crypto_secretbox')) {
-			return \sodium_crypto_secretbox_open($this->value, $this->nonce, APP_SALT);
+			return \sodium_crypto_secretbox_open($this->value, $this->nonce, static::$key);
 		}
-		return xorIt($this->value);
+		return static::xorIt($this->value);
 	}
 
 	public function setValue(
@@ -43,11 +30,29 @@ class SensitiveString /* extends SensitiveParameterValue | SensitiveParameter */
 	{
 		if (\is_callable('sodium_crypto_secretbox')) {
 			$this->nonce = \random_bytes(\SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
-//			$this->key = \sodium_crypto_secretbox_keygen();
-			$this->value = \sodium_crypto_secretbox($value, $this->nonce, APP_SALT);
+			if (!static::$key) {
+				static::$key = \sodium_crypto_secretbox_keygen();
+			}
+			$this->value = \sodium_crypto_secretbox($value, $this->nonce, static::$key);
 		} else {
-			$this->value = xorIt($value);
+			$this->value = static::xorIt($value);
 		}
+	}
+
+	private static function xorIt(
+		#[\SensitiveParameter]
+		string $value
+	) : string
+	{
+		if (!static::$key) {
+			static::$key = \random_bytes(32);
+		}
+		$kl = \strlen(static::$key);
+		$i = \strlen($value);
+		while ($i--) {
+			$value[$i] = $value[$i] ^ static::$key[$i % $kl];
+		}
+		return $value;
 	}
 
 	public function __toString(): string
@@ -62,11 +67,11 @@ class SensitiveString /* extends SensitiveParameterValue | SensitiveParameter */
 
 	public function __serialize(): array
 	{
-		throw new \Exception("Serialization of 'SensitiveString' is not allowed");
+		throw new \Exception("Serialization of 'SnappyMail\\SensitiveString' is not allowed");
 	}
 
 	public function __unserialize(array $data): void
 	{
-		throw new \Exception("Unserialization of 'SensitiveString' is not allowed");
+		throw new \Exception("Unserialization of 'SnappyMail\\SensitiveString' is not allowed");
 	}
 }
