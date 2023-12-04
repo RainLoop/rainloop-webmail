@@ -22,7 +22,7 @@ const
 	ZWS = '\u200B',
 	ua = navigator.userAgent,
 	isMac = /Mac OS X/.test(ua),
-	isIOS = /iP(?:ad|hone|od)/.test(ua) || (isMac && !!navigator.maxTouchPoints),
+	isIOS = /iP(?:ad|hone)/.test(ua) || (isMac && !!navigator.maxTouchPoints),
 	isWebKit = /WebKit\//.test(ua),
 	ctrlKey = isMac ? 'meta-' : 'ctrl-',
 	cantFocusEmptyTextNodes = isWebKit,
