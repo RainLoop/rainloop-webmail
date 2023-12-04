@@ -1420,10 +1420,7 @@ const
 			this._ensureBottomLine();
 			this.setSelection(range);
 			this._updatePath(range, true);
-		} else if (range.collapsed
-			&& range.startContainer === root
-			&& root.children.length > 0) {
-
+		} else if (range.collapsed && range.startContainer === root && root.children.length > 0) {
 			// Under certain conditions, cursor/range can be positioned directly
 			// under this._root (not wrapped) and when this happens, an inline(TEXT)
 			// element is attached directly to this._root. There might be other
@@ -1466,14 +1463,17 @@ const
 			let restoreAndDoEnter = () => {
 				self.removeEventListener('keyup', restoreAndDoEnter);
 				self._setHTML(html);
-				range = self._getRangeAndRemoveBookmark();
 				// Ignore the shift key on iOS, as this is for auto-capitalisation.
-				handleEnter(self, false, range);
+				handleEnter(self, false, self._getRangeAndRemoveBookmark());
 			};
 			self.addEventListener('keyup', restoreAndDoEnter);
 		} : (self, event, range) => {
-			event.preventDefault();
-			handleEnter(self, event.shiftKey, range);
+			self._recordUndoState(range, false);
+			self._config.addLinks && addLinks(range.startContainer, self._root);
+			self._removeZWS();
+			self._getRangeAndRemoveBookmark(range);
+//			event.preventDefault();
+//			handleEnter(self, event.shiftKey, range);
 		},
 
 		'shift-enter': (self, event, range) => self._keyHandlers.enter(self, event, range),
@@ -1647,7 +1647,7 @@ const
 		space: (self, _, range) => {
 			let root = self._root;
 			self._recordUndoState(range, false);
-			self._config.addLinks && addLinks(range.startContainer, root, self);
+			self._config.addLinks && addLinks(range.startContainer, root);
 			self._getRangeAndRemoveBookmark(range);
 	/*
 			// If the cursor is at the end of a link (<a>foo|</a>) then move it
@@ -1850,7 +1850,7 @@ const
 		// Remove any zws so we don't think there's content in an empty
 		// block.
 		self._recordUndoState(range, false);
-		self._config.addLinks && addLinks(range.startContainer, root, self);
+		self._config.addLinks && addLinks(range.startContainer, root);
 		self._removeZWS();
 		self._getRangeAndRemoveBookmark(range);
 
@@ -1934,8 +1934,7 @@ const
 		}
 
 		// Otherwise, split at cursor point.
-		nodeAfterSplit = splitBlock(self, block,
-			range.startContainer, range.startOffset);
+		nodeAfterSplit = splitBlock(self, block, range.startContainer, range.startOffset);
 
 		// Clean up any empty inlines if we hit enter at the beginning of the block
 		removeZWS(block);
@@ -2546,16 +2545,10 @@ class Squire
 				// selection, you can end up in a state where you type but the input
 				// doesn't get directed into the contenteditable area but is instead
 				// lost in a black hole. Very strange.
-				if (isIOS) {
-					win.focus();
-				}
+				isIOS && win.focus();
 				let sel = win.getSelection();
-				sel.setBaseAndExtent(
-					range.startContainer,
-					range.startOffset,
-					range.endContainer,
-					range.endOffset,
-				);
+				sel.empty();
+				sel.addRange(range);
 			} else {
 				this._restoreSelection = true;
 			}
@@ -2607,11 +2600,11 @@ class Squire
 
 	// WebKit bug: https://bugs.webkit.org/show_bug.cgi?id=15256
 
-	_addZWS () {
+	_addZWS() {
 		this._hasZWS = isWebKit;
 		return doc.createTextNode(isWebKit ? ZWS : '');
 	}
-	_removeZWS () {
+	_removeZWS() {
 		if (this._hasZWS) {
 			removeZWS(this._root);
 			this._hasZWS = false;
@@ -2620,7 +2613,7 @@ class Squire
 
 	// --- Path change events ---
 
-	_updatePath (range, force) {
+	_updatePath(range, force) {
 		if (range) {
 			let anchor = range.startContainer,
 				focus = range.endContainer,
@@ -2655,7 +2648,7 @@ class Squire
 
 	// --- Bookmarking ---
 
-	_saveRangeToBookmark (range) {
+	_saveRangeToBookmark(range) {
 		let [startNode, endNode] = createBookmarkNodes(this),
 			temp;
 
@@ -2676,7 +2669,7 @@ class Squire
 		range.setEndBefore(endNode);
 	}
 
-	_getRangeAndRemoveBookmark (range) {
+	_getRangeAndRemoveBookmark(range) {
 		let root = this._root,
 			start = root.querySelector('#' + startSelectionId),
 			end = root.querySelector('#' + endSelectionId);
@@ -3300,8 +3293,7 @@ class Squire
 		this.editStack.clear();
 
 		// Record undo state
-		let range = this._getRangeAndRemoveBookmark() ||
-			createRange(root.firstChild, 0);
+		let range = this._getRangeAndRemoveBookmark() || createRange(root.firstChild, 0);
 		this.saveUndoState(range);
 		// IE will also set focus when selecting text so don't use
 		// setSelection. Instead, just store it in lastSelection, so if
@@ -3387,7 +3379,7 @@ class Squire
 		try {
 			let root = this._root, node = frag;
 
-			addLinks(frag, frag, this);
+			addLinks(frag, frag);
 			cleanTree(frag);
 			cleanupBRs(frag, root, false);
 			removeEmptyInlines(frag);
