@@ -822,6 +822,9 @@ class Actions
 				foreach (\glob(APP_VERSION_ROOT_PATH.'static/sounds/*.mp3') as $file) {
 					$aResult['newMailSounds'][] = \basename($file, '.mp3');
 				}
+//				foreach (\glob(APP_INDEX_ROOT_PATH.'notifications/*.mp3') as $file) {
+//					$aResult['newMailSounds'][] = 'custom@'.\basename($file, '.mp3');
+//				}
 			}
 			else {
 				if ($oConfig->Get('login', 'allow_languages_on_login', true) && $oConfig->Get('login', 'determine_user_language', true)) {

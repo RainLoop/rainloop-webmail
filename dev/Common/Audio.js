@@ -116,6 +116,7 @@ export const SMAudio = new class {
 			if ('running' == audioCtx.state && (this.supportedMp3 || this.supportedOgg)) {
 				notificator = notificator || createNewObject();
 				if (notificator) {
+//					SettingsGet('NotificationSound').startsWith('custom@')
 					notificator.src = Links.staticLink('sounds/'
 						+ SettingsGet('NotificationSound')
 						+ (this.supportedMp3 ? '.mp3' : '.ogg'));
