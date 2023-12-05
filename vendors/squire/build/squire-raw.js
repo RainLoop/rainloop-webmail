@@ -2034,14 +2034,14 @@ class EditStack extends Array
 			this[undoIndex] = html;
 			this.index = undoIndex;
 			this.inUndoState = true;
+		} else {
+			console.error('EditStack in inUndoState');
 		}
 	}
 
 	saveUndoState(range) {
 		let squire = this.squire;
-		if (range === undefined) {
-			range = squire.getSelection();
-		}
+		range = range || squire.getSelection();
 		this.recordUndoState(range, true);
 		squire._getRangeAndRemoveBookmark(range);
 	}
@@ -2617,7 +2617,6 @@ class Squire
 		const range = this._getRangeAndRemoveBookmark() || createRange(root.firstElementChild || root, 0);
 		this.saveUndoState(range);
 		this.setRange(range);
-
 		return this;
 	}
 
@@ -3148,6 +3147,7 @@ class Squire
 		let node;
 		let nodeAfterSplit;
 
+		// TODO: why was _docWasChanged() not triggered?
 		this.editStack.inUndoState && this._docWasChanged();
 		this._recordUndoState(range);
 //		self._config.addLinks && addLinks(range.startContainer, root);

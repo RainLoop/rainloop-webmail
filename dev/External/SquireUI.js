@@ -619,6 +619,7 @@ class SquireUI
 					// Move cursor above signature
 					div.before(br);
 					div.before(br.cloneNode());
+//					squire._docWasChanged();
 				}
 				this._prev_txt_sig = signature;
 			} catch (e) {
