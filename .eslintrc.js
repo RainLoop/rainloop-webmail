@@ -39,6 +39,7 @@ module.exports = {
 	},
 	// http://eslint.org/docs/rules/
 	rules: {
+		'no-cond-assign': 0,
 		// plugins
 		'no-mixed-spaces-and-tabs': 'off',
 		'max-len': [
