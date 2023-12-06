@@ -311,11 +311,6 @@ const
 				}
 			} else if (isElement(node) && !node.querySelector("BR")) {
 				fixer = createElement("BR");
-				let parent = node;
-				let child;
-				while ((child = parent.lastElementChild) && !isInline(child)) {
-					parent = child;
-				}
 			}
 			if (fixer) {
 				try {
