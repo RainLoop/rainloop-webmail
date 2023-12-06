@@ -500,10 +500,10 @@ export class ComposePopupView extends AbstractViewPopup {
 										'forward': '$forwarded'
 									}[this.aDraftInfo[0]];
 									if (flag) {
-										const aFlags = MessageUserStore.message().flags();
+										const aFlags = oLastMessage.flags();
 										if (aFlags.indexOf(flag) === -1) {
 											aFlags.push(flag);
-											MessageUserStore.message().flags(aFlags);
+											oLastMessage.flags(aFlags);
 										}
 									}
 								}
