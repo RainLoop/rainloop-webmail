@@ -621,7 +621,6 @@ class Actions
 			'allowLanguagesOnLogin' => (bool) $oConfig->Get('login', 'allow_languages_on_login', true)
 		);
 
-		$sLanguage = $oConfig->Get('webmail', 'language', 'en');
 		$UserLanguageRaw = $this->detectUserLanguage($bAdmin);
 
 		if ($bAdmin) {
@@ -746,10 +745,6 @@ class Actions
 					}
 				}
 
-				if ($oConfig->Get('login', 'determine_user_language', true)) {
-					$sLanguage = $this->ValidateLanguage($UserLanguageRaw, $sLanguage, false);
-				}
-
 				// MainAccount or AdditionalAccount
 				$aResult = \array_merge($aResult, $this->getAccountData($oAccount));
 
@@ -761,9 +756,6 @@ class Actions
 						$aResult[\lcfirst($key)] = $value;
 					}
 */
-					if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)) {
-						$sLanguage = (string) $oSettings->GetConf('language', $sLanguage);
-					}
 					$aResult['hourCycle'] = $oSettings->GetConf('hourCycle', '');
 
 					if (!$oSettings->GetConf('MessagesPerPage')) {
@@ -827,10 +819,6 @@ class Actions
 //				}
 			}
 			else {
-				if ($oConfig->Get('login', 'allow_languages_on_login', true) && $oConfig->Get('login', 'determine_user_language', true)) {
-					$sLanguage = $this->ValidateLanguage($UserLanguageRaw, $sLanguage, false);
-				}
-
 				if (SNAPPYMAIL_DEV) {
 					$aResult['DevEmail'] = $oConfig->Get('labs', 'dev_email', '');
 					$aResult['DevPassword'] = $oConfig->Get('labs', 'dev_password', '');
@@ -864,7 +852,7 @@ class Actions
 
 		$aResult['Theme'] = $this->GetTheme($bAdmin);
 
-		$aResult['language'] = $this->ValidateLanguage($sLanguage, '', false);
+		$aResult['language'] = $this->GetLanguage();
 		$aResult['userLanguage'] = $this->ValidateLanguage($UserLanguageRaw, '', false, true);
 
 		$aResult['PluginsLink'] = $this->oPlugins->HaveJs($bAdmin)

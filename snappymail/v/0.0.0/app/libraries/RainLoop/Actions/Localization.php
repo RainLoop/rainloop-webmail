@@ -12,6 +12,9 @@ trait Localization
 		} else {
 			$sLanguage = $oConfig->Get('webmail', 'language', 'en');
 			if ($oAccount = $this->getAccountFromToken(false)) {
+				if ($oConfig->Get('login', 'determine_user_language', true)) {
+					$sLanguage = $this->ValidateLanguage($this->detectUserLanguage($bAdmin), $sLanguage, false);
+				}
 				if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)
 				 && ($oSettings = $this->SettingsProvider()->Load($oAccount))) {
 					$sLanguage = $oSettings->GetConf('language', $sLanguage);
@@ -66,26 +69,20 @@ trait Localization
 		return \in_array($sResult, $aLang) ? $sResult : 'en';
 	}
 
-	private function getUserLanguagesFromHeader(): array
-	{
-		$aResult = $aList = array();
-		$sAcceptLang = \strtolower(\MailSo\Base\Http::GetServer('HTTP_ACCEPT_LANGUAGE', 'en'));
-		if (!empty($sAcceptLang) && \preg_match_all('/([a-z]{1,8}(?:-[a-z]{1,8})?)(?:;q=([0-9.]+))?/', $sAcceptLang, $aList)) {
-			$aResult = \array_combine($aList[1], $aList[2]);
-			foreach ($aResult as $n => $v) {
-				$aResult[$n] = $v ? $v : 1;
-			}
-
-			\arsort($aResult, SORT_NUMERIC);
-		}
-
-		return $aResult;
-	}
-
 	public function detectUserLanguage(bool $bAdmin): string
 	{
 		$sResult = '';
-		$aLangs = $this->getUserLanguagesFromHeader();
+		$aLangs = $aList = array();
+
+		$sAcceptLang = \strtolower(\MailSo\Base\Http::GetServer('HTTP_ACCEPT_LANGUAGE', 'en'));
+		if (!empty($sAcceptLang) && \preg_match_all('/([a-z]{1,8}(?:-[a-z]{1,8})?)(?:;q=([0-9.]+))?/', $sAcceptLang, $aList)) {
+			$aLangs = \array_combine($aList[1], $aList[2]);
+			foreach ($aLangs as $n => $v) {
+				$aLangs[$n] = $v ? $v : 1;
+			}
+
+			\arsort($aLangs, SORT_NUMERIC);
+		}
 
 		foreach (\array_keys($aLangs) as $sLang) {
 			$sLang = $this->ValidateLanguage($sLang, '', $bAdmin, true);
