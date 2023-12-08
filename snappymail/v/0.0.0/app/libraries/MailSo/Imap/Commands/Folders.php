@@ -565,7 +565,7 @@ trait Folders
 		if ($bMetadata && !$aMetadata /*&& 50 < $oFolderCollection->count()*/) {
 			foreach ($oFolderCollection as $oFolder) {
 //				if (2 > \substr_count($oFolder->FullName, $oFolder->Delimiter()))
-				try {
+				if ($oFolder->Selectable()) try {
 					$oFolder->SetAllMetadata(
 						$this->getMetadata($oFolder->FullName, ['/shared', '/private'], ['DEPTH'=>'infinity'])
 					);
@@ -577,7 +577,11 @@ trait Folders
 
 		if ($this->hasCapability('ACL') || $this->CapabilityValue('RIGHTS')) {
 			foreach ($oFolderCollection as $oFolder) {
-				$oFolder->myRights = $this->FolderMyRights($oFolder->FullName);
+				if ($oFolder->Selectable()) try {
+					$oFolder->myRights = $this->FolderMyRights($oFolder->FullName);
+				} catch (\Throwable $oException) {
+					// Ignore error
+				}
 			}
 		}
 

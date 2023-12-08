@@ -72,7 +72,7 @@ trait ACL
 	{
 //		if ($this->ACLAllow($sFolderName, 'SETACL')) {
 		$this->SendRequestGetResponse('SETACL', array(
-			$this->EscapeString($sFolderName),
+			$this->EscapeFolderName($sFolderName),
 			$this->EscapeString($sIdentifier),
 			$this->EscapeString($sAccessRights)
 		));
@@ -82,7 +82,7 @@ trait ACL
 	{
 //		if ($this->ACLAllow($sFolderName, 'DELETEACL')) {
 		$this->SendRequestGetResponse('DELETEACL', array(
-			$this->EscapeString($sFolderName),
+			$this->EscapeFolderName($sFolderName),
 			$this->EscapeString($sIdentifier)
 		));
 	}
@@ -90,7 +90,7 @@ trait ACL
 	public function FolderGetACL(string $sFolderName) : array
 	{
 //		if ($this->ACLAllow($sFolderName, 'GETACL')) {
-		$oResponses = $this->SendRequestGetResponse('GETACL', array($this->EscapeString($sFolderName)));
+		$oResponses = $this->SendRequestGetResponse('GETACL', array($this->EscapeFolderName($sFolderName)));
 		$aResult = array();
 		foreach ($oResponses as $oResponse) {
 			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
@@ -109,7 +109,7 @@ trait ACL
 	{
 //		if ($this->ACLAllow($sFolderName, 'LISTRIGHTS')) {
 		$oResponses = $this->SendRequestGetResponse('LISTRIGHTS', array(
-			$this->EscapeString($sFolderName),
+			$this->EscapeFolderName($sFolderName),
 			$this->EscapeString($sIdentifier)
 		));
 		foreach ($oResponses as $oResponse) {
@@ -130,7 +130,7 @@ trait ACL
 	{
 //		if ($this->ACLAllow($sFolderName, 'MYRIGHTS')) {
 //		if ($this->hasCapability('ACL')) {
-		$oResponses = $this->SendRequestGetResponse('MYRIGHTS', array($this->EscapeString($sFolderName)));
+		$oResponses = $this->SendRequestGetResponse('MYRIGHTS', array($this->EscapeFolderName($sFolderName)));
 		foreach ($oResponses as $oResponse) {
 			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
 				&& isset($oResponse->ResponseList[3])
