@@ -12,7 +12,7 @@
 		"CONTACTS": "Contacts",
 		"DELETE": "Supprimer",
 		"DONE": "Fait",
-		"EMAIL": "Email",
+		"EMAIL": "Courriel",
 		"FROM": "De",
 		"LOADING": "Chargement",
 		"LOGOUT": "Déconnexion",
@@ -36,7 +36,7 @@
 		"SERVER_MESSAGE": "Message du serveur",
 		"YES": "Oui",
 		"NO": "Non",
-		"INACTIVE": "Inactive",
+		"INACTIVE": "Inactif",
 		"DEFAULT": "défaut",
 		"HELP": "Aide",
 		"TEXT": "Texte",
@@ -67,9 +67,9 @@
 		"SUBFOLDERS": "Sous-dossiers",
 		"SUBFOLDERS_NONE": "Aucun",
 		"SUBFOLDERS_SUBTREE": "Tous",
-		"SUBFOLDERS_SUBTREE_ONE": "One level",
+		"SUBFOLDERS_SUBTREE_ONE": "Un niveau",
 		"REPLIED": "Répondu",
-		"KEYWORD": "Tag"
+		"KEYWORD": "Étiquette"
 	},
 	"FOLDER_LIST": {
 		"BUTTON_COMPOSE": "Nouveau message",
@@ -166,7 +166,7 @@
 	},
 	"READ_RECEIPT": {
 		"SUBJECT": "Accusé de réception (affiché) - %SUBJECT%",
-		"BODY": "Il s'agit d'un accusé de réception pour le courrier que vous avez envoyé à %READ-RECEIPT%.\n\nNote: Cet accusé de réception reconnaît que le message a été affiché sur l'ordinateur du destinataire.\nIl n'y a aucune garantie que le destinataire ait lu ou compris le contenu du message.\n"
+		"BODY": "Il s'agit d'un accusé de réception pour le courrier que vous avez envoyé à %READ-RECEIPT%.\n\nNote: Cet accusé de réception reconnaît que le message a été affiché sur l'ordinateur du destinataire.\nIl n'y a aucune garantie que le destinataire ait lu ou compris le contenu du message."
 	},
 	"SUGGESTIONS": {
 		"SEARCHING_DESC": "Recherche..."
@@ -207,7 +207,7 @@
 		"ADD_MENU_URL": "URL",
 		"ADD_MENU_ADDRESS": "Adresse",
 		"ADD_MENU_BIRTHDAY": "Anniversaire",
-		"ADD_MENU_TAGS": "Tags",
+		"ADD_MENU_TAGS": "Étiquettes",
 		"BUTTON_SHARE_ALL": "Tout le monde",
 		"BUTTON_SYNC": "Synchronisation (CardDAV)"
 	},
@@ -340,11 +340,11 @@
 		"TITLE_SYSTEM_FOLDERS": "Sélectionner les dossiers systèmes",
 		"SELECT_CHOOSE_ONE": "Faites un choix",
 		"SELECT_UNUSE_NAME": "Ne pas utiliser",
-		"NOTIFICATION_SENT": "Vous n'avez pas sélectionné de dossier \"Envoyés\" où copier les messages après envoi.\nSi vous ne souhaitez pas enregistrer une copie des messages envoyés, sélectionnez l'option \"Ne pas utiliser\".\n",
+		"NOTIFICATION_SENT": "Vous n'avez pas sélectionné de dossier \"Envoyés\" où copier les messages après envoi.\nSi vous ne souhaitez pas enregistrer une copie des messages envoyés, sélectionnez l'option \"Ne pas utiliser\".",
 		"NOTIFICATION_DRAFTS": "Vous n'avez pas sélectionné de dossier \"Brouillons\" où enregistrer les messages en cours de rédaction.",
-		"NOTIFICATION_SPAM": "Vous n'avez pas sélectionné de dossier \"Spam\" où placer les indésirables.\nSi vous ne souhaitez pas supprimer définitivement les messages, sélectionnez l'option \"Ne pas utiliser\".\n",
-		"NOTIFICATION_TRASH": "Vous n'avez pas sélectionné de dossier \"Corbeille\" où placer les messages supprimés.\nSi vous ne souhaitez pas supprimer définitivement les messages, sélectionnez l'option \"Ne pas utiliser\".\n",
-		"NOTIFICATION_ARCHIVE": "Vous n'avez pas sélectionné de dossier \"Archive\" où placer les messages archivés.\n"
+		"NOTIFICATION_SPAM": "Vous n'avez pas sélectionné de dossier \"Spam\" où placer les indésirables.\nSi vous ne souhaitez pas supprimer définitivement les messages, sélectionnez l'option \"Ne pas utiliser\".",
+		"NOTIFICATION_TRASH": "Vous n'avez pas sélectionné de dossier \"Corbeille\" où placer les messages supprimés.\nSi vous ne souhaitez pas supprimer définitivement les messages, sélectionnez l'option \"Ne pas utiliser\".",
+		"NOTIFICATION_ARCHIVE": "Vous n'avez pas sélectionné de dossier \"Archive\" où placer les messages archivés."
 	},
 	"TITLES": {
 		"MAILBOX": "Boîte mail",
@@ -435,7 +435,7 @@
 		"REMOVE_COLORS": "Supprimer les couleurs d'arrière-plan et de texte du message",
 		"ALLOW_STYLES": "Autoriser <style> CSS",
 		"MESSAGE_PER_PAGE": "Messages par page",
-		"CHECK_MAIL_INTERVAL": "Vérifier le messagerie à l'intervalle",
+		"CHECK_MAIL_INTERVAL": "Intervalle de relevé des messages",
 		"MARK_MESSAGE_READ_AFTER": "Marquer le message comme lu après",
 		"MSG_DEFAULT_ACTION": "Action par défaut",
 		"SECONDS": "secondes",
@@ -445,7 +445,7 @@
 		"CHROME_NOTIFICATION_DESC": "Afficher un pop-up de notification pour les nouveaux messages",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Bloqué par le navigateur)",
 		"COLLAPSE_BLOCKQUOTES": "Réduire le texte cité",
-		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
+		"MAX_QUOTE_LEVEL": "Niveau maximum de texte cité visible",
 		"LIST_INLINE_ATTACHMENTS": "Afficher les pièces jointes dans la liste",
 		"LIST_SIMPLE_ATTACHMENTS": "Liste simple des pièces jointes",
 		"LIST_MESSAGES_GROUPED": "Lister les messages groupés (lors du tri par Date ou Destinataire)",

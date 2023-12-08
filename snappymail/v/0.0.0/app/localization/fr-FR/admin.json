@@ -44,7 +44,7 @@
 		"LABEL_ALLOW_IDENTITIES": "Autoriser les identités multiples",
 		"ALERT_DATA_ACCESS": "Le dossier de données est accessible. Veuillez configurer votre serveur web afin qu'il soit masqué à tout accès externe. Plus d'informations ici :",
 		"ALERT_WARNING": "ATTENTION !",
-		"HTML_ALERT_WEAK_PASSWORD": "Vous utilisez le mot de passe administrateur par défaut.\n<br>\nPour des raisons de sécurité, veuillez\n<strong><a href=\"#\/security\">changer le mot de passe <\/a><\/strong>\ndès maintenant.\n"
+		"HTML_ALERT_WEAK_PASSWORD": "Vous utilisez le mot de passe administrateur par défaut.\n<br>\nPour des raisons de sécurité, veuillez\n<strong><a href=\"#\/security\">changer le mot de passe <\/a><\/strong>\ndès maintenant."
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Écran de connexion",
@@ -69,16 +69,16 @@
 		"LABEL_STORAGE_USER": "Utilisateur",
 		"LABEL_STORAGE_PASSWORD": "Mot de passe",
 		"ALERT_NOTICE": "Note !",
-		"SUGGESTIONS_LIMIT": "Suggestions limit",
+		"SUGGESTIONS_LIMIT": "Limite de suggestions",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "N'utilisez pas ce type de base de données avec un grand nombre d'utilisateurs actifs.",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "Votre système ne supporte pas les contacts.\n<br>\nVous devez installer ou autoriser l'extension <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> sur votre serveur.\n"
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Votre système ne supporte pas les contacts.\n<br>\nVous devez installer ou autoriser l'extension <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> sur votre serveur."
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "Domaines",
 		"BUTTON_ADD_DOMAIN": "Ajouter un domaine",
 		"BUTTON_ADD_ALIAS": "Ajouter un alias",
 		"DELETE_ARE_YOU_SURE": "Êtes-vous sûr ?",
-		"HTML_DOMAINS_HELPER": "Liste des domaines autorisés.\n<br>\nCliquez sur le nom pour configurer le domaine.\n"
+		"HTML_DOMAINS_HELPER": "Liste des domaines autorisés.\n<br>\nCliquez sur le nom pour configurer le domaine."
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Sécurité",
@@ -101,14 +101,14 @@
 	},
 	"TAB_ABOUT": {
 		"LEGEND_ABOUT": "À propos",
-		"LABEL_TAG_HINT": "Un client webmail simple, moderne et rapide ",
+		"LABEL_TAG_HINT": "Un client webmail simple, moderne et rapide",
 		"LABEL_ALL_RIGHTS_RESERVED": "Tous droits réservés.",
 		"HINT_READ_CHANGE_LOG": "Veuillez lire le journal des modifications avant de faire la mise à jour.",
 		"HINT_IS_UP_TO_DATE": "SnappyMail est à jour.",
 		"HTML_NEW_VERSION": "Une nouvelle version <b>%VERSION%<\/b> est disponible.",
 		"LABEL_UPDATING": "Mise à jour",
 		"LABEL_CHECKING": "Vérification des mises à jour",
-		"BUTTON_RELEASES": "Releases"
+		"BUTTON_RELEASES": "Versions"
 	},
 	"POPUPS_DOMAIN_ALIAS": {
 		"TITLE_ADD_DOMAIN_ALIAS": "Ajouter un alias",
@@ -127,7 +127,7 @@
 		"TIMEOUT": "Timeout",
 		"DISABLE_CAPABILITIES": "Désactiver les fonctionnalités",
 		"LIMITS": "Limites",
-		"FOLDERS": "Folders",
+		"FOLDERS": "Dossiers",
 		"MESSAGES": "Messages",
 		"LABEL_WHITE_LIST": "Liste Blanche",
 		"SECURE_OPTION_NONE": "Aucun",
@@ -143,7 +143,7 @@
 		"BUTTON_BACK": "Retour",
 		"BUTTON_UPDATE": "Modifier",
 		"NEW_DOMAIN_DESC": "Cette configuration de domaine vous permettra de travailler <br> avec <i>%NAME%<\/i> dans les adresses électroniques.",
-		"WHITE_LIST_ALERT": "Liste des utilisateurs du domaine auxquels le webmail est autorisé à accéder.\nUtilisez un espace comme séparateur.\n"
+		"WHITE_LIST_ALERT": "Liste des utilisateurs du domaine auxquels le webmail est autorisé à accéder.\nUtilisez un espace comme séparateur."
 	},
 	"POPUPS_PLUGIN": {
 		"TITLE_PLUGIN": "Extension",
