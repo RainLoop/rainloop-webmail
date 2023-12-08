@@ -2142,157 +2142,145 @@ class Squire
 {
 	constructor(root, config) {
 		this._root = root;
-
-		this._events = {};
-
+		this.setConfig(config);
 		this._isFocused = false;
 		this._lastRange = null;
-
+		this._restoreSelection = false;
 		this._mayHaveZWS = false;
-
-		this._path = '';
+		this._path = "";
 		this._pathRange = null;
-
-		doc.addEventListener('selectionchange', () => this._isFocused && this._updatePath(this.getSelection()));
-
-		this.editStack = new EditStack(this);
+		this._events = {}; // new Map();
 		this._ignoreChange = false;
+		this.editStack = new EditStack(this);
+		doc.addEventListener("selectionchange", () => this._isFocused && this._updatePath(this.getSelection()));
+		this.addEventListener("blur", () => this._restoreSelection = true)
+			.addEventListener("pointerdown mousedown touchstart", () => this._restoreSelection = false)
+			.addEventListener("focus", () => this._restoreSelection && this.setSelection(this._lastRange))
+			.addEventListener("cut", onCut)
+			.addEventListener("copy", onCopy)
+			// Need to monitor for shift key like this, as event.shiftKey is not available in paste event.
+			.addEventListener("keydown keyup", event => this.isShiftDown = event.shiftKey)
+			.addEventListener("paste", onPaste)
+			// On Windows you can drag an drop text. We can"t handle this ourselves, because
+			// as far as I can see, there"s no way to get the drop insertion point. So just
+			// save an undo state and hope for the best.
+			.addEventListener("drop", event => {
+				let types = event.dataTransfer.types;
+				if (types.includes("text/plain") || types.includes("text/html")) {
+					this.saveUndoState();
+				}
+			})
+			.addEventListener("keydown", onKey)
+			.addEventListener("pointerup keyup mouseup touchend", ()=>this.getSelection());
 
-		this._mutation = new MutationObserver(()=>{
-			this._docWasChanged()
-		});
+		this._keyHandlers = Object.create(keyHandlers);
+		this._mutation = new MutationObserver(() => this._docWasChanged());
 		this._mutation.observe(root, {
 			childList: true,
 			attributes: true,
 			characterData: true,
 			subtree: true
 		});
+		root.setAttribute("contenteditable", "true");
+		this.addEventListener(
+			"beforeinput",
+			this._beforeInput
+		);
+		this.setHTML("");
 
-		// On blur, restore focus except if the user taps or clicks to focus a
-		// specific point. Can't actually use click event because focus happens
-		// before click, so use mousedown/touchstart
-		this._restoreSelection = false;
-		// https://caniuse.com/mdn-api_document_pointerup_event
-		this.addEventListener('blur', () => this._restoreSelection = true)
-			.addEventListener('pointerdown mousedown touchstart', () => this._restoreSelection = false)
-			.addEventListener('focus', () => this._restoreSelection && this.setSelection(this._lastRange))
-			.addEventListener('cut', onCut)
-			.addEventListener('copy', onCopy)
-			// Need to monitor for shift key like this, as event.shiftKey is not available in paste event.
-			.addEventListener('keydown keyup', event => this.isShiftDown = event.shiftKey)
-			.addEventListener('paste', onPaste)
-			// On Windows you can drag an drop text. We can't handle this ourselves, because
-			// as far as I can see, there's no way to get the drop insertion point. So just
-			// save an undo state and hope for the best.
-			.addEventListener('drop', event => {
-				let types = event.dataTransfer.types;
-				if (types.includes('text/plain') || types.includes('text/html')) {
-					this.saveUndoState();
+		this._beforeInputTypes = {
+//			insertFromPaste: event => {},
+//			insertReplacementText: event => {},
+			insertText: event => {
+				if (isAndroid && event.data && event.data.includes("\n")) {
+					event.preventDefault();
 				}
-			})
-			.addEventListener('keydown', onKey)
-			.addEventListener('pointerup keyup mouseup touchend', ()=>this.getSelection());
-
-		// Add key handlers
-		this._keyHandlers = Object.create(keyHandlers);
-
-		// Override default properties
-		this.setConfig(config);
-
-		root.setAttribute('contenteditable', 'true');
-
-		this.addEventListener("beforeinput", this._beforeInput);
-
-		// Need to register instance before calling setHTML, so that the fixCursor
-		// function can lookup any default block tag options set.
-		this.setHTML('');
+			},
+			// shift + enter
+			insertLineBreak: event => {
+				event.preventDefault();
+				this.splitBlock(true);
+			},
+			// enter
+			insertParagraph: event => {
+				event.preventDefault();
+				this.splitBlock(false);
+			},
+			insertOrderedList: event => {
+				event.preventDefault();
+				this.makeOrderedList();
+			},
+			insertUnoderedList: event => {
+				event.preventDefault();
+				this.makeUnorderedList();
+			},
+			historyUndo: event => {
+				event.preventDefault();
+				this.undo();
+			},
+			historyRedo: event => {
+				event.preventDefault();
+//				this.redo();
+			},
+			formatRemove: event => {
+				event.preventDefault();
+				this.setStyle(null);
+			},
+			formatSetBlockTextDirection: event => {
+				event.preventDefault();
+				let dir = event.data;
+				this.bidi(dir === "null" ? null : dir);
+			},
+			formatBackColor: event => {
+				event.preventDefault();
+				this.setStyle({backgroundColor:event.data});
+			},
+			formatFontColor: event => {
+				event.preventDefault();
+				this.setStyle({color:event.data});
+			},
+			formatFontName: event => {
+				event.preventDefault();
+				this.setStyle({fontFamily:event.data});
+			},
+/*
+//			deleteByCut: event => {
+				this.saveUndoState();
+			},
+*/
+			deleteContentBackward: event => {
+				Backspace(this, event, this.getSelection());
+			},
+			deleteContentForward: event => {
+				Delete(this, event, this.getSelection());
+			}
+		}
 	}
 
 	// https://rawgit.com/w3c/input-events/v1/index.html#interface-InputEvent-Attributes
 	_beforeInput(event) {
-		switch (event.inputType) {
-//			case "insertFromPaste":
-//			case "insertReplacementText":
-			case "insertText":
-				if (isAndroid && event.data && event.data.includes("\n")) {
-					event.preventDefault();
-				}
-				break;
-			case "insertLineBreak": // shift + enter
-				event.preventDefault();
-				this.splitBlock(true);
-				break;
-			case "insertParagraph": // enter
-				event.preventDefault();
-				this.splitBlock(false);
-				break;
-			case "insertOrderedList":
-				event.preventDefault();
-				this.makeOrderedList();
-				break;
-			case "insertUnoderedList":
-				event.preventDefault();
-				this.makeUnorderedList();
-				break;
-			case "historyUndo":
-				event.preventDefault();
-				this.undo();
-				break;
-			case "historyRedo":
-				event.preventDefault();
-//				this.redo();
-				break;
+		let type = event.inputType;
+		switch (type) {
 			case "formatBold":
-			case "formaItalic":
+			case "formatItalic":
 			case "formatUnderline":
 			case "formatStrikeThrough":
 			case "formatSuperscript":
 			case "formatSubscript":
 				event.preventDefault();
-				this[event.inputType.slice(6).toLowerCase()]();
+				this[type.slice(6).toLowerCase()]();
 				break;
 			case "formatJustifyFull":
 			case "formatJustifyCenter":
 			case "formatJustifyRight":
 			case "formatJustifyLeft": {
 				event.preventDefault();
-				let alignment = event.inputType.slice(13).toLowerCase();
+				let alignment = type.slice(13).toLowerCase();
 				this.setStyle({textAlign:alignment === "full" ? "justify" : alignment});
 				break;
 			}
-			case "formatRemove":
-				event.preventDefault();
-				this.setStyle(null);
-				break;
-			case "formatSetBlockTextDirection": {
-				event.preventDefault();
-				let dir = event.data;
-				this.bidi(dir === "null" ? null : dir);
-				break;
-			}
-			case "formatBackColor":
-				event.preventDefault();
-				this.setStyle({backgroundColor:event.data});
-				break;
-			case "formatFontColor":
-				event.preventDefault();
-				this.setStyle({color:event.data});
-				break;
-			case "formatFontName":
-				event.preventDefault();
-				this.setStyle({fontFamily:event.data});
-				break;
-/*
-//			case "deleteByCut":
-				this.saveUndoState();
-				break;
-*/
-			case "deleteContentBackward":
-				Backspace(this, event, this.getSelection());
-				break;
-			case "deleteContentForward":
-				Delete(this, event, this.getSelection());
-				break;
+			default:
+				this._beforeInputTypes[type]?.(event);
 		}
 	}
 
