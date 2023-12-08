@@ -152,13 +152,13 @@ class ChangePasswordPoppassdDriver extends \MailSo\Net\NetClient
 
 	private function validateResponse(bool $bAuthRequestValidate = false) : self
 	{
-		$this->getNextBuffer();
+		$sResponseBuffer = $this->getNextBuffer();
 
-		$bResult = \preg_match($bAuthRequestValidate ? '/^[23]\d\d/' : '/^2\d\d/', trim($this->sResponseBuffer));
+		$bResult = \preg_match($bAuthRequestValidate ? '/^[23]\d\d/' : '/^2\d\d/', \trim($sResponseBuffer));
 
 		if (!$bResult) {
 			// POP3 validation hack
-			$bResult = '+OK ' === \substr(\trim($this->sResponseBuffer), 0, 4);
+			$bResult = '+OK ' === \substr(\trim($sResponseBuffer), 0, 4);
 		}
 
 		if (!$bResult) {
