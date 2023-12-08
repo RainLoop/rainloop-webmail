@@ -32,13 +32,23 @@ trait Localization
 
 		$aHelper = array(
 			'ar' => 'ar-SA',
-			'cs' => 'cs-CZ',
-			'no' => 'nb-NO',
-			'ua' => 'uk-UA',
 			'cn' => 'zh-CN',
-			'zh' => 'zh-CN',
+			'cs' => 'cs-CZ',
+			'da' => 'da-DK',
+			'el' => 'el-GR',
+			'et' => 'et-EE',
+			'fa' => 'fa-IR',
+			'ja' => 'ja-JP',
+			'ko' => 'ko-KR',
+			'nb' => 'nb-NO',
+			'no' => 'nb-NO',
+			'sl' => 'sl-SI',
+			'sv' => 'sv-SE',
 			'tw' => 'zh-TW',
-			'fa' => 'fa-IR'
+			'ua' => 'uk-UA',
+			'uk' => 'uk-UA',
+			'vi' => 'vi-VN',
+			'zh' => 'zh-CN'
 		);
 
 		$sLanguage = isset($aHelper[$sLanguage]) ? $aHelper[$sLanguage] : \strtr($sLanguage, '_', '-');
@@ -50,11 +60,11 @@ trait Localization
 
 		$sLanguage = \preg_replace('/^([a-zA-Z]{2})$/', '\1-\1', $sLanguage);
 
-		$sLangCountry = \preg_replace_callback('/-([a-zA-Z]{2})$/', function ($aData) {
+		$sLanguage = \preg_replace_callback('/-([a-zA-Z]{2})$/', function ($aData) {
 			return \strtoupper($aData[0]);
 		}, $sLanguage);
-		if (\in_array($sLangCountry, $aLang)) {
-			return $sLangCountry;
+		if (\in_array($sLanguage, $aLang)) {
+			return $sLanguage;
 		}
 
 		if (\in_array($sDefault, $aLang)) {
