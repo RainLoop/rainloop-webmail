@@ -1,3 +1,32 @@
+## 2.31.0 – 2023-12-08
+
+### Added
+- PHP Hook `filter.language` to allow remote language selection
+
+### Changed
+- Cleaner language detection
+- Get Squire in sync with v2.2.5 and some bugfixes
+- Update French by @Cwpute
+- Squire: drop support for iPod
+
+### Fixed
+- Call to undefined method FolderMyRights()
+  [#1344](https://github.com/the-djmaze/snappymail/issues/1344)
+- NO Mailbox does not exist, or must be subscribed to")
+  [#1354](https://github.com/the-djmaze/snappymail/issues/1354)
+- Flag indicators are added to wrong message by @SergeyMosin
+  [#1347](https://github.com/the-djmaze/snappymail/pull/1347)
+- Squire: issue when using the enter key in a reply window
+  [#1296](https://github.com/the-djmaze/snappymail/issues/1296)
+- Squire: crash on cut/delete range
+
+### Nextcloud
+- Use language as defined in Nextcloud settings
+  [#1293](https://github.com/the-djmaze/snappymail/issues/1293)
+- Plugin Call to undefined method RainLoop\Model\MainAccount::ImapConnectAndLoginHelper()
+- SnappyMail failed due to Nextcloud Symfony polyfill
+
+
 ## 2.30.0 – 2023-12-04
 
 ### Added
