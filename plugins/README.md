@@ -285,6 +285,13 @@ and called in JavaScript using rl.pluginRemoteRequest().
 	params:
 		array &$aPaths
 
+### filter.language
+	params:
+		string &$sLanguage
+		bool $bAdmin
+
+	Allows you to set a different language
+
 ### filter.message-html
 	params:
 		\RainLoop\Model\Account $oAccount

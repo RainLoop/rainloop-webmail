@@ -23,7 +23,9 @@ trait Localization
 				$sLanguage = $this->ValidateLanguage($this->detectUserLanguage($bAdmin), $sLanguage, false);
 			}
 		}
-		return $this->ValidateLanguage($sLanguage, '', $bAdmin) ?: 'en';
+		$sHookLanguage = $sLanguage = $this->ValidateLanguage($sLanguage, '', $bAdmin) ?: 'en';
+		$this->Plugins()->RunHook('filter.language', array(&$sHookLanguage, $bAdmin));
+		return $this->ValidateLanguage($sHookLanguage, $sLanguage, $bAdmin);
 	}
 
 	public function ValidateLanguage(string $sLanguage, string $sDefault = '', bool $bAdmin = false, bool $bAllowEmptyResult = false): string

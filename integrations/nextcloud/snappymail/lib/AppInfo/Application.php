@@ -35,8 +35,7 @@ class Application extends App implements IBootstrap
 			'PageController', function($c) {
 				return new PageController(
 					$c->query('AppName'),
-					$c->query('Request'),
-					$c->query(IL10N::class)
+					$c->query('Request')
 				);
 			}
 		);

@@ -7,24 +7,9 @@ use OCA\SnappyMail\ContentSecurityPolicy;
 
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
-use OCP\IL10N;
-use OCP\IRequest;
 
 class PageController extends Controller
 {
-//	private IL10N $l;
-
-	public function __construct(string $appName, IRequest $request, IL10N $l) {
-		parent::__construct($appName, $request);
-//		$this->l = $l;
-		$lang = \strtolower(\str_replace('_', '-', $l->getLocaleCode()));
-		if (empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-			$_SERVER['HTTP_ACCEPT_LANGUAGE'] = $lang;
-		} else {
-			$_SERVER['HTTP_ACCEPT_LANGUAGE'] .= ",{$lang};q=2";
-		}
-	}
-
 	/**
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
