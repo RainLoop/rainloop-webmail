@@ -89,10 +89,6 @@ Object.assign(ko.bindingHandlers, {
 		}
 	},
 
-	title: {
-		update: (element, fValueAccessor) => element.title = ko.unwrap(fValueAccessor())
-	},
-
 	command: {
 		init: (element, fValueAccessor, fAllBindings, viewModel, bindingContext) => {
 			const command = fValueAccessor();

@@ -1,4 +1,4 @@
-<header class="g-ui-user-select-none" data-bind="css: {'loading': saving() || sending()}">
+<header class="g-ui-user-select-none" data-bind="css: {loading: saving() || sending()}">
 	<a class="btn" data-bind="command: sendCommand, tooltipErrorTip: sendErrorDesc, css: {'btn-success': sendButtonSuccess, 'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
 		<i data-bind="css: {'icon-paper-plane': !sending(), 'icon-spinner': sending()}"></i>
 		<span class="hide-mobile" data-i18n="COMPOSE/BUTTON_SEND"></span>
@@ -181,13 +181,13 @@
 			<span data-i18n="GLOBAL/ATTACHMENTS"></span>
 		</label>
 		<div class="tab-content attachmentAreaParent" role="tabpanel" aria-hidden="true" style="grid-column-end:4">
-			<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropVisible(), css: {'dragAndDropOver': dragAndDropOver}"
+			<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropVisible(), css: {dragAndDropOver: dragAndDropOver}"
 				data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></div>
 			<ul class="attachmentList" data-bind="foreach: attachments">
-				<li class="attachmentItem" data-bind="attr: { 'title': title }, css: { 'waiting': waiting, 'error': '' !== error() }">
+				<li class="attachmentItem" data-bind="attr: { title: title }, css: { waiting: waiting, error: '' !== error() }">
 					<div class="attachmentIcon">
 						<i class="iconMain" data-bind="css: iconClass, visible: !uploading() || 0 === progress()"></i>
-						<div class="iconProgress" data-bind="attr: { 'style': progressStyle }, visible: uploading"></div>
+						<div class="iconProgress" data-bind="attr: { style: progressStyle }, visible: uploading"></div>
 						<div class="iconBG" data-bind="text: progressText, visible: uploading"></div>
 					</div>
 					<div class="attachmentNameParent">
