@@ -283,7 +283,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function Capability() : ?array
 	{
-		if (!$this->aCapa) {
+		if (!$this->aCapaRaw) {
 			$this->setCapabilities($this->SendRequestGetResponse('CAPABILITY'));
 		}
 /*
@@ -294,8 +294,8 @@ class ImapClient extends \MailSo\Net\NetClient
 
 	public function Capabilities() : ?array
 	{
-		if (!$this->aCapa) {
-			$this->setCapabilities($this->SendRequestGetResponse('CAPABILITY'));
+		if (!$this->aCapaRaw) {
+			$this->Capability();
 		}
 		return $this->aCapaRaw;
 	}
