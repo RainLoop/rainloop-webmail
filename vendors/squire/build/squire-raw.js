@@ -82,7 +82,7 @@ const
 		return !isLeaf(node) && (
 			node.nodeType === node2.nodeType &&
 			node.nodeName === node2.nodeName &&
-			node.nodeName !== 'A' &&
+			node.nodeName !== "A" &&
 			node.className === node2.className &&
 			node.style?.cssText === node2.style?.cssText
 		);
@@ -333,14 +333,14 @@ const
 		[...container.childNodes].forEach(child => {
 			isBR = child.nodeName === "BR";
 			if (!isBR && child.parentNode == root && isInline(child)
-//			 && (blockTag !== 'DIV' || (child.matches && !child.matches(phrasingElements)))
+//			 && (blockTag !== "DIV" || (child.matches && !child.matches(phrasingElements)))
 			) {
 				wrapper = wrapper || createElement("DIV");
 				wrapper.append(child);
 			} else if (isBR || wrapper) {
 				wrapper = wrapper || createElement("DIV");
 				fixCursor(wrapper);
-				child[isBR ? 'replaceWith' : 'before'](wrapper);
+				child[isBR ? "replaceWith" : "before"](wrapper);
 				wrapper = null;
 			}
 			isContainer(child) && fixContainer(child, root);
@@ -495,32 +495,32 @@ const
 	styleToSemantic = {
 		fontWeight: {
 			regexp: /^bold|^700/i,
-			replace: () => createElement('B')
+			replace: () => createElement("B")
 		},
 		fontStyle: {
 			regexp: /^italic/i,
-			replace: () => createElement('I')
+			replace: () => createElement("I")
 		},
 		fontFamily: {
 			regexp: notWS,
-			replace: (doc, family) => createElement('SPAN', {
+			replace: (doc, family) => createElement("SPAN", {
 				style: 'font-family:' + family
 			})
 		},
 		fontSize: {
 			regexp: notWS,
-			replace: (doc, size) => createElement('SPAN', {
+			replace: (doc, size) => createElement("SPAN", {
 				style: 'font-size:' + size
 			})
 		},
 		textDecoration: {
 			regexp: /^underline/i,
-			replace: () => createElement('U')
+			replace: () => createElement("U")
 		}
 	/*
 		textDecoration: {
 			regexp: /^line-through/i,
-			replace: doc => createElement('S')
+			replace: doc => createElement("S")
 		}
 	*/
 	},
@@ -563,14 +563,14 @@ const
 	},
 	fontSizes = {
 		1: 'x-small',
-		2: 'small',
-		3: 'medium',
-		4: 'large',
+		2: "small",
+		3: "medium",
+		4: "large",
 		5: 'x-large',
 		6: 'xx-large',
 		7: 'xxx-large',
-		'-1': 'smaller',
-		'+1': 'larger'
+		'-1': "smaller",
+		'+1': "larger"
 	},
 	stylesRewriters = {
 		STRONG: replaceWithTag("B"),
@@ -582,7 +582,7 @@ const
 			let face = node.face,
 				size = node.size,
 				color = node.color,
-				newTag = createElement('SPAN'),
+				newTag = createElement("SPAN"),
 				css = newTag.style;
 			newTag.style.cssText = node.style.cssText;
 			if (face) {
@@ -606,7 +606,7 @@ const
 	//	CODE:
 	//	SAMP:
 		TT: node => {
-			let el = createElement('SPAN', {
+			let el = createElement("SPAN", {
 				style: 'font-family:menlo,consolas,"courier new",monospace'
 			});
 			node.replaceWith(el);
@@ -650,7 +650,7 @@ const
 					continue;
 				}
 				if (childLength) {
-					cleanTree(child, preserveWS || (nodeName === 'PRE'));
+					cleanTree(child, preserveWS || (nodeName === "PRE"));
 				}
 /*
 			} else {
@@ -667,7 +667,7 @@ const
 						walker.currentNode = child;
 						while (sibling = walker.previousPONode()) {
 							nodeName = sibling.nodeName;
-							if (nodeName === 'IMG' || (nodeName === '#text' && notWS.test(sibling.data))) {
+							if (nodeName === "IMG" || (nodeName === '#text' && notWS.test(sibling.data))) {
 								break;
 							}
 							if (!isInline(sibling)) {
@@ -680,7 +680,7 @@ const
 					if (endsWithWS) {
 						walker.currentNode = child;
 						while (sibling = walker.nextNode()) {
-							if (nodeName === 'IMG' || (nodeName === '#text' && notWS.test(sibling.data))) {
+							if (nodeName === "IMG" || (nodeName === '#text' && notWS.test(sibling.data))) {
 								break;
 							}
 							if (!isInline(sibling)) {
@@ -724,7 +724,7 @@ const
 	// elements at the end of each block will then have them added back in a later
 	// fixCursor method call.
 	cleanupBRs = (node, root, keepForBlankLine) => {
-		const brs = node.querySelectorAll('BR');
+		const brs = node.querySelectorAll("BR");
 		let l = brs.length;
 		let br, parent;
 		while (l--) {
@@ -1081,7 +1081,7 @@ const
 		range.collapse(); // collapse to end
 
 		// Where will we split up to? First blockquote parent, otherwise root.
-		stopPoint = getClosest(range.endContainer, root, 'BLOCKQUOTE') || root;
+		stopPoint = getClosest(range.endContainer, root, "BLOCKQUOTE") || root;
 
 		// Merge the contents of the first block in the frag with the focused block.
 		// If there are contents in the block after the focus point, collect this
@@ -1269,7 +1269,7 @@ const
 	setClipboardData = (event, contents, root) => {
 		let clipboardData = event.clipboardData;
 		let body = doc.body;
-		let node = createElement('div');
+		let node = createElement("div");
 		let html, text;
 
 		node.append(contents);
@@ -1280,7 +1280,7 @@ const
 		// calculating innerText, even though they don't actually affect
 		// display, so we need to remove them first.
 		cleanupBRs(node, root, true);
-		node.setAttribute('style',
+		node.setAttribute("style",
 			'position:fixed;overflow:hidden;bottom:100%;right:100%;');
 		body.append(node);
 		text = (node.innerText || node.textContent).replace(NBSP, ' '); // Replace nbsp with regular space
@@ -1371,7 +1371,7 @@ const
 				// plain text.
 				} else if (type === 'text/plain' || type === 'text/uri-list') {
 					plainItem = item;
-				} else if (item.kind === 'file' && /^image\/(png|jpeg|webp)/.test(type)) {
+				} else if (item.kind === "file" && /^image\/(png|jpeg|webp)/.test(type)) {
 					imageItem = item;
 				}
 			});
@@ -1380,8 +1380,8 @@ const
 				if (imageItem) {
 					let reader = new FileReader();
 					reader.onload = event => {
-						let img = createElement('img', {src: event.target.result}),
-							canvas = createElement('canvas'),
+						let img = createElement("img", {src: event.target.result}),
+							canvas = createElement("canvas"),
 							ctx = canvas.getContext('2d');
 						img.onload = ()=>{
 							ctx.drawImage(img, 0, 0);
@@ -1452,7 +1452,7 @@ const
 			// it removes the div and replaces it with just a <br> inside the
 			// root. Detach the <br>; the _ensureBottomLine call will insert a new
 			// block.
-			if (node === self._root && (node = node.firstChild) && node.nodeName === 'BR') {
+			if (node === self._root && (node = node.firstChild) && node.nodeName === "BR") {
 				detach(node);
 			}
 			self._ensureBottomLine();
@@ -1511,7 +1511,7 @@ const
 			else if (current) {
 				let parent = getClosest(current, root, 'UL,OL,BLOCKQUOTE');
 				if (parent) {
-					return ('BLOCKQUOTE' === parent.nodeName)
+					return ("BLOCKQUOTE" === parent.nodeName)
 						// Break blockquote
 						? self.decreaseQuoteLevel(range)
 						// Break list
@@ -1606,7 +1606,7 @@ const
 
 		// We need to apply the backspace/delete handlers regardless of control key modifiers.
 		// ctrl-shift-key or meta-shift-key
-		if (key !== 'backspace' && key !== 'delete') {
+		if (key !== "backspace" && key !== "delete") {
 			if (event.shiftKey) { key = 'shift-' + key; }
 			if (event[osKey]) { key = ctrlKey + key; }
 //			if (event.altKey) { key = 'alt-' + key; }
@@ -1637,7 +1637,7 @@ const
 				range = createRange(root.insertBefore(
 					this.createDefaultBlock(), nextElement
 				), 0);
-				if (nextElement.tagName === 'BR') {
+				if (nextElement.tagName === "BR") {
 					// delete it because a new <br> is created by createDefaultBlock()
 					root.removeChild(nextElement);
 				}
@@ -1658,9 +1658,9 @@ const
 			if (range.collapsed && rangeDoesStartAtBlockBoundary(range, root)) {
 				node = getStartBlockOfRange(range, root);
 				// Iterate through the block's parents
-				while ((parent = node.parentNode)) {
+				while (parent = node.parentNode) {
 					// If we find a UL or OL (so are in a list, node must be an LI)
-					if (parent.nodeName === 'UL' || parent.nodeName === 'OL') {
+					if (parent.nodeName === "UL" || parent.nodeName === "OL") {
 						// Then increase the list level
 						event.preventDefault();
 						self.increaseListLevel(range);
@@ -1697,7 +1697,7 @@ const
 			let node = range.endContainer;
 			if (range.collapsed && range.endOffset === getLength(node)) {
 				do {
-					if (node.nodeName === 'A') {
+					if (node.nodeName === "A") {
 						range.setStartAfter(node);
 						break;
 					}
@@ -1725,14 +1725,14 @@ const
 		self[method]();
 	},
 
-	blockTag = 'DIV',
+	blockTag = "DIV",
 	DOCUMENT_POSITION_PRECEDING = 2, // Node.DOCUMENT_POSITION_PRECEDING
 
 	NBSP = '\u00A0',
 
 	win = doc.defaultView,
 
-	osKey = isMac ? 'metaKey' : 'ctrlKey',
+	osKey = isMac ? "metaKey" : "ctrlKey",
 
 	filterAccept = NodeFilter.FILTER_ACCEPT,
 /*
@@ -1765,7 +1765,7 @@ const
 
 	setAttributes = (node, props) => {
 		props && Object.entries(props).forEach(([k,v]) => {
-			if ('style' === k && typeof v === 'object') {
+			if ("style" === k && typeof v === "object") {
 				Object.entries(v).forEach(([k,v]) => node.style[k] = v);
 			} else if (v != null) {
 				node.setAttribute(k, v);
@@ -1777,14 +1777,14 @@ const
 
 	newContentWalker = root => createTreeWalker(root,
 		SHOW_ELEMENT_OR_TEXT,
-		node => isTextNode(node) ? notWS.test(node.data) : node.nodeName === 'IMG'
+		node => isTextNode(node) ? notWS.test(node.data) : node.nodeName === "IMG"
 	),
 
 	didError = error => console.error(error),
 
 	detachUneditableNode = (node, root) => {
 		let parent;
-		while ((parent = node.parentNode)) {
+		while (parent = node.parentNode) {
 			if (parent === root || parent.isContentEditable) {
 				break;
 			}
@@ -1868,23 +1868,23 @@ const
 	endSelectionId = 'squire-selection-end',
 
 	createBookmarkNodes = () => [
-		createElement('INPUT', {
+		createElement("INPUT", {
 			id: startSelectionId,
-			type: 'hidden'
+			type: "hidden"
 		}),
-		createElement('INPUT', {
+		createElement("INPUT", {
 			id: endSelectionId,
-			type: 'hidden'
+			type: "hidden"
 		})
 	],
 
 	// --- Block formatting ---
 
 	tagAfterSplit = {
-		DT:  'DD',
-		DD:  'DT',
-		LI:  'LI',
-		PRE: 'PRE'
+		DT:  "DD",
+		DD:  "DT",
+		LI:  "LI",
+		PRE: "PRE"
 	},
 
 	getListSelection = (range, root) => {
@@ -1918,12 +1918,12 @@ const
 			node, tag, prev, newLi;
 
 		while (node = walker.nextNode()) {
-			if (node.parentNode.nodeName === 'LI') {
+			if (node.parentNode.nodeName === "LI") {
 				node = node.parentNode;
 				walker.currentNode = node.lastChild;
 			}
-			if (node.nodeName !== 'LI') {
-				newLi = createElement('LI');
+			if (node.nodeName !== "LI") {
+				newLi = createElement("LI");
 				if (node.dir) {
 					newLi.dir = node.dir;
 				}
@@ -1976,19 +1976,19 @@ const
 	linkRegExp = /\b(?:((https?:\/\/)?(?:www\d{0,3}\.|[a-z0-9][a-z0-9.-]*\.[a-z]{2,}\/)(?:[^\s()<>]+|\([^\s()<>]+\))+(?:[^\s?&`!()[\]{};:'".,<>«»“”‘’]|\([^\s()<>]+\)))|([\w\-.%+]+@(?:[\w-]+\.)+[a-z]{2,}\b(?:\?[^&?\s]+=[^\s?&`!()[\]{};:'".,<>«»“”‘’]+(?:&[^&?\s]+=[^\s?&`!()[\]{};:'".,<>«»“”‘’]+)*)?))/i,
 
 	addLinks = (frag, root) => {
-		let walker = createTreeWalker(frag, SHOW_TEXT, node => !getClosest(node, root, 'A'));
+		let walker = createTreeWalker(frag, SHOW_TEXT, node => !getClosest(node, root, "A"));
 		let node, data, parent, match, index, endIndex, child;
-		while ((node = walker.nextNode())) {
+		while (node = walker.nextNode()) {
 			data = node.data;
 			parent = node.parentNode;
-			while ((match = linkRegExp.exec(data))) {
+			while (match = linkRegExp.exec(data)) {
 				index = match.index;
 				endIndex = index + match[0].length;
 				if (index) {
 					child = doc.createTextNode(data.slice(0, index));
 					parent.insertBefore(child, node);
 				}
-				child = createElement('A', {
+				child = createElement("A", {
 					href: match[1]
 						? (match[2] ? match[1] : 'https://' + match[1])
 						: 'mailto:' + match[0]
@@ -2009,22 +2009,22 @@ if (!isMac && !isIOS) {
 	keyHandlers.pagedown = self => self._moveCursorTo(false);
 }
 
-keyHandlers[ctrlKey + 'b'] = mapKeyToFormat('B');
-keyHandlers[ctrlKey + 'i'] = mapKeyToFormat('I');
-keyHandlers[ctrlKey + 'u'] = mapKeyToFormat('U');
-keyHandlers[ctrlKey + 'shift-7'] = mapKeyToFormat('S');
-keyHandlers[ctrlKey + 'shift-5'] = mapKeyToFormat('SUB', 'SUP');
-keyHandlers[ctrlKey + 'shift-6'] = mapKeyToFormat('SUP', 'SUB');
-keyHandlers[ctrlKey + 'shift-8'] = toggleList('UL', 'makeUnorderedList');
-keyHandlers[ctrlKey + 'shift-9'] = toggleList('OL', 'makeOrderedList');
-keyHandlers[ctrlKey + '['] = changeIndentationLevel('decrease');
-keyHandlers[ctrlKey + ']'] = changeIndentationLevel('increase');
-keyHandlers[ctrlKey + 'd'] = mapKeyTo('toggleCode');
-keyHandlers[ctrlKey + 'y'] = mapKeyTo('redo');
-//keyHandlers[ctrlKey + 'z'] = mapKeyTo('undo');
-keyHandlers[ctrlKey + 'shift-z'] = mapKeyTo('redo');
-keyHandlers['redo'] = mapKeyTo('redo');
-//keyHandlers['undo'] = mapKeyTo('undo');
+keyHandlers[ctrlKey + "b"] = mapKeyToFormat("B");
+keyHandlers[ctrlKey + "i"] = mapKeyToFormat("I");
+keyHandlers[ctrlKey + "u"] = mapKeyToFormat("U");
+keyHandlers[ctrlKey + 'shift-7'] = mapKeyToFormat("S");
+keyHandlers[ctrlKey + 'shift-5'] = mapKeyToFormat("SUB", "SUP");
+keyHandlers[ctrlKey + 'shift-6'] = mapKeyToFormat("SUP", "SUB");
+keyHandlers[ctrlKey + 'shift-8'] = toggleList("UL", "makeUnorderedList");
+keyHandlers[ctrlKey + 'shift-9'] = toggleList("OL", "makeOrderedList");
+keyHandlers[ctrlKey + '['] = changeIndentationLevel("decrease");
+keyHandlers[ctrlKey + ']'] = changeIndentationLevel("increase");
+keyHandlers[ctrlKey + "d"] = mapKeyTo("toggleCode");
+keyHandlers[ctrlKey + "y"] = mapKeyTo("redo");
+//keyHandlers[ctrlKey + "z"] = mapKeyTo("undo");
+keyHandlers[ctrlKey + 'shift-z'] = mapKeyTo("redo");
+keyHandlers["redo"] = mapKeyTo("redo");
+//keyHandlers["undo"] = mapKeyTo("undo");
 
 class EditStack extends Array
 {
@@ -2044,11 +2044,11 @@ class EditStack extends Array
 	}
 
 	stateChanged(/*canUndo, canRedo*/) {
-		this.squire.fireEvent('undoStateChange', {
+		this.squire.fireEvent("undoStateChange", {
 			canUndo: this.index > 0,
 			canRedo: this.index + 1 < this.length
 		});
-		this.squire.fireEvent('input');
+		this.squire.fireEvent("input");
 	}
 
 	docWasChanged() {
@@ -2056,7 +2056,7 @@ class EditStack extends Array
 			this.inUndoState = false;
 			this.stateChanged(/*true, false*/);
 		} else
-			this.squire.fireEvent('input');
+			this.squire.fireEvent("input");
 	}
 
 	/**
@@ -2344,7 +2344,7 @@ class Squire
 			let handlers = this._events[type];
 			if (!handlers) {
 				handlers = this._events[type] = [];
-				customEvents[type] || this._root.addEventListener(type, this, {capture:true,passive:'touchstart'===type});
+				customEvents[type] || this._root.addEventListener(type, this, {capture:true,passive:"touchstart"===type});
 			}
 			handlers.push(fn);
 		});
@@ -2725,7 +2725,7 @@ class Squire
 			// After inserting the fragment, check whether the cursor is inside
 			// an <a> element and if so if there is an equivalent cursor
 			// position after the <a> element. If there is, move it there.
-			moveRangeBoundaryOutOf(range, 'A', root);
+			moveRangeBoundaryOutOf(range, "A", root);
 
 			this._ensureBottomLine();
 
@@ -2778,7 +2778,7 @@ class Squire
 	}
 
 	insertImage(src, attributes) {
-		const img = createElement('IMG', mergeObjects({
+		const img = createElement("IMG", mergeObjects({
 			src: src
 		}, attributes, true));
 		this.insertElement(img);
@@ -2787,7 +2787,7 @@ class Squire
 
 	insertPlainText(plainText, isPaste) {
 		const range = this.getSelection();
-		if (range.collapsed && getClosest(range.startContainer, this._root, 'PRE')) {
+		if (range.collapsed && getClosest(range.startContainer, this._root, "PRE")) {
 			let node = range.startContainer;
 			let offset = range.startOffset;
 			let text;
@@ -2969,8 +2969,8 @@ class Squire
 				range.commonAncestorContainer,
 				SHOW_ELEMENT_OR_TEXT,
 				node => (isTextNode(node) ||
-							node.nodeName === 'BR' ||
-							node.nodeName === 'IMG'
+							node.nodeName === "BR" ||
+							node.nodeName === "IMG"
 						) && isNodeContainedInRange(range, node)
 			);
 
@@ -3078,7 +3078,7 @@ class Squire
 				// in a clone of the tag we're removing and we're done.
 				if (!isNodeContainedInRange(range, node)) {
 					// Ignore bookmarks and empty text nodes
-					if (node.nodeName !== 'INPUT' && (!isText || node.data)) {
+					if (node.nodeName !== "INPUT" && (!isText || node.data)) {
 						toWrap.push([exemplar, node]);
 					}
 					return;
@@ -3139,12 +3139,12 @@ class Squire
 	}
 
 	// ---
-	bold() { this.toggleTag('B'); }
-	italic() { this.toggleTag('I'); }
-	underline() { this.toggleTag('U'); }
-	strikethrough() { this.toggleTag('S'); }
-	subscript() { this.toggleTag('SUB', 'SUP'); }
-	superscript() { this.toggleTag('SUP', 'SUB'); }
+	bold() { this.toggleTag("B"); }
+	italic() { this.toggleTag("I"); }
+	underline() { this.toggleTag("U"); }
+	strikethrough() { this.toggleTag("S"); }
+	subscript() { this.toggleTag("SUB", "SUP"); }
+	superscript() { this.toggleTag("SUP", "SUB"); }
 
 	makeLink(url, attributes) {
 		const range = this.getSelection();
@@ -3286,7 +3286,7 @@ class Squire
 		}
 		block = getClosest(block, root, "LI") || block;
 		if (isEmptyBlock(block) && (parent = getClosest(block, root, 'UL,OL,BLOCKQUOTE'))) {
-			return 'BLOCKQUOTE' === parent.nodeName
+			return "BLOCKQUOTE" === parent.nodeName
 				// Break blockquote
 				? self.modifyBlocks((/* frag */) => self.createDefaultBlock(createBookmarkNodes(self)), range)
 				// Break list
@@ -3395,7 +3395,7 @@ class Squire
 				do {
 					next = startLi === endLi ? null : startLi.nextSibling;
 					newParent.append(startLi);
-				} while ((startLi = next));
+				} while (startLi = next);
 				next = newParent.nextSibling;
 				next && mergeContainers(next, root);
 
@@ -3429,7 +3429,7 @@ class Squire
 					list.nextSibling :
 					split(list, endLi.nextSibling, newParent, root);
 
-				if (newParent !== root && newParent.nodeName === 'LI') {
+				if (newParent !== root && newParent.nodeName === "LI") {
 					newParent = newParent.parentNode;
 					while (insertBefore) {
 						next = insertBefore.nextSibling;
@@ -3443,11 +3443,11 @@ class Squire
 				do {
 					next = startLi === endLi ? null : startLi.nextSibling;
 					startLi.remove();
-					if (makeNotList && startLi.nodeName === 'LI') {
+					if (makeNotList && startLi.nodeName === "LI") {
 						startLi = this.createDefaultBlock([empty(startLi)]);
 					}
 					newParent.insertBefore(startLi, insertBefore);
-				} while ((startLi = next));
+				} while (startLi = next);
 			}
 
 			list.firstChild || detach(list);
@@ -3462,11 +3462,11 @@ class Squire
 	}
 
 	makeUnorderedList() {
-		return this.modifyBlocks(frag => makeList(this, frag, 'UL')).focus();
+		return this.modifyBlocks(frag => makeList(this, frag, "UL")).focus();
 	}
 
 	makeOrderedList() {
-		return this.modifyBlocks(frag => makeList(this, frag, 'OL')).focus();
+		return this.modifyBlocks(frag => makeList(this, frag, "OL")).focus();
 	}
 
 	removeList() {
@@ -3479,11 +3479,9 @@ class Squire
 				list.replaceWith(listFrag);
 			});
 
-			frag.querySelectorAll('LI').forEach(item => {
+			frag.querySelectorAll("LI").forEach(item => {
 				if (isBlock(item)) {
-					item.replaceWith(
-						this.createDefaultBlock([empty(item)])
-					);
+					item.replaceWith(this.createDefaultBlock([empty(item)]));
 				} else {
 					fixContainer(item, root);
 					item.replaceWith(empty(item));
@@ -3498,7 +3496,11 @@ class Squire
 
 	increaseQuoteLevel(range) {
 		return this.modifyBlocks(
-			frag => createElement('BLOCKQUOTE', null, [frag]),
+			frag => createElement(
+				"BLOCKQUOTE",
+				null,
+				[frag]
+			),
 			range
 		).focus();
 	}
@@ -3506,9 +3508,11 @@ class Squire
 	decreaseQuoteLevel(range) {
 		return this.modifyBlocks(
 			frag => {
-				Array.prototype.filter.call(frag.querySelectorAll('blockquote'), el =>
-					!getClosest(el.parentNode, frag, 'BLOCKQUOTE')
-				).forEach(el => el.replaceWith(empty(el)));
+				Array.prototype.filter.call(frag.querySelectorAll("blockquote"), el =>
+					!getClosest(el.parentNode, frag, "BLOCKQUOTE")
+				).forEach(el =>
+					el.replaceWith(empty(el))
+				);
 				return frag;
 			},
 			range
@@ -3526,59 +3530,60 @@ class Squire
 				let walker = getBlockWalker(frag, root);
 				let node;
 				// 1. Extract inline content; drop all blocks and contains.
-				while ((node = walker.nextNode())) {
+				while (node = walker.nextNode()) {
 					// 2. Replace <br> with \n in content
-					node.querySelectorAll('BR').forEach(br => {
+					node.querySelectorAll("BR").forEach(br => {
 						if (!isLineBreak(br, false)) {
 							detach(br);
 						} else {
-							br.replaceWith(doc.createTextNode('\n'));
+							br.replaceWith(doc.createTextNode("\n"));
 						}
 					});
 					// 3. Remove <code>; its format clashes with <pre>
-					node.querySelectorAll('CODE').forEach(el => detach(el));
+					node.querySelectorAll("CODE").forEach(el => detach(el));
 					if (output.childNodes.length) {
-						output.append(doc.createTextNode('\n'));
+						output.append(doc.createTextNode("\n"));
 					}
 					output.append(empty(node));
 				}
 				// 4. Replace nbsp with regular sp
 				walker = createTreeWalker(output, SHOW_TEXT);
-				while ((node = walker.nextNode())) {
+				while (node = walker.nextNode()) {
 					node.data = node.data.replace(NBSP, ' '); // nbsp -> sp
 				}
 				output.normalize();
-				return fixCursor(createElement('PRE',
-					null, [
+				return fixCursor(
+					createElement("PRE", null, [
 						output
-					]));
+					])
+				);
 			}, range).focus();
 		}
-		return this.changeFormat({ tag: 'CODE' }, null, range);
+		return this.changeFormat({ tag: "CODE" }, null, range);
 	}
 
 	removeCode() {
 		let range = this.getSelection();
 		let ancestor = range.commonAncestorContainer;
-		let inPre = getClosest(ancestor, this._root, 'PRE');
+		let inPre = getClosest(ancestor, this._root, "PRE");
 		if (inPre) {
 			return this.modifyBlocks(frag => {
 				let root = this._root;
-				let pres = frag.querySelectorAll('PRE');
+				let pres = frag.querySelectorAll("PRE");
 				let l = pres.length;
 				let pre, walker, node, value, contents, index;
 				while (l--) {
 					pre = pres[l];
 					walker = createTreeWalker(pre, SHOW_TEXT);
-					while ((node = walker.nextNode())) {
+					while (node = walker.nextNode()) {
 						value = node.data;
 						value = value.replace(/ (?=)/g, NBSP); // sp -> nbsp
 						contents = doc.createDocumentFragment();
-						while ((index = value.indexOf('\n')) > -1) {
+						while ((index = value.indexOf("\n")) > -1) {
 							contents.append(
 								doc.createTextNode(value.slice(0, index))
 							);
-							contents.append(createElement('BR'));
+							contents.append(createElement("BR"));
 							value = value.slice(index + 1);
 						}
 						node.before(contents);
@@ -3590,11 +3595,11 @@ class Squire
 				return frag;
 			}, range).focus();
 		}
-		return this.changeFormat(null, { tag: 'CODE' }, range);
+		return this.changeFormat(null, { tag: "CODE" }, range);
 	}
 
 	toggleCode() {
-		return (this.hasFormat('PRE') || this.hasFormat('CODE'))
+		return (this.hasFormat("PRE") || this.hasFormat("CODE"))
 			? this.removeCode()
 			: this.code();
 	}
@@ -3611,7 +3616,7 @@ class Squire
 	// --- Formatting ---
 
 	setStyle(style) {
-		this.setAttribute('style', style);
+		this.setAttribute("style", style);
 	}
 
 	setAttribute(name, value) {
@@ -3619,7 +3624,7 @@ class Squire
 		let start = range?.startContainer || {};
 		let end = range ? range.endContainer : 0;
 		// When the selection is all the text inside an element, set style on the element itself
-		if ('dir' == name || (isTextNode(start) && 0 === range.startOffset && start === end && end.length === range.endOffset)) {
+		if ("dir" == name || (isTextNode(start) && 0 === range.startOffset && start === end && end.length === range.endOffset)) {
 			this.saveUndoState(range);
 			setAttributes(start.parentNode, {[name]: value});
 			this.setRange(range);
@@ -3627,7 +3632,7 @@ class Squire
 		// Else create a span element
 		else {
 			this.changeFormat({
-				tag: 'SPAN',
+				tag: "SPAN",
 				attributes: {[name]: value}
 			}, null, range);
 		}
@@ -3638,9 +3643,9 @@ class Squire
 
 	changeIndentationLevel(direction) {
 		let parent = this.getSelectionClosest('UL,OL,BLOCKQUOTE');
-		if (parent || 'increase' === direction) {
-			let method = (!parent || 'BLOCKQUOTE' === parent.nodeName) ? 'Quote' : 'List';
-			this[direction + method + 'Level']();
+		if (parent || "increase" === direction) {
+			let method = (!parent || "BLOCKQUOTE" === parent.nodeName) ? "Quote" : "List";
+			this[direction + method + "Level"]();
 		}
 	}
 
