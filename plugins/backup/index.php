@@ -7,7 +7,7 @@ class BackupPlugin extends \RainLoop\Plugins\AbstractPlugin
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
 		VERSION  = '1.0',
-		RELEASE  = '2023-11-27',
+		RELEASE  = '2023-12-10',
 		REQUIRED = '2.30.0',
 		CATEGORY = 'General',
 		LICENSE  = 'MIT',
@@ -47,6 +47,10 @@ class BackupPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$oZip->addRecursive(APP_PRIVATE_DATA.'domains', 'domains');
 		$oZip->addRecursive(APP_PRIVATE_DATA.'plugins', 'plugins');
 		$oZip->addRecursive(APP_PRIVATE_DATA.'storage', 'storage');
+		if (\is_readable(APP_PRIVATE_DATA.'AddressBook.sqlite')) {
+			$oZip->addFile(APP_PRIVATE_DATA.'AddressBook.sqlite');
+		}
+//		$oZip->addFile(APP_DATA_FOLDER_PATH.'SALT.php');
 		$oZip->close();
 
 		$data = \base64_encode(\file_get_contents($sZipFileName));
