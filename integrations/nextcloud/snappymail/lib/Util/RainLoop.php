@@ -77,7 +77,7 @@ class RainLoop
 		}
 
 		$oConfig = \RainLoop\Api::Config();
-		$oConfig->Set('webmail', 'theme', 'Nextcloud@custom');
+		$oConfig->Set('webmail', 'theme', 'NextcloudV25+');
 		$oConfig->Save();
 
 		return $result;
