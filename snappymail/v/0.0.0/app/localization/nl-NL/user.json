@@ -20,7 +20,7 @@
 		"MOVE_TO": "Verplaats naar",
 		"NAME": "Naam",
 		"NONE": "Geen",
-		"TO_SPAM": "Move message(s) to Spam",
+		"TO_SPAM": "Verplaats bericht(en) naar Spam",
 		"NOT_SPAM": "Geen ongewenste e-mail",
 		"USERNAME": "Gebruikersnaam",
 		"PASSWORD": "Wachtwoord",
@@ -110,7 +110,7 @@
 		"NEW_MESSAGE_NOTIFICATION": "U heeft %COUNT% nieuwe berichten!",
 		"QUOTA_SIZE": "U gebruikt <strong>%SIZE% (%PROC%%)<\/strong> van <strong>%LIMIT%<\/strong>",
 		"SORT": "Sorteren",
-		"NO_SORT": "Mail server does not support sorting",
+		"NO_SORT": "Mail server ondersteund sorteren niet",
 		"SORT_DATE_ASC": "Datum oplopend",
 		"SORT_DATE_DESC": "Datum aflopend",
 		"SORT_SIZE_ASC": "Grootte oplopend",
@@ -138,7 +138,7 @@
 		"MENU_HEADERS": "Toon berichtkoppen",
 		"MENU_VIEW_ORIGINAL": "Toon origineel",
 		"HTML_VIEW": "Bekijk HTML bericht",
-		"PLAIN_VIEW": "Bekijk platte text bericht",
+		"PLAIN_VIEW": "Bekijk platte tekst bericht",
 		"MENU_DOWNLOAD_ORIGINAL": "Download als .eml bestand",
 		"MENU_FILTER_SIMILAR": "Filter gelijksoortige berichten",
 		"MENU_PRINT": "Afdrukken",
@@ -237,7 +237,7 @@
 		"ERROR_EMPTY_BODY": "Bericht inhoud is leeg"
 	},
 	"POPUPS_ASK": {
-		"EXIT_ARE_YOU_SURE": "Are you sure you want to exit?",
+		"EXIT_ARE_YOU_SURE": "Weet u zeker dat u wilt afsluiten?",
 		"DESC_WANT_CLOSE_THIS_WINDOW": "Weet u zeker dat u dit venster wilt sluiten?",
 		"DESC_WANT_DELETE_MESSAGES": "Weet u zeker dat u dit\/deze bericht\/berichten wilt verwijderen?"
 	},
@@ -255,7 +255,7 @@
 		"TITLE_UPDATE_IDENTITY": "Identiteit bijwerken?",
 		"BUTTON_ADD_IDENTITY": "Toevoegen",
 		"BUTTON_UPDATE_IDENTITY": "Bijwerken",
-		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
+		"LABEL_SIGNATURE_ADD": "Handtekening toevoegen/wijzigen",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Plaats deze handtekening vóór geciteerde tekst in antwoorden"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -445,17 +445,17 @@
 		"SOUND_NOTIFICATION": "Notificatie geluid",
 		"CHROME_NOTIFICATION_DESC": "Toon nieuwe berichten popup",
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Geblokkeerd door de browser)",
-		"COLLAPSE_BLOCKQUOTES": "Collapse quoted text",
-		"MAX_QUOTE_LEVEL": "Maximum visible quoted text levels",
+		"COLLAPSE_BLOCKQUOTES": "Geciteerde tekst inklappen",
+		"MAX_QUOTE_LEVEL": "Maximaal zichtbare geciteerde tekstniveaus",
 		"LIST_INLINE_ATTACHMENTS": "Toon inline bijlagen in lijst",
 		"LIST_SIMPLE_ATTACHMENTS": "Simpele bijlagen lijst",
 		"LIST_MESSAGES_GROUPED": "Toon berichten gegroepeerd (bij sorteren op Datum of Van)",
-		"EXTERNAL_IMAGES": "External images",
-		"IMAGES_OPTION_ASK": "Always ask",
-		"IMAGES_OPTION_WHITELIST": "Whitelist or ask",
-		"IMAGES_OPTION_ALWAYS": "Show always",
-		"IMAGES_WHITELIST": "Images whitelist",
-		"MESSAGE_POPUP_WINDOW": "Popup in new window instead of tab"
+		"EXTERNAL_IMAGES": "Externe afbeeldingen",
+		"IMAGES_OPTION_ASK": "Altijd vragen",
+		"IMAGES_OPTION_WHITELIST": "Whitelist of vragen",
+		"IMAGES_OPTION_ALWAYS": "Altijd tonen",
+		"IMAGES_WHITELIST": "Afbeeldingen whitelist",
+		"MESSAGE_POPUP_WINDOW": "Openen in een nieuw venster i.p.v. tab"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Automatisch ontvangers toevoegen aan uw adresboek",
