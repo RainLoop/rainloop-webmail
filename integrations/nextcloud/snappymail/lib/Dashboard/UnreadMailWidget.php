@@ -12,6 +12,7 @@ use OCP\Dashboard\Model\WidgetItem;
 use OCP\Dashboard\Model\WidgetOptions;
 use OCP\IL10N;
 use OCP\IURLGenerator;
+//use OCP\Util;
 
 class UnreadMailWidget implements IAPIWidget, IIconWidget/*, IOptionWidget*/
 {
@@ -19,11 +20,14 @@ class UnreadMailWidget implements IAPIWidget, IIconWidget/*, IOptionWidget*/
 	protected IURLGenerator $urlGenerator;
 	protected IInitialState $initialState;
 
-	public function __construct(IL10N $l10n, IURLGenerator $urlGenerator, IInitialState $initialState)
+	public function __construct(IL10N $l10n, IURLGenerator $urlGenerator,
+		IInitialState $initialState,
+		?string $userId)
 	{
 		$this->l10n = $l10n;
 		$this->urlGenerator = $urlGenerator;
 		$this->initialState = $initialState;
+		$this->userId = $userId;
 	}
 
 	// IWidget
@@ -79,7 +83,10 @@ class UnreadMailWidget implements IAPIWidget, IIconWidget/*, IOptionWidget*/
 	 */
 	public function load(): void
 	{
-//		SnappyMailHelper::loadApp();
+//		Util::addScript(Application::APP_ID, 'dashboard');
+		if ($this->userId !== null) {
+			$this->initialStateService->provideInitialState('dashboard-widget-items', $this->getItems($this->userId));
+		}
 	}
 
 	// IAPIWidget
