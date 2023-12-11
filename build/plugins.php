@@ -32,6 +32,7 @@ $keys = [
 $released = [
 	'add-x-originating-ip-header',
 	'avatars',
+	'backup',
 	'black-list',
 	'change-password',
 	'change-password-froxlor',
@@ -55,6 +56,7 @@ $released = [
 	'nextcloud',
 	'override-smtp-credentials',
 	'set-remote-addr',
+	'smtp-use-from-adr-account',
 	'snowfall-on-login-screen',
 	'two-factor-auth',
 	'view-ics',
