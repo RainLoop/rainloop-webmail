@@ -22,6 +22,11 @@ abstract class Integrity
 			echo '<ul><li>' . \implode('</li>li><li>', $result) . '</li></ul>';
 		}
 
+/*
+		echo '<div>'.APP_VERSION_ROOT_PATH.'static directory permissions: ' . substr(sprintf('%o', fileperms(APP_VERSION_ROOT_PATH . 'static')), -4) . '</div>';
+		echo '<div>'.APP_VERSION_ROOT_PATH.'themes directory permissions: ' . substr(sprintf('%o', fileperms(APP_VERSION_ROOT_PATH . 'themes')), -4) . '</div>';
+*/
+
 		$uri = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST']
 			. \RainLoop\Utils::WebVersionPath();
 		$HTTP = \SnappyMail\HTTP\Request::factory();

@@ -228,7 +228,7 @@ abstract class Upgrade
 	public static function fixPermissions($mode = 0755) : void
 	{
 		\clearstatcache(true);
-		\umask(0022);
+		\umask(0000);
 		$target = \rtrim(APP_INDEX_ROOT_PATH, '\\/');
 		// Prevent Apache access error due to directories being 0700
 		foreach (\glob("{$target}/snappymail/v/*", \GLOB_ONLYDIR) as $dir) {
