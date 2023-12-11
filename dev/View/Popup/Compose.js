@@ -1381,13 +1381,13 @@ export class ComposePopupView extends AbstractViewPopup {
 				};
 			}
 		});
-
+/*
 		let sToAddress = this.to();
 
 		if (/".*" <.*,.*>/g.test(sToAddress)) {
 			sToAddress = sToAddress.match(/<.*>/g)[0].replace(/[<>]/g, '');
 		}
-
+*/
 		const
 			identity = this.currentIdentity(),
 			params = {
@@ -1396,7 +1396,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				messageUid: this.draftUid(),
 				saveFolder: sSaveFolder,
 				from: this.from(),
-				to: sToAddress,
+				to: this.to(),
 				cc: this.cc(),
 				bcc: this.bcc(),
 				replyTo: this.replyTo(),

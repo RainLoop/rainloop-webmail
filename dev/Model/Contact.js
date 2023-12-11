@@ -140,24 +140,22 @@ export class ContactModel extends AbstractModel {
 	 */
 	getNameAndEmailHelper() {
 		let name = (this.givenName() + ' ' + this.surName()).trim(),
-			email;
+			email = [],
+			addresses = this.email();
 
 		if (this.sendToAll()) {
-			email = [];
-			this.email().forEach(function (key){
-				email.push(key?.value())
-			});
-		} else {
-			email = this.email()[0]?.value();
+			addresses.forEach(key => email.push(key.value()));
+		} else if (addresses.length) {
+			email.push(addresses[0].value());
 		}
 /*
 //		this.jCard.getOne('fn')?.notEmpty() ||
 		this.jCard.parseFullName({set:true});
 //		let name = this.jCard.getOne('nickname'),
 		let name = this.jCard.getOne('fn'),
-			email = this.jCard.getOne('email');
+			email = [this.jCard.getOne('email')];
 */
-		return email ? [email, name] : null;
+		return email.length ? [name, email] : null;
 	}
 
 	/**
@@ -330,10 +328,6 @@ export class ContactModel extends AbstractModel {
 			+ (this.deleted() ? ' deleted' : '')
 			+ (this.checked() ? ' checked' : '')
 			+ (this.focused() ? ' focused' : '');
-	}
-
-	sendToAllDefaultValue() {
-		return (this.sendToAll() ? ' checked' : '');
 	}
 
 	sendToAllDisplayStatus() {

@@ -209,7 +209,8 @@
 		"ADD_MENU_BIRTHDAY": "Ngày sinh",
 		"ADD_MENU_TAGS": "Thẻ",
 		"BUTTON_SHARE_ALL": "Tất cả mọi người",
-		"BUTTON_SYNC": "Đồng bộ hóa (CardDAV)"
+		"BUTTON_SYNC": "Đồng bộ hóa (CardDAV)",
+		"SEND_TO_ALL_CONTACT_EMAILS": "Send to all contact emails"
 	},
 	"COMPOSE": {
 		"LINK_SHOW_INPUTS": "hiển thị tất cả mục nhập thông tin",

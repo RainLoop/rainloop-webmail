@@ -137,9 +137,13 @@ export class ContactsPopupView extends AbstractViewPopup {
 			recipients = {to:null,cc:null,bcc:null};
 
 		this.contactsCheckedOrSelected().forEach(oContact => {
-			const data = oContact?.getNameAndEmailHelper(),
-				email = data ? new EmailModel(data[0], data[1]) : null;
-			email?.valid() && aE.push(email);
+			const data = oContact?.getNameAndEmailHelper();
+			if (data) {
+				data[1].forEach(address => {
+					let email = new EmailModel(address, data[0]);
+					email.valid() && aE.push(email);
+				});
+			}
 		});
 
 		if (arrayLength(aE)) {

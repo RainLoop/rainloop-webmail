@@ -209,7 +209,8 @@
 		"ADD_MENU_BIRTHDAY": "Anniversaire",
 		"ADD_MENU_TAGS": "Étiquettes",
 		"BUTTON_SHARE_ALL": "Tout le monde",
-		"BUTTON_SYNC": "Synchronisation (CardDAV)"
+		"BUTTON_SYNC": "Synchronisation (CardDAV)",
+		"SEND_TO_ALL_CONTACT_EMAILS": "Send to all contact emails"
 	},
 	"COMPOSE": {
 		"LINK_SHOW_INPUTS": "Voir tous les champs",

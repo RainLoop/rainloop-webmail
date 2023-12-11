@@ -209,7 +209,8 @@
 		"ADD_MENU_BIRTHDAY": "تاریخ تولد",
 		"ADD_MENU_TAGS": "برچسب",
 		"BUTTON_SHARE_ALL": "هرکسی",
-		"BUTTON_SYNC": "همگام‌سازی (CardDAV)"
+		"BUTTON_SYNC": "همگام‌سازی (CardDAV)",
+		"SEND_TO_ALL_CONTACT_EMAILS": "Send to all contact emails"
 	},
 	"COMPOSE": {
 		"LINK_SHOW_INPUTS": "نمایش همه فیلدها",

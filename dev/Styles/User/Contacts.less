@@ -145,7 +145,7 @@
 		margin: 0;
 		overflow: auto;
 
-		span {
+		:not(.e-checkbox) > span {
 			height: 20px;
 			line-height: 20px;
 			display: none;
@@ -169,11 +169,6 @@
 		input:not([type='checkbox']), textarea {
 			width: 70vw;
 			max-width: 400px;
-		}
-
-		#send-to-all > input[type="checkbox"] {
-			margin-left: 2px;
-			margin-right: 10px;
 		}
 	}
 

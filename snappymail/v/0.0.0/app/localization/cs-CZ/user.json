@@ -209,7 +209,8 @@
 		"ADD_MENU_BIRTHDAY": "Narozeniny",
 		"ADD_MENU_TAGS": "Tagy",
 		"BUTTON_SHARE_ALL": "Vše",
-		"BUTTON_SYNC": "Synchronizace (CardDAV)"
+		"BUTTON_SYNC": "Synchronizace (CardDAV)",
+		"SEND_TO_ALL_CONTACT_EMAILS": "Send to all contact emails"
 	},
 	"COMPOSE": {
 		"LINK_SHOW_INPUTS": "zobrazit všechna pole",
