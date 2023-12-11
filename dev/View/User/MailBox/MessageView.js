@@ -10,7 +10,7 @@ import {
 	FolderType,
 	MessageSetAction
 } from 'Common/EnumsUser';
-
+import { RFC822 } from 'Common/File';
 import {
 	elementById,
 	keyScopeReal,
@@ -292,7 +292,19 @@ export class MailMessageView extends AbstractViewRight {
 				return;
 			}
 
-			if (eqs(event, '.attachmentsPlace .showPreview')) {
+			el = eqs(event, '.attachmentsPlace .showPreview');
+			if (el) {
+				const attachment = ko.dataFor(el), url = attachment?.linkDownload();
+//				if (url && FileType.Eml === attachment.fileType) {
+				if (url && RFC822 == attachment.mimeType) {
+					stopEvent(event);
+					fetchRaw(url).then(text => {
+						const oMessage = new MessageModel();
+						MimeToMessage(text, oMessage);
+						// cleanHTML
+						oMessage.popupMessage();
+					});
+				}
 				return;
 			}
 
@@ -326,14 +338,6 @@ export class MailMessageView extends AbstractViewRight {
 						fetchRaw(url).then(text =>
 							showScreenPopup(OpenPgpImportPopupView, [text])
 						);
-					} else if ('message/rfc822' == attachment.mimeType) {
-						// TODO
-						fetchRaw(url).then(text => {
-							const oMessage = new MessageModel();
-							MimeToMessage(text, oMessage);
-							// cleanHTML
-							oMessage.popupMessage();
-						});
 					} else {
 						download(url, attachment.fileName);
 					}

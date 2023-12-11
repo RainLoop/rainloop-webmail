@@ -1,8 +1,6 @@
+import { RFC822 } from 'Common/File';
+import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
 import { isArray, arrayLength } from 'Common/Utils';
-import {
-	getFolderInboxName,
-	getFolderFromCacheList
-} from 'Common/Cache';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
@@ -194,7 +192,7 @@ folderInformationMultiply = (boot = false) => {
 dropFilesInFolder = (sFolderFullName, files) => {
 	let count = files.length;
 	for (const file of files) {
-		if ('message/rfc822' === file.type) {
+		if (RFC822 === file.type) {
 			let data = new FormData;
 			data.append('folder', sFolderFullName);
 			data.append('appendFile', file);

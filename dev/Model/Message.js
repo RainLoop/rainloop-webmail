@@ -11,7 +11,7 @@ import { addObservablesTo, addComputablesTo } from 'External/ko';
 import { FolderUserStore, isAllowedKeyword } from 'Stores/User/Folder';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
-import { FileInfo } from 'Common/File';
+import { FileInfo, RFC822 } from 'Common/File';
 import { AttachmentCollectionModel } from 'Model/AttachmentCollection';
 import { EmailCollectionModel } from 'Model/EmailCollection';
 import { AbstractModel } from 'Knoin/AbstractModel';
@@ -186,7 +186,7 @@ export class MessageModel extends AbstractModel {
 		return b64EncodeJSONSafe({
 			folder: this.folder,
 			uid: this.uid,
-			mimeType: 'message/rfc822',
+			mimeType: RFC822,
 			fileName: (this.subject() || 'message-' + this.hash) + '.eml',
 			accountHash: SettingsGet('accountHash')
 		});

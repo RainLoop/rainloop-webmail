@@ -3,6 +3,8 @@
 
 import { arrayLength } from 'Common/Utils';
 
+export const RFC822 = 'message/rfc822';
+
 const
 	cache = {},
 	app = 'application/',
@@ -12,8 +14,8 @@ const
 	lowerCase = text => text.toLowerCase().trim(),
 
 	exts = {
-		eml: 'message/rfc822',
-		mime: 'message/rfc822',
+		eml: RFC822,
+		mime: RFC822,
 		vcard: 'text/vcard',
 		vcf: 'text/vcard',
 		htm: 'text/html',
@@ -188,7 +190,7 @@ export const FileInfo = {
 			case ['php', 'js', 'css', 'xml', 'html'].includes(ext) || 'text/html' == mimeType:
 				result = FileType.Code;
 				break;
-			case 'eml' == ext || ['message/delivery-status', 'message/rfc822'].includes(mimeType):
+			case 'eml' == ext || ['message/delivery-status', RFC822].includes(mimeType):
 				result = FileType.Eml;
 				break;
 			case 'ics' == ext || mimeType == 'text/calendar':

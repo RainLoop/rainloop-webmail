@@ -2,19 +2,16 @@ import ko from 'ko';
 import { addObservablesTo, addComputablesTo } from 'External/ko';
 
 import { ScopeFolderList, ScopeMessageList, ScopeMessageView } from 'Common/Enums';
-
 import { ComposeType, FolderType, MessageSetAction } from 'Common/EnumsUser';
-
 import { doc,
 	leftPanelDisabled, toggleLeftPanel,
 	Settings, SettingsCapa,
 	addEventsListeners, stopEvent,
 	addShortcut, registerShortcut, formFieldFocused
 } from 'Common/Globals';
-
 import { arrayLength } from 'Common/Utils';
 import { computedPaginatorHelper, showMessageComposer, populateMessageBody, downloadZip, moveAction } from 'Common/UtilsUser';
-import { FileInfo } from 'Common/File';
+import { FileInfo, RFC822 } from 'Common/File';
 import { isFullscreen, toggleFullscreen } from 'Common/Fullscreen';
 
 import { mailBox } from 'Common/Links';
@@ -610,7 +607,7 @@ export class MailMessageList extends AbstractViewRight {
 			const dropZone = dom.querySelector('.listDragOver'),
 				validFiles = oEvent => {
 					for (const item of oEvent.dataTransfer.items) {
-						if ('file' === item.kind && 'message/rfc822' === item.type) {
+						if ('file' === item.kind && RFC822 === item.type) {
 							return true;
 						}
 					}

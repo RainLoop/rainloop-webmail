@@ -1,5 +1,6 @@
 import 'External/ko';
 import ko from 'ko';
+import { RFC822 } from 'Common/File';
 import { HtmlEditor } from 'Common/Html';
 import { timeToNode } from 'Common/Translator';
 import { doc, elementById, addEventsListeners, dropdowns, leftPanelDisabled } from 'Common/Globals';
@@ -43,7 +44,7 @@ const rlContentType = 'snappymail/action',
 		let files = false;
 //		if (e.dataTransfer.types.includes('Files'))
 		for (const item of e.dataTransfer.items) {
-			files |= 'file' === item.kind && 'message/rfc822' === item.type;
+			files |= 'file' === item.kind && RFC822 === item.type;
 		}
 		if (files || dragMessages()) {
 			e.stopPropagation();
