@@ -624,7 +624,7 @@
 #rl-app .select,
 #rl-app .emailaddresses,
 #rl-app input:not([type="checkbox"]) {
-    padding: 0 30px;
+    padding: 0 12px;
     font-size: var(--nc-default-font-size);
     color: var(--nc-color-main-text);
     background-color: unset;
@@ -675,8 +675,6 @@
 }
 
 #rl-app input[type=number] {
-    -moz-appearance: textfield;
-    -webkit-appearance: textfield;
     appearance: textfield;
     margin: 0;
     /* ? margin: 0 5px 0 0; */
