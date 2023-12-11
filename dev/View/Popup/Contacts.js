@@ -137,12 +137,24 @@ export class ContactsPopupView extends AbstractViewPopup {
 			recipients = {to:null,cc:null,bcc:null};
 
 		this.contactsCheckedOrSelected().forEach(oContact => {
-			const data = oContact?.getNameAndEmailHelper();
-			if (data) {
-				data[1].forEach(address => {
-					let email = new EmailModel(address, data[0]);
+			if (oContact) {
+				let name = (oContact.givenName() + ' ' + oContact.surName()).trim(),
+					email,
+					addresses = oContact.email();
+				if (!oContact.sendToAll()) {
+					addresses = addresses.slice(0,1);
+				}
+				addresses.forEach(address => {
+					email = new EmailModel(address, name);
 					email.valid() && aE.push(email);
 				});
+/*
+		//		oContact.jCard.getOne('fn')?.notEmpty() ||
+				oContact.jCard.parseFullName({set:true});
+		//		let name = oContact.jCard.getOne('nickname'),
+				let name = oContact.jCard.getOne('fn'),
+					email = [oContact.jCard.getOne('email')];
+*/
 			}
 		});
 

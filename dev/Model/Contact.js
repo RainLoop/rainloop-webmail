@@ -136,29 +136,6 @@ export class ContactModel extends AbstractModel {
 	}
 
 	/**
-	 * @returns {Array|null}
-	 */
-	getNameAndEmailHelper() {
-		let name = (this.givenName() + ' ' + this.surName()).trim(),
-			email = [],
-			addresses = this.email();
-
-		if (this.sendToAll()) {
-			addresses.forEach(key => email.push(key.value()));
-		} else if (addresses.length) {
-			email.push(addresses[0].value());
-		}
-/*
-//		this.jCard.getOne('fn')?.notEmpty() ||
-		this.jCard.parseFullName({set:true});
-//		let name = this.jCard.getOne('nickname'),
-		let name = this.jCard.getOne('fn'),
-			email = [this.jCard.getOne('email')];
-*/
-		return email.length ? [name, email] : null;
-	}
-
-	/**
 	 * @static
 	 * @param {jCard} json
 	 * @returns {?ContactModel}
