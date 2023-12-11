@@ -23,7 +23,10 @@ if ('POST' === $_SERVER['REQUEST_METHOD']) {
 		if (!$zip->open($file, ZIPARCHIVE::CREATE)) {
 			exit("Failed to create zip");
 		}
-		$lang = $lang ?: 'new';
+		if (!$lang) {
+			$lang = (empty($_POST['lang']) || !preg_match('/^[a-z]{2}(-[A-Z]{2})?$/D',$_POST['lang']))
+				? 'new' : $_POST['lang'];
+		}
 		$zip->addFromString("{$lang}/admin.json", toJSON($_POST['admin']));
 		$zip->addFromString("{$lang}/user.json", toJSON($_POST['user']));
 		$zip->close();
@@ -45,9 +48,9 @@ require 'demo/index.php';
 $root = APP_VERSION_ROOT_PATH . 'app/localization';
 
 $en = [
+	'user' => '',
 	'admin' => '',
 //	'static' => '',
-	'user' => ''
 ];
 foreach ($en as $name => $data) {
 	$en[$name] = json_decode(file_get_contents("{$root}/en/{$name}.json"), true);
@@ -102,17 +105,20 @@ echo '<!DOCTYPE html>
 <thead>
 	<tr>
 		<th>en</th>
-		<th>'.$lang.'</th>
+		<th>'.($lang ?: '<input name="lang" required="" pattern="[a-z]{2}(-[A-Z]{2})?">').'</th>
 	</tr>
 </thead>';
 foreach ($en as $name => $sections) {
 	echo '<tbody><tr class="file"><th colspan="3">'.$name.'</th></tr>';
-	$data = is_readable("{$root}/{$lang}/{$name}.json") ? json_decode(file_get_contents("{$root}/{$lang}/{$name}.json"), true) : [];
+	$data = $sections;
+	if ($lang && is_readable("{$root}/{$lang}/{$name}.json")) {
+		$data = json_decode(file_get_contents("{$root}/{$lang}/{$name}.json"), true);
+	}
 	foreach ($sections as $section => $values) {
 		if (is_array($values)) {
 			echo '<tr class="section"><td colspan="3">'.$section.'</td><td></td></tr>';
 			foreach ($values as $key => $value) {
-				echo '<tr'.(($lang && (empty($data[$section][$key]) || $value == $data[$section][$key])) ? ' class="untranslated"':'').'>';
+				echo '<tr'.((empty($data[$section][$key]) || $value == $data[$section][$key]) ? ' class="untranslated"':'').'>';
 //				echo '<td>'.$section.'/'.$key.'</td>';
 				echo '<td>'.htmlspecialchars($value).'</td>';
 				echo '<td><textarea name="'."{$name}[{$section}][{$key}]".'">'.htmlspecialchars($data[$section][$key] ?? '').'</textarea></td>';
