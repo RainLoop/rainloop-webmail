@@ -64,7 +64,7 @@ body#rl-app {
 #rl-loading, #rl-loading-error, #rl-BadBrowser, #rl-NoCookie {
 	color: var(--loading-color, #000);
 	text-shadow: var(--loading-text-shadow);
-	font-size: 30px;
+	font-size: 214%;
 	line-height: 130%;
 	position: fixed;
 	text-align: center;

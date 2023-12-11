@@ -145,7 +145,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 					addresses = addresses.slice(0,1);
 				}
 				addresses.forEach(address => {
-					email = new EmailModel(address, name);
+					email = new EmailModel(address.value(), name);
 					email.valid() && aE.push(email);
 				});
 /*
