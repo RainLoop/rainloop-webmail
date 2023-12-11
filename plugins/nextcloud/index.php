@@ -4,8 +4,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Nextcloud',
-		VERSION = '2.26',
-		RELEASE  = '2023-12-08',
+		VERSION = '2.27',
+		RELEASE  = '2023-12-11',
 		CATEGORY = 'Integrations',
 		DESCRIPTION = 'Integrate with Nextcloud v20+',
 		REQUIRED = '2.27.0';
@@ -245,14 +245,10 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 	}
 
-	public function FilterLanguage($bAdmin, &$sLanguage) : void
+	public function FilterLanguage(&$sLanguage, $bAdmin) : void
 	{
 		if (!\RainLoop\Api::Config()->Get('webmail', 'allow_languages_on_settings', true)) {
-			$sLanguage = \RainLoop\Api::Actions()->ValidateLanguage(
-				\OC::$server->getL10N('core')->getLocaleCode(),
-				$sLanguage,
-				$bAdmin
-			);
+			$sLanguage = \strtr(\OC::$server->getL10N('core')->getLocaleCode(), '_', '-');
 		}
 	}
 
