@@ -96,7 +96,7 @@ export class MailMessageView extends AbstractViewRight {
 						currentMessage(null);
 						rl.app.moveMessagesToFolderType(folderType, message.folder, new Set([message.uid]), bDelete);
 					}
-				}, this.messageVisibility);
+				}, this.messageVisible);
 
 		this.msgDefaultAction = SettingsUserStore.msgDefaultAction;
 		this.simpleAttachmentsList = SettingsUserStore.simpleAttachmentsList;
@@ -147,7 +147,7 @@ export class MailMessageView extends AbstractViewRight {
 
 			tagsAllowed: () => FolderUserStore.currentFolder()?.tagsAllowed(),
 
-			messageVisibility: () => !MessageUserStore.loading() && !!currentMessage(),
+			messageVisible: () => !MessageUserStore.loading() && !!currentMessage(),
 
 			tagsToHTML: () => currentMessage()?.flags().map(value =>
 					isAllowedKeyword(value)
@@ -164,7 +164,7 @@ export class MailMessageView extends AbstractViewRight {
 				.filter(item => SettingsUserStore.listInlineAttachments() || !item.isLinked()),
 			hasAttachments: () => this.listAttachments()?.length,
 
-			canBeRepliedOrForwarded: () => !MessagelistUserStore.isDraftFolder() && this.messageVisibility(),
+			canBeRepliedOrForwarded: () => !MessagelistUserStore.isDraftFolder() && this.messageVisible(),
 
 			viewDkimIcon: () => 'none' !== this.dkimData()[0],
 
@@ -230,8 +230,8 @@ export class MailMessageView extends AbstractViewRight {
 		this.notSpamCommand = createCommandActionHelper(FolderType.Inbox);
 
 		decorateKoCommands(this, {
-			editCommand: self => self.messageVisibility(),
-			moveCommand: self => self.messageVisibility(),
+			editCommand: self => self.messageVisible(),
+			moveCommand: self => self.messageVisible(),
 			goUpCommand: self => !self.messageListOrViewLoading(),
 			goDownCommand: self => !self.messageListOrViewLoading()
 		});
