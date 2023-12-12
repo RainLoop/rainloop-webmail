@@ -25,6 +25,11 @@ class File implements \MailSo\Cache\DriverInterface
 	function __construct(string $sCacheFolder, string $sKeyPrefix = '')
 	{
 		$this->sCacheFolder = \rtrim(\trim($sCacheFolder), '\\/').'/';
+
+		// http://www.brynosaurus.com/cachedir/
+		$tag = $this->sCacheFolder . 'CACHEDIR.TAG';
+		\is_file($tag) || \file_put_contents($tag, 'Signature: 8a477f597d28d172789f06886806bc55');
+
 		if (!empty($sKeyPrefix)) {
 			$sKeyPrefix = \str_pad(\preg_replace('/[^a-zA-Z0-9_]/', '_',
 				\rtrim(\trim($sKeyPrefix), '\\/')), 5, '_');

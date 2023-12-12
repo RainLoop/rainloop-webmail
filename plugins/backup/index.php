@@ -33,7 +33,7 @@ class BackupPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$sZipHash = \MailSo\Base\Utils::Sha1Rand();
 		$sZipFileName = APP_PRIVATE_DATA . $sZipHash . '.zip';
 
-		\touch(APP_PRIVATE_DATA.'cache/CACHEDIR.TAG');
+		\file_put_contents(APP_PRIVATE_DATA.'cache/CACHEDIR.TAG', 'Signature: 8a477f597d28d172789f06886806bc55');
 
 		if (\class_exists('ZipArchive')) {
 //			$oZip = new \ZipArchive();

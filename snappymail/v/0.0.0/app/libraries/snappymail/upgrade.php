@@ -172,7 +172,10 @@ abstract class Upgrade
 //		$tar_destination = APP_DATA_FOLDER_PATH . APP_VERSION . '.tar';
 		$tar_destination = APP_DATA_FOLDER_PATH . 'backup-' . \date('YmdHis') . '.tar';
 		$tar = new \PharData($tar_destination);
-		$files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(APP_DATA_FOLDER_PATH . '_data_'), \RecursiveIteratorIterator::SELF_FIRST);
+		$files = new \RecursiveIteratorIterator(
+			new \RecursiveDirectoryIterator(APP_DATA_FOLDER_PATH . '_data_'),
+			\RecursiveIteratorIterator::SELF_FIRST
+		);
 		$l = \strlen(APP_DATA_FOLDER_PATH);
 		foreach ($files as $file) {
 			$file = \str_replace('\\', '/', $file);
