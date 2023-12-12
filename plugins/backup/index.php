@@ -6,8 +6,8 @@ class BackupPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Backup',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.0',
-		RELEASE  = '2023-12-10',
+		VERSION  = '1.1',
+		RELEASE  = '2023-12-12',
 		REQUIRED = '2.30.0',
 		CATEGORY = 'General',
 		LICENSE  = 'MIT',
@@ -34,7 +34,8 @@ class BackupPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 		$sFileName = APP_PRIVATE_DATA . \MailSo\Base\Utils::Sha1Rand();
 
-		if (false) {
+		if (true) {
+			$sType = 'application/zip';
 			$sFileName .= '.zip';
 			if (\class_exists('ZipArchive')) {
 //				$oArchive = new \ZipArchive();
@@ -43,6 +44,7 @@ class BackupPlugin extends \RainLoop\Plugins\AbstractPlugin
 			}
 			$oArchive = new \SnappyMail\Stream\ZIP($sFileName);
 		} else {
+			$sType = 'application/x-gzip';
 			$sFileName .= '.tgz';
 			$oArchive = new \SnappyMail\Stream\TAR($sFileName);
 		}
@@ -62,7 +64,8 @@ class BackupPlugin extends \RainLoop\Plugins\AbstractPlugin
 		\unlink($sFileName);
 
 		return $this->jsonResponse(__FUNCTION__, array(
-			'zip' => $data
+			'name' => \basename($sFileName),
+			'data' => "data:{$sType};base64,{$data}"
 		));
 	}
 
