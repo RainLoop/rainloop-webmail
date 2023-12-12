@@ -228,7 +228,7 @@
 					<div class="bodySubHeader" data-bind="if: message, i18nUpdate: message">
 						<div class="readReceipt" data-bind="visible: askReadReceipt, click: readReceipt"
 							data-icon="✉" data-i18n="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></div>
-							<details class="attachmentsPlace" data-bind="visible: hasAttachments, css: {'selection-mode' : showAttachmentControls}, attr: { open: hasAttachments }">
+						<details class="attachmentsPlace" data-bind="visible: hasAttachments, css: {'selection-mode' : showAttachmentControls}, attr: { open: hasAttachments }">
 							<summary data-i18n="MESSAGE/PRINT_LABEL_ATTACHMENTS"></summary>
 							<!-- ko ifnot: simpleAttachmentsList -->
 							<ul class="attachmentList" data-bind="foreach: listAttachments">
