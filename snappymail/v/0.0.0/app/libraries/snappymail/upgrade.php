@@ -166,12 +166,15 @@ abstract class Upgrade
 
 	public static function backup() : string
 	{
-		if (!\class_exists('PharData')) {
-			throw new \Exception('PHP Phar is disabled, you must enable it');
-		}
 //		$tar_destination = APP_DATA_FOLDER_PATH . APP_VERSION . '.tar';
-		$tar_destination = APP_DATA_FOLDER_PATH . 'backup-' . \date('YmdHis') . '.tar';
-		$tar = new \PharData($tar_destination);
+		$tar_destination = APP_DATA_FOLDER_PATH . 'backup-' . \date('YmdHis');
+		if (\class_exists('PharData')) {
+			$tar_destination .= '.tar';
+			$tar = new \PharData($tar_destination);
+		} else {
+			$tar_destination .= '.tgz';
+			$tar = new \SnappyMail\Stream\TAR($tar_destination);
+		}
 		$files = new \RecursiveIteratorIterator(
 			new \RecursiveDirectoryIterator(APP_DATA_FOLDER_PATH . '_data_'),
 			\RecursiveIteratorIterator::SELF_FIRST
@@ -182,6 +185,9 @@ abstract class Upgrade
 			if (\is_file($file) && !\strpos($file, '/cache/')) {
 				$tar->addFile($file, \substr($file, $l));
 			}
+		}
+		if ($tar instanceof \SnappyMail\Stream\TAR) {
+			return $tar_destination;
 		}
 		$tar->compress(\Phar::GZ);
 		\unlink($tar_destination);
