@@ -197,12 +197,15 @@ abstract class Upgrade
 				if (!$sTmp) {
 					throw new \Exception('Failed to download latest SnappyMail');
 				}
-				$target = \rtrim(APP_INDEX_ROOT_PATH, '\\/');
+
 				if (\class_exists('PharData')) {
 					$oArchive = new \PharData($sTmp, 0, null, \Phar::GZ);
 				} else {
 					$oArchive = new \SnappyMail\TAR($sTmp);
 				}
+
+				$target = \rtrim(APP_INDEX_ROOT_PATH, '\\/');
+				\umask(0022);
 				\error_log('Extract to ' . $target);
 //				$bResult = $oArchive->extractTo($target, null, true);
 				$bResult = $oArchive->extractTo($target, 'snappymail/')
@@ -228,12 +231,13 @@ abstract class Upgrade
 	public static function fixPermissions($mode = 0755) : void
 	{
 		\clearstatcache(true);
-		\umask(0000);
+		\umask(0022);
 		$target = \rtrim(APP_INDEX_ROOT_PATH, '\\/');
 		// Prevent Apache access error due to directories being 0700
 		foreach (\glob("{$target}/snappymail/v/*", \GLOB_ONLYDIR) as $dir) {
 			\chmod($dir, 0755);
 			foreach (['static','themes'] as $folder) {
+				\chmod("{$dir}/{$folder}", 0755);
 				$iterator = new \RecursiveIteratorIterator(
 					new \RecursiveDirectoryIterator("{$dir}/{$folder}", \FilesystemIterator::SKIP_DOTS),
 					\RecursiveIteratorIterator::SELF_FIRST
