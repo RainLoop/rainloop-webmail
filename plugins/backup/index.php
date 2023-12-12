@@ -30,31 +30,36 @@ class BackupPlugin extends \RainLoop\Plugins\AbstractPlugin
 			return $this->jsonResponse(__FUNCTION__, false);
 		}
 
-		$sZipHash = \MailSo\Base\Utils::Sha1Rand();
-		$sZipFileName = APP_PRIVATE_DATA . $sZipHash . '.zip';
-
 		\file_put_contents(APP_PRIVATE_DATA.'cache/CACHEDIR.TAG', 'Signature: 8a477f597d28d172789f06886806bc55');
 
-		if (\class_exists('ZipArchive')) {
-//			$oZip = new \ZipArchive();
-//			$oZip->open($sZipFileName, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::OVERWRITE);
-//			$oZip->setArchiveComment('SnappyMail/'.APP_VERSION);
+		$sFileName = APP_PRIVATE_DATA . \MailSo\Base\Utils::Sha1Rand();
+
+		if (false) {
+			$sFileName .= '.zip';
+			if (\class_exists('ZipArchive')) {
+//				$oArchive = new \ZipArchive();
+//				$oArchive->open($sFileName, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::OVERWRITE);
+//				$oArchive->setArchiveComment('SnappyMail/'.APP_VERSION);
+			}
+			$oArchive = new \SnappyMail\Stream\ZIP($sFileName);
+		} else {
+			$sFileName .= '.tgz';
+			$oArchive = new \SnappyMail\Stream\TAR($sFileName);
 		}
 
-		$oZip = new \SnappyMail\Stream\ZIP($sZipFileName);
-//		$oZip->addRecursive(APP_PRIVATE_DATA, '#/(cache.*)#');
-		$oZip->addRecursive(APP_PRIVATE_DATA.'configs', 'configs');
-		$oZip->addRecursive(APP_PRIVATE_DATA.'domains', 'domains');
-		$oZip->addRecursive(APP_PRIVATE_DATA.'plugins', 'plugins');
-		$oZip->addRecursive(APP_PRIVATE_DATA.'storage', 'storage');
+//		$oArchive->addRecursive(APP_PRIVATE_DATA, '#/(cache.*)#');
+		$oArchive->addRecursive(APP_PRIVATE_DATA.'configs', 'configs');
+		$oArchive->addRecursive(APP_PRIVATE_DATA.'domains', 'domains');
+		$oArchive->addRecursive(APP_PRIVATE_DATA.'plugins', 'plugins');
+		$oArchive->addRecursive(APP_PRIVATE_DATA.'storage', 'storage');
 		if (\is_readable(APP_PRIVATE_DATA.'AddressBook.sqlite')) {
-			$oZip->addFile(APP_PRIVATE_DATA.'AddressBook.sqlite');
+			$oArchive->addFile(APP_PRIVATE_DATA.'AddressBook.sqlite');
 		}
-//		$oZip->addFile(APP_DATA_FOLDER_PATH.'SALT.php');
-		$oZip->close();
+//		$oArchive->addFile(APP_DATA_FOLDER_PATH.'SALT.php');
+		$oArchive->close();
 
-		$data = \base64_encode(\file_get_contents($sZipFileName));
-		\unlink($sZipFileName);
+		$data = \base64_encode(\file_get_contents($sFileName));
+		\unlink($sFileName);
 
 		return $this->jsonResponse(__FUNCTION__, array(
 			'zip' => $data
