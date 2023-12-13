@@ -8,7 +8,7 @@ abstract class L10n
 	/**
 	 * @staticvar array $aCache
 	 */
-	public static function (bool $bAdmin = false) : array
+	public static function getLanguages(bool $bAdmin = false) : array
 	{
 		static $aCache = array();
 
