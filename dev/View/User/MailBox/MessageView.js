@@ -162,7 +162,13 @@ export class MailMessageView extends AbstractViewRight {
 
 			listAttachments: () => currentMessage()?.attachments()
 				.filter(item => SettingsUserStore.listInlineAttachments() || !item.isLinked()),
-			hasAttachments: () => this.listAttachments()?.length,
+//			hasAttachments: () => this.listAttachments()?.length,
+			hasAttachments: () => currentMessage()?.attachments()
+				.some(item => SettingsUserStore.listInlineAttachments() || !item.isLinked()),
+//			listInlines: () => currentMessage()?.attachments()
+//				.filter(item => item.isLinked()),
+//			hasInlines: () => currentMessage()?.attachments()
+//				.some(item => SettingsUserStore.listInlineAttachments() || !item.isLinked()),
 
 			canBeRepliedOrForwarded: () => !MessagelistUserStore.isDraftFolder() && this.messageVisible(),
 
