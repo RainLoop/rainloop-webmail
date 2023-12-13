@@ -248,8 +248,50 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function FilterLanguage(&$sLanguage, $bAdmin) : void
 	{
 		if (!\RainLoop\Api::Config()->Get('webmail', 'allow_languages_on_settings', true)) {
-			$sLanguage = \strtr(\OC::$server->getL10N('core')->getLocaleCode(), '_', '-');
+			$aResultLang = \json_decode(\file_get_contents(APP_VERSION_ROOT_PATH . 'app/localization/langs.json'), true);
+			if ($aResultLang === null) {
+				throw new \Exception('Error decoding JSON content.');
+			}
+			$user = \OC::$server->getUserSession()->getUser();
+			$userId = $user->getUID();
+			$userLang = \OC::$server->getConfig()->getUserValue($userId, 'core', 'lang');
+			$sLanguage = $this->determineLocale($langCode,$aResultLang['LANGS_NAMES_EN']);
+			// Check if $sLanguage is null
+			if ($sLanguage === null) {
+				$sLanguage = 'en'; // Assign 'en' if $sLanguage is null
+			}
 		}
+	}
+
+	/**
+	 * Determine locale from user language.
+	 *
+	 * @param string $langCode The name of the input.
+	 * @param array  $languagesArray The value of the array.
+	 *
+	 * @return string return locale 
+	 */
+	private function determineLocale (string $langCode, array $languagesArray) : string {
+		// Direct check for the language code
+		if (isset($languagesArray[$langCode])) {
+			return $langCode;
+		}
+	
+		// Check with uppercase country code
+		$langCodeWithUpperCase = $langCode . '-' . strtoupper($langCode);
+		if (isset($languagesArray[$langCodeWithUpperCase])) {
+			return $langCodeWithUpperCase;
+		}
+	
+		// Iterating to find a match starting with langCode
+		foreach ($languagesArray as $localeKey => $localeValue) {
+			if (strpos($localeKey, $langCode) === 0) {
+				return $localeKey;
+			}
+		}
+
+		// If no match is found
+		return null;
 	}
 
 	/**
