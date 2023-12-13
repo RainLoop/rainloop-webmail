@@ -254,8 +254,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 			}
 			$user = \OC::$server->getUserSession()->getUser();
 			$userId = $user->getUID();
-			$userLang = \OC::$server->getConfig()->getUserValue($userId, 'core', 'lang');
-			$sLanguage = $this->determineLocale($langCode,$aResultLang['LANGS_NAMES_EN']);
+			$userLang = \OC::$server->getConfig()->getUserValue($userId, 'core', 'lang','en');
+			$sLanguage = $this->determineLocale($userLang,$aResultLang['LANGS_NAMES_EN']);
 			// Check if $sLanguage is null
 			if ($sLanguage === null) {
 				$sLanguage = 'en'; // Assign 'en' if $sLanguage is null
