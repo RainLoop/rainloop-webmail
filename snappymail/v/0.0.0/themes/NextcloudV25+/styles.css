@@ -1540,15 +1540,15 @@ html.rl-left-panel-disabled[dir="rtl"] #rl-app #V-MailFolderList .b-footer.btn-t
 	background: var(--nc-color-primary-light);
 	border-radius: var(--nc-border-radius-large);
 	margin: 5px 5px 0 5px;
-	text-align: center;
+	text-align: start;
+}
+
+html.sm-msgView-side #V-MailMessageList .btn-toolbar {
+	text-align: center !important;
 }
 
 #rl-app #V-MailMessageList .btn-toolbar .btn:not(.btn-success) {
 	background: var(--nc-color-main-background);
-}
-
-html.rl-mobile #rl-app #V-MailMessageList .btn-toolbar {
-	text-align: start;
 }
 
 #rl-app #V-MailMessageList .messageList {
