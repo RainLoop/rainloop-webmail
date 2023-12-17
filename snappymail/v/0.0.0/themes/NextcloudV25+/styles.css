@@ -706,12 +706,12 @@
 	outline: none;
 }
 
-#rl-app .e-checkbox.material-design:focus {
-	outline: none;
-}
-
 #rl-app .e-checkbox input[type="checkbox"] {
 	display: none;
+}
+
+#rl-app .e-checkbox:focus {
+	outline: none;
 }
 
 input[type="checkbox"] {
