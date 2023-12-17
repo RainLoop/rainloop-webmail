@@ -447,7 +447,7 @@
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Bloqué par le navigateur)",
 		"COLLAPSE_BLOCKQUOTES": "Réduire le texte cité",
 		"MAX_QUOTE_LEVEL": "Niveau maximum de texte cité visible",
-		"LIST_INLINE_ATTACHMENTS": "Afficher les pièces jointes dans la liste",
+		"LIST_INLINE_ATTACHMENTS": "Afficher les pièces jointes intégrées dans la liste",
 		"LIST_SIMPLE_ATTACHMENTS": "Liste simple des pièces jointes",
 		"LIST_MESSAGES_GROUPED": "Lister les messages groupés (lors du tri par Date ou Destinataire)",
 		"EXTERNAL_IMAGES": "Images externes",
