@@ -2415,8 +2415,9 @@ html.rl-mobile #rl-app #V-AdminPane>.b-toolbar {
 }
 
 #rl-app #V-PopupsNextcloudCalendars li button {
-	margin-left: auto !important;
-	align-self: center;
+	border: 0px !important;
+	margin-left: 8px !important;
+	color: var(--nc-color-primary-element-light-text) !important;
 }
 
 /* #endregion */
