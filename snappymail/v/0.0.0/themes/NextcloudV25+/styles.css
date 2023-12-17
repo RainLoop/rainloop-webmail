@@ -13,15 +13,6 @@
 :root {
 	--border-color: var(--nc-color-border);
 	--dialog-border-clr: var(--nc-color-border);
-
-	--nc-vs-selected-bg: var(--vs-selected-bg, var(--nc-color-background-dark));
-	--nc-vs-selected-color: var(--vs-selected-color, var(--nc-color-main-text));
-	--nc-vs-border-radius: var(--vs-border-radius, var(--nc-border-radius-large));
-	--nc-vs-controls-color: var(--vs-controls-color, var(--nc-color-text-maxcontrast));
-	--nc-vs-line-height: var(--vs-line-height, var(--nc-default-line-height));
-	--nc-vs-search-input-bg: var(--vs-search-input-bg, var(--nc-color-main-background));
-	--nc-vs-search-input-color: var(--vs-search-input-color, var(--nc-color-main-text));
-	--nc-vs-font-size: var(--vs-font-size, var(--nc-default-font-size));
 }
 
 :not([data-themes~="dark"]) {
@@ -151,6 +142,7 @@
 		--nc-color-primary-element-text-dark: var(--color-primary-element-text-dark, #ededed);
 	}
 }
+
 /* #endregion */
 
 /*
@@ -783,8 +775,8 @@ input[type="checkbox"] {
 	height: auto;
 	min-height: 44px;
 	max-height: calc(44px*2);
-	line-height: var(--nc-vs-line-height);
-	background-color: var(--nc-vs-search-input-bg);
+	line-height: var(--nc-default-line-height);
+	background-color: var(--nc-color-main-background);
 	white-space: normal;
 }
 
@@ -802,9 +794,9 @@ input[type="checkbox"] {
 	padding: 0 7px;
 	height: 36px;
 	max-width: 390px;
-	color: var(--nc-vs-search-input-color);
-	font-size: var(--nc-vs-font-size);
-	line-height: var(--nc-vs-line-height);
+	color: var(--nc-color-main-text);
+	font-size: var(--nc-default-font-size);
+	line-height: var(--nc-default-line-height);
 }
 
 #rl-app .emailaddresses li[draggable] {
@@ -812,11 +804,11 @@ input[type="checkbox"] {
 	align-items: center;
 	padding: 0 0.5em;
 	min-height: 36px;
-	line-height: var(--nc-vs-line-height);
-	color: var(--nc-vs-selected-color);
+	line-height: var(--nc-default-line-height);
+	color: var(--nc-color-main-text);
 	border: 0;
-	border-radius: var(--nc-vs-border-radius);
-	background-color: var(--nc-vs-selected-bg);
+	border-radius: var(--nc-border-radius-large);
+	background-color: var(--nc-color-background-dark);
 	box-shadow: none;
 }
 
@@ -830,7 +822,7 @@ input[type="checkbox"] {
 #rl-app .emailaddresses li[draggable]>a.ficon {
 	position: unset;
 	color: transparent;
-	text-shadow: 0 0 0 var(--nc-vs-controls-color);
+	text-shadow: 0 0 0 var(--nc-color-text-maxcontrast);
 	background: none;
 	border: 0;
 	cursor: pointer;
