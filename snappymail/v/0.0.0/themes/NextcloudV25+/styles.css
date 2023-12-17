@@ -13,15 +13,6 @@
 :root {
 	--border-color: var(--nc-color-border);
 	--dialog-border-clr: var(--nc-color-border);
-
-	--nc-vs-selected-bg: var(--vs-selected-bg, var(--nc-color-background-dark));
-	--nc-vs-selected-color: var(--vs-selected-color, var(--nc-color-main-text));
-	--nc-vs-border-radius: var(--vs-border-radius, var(--nc-border-radius-large));
-	--nc-vs-controls-color: var(--vs-controls-color, var(--nc-color-text-maxcontrast));
-	--nc-vs-line-height: var(--vs-line-height, var(--nc-default-line-height));
-	--nc-vs-search-input-bg: var(--vs-search-input-bg, var(--nc-color-main-background));
-	--nc-vs-search-input-color: var(--vs-search-input-color, var(--nc-color-main-text));
-	--nc-vs-font-size: var(--vs-font-size, var(--nc-default-font-size));
 }
 
 :not([data-themes~="dark"]) {
@@ -151,6 +142,7 @@
 		--nc-color-primary-element-text-dark: var(--color-primary-element-text-dark, #ededed);
 	}
 }
+
 /* #endregion */
 
 /*
@@ -714,12 +706,12 @@
 	outline: none;
 }
 
-#rl-app .e-checkbox.material-design:focus {
-	outline: none;
-}
-
 #rl-app .e-checkbox input[type="checkbox"] {
 	display: none;
+}
+
+#rl-app .e-checkbox:focus {
+	outline: none;
 }
 
 input[type="checkbox"] {
@@ -783,8 +775,8 @@ input[type="checkbox"] {
 	height: auto;
 	min-height: 44px;
 	max-height: calc(44px*2);
-	line-height: var(--nc-vs-line-height);
-	background-color: var(--nc-vs-search-input-bg);
+	line-height: var(--nc-default-line-height);
+	background-color: var(--nc-color-main-background);
 	white-space: normal;
 }
 
@@ -802,9 +794,9 @@ input[type="checkbox"] {
 	padding: 0 7px;
 	height: 36px;
 	max-width: 390px;
-	color: var(--nc-vs-search-input-color);
-	font-size: var(--nc-vs-font-size);
-	line-height: var(--nc-vs-line-height);
+	color: var(--nc-color-main-text);
+	font-size: var(--nc-default-font-size);
+	line-height: var(--nc-default-line-height);
 }
 
 #rl-app .emailaddresses li[draggable] {
@@ -812,11 +804,11 @@ input[type="checkbox"] {
 	align-items: center;
 	padding: 0 0.5em;
 	min-height: 36px;
-	line-height: var(--nc-vs-line-height);
-	color: var(--nc-vs-selected-color);
+	line-height: var(--nc-default-line-height);
+	color: var(--nc-color-main-text);
 	border: 0;
-	border-radius: var(--nc-vs-border-radius);
-	background-color: var(--nc-vs-selected-bg);
+	border-radius: var(--nc-border-radius-large);
+	background-color: var(--nc-color-background-dark);
 	box-shadow: none;
 }
 
@@ -830,7 +822,7 @@ input[type="checkbox"] {
 #rl-app .emailaddresses li[draggable]>a.ficon {
 	position: unset;
 	color: transparent;
-	text-shadow: 0 0 0 var(--nc-vs-controls-color);
+	text-shadow: 0 0 0 var(--nc-color-text-maxcontrast);
 	background: none;
 	border: 0;
 	cursor: pointer;
@@ -1008,6 +1000,15 @@ input[type="checkbox"] {
 	overflow-wrap: anywhere;
 }
 
+#rl-app .tabs>label:first-of-type {
+  margin-left: 0px;
+}
+
+#rl-app .tabs>label:last-of-type {
+  margin-right: 0px;
+}
+
+
 #rl-app .tabs>label:hover {
 	border-color: transparent;
 	border-bottom-color: var(--nc-color-primary-element);
@@ -1056,6 +1057,28 @@ input[type="checkbox"] {
 	border-radius: var(--nc-border-radius);
 	box-shadow: none;
 	padding: 2px;
+}
+
+#rl-app .attachmentListSimple {
+  flex-wrap: wrap;
+  display: flex;
+}
+
+#rl-app .attachmentListSimple .attachmentItem {
+	display: flex;
+	width: min-content;
+	max-width: unset;
+}
+
+#rl-app .attachmentListSimple .attachmentName {
+	max-width: 200px;
+	margin: 5px;
+}
+
+#rl-app .attachmentListSimple .checkboxAttachment {
+	position: initial;
+  margin: 5px;
+  margin-left: 0;
 }
 
 #rl-app .attachmentItem:hover,
@@ -1221,6 +1244,10 @@ html.rl-mobile.rl-left-panel-disabled #rl-app #rl-left {
 #rl-app .LoginView .controls span.fontastic:active,
 #rl-app .LoginView .controls span.fontastic:hover {
 	background: unset;
+}
+
+#rl-app .LoginView .controls input:not([type="checkbox"]) {
+	padding-left: 30px;
 }
 
 #rl-app #rl-loading[hidden],
@@ -1535,15 +1562,15 @@ html.rl-left-panel-disabled[dir="rtl"] #rl-app #V-MailFolderList .b-footer.btn-t
 	background: var(--nc-color-primary-light);
 	border-radius: var(--nc-border-radius-large);
 	margin: 5px 5px 0 5px;
-	text-align: center;
+	text-align: start;
+}
+
+html.sm-msgView-side #V-MailMessageList .btn-toolbar {
+	text-align: center !important;
 }
 
 #rl-app #V-MailMessageList .btn-toolbar .btn:not(.btn-success) {
 	background: var(--nc-color-main-background);
-}
-
-html.rl-mobile #rl-app #V-MailMessageList .btn-toolbar {
-	text-align: start;
 }
 
 #rl-app #V-MailMessageList .messageList {
@@ -1911,10 +1938,6 @@ html.sm-msgView-bottom #rl-app .messageView {
 #rl-app #messageItem .attachmentsControls .icon-file-archive,
 #rl-app #messageItem .attachmentsControls .fontastic {
 	color: var(--nc-color-main-text);
-}
-
-#rl-app #messageItem .attachmentListSimple .attachmentName {
-	margin: 5px;
 }
 
 /* #endregion */
@@ -2336,6 +2359,15 @@ html.rl-mobile #rl-app #V-AdminPane>.b-toolbar {
 	overflow-wrap: anywhere;
 }
 
+/* fallback (Firefox ignores complete selector list if :has is used) */
+#rl-app #V-PopupsNextcloudFiles li[data-icon],
+#rl-app #V-PopupsNextcloudFiles li details summary {
+	padding: 5px 10px;
+	display: flex;
+	align-items: center !important;
+	overflow-wrap: anywhere;
+}
+
 #rl-app #V-PopupsNextcloudFiles li button,
 #rl-app #V-PopupsNextcloudFiles li input {
 	margin-left: auto !important;
@@ -2401,8 +2433,22 @@ html.rl-mobile #rl-app #V-AdminPane>.b-toolbar {
 }
 
 #rl-app #V-PopupsNextcloudCalendars li button {
-	margin-left: auto !important;
-	align-self: center;
+	border: 0px !important;
+	margin-left: 8px !important;
+	color: var(--nc-color-primary-element-light-text) !important;
+}
+
+/* #endregion */
+
+/* #region popup openpgp generate */
+
+#rl-app #openpgp-generate.form-horizontal .control-group:has(.e-checkbox) {
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+#rl-app #openpgp-generate.form-horizontal .control-group:has(.e-checkbox) br {
+	display: none;
 }
 
 /* #endregion */
