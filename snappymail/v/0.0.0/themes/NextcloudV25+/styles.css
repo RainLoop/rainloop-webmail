@@ -1059,6 +1059,28 @@ input[type="checkbox"] {
 	padding: 2px;
 }
 
+#rl-app .attachmentListSimple {
+  flex-wrap: wrap;
+  display: flex;
+}
+
+#rl-app .attachmentListSimple .attachmentItem {
+	display: flex;
+	width: min-content;
+	max-width: unset;
+}
+
+#rl-app .attachmentListSimple .attachmentName {
+	max-width: 200px;
+	margin: 5px;
+}
+
+#rl-app .attachmentListSimple .checkboxAttachment {
+	position: initial;
+  margin: 5px;
+  margin-left: 0;
+}
+
 #rl-app .attachmentItem:hover,
 #rl-app .attachmentItem:active {
 	background-color: var(--nc-color-background-darker);
@@ -1916,10 +1938,6 @@ html.sm-msgView-bottom #rl-app .messageView {
 #rl-app #messageItem .attachmentsControls .icon-file-archive,
 #rl-app #messageItem .attachmentsControls .fontastic {
 	color: var(--nc-color-main-text);
-}
-
-#rl-app #messageItem .attachmentListSimple .attachmentName {
-	margin: 5px;
 }
 
 /* #endregion */
