@@ -1215,6 +1215,10 @@ html.rl-mobile.rl-left-panel-disabled #rl-app #rl-left {
 	background: unset;
 }
 
+#rl-app .LoginView .controls input:not([type="checkbox"]) {
+	padding-left: 30px;
+}
+
 #rl-app #rl-loading[hidden],
 #rl-app #rl-loading-error[hidden],
 #rl-app .LoginView .alert[hidden] {
