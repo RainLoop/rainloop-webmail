@@ -2399,6 +2399,19 @@ html.rl-mobile #rl-app #V-AdminPane>.b-toolbar {
 
 /* #endregion */
 
+/* #region popup openpgp generate */
+
+#rl-app #openpgp-generate.form-horizontal .control-group:has(.e-checkbox) {
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+#rl-app #openpgp-generate.form-horizontal .control-group:has(.e-checkbox) br {
+	display: none;
+}
+
+/* #endregion */
+
 /* #endregion */
 
 /*
