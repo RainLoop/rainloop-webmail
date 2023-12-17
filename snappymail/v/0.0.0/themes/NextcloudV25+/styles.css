@@ -1000,6 +1000,15 @@ input[type="checkbox"] {
 	overflow-wrap: anywhere;
 }
 
+#rl-app .tabs>label:first-of-type {
+  margin-left: 0px;
+}
+
+#rl-app .tabs>label:last-of-type {
+  margin-right: 0px;
+}
+
+
 #rl-app .tabs>label:hover {
 	border-color: transparent;
 	border-bottom-color: var(--nc-color-primary-element);
