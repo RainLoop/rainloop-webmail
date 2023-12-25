@@ -389,8 +389,16 @@ class MailClient
 	 */
 	public function FolderHash(string $sFolderName) : string
 	{
-		return $this->oImapClient->FolderStatus($sFolderName)->etag;
-//		return $this->oImapClient->FolderStatusAndSelect($sFolderName)->etag;
+		try
+		{
+//			return $this->oImapClient->FolderStatusAndSelect($sFolderName)->etag;
+			return $this->oImapClient->FolderStatus($sFolderName)->etag;
+		}
+		catch (\Throwable $oException)
+		{
+			\SnappyMail\Log::warning('IMAP', "FolderHash({$sFolderName}) Exception: {$oException->getMessage()}");
+		}
+		return '';
 	}
 
 	/**

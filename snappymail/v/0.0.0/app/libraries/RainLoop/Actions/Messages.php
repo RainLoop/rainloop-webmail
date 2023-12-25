@@ -61,7 +61,7 @@ trait Messages
 		$oAccount = $this->initMailClientConnection();
 
 		if ($sHash) {
-//			$oInfo = $this->MailClient()->FolderHash($oParams->sFolderName);
+//			$sFolderHash = $this->MailClient()->FolderHash($oParams->sFolderName);
 			$oInfo = $this->ImapClient()->FolderStatusAndSelect($oParams->sFolderName);
 			$aRequestHash = \explode('-', $sHash);
 			$sFolderHash = $oInfo->etag;
@@ -457,15 +457,7 @@ trait Messages
 			throw new ClientException(Notifications::CantDeleteMessage, $oException);
 		}
 
-		$sHash = '';
-		try
-		{
-			$sHash = $this->MailClient()->FolderHash($sFolder);
-		}
-		catch (\Throwable $oException)
-		{
-			\SnappyMail\Log::warning('IMAP', "FolderHash({$sFolder}) Exception: {$oException->getMessage()}");
-		}
+		$sHash = $this->MailClient()->FolderHash($sFolder);
 
 		return $this->DefaultResponse($sHash ? array($sFolder, $sHash) : array($sFromFolder));
 	}
@@ -522,15 +514,7 @@ trait Messages
 			throw new ClientException(Notifications::CantMoveMessage, $oException);
 		}
 
-		$sHash = '';
-		try
-		{
-			$sHash = $this->MailClient()->FolderHash($sFromFolder);
-		}
-		catch (\Throwable $oException)
-		{
-			\SnappyMail\Log::warning('IMAP', "FolderHash({$sFromFolder}) Exception: {$oException->getMessage()}");
-		}
+		$sHash = $this->MailClient()->FolderHash($sFromFolder);
 
 		return $this->DefaultResponse($sHash ? array($sFromFolder, $sHash) : array($sFromFolder));
 	}
@@ -542,11 +526,13 @@ trait Messages
 	{
 		$this->initMailClientConnection();
 
+		$sToFolder = $this->GetActionParam('toFolder', '');
+
 		try
 		{
 			$this->ImapClient()->MessageCopy(
 				$this->GetActionParam('fromFolder', ''),
-				$this->GetActionParam('toFolder', ''),
+				$sToFolder,
 				new SequenceSet(\explode(',', (string) $this->GetActionParam('uids', '')))
 			);
 		}
@@ -555,7 +541,9 @@ trait Messages
 			throw new ClientException(Notifications::CantCopyMessage, $oException);
 		}
 
-		return $this->TrueResponse();
+		$sHash = $this->MailClient()->FolderHash($sToFolder);
+
+		return $this->DefaultResponse($sHash ? array($sToFolder, $sHash) : array($sToFolder));
 	}
 
 	public function DoMessageUploadAttachments() : array
