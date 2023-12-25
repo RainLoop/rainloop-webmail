@@ -65,6 +65,9 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 				exit;
 			}
 		}
+		else if ('DoFolderClear' === $sMethodName || 'DoMessageDelete' === $sMethodName) {
+			exit;
+		}
 	}
 
 	/**
