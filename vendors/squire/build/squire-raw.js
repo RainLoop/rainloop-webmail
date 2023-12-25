@@ -414,10 +414,10 @@ const
 				if (isTextNode(child)) {
 					prev.appendData(child.data);
 				} else {
-					frags.push(empty(child));
+					frags.unshift(empty(child));
 				}
 			} else if (isElement(child)) {
-				child.append(...frags.reverse());
+				child.append(...frags);
 				frags = [];
 				_mergeInlines(child, fakeRange);
 			}
@@ -458,9 +458,9 @@ const
 		mergeInlines(block, range);
 	},
 	mergeContainers = (node, root) => {
-		const prev = node.previousSibling,
-			first = node.firstChild,
-			isListItem = node.nodeName === "LI";
+		const prev = node.previousSibling;
+		const first = node.firstChild;
+		const isListItem = node.nodeName === "LI";
 		// Do not merge LIs, unless it only contains a UL
 		if (isListItem && (!first || !listNodeNames.has(first.nodeName))) {
 			return;
@@ -579,11 +579,11 @@ const
 		STRIKE: replaceWithTag("S"),
 		SPAN: replaceStyles,
 		FONT: node => {
-			let face = node.face,
-				size = node.size,
-				color = node.color,
-				newTag = createElement("SPAN"),
-				css = newTag.style;
+			const face = node.face;
+			const size = node.size;
+			let color = node.color;
+			let newTag = createElement("SPAN");
+			let css = newTag.style;
 			newTag.style.cssText = node.style.cssText;
 			if (face) {
 				css.fontFamily = face;
@@ -592,8 +592,8 @@ const
 				css.fontSize = fontSizes[size];
 			}
 			if (color && /^#?([\dA-F]{3}){1,2}$/i.test(color)) {
-				if (color.charAt(0) !== '#') {
-					color = '#' + color;
+				if (color.charAt(0) !== "#") {
+					color = "#" + color;
 				}
 				css.color = color;
 			}
@@ -624,15 +624,15 @@ const
 		2. Convert inline tags into our preferred format.
 	*/
 	cleanTree = (node, preserveWS) => {
-		let children = node.childNodes,
-			nonInlineParent, i = children.length, child, nodeName, childLength;
+		const children = node.childNodes;
+		let nonInlineParent, i = children.length, child, nodeName, childLength;
 //			startsWithWS, endsWithWS, data, sibling;
 
 		nonInlineParent = node;
 		while (isInline(nonInlineParent)) {
 			nonInlineParent = nonInlineParent.parentNode;
 		}
-//		let walker = createTreeWalker(nonInlineParent, SHOW_ELEMENT_OR_TEXT);
+//		const walker = createTreeWalker(nonInlineParent, SHOW_ELEMENT_OR_TEXT);
 
 		while (i--) {
 			child = children[i];
@@ -836,8 +836,8 @@ const
 		}
 	},
 	rangeDoesEndAtBlockBoundary = (range, root) => {
-		const endContainer = range.endContainer,
-			endOffset = range.endOffset;
+		const endContainer = range.endContainer;
+		const endOffset = range.endOffset;
 		let currentNode;
 		// If in a text node with content, and not at the end, we're not at the boundary
 		if (isTextNode(endContainer)) {
@@ -860,9 +860,9 @@ const
 		}
 	},
 	expandRangeToBlockBoundaries = (range, root) => {
-		const start = getStartBlockOfRange(range, root),
-			end = getEndBlockOfRange(range, root);
-
+		const start = getStartBlockOfRange(range, root);
+		const end = getEndBlockOfRange(range, root);
+//		let parent;
 		if (start && end) {
 			range.setStart(start, 0);
 			range.setEnd(end, end.childNodes.length);
@@ -1509,13 +1509,8 @@ const
 			// If at very beginning of text area, allow backspace
 			// to break lists/blockquote.
 			else if (current) {
-				let parent = getClosest(current, root, 'UL,OL,BLOCKQUOTE');
-				if (parent) {
-					return ("BLOCKQUOTE" === parent.nodeName)
-						// Break blockquote
-						? self.decreaseQuoteLevel(range)
-						// Break list
-						: self.decreaseListLevel(range);
+				if (decreaseLevel(self, range, current)) {
+					return;
 				}
 				self.setRange(range);
 			}
@@ -1527,22 +1522,26 @@ const
 			setTimeout(() => afterDelete(self), 0);
 		}
 	},
+
 	// source/keyboard/Delete.ts
 	Delete = (self, event, range) => {
 		const root = self._root;
-		let current, next, originalRange,
-			cursorContainer, cursorOffset, nodeAfterCursor;
+		let current;
+		let next;
+		let originalRange;
+		let cursorContainer;
+		let cursorOffset;
+		let nodeAfterCursor;
 		self._removeZWS();
 		// Record undo checkpoint.
 		self.saveUndoState(range);
-		// If not collapsed, delete contents
 		if (!range.collapsed) {
+			// If not collapsed, delete contents
 			event.preventDefault();
 			deleteContentsOfRange(range, root);
 			afterDelete(self, range);
-		}
-		// If at end of block, merge next into this block
-		else if (rangeDoesEndAtBlockBoundary(range, root)) {
+		} else if (rangeDoesEndAtBlockBoundary(range, root)) {
+			// If at end of block, merge next into this block
 			event.preventDefault();
 			if (current = getStartBlockOfRange(range, root)) {
 				// In case inline data has somehow got between blocks.
@@ -1569,10 +1568,9 @@ const
 					self.setRange(range);
 				}
 			}
-		}
-		// Otherwise, leave to browser but check afterwards whether it has
-		// left behind an empty inline tag.
-		else {
+		} else {
+			// Otherwise, leave to browser but check afterwards whether it has
+			// left behind an empty inline tag.
 			// But first check if the cursor is just before an IMG tag. If so,
 			// delete it ourselves, because the browser won't if it is not
 			// inline.
@@ -1594,6 +1592,107 @@ const
 			setTimeout(() => afterDelete(self), 0);
 		}
 	},
+
+	// source/keyboard/Tab.ts
+	Tab = (self, event, range) => {
+		self._removeZWS();
+		// If no selection and at start of block
+		if (range.collapsed && rangeDoesStartAtBlockBoundary(range, self._root)) {
+			getClosest(range.startContainer, self._root, "UL,OL,BLOCKQUOTE")
+			&& self.changeIndentationLevel('increase')
+			&& event.preventDefault();
+		}
+	},
+	ShiftTab = (self, event, range) => {
+		self._removeZWS();
+		// If no selection and at start of block
+		if (range.collapsed && rangeDoesStartAtBlockBoundary(range, self._root)) {
+			// Break list
+			decreaseLevel(self, range, range.startContainer)
+			&& event.preventDefault();
+		}
+	},
+
+	// source/keyboard/Space.ts
+	Space = (self, event, range) => {
+/*
+		var _a;
+		let node;
+		const root = self._root;
+		self._recordUndoState(range);
+		self._getRangeAndRemoveBookmark(range);
+		if (!range.collapsed) {
+			deleteContentsOfRange(range, root);
+			self._ensureBottomLine();
+			self.setSelection(range);
+			self._updatePath(range, true);
+		} else if (rangeDoesEndAtBlockBoundary(range, root)) {
+			const block = getStartBlockOfRange(range, root);
+			if (block && block.nodeName !== "PRE") {
+				const text = (_a = block.textContent) == null ? void 0 : _a.trimEnd().replace(ZWS, "");
+				if (text === "*" || text === "1.") {
+					event.preventDefault();
+					const walker = new TreeIterator(block, SHOW_TEXT);
+					let textNode;
+					while (textNode = walker.nextNode()) {
+						textNode.data = cantFocusEmptyTextNodes ? ZWS : "";
+					}
+					if (text === "*") {
+						self.makeUnorderedList();
+					} else {
+						self.makeOrderedList();
+					}
+					return;
+				}
+			}
+		}
+		node = range.endContainer;
+		if (range.endOffset === getLength(node)) {
+			do {
+				if (node.nodeName === "A") {
+					range.setStartAfter(node);
+					break;
+				}
+			} while (!node.nextSibling && (node = node.parentNode) && node !== root);
+		}
+		if (self._config.addLinks) {
+			const linkRange = range.cloneRange();
+			moveRangeBoundariesDownTree(linkRange);
+			const textNode = linkRange.startContainer;
+			const offset = linkRange.startOffset;
+			setTimeout(() => {
+				linkifyText(self, textNode, offset);
+			}, 0);
+		}
+		self.setSelection(range);
+*/
+		const root = self._root;
+		self._recordUndoState(range);
+		self._config.addLinks && addLinks(range.startContainer, root);
+		self._getRangeAndRemoveBookmark(range);
+/*
+		// If the cursor is at the end of a link (<a>foo|</a>) then move it
+		// outside of the link (<a>foo</a>|) so that the space is not part of
+		// the link text.
+		// SnappyMail: disabled as it fails in Firefox
+		let node = range.endContainer;
+		if (range.collapsed && range.endOffset === getLength(node)) {
+			do {
+				if (node.nodeName === "A") {
+					range.setStartAfter(node);
+					break;
+				}
+			} while (!node.nextSibling && (node = node.parentNode) && node !== root);
+		}
+*/
+		// Delete the selection if not collapsed
+		if (!range.collapsed) {
+			deleteContentsOfRange(range, root);
+			self._ensureBottomLine();
+		}
+		self.setRange(range);
+	},
+
 	// source/keyboard/KeyHandlers.ts
 	onKey = function(event) {
 		if (event.defaultPrevented) {
@@ -1650,67 +1749,9 @@ const
 	keyHandlers = {
 //		"backspace": Backspace,
 //		"delete": Delete,
-		tab: (self, event, range) => {
-			let root = self._root;
-			let node, parent;
-			self._removeZWS();
-			// If no selection and at start of block
-			if (range.collapsed && rangeDoesStartAtBlockBoundary(range, root)) {
-				node = getStartBlockOfRange(range, root);
-				// Iterate through the block's parents
-				while (parent = node.parentNode) {
-					// If we find a UL or OL (so are in a list, node must be an LI)
-					if (parent.nodeName === "UL" || parent.nodeName === "OL") {
-						// Then increase the list level
-						event.preventDefault();
-						self.increaseListLevel(range);
-						break;
-					}
-					node = parent;
-				}
-			}
-		},
-		'shift-tab': (self, event, range) => {
-			let root = self._root;
-			let node;
-			self._removeZWS();
-			// If no selection and at start of block
-			if (range.collapsed && rangeDoesStartAtBlockBoundary(range, root)) {
-				// Break list
-				node = range.startContainer;
-				if (getClosest(node, root, 'UL,OL')) {
-					event.preventDefault();
-					self.decreaseListLevel(range);
-				}
-			}
-		},
-		space: (self, _, range) => {
-			let root = self._root;
-			self._recordUndoState(range);
-			self._config.addLinks && addLinks(range.startContainer, root);
-			self._getRangeAndRemoveBookmark(range);
-	/*
-			// If the cursor is at the end of a link (<a>foo|</a>) then move it
-			// outside of the link (<a>foo</a>|) so that the space is not part of
-			// the link text.
-			// SnappyMail: disabled as it fails in Firefox
-			let node = range.endContainer;
-			if (range.collapsed && range.endOffset === getLength(node)) {
-				do {
-					if (node.nodeName === "A") {
-						range.setStartAfter(node);
-						break;
-					}
-				} while (!node.nextSibling && (node = node.parentNode) && node !== root);
-			}
-	*/
-			// Delete the selection if not collapsed
-			if (!range.collapsed) {
-				deleteContentsOfRange(range, root);
-				self._ensureBottomLine();
-			}
-			self.setRange(range);
-		},
+		tab: Tab,
+		'shift-tab': ShiftTab,
+		space: Space,
 		arrowleft: self => self._removeZWS(),
 		arrowright: self => self._removeZWS()
 	},
@@ -1972,6 +2013,9 @@ const
 		}
 		return frag;
 	},
+
+	decreaseLevel = (self, range, node) =>
+		getClosest(node, self._root, 'UL,OL,BLOCKQUOTE') && self.changeIndentationLevel('decrease'),
 
 	linkRegExp = /\b(?:((https?:\/\/)?(?:www\d{0,3}\.|[a-z0-9][a-z0-9.-]*\.[a-z]{2,}\/)(?:[^\s()<>]+|\([^\s()<>]+\))+(?:[^\s?&`!()[\]{};:'".,<>«»“”‘’]|\([^\s()<>]+\)))|([\w\-.%+]+@(?:[\w-]+\.)+[a-z]{2,}\b(?:\?[^&?\s]+=[^\s?&`!()[\]{};:'".,<>«»“”‘’]+(?:&[^&?\s]+=[^\s?&`!()[\]{};:'".,<>«»“”‘’]+)*)?))/i,
 
@@ -2397,7 +2441,7 @@ class Squire
 	}
 
 	_saveRangeToBookmark(range) {
-		let [startNode, endNode] = createBookmarkNodes(this),
+		let [startNode, endNode] = createBookmarkNodes(),
 			temp;
 
 		insertNodeInRange(range, startNode);
@@ -3213,7 +3257,7 @@ class Squire
 		// TODO: why was _docWasChanged() not triggered?
 		this.editStack.inUndoState && this._docWasChanged();
 		this._recordUndoState(range);
-//		self._config.addLinks && addLinks(range.startContainer, root);
+//		this._config.addLinks && addLinks(range.startContainer, root);
 		this._removeZWS();
 		this._getRangeAndRemoveBookmark(range);
 
@@ -3226,7 +3270,7 @@ class Squire
 //			const offset2 = range.startOffset;
 			setTimeout(() => {
 //				linkifyText(this, textNode, offset2);
-				addLinks(range.startContainer, self._root);
+				addLinks(range.startContainer, this._root);
 			}, 0);
 		}
 		block = getStartBlockOfRange(range, root);
@@ -3285,12 +3329,12 @@ class Squire
 			return;
 		}
 		block = getClosest(block, root, "LI") || block;
-		if (isEmptyBlock(block) && (parent = getClosest(block, root, 'UL,OL,BLOCKQUOTE'))) {
+		if (isEmptyBlock(block) && (parent = getClosest(block, root, "UL,OL,BLOCKQUOTE"))) {
 			return "BLOCKQUOTE" === parent.nodeName
 				// Break blockquote
-				? self.modifyBlocks((/* frag */) => self.createDefaultBlock(createBookmarkNodes(self)), range)
+				? this.modifyBlocks((/* frag */) => this.createDefaultBlock(createBookmarkNodes()), range)
 				// Break list
-				: self.decreaseListLevel(range);
+				: this.decreaseListLevel(range);
 		}
 		node = range.startContainer;
 		const offset = range.startOffset;
@@ -3645,7 +3689,7 @@ class Squire
 		let parent = this.getSelectionClosest('UL,OL,BLOCKQUOTE');
 		if (parent || "increase" === direction) {
 			let method = (!parent || "BLOCKQUOTE" === parent.nodeName) ? "Quote" : "List";
-			this[direction + method + "Level"]();
+			return this[direction + method + "Level"]();
 		}
 	}
 
