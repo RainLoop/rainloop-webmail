@@ -25,7 +25,7 @@ const
 	isIOS = /iP(?:ad|hone)/.test(ua) || (isMac && !!navigator.maxTouchPoints),
 	isAndroid = /Android/.test(ua),
 	isWebKit = /WebKit\//.test(ua),
-	ctrlKey = isMac ? 'meta-' : 'ctrl-',
+	ctrlKey = isMac || isIOS ? 'meta-' : 'ctrl-',
 	cantFocusEmptyTextNodes = isWebKit,
 	// Use [^ \t\r\n] instead of \S so that nbsp does not count as white-space
 	notWS = /[^ \t\r\n]/,
@@ -141,7 +141,7 @@ const
 	},
 
 	// source/node/Whitespace.ts
-	notWSTextNode = node => isElement(node) ? node.nodeName === "BR" : notWS.test(node.data),
+	notWSTextNode = node => isElement(node) ? isBrElement(node) : notWS.test(node.data),
 	isLineBreak = (br, isLBIfEmptyBlock) => {
 		let walker, block = br.parentNode;
 		while (isInline(block)) {
@@ -224,7 +224,7 @@ const
 			while (!isTextNode(endContainer)) {
 				child = endContainer.childNodes[endOffset - 1];
 				if (!child || isLeaf(child)) {
-					if (child?.nodeName === "BR" && !isLineBreak(child)) {
+					if (isBrElement(child) && !isLineBreak(child)) {
 						--endOffset;
 						continue;
 					}
@@ -267,7 +267,7 @@ const
 		}
 
 		while (endContainer !== endMax && endContainer !== root) {
-			if (!isTextNode(endContainer) && endContainer.childNodes[endOffset]?.nodeName === "BR" && !isLineBreak(endContainer.childNodes[endOffset])) {
+			if (!isTextNode(endContainer) && isBrElement(endContainer.childNodes[endOffset]) && !isLineBreak(endContainer.childNodes[endOffset])) {
 				++endOffset;
 			}
 			if (endOffset !== getLength(endContainer)) {
@@ -331,7 +331,7 @@ const
 		let wrapper, isBR;
 		// Not live, and fast
 		[...container.childNodes].forEach(child => {
-			isBR = child.nodeName === "BR";
+			isBR = isBrElement(child);
 			if (!isBR && child.parentNode == root && isInline(child)
 //			 && (blockTag !== "DIV" || (child.matches && !child.matches(phrasingElements)))
 			) {
@@ -448,7 +448,7 @@ const
 		offset = block.childNodes.length;
 		// Remove extra <BR> fixer if present.
 		const last = block.lastChild;
-		if (last?.nodeName === "BR") {
+		if (isBrElement(last)) {
 			last.remove();
 			--offset;
 		}
@@ -1013,7 +1013,7 @@ const
 
 		// Ensure root has a block-level element in it.
 		const child = root.firstChild;
-		if (!child || child.nodeName === "BR") {
+		if (!child || isBrElement(child)) {
 			fixCursor(root);
 			root.firstChild && range.selectNodeContents(root.firstChild);
 		}
@@ -1220,7 +1220,7 @@ const
 					textContent += value;
 					addedTextInBlock = true;
 				}
-			} else if (node.nodeName === "BR" || addedTextInBlock && !isInline(node)) {
+			} else if (isBrElement(node) || addedTextInBlock && !isInline(node)) {
 				textContent += "\n";
 				addedTextInBlock = false;
 			}
@@ -1452,7 +1452,7 @@ const
 			// it removes the div and replaces it with just a <br> inside the
 			// root. Detach the <br>; the _ensureBottomLine call will insert a new
 			// block.
-			if (node === self._root && (node = node.firstChild) && node.nodeName === "BR") {
+			if (node === self._root && (node = node.firstChild) && isBrElement(node)) {
 				detach(node);
 			}
 			self._ensureBottomLine();
@@ -1736,7 +1736,7 @@ const
 				range = createRange(root.insertBefore(
 					this.createDefaultBlock(), nextElement
 				), 0);
-				if (nextElement.tagName === "BR") {
+				if (isBrElement(nextElement)) {
 					// delete it because a new <br> is created by createDefaultBlock()
 					root.removeChild(nextElement);
 				}
@@ -1795,6 +1795,8 @@ const
 
 	isElement = node => node instanceof Element,
 	isTextNode = node => node instanceof Text,
+//	isBrElement = node => node instanceof HTMLBRElement,
+	isBrElement = node => "BR" === node?.nodeName,
 
 	createTreeWalker = (root, whatToShow, filter) => {
 		const walker = doc.createTreeWalker(root, whatToShow, filter ? {
@@ -2045,14 +2047,6 @@ const
 
 let nodeCategoryCache = new WeakMap();
 
-// System standard for page up/down on Mac is to just scroll, not move the
-// cursor. On Linux/Windows, it should move the cursor, but some browsers don't
-// implement this natively. Override to support it.
-if (!isMac && !isIOS) {
-	keyHandlers.pageup = self => self._moveCursorTo(true);
-	keyHandlers.pagedown = self => self._moveCursorTo(false);
-}
-
 keyHandlers[ctrlKey + "b"] = mapKeyToFormat("B");
 keyHandlers[ctrlKey + "i"] = mapKeyToFormat("I");
 keyHandlers[ctrlKey + "u"] = mapKeyToFormat("U");
@@ -2288,6 +2282,14 @@ class Squire
 				this.setStyle({fontFamily:event.data});
 			},
 /*
+			formatIndent: event => {
+				event.preventDefault();
+				this.changeIndentationLevel("increase");
+			},
+			formatOutdent: event => {
+				event.preventDefault();
+				this.changeIndentationLevel("decrease");
+			},
 //			deleteByCut: event => {
 				this.saveUndoState();
 			},
@@ -2301,9 +2303,11 @@ class Squire
 		}
 	}
 
-	// https://rawgit.com/w3c/input-events/v1/index.html#interface-InputEvent-Attributes
+	// https://developer.mozilla.org/en-US/docs/Web/API/InputEvent/inputType
+	// https://github.com/w3c/input-events
 	_beforeInput(event) {
 		let type = event.inputType;
+		// event.getTargetRanges();
 		switch (type) {
 			case "formatBold":
 			case "formatItalic":
@@ -2565,14 +2569,6 @@ class Squire
 
 	getSelectionClosest(selector) {
 		return getClosest(this.getSelection().commonAncestorContainer, this._root, selector);
-	}
-
-	// ---
-	_moveCursorTo(toStart) {
-		const root = this._root,
-			range = createRange(root, toStart ? 0 : root.childNodes.length);
-		moveRangeBoundariesDownTree(range);
-		this.setSelection(range);
 	}
 
 	// --- Path
@@ -3013,7 +3009,7 @@ class Squire
 				range.commonAncestorContainer,
 				SHOW_ELEMENT_OR_TEXT,
 				node => (isTextNode(node) ||
-							node.nodeName === "BR" ||
+							isBrElement(node) ||
 							node.nodeName === "IMG"
 						) && isNodeContainedInRange(range, node)
 			);
@@ -3368,13 +3364,13 @@ class Squire
 			}
 			while (isTextNode(child) && !child.data) {
 				next = child.nextSibling;
-				if (!next || next.nodeName === "BR") {
+				if (!next || isBrElement(next)) {
 					break;
 				}
 				detach(child);
 				child = next;
 			}
-			if (!child || child.nodeName === "BR" || isTextNode(child)) {
+			if (!child || isBrElement(child) || isTextNode(child)) {
 				break;
 			}
 			nodeAfterSplit = child;
