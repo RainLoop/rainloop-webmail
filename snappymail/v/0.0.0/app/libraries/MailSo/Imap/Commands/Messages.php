@@ -289,7 +289,7 @@ trait Messages
 			$this->FolderSelect($sFolderName);
 			$iNewUid = $this->MessageAppendStream($sFolderName, $rMessageStream, $iStreamSize, $aFlagsList, $iDateTime);
 			if ($iUid) {
-				$oRange = new SequenceSet([$iUid]);
+				$oRange = new SequenceSet($iUid);
 				$this->MessageStoreFlag($oRange,
 					array(MessageFlag::DELETED),
 					StoreAction::ADD_FLAGS_SILENT
