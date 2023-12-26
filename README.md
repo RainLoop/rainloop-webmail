@@ -30,7 +30,7 @@ For more information about the product, check [snappymail.eu](https://snappymail
 
 Information about installing the product, check the [wiki page](https://github.com/the-djmaze/snappymail/wiki/Installation-instructions).
 
-And don't forget to read the [RainLoop documentation](https://www.rainloop.net/docs/).
+And don't forget to read the whole [Wiki](https://github.com/the-djmaze/snappymail/wiki).
 
 ## License
 
@@ -140,26 +140,26 @@ RainLoop 1.17 vs SnappyMail
 
 |js/*           	|RainLoop 	|Snappy   	|
 |---------------	|--------:	|--------:	|
-|admin.js        	|2.170.153	|   80.366	|
-|app.js          	|4.207.787	|  407.909	|
+|admin.js        	|2.170.153	|   80.370	|
+|app.js          	|4.207.787	|  408.429	|
 |boot.js         	|  868.735	|    4.142	|
-|libs.js         	|  658.812	|  192.289	|
+|libs.js         	|  658.812	|  193.230	|
 |sieve.js         	|        0	|   85.085	|
 |polyfills.js    	|  334.608	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|8.240.095	|  770.076	|
+|TOTAL           	|8.240.095	|  771.541	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
-|admin.min.js    	|  256.831	|   39.283	| 73.606	| 13.181	| 60.877  	| 11.803	|
-|app.min.js      	|  515.367	|  186.036	|139.456	| 63.062	|110.485  	| 54.135	|
+|admin.min.js    	|  256.831	|   39.285	| 73.606	| 13.183	| 60.877  	| 11.806	|
+|app.min.js      	|  515.367	|  186.270	|139.456	| 63.111	|110.485  	| 54.218	|
 |boot.min.js     	|   84.659	|    2.084	| 26.998	|  1.202	| 23.643  	|  1.003	|
-|libs.min.js     	|  584.772	|   93.758	|180.901	| 34.878	|155.182  	| 31.291	|
+|libs.min.js     	|  584.772	|   93.401	|180.901	| 34.765	|155.182  	| 31.194	|
 |sieve.min.js     	|        0	|   41.316	|      0	| 10.364	|      0  	|  9.352	|
 |polyfills.min.js	|   32.837	|        0	| 11.406	|      0	| 10.175  	|      0	|
-|TOTAL user      	|1.217.635	|  281.878	|358.761	| 99.142	|299.485  	| 86.429	|
-|TOTAL user+sieve	|1.217.635	|  323.194	|358.761	|109.506	|299.485  	| 95.781	|
-|TOTAL admin     	|  959.099	|  135.125	|292.911	| 49.261	|249.877  	| 44.097	|
+|TOTAL user      	|1.217.635	|  281.755	|358.761	| 99.078	|299.485  	| 86.415	|
+|TOTAL user+sieve	|1.217.635	|  323.071	|358.761	|109.442	|299.485  	| 95.767	|
+|TOTAL admin     	|  959.099	|  134.770	|292.911	| 49.150	|249.877  	| 44.003	|
 
 For a user it is around 69% smaller and faster than traditional RainLoop.
 
@@ -188,8 +188,8 @@ For a user it is around 69% smaller and faster than traditional RainLoop.
 
 |css/*       	|RainLoop	|Snappy   	|RL gzip	|SM gzip	|SM brotli	|
 |------------	|-------:	|------:	|------:	|------:	|--------:	|
-|app.css     	| 340.331	| 84.607	| 46.946	| 17.662	| 15.138	|
-|app.min.css 	| 274.947	| 67.961	| 39.647	| 15.550	| 13.570	|
+|app.css     	| 340.331	| 84.484	| 46.946	| 17.627	| 15.110	|
+|app.min.css 	| 274.947	| 67.910	| 39.647	| 15.541	| 13.547	|
 |boot.css    	|       	|  1.326	|       	|    664	|    545	|
 |boot.min.css	|       	|  1.071	|       	|    590	|    474	|
 |admin.css    	|       	| 30.641	|       	|  7.028	|  6.111	|

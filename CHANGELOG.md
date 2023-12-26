@@ -1,3 +1,39 @@
+## 2.32.0 – 2023-12-26
+
+### Added
+- Run full GetUids() in background when message_list_limit is set
+- MessageListThreadsMap as background task when message_list_limit is set
+- Properly set CACHEDIR.TAG
+- Sending group email to all contact addresses by @rezaei92
+  [#1286](https://github.com/the-djmaze/snappymail/pull/1286)
+
+### Changed
+- Default IMAP message_list_limit to 10000
+- DoMessageCopy() return toFolder hash/etag
+- Improved Squire WYSIWYG
+- Sort real attachments and inline attachments for
+  [#1360](https://github.com/the-djmaze/snappymail/issues/1360)
+- Nextcloud Theme fixes and improvements by @hampoelz
+  [#1363](https://github.com/the-djmaze/snappymail/pull/1363)
+- Improve display of attachments
+  [#1361](https://github.com/the-djmaze/snappymail/issues/1361)
+- Rename messageVisibility to messageVisible
+- All CSS font-size to % instead of px
+- Flip source code view of .eml attachments
+  [#1332](https://github.com/the-djmaze/snappymail/issues/1332)
+
+### Fixed
+- Folders array_filter(): Argument 1 must be of type array, null given
+- At upgrade set `static` and `themes` folder to 0755
+- Preview tooltip shows "null" when PREVIEW capability is disabled
+
+### Nextcloud
+- Improved language handling by @avinash-0007
+  [#1362](https://github.com/the-djmaze/snappymail/pull/1362)
+- FilterLanguage had wrong parameter order
+- Use NextcloudV25+ theme by default
+
+
 ## 2.31.0 – 2023-12-08
 
 ### Added
