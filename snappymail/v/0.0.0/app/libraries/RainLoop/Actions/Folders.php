@@ -68,7 +68,7 @@ trait Folders
 				}
 			}
 
-			$aCapabilities = \array_values(\array_filter($this->ImapClient()->Capability(), function ($item) {
+			$aCapabilities = \array_values(\array_filter($this->ImapClient()->Capability() ?: [], function ($item) {
 				return !\preg_match('/^(IMAP|AUTH|LOGIN|SASL)/', $item);
 			}));
 
