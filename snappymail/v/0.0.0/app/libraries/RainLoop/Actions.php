@@ -241,13 +241,15 @@ class Actions
 
 	public function BootEnd(): void
 	{
+/*
 		try {
-			if ($this->ImapClient()->IsLoggined()) {
+			if (!\SnappyMail\Shutdown::count() && $this->ImapClient()->IsLoggined()) {
 				$this->ImapClient()->Disconnect();
 			}
 		} catch (\Throwable $oException) {
 			unset($oException);
 		}
+*/
 	}
 
 	protected function compileLogParams(string $sLine, ?Model\Account $oAccount = null, array $aAdditionalParams = array()): string

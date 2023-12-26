@@ -8,7 +8,7 @@ abstract class Shutdown
 		$actions = [],
 		$running = false;
 
-	final public function run() : void
+	final public static function run() : void
 	{
 		if (!static::$running && \count(static::$actions)) {
 			static::$running = true;
@@ -35,11 +35,16 @@ abstract class Shutdown
 		}
 	}
 
-	final public function add(callable $function, array $args = []) : void
+	final public static function add(callable $function, array $args = []) : void
 	{
 		if (!\count(static::$actions)) {
 			\register_shutdown_function('\\SnappyMail\\Shutdown::run');
 		}
 		static::$actions[] = [$function, $args];
+	}
+
+	final public static function count() : int
+	{
+		return \count(static::$actions);
 	}
 }

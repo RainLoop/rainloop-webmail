@@ -407,7 +407,7 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	protected function MessageListThreadsMap(MessageCollection $oMessageCollection, ?\MailSo\Cache\CacheClient $oCacher) : array
+	protected function MessageListThreadsMap(MessageCollection $oMessageCollection, ?\MailSo\Cache\CacheClient $oCacher, bool $bBackground = false) : array
 	{
 		$sFolderName = $oMessageCollection->FolderName;
 
@@ -434,6 +434,15 @@ class MailClient
 					$this->logWrite('Get Serialized Thread UIDS from cache ("'.$sFolderName.'" / '.$sSearch.') [count:'.\count($aSerializedUids['ThreadsUids']).']');
 					return $aSerializedUids['ThreadsUids'];
 				}
+			}
+			// Idea to fetch all UID's in background
+			else if (!$bBackground) {
+				$this->logWrite('Set MessageListThreadsMap() as background task ("'.$sFolderName.'" / '.$sSearch.')');
+				\SnappyMail\Shutdown::add(function($oMailClient, $oMessageCollection, $oCacher) {
+					$oMessageCollection->FolderInfo->MESSAGES = 0;
+					$oMailClient->MessageListThreadsMap($oMessageCollection, $oCacher, true);
+				}, [$this, $oMessageCollection, $oCacher]);
+				return [];
 			}
 		}
 
@@ -706,10 +715,12 @@ class MailClient
 /*
 			// TODO: Idea to fetch all UID's in background
 			// Must know what is cached so needs more thought
-			\SnappyMail\Shutdown::add(function($oMailClient, $oParams) {
-				$oParams->bIgnoreLimit = true;
-				$oMailClient->MessageList($oParams);
-			}, [$this, $oParams]);
+			if ($oParams->oCacher && !$oParams->iOffset && !$oParams->iThreadUid && !\strlen($sSearch)) {
+				\SnappyMail\Shutdown::add(function($oMailClient, $oParams) {
+					$oParams->bIgnoreLimit = true;
+					$oMailClient->MessageList($oParams);
+				}, [$this, $oParams]);
+			}
 */
 //		if ((0 < $message_list_limit && $message_list_limit < $oInfo->MESSAGES)
 //		 || (!$this->oImapClient->hasCapability('SORT') && !$this->oImapClient->CapabilityValue('THREAD'))) {
