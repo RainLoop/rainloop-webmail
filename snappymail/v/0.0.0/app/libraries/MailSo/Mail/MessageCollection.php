@@ -32,6 +32,8 @@ class MessageCollection extends \MailSo\Base\Collection
 
 	public string $Search = '';
 
+	public string $Sort = '';
+
 	public int $ThreadUid = 0;
 
 	// MailSo\Imap\FolderInformation
@@ -57,7 +59,7 @@ class MessageCollection extends \MailSo\Base\Collection
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
-		return array_merge(parent::jsonSerialize(), array(
+		return \array_merge(parent::jsonSerialize(), array(
 			'totalEmails' => $this->totalEmails,
 			'totalThreads' => $this->totalThreads,
 			'threadUid' => $this->ThreadUid,
@@ -66,6 +68,7 @@ class MessageCollection extends \MailSo\Base\Collection
 			'offset' => $this->Offset,
 			'limit' => $this->Limit,
 			'search' => $this->Search,
+			'sort' => $this->Sort,
 			'limited' => $this->Limited,
 			'folder' => $this->FolderInfo
 		));

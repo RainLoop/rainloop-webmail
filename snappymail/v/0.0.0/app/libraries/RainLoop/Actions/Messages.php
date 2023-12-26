@@ -77,6 +77,7 @@ trait Messages
 				$oParams->oCacher = $this->Cacher($oAccount);
 			}
 
+//			$oParams->bUseSort = $this->ImapClient->hasCapability('SORT');
 			$oParams->bUseSort = true;
 
 			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);

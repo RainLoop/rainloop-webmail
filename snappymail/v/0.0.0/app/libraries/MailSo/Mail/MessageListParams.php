@@ -24,8 +24,7 @@ class MessageListParams
 	public bool
 		$bUseSort = true,
 		$bUseThreads = false,
-		$bHideDeleted = true,
-		$bIgnoreLimit = false;
+		$bHideDeleted = true;
 
 	protected int
 		$iOffset = 0,
@@ -61,7 +60,7 @@ class MessageListParams
 			$this->iLimit,
 			$this->bHideDeleted ? '1' : '0',
 			$this->sSearch,
-			$this->bUseSort ? $this->sSort : '',
+			$this->bUseSort ? $this->sSort : '0',
 			$this->bUseThreads ? $this->iThreadUid : '',
 			$this->iPrevUidNext
 		]));
