@@ -22,7 +22,7 @@ class Settings extends \MailSo\Net\ConnectSettings
 		$timeout = 300,
 		$body_text_limit = 0,
 //		$folder_list_limit = 200,
-		$message_list_limit = 0,
+		$message_list_limit = 10000,
 		$thread_limit = 50;
 
 	public bool

@@ -36,7 +36,7 @@ const
 		imapForce_select: false,
 		imapFolder_list_limit: 200,
 		imapMessage_all_headers: false,
-		imapMessage_list_limit: 0,
+		imapMessage_list_limit: 10000,
 		imapSearch_filter: '',
 
 		sieveEnabled: false,

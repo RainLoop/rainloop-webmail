@@ -30,7 +30,7 @@
         "fast_simple_search": true,
         "force_select": false,
         "message_all_headers": false,
-        "message_list_limit": 0,
+        "message_list_limit": 10000,
         "search_filter": ""
     },
     "SMTP": {
