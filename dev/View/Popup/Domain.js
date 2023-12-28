@@ -343,6 +343,7 @@ export class DomainPopupView extends AbstractViewPopup {
 					this[key]?.(value);
 				}
 			});
+			this.imapCapabilities(this.imapCapabilities.concat(this.imapDisabled_capabilities()).unique());
 			this.enableSmartPorts(true);
 		}
 	}

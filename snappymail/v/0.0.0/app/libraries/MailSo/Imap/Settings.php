@@ -98,6 +98,8 @@ class Settings extends \MailSo\Net\ConnectSettings
 		}
 		if (\in_array('SORT', $object->disabled_capabilities)) {
 			$object->disabled_capabilities[] = 'ESORT';
+		} else {
+			$object->disabled_capabilities = \array_diff($object->disabled_capabilities, ['ESORT']);
 		}
 		$object->disabled_capabilities = \array_values(\array_unique($object->disabled_capabilities));
 
