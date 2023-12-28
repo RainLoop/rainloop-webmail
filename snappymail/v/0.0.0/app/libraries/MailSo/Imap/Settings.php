@@ -96,11 +96,6 @@ class Settings extends \MailSo\Net\ConnectSettings
 			// RFC 8970
 			$object->disabled_capabilities[] = 'PREVIEW';
 		}
-		if (\in_array('SORT', $object->disabled_capabilities)) {
-			$object->disabled_capabilities[] = 'ESORT';
-		} else {
-			$object->disabled_capabilities = \array_diff($object->disabled_capabilities, ['ESORT']);
-		}
 		$object->disabled_capabilities = \array_values(\array_unique($object->disabled_capabilities));
 
 		return $object;
