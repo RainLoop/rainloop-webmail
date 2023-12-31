@@ -31,7 +31,7 @@ abstract class JWT
 		$timestamp = $timestamp ?: \time();
 
 		if (empty($key)) {
-			throw new \InvalidArgumentException('Key may not be empty');
+			throw new \ValueError('Key may not be empty');
 		}
 
 		$jwt = \explode('.', $jwt);
@@ -39,7 +39,6 @@ abstract class JWT
 			throw new \UnexpectedValueException('Wrong number of segments');
 		}
 		try {
-			;
 			$header = static::jsonDecode($jwt[0]);
 		} catch (\Throwable $e) {
 			throw new \UnexpectedValueException("Invalid header encoding ({$e->getMessage()})");
@@ -137,13 +136,13 @@ abstract class JWT
 				if ($free_key) {
 					$key = \openssl_pkey_get_private($key, $passphrase);
 					if (!$key) {
-						throw new \InvalidArgumentException('Invalid key, reason: ' . \openssl_error_string());
+						throw new \ValueError('Invalid key, reason: ' . \openssl_error_string());
 					}
 				}
 				try {
 					$details = \openssl_pkey_get_details($key);
 					if (!isset($details['key']) || OPENSSL_KEYTYPE_RSA !== $details['type']) {
-						throw new \InvalidArgumentException('Key is not compatible with RSA signatures');
+						throw new \ValueError('Key is not compatible with RSA signatures');
 					}
 					$signature = '';
 					if (!\openssl_sign($msg, $signature, $key, 'SHA'.\substr($alg,2))) {
@@ -165,7 +164,7 @@ abstract class JWT
 				}
 
 			default:
-				throw new \InvalidArgumentException("Algorithm '{$alg}' not supported");
+				throw new \ValueError("Algorithm '{$alg}' not supported");
 		}
 	}
 
@@ -191,13 +190,13 @@ abstract class JWT
 				if ($free_key) {
 					$key = \openssl_pkey_get_public($key);
 					if (!$key) {
-						throw new \InvalidArgumentException('Invalid key, reason: ' . openssl_error_string());
+						throw new \ValueError('Invalid key, reason: ' . openssl_error_string());
 					}
 				}
 				try {
 					$details = \openssl_pkey_get_details($key);
 					if (!isset($details['key']) || OPENSSL_KEYTYPE_RSA !== $details['type']) {
-						throw new \InvalidArgumentException('Key is not compatible with RSA signatures');
+						throw new \ValueError('Key is not compatible with RSA signatures');
 					}
 					$success = \openssl_verify($msg, $signature, $key, 'SHA'.\substr($alg,2));
 					if (-1 == $success) {
@@ -223,7 +222,7 @@ abstract class JWT
 //			case 'ES384':
 //			case 'ES512':
 			default:
-				throw new \InvalidArgumentException("Algorithm '{$alg}' not supported");
+				throw new \ValueError("Algorithm '{$alg}' not supported");
 		}
 	}
 

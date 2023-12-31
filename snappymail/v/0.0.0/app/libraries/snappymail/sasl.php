@@ -26,7 +26,7 @@ abstract class SASL
 				return new $class($m[2] ?? '');
 			}
 		}
-		throw new \Exception("Unsupported SASL mechanism type: {$type}");
+		throw new \ValueError("Unsupported SASL mechanism type: {$type}");
 	}
 
 	public static function isSupported(string $type) : bool

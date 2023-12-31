@@ -108,6 +108,7 @@ class SieveClient extends \MailSo\Net\NetClient
 				$this->StartTLS();
 				return $this->Login($oSettings);
 			}
+//			$this->writeLogException(new \UnexpectedValueException('No supported SASL mechanism found'), \LOG_ERR);
 			$this->writeLogException(new \MailSo\Sieve\Exceptions\LoginException, \LOG_ERR);
 		}
 

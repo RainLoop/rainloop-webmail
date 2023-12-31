@@ -772,7 +772,7 @@ class PdoAddressBook
 	}
 
 	/**
-	 * @throws \InvalidArgumentException
+	 * @throws \ValueError
 	 */
 	public function GetSuggestions(string $sSearch, int $iLimit = 20) : array
 	{
@@ -782,7 +782,7 @@ class PdoAddressBook
 
 		$sSearch = \trim($sSearch);
 		if (!\strlen($sSearch)) {
-			throw new \InvalidArgumentException('Empty Search argument');
+			throw new \ValueError('Empty Search argument');
 		}
 
 		$sTypes = \implode(',', static::$aSearchInFields);
@@ -936,6 +936,9 @@ class PdoAddressBook
 		return array();
 	}
 
+	/**
+	 * @throws \ValueError
+	 */
 	public function IncFrec(array $aEmails, bool $bCreateAuto = true) : bool
 	{
 		if (1 > $this->iUserID) {
@@ -959,7 +962,7 @@ class PdoAddressBook
 		});
 
 		if (!\count($aEmailsObjects)) {
-			throw new \InvalidArgumentException('Empty Emails argument');
+			throw new \ValueError('Empty Emails argument');
 		}
 
 		$aExists = array();
@@ -1302,13 +1305,16 @@ SQLITEINITIAL;
 		return $this->settings;
 	}
 
+	/**
+	 * @throws \ValueError
+	 */
 	protected function getUserId(string $sEmail, bool $bSkipInsert = false, bool $bCache = true) : int
 	{
 		static $aCache = array();
 
 		$sEmail = \MailSo\Base\Utils::IdnToAscii(\trim($sEmail), true);
 		if (empty($sEmail)) {
-			throw new \InvalidArgumentException('Empty Email argument');
+			throw new \ValueError('Empty Email argument');
 		}
 
 		if ($bCache && isset($aCache[$sEmail])) {

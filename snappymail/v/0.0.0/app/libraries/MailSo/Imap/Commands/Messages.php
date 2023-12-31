@@ -27,7 +27,7 @@ use MailSo\Imap\Enumerations\StoreAction;
 trait Messages
 {
 	/**
-	 * @throws \InvalidArgumentException
+	 * @throws \ValueError
 	 * @throws \MailSo\RuntimeException
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
@@ -35,7 +35,7 @@ trait Messages
 	public function FetchIterate(array $aInputFetchItems, string $sIndexRange, bool $bIndexIsUid) : iterable
 	{
 		if (!\strlen(\trim($sIndexRange))) {
-			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
+			$this->writeLogException(new \ValueError('$sIndexRange is empty'), \LOG_ERR);
 		}
 
 		$aReturn = array();
@@ -138,14 +138,21 @@ trait Messages
 	 * @param resource $rMessageStream
 	 *
 	 * @throws \InvalidArgumentException
+	 * @throws \ValueError
 	 * @throws \MailSo\RuntimeException
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
 	public function MessageAppendStream(string $sFolderName, $rMessageStream, int $iStreamSize, array $aFlagsList = null, int $iDateTime = 0) : ?int
 	{
-		if (!\is_resource($rMessageStream) || !\strlen($sFolderName) || 1 > $iStreamSize) {
-			throw new \InvalidArgumentException;
+		if (!\is_resource($rMessageStream)) {
+			throw new \InvalidArgumentException('$rMessageStream must be a resource');
+		}
+		if (!\strlen($sFolderName)) {
+			throw new \ValueError('$sFolderName is empty');
+		}
+		if (1 > $iStreamSize) {
+			throw new \ValueError('$iStreamSize must be higher then 0');
 		}
 
 		$aParams = array(
@@ -202,7 +209,7 @@ trait Messages
 	*/
 
 	/**
-	 * @throws \InvalidArgumentException
+	 * @throws \ValueError
 	 * @throws \MailSo\RuntimeException
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
@@ -210,7 +217,7 @@ trait Messages
 	public function MessageCopy(string $sFromFolder, string $sToFolder, SequenceSet $oRange) : ResponseCollection
 	{
 		if (!$sFromFolder || !$sToFolder || !\count($oRange)) {
-			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
+			$this->writeLogException(new \ValueError, \LOG_ERR);
 		}
 
 		$this->FolderSelect($sFromFolder);
@@ -222,7 +229,7 @@ trait Messages
 	}
 
 	/**
-	 * @throws \InvalidArgumentException
+	 * @throws \ValueError
 	 * @throws \MailSo\RuntimeException
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
@@ -230,7 +237,7 @@ trait Messages
 	public function MessageMove(string $sFromFolder, string $sToFolder, SequenceSet $oRange) : void
 	{
 		if (!$sFromFolder || !$sToFolder || !\count($oRange)) {
-			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
+			$this->writeLogException(new \ValueError, \LOG_ERR);
 		}
 
 		if ($this->hasCapability('MOVE')) {
@@ -246,7 +253,7 @@ trait Messages
 	}
 
 	/**
-	 * @throws \InvalidArgumentException
+	 * @throws \ValueError
 	 * @throws \MailSo\RuntimeException
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
@@ -254,7 +261,7 @@ trait Messages
 	public function MessageDelete(string $sFolder, SequenceSet $oRange, bool $bExpungeAll = false) : void
 	{
 		if (!$sFolder || !\count($oRange)) {
-			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
+			$this->writeLogException(new \ValueError, \LOG_ERR);
 		}
 
 		$this->FolderSelect($sFolder);
@@ -279,6 +286,7 @@ trait Messages
 	 * @param resource $rMessageStream
 	 *
 	 * @throws \InvalidArgumentException
+	 * @throws \ValueError
 	 * @throws \MailSo\RuntimeException
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*

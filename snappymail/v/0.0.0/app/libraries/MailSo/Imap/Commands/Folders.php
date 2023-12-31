@@ -56,7 +56,7 @@ trait Folders
 	}
 
 	/**
-	 * @throws \InvalidArgumentException
+	 * @throws \ValueError
 	 * @throws \MailSo\RuntimeException
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
@@ -64,7 +64,7 @@ trait Folders
 	public function FolderDelete(string $sFolderName) : void
 	{
 		if (!$sFolderName || 'INBOX' === $sFolderName) {
-			throw new \InvalidArgumentException;
+			throw new \ValueError;
 		}
 
 		$oInfo = $this->hasCapability('IMAP4rev2')
@@ -360,7 +360,7 @@ trait Folders
 		}
 
 		if (!\strlen(\trim($sFolderName))) {
-			throw new \InvalidArgumentException;
+			throw new \ValueError;
 		}
 
 		$aSelectParams = array();

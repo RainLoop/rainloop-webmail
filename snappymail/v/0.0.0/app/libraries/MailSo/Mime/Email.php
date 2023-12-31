@@ -24,12 +24,12 @@ class Email implements \JsonSerializable
 	private string $sDkimStatus = Enumerations\DkimStatus::NONE;
 
 	/**
-	 * @throws \InvalidArgumentException
+	 * @throws \ValueError
 	 */
 	function __construct(string $sEmail, string $sDisplayName = '')
 	{
 		if (!\strlen(\trim($sEmail)) && !\strlen(\trim($sDisplayName))) {
-			throw new \InvalidArgumentException;
+			throw new \ValueError;
 		}
 
 		$this->sEmail = \MailSo\Base\Utils::IdnToAscii(
@@ -39,13 +39,13 @@ class Email implements \JsonSerializable
 	}
 
 	/**
-	 * @throws \InvalidArgumentException
+	 * @throws \ValueError
 	 */
 	public static function Parse(string $sEmailAddress) : self
 	{
 		$sEmailAddress = \MailSo\Base\Utils::Trim($sEmailAddress);
 		if (!\strlen(\trim($sEmailAddress))) {
-			throw new \InvalidArgumentException;
+			throw new \ValueError;
 		}
 
 		$sName = '';

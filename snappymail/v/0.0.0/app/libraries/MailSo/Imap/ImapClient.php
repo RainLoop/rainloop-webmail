@@ -99,7 +99,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \InvalidArgumentException
+	 * @throws \UnexpectedValueException
 	 * @throws \MailSo\RuntimeException
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
@@ -123,7 +123,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sLogin));
 
 		if (!\strlen($sLogin) || !\strlen($sPassword)) {
-			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
+			$this->writeLogException(new \UnexpectedValueException, \LOG_ERR);
 		}
 
 		$type = '';
@@ -421,7 +421,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \InvalidArgumentException
+	 * @throws \ValueError
 	 * @throws \MailSo\RuntimeException
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
@@ -430,7 +430,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	{
 		$sCommand = \trim($sCommand);
 		if (!\strlen($sCommand)) {
-			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
+			$this->writeLogException(new \ValueError, \LOG_ERR);
 		}
 
 		$this->IsConnected(true);
@@ -454,7 +454,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @throws \InvalidArgumentException
+	 * @throws \ValueError
 	 * @throws \MailSo\RuntimeException
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*

@@ -34,12 +34,12 @@ class Folder implements \JsonSerializable
 	public ?Responses\ACL $myRights = null;
 
 	/**
-	 * @throws \InvalidArgumentException
+	 * @throws \ValueError
 	 */
 	function __construct(string $sFullName, string $sDelimiter = null, array $aAttributes = array())
 	{
 		if (!\strlen($sFullName)) {
-			throw new \InvalidArgumentException;
+			throw new \ValueError;
 		}
 		$this->FullName = $sFullName;
 		$this->setDelimiter($sDelimiter);

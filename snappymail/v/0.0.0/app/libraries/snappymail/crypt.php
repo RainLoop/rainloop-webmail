@@ -210,7 +210,7 @@ abstract class Crypt
 	) /* : string|false */
 	{
 		if (!$data || !$iv) {
-			throw new \InvalidArgumentException('$data or $iv is empty string');
+			throw new \ValueError('$data or $iv is empty string');
 		}
 		if (!\is_callable('openssl_decrypt')) {
 			throw new \Exception('openssl_decrypt not callable');
@@ -237,7 +237,7 @@ abstract class Crypt
 	) : string
 	{
 		if (!$data || !$iv) {
-			throw new \InvalidArgumentException('$data or $iv is empty string');
+			throw new \ValueError('$data or $iv is empty string');
 		}
 		if (!\is_callable('openssl_encrypt')) {
 			throw new \Exception('openssl_encrypt not callable');
@@ -265,7 +265,7 @@ abstract class Crypt
 	) /* : mixed */
 	{
 		if (!$data || !$salt) {
-			throw new \InvalidArgumentException('$data or $salt is empty string');
+			throw new \ValueError('$data or $salt is empty string');
 		}
 		$key = $salt . static::Passphrase($key);
 		return \is_callable('xxtea_decrypt')
@@ -282,7 +282,7 @@ abstract class Crypt
 	) : string
 	{
 		if (!$data || !$salt) {
-			throw new \InvalidArgumentException('$data or $salt is empty string');
+			throw new \ValueError('$data or $salt is empty string');
 		}
 		$key = $salt . static::Passphrase($key);
 		$result = \is_callable('xxtea_encrypt')

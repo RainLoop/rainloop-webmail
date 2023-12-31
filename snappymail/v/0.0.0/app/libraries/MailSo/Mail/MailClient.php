@@ -118,7 +118,7 @@ class MailClient
 	public function Message(string $sFolderName, int $iIndex, bool $bIndexIsUid = true, ?\MailSo\Cache\CacheClient $oCacher = null) : ?Message
 	{
 		if (1 > $iIndex) {
-			throw new \InvalidArgumentException;
+			throw new \ValueError;
 		}
 
 		$this->oImapClient->FolderExamine($sFolderName);
@@ -187,7 +187,7 @@ class MailClient
 	public function MessageMimeStream($mCallback, string $sFolderName, int $iIndex, string $sMimeIndex) : bool
 	{
 		if (!\is_callable($mCallback)) {
-			throw new \InvalidArgumentException;
+			throw new \ValueError;
 		}
 
 		$this->oImapClient->FolderExamine($sFolderName);
@@ -278,7 +278,7 @@ class MailClient
 	public function MessageAppendFile(string $sMessageFileName, string $sFolderToSave, array $aAppendFlags = null) : int
 	{
 		if (!\is_file($sMessageFileName) || !\is_readable($sMessageFileName)) {
-			throw new \InvalidArgumentException;
+			throw new \ValueError;
 		}
 
 		$iMessageStreamSize = \filesize($sMessageFileName);
@@ -687,7 +687,7 @@ class MailClient
 	public function MessageList(MessageListParams $oParams) : MessageCollection
 	{
 		if (0 > $oParams->iOffset || 0 > $oParams->iLimit || 999 < $oParams->iLimit) {
-			throw new \InvalidArgumentException;
+			throw new \ValueError;
 		}
 
 		$sSearch = \trim($oParams->sSearch);
@@ -707,7 +707,7 @@ class MailClient
 		$oParams->bUseThreads = $oParams->bUseThreads && $this->oImapClient->CapabilityValue('THREAD');
 //			&& ($this->oImapClient->hasCapability('THREAD=REFS') || $this->oImapClient->hasCapability('THREAD=REFERENCES') || $this->oImapClient->hasCapability('THREAD=ORDEREDSUBJECT'));
 		if ($oParams->iThreadUid && !$oParams->bUseThreads) {
-			throw new \InvalidArgumentException('THREAD not supported');
+			throw new \ValueError('THREAD not supported');
 		}
 
 		if (!$oInfo->MESSAGES || $oParams->iOffset > $oInfo->MESSAGES) {
@@ -851,7 +851,7 @@ class MailClient
 	public function FindMessageUidByMessageId(string $sFolderName, string $sMessageId) : ?int
 	{
 		if (!\strlen($sMessageId)) {
-			throw new \InvalidArgumentException;
+			throw new \ValueError;
 		}
 
 		$this->oImapClient->FolderExamine($sFolderName);
@@ -892,7 +892,7 @@ class MailClient
 	}
 
 	/**
-	 * @throws \InvalidArgumentException
+	 * @throws \ValueError
 	 */
 	public function FolderCreate(string $sFolderNameInUtf8, string $sFolderParentFullName = '', bool $bSubscribeOnCreation = true, string $sDelimiter = '') : ?\MailSo\Imap\Folder
 	{
@@ -900,7 +900,7 @@ class MailClient
 		$sFolderParentFullName = \trim($sFolderParentFullName);
 
 		if (!\strlen($sFolderNameInUtf8)) {
-			throw new \InvalidArgumentException;
+			throw new \ValueError;
 		}
 
 		if (!\strlen($sDelimiter) || \strlen($sFolderParentFullName)) {
@@ -976,13 +976,13 @@ class MailClient
 	}
 
 	/**
-	 * @throws \InvalidArgumentException
+	 * @throws \ValueError
 	 * @throws \MailSo\RuntimeException
 	 */
 	protected function folderModify(string $sPrevFolderFullName, string $sNewFolderFullName, bool $bSubscribe) : self
 	{
 		if (!\strlen($sPrevFolderFullName) || !\strlen($sNewFolderFullName)) {
-			throw new \InvalidArgumentException;
+			throw new \ValueError;
 		}
 
 		$oSubscribedFolders = array();

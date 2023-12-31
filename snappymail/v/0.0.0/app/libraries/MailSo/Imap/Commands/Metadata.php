@@ -112,7 +112,7 @@ trait Metadata
 	{
 		if ($this->hasCapability('METADATA')) {
 			if (!$aEntries) {
-				throw new \InvalidArgumentException('Wrong argument for SETMETADATA command');
+				throw new \ValueError('Wrong argument for SETMETADATA command');
 			}
 
 			$arguments = [$this->EscapeFolderName($sFolderName)];

@@ -32,7 +32,7 @@ class Client
 	function __construct(array $settings)
 	{
 		if (!isset($settings['baseUri'])) {
-			throw new \InvalidArgumentException('A baseUri must be provided');
+			throw new \ValueError('A baseUri must be provided');
 		}
 		$this->baseUri = $settings['baseUri'];
 
@@ -114,7 +114,7 @@ class Client
 
 		foreach ($properties as $property) {
 			if (!\preg_match('/^{([^}]*)}(.*)$/', $property, $match)) {
-				throw new \InvalidArgumentException('\'' . $property . '\' is not a valid clark-notation formatted string');
+				throw new \ValueError('\'' . $property . '\' is not a valid clark-notation formatted string');
 			}
 			if ('DAV:' === $match[1]) {
 				$body .= "<d:{$match[2]}/>";
