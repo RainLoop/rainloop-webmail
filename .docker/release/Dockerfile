@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 FROM alpine:3.15 AS builder
-RUN apk add --no-cache php7 php7-json php-phar php-zip
+RUN apk add --no-cache php83 php83-json php-phar php-zip
 RUN apk add --no-cache npm
 RUN npm install -g gulp yarn
 WORKDIR /source
@@ -23,7 +23,7 @@ RUN set -eux; \
     rm -v /snappymail/README.md /snappymail/_include.php
 
 # Inspired by the original Rainloop dockerfile from youtous on GitLab
-FROM php:8.1-fpm-alpine AS final
+FROM php:8.3-fpm-alpine AS final
 
 LABEL org.label-schema.description="SnappyMail webmail client image using nginx, php-fpm on Alpine"
 
