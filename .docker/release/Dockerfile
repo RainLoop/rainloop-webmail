@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM alpine:3.15 AS builder
+FROM alpine:3.18.5 AS builder
 RUN apk add --no-cache php83 php83-json php-phar php-zip
 RUN apk add --no-cache npm
 RUN npm install -g gulp yarn
