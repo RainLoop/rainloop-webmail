@@ -38,7 +38,7 @@ And don't forget to read the whole [Wiki](https://github.com/the-djmaze/snappyma
 **GNU AFFERO GENERAL PUBLIC LICENSE Version 3 (AGPL)**.
 http://www.gnu.org/licenses/agpl-3.0.html
 
-Copyright (c) 2020 - 2023 SnappyMail
+Copyright (c) 2020 - 2024 SnappyMail
 Copyright (c) 2013 - 2022 RainLoop
 
 ## Modifications
