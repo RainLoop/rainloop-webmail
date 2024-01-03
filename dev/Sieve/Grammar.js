@@ -196,7 +196,7 @@ export class GrammarTestList extends Array
 //			return '(\r\n\t' + arrayToString(this, ',\r\n\t') + '\r\n)';
 			return '(' + this.join(', ') + ')';
 		}
-		return this.length ? this[0] : '';
+		return this.length ? this[0].toString() : '';
 	}
 
 	push(value)
@@ -254,7 +254,7 @@ export class GrammarStringList extends Array
 		if (1 < this.length) {
 			return '[' + this.join(',') + ']';
 		}
-		return this.length ? this[0] : '';
+		return this.length ? this[0].toString() : '';
 	}
 
 	push(value)

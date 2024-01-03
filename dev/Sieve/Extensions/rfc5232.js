@@ -23,7 +23,8 @@ class FlagCommand extends ActionCommand
 
 	toString()
 	{
-		return this.identifier + ' ' + this._variablename + ' ' + this.list_of_flags + ';';
+		let name = this._variablename;
+		return this.identifier + (name.length ? ' ' + this.variablename : '') + ' ' + this.list_of_flags + ';';
 	}
 
 	get variablename()

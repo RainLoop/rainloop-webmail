@@ -18,9 +18,9 @@ import {
  */
 export class ConditionalCommand extends ControlCommand
 {
-	constructor()
+	constructor(identifier)
 	{
-		super();
+		super(identifier);
 		this.test = null;
 	}
 
