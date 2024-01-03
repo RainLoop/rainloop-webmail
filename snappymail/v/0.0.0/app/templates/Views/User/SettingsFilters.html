@@ -41,7 +41,7 @@
 					data-i18n="GLOBAL/ARE_YOU_SURE"></a>
 			</td>
 			<td>
-				<span class="e-action fontastic" data-bind="visible: !askDelete() && canBeDeleted(), click: function (oScript) { $root.scriptForDeletion(oScript); }">🗑</span>
+				<span class="e-action fontastic" data-bind="visible: !askDelete() && !allowFilters(), click: function (oScript) { $root.scriptForDeletion(oScript); }">🗑</span>
 			</td>
 		</tr>
 		<!-- /ko -->

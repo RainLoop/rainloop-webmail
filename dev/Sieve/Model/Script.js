@@ -261,7 +261,6 @@ export class SieveScriptModel extends AbstractModel
 			exists: false,
 			nameError: false,
 			askDelete: false,
-			canBeDeleted: true,
 			hasChanges: false
 		});
 
@@ -317,7 +316,6 @@ export class SieveScriptModel extends AbstractModel
 			if (script.allowFilters()) {
 				script.filters(sieveScriptToFilters(script.body()));
 			}
-			script.canBeDeleted(SIEVE_FILE_NAME !== json.name);
 			script.exists(true);
 			script.hasChanges(false);
 		}
