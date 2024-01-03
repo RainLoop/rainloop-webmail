@@ -79,6 +79,15 @@ export class FilterConditionModel extends AbstractModel {
 		return true;
 	}
 
+	toJSON() {
+		return {
+			Field: this.field(),
+			Type: this.type(),
+			Value: this.value(),
+			ValueSecond: this.valueSecond()
+		};
+	}
+
 //	static reviveFromJson(json) {}
 
 	cloneSelf() {

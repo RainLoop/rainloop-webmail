@@ -26,7 +26,7 @@ export class AbstractModel {
 			throw new Error("Can't instantiate AbstractModel!");
 		}
 */
-		this.disposables = [];
+		Object.defineProperty(this, 'disposables', {value: []});
 	}
 
 	addObservables(observables) {

@@ -228,7 +228,7 @@ function filtersToSieveScript(filters)
 }
 
 // fileStringToCollection
-function sieveScriptToFilters(script)
+function rainloopScriptToFilters(script)
 {
 	let regex = /BEGIN:HEADER([\s\S]+?)END:HEADER/gm,
 		filters = [],
@@ -239,7 +239,6 @@ function sieveScriptToFilters(script)
 			json = decodeURIComponent(escape(atob(json[1].replace(/\s+/g, ''))));
 			if (json && json.length && (json = JSON.parse(json))) {
 				json['@Object'] = 'Object/Filter';
-				json.Conditions.forEach(condition => condition['@Object'] = 'Object/FilterCondition');
 				filter = FilterModel.reviveFromJson(json);
 				filter && filters.push(filter);
 			}
@@ -279,11 +278,6 @@ export class SieveScriptModel extends AbstractModel
 //		this.body(filtersToSieveScript(this.filters));
 	}
 
-	rawToFilters() {
-		return sieveScriptToFilters(this.body());
-//		this.filters(sieveScriptToFilters(this.body()));
-	}
-
 	verify() {
 		this.nameError(!this.name());
 		return !this.nameError();
@@ -314,7 +308,7 @@ export class SieveScriptModel extends AbstractModel
 		const script = super.reviveFromJson(json);
 		if (script) {
 			if (script.allowFilters()) {
-				script.filters(sieveScriptToFilters(script.body()));
+				script.filters(rainloopScriptToFilters(script.body()));
 			}
 			script.exists(true);
 			script.hasChanges(false);

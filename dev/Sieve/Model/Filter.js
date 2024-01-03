@@ -188,6 +188,24 @@ export class FilterModel extends AbstractModel {
 		this.conditions.remove(oConditionToDelete);
 	}
 
+	toJSON() {
+		return {
+			ID: this.id,
+			Enabled: this.enabled(),
+			Name: this.name(),
+			Conditions: this.conditions(),
+			ConditionsType: this.conditionsType(),
+			ActionType: this.actionType(),
+			ActionValue: this.actionValue(),
+			ActionValueSecond: this.actionValueSecond(),
+			ActionValueThird: this.actionValueThird(),
+			ActionValueFourth: this.actionValueFourth(),
+			Keep: this.keep(),
+			Stop: this.stop(),
+			MarkAsRead: this.markAsRead()
+		};
+	}
+
 	/**
 	 * @static
 	 * @param {FetchJsonFilter} json
@@ -200,7 +218,10 @@ export class FilterModel extends AbstractModel {
 		if (filter) {
 			filter.id = '' + (filter.id || '');
 			filter.conditions(
-				(json.Conditions || []).map(aData => FilterConditionModel.reviveFromJson(aData)).filter(v => v)
+				(json.Conditions || json.conditions || []).map(condition => {
+					condition['@Object'] = 'Object/FilterCondition';
+					return FilterConditionModel.reviveFromJson(condition)
+				}).filter(v => v)
 			);
 		}
 		return filter;
