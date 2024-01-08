@@ -112,4 +112,4 @@ ko.bindingHandlers['value'] = {
     },
     'update': () => {} // Keep for backwards compatibility with code that may have wrapped value binding
 };
-ko.expressionRewriting.twoWayBindings.add('value');
+//ko.expressionRewriting.twoWayBindings.add('value');

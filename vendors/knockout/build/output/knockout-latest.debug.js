@@ -1458,7 +1458,7 @@ ko.expressionRewriting = (() => {
         },
 
     // Two-way bindings include a write function that allow the handler to update the value even if it's not an observable.
-        twoWayBindings = new Set,
+//        twoWayBindings = new Set,
 
         preProcessBindings = (bindingsStringOrKeyValueArray) => {
 
@@ -1495,7 +1495,7 @@ ko.expressionRewriting = (() => {
     return {
         bindingRewriteValidators: [],
 
-        twoWayBindings: twoWayBindings,
+//        twoWayBindings: twoWayBindings,
 
         parseObjectLiteral: parseObjectLiteral,
 
@@ -2503,7 +2503,7 @@ ko.bindingHandlers['checked'] = {
         }
     }
 };
-ko.expressionRewriting.twoWayBindings['checked'] = true;
+//ko.expressionRewriting.twoWayBindings['checked'] = true;
 
 ko.bindingHandlers['checkedValue'] = {
     'update': function (element, valueAccessor) {
@@ -2652,7 +2652,7 @@ ko.bindingHandlers['hasfocus'] = {
         }
     }
 };
-ko.expressionRewriting.twoWayBindings.add('hasfocus');
+//ko.expressionRewriting.twoWayBindings.add('hasfocus');
 ko.bindingHandlers['html'] = {
     'init': () => (
         // Prevent binding on the dynamically-injected HTML (as developers are unlikely to expect that, and it has security implications)
@@ -3000,7 +3000,7 @@ ko.bindingHandlers['textInput'] = {
         ko.computed(updateView, { disposeWhenNodeIsRemoved: element });
     }
 };
-ko.expressionRewriting.twoWayBindings.add('textInput');
+//ko.expressionRewriting.twoWayBindings.add('textInput');
 
 // textinput is an alias for textInput
 ko.bindingHandlers['textinput'] = {
@@ -3121,7 +3121,7 @@ ko.bindingHandlers['value'] = {
     },
     'update': () => {} // Keep for backwards compatibility with code that may have wrapped value binding
 };
-ko.expressionRewriting.twoWayBindings.add('value');
+//ko.expressionRewriting.twoWayBindings.add('value');
 ko.bindingHandlers['visible'] = {
     'update': (element, valueAccessor) => {
         var value = ko.utils.unwrapObservable(valueAccessor());

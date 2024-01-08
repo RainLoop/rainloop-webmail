@@ -113,7 +113,7 @@ ko.expressionRewriting = (() => {
         },
 
     // Two-way bindings include a write function that allow the handler to update the value even if it's not an observable.
-        twoWayBindings = new Set,
+//        twoWayBindings = new Set,
 
         preProcessBindings = (bindingsStringOrKeyValueArray) => {
 
@@ -150,7 +150,7 @@ ko.expressionRewriting = (() => {
     return {
         bindingRewriteValidators: [],
 
-        twoWayBindings: twoWayBindings,
+//        twoWayBindings: twoWayBindings,
 
         parseObjectLiteral: parseObjectLiteral,
 
