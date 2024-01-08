@@ -8,22 +8,17 @@ import {
 	GrammarString
 } from 'Sieve/Grammar';
 
-/**
- * https://tools.ietf.org/html/rfc5429#section-2.1
- */
-export class ErejectCommand extends ActionCommand
+class rfc5429Command extends ActionCommand
 {
-	constructor()
+	constructor(identifier)
 	{
-		super();
+		super(identifier);
 		this._reason = new GrammarQuotedString;
 	}
 
-	get require() { return 'ereject'; }
-
 	toString()
 	{
-		return 'ereject ' + this._reason + ';';
+		return this.require + ' ' + this._reason + ';';
 	}
 
 	get reason()
@@ -45,37 +40,19 @@ export class ErejectCommand extends ActionCommand
 }
 
 /**
+ * https://tools.ietf.org/html/rfc5429#section-2.1
+ */
+export class ErejectCommand extends rfc5429Command
+{
+	constructor() { super('ereject'); }
+	get require() { return 'ereject'; }
+}
+
+/**
  * https://tools.ietf.org/html/rfc5429#section-2.2
  */
-export class RejectCommand extends ActionCommand
+export class RejectCommand extends rfc5429Command
 {
-	constructor()
-	{
-		super();
-		this._reason = new GrammarQuotedString;
-	}
-
+	constructor() { super('reject'); }
 	get require() { return 'reject'; }
-
-	toString()
-	{
-		return 'reject ' + this._reason + ';';
-	}
-
-	get reason()
-	{
-		return this._reason.value;
-	}
-
-	set reason(value)
-	{
-		this._reason.value = value;
-	}
-
-	pushArguments(args)
-	{
-		if (args[0] instanceof GrammarString) {
-			this._reason = args[0];
-		}
-	}
 }
