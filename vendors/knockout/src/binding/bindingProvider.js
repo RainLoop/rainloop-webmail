@@ -29,14 +29,13 @@ ko.bindingProvider = new class
         var bindingsString = getBindingsString(node);
         if (bindingsString) {
             try {
-                let options = { 'valueAccessors': true },
-                    cacheKey = bindingsString,
+                let cacheKey = bindingsString,
                     bindingFunction = bindingCache.get(cacheKey);
                 if (!bindingFunction) {
                     // Build the source for a function that evaluates "expression"
                     // For each scope variable, add an extra level of "with" nesting
                     // Example result: with(sc1) { with(sc0) { return (expression) } }
-                    var rewrittenBindings = ko.expressionRewriting.preProcessBindings(bindingsString, options),
+                    var rewrittenBindings = ko.expressionRewriting.preProcessBindings(bindingsString),
                         functionBody = "with($context){with($data||{}){return{" + rewrittenBindings + "}}}";
                     bindingFunction = new Function("$context", "$element", functionBody);
                     bindingCache.set(cacheKey, bindingFunction);

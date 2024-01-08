@@ -48,8 +48,8 @@ ko.bindingHandlers['checked'] = {
                         // currently checked, replace the old elem value with the new elem value
                         // in the model array.
                         if (isChecked) {
-							writableValue.push(elemValue);
-							writableValue.remove(saveOldValue);
+                            writableValue.push(elemValue);
+                            writableValue.remove(saveOldValue);
                         }
                     } else {
                         // When we're responding to the user having checked/unchecked a checkbox,

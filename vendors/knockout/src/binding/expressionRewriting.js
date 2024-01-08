@@ -64,7 +64,9 @@ ko.expressionRewriting = (() => {
                     // A comma signals the end of a key/value pair if depth is zero
                     if (c === 44) { // ","
                         if (depth <= 0) {
-                            result.push((key && values.length) ? {key: key, value: values.join('')} : {'unknown': key || values.join('')});
+                            result.push((key && values.length)
+                                ? {key: key, value: values.join('')}
+                                : {'unknown': key || values.join('')});
                             key = depth = 0;
                             values = [];
                             continue;
@@ -111,33 +113,24 @@ ko.expressionRewriting = (() => {
     // Two-way bindings include a write function that allow the handler to update the value even if it's not an observable.
         twoWayBindings = new Set,
 
-        preProcessBindings = (bindingsStringOrKeyValueArray, bindingOptions) => {
+        preProcessBindings = (bindingsStringOrKeyValueArray) => {
 
             var resultStrings = [],
                 propertyAccessorResultStrings = [],
-                makeValueAccessors = bindingOptions?.['valueAccessors'],
-                bindingParams = bindingOptions?.['bindingParams'],
-                keyValueArray = typeof bindingsStringOrKeyValueArray === "string" ?
-                    parseObjectLiteral(bindingsStringOrKeyValueArray) : bindingsStringOrKeyValueArray,
+                keyValueArray = parseObjectLiteral(bindingsStringOrKeyValueArray),
 
                 processKeyValue = (key, val) => {
-                    var writableVal,
-                        callPreprocessHook = obj =>
-                            obj?.['preprocess'] ? (val = obj['preprocess'](val, key, processKeyValue)) : true;
-                    if (!bindingParams) {
-                        if (!callPreprocessHook(ko.bindingHandlers[key]))
-                            return;
+                    var writableVal, obj = ko.bindingHandlers[key];
+                    if (obj?.['preprocess'] && !obj['preprocess'](val, key, processKeyValue))
+                        return;
 
-                        if (twoWayBindings.has(key) && (writableVal = getWriteableValue(val))) {
-                            // For two-way bindings, provide a write method in case the value
-                            // isn't a writable observable.
-                            propertyAccessorResultStrings.push("'" + key + "':function(_z){" + writableVal + "=_z}");
-                        }
+                    if (twoWayBindings.has(key) && (writableVal = getWriteableValue(val))) {
+                        // For two-way bindings, provide a write method in case the value
+                        // isn't a writable observable.
+                        propertyAccessorResultStrings.push("'" + key + "':function(_z){" + writableVal + "=_z}");
                     }
                     // Values are wrapped in a function so that each value can be accessed independently
-                    if (makeValueAccessors) {
-                        val = 'function(){return ' + val + ' }';
-                    }
+                    val = 'function(){return ' + val + ' }';
                     resultStrings.push("'" + key + "':" + val);
                 };
 
