@@ -131,8 +131,8 @@
 				<a href="#" class="close" data-bind="click: closeMessage" style="margin-top: -8px;">×</a>
 			</div>
 			<div class="informationShort">
-				<span class="from" data-bind="html: viewFromShort, title: message().from"></span>
-				<i data-bind="visible: viewDkimIcon, css: dkimIconClass, title: dkimTitle"></i>
+				<span class="from" data-bind="html: viewFromShort, attr:{ title: message().from }"></span>
+				<i data-bind="visible: viewDkimIcon, css: dkimIconClass, attr:{ title: dkimTitle }"></i>
 			</div>
 		</div>
 		<div id="messageItem">
@@ -151,7 +151,7 @@
 					</div>
 					<div class="informationShort" data-bind="visible: message().spamResult()">
 						<span data-i18n="MESSAGE/SPAM_SCORE"></span>:
-						<meter min="0" max="100" optimum="0" low="33" high="66" data-bind="value: message().spamScore(), title: message().spamStatus()"></meter>
+						<meter min="0" max="100" optimum="0" low="33" high="66" data-bind="value: message().spamScore(), attr:{ title: message().spamStatus() }"></meter>
 					</div>
 				</div>
 				<div class="informationFull" data-bind="visible: showFullInfo, with: message">
@@ -159,7 +159,7 @@
 						<tr data-bind="visible: from.length">
 							<td data-i18n="GLOBAL/FROM"></td>
 							<td><span data-bind="text: from"></span>
-								<i data-bind="visible: $parent.viewDkimIcon, css: $parent.dkimIconClass, title: $parent.dkimTitle"></i>
+								<i data-bind="visible: $parent.viewDkimIcon, css: $parent.dkimIconClass, attr:{ title: $parent.dkimTitle }"></i>
 							</td>
 						</tr>
 						<tr data-bind="visible: to.length">
@@ -206,7 +206,7 @@
 						<menu class="dropdown-menu right-edge" role="menu" aria-labelledby="tags-dropdown-id">
 							<div data-bind="foreach: message().tagOptions()">
 								<li role="presentation">
-									<a href="#" tabindex="-1" data-icon="☐" data-bind="click: toggle, text: label, title: value, attr: { class: css, 'data-icon': checked ? '☑' : '☐' }"></a>
+									<a href="#" tabindex="-1" data-icon="☐" data-bind="click: toggle, text: label, attr:{ title: value, class: css, 'data-icon': checked ? '☑' : '☐' }"></a>
 								</li>
 							</div>
 							<li role="presentation" class="dividerbar">
