@@ -15,8 +15,7 @@
     "url": "git://github.com/the-djmaze/snappymail.git"
   },
   "scripts": {
-    "watch-css": "gulp watchCss",
-    "watch-js": "webpack --color --watch"
+    "watch-css": "gulp watchCss"
   },
   "license": "SEE LICENSE IN LICENSE",
   "licenses": [
