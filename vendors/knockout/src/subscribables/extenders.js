@@ -1,19 +1,7 @@
 ko.extenders = {
     'debounce': (target, timeout) => target.limit(callback => debounce(callback, timeout)),
 
-    'rateLimit': (target, options) => {
-        var timeout, method, limitFunction;
-
-        if (typeof options == 'number') {
-            timeout = options;
-        } else {
-            timeout = options['timeout'];
-            method = options['method'];
-        }
-
-        limitFunction = typeof method == 'function' ? method : throttle;
-        target.limit(callback => limitFunction(callback, timeout, options));
-    },
+    'rateLimit': (target, timeout) => target.limit(callback => throttle(callback, timeout)),
 
     'notify': (target, notifyWhen) => {
         target.equalityComparer = notifyWhen == "always" ?
