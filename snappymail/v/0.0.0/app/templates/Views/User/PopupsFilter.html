@@ -24,7 +24,7 @@
 	</div>
 	<div data-bind="foreach: conditions">
 		<div class="control-group" data-bind="css: {'error': valueError}" style="display:flex">
-			<div style="flex-grow:1" data-bind="css: {'error': valueError}, template: {'name': template(), 'data': $data}"></div>
+			<div style="flex-grow:1" data-bind="css: {'error': valueError}, template: {name: template(), data: $data}"></div>
 			<span class="delete-action button-delete fontastic" style="margin-top: 5px;"
 				data-bind="click: function (oCondition) { $root.removeCondition(oCondition); }">🗑</span>
 		</div>
@@ -37,7 +37,7 @@
 
 	<div class="legend" data-i18n="POPUPS_FILTER/LEGEND_ACTIONS"></div>
 	<select class="span3" data-bind="options: $root.actionTypeOptions, value: actionType, optionsText: 'name', optionsValue: 'id'"></select>
-	<div data-bind="template: {'name': actionTemplate()}, i18nUpdate: actionTemplate"></div>
+	<div data-bind="template: {name: actionTemplate()}, i18nUpdate: actionTemplate"></div>
 </form>
 <footer>
 	<button class="btn buttonSave" form="sieve-script-filter" data-icon="✔" data-i18n="GLOBAL/DONE"></button>
