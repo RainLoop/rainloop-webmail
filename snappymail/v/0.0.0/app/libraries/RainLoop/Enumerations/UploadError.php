@@ -51,7 +51,7 @@ abstract class UploadError
 			case \UPLOAD_ERR_CANT_WRITE:
 			case \UPLOAD_ERR_EXTENSION:
 			case static::ON_SAVING:
-				$iClientError = static::FILE_ON_SAVING_ERROR;
+				$iClientError = static::ON_SAVING;
 				break;
 
 			default:
