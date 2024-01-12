@@ -187,7 +187,7 @@ export class MessageModel extends AbstractModel {
 			folder: this.folder,
 			uid: this.uid,
 			mimeType: RFC822,
-			fileName: (this.subject() || 'message-' + this.hash) + '.eml',
+			fileName: (this.subject() || 'message') + '-' + this.hash + '.eml',
 			accountHash: SettingsGet('accountHash')
 		});
 	}
