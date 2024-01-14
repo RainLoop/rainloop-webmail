@@ -43,14 +43,15 @@ class ProxyAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		$oActions = \RainLoop\Api::Actions();
 		$oLogger = $oActions->Logger();
-		$sPrefix = "ProxyAuthCREDENTIALS";
+		$sPrefix = "ProxyAuth";
 		$sLevel = LOG_DEBUG;
 		$sMsg = "sEmail= " . $sEmail;
 		$oLogger->Write($sMsg, $sLevel, $sPrefix);
 		
-		$sMasterUser = \trim($this->Config()->Get('plugin', 'master_user', ''));
-		$sMasterSeparator = \trim($this->Config()->Get('plugin', 'master_separator', ''));
+		$sMasterUser = \trim($this->Config()->getDecrypted('plugin', 'master_user', ''));
+		$sMasterSeparator = \trim($this->Config()->getDecrypted('plugin', 'master_separator', ''));
 		
+		/* remove superuser from email for proper UI */
 		if (static::$login) {
 			$sEmail = str_replace($sMasterUser, "", $sEmail);
 			$sEmail = str_replace($sMasterSeparator, "", $sEmail);
@@ -69,21 +70,22 @@ class ProxyAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$sLevel = LOG_DEBUG;
 		$sPrefix = "ProxyAuth";
 
-		$sMasterUser = \trim($this->Config()->Get('plugin', 'master_user', ''));
-		$sMasterSeparator = \trim($this->Config()->Get('plugin', 'master_separator', ''));
-		$sHeaderName = \trim($this->Config()->Get('plugin', 'header_name', ''));
+		$sMasterUser = \trim($this->Config()->getDecrypted('plugin', 'master_user', ''));
+		$sMasterSeparator = \trim($this->Config()->getDecrypted('plugin', 'master_separator', ''));
+		$sHeaderName = \trim($this->Config()->getDecrypted('plugin', 'header_name', ''));
 
 		$sRemoteUser = $this->Manager()->Actions()->Http()->GetHeader($sHeaderName);
 		$sMsg = "Remote User: " . $sRemoteUser;
 		$oLogger->Write($sMsg, $sLevel, $sPrefix);
 
-		$sProxyIP = $this->Config()->Get('plugin', 'proxy_ip', '');
+		$sProxyIP = $this->Config()->getDecrypted('plugin', 'proxy_ip', '');
 		$sMsg = "ProxyIP: " . $sProxyIP;
 		$oLogger->Write($sMsg, $sLevel, $sPrefix);
 
-		$sProxyCheck = $this->Config()->Get('plugin', 'proxy_check', '');
+		$sProxyCheck = $this->Config()->getDecrypted('plugin', 'proxy_check', '');
 		$sClientIPs = $this->Manager()->Actions()->Http()->GetClientIP(true);
 		
+		/* make sure that remote user is only set by authorized proxy to avoid security risks */
 		if ($sProxyCheck) {
 			$sProxyRequest = false;
 			$sMsg = "checking client IPs: " . $sClientIPs;
@@ -111,9 +113,10 @@ class ProxyAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$sProxyRequest = true;
 		}
 		
-		if ($sProxyRequest) {		
+		if ($sProxyRequest) {
+			/* create master user login from remote user header and settings */
 			$sEmail = $sRemoteUser . $sMasterSeparator . $sMasterUser;
-			$sPassword = \trim($this->Config()->Get('plugin', 'master_password', ''));
+			$sPassword = \trim($this->Config()->getDecrypted('plugin', 'master_password', ''));
 
 			try
 			{
@@ -144,32 +147,38 @@ class ProxyAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetLabel('Master User separator')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
 				->SetDescription('Sets the master user separator (format: <username><separator><master username>)')
-				->SetDefaultValue('*'),
+				->SetDefaultValue('*')
+				->SetEncrypted(),
 			\RainLoop\Plugins\Property::NewInstance('master_user')
 				->SetLabel('Master User')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
 				->SetDescription('Username of master user')
-				->SetDefaultValue('admin'),
+				->SetDefaultValue('admin')
+				->SetEncrypted(),
 			\RainLoop\Plugins\Property::NewInstance('master_password')
 				->SetLabel('Master Password')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
 				->SetDescription('Password for master user')
-				->SetDefaultValue('adminpassword'),
+				->SetDefaultValue('adminpassword')
+				->SetEncrypted(),
 			\RainLoop\Plugins\Property::NewInstance('header_name')
 				->SetLabel('Header Name')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
 				->SetDescription('Name of header containing username')
-				->SetDefaultValue('Remote-User'),
+				->SetDefaultValue('Remote-User')
+				->SetEncrypted(),
 			\RainLoop\Plugins\Property::NewInstance('check_proxy')
 				->SetLabel('Check Proxy')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDescription('Activates check if proxy is connecting')
-				->SetDefaultValue(true),
+				->SetDefaultValue(true)
+				->SetEncrypted(),
 			\RainLoop\Plugins\Property::NewInstance('proxy_ip')
 				->SetLabel('Proxy IPNet')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
 				->SetDescription('IP or Subnet of proxy, auth header will only be accepted from this address')
 				->SetDefaultValue('10.1.0.0/24')
+				->SetEncrypted()
 		);
 	}
 }
