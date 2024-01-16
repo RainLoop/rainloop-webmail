@@ -257,51 +257,7 @@ abstract class Base
 
 		$oPdo = $this->getPDO();
 		if ($oPdo) {
-			$aQ = array();
-			switch ($this->sDbType)
-			{
-				case 'mysql':
-					$aQ[] = 'CREATE TABLE IF NOT EXISTS rainloop_system (
-sys_name varchar(64) NOT NULL,
-value_int int UNSIGNED NOT NULL DEFAULT 0,
-PRIMARY KEY (sys_name)
-) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;';
-					$aQ[] = 'CREATE TABLE IF NOT EXISTS rainloop_users (
-id_user int UNSIGNED NOT NULL AUTO_INCREMENT,
-rl_email varchar(254) NOT NULL,
-PRIMARY KEY (id_user),
-UNIQUE KEY ui_rainloop_users_email (rl_email)
-);';
-					break;
-
-				case 'pgsql':
-					$aQ[] = 'CREATE TABLE rainloop_system (
-sys_name varchar(50) NOT NULL,
-value_int integer NOT NULL DEFAULT 0
-);';
-					$aQ[] = 'CREATE INDEX sys_name_rainloop_system_index ON rainloop_system (sys_name);';
-					$aQ[] = 'CREATE SEQUENCE id_user START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;';
-					$aQ[] = 'CREATE TABLE rainloop_users (
-id_user integer DEFAULT nextval(\'id_user\'::text) PRIMARY KEY,
-rl_email varchar(254) NOT NULL DEFAULT \'\'
-);';
-					$aQ[] = 'CREATE INDEX rl_email_rainloop_users_index ON rainloop_users (rl_email);';
-					break;
-
-				case 'sqlite':
-					$aQ[] = 'CREATE TABLE rainloop_system (
-sys_name text NOT NULL,
-value_int integer NOT NULL DEFAULT 0
-);';
-					$aQ[] = 'CREATE UNIQUE INDEX ui_rainloop_system_sys_name ON rainloop_system (sys_name);';
-					$aQ[] = 'CREATE TABLE rainloop_users (
-id_user integer NOT NULL PRIMARY KEY,
-rl_email text NOT NULL DEFAULT \'\'
-);';
-					$aQ[] = 'CREATE INDEX rl_email_rainloop_users_index ON rainloop_users (rl_email);';
-					break;
-			}
-
+			$aQ = Schema::getForDbType($this->sDbType);
 			if (\count($aQ)) {
 				try
 				{
@@ -352,41 +308,36 @@ rl_email text NOT NULL DEFAULT \'\'
 		$bResult = false;
 		if (\is_int($iFromVersion) && 0 <= $iFromVersion) {
 			$oPdo = false;
-
 			foreach ($aData as $iVersion => $aQuery) {
-				if (0 === \count($aQuery)) {
-					continue;
-				}
-
-				if (!$oPdo) {
-					$oPdo = $this->getPDO();
-					$bResult = true;
-				}
-
-				if ($iFromVersion < $iVersion && $oPdo) {
-					try
-					{
-						foreach ($aQuery as $sQuery) {
-							$this->writeLog($sQuery);
-							$bExec = $oPdo->exec($sQuery);
-							if (false === $bExec) {
-								$this->writeLog('Result: false');
-
-								$bResult = false;
+				if ($iFromVersion < $iVersion) {
+					if (\count($aQuery)) {
+						if (!$oPdo) {
+							$oPdo = $this->getPDO();
+							$bResult = true;
+						}
+						if ($oPdo) {
+							try
+							{
+								foreach ($aQuery as $sQuery) {
+									$this->writeLog($sQuery);
+									$bExec = $oPdo->exec($sQuery);
+									if (false === $bExec) {
+										$this->writeLog('Result: false');
+										$bResult = false;
+										break;
+									}
+								}
+							}
+							catch (\Throwable $oException)
+							{
+								$this->writeLog($oException);
+								throw $oException;
+							}
+							if (!$bResult) {
 								break;
 							}
 						}
 					}
-					catch (\Throwable $oException)
-					{
-						$this->writeLog($oException);
-						throw $oException;
-					}
-
-					if (!$bResult) {
-						break;
-					}
-
 					$this->setVersion($sName, $iVersion);
 				}
 			}
