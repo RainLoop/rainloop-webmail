@@ -290,23 +290,58 @@ class ActionsAdmin extends Actions
 			]
 		];
 
-		foreach (['APCu', 'cURL','Fileinfo','GnuPG','GD','Gmagick','Imagick','iconv','intl','LDAP','OpenSSL','pdo_mysql','pdo_pgsql','pdo_sqlite','redis','Sodium','Tidy','uuid','XXTEA','Zip'] as $name) {
+		foreach (['APCu', 'cURL','Fileinfo','iconv','intl','LDAP','redis','Tidy','uuid','Zip'] as $name) {
 			$aResult['php'][] = [
-				'name' => ('OpenSSL' === $name && \defined('OPENSSL_VERSION_TEXT')) ? OPENSSL_VERSION_TEXT : $name,
+				'name' => $name,
 				'loaded' => \extension_loaded(\strtolower($name)),
 				'version' => \phpversion($name)
 			];
 		}
-		$aResult['php'][] = [
-			'name' => 'Fileinfo',
-			'loaded' => \class_exists('finfo'),
-			'version' => \phpversion('fileinfo')
-		];
+
 		$aResult['php'][] = [
 			'name' => 'Phar',
 			'loaded' => \class_exists('PharData'),
 			'version' => \phpversion('phar')
 		];
+
+		$aResult['php'][] = [
+			'name' => 'Contacts database:',
+			'loaded' => \extension_loaded('pdo_mysql') || \extension_loaded('pdo_pgsql') || \extension_loaded('pdo_sqlite'),
+			'version' => 0
+		];
+		foreach (['pdo_mysql','pdo_pgsql','pdo_sqlite'] as $name) {
+			$aResult['php'][] = [
+				'name' => "- {$name}",
+				'loaded' => \extension_loaded(\strtolower($name)),
+				'version' => \phpversion($name)
+			];
+		}
+
+		$aResult['php'][] = [
+			'name' => 'Crypt:',
+			'loaded' => true,
+			'version' => 0
+		];
+		foreach (['Sodium','OpenSSL','XXTEA','GnuPG'] as $name) {
+			$aResult['php'][] = [
+				'name' => '- ' . (('OpenSSL' === $name && \defined('OPENSSL_VERSION_TEXT')) ? OPENSSL_VERSION_TEXT : $name),
+				'loaded' => \extension_loaded(\strtolower($name)),
+				'version' => \phpversion($name)
+			];
+		}
+
+		$aResult['php'][] = [
+			'name' => 'Image processing:',
+			'loaded' => \extension_loaded('gd') || \extension_loaded('gmagick') || \extension_loaded('imagick'),
+			'version' => 0
+		];
+		foreach (['GD','Gmagick','Imagick'] as $name) {
+			$aResult['php'][] = [
+				'name' => "- {$name}",
+				'loaded' => \extension_loaded(\strtolower($name)),
+				'version' => \phpversion($name)
+			];
+		}
 
 		return $this->DefaultResponse($aResult);
 	}
