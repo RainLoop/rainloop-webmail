@@ -28,6 +28,8 @@ export class AdminSettingsContacts extends AbstractViewSettings {
 		this.addSetting('contactsMySQLSSLVerify');
 		this.addSetting('contactsMySQLSSLCiphers');
 
+		this.addSetting('contactsSQLiteGlobal');
+
 		addObservablesTo(this, {
 			testing: false,
 			testContactsSuccess: false,
@@ -102,7 +104,8 @@ export class AdminSettingsContacts extends AbstractViewSettings {
 				PdoPassword: this.contactsPdoPassword(),
 				MySQLSSLCA: this.contactsMySQLSSLCA(),
 				MySQLSSLVerify: this.contactsMySQLSSLVerify(),
-				MySQLSSLCiphers: this.contactsMySQLSSLCiphers()
+				MySQLSSLCiphers: this.contactsMySQLSSLCiphers(),
+				SQLiteGlobal: this.contactsSQLiteGlobal()
 			}
 		);
 	}

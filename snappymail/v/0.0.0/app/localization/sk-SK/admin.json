@@ -68,6 +68,7 @@
 		"LABEL_STORAGE_DSN": "Dsn",
 		"LABEL_STORAGE_USER": "Užívateľ",
 		"LABEL_STORAGE_PASSWORD": "Heslo",
+		"SQLITE_GLOBAL": "Use a global DB instead of per account",
 		"ALERT_NOTICE": "Notice!",
 		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Nepoužívajte tento typ databázy, ak máte veľký počet aktívnych používateľov.",

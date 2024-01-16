@@ -68,6 +68,7 @@
 		"LABEL_STORAGE_DSN": "Dsn",
 		"LABEL_STORAGE_USER": "用户",
 		"LABEL_STORAGE_PASSWORD": "密码",
+		"SQLITE_GLOBAL": "Use a global DB instead of per account",
 		"ALERT_NOTICE": "提示!",
 		"SUGGESTIONS_LIMIT": "建议数量上限",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "如果有大量的活跃用户，请不要选择此数据库类型。",

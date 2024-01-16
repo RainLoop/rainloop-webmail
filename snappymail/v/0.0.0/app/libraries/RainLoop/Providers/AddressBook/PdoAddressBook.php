@@ -32,20 +32,20 @@ class PdoAddressBook
 		$oSettings->driver = static::validPdoType($oConfig->Get('contacts', 'type', 'sqlite'));
 		if ('sqlite' === $oSettings->driver) {
 			$sDsn = 'sqlite:' . APP_PRIVATE_DATA . 'AddressBook.sqlite';
-/*
-			// TODO: use local db?
-			$oAccount = \RainLoop\Api::Actions()->getMainAccountFromToken(false);
-			if ($oAccount) {
-				$homedir = \RainLoop\Api::Actions()->StorageProvider()->GenerateFilePath(
-					$oAccount,
-					\RainLoop\Providers\Storage\Enumerations\StorageType::ROOT
-				);
-				if (!\is_file($homedir . 'AddressBook.sqlite') && \is_file(APP_PRIVATE_DATA . '/AddressBook.sqlite')) {
-					\copy(APP_PRIVATE_DATA . '/AddressBook.sqlite', $homedir . 'AddressBook.sqlite');
+			if (!$oConfig->Get('contacts', 'sqlite_global', \is_file(APP_PRIVATE_DATA . '/AddressBook.sqlite'))) {
+				$oAccount = \RainLoop\Api::Actions()->getMainAccountFromToken(false);
+				if ($oAccount) {
+					$homedir = \RainLoop\Api::Actions()->StorageProvider()->GenerateFilePath(
+						$oAccount,
+						\RainLoop\Providers\Storage\Enumerations\StorageType::ROOT
+					);
+					// TODO: sync data on switch?
+//					if (!\is_file($homedir . 'AddressBook.sqlite') && \is_file(APP_PRIVATE_DATA . '/AddressBook.sqlite')) {
+//						\copy(APP_PRIVATE_DATA . '/AddressBook.sqlite', $homedir . 'AddressBook.sqlite');
+//					}
+					$sDsn = 'sqlite:' . $homedir . 'AddressBook.sqlite';
 				}
-				$sDsn = 'sqlite:' . $homedir . 'AddressBook.sqlite';
 			}
-*/
 		} else {
 			$sDsn = \trim($oConfig->Get('contacts', 'pdo_dsn', ''));
 			$oSettings->user = \trim($oConfig->Get('contacts', 'pdo_user', ''));

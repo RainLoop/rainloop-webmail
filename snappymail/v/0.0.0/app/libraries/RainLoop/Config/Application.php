@@ -201,6 +201,7 @@ Warning: only enable when server does not do this, else double compression error
 				'mysql_ssl_ca'      => array('', 'PEM format certificate'),
 				'mysql_ssl_verify'  => array(true),
 				'mysql_ssl_ciphers' => array('', 'HIGH'),
+				'sqlite_global'     => array(\is_file(APP_PRIVATE_DATA . '/AddressBook.sqlite')),
 				'suggestions_limit' => array(20)
 			),
 

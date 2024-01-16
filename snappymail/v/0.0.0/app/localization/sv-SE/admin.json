@@ -68,6 +68,7 @@
 		"LABEL_STORAGE_DSN": "Dsn",
 		"LABEL_STORAGE_USER": "Användare",
 		"LABEL_STORAGE_PASSWORD": "Lösenord",
+		"SQLITE_GLOBAL": "Use a global DB instead of per account",
 		"ALERT_NOTICE": "Notis",
 		"SUGGESTIONS_LIMIT": "Suggestions limit",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Använd inte denna typ av databas med ett stort antal aktiva användare.",

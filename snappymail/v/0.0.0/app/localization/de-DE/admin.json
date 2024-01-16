@@ -68,6 +68,7 @@
 		"LABEL_STORAGE_DSN": "DSN",
 		"LABEL_STORAGE_USER": "Benutzer",
 		"LABEL_STORAGE_PASSWORD": "Passwort",
+		"SQLITE_GLOBAL": "Use a global DB instead of per account",
 		"ALERT_NOTICE": "Hinweis!",
 		"SUGGESTIONS_LIMIT": "Limit für Empfehlungen",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Verwenden Sie diesen Datenbanktyp nicht bei einer hohen Anzahl aktiver Benutzer.",

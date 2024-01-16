@@ -255,7 +255,7 @@
 		"TITLE_UPDATE_IDENTITY": "Identiteit bijwerken?",
 		"BUTTON_ADD_IDENTITY": "Toevoegen",
 		"BUTTON_UPDATE_IDENTITY": "Bijwerken",
-		"LABEL_SIGNATURE_ADD": "Handtekening toevoegen/wijzigen",
+		"LABEL_SIGNATURE_ADD": "Handtekening toevoegen\/wijzigen",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Plaats deze handtekening vóór geciteerde tekst in antwoorden"
 	},
 	"POPUPS_CREATE_FOLDER": {

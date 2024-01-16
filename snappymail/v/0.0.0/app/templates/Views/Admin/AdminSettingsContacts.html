@@ -86,22 +86,23 @@
 				</div>
 			</div>
 		</div>
-
-		<div class="control-group">
-			<label></label>
-			<a class="btn" data-bind="command: testContactsCommand, css: { 'btn-success': testContactsSuccess, 'btn-danger': testContactsError }">
-				<i class="fontastic" data-bind="css: {'icon-spinner': testing()}">ℹ</i>
-				<span data-i18n="GLOBAL/TEST"></span>
-			</a>
-		</div>
 	</div>
 	<div data-bind="visible: 'sqlite' === contactsPdoType()">
 		<div class="control-group">
+			<label></label>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: { value: contactsSQLiteGlobal, label: 'TAB_CONTACTS/SQLITE_GLOBAL' }
+			}"></div>
+		</div>
+		<div class="control-group" data-bind="visible: contactsSQLiteGlobal">
 			<div class="alert">
 				<h4 data-i18n="TAB_CONTACTS/ALERT_NOTICE"></h4>
 				<div data-i18n="[html]TAB_CONTACTS/HTML_ALERT_DO_NOT_USE_THIS_DATABASE"></div>
 			</div>
 		</div>
+	</div>
+	<div data-bind="visible: contactsPdoType">
 		<div class="control-group">
 			<label></label>
 			<a class="btn" data-bind="command: testContactsCommand, css: { 'btn-success': testContactsSuccess, 'btn-danger': testContactsError }">

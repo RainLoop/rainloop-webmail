@@ -76,6 +76,7 @@ class ActionsAdmin extends Actions
 		$this->setConfigFromParams($oConfig, 'contactsMySQLSSLCA', 'contacts', 'mysql_ssl_ca', 'string');
 		$this->setConfigFromParams($oConfig, 'contactsMySQLSSLVerify', 'contacts', 'mysql_ssl_verify', 'bool');
 		$this->setConfigFromParams($oConfig, 'contactsMySQLSSLCiphers', 'contacts', 'mysql_ssl_ciphers', 'string');
+		$this->setConfigFromParams($oConfig, 'contactsSQLiteGlobal', 'contacts', 'sqlite_global', 'bool');
 		$this->setConfigFromParams($oConfig, 'contactsSuggestionsLimit', 'contacts', 'suggestions_limit', 'int');
 		$this->setConfigFromParams($oConfig, 'contactsPdoType', 'contacts', 'type', 'string', function ($sType) use ($self) {
 			return Providers\AddressBook\PdoAddressBook::validPdoType($sType);
@@ -153,6 +154,7 @@ class ActionsAdmin extends Actions
 		$this->setConfigFromParams($oConfig, 'MySQLSSLCA', 'contacts', 'mysql_ssl_ca', 'string');
 		$this->setConfigFromParams($oConfig, 'MySQLSSLVerify', 'contacts', 'mysql_ssl_verify', 'bool');
 		$this->setConfigFromParams($oConfig, 'MySQLSSLCiphers', 'contacts', 'mysql_ssl_ciphers', 'string');
+		$this->setConfigFromParams($oConfig, 'SQLiteGlobal', 'contacts', 'sqlite_global', 'bool');
 
 		$sTestMessage = '';
 		try {
@@ -391,6 +393,7 @@ class ActionsAdmin extends Actions
 			$aResult['contactsMySQLSSLCA'] = (string) $oConfig->Get('contacts', 'mysql_ssl_ca', '');
 			$aResult['contactsMySQLSSLVerify'] = !!$oConfig->Get('contacts', 'mysql_ssl_verify', true);
 			$aResult['contactsMySQLSSLCiphers'] = (string) $oConfig->Get('contacts', 'mysql_ssl_ciphers', '');
+			$aResult['contactsSQLiteGlobal'] = !!$oConfig->Get('contacts', 'sqlite_global', \is_file(APP_PRIVATE_DATA . '/AddressBook.sqlite'));
 			$aResult['contactsSuggestionsLimit'] = (int)$oConfig->Get('contacts', 'suggestions_limit', 20);
 
 			$aResult['faviconUrl'] = $oConfig->Get('webmail', 'favicon_url', '');
