@@ -35,6 +35,9 @@ abstract class MimeType
 			if (self::$finfo) {
 				$mime = \preg_replace('#[,;].*#', '', self::$finfo->file($filename));
 			}
+			if (!$mime && \is_callable('mime_content_type')) {
+				$mime = \mime_content_type($filename);
+			}
 			if (!$mime && $fp = \fopen($filename, 'rb')) {
 				$mime = self::fromStream($fp);
 				\fclose($fp);

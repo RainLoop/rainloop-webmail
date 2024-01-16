@@ -10,8 +10,8 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Avatars',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.12',
-		RELEASE  = '2023-11-27',
+		VERSION  = '1.13',
+		RELEASE  = '2024-01-16',
 		REQUIRED = '2.25.0',
 		CATEGORY = 'Contacts',
 		LICENSE  = 'MIT',
@@ -316,7 +316,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		if ($aFiles) {
 			\MailSo\Base\Http::setLastModified(\filemtime($aFiles[0]));
 			return [
-				\mime_content_type($aFiles[0]),
+				\SnappyMail\File\MimeType::fromFile($aFiles[0]),
 				\file_get_contents($aFiles[0])
 			];
 		}
