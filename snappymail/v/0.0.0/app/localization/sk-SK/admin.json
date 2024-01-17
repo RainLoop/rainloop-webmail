@@ -79,7 +79,7 @@
 		"BUTTON_ADD_DOMAIN": "Pridať doménu",
 		"BUTTON_ADD_ALIAS": "Pridať alias",
 		"DELETE_ARE_YOU_SURE": "Ste si istí?",
-		"HTML_DOMAINS_HELPER": "List of domains webmail is allowed to access.\n<br>\nClick on the name to configure the domain.\n"
+		"HTML_DOMAINS_HELPER": "List of domains that are allowed.\n<br>\nClick on the name to configure the domain.\n"
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Bezpečnosť",
