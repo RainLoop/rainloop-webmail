@@ -111,9 +111,13 @@ abstract class Api
 				$oStorageProvider->DeleteStorage($sEmail);
 			}
 
-			$oAddressBookProvider = static::Actions()->AddressBookProvider();
-			if ($oAddressBookProvider) {
-				$oAddressBookProvider->DeleteAllContacts($sEmail);
+			$oConfig = static::Config();
+			$sqlite_global = $oConfig->Get('contacts', 'sqlite_global', false);
+			if ('sqlite' != $oConfig->Get('contacts', 'type', '') || \is_file(APP_PRIVATE_DATA . '/AddressBook.sqlite')) {
+				$oConfig->Set('contacts', 'sqlite_global', true);
+				$oAddressBookProvider = static::Actions()->AddressBookProvider();
+				$oAddressBookProvider && $oAddressBookProvider->DeleteAllContacts($sEmail);
+				$oConfig->Set('contacts', 'sqlite_global', !!$sqlite_global);
 			}
 
 			return true;
