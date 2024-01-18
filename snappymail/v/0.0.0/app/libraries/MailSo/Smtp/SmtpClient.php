@@ -7,6 +7,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * https://datatracker.ietf.org/doc/html/rfc2034
+ * https://datatracker.ietf.org/doc/html/rfc2821
  */
 
 namespace MailSo\Smtp;
@@ -149,7 +152,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			// https://github.com/the-djmaze/snappymail/issues/1038
 			try
 			{
-				$sResult = $this->sendRequestWithCheck('AUTH', 235, 'PLAIN ' . $SASL->authenticate($sLogin, $sPassword));
+				$sResult = $this->sendRequestWithCheck('AUTH PLAIN ' . $SASL->authenticate($sLogin, $sPassword), 235);
 			}
 			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
 			{
@@ -161,7 +164,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			// Start authentication
 			try
 			{
-				$sResult = $this->sendRequestWithCheck('AUTH', 334, $type);
+				$sResult = $this->sendRequestWithCheck("AUTH {$type}", 334);
 			}
 			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
 			{
@@ -174,10 +177,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 			{
 				if (\str_starts_with($type, 'SCRAM-')) {
 					// RFC 5802
-					$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 234, '');
+					$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 234);
 					$sChallenge = $SASL->challenge($sResult);
 					$this->logMask($sChallenge);
-					$SASL->verify($this->sendRequestWithCheck($sChallenge, 235, '', true));
+					$SASL->verify($this->sendRequestWithCheck($sChallenge, 235, true));
 				} else switch ($type) {
 				// RFC 4616
 				case 'PLAIN':
@@ -185,14 +188,14 @@ class SmtpClient extends \MailSo\Net\NetClient
 				case 'OAUTHBEARER':
 					$sAuth = $SASL->authenticate($sLogin, $sPassword);
 					$this->logMask($sAuth);
-					$this->sendRequestWithCheck($sAuth, 235, '', true);
+					$this->sendRequestWithCheck($sAuth, 235, true);
 					break;
 
 				case 'LOGIN':
-					$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 334, '');
+					$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 334);
 					$sPassword = $SASL->challenge($sResult);
 					$this->logMask($sPassword);
-					$this->sendRequestWithCheck($sPassword, 235, '', true);
+					$this->sendRequestWithCheck($sPassword, 235, true);
 					break;
 
 				// RFC 2195
@@ -200,7 +203,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 					if (empty($sResult)) {
 						$this->writeLogException(new \MailSo\Smtp\Exceptions\NegativeResponseException);
 					}
-					$this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 235, '', true);
+					$this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 235, true);
 					break;
 				}
 			}
@@ -240,6 +243,18 @@ class SmtpClient extends \MailSo\Net\NetClient
 		// RFC 6152
 		if ($this->hasCapability('8BITMIME')) {
 //			$sCmd .= ' BODY=8BITMIME';
+			// RFC 6531
+			if ($this->hasCapability('SMTPUTF8')) {
+//				$sCmd .= ' SMTPUTF8';
+			}
+		}
+		// RFC 3030
+		else if ($this->hasCapability('BINARYMIME')) {
+//			$sCmd .= ' BODY=BINARYMIME';
+			// RFC 6531
+			if ($this->hasCapability('SMTPUTF8')) {
+//				$sCmd .= ' SMTPUTF8';
+			}
 		}
 
 		// RFC 8689
@@ -247,7 +262,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			$sCmd .= ' REQUIRETLS';
 		}
 
-		$this->sendRequestWithCheck('MAIL', 250, $sCmd);
+		$this->sendRequestWithCheck("MAIL {$sCmd}", 250);
 
 		$this->bMail = true;
 		$this->bRcpt = false;
@@ -274,10 +289,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			$sCmd .= ' NOTIFY=SUCCESS,FAILURE';
 		}
 
-		$this->sendRequestWithCheck(
-			'RCPT', array(250, 251), $sCmd, false,
-			'Failed to add recipient "'.$sTo.'"'
-		);
+		$this->sendRequestWithCheck("RCPT {$sCmd}", array(250, 251), false, "Failed to add recipient '{$sTo}'");
 
 		$this->bRcpt = true;
 
@@ -331,6 +343,25 @@ class SmtpClient extends \MailSo\Net\NetClient
 			$this->writeLogException(new \MailSo\RuntimeException('No recipient forward path has been supplied'), \LOG_ERR);
 		}
 
+/*
+		// RFC 3030
+		if ($this->hasCapability('CHUNKING')) {
+			$this->bRunningCallback = true;
+			while (!\feof($rDataStream)) {
+				$sBuffer = \fgets($rDataStream);
+				if (false === $sBuffer) {
+					if (!\feof($rDataStream)) {
+						$this->writeLogException(new \MailSo\RuntimeException('Cannot read input resource'), \LOG_ERR);
+					}
+					break;
+				}
+				$this->sendRequestWithCheck("BDAT " . \strlen($sBuffer) . "\r\n{$sBuffer}", 250);
+				\MailSo\Base\Utils::ResetTimeLimit();
+			}
+			$this->sendRequestWithCheck("BDAT 0 LAST\r\n", 250);
+		}
+		else {
+*/
 		$this->sendRequestWithCheck('DATA', 354);
 
 		$this->writeLog('Message data.');
@@ -375,16 +406,57 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
+	 * VERIFY
 	 * @throws \MailSo\RuntimeException
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
 	public function Vrfy(string $sUser) : self
 	{
-		$this->sendRequestWithCheck('VRFY', array(250, 251, 252),
-			\MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sUser)));
+/*
+		// RFC 6531
+		if ($this->hasCapability('SMTPUTF8')) {
+			$this->sendRequestWithCheck('VRFY '
+					. \MailSo\Base\Utils::IdnToUtf8(\MailSo\Base\Utils::Trim($sUser))
+					. ' SMTPUTF8',
+				array(250, 251, 252),
+			);
+		} else {
+*/
+		$this->sendRequestWithCheck(
+			'VRFY ' . \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sUser)),
+			array(250, 251, 252)
+		);
 		return $this;
 	}
+
+	/**
+	 * EXPAND command, the string identifies a mailing list, and the
+	 * successful (i.e., 250) multiline response MAY include the full name
+	 * of the users and MUST give the mailboxes on the mailing list.
+	 *
+	 * @throws \MailSo\RuntimeException
+	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Smtp\Exceptions\*
+	 */
+/*
+	public function Expn(string $sUser) : self
+	{
+		// RFC 6531
+		if ($this->hasCapability('SMTPUTF8')) {
+			$this->sendRequestWithCheck('EXPN '
+					. \MailSo\Base\Utils::IdnToUtf8(\MailSo\Base\Utils::Trim($sUser))
+					. ' SMTPUTF8',
+				array(250, 251, 252)
+			);
+		} else {
+		$this->sendRequestWithCheck('EXPN '
+				. \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sUser)),
+			array(250, 251, 252),
+		);
+		return $this;
+	}
+*/
 
 	/**
 	 * @throws \MailSo\RuntimeException
@@ -394,7 +466,6 @@ class SmtpClient extends \MailSo\Net\NetClient
 	public function Noop() : self
 	{
 		$this->sendRequestWithCheck('NOOP', 250);
-
 		return $this;
 	}
 
@@ -417,20 +488,15 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\RuntimeException
 	 * @throws \MailSo\Net\Exceptions\*
 	 */
-	private function sendRequest(string $sCommand, string $sAddToCommand = '', bool $bSecureLog = false) : void
+	private function sendRequest(string $sCommand, bool $bSecureLog = false) : void
 	{
-		$sCommand = \trim($sCommand);
-		if (!\strlen($sCommand)) {
+		if (!\strlen(\trim($sCommand))) {
 			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
 		}
 
 		$this->IsConnected(true);
 
-		$sRealCommand = $sCommand . (\strlen($sAddToCommand) ? ' '.$sAddToCommand : '');
-
-		$sFakeCommand = $bSecureLog ? '********' : '';
-
-		$this->sendRaw($sRealCommand, true, $sFakeCommand);
+		$this->sendRaw($sCommand, true, $bSecureLog ? '********' : '');
 	}
 
 	/**
@@ -439,9 +505,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
-	private function sendRequestWithCheck(string $sCommand, $mExpectCode, string $sAddToCommand = '', bool $bSecureLog = false, string $sErrorPrefix = '') : string
+	private function sendRequestWithCheck(string $sCommand, $mExpectCode, bool $bSecureLog = false, string $sErrorPrefix = '') : string
 	{
-		$this->sendRequest($sCommand, $sAddToCommand, $bSecureLog);
+		$this->sendRequest($sCommand, $bSecureLog);
 		$this->validateResponse($mExpectCode, $sErrorPrefix);
 		return empty($this->aResults[0]) ? '' : \trim(\substr($this->aResults[0], 4));
 	}
@@ -472,16 +538,12 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	private function ehlo(string $sHost) : void
 	{
-		$this->sendRequestWithCheck('EHLO', 250, $sHost);
+		$this->sendRequestWithCheck("EHLO {$sHost}", 250);
 		/*
 		250-PIPELINING\r\n
 		250-SIZE 256000000\r\n
 		250-ETRN\r\n
-		250-STARTTLS\r\n
 		250-ENHANCEDSTATUSCODES\r\n
-		250-8BITMIME\r\n
-		250-DSN\r\n
-		250 SMTPUTF8\r\n
 		*/
 		$this->aCapa = [];
 		foreach ($this->aResults as $sLine) {
@@ -513,7 +575,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	private function helo(string $sHost) : void
 	{
-		$this->sendRequestWithCheck('HELO', 250, $sHost);
+		$this->sendRequestWithCheck("HELO {$sHost}", 250);
 		$this->aAuthTypes = array();
 		$this->iSizeCapaValue = 0;
 		$this->aCapa = [];
