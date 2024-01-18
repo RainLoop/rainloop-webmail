@@ -906,8 +906,6 @@ trait Messages
 
 		if ($this->Config()->Get('security', 'hide_x_mailer_header', true)) {
 			$oMessage->DoesNotAddDefaultXMailer();
-		} else {
-			$oMessage->SetXMailer('SnappyMail/'.APP_VERSION);
 		}
 
 		$oMessage->SetFrom(new \MailSo\Mime\Email($oIdentity->Email(), $oIdentity->Name()));
@@ -952,8 +950,6 @@ trait Messages
 
 		if ($this->Config()->Get('security', 'hide_x_mailer_header', true)) {
 			$oMessage->DoesNotAddDefaultXMailer();
-		} else {
-			$oMessage->SetXMailer('SnappyMail/'.APP_VERSION);
 		}
 
 		$sFrom = $this->GetActionParam('from', '');
@@ -1029,28 +1025,7 @@ trait Messages
 			unset($sSigned);
 
 		} else if ($sEncrypted = $this->GetActionParam('encrypted', '')) {
-			$oPart = new MimePart;
-			$oPart->Headers->AddByName(
-				MimeEnumHeader::CONTENT_TYPE,
-				'multipart/encrypted; protocol="application/pgp-encrypted"'
-			);
-			$oMessage->SubParts->append($oPart);
-
-			$oAlternativePart = new MimePart;
-			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'application/pgp-encrypted');
-			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_DISPOSITION, 'attachment');
-			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, '7Bit');
-			$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString('Version: 1');
-			$oPart->SubParts->append($oAlternativePart);
-
-			$oAlternativePart = new MimePart;
-			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'application/octet-stream');
-			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_DISPOSITION, 'inline; filename="msg.asc"');
-			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, '7Bit');
-			$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sEncrypted)));
-			$oPart->SubParts->append($oAlternativePart);
-
-			unset($oAlternativePart);
+			$oPart->addPgpEncrypted(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sEncrypted)));
 			unset($sEncrypted);
 
 		} else if ($sHtml = $this->GetActionParam('html', '')) {
@@ -1064,14 +1039,7 @@ trait Messages
 			// First add plain
 			$sPlain = $this->GetActionParam('plain', '') ?: \MailSo\Base\HtmlUtils::ConvertHtmlToPlain($sHtml);
 			$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sPlain));
-			$oAlternativePart = new MimePart;
-			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'text/plain; charset=utf-8');
-			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
-			$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
-				\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sPlain))),
-				'convert.quoted-printable-encode'
-			);
-			$oPart->SubParts->append($oAlternativePart);
+			$oPart->addPlain($sPlain);
 			unset($sPlain);
 
 			// Now add HTML
@@ -1114,15 +1082,7 @@ trait Messages
 			} else {
 */
 			$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sPlain));
-			$oAlternativePart = new MimePart;
-			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'text/plain; charset="utf-8"');
-			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
-			$oAlternativePart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
-				\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sPlain))),
-				'convert.quoted-printable-encode'
-			);
-			$oMessage->SubParts->append($oAlternativePart);
-			unset($oAlternativePart);
+			$oMessage->addPlain($sPlain);
 			unset($sPlain);
 		}
 		unset($oPart);
@@ -1230,28 +1190,8 @@ trait Messages
 			foreach ($aFingerprints as $sFingerprint) {
 				$GPG->addEncryptKey($sFingerprint);
 			}
-			$sEncrypted = $GPG->encryptStream($fp);
 
-			$oPart = new MimePart;
-			$oPart->Headers->AddByName(
-				MimeEnumHeader::CONTENT_TYPE,
-				'multipart/encrypted; protocol="application/pgp-encrypted"'
-			);
-			$oMessage->SubParts->append($oPart);
-
-			$oAlternativePart = new MimePart;
-			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'application/pgp-encrypted');
-			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_DISPOSITION, 'attachment');
-			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, '7Bit');
-			$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString('Version: 1');
-			$oPart->SubParts->append($oAlternativePart);
-
-			$oAlternativePart = new MimePart;
-			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'application/octet-stream');
-			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_DISPOSITION, 'inline; filename="msg.asc"');
-			$oAlternativePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, '7Bit');
-			$oAlternativePart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString($sEncrypted);
-			$oPart->SubParts->append($oAlternativePart);
+			$oPart->addPgpEncrypted($GPG->encryptStream($fp));
 		}
 
 		$this->Plugins()->RunHook('filter.build-message', array($oMessage));
