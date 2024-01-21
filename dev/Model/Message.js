@@ -14,6 +14,7 @@ import { SettingsUserStore } from 'Stores/User/Settings';
 import { FileInfo, RFC822 } from 'Common/File';
 import { AttachmentCollectionModel } from 'Model/AttachmentCollection';
 import { EmailCollectionModel } from 'Model/EmailCollection';
+import { MimeHeaderCollectionModel } from 'Model/MimeHeaderCollection';
 import { AbstractModel } from 'Knoin/AbstractModel';
 
 import PreviewHTML from 'Html/PreviewMessage.html';
@@ -122,6 +123,7 @@ export class MessageModel extends AbstractModel {
 		this.threadUnseen = ko.observableArray();
 		this.unsubsribeLinks = ko.observableArray();
 		this.flags = ko.observableArray();
+		this.headers = ko.observableArray(new MimeHeaderCollectionModel);
 
 		addComputablesTo(this, {
 			attachmentIconClass: () =>
@@ -224,8 +226,44 @@ export class MessageModel extends AbstractModel {
 		if (super.revivePropertiesFromJson(json)) {
 //			this.foundCIDs = isArray(json.FoundCIDs) ? json.FoundCIDs : [];
 //			this.attachments(AttachmentCollectionModel.reviveFromJson(json.attachments, this.foundCIDs));
+//			this.headers(MimeHeaderCollectionModel.reviveFromJson(json.headers));
 
 			this.computeSenderEmail();
+
+			let value, headers = this.headers();
+/*			// These could be by Envelope or MIME
+			this.messageId = headers.valueByName('Message-Id');
+			this.subject(headers.valueByName('Subject'));
+			this.sender = EmailCollectionModel.fromString(headers.valueByName('Sender'));
+			this.from = EmailCollectionModel.fromString(headers.valueByName('From'));
+			this.replyTo = EmailCollectionModel.fromString(headers.valueByName('Reply-To'));
+			this.to = EmailCollectionModel.fromString(headers.valueByName('To'));
+			this.cc = EmailCollectionModel.fromString(headers.valueByName('Cc'));
+			this.bcc = EmailCollectionModel.fromString(headers.valueByName('Bcc'));
+			this.inReplyTo = headers.valueByName('In-Reply-To');
+
+			this.deliveredTo = EmailCollectionModel.fromString(headers.valueByName('Delivered-To'));
+*/
+			// Priority
+			value = headers.valueByName('X-MSMail-Priority')
+				|| headers.valueByName('Importance')
+				|| headers.valueByName('X-Priority');
+			if (value) {
+				if (/[h12]/.test(value[0])) {
+					this.priority(1);
+				} else if (/[l45]/.test(value[0])) {
+					this.priority(5);
+				}
+			}
+
+			// Unsubscribe links
+			value = headers.valueByName('List-Unsubscribe');
+			if (value) {
+				this.unsubsribeLinks(value.split(',').map(
+					link => link.replace(/^[ <>]+|[ <>]+$/g, '')
+				));
+			}
+
 			return true;
 		}
 	}

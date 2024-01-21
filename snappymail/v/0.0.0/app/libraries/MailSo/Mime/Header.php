@@ -15,7 +15,7 @@ namespace MailSo\Mime;
  * @category MailSo
  * @package Mime
  */
-class Header
+class Header implements \JsonSerializable
 {
 	private string $sName;
 
@@ -41,7 +41,7 @@ class Header
 		$this->sFullValue = \trim($sValue);
 		$this->sEncodedValueForReparse = '';
 
-		if (\strlen($sEncodedValueForReparse) && $this->IsReparsed()) {
+		if (\strlen($sEncodedValueForReparse) && ($this->IsEmail() || $this->IsSubject() || $this->IsParameterized())) {
 			$this->sEncodedValueForReparse = \trim($sEncodedValueForReparse);
 		}
 
@@ -88,7 +88,7 @@ class Header
 
 	public function NameWithDelimitrom() : string
 	{
-		return $this->Name().': ';
+		return $this->sName . ': ';
 	}
 
 	public function Value() : string
@@ -103,7 +103,7 @@ class Header
 
 	public function SetParentCharset(string $sParentCharset) : Header
 	{
-		if ($this->sParentCharset !== $sParentCharset && $this->IsReparsed() && \strlen($this->sEncodedValueForReparse)) {
+		if ($this->sParentCharset !== $sParentCharset && \strlen($this->sEncodedValueForReparse)) {
 			$this->initInputData(
 				$this->sName,
 				\trim(\MailSo\Base\Utils::DecodeHeaderValue($this->sEncodedValueForReparse, $sParentCharset)),
@@ -132,19 +132,17 @@ class Header
 
 		if ($this->IsSubject()) {
 			if (!\MailSo\Base\Utils::IsAscii($sResult) && \function_exists('iconv_mime_encode')) {
-				$aPreferences = array(
+				return \iconv_mime_encode($this->Name(), $sResult, array(
 //					'scheme' => \MailSo\Base\Enumerations\Encoding::QUOTED_PRINTABLE_SHORT,
 					'scheme' => \MailSo\Base\Enumerations\Encoding::BASE64_SHORT,
 					'input-charset' => \MailSo\Base\Enumerations\Charset::UTF_8,
 					'output-charset' => \MailSo\Base\Enumerations\Charset::UTF_8,
 					'line-length' => 74,
 					'line-break-chars' => "\r\n"
-				);
-
-				return \iconv_mime_encode($this->Name(), $sResult, $aPreferences);
+				));
 			}
 		}
-		else if ($this->IsParameterized() && 0 < $this->oParameters->count())
+		else if ($this->IsParameterized() && $this->oParameters->count())
 		{
 			$sResult = $this->sValue.'; '.$this->oParameters->ToString(true);
 		}
@@ -157,16 +155,15 @@ class Header
 		}
 
 		// https://www.rfc-editor.org/rfc/rfc2822#section-2.1.1, avoid folding immediately after the header name
-                return $this->NameWithDelimitrom() . \wordwrap($sResult, 78 - \strlen($this->NameWithDelimitrom()) - 1, "\r\n ");
-
+		return $this->NameWithDelimitrom() . \wordwrap($sResult, 78 - \strlen($this->NameWithDelimitrom()) - 1, "\r\n ");
 	}
 
-	public function IsSubject() : bool
+	private function IsSubject() : bool
 	{
 		return \strtolower(Enumerations\Header::SUBJECT) === \strtolower($this->Name());
 	}
 
-	public function IsParameterized() : bool
+	private function IsParameterized() : bool
 	{
 		return \in_array(\strtolower($this->sName), array(
 			\strtolower(Enumerations\Header::CONTENT_TYPE),
@@ -174,7 +171,7 @@ class Header
 		));
 	}
 
-	public function IsEmail() : bool
+	private function IsEmail() : bool
 	{
 		return \in_array(\strtolower($this->sName), array(
 			\strtolower(Enumerations\Header::FROM_),
@@ -182,7 +179,7 @@ class Header
 			\strtolower(Enumerations\Header::CC),
 			\strtolower(Enumerations\Header::BCC),
 			\strtolower(Enumerations\Header::REPLY_TO),
-			\strtolower(Enumerations\Header::RETURN_PATH),
+//			\strtolower(Enumerations\Header::RETURN_PATH),
 			\strtolower(Enumerations\Header::SENDER)
 		));
 	}
@@ -199,8 +196,22 @@ class Header
 		return $this->Value();
 	}
 
-	public function IsReparsed() : bool
+	private function IsReparsed() : bool
 	{
 		return $this->IsEmail() || $this->IsSubject() || $this->IsParameterized();
+	}
+
+	#[\ReturnTypeWillChange]
+	public function jsonSerialize()
+	{
+		$aResult = array(
+			'@Object' => 'Object/MimeHeader',
+			'name' => $this->sName,
+			'value' => $this->sValue
+		);
+		if ($this->oParameters->count()) {
+			$aResult['parameters'] = $this->oParameters;
+		}
+		return $aResult;
 	}
 }

@@ -81,15 +81,10 @@ class HeaderCollection extends \MailSo\Base\Collection
 		);
 	}
 
-	public function ParametersByName(string $sHeaderName) : ?ParameterCollection
-	{
-		$oHeader = $this->GetByName($sHeaderName);
-		return $oHeader ? $oHeader->Parameters() : null;
-	}
-
 	public function ParameterValue(string $sHeaderName, string $sParamName) : string
 	{
-		$oParameters = $this->ParametersByName($sHeaderName);
+		$oHeader = $this->GetByName($sHeaderName);
+		$oParameters = $oHeader ? $oHeader->Parameters() : null;
 		return (null !== $oParameters) ? $oParameters->ParameterValueByName($sParamName) : '';
 	}
 
@@ -243,5 +238,14 @@ class HeaderCollection extends \MailSo\Base\Collection
 	public function __toString() : string
 	{
 		return \implode("\r\n", $this->getArrayCopy());
+	}
+
+	#[\ReturnTypeWillChange]
+	public function jsonSerialize()
+	{
+		return array(
+			'@Object' => 'Collection/MimeHeaderCollection',
+			'@Collection' => $this->getArrayCopy()
+		);
 	}
 }

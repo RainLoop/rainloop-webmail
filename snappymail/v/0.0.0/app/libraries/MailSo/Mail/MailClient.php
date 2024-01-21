@@ -47,9 +47,9 @@ class MailClient
 		}
 
 		return FetchType::BuildBodyCustomHeaderRequest(array(
-			MimeHeader::RETURN_PATH,
-			MimeHeader::RECEIVED,
-			MimeHeader::MIME_VERSION,
+//			MimeHeader::RETURN_PATH,
+//			MimeHeader::RECEIVED,
+//			MimeHeader::MIME_VERSION,
 			MimeHeader::MESSAGE_ID,
 			MimeHeader::CONTENT_TYPE,
 			MimeHeader::FROM_,
@@ -67,7 +67,7 @@ class MailClient
 			MimeHeader::IMPORTANCE,
 			MimeHeader::X_PRIORITY,
 			MimeHeader::X_DRAFT_INFO,
-			MimeHeader::RETURN_RECEIPT_TO,
+//			MimeHeader::RETURN_RECEIPT_TO,
 			MimeHeader::DISPOSITION_NOTIFICATION_TO,
 			MimeHeader::X_CONFIRM_READING_TO,
 			MimeHeader::AUTHENTICATION_RESULTS,

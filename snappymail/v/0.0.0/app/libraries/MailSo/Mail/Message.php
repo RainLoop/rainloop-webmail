@@ -32,7 +32,6 @@ class Message implements \JsonSerializable
 		$sPlain = '',
 		$sHtml = '',
 		$References = '',
-		$sDeliveryReceipt = '',
 		$ReadReceipt = '';
 
 	private ?string
@@ -53,8 +52,7 @@ class Message implements \JsonSerializable
 		$iSize = 0,
 		$SpamScore = 0,
 		$iInternalTimeStampInUTC = 0,
-		$iHeaderTimeStampInUTC = 0,
-		$iPriority = \MailSo\Mime\Enumerations\MessagePriority::NORMAL;
+		$iHeaderTimeStampInUTC = 0;
 
 	private bool
 		$bIsSpam = false;
@@ -73,7 +71,6 @@ class Message implements \JsonSerializable
 		$DMARC = [],
 //		$aFlags = [],
 		$aFlagsLowerCase = [],
-		$UnsubsribeLinks = [],
 		$aThreadUIDs = [],
 		$aThreadUnseenUIDs = [];
 
@@ -92,6 +89,9 @@ class Message implements \JsonSerializable
 
 	private ?AttachmentCollection
 		$Attachments = null;
+
+	private ?\MailSo\Mime\HeaderCollection
+		$Headers = null;
 
 	function __get($k)
 	{
@@ -164,6 +164,8 @@ class Message implements \JsonSerializable
 		$sHeaders = $oFetchResponse->GetHeaderFieldsValue();
 		$oHeaders = \strlen($sHeaders) ? new \MailSo\Mime\HeaderCollection($sHeaders, false, $sCharset) : null;
 		if ($oHeaders) {
+			$oMessage->Headers = $oHeaders;
+
 			$sContentTypeCharset = $oHeaders->ParameterValue(
 				MimeHeader::CONTENT_TYPE,
 				\MailSo\Mime\Enumerations\Parameter::CHARSET
@@ -200,45 +202,13 @@ class Message implements \JsonSerializable
 				$oHeaders->ValueByName(MimeHeader::DATE)
 			);
 
-			// Priority
-			$sPriority = $oHeaders->ValueByName(MimeHeader::X_MSMAIL_PRIORITY)
-				?: $oHeaders->ValueByName(MimeHeader::IMPORTANCE)
-				?: $oHeaders->ValueByName(MimeHeader::X_PRIORITY);
-			if (\strlen($sPriority)) {
-				switch (\substr(\trim($sPriority), 0, 1))
-				{
-					case 'h':
-					case '1':
-					case '2':
-						$oMessage->iPriority = \MailSo\Mime\Enumerations\MessagePriority::HIGH;
-						break;
-
-					case 'l':
-					case '4':
-					case '5':
-						$oMessage->iPriority = \MailSo\Mime\Enumerations\MessagePriority::LOW;
-						break;
-				}
-			}
-
 			// Delivery Receipt
-			$oMessage->sDeliveryReceipt = \trim($oHeaders->ValueByName(MimeHeader::RETURN_RECEIPT_TO));
+//			$oMessage->sDeliveryReceipt = \trim($oHeaders->ValueByName(MimeHeader::RETURN_RECEIPT_TO));
 
 			// Read Receipt
 			$oMessage->ReadReceipt = \trim($oHeaders->ValueByName(MimeHeader::DISPOSITION_NOTIFICATION_TO));
 			if (empty($oMessage->ReadReceipt)) {
 				$oMessage->ReadReceipt = \trim($oHeaders->ValueByName(MimeHeader::X_CONFIRM_READING_TO));
-			}
-
-			// Unsubscribe links
-			$UnsubsribeLinks = $oHeaders->ValueByName(MimeHeader::LIST_UNSUBSCRIBE);
-			if ($UnsubsribeLinks) {
-				$oMessage->UnsubsribeLinks = \array_map(
-					function ($link) {
-						return trim($link, ' <>');
-					},
-					\explode(',', $UnsubsribeLinks)
-				);
 			}
 
 			if ($spam = $oHeaders->ValueByName(MimeHeader::X_SPAMD_RESULT)) {
@@ -554,7 +524,6 @@ class Message implements \JsonSerializable
 			'sender' => $this->oSender,
 			'deliveredTo' => $this->oDeliveredTo,
 
-			'priority' => $this->iPriority,
 			'readReceipt' => $sReadReceipt,
 			'autocrypt' => $aAutocrypt ?: null,
 
@@ -576,14 +545,13 @@ class Message implements \JsonSerializable
 //			'keywords' => $keywords,
 			'size' => $this->iSize,
 
-			'preview' => $this->sPreview
+			'preview' => $this->sPreview,
+
+			'headers' => $this->Headers
 		);
 
 		if ($this->DraftInfo) {
 			$result['draftInfo'] = $this->DraftInfo;
-		}
-		if ($this->UnsubsribeLinks) {
-			$result['unsubsribeLinks'] = $this->UnsubsribeLinks;
 		}
 		if ($this->References) {
 			$result['references'] = $this->References;
