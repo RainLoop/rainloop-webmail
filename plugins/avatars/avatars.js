@@ -39,9 +39,15 @@
 		avatars = new Map,
 		ncAvatars = new Map,
 		templateId = 'MailMessageView',
+		getBimiSelector = msg => {
+			// Get 's' value out of 'v=BIMI1; s=foo;'
+			let bimiSelector = msg.headers().valueByName('BIMI-Selector');
+			bimiSelector = bimiSelector ? bimiSelector.match(/;.*s=([^\s;]+)/)[1] : '';
+			return bimiSelector || '';
+		},
 		getAvatarUid = msg => {
 			let from = msg.from[0],
-				bimi = 'pass' == from.dkimStatus ? 1 : 0;
+				bimi = ('pass' == from.dkimStatus ? 1 : 0) + '-' + getBimiSelector(msg);
 			return `${bimi}/${from.email.toLowerCase()}`;
 		},
 		getAvatar = msg => ncAvatars.get(msg.from[0].email.toLowerCase()) || avatars.get(getAvatarUid(msg)),
@@ -97,6 +103,7 @@
 							runQueue();
 						}, 'Avatar', {
 							bimi: 'pass' == from.dkimStatus ? 1 : 0,
+							bimiSelector: getBimiSelector(item[0]),
 							email: from.email
 						});
 						break;

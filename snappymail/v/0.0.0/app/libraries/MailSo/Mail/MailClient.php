@@ -75,6 +75,8 @@ class MailClient
 			MimeHeader::LIST_UNSUBSCRIBE,
 			// https://autocrypt.org/level1.html#the-autocrypt-header
 			MimeHeader::AUTOCRYPT,
+			// https://www.ietf.org/archive/id/draft-brand-indicators-for-message-identification-04.html#bimi-selector
+			MimeHeader::BIMI_SELECTOR,
 			// SPAM
 			MimeHeader::X_SPAM_STATUS,
 			MimeHeader::X_SPAM_FLAG,

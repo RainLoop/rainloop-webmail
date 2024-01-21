@@ -93,5 +93,8 @@ abstract class Header
 		// https://autocrypt.org/level1.html#the-autocrypt-header
 		AUTOCRYPT = 'Autocrypt',
 
+		// https://www.ietf.org/archive/id/draft-brand-indicators-for-message-identification-04.html#bimi-selector
+		BIMI_SELECTOR = 'BIMI-Selector',
+
 		LIST_UNSUBSCRIBE = 'List-Unsubscribe';
 }

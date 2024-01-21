@@ -84,8 +84,9 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function DoAvatar() : array
 	{
 		$bBimi = !empty($this->jsonParam('bimi'));
+		$sBimiSelector = $this->jsonParam('bimiSelector') ?: '';
 		$sEmail = $this->jsonParam('email');
-		$aResult = $this->getAvatar($sEmail, !empty($bBimi));
+		$aResult = $this->getAvatar($sEmail, $bBimi, $sBimiSelector);
 		if ($aResult) {
 			$aResult = [
 				'type' => $aResult[0],
@@ -103,7 +104,9 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function ServiceAvatar(string $sServiceName, string $sBimi, string $sEmail)
 	{
 		$sEmail = \SnappyMail\Crypt::DecryptUrlSafe($sEmail);
-		if ($sEmail && ($aResult = $this->getAvatar($sEmail, !empty($sBimi)))) {
+		$aBimi = \explode('-', $sBimi, 2);
+		$sBimiSelector = isset($aBimi[1]) ? $aBimi[1] : 'default';
+		if ($sEmail && ($aResult = $this->getAvatar($sEmail, !empty($aBimi[0]), $sBimiSelector))) {
 			\header('Content-Type: '.$aResult[0]);
 			echo $aResult[1];
 		} else {
@@ -190,7 +193,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		return null;
 	}
 
-	private function getAvatar(string $sEmail, bool $bBimi) : ?array
+	private function getAvatar(string $sEmail, bool $bBimi, string $sBimiSelector = '') : ?array
 	{
 		if (!\strpos($sEmail, '@')) {
 			return null;
@@ -235,7 +238,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$aUrls = [];
 
 			if ($this->Config()->Get('plugin', 'bimi', false)) {
-				$BIMI = $bBimi ? \SnappyMail\DNS::BIMI($sDomain) : null;
+				$BIMI = $bBimi ? \SnappyMail\DNS::BIMI($sDomain, $sBimiSelector) : null;
 				if ($BIMI) {
 					$aUrls[] = $BIMI;
 //					$aResult = ['text/uri-list', $BIMI];
