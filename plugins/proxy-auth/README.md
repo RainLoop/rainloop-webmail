@@ -78,3 +78,5 @@ Note that due to this implementation, logout is impossible, as once logged out, 
 The user is always considered logged in, as authentication is handled through reverse proxy and authentication system.
 
 Auto login can be disabled in the plugin settings.
+You can also change the logout link in admin panel -> Config -> custom_logout_link to the one of your authentication system, e.g., ```https://auth.yourdomain.com/logout```.
+In this case, you can log out from your overall system via SnappyMail.

@@ -207,7 +207,7 @@ class ProxyAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetAllowedInJs(true)
 				->SetLabel('Activate automatic login')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
-				->SetDescription('Activates automatic login, if User Header is set (note: logout not possible)')
+				->SetDescription('Activates automatic login, if User Header is set (note: Use custom_logout_link to enable logout, see plugin README)')
 				->SetDefaultValue(true)
 		);
 	}
