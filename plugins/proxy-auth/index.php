@@ -6,8 +6,8 @@ class ProxyAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Proxy Auth',
 		AUTHOR   = 'Philipp',
 		URL      = 'https://www.mundhenk.org/',
-		VERSION  = '0.1',
-		RELEASE  = '2023-01-14',
+		VERSION  = '0.2',
+		RELEASE  = '2024-01-22',
 		REQUIRED = '2.27.0',
 		CATEGORY = 'Login',
 		LICENSE  = 'MIT',
@@ -49,10 +49,10 @@ class ProxyAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$sLevel = LOG_DEBUG;
 		$sMsg = "sEmail= " . $sEmail;
 		$oLogger->Write($sMsg, $sLevel, $sPrefix);
-		
+
 		$sMasterUser = \trim($this->Config()->getDecrypted('plugin', 'master_user', ''));
 		$sMasterSeparator = \trim($this->Config()->getDecrypted('plugin', 'master_separator', ''));
-		
+
 		/* remove superuser from email for proper UI */
 		if (static::$login) {
 			$sEmail = str_replace($sMasterUser, "", $sEmail);
@@ -86,7 +86,7 @@ class ProxyAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 		$sProxyCheck = $this->Config()->getDecrypted('plugin', 'proxy_check', '');
 		$sClientIPs = $this->Manager()->Actions()->Http()->GetClientIP(true);
-		
+
 		/* make sure that remote user is only set by authorized proxy to avoid security risks */
 		if ($sProxyCheck) {
 			$sProxyRequest = false;
@@ -103,7 +103,7 @@ class ProxyAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 						$sProxyRequest = true;
 					}
 				}
-			} else {		
+			} else {
 				$sMsg = "checking client IP: " . $sClientIPs;
 				$oLogger->Write($sMsg, $sLevel, $sPrefix);
 
@@ -114,7 +114,7 @@ class ProxyAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		} else {
 			$sProxyRequest = true;
 		}
-		
+
 		if ($sProxyRequest) {
 			/* create master user login from remote user header and settings */
 			$sEmail = $sRemoteUser . $sMasterSeparator . $sMasterUser;
