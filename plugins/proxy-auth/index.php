@@ -15,7 +15,9 @@ class ProxyAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	public function Init() : void
 	{
+		$this->addJs('js/auto-login.js');
 		$this->addPartHook('ProxyAuth', 'ServiceProxyAuth');
+		$this->addPartHook('UserHeaderSet', 'ServiceUserHeaderSet');
 		$this->addHook('login.credentials', 'MapEmailAddress');
 	}
 
@@ -140,6 +142,28 @@ class ProxyAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		return true;
 	}
 
+	public function ServiceUserHeaderSet() : bool
+	{
+		$oActions = \RainLoop\Api::Actions();
+
+		$oLogger = $oActions->Logger();
+		$sLevel = LOG_DEBUG;
+		$sPrefix = "ProxyAuth";
+
+		$sHeaderName = \trim($this->Config()->getDecrypted('plugin', 'header_name', ''));
+
+		$sRemoteUser = $this->Manager()->Actions()->Http()->GetHeader($sHeaderName);
+		$sMsg = "Remote User: " . $sRemoteUser;
+		$oLogger->Write($sMsg, $sLevel, $sPrefix);
+
+		if (strlen($sRemoteUser) > 0) {
+			\MailSo\Base\Http::StatusHeader('200');
+		} else {
+			\MailSo\Base\Http::StatusHeader('401');
+		}
+		return true;
+	}
+
 	protected function configMapping() : array
 	{
 		return array(
@@ -178,7 +202,13 @@ class ProxyAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
 				->SetDescription('IP or Subnet of proxy, auth header will only be accepted from this address')
 				->SetDefaultValue('10.1.0.0/24')
-				->SetEncrypted()
+				->SetEncrypted(),
+			\RainLoop\Plugins\Property::NewInstance('auto_login')
+				->SetAllowedInJs(true)
+				->SetLabel('Activate automatic login')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDescription('Activates automatic login, if User Header is set (note: logout not possible)')
+				->SetDefaultValue(true)
 		);
 	}
 }
