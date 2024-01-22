@@ -27,7 +27,6 @@ class Message implements \JsonSerializable
 		$sMessageId = '',
 		$sContentType = '',
 		$sSpamResult = '',
-		$sVirusScanned = '',
 		$InReplyTo = '',
 		$sPlain = '',
 		$sHtml = '',
@@ -56,14 +55,6 @@ class Message implements \JsonSerializable
 
 	private bool
 		$bIsSpam = false;
-
-	private ?bool
-		/**
-		 * null = not scanned
-		 * true = scanned and infected
-		 * false = scanned and no infection found
-		 */
-		$bHasVirus = null;
 
 	private array
 		$SPF = [],
@@ -244,20 +235,6 @@ class Message implements \JsonSerializable
 
 				$oMessage->bIsSpam = 'Yes' === \substr($spam, 0, 3)
 					|| false !== \stripos($oHeaders->ValueByName(MimeHeader::X_SPAM_FLAG), 'YES');
-			}
-
-			if ($virus = $oHeaders->ValueByName(MimeHeader::X_VIRUS)) {
-				$oMessage->bHasVirus = true;
-			}
-			if ($virus = $oHeaders->ValueByName(MimeHeader::X_VIRUS_STATUS)) {
-				if (false !== \stripos($spam, 'infected')) {
-					$oMessage->bHasVirus = true;
-				} else if (false !== \stripos($spam, 'clean')) {
-					$oMessage->bHasVirus = false;
-				}
-			}
-			if ($virus = $oHeaders->ValueByName(MimeHeader::X_VIRUS_SCANNED)) {
-				$oMessage->sVirusScanned = $virus;
 			}
 
 			$sDraftInfo = $oHeaders->ValueByName(MimeHeader::X_DRAFT_INFO);
@@ -510,8 +487,6 @@ class Message implements \JsonSerializable
 			'spamScore' => $this->bIsSpam ? 100 : $this->SpamScore,
 			'spamResult' => $this->sSpamResult,
 			'isSpam' => $this->bIsSpam,
-			'hasVirus' => $this->bHasVirus,
-//			'virusScanned' => $this->sVirusScanned,
 			'dateTimestamp' => $this->iHeaderTimeStampInUTC ?: $this->iInternalTimeStampInUTC,
 			'internalTimestamp' => $this->iInternalTimeStampInUTC,
 

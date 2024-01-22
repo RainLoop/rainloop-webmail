@@ -257,12 +257,27 @@ export class MessageModel extends AbstractModel {
 			}
 
 			// Unsubscribe links
-			value = headers.valueByName('List-Unsubscribe');
-			if (value) {
+			if (value = headers.valueByName('List-Unsubscribe')) {
 				this.unsubsribeLinks(value.split(',').map(
 					link => link.replace(/^[ <>]+|[ <>]+$/g, '')
 				));
 			}
+
+			if (headers.valueByName('X-Virus')) {
+				this.hasVirus(true);
+			}
+			if (value = headers.valueByName('X-Virus-Status')) {
+				if (value.includes('infected')) {
+					this.hasVirus(true);
+				} else if (value.includes('clean')) {
+					this.hasVirus(false);
+				}
+			}
+/*
+			if (value = headers.valueByName('X-Virus-Scanned')) {
+				this.virusScanned(value);
+			}
+*/
 
 			return true;
 		}
