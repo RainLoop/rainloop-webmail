@@ -1056,7 +1056,7 @@ trait Messages
 			unset($sSigned);
 
 		} else if ($sEncrypted = $this->GetActionParam('encrypted', '')) {
-			$oPart->addPgpEncrypted(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sEncrypted)));
+			$oMessage->addPgpEncrypted(\preg_replace('/\\r?\\n/su', "\r\n", \trim($sEncrypted)));
 			unset($sEncrypted);
 
 		} else if ($sHtml = $this->GetActionParam('html', '')) {
@@ -1222,7 +1222,7 @@ trait Messages
 				$GPG->addEncryptKey($sFingerprint);
 			}
 
-			$oPart->addPgpEncrypted($GPG->encryptStream($fp));
+			$oMessage->addPgpEncrypted($GPG->encryptStream($fp));
 		}
 
 		$this->Plugins()->RunHook('filter.build-message', array($oMessage));
