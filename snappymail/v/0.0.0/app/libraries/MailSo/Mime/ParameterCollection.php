@@ -64,7 +64,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 		$aDataToParse = \explode(';', $sRawParams);
 
 		foreach ($aDataToParse as $sParam) {
-			$this->append(Parameter::CreateFromParameterLine($sParam));
+			$this->append(Parameter::FromString($sParam));
 		}
 
 		$this->reParseParameters();
