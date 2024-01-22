@@ -205,6 +205,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 		if (\count($aHeaders)) {
 			$aHeaders = \implode(';', $aHeaders);
 			$aHeaders = \preg_replace('/[\\r\\n\\t\\s]+/', ' ', $aHeaders);
+			$aHeaders = \str_replace('-bit key;', '-bit key,', $aHeaders);
 			$aHeaders = \explode(';', $aHeaders);
 			foreach ($aHeaders as $sLine) {
 				$aStatus = array();
