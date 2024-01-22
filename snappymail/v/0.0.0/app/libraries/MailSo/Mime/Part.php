@@ -185,18 +185,18 @@ class Part
 
 	public function addPgpEncrypted(string $sEncrypted)
 	{
-		$oPart = new MimePart;
+		$oPart = new self;
 		$oPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE, 'multipart/encrypted; protocol="application/pgp-encrypted"');
 		$this->SubParts->append($oPart);
 
-		$oSubPart = new MimePart;
+		$oSubPart = new self;
 		$oSubPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE, 'application/pgp-encrypted');
 		$oSubPart->Headers->AddByName(Enumerations\Header::CONTENT_DISPOSITION, 'attachment');
 		$oSubPart->Headers->AddByName(Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
 		$oSubPart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString('Version: 1');
 		$oPart->SubParts->append($oSubPart);
 
-		$oSubPart = new MimePart;
+		$oSubPart = new self;
 		$oSubPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE, 'application/octet-stream');
 		$oSubPart->Headers->AddByName(Enumerations\Header::CONTENT_DISPOSITION, 'inline; filename="msg.asc"');
 		$oSubPart->Headers->AddByName(Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
@@ -206,7 +206,7 @@ class Part
 
 	public function addPlain(string $sPlain)
 	{
-		$oPart = new MimePart;
+		$oPart = new self;
 		$oPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE, 'text/plain; charset=utf-8');
 		$oPart->Headers->AddByName(Enumerations\Header::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
 		$oPart->Body = \MailSo\Base\StreamWrappers\Binary::CreateStream(
