@@ -46,7 +46,7 @@ class MailClient
 			return FetchType::BODY_HEADER_PEEK;
 		}
 
-		return FetchType::BuildBodyCustomHeaderRequest(array(
+		$aHeaders = array(
 //			MimeHeader::RETURN_PATH,
 //			MimeHeader::RECEIVED,
 //			MimeHeader::MIME_VERSION,
@@ -75,8 +75,6 @@ class MailClient
 			MimeHeader::LIST_UNSUBSCRIBE,
 			// https://autocrypt.org/level1.html#the-autocrypt-header
 			MimeHeader::AUTOCRYPT,
-			// https://www.ietf.org/archive/id/draft-brand-indicators-for-message-identification-04.html#bimi-selector
-			MimeHeader::BIMI_SELECTOR,
 			// SPAM
 			MimeHeader::X_SPAM_STATUS,
 			MimeHeader::X_SPAM_FLAG,
@@ -87,9 +85,11 @@ class MailClient
 			MimeHeader::X_VIRUS,
 			MimeHeader::X_VIRUS_SCANNED,
 			MimeHeader::X_VIRUS_STATUS
-		), true);
-//
-//		return FetchType::ENVELOPE;
+		);
+
+		\RainLoop\Api::Actions()->Plugins()->RunHook('imap.message-headers', array(&$aHeaders));
+
+		return FetchType::BuildBodyCustomHeaderRequest($aHeaders, true);
 	}
 
 	/**

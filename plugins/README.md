@@ -164,6 +164,12 @@ $Plugin->addHook('hook.name', 'functionName');
 		bool $bSuccess
 		\MailSo\Imap\Settings $oSettings
 
+### imap.message-headers
+	params:
+		array &$aHeaders
+
+	Allows you to fetch more MIME headers for messages.
+
 ## Sieve
 
 ### sieve.before-connect

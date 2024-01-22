@@ -61,15 +61,11 @@ abstract class FetchType
 
 	public static function BuildBodyCustomHeaderRequest(array $aHeaders, bool $bPeek = true) : string
 	{
-		$sResult = '';
-		if (\count($aHeaders))
-		{
-			$aHeaders = \array_map('strtoupper', \array_map('trim', $aHeaders));
-
-			$sResult = $bPeek ? self::BODY_PEEK : self::BODY;
-			$sResult .= '[HEADER.FIELDS ('.\implode(' ', $aHeaders).')]';
+		if (\count($aHeaders)) {
+			$aHeaders = \array_map(fn($sHeader) => \strtoupper(\trim($sHeader)), $aHeaders);
+			return ($bPeek ? self::BODY_PEEK : self::BODY)
+				. '[HEADER.FIELDS ('.\implode(' ', $aHeaders).')]';
 		}
-
-		return $sResult;
+		return '';
 	}
 }

@@ -10,8 +10,8 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Avatars',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.14',
-		RELEASE  = '2024-01-17',
+		VERSION  = '1.15',
+		RELEASE  = '2024-01-22',
 		REQUIRED = '2.25.0',
 		CATEGORY = 'Contacts',
 		LICENSE  = 'MIT',
@@ -32,6 +32,16 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$this->addHook('json.after-message', 'JsonMessage');
 			$this->addHook('json.after-messagelist', 'JsonMessageList');
 		}
+		// https://www.ietf.org/archive/id/draft-brand-indicators-for-message-identification-04.html#bimi-selector
+		if ($this->Config()->Get('plugin', 'bimi', false)) {
+			$this->addHook('imap.message-headers', 'ImapMessageHeaders');
+		}
+	}
+
+	public function ImapMessageHeaders(array &$aHeaders)
+	{
+		// \MailSo\Mime\Enumerations\Header::BIMI_SELECTOR
+		$aHeaders[] = 'BIMI-Selector';
 	}
 
 	public function JsonMessage(array &$aResponse)
