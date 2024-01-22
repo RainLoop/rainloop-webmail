@@ -184,9 +184,7 @@ class Email implements \JsonSerializable
 
 		$sDisplayName = \str_replace('"', '\"', $this->sDisplayName);
 		if ($bConvertSpecialsName) {
-			$sDisplayName = \strlen($sDisplayName)
-				? \MailSo\Base\Utils::EncodeUnencodedValue(\MailSo\Base\Enumerations\Encoding::BASE64_SHORT, $sDisplayName)
-				: '';
+			$sDisplayName = \strlen($sDisplayName) ? \MailSo\Base\Utils::EncodeHeaderValue($sDisplayName) : '';
 		}
 
 		$sDisplayName = \strlen($sDisplayName) ? '"'.$sDisplayName.'"' : '';

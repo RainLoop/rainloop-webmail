@@ -356,7 +356,10 @@ abstract class Utils
 		return $sResultHeaders;
 	}
 
-	public static function EncodeUnencodedValue(string $sEncodeType, string $sValue) : string
+	/**
+	 * https://datatracker.ietf.org/doc/html/rfc2047
+	 */
+	public static function EncodeHeaderValue(string $sValue, string $sEncodeType = 'B') : string
 	{
 		$sValue = \trim($sValue);
 		if (\strlen($sValue) && !static::IsAscii($sValue)) {

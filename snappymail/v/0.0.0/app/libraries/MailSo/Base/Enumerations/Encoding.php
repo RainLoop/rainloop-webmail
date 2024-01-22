@@ -21,7 +21,6 @@ abstract class Encoding
 	const QUOTED_PRINTABLE_LOWER = 'quoted-printable';
 	const QUOTED_PRINTABLE_SHORT = 'Q';
 
-	const BASE64 = 'Base64';
 	const BASE64_LOWER = 'base64';
 	const BASE64_SHORT = 'B';
 }

@@ -153,7 +153,7 @@ class Attachment
 				$oAttachmentPart->Body =
 					\MailSo\Base\StreamWrappers\Binary::CreateStream($oAttachmentPart->Body,
 						\MailSo\Base\StreamWrappers\Binary::GetInlineDecodeOrEncodeFunctionName(
-							\MailSo\Base\Enumerations\Encoding::BASE64, false));
+							\MailSo\Base\Enumerations\Encoding::BASE64_LOWER, false));
 
 				\MailSo\Base\StreamWrappers\Binary::RememberStream($oAttachmentPart->Body);
 			}

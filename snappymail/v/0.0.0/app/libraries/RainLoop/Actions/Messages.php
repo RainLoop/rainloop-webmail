@@ -779,8 +779,7 @@ trait Messages
 						if (!empty($sRawBody)) {
 							$sMailTo = \trim($aToCollection->ToString(true));
 							$sMailSubject = \trim($oMessage->GetSubject());
-							$sMailSubject = 0 === \strlen($sMailSubject) ? '' : \MailSo\Base\Utils::EncodeUnencodedValue(
-								\MailSo\Base\Enumerations\Encoding::BASE64_SHORT, $sMailSubject);
+							$sMailSubject = \strlen($sMailSubject) ? \MailSo\Base\Utils::EncodeHeaderValue($sMailSubject) : '';
 
 							$sMailHeaders = $sMailBody = '';
 							list($sMailHeaders, $sMailBody) = \explode("\r\n\r\n", $sRawBody, 2);

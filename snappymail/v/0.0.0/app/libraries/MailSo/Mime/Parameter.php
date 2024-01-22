@@ -66,9 +66,7 @@ class Parameter implements \JsonSerializable
 			\strtolower(Enumerations\Parameter::FILENAME)
 		)))
 		{
-			return $this->sName . '="' . \MailSo\Base\Utils::EncodeUnencodedValue(
-				\MailSo\Base\Enumerations\Encoding::BASE64_SHORT,
-				$this->sValue) . '"';
+			return $this->sName . '="' . \MailSo\Base\Utils::EncodeHeaderValue($this->sValue) . '"';
 		}
 
 		return $this->sName . '="' . $this->sValue . '"';
