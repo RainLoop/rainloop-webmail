@@ -156,7 +156,7 @@ trait Messages
 
 		$oConfig = $this->Config();
 
-		$sSentFolder = $this->GetActionParam('saveFolder', '');
+		$sSaveFolder = $this->GetActionParam('saveFolder', '');
 		$aDraftInfo = $this->GetActionParam('draftInfo', null);
 
 		$oMessage = $this->buildMessage($oAccount, false);
@@ -174,9 +174,10 @@ trait Messages
 				);
 
 				if (false !== $iMessageStreamSize) {
-					$bDsn = !empty($this->GetActionParam('dsn', 0));
-					$bRequireTLS = !empty($this->GetActionParam('requireTLS', 0));
-					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream, $iMessageStreamSize, true, $bDsn, $bRequireTLS);
+					$this->smtpSendMessage($oAccount, $oMessage, $rMessageStream, $iMessageStreamSize, true,
+						!empty($this->GetActionParam('dsn', 0)),
+						!empty($this->GetActionParam('requireTLS', 0))
+					);
 
 					if (\is_array($aDraftInfo) && 3 === \count($aDraftInfo)) {
 						$sDraftInfoType = $aDraftInfo[0];
@@ -202,42 +203,73 @@ trait Messages
 						}
 					}
 
-					if (\strlen($sSentFolder)) {
+					if (\strlen($sSaveFolder)) {
+						$rAppendMessageStream = $rMessageStream;
+						$iAppendMessageStreamSize = $iMessageStreamSize;
 						try
 						{
-							if (!$oMessage->GetBcc()) {
-								if (\is_resource($rMessageStream)) {
-									\rewind($rMessageStream);
-								}
-
-								$this->Plugins()->RunHook('filter.send-message-stream',
-									array($oAccount, &$rMessageStream, &$iMessageStreamSize));
-
-								$this->ImapClient()->MessageAppendStream(
-									$sSentFolder, $rMessageStream, $iMessageStreamSize, array(MessageFlag::SEEN)
-								);
-							} else {
+							if ($oMessage->GetBcc()) {
 								$rAppendMessageStream = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
-
 								$iAppendMessageStreamSize = \MailSo\Base\Utils::WriteStream(
 									$oMessage->ToStream(false), $rAppendMessageStream, 8192, true, true
 								);
-
-								$this->Plugins()->RunHook('filter.send-message-stream',
-									array($oAccount, &$rAppendMessageStream, &$iAppendMessageStreamSize));
-
-								$this->ImapClient()->MessageAppendStream(
-									$sSentFolder, $rAppendMessageStream, $iAppendMessageStreamSize, array(MessageFlag::SEEN)
-								);
-
-								if (\is_resource($rAppendMessageStream)) {
-									fclose($rAppendMessageStream);
+							} else {
+								if (\is_resource($rMessageStream)) {
+									\rewind($rMessageStream);
 								}
 							}
 						}
 						catch (\Throwable $oException)
 						{
+							$this->logException($oException, \LOG_ERR);
 							throw new ClientException(Notifications::CantSaveMessage, $oException);
+						}
+
+						try
+						{
+							$this->Plugins()->RunHook('filter.send-message-stream',
+								array($oAccount, &$rAppendMessageStream, &$iAppendMessageStreamSize));
+						}
+						catch (\Throwable $oException)
+						{
+							$this->logException($oException, \LOG_ERR);
+						}
+
+						try
+						{
+							$this->ImapClient()->MessageAppendStream(
+								$sSaveFolder, $rAppendMessageStream, $iAppendMessageStreamSize,
+								array(MessageFlag::SEEN)
+							);
+						}
+						catch (\Throwable $oException)
+						{
+							// Save folder not the same as default Sent folder, so try again
+							$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
+							if ($oSettingsLocal instanceof \RainLoop\Settings) {
+								$sSentFolder = (string) $oSettingsLocal->GetConf('SentFolder', '');
+								if (\strlen($sSentFolder) && $sSentFolder !== $sSaveFolder) {
+									$oException = null;
+									try
+									{
+										$this->ImapClient()->MessageAppendStream(
+											$sSentFolder, $rAppendMessageStream, $iAppendMessageStreamSize,
+											array(MessageFlag::SEEN)
+										);
+									}
+									catch (\Throwable $oException)
+									{
+									}
+								}
+							}
+							if ($oException) {
+								$this->logException($oException, \LOG_ERR);
+								throw new ClientException(Notifications::CantSaveMessage, $oException);
+							}
+						}
+
+						if (\is_resource($rAppendMessageStream) && $rAppendMessageStream !== $rMessageStream) {
+							\fclose($rAppendMessageStream);
 						}
 					}
 
