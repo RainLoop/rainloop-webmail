@@ -72,7 +72,6 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 			if (!$this->Config()->Get('plugin', 'delay', true)
 			 && ($this->Config()->Get('plugin', 'gravatar', false)
 				|| ($this->Config()->Get('plugin', 'bimi', false) && 'pass' == $mFrom['dkimStatus'])
-				|| !$this->Config()->Get('plugin', 'service', true)
 			 )
 			) try {
 				// Base64Url
