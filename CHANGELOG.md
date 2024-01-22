@@ -1,3 +1,39 @@
+## 2.33.0 – 2024-01-22
+
+### Added
+- Feature to use the SQLite AddressBook per login account instead of global (on by default).
+- Return all fetched messages headers in JSON.
+
+### Changed
+- Docker hub use Alpine linux 3.18.5 and PHP 8.2
+- Some InvalidArgumentException to the better suited ValueError
+- Removed some unused KnockoutJS code
+- KnockoutJS drop unused rateLimit method
+- Cleanup some data-bind=""
+- Drop the disabled KnockoutJS twoWayBindings
+- Drop support for KnockoutJS _ko_property_writers and for two-way binding they must be observables
+- Login form use method="POST" to prevent uri exposure when javascript fails
+- Merge code to generate MIME PGP parts and MIME Plain parts
+- SMTP sendRequestWithCheck for future support of RFC's
+- Cleanup mime header handling
+
+### Fixed
+- Sorting not supported since 2.32.0
+  [#1373](https://github.com/the-djmaze/snappymail/issues/1373)
+- FILE_ON_SAVING_ERROR is not defined
+  [#1379](https://github.com/the-djmaze/snappymail/issues/1379)
+- Saving EML files with same subject result in only saving latest email
+  [#1381](https://github.com/the-djmaze/snappymail/issues/1381)
+- Some Sieve parser issues
+- Handling of RainLoop Sieve script
+- Sieve rfc5429 RejectCommand and ErejectCommand
+- KnockoutJS title:value was removed, use attr:{title:value}
+- dataBaseUpgrade() always runs on sqlite and pgsql
+- Message was sent but not saved to sent items folder
+  [#1397](https://github.com/the-djmaze/snappymail/issues/1397)
+- DKIM `pass` detection sometimes failed
+
+
 ## 2.32.0 – 2023-12-26
 
 ### Added

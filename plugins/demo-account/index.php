@@ -62,11 +62,11 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$latin = transliterator_transliterate('Any-Latin; Latin-ASCII; Lower()', $aActionParams['folder']);
 			if (false !== \strpos($latin, 'nigger')) {
 				\error_log("blocked {$sMethodName} {$aActionParams['folder']}");
-				exit;
+				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DemoAccountError);
 			}
 		}
 		else if ('DoFolderClear' === $sMethodName || 'DoMessageDelete' === $sMethodName) {
-			exit;
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::DemoAccountError);
 		}
 	}
 
