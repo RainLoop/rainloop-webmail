@@ -10,8 +10,8 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Avatars',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.15',
-		RELEASE  = '2024-01-22',
+		VERSION  = '1.14',
+		RELEASE  = '2024-01-17',
 		REQUIRED = '2.25.0',
 		CATEGORY = 'Contacts',
 		LICENSE  = 'MIT',
@@ -69,10 +69,6 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$mFrom = $mFrom->jsonSerialize();
 		}
 		if (\is_array($mFrom)) {
-			if ('pass' == $mFrom['dkimStatus'] && $this->Config()->Get('plugin', 'service', true)) {
-				// 'data:image/png;base64,[a-zA-Z0-9+/=]'
-				return static::getServiceIcon($mFrom['email']);
-			}
 			if (!$this->Config()->Get('plugin', 'delay', true)
 			 && ($this->Config()->Get('plugin', 'gravatar', false)
 				|| ($this->Config()->Get('plugin', 'bimi', false) && 'pass' == $mFrom['dkimStatus'])
@@ -83,6 +79,10 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				return \SnappyMail\Crypt::EncryptUrlSafe($mFrom['email']);
 			} catch (\Throwable $e) {
 				\SnappyMail\Log::error('Crypt', $e->getMessage());
+			}
+			if ('pass' == $mFrom['dkimStatus'] && $this->Config()->Get('plugin', 'service', true)) {
+				// 'data:image/png;base64,[a-zA-Z0-9+/=]'
+				return static::getServiceIcon($mFrom['email']);
 			}
 		}
 		return null;
