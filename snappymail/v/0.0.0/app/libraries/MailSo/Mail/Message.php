@@ -42,9 +42,7 @@ class Message implements \JsonSerializable
 		/**
 		 * https://www.rfc-editor.org/rfc/rfc8970
 		 */
-		$sPreview = null,
-		// https://autocrypt.org/level1.html#the-autocrypt-header
-		$sAutocrypt = '';
+		$sPreview = null;
 
 	private int
 		$Uid = 0,
@@ -291,8 +289,6 @@ class Message implements \JsonSerializable
 					}
 				}
 			}
-
-			$oMessage->sAutocrypt = $oHeaders->ValueByName(MimeHeader::AUTOCRYPT);
 		}
 		else if ($oFetchResponse->GetEnvelope())
 		{
@@ -466,14 +462,6 @@ class Message implements \JsonSerializable
 			$this->aFlagsLowerCase
 		), true);
 */
-		$aAutocrypt = [];
-		if ($this->sAutocrypt) {
-			foreach (\explode(';', $this->sAutocrypt) as $entry) {
-				$entry = \explode('=', \trim($entry), 2);
-				$aAutocrypt[$entry[0]] = $entry[1];
-			}
-		}
-
 		$result = array(
 			'@Object' => 'Object/Message',
 			'folder' => $this->sFolder,
@@ -498,7 +486,6 @@ class Message implements \JsonSerializable
 			'deliveredTo' => $this->oDeliveredTo,
 
 			'readReceipt' => $this->ReadReceipt,
-			'autocrypt' => $aAutocrypt ?: null,
 
 			'attachments' => $this->Attachments,
 

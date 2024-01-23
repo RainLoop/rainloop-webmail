@@ -74,7 +74,7 @@ export class MessageModel extends AbstractModel {
 		this.messageId = '';
 		this.inReplyTo = '';
 		this.references = '';
-		this.autocrypt = {};
+		this.autocrypt = {/*addr:'', 'prefer-encrypt':'nopreference', keydata:'BASE64'*/};
 
 		addObservablesTo(this, {
 			subject: '',
@@ -277,8 +277,15 @@ export class MessageModel extends AbstractModel {
 			if (value = headers.valueByName('X-Virus-Scanned')) {
 				this.virusScanned(value);
 			}
-*/
 
+			// https://autocrypt.org/level1.html#the-autocrypt-header
+			if (value = headers.valueByName('Autocrypt')) {
+				value.split(';').forEach(entry => {
+					entry = entry.trim().split('=', 2);
+					json.autocrypt[entry[0]] = entry[1];
+				});
+			}
+*/
 			return true;
 		}
 	}
