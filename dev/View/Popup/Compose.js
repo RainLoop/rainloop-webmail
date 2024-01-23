@@ -487,7 +487,11 @@ export class ComposePopupView extends AbstractViewPopup {
 							if (iError) {
 								if (Notifications.CantSaveMessage === iError) {
 									this.sendSuccessButSaveError(true);
-									this.savedErrorDesc(i18n('COMPOSE/SAVED_ERROR_ON_SEND').trim());
+									let msg = i18n('COMPOSE/SAVED_ERROR_ON_SEND');
+									if (data?.ErrorMessageAdditional) {
+										msg = msg + "\n" + data?.ErrorMessageAdditional;
+									}
+									this.savedErrorDesc(msg);
 								} else {
 									this.sendError(true);
 									this.sendErrorDesc(getNotification(iError, data?.ErrorMessage)
