@@ -197,10 +197,23 @@ class Message implements \JsonSerializable
 //			$oMessage->sDeliveryReceipt = \trim($oHeaders->ValueByName(MimeHeader::RETURN_RECEIPT_TO));
 
 			// Read Receipt
-			$oMessage->ReadReceipt = \trim($oHeaders->ValueByName(MimeHeader::DISPOSITION_NOTIFICATION_TO));
-			if (empty($oMessage->ReadReceipt)) {
-				$oMessage->ReadReceipt = \trim($oHeaders->ValueByName(MimeHeader::X_CONFIRM_READING_TO));
+			$sReadReceipt = \trim($oHeaders->ValueByName(MimeHeader::DISPOSITION_NOTIFICATION_TO));
+			if (empty($sReadReceipt)) {
+				$sReadReceipt = \trim($oHeaders->ValueByName(MimeHeader::X_CONFIRM_READING_TO));
 			}
+			if ($sReadReceipt) {
+				try
+				{
+					if (!\MailSo\Mime\Email::Parse($sReadReceipt)) {
+						$sReadReceipt = '';
+					}
+				}
+				catch (\Throwable $oException)
+				{
+					$sReadReceipt = '';
+				}
+			}
+			$oMessage->ReadReceipt = $sReadReceipt;
 
 			if ($spam = $oHeaders->ValueByName(MimeHeader::X_SPAMD_RESULT)) {
 				if (\preg_match('/\\[([\\d\\.-]+)\\s*\\/\\s*([\\d\\.]+)\\];/', $spam, $match)) {
@@ -461,21 +474,6 @@ class Message implements \JsonSerializable
 			}
 		}
 
-		$aFlags = $this->getFlags();
-		$sReadReceipt = $this->ReadReceipt;
-		if (\strlen($sReadReceipt) && !\in_array('$forwarded', $aFlags)) {
-			try
-			{
-				if (!\MailSo\Mime\Email::Parse($sReadReceipt)) {
-					$sReadReceipt = '';
-				}
-			}
-			catch (\Throwable $oException)
-			{
-				$sReadReceipt = '';
-			}
-		}
-
 		$result = array(
 			'@Object' => 'Object/Message',
 			'folder' => $this->sFolder,
@@ -499,7 +497,7 @@ class Message implements \JsonSerializable
 			'sender' => $this->oSender,
 			'deliveredTo' => $this->oDeliveredTo,
 
-			'readReceipt' => $sReadReceipt,
+			'readReceipt' => $this->ReadReceipt,
 			'autocrypt' => $aAutocrypt ?: null,
 
 			'attachments' => $this->Attachments,
@@ -508,7 +506,7 @@ class Message implements \JsonSerializable
 			'dkim' => $this->DKIM,
 			'dmarc' => $this->DMARC,
 
-			'flags' => $aFlags,
+			'flags' => $this->getFlags(),
 
 			'inReplyTo' => $this->InReplyTo,
 

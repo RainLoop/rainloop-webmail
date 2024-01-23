@@ -155,10 +155,10 @@ export class MailMessageView extends AbstractViewRight {
 					: ''
 				).join(' '),
 
-			askReadReceipt: () =>
-				(MessagelistUserStore.isDraftFolder() || MessagelistUserStore.isSentFolder())
-				&& currentMessage()?.readReceipt()
-				&& currentMessage()?.flags().includes('$mdnsent'),
+			askReadReceipt: () => currentMessage()?.readReceipt()
+				&& !(MessagelistUserStore.isDraftFolder() || MessagelistUserStore.isSentFolder())
+				&& !currentMessage()?.flags().includes('$mdnsent')
+				&& !currentMessage()?.flags().includes('\\answered'),
 
 			listAttachments: () => currentMessage()?.attachments()
 				.filter(item => SettingsUserStore.listInlineAttachments() || !item.isLinked()),

@@ -96,7 +96,7 @@ trait Response
 			if (!$this->Config()->Get('labs', 'date_from_headers', true) && $aResult['internalTimestamp']) {
 				$aResult['dateTimestamp'] = $aResult['internalTimestamp'];
 			}
-			if (!$sParent && \strlen($aResult['readReceipt']) && !\in_array('$forwarded', $aResult['flags'])) {
+			if (!$sParent && \strlen($aResult['readReceipt']) && !\in_array('$mdnsent', $aResult['flags']) && !\in_array('\\answered', $aResult['flags'])) {
 				$oAccount = $this->getAccountFromToken();
 				if ('1' === $this->Cacher($oAccount)->Get(\RainLoop\KeyPathHelper::ReadReceiptCache($oAccount->Email(), $aResult['folder'], $aResult['uid']), '0')) {
 					$aResult['readReceipt'] = '';

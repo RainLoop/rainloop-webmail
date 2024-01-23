@@ -368,14 +368,15 @@ trait Messages
 					$sFolderFullName = $this->GetActionParam('messageFolder', '');
 					$iUid = (int) $this->GetActionParam('messageUid', 0);
 
-					$this->Cacher($oAccount)->Set(\RainLoop\KeyPathHelper::ReadReceiptCache($oAccount->Email(), $sFolderFullName, $iUid), '1');
-
 					if (\strlen($sFolderFullName) && 0 < $iUid) {
 						try
 						{
 							$this->MailClient()->MessageSetFlag($sFolderFullName, new SequenceSet($iUid), MessageFlag::MDNSENT, true, true);
 						}
-						catch (\Throwable $oException) {}
+						catch (\Throwable $oException)
+						{
+							$this->Cacher($oAccount)->Set(\RainLoop\KeyPathHelper::ReadReceiptCache($oAccount->Email(), $sFolderFullName, $iUid), '1');
+						}
 					}
 				}
 			}
