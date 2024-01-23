@@ -332,7 +332,7 @@ class MailClient
 						'folder' => $sFolderName,
 						'uid' => $iUid,
 						'subject' => $oHeaders->ValueByName(MimeHeader::SUBJECT, !$sContentTypeCharset),
-						'from' => $oHeaders->GetAsEmailCollection(MimeHeader::FROM_, !$sContentTypeCharset)
+						'from' => $oHeaders->GetAsEmailCollection(MimeHeader::FROM_)
 					);
 				}
 			}

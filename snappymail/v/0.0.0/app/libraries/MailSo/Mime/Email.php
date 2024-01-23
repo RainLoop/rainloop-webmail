@@ -43,6 +43,7 @@ class Email implements \JsonSerializable
 	 */
 	public static function Parse(string $sEmailAddress) : self
 	{
+		$sEmailAddress = \MailSo\Base\Utils::DecodeHeaderValue($sEmailAddress);
 		$sEmailAddress = \MailSo\Base\Utils::Trim($sEmailAddress);
 		if (!\strlen(\trim($sEmailAddress))) {
 			throw new \ValueError;

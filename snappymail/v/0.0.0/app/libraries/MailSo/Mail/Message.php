@@ -151,7 +151,7 @@ class Message implements \JsonSerializable
 		$sCharset = $oBodyStructure ? Utils::NormalizeCharset($oBodyStructure->SearchCharset()) : '';
 
 		$sHeaders = $oFetchResponse->GetHeaderFieldsValue();
-		$oHeaders = \strlen($sHeaders) ? new \MailSo\Mime\HeaderCollection($sHeaders, false, $sCharset) : null;
+		$oHeaders = \strlen($sHeaders) ? new \MailSo\Mime\HeaderCollection($sHeaders, $sCharset) : null;
 		if ($oHeaders) {
 			$oMessage->Headers = $oHeaders;
 
@@ -159,11 +159,9 @@ class Message implements \JsonSerializable
 				MimeHeader::CONTENT_TYPE,
 				\MailSo\Mime\Enumerations\Parameter::CHARSET
 			);
-
 			if (\strlen($sContentTypeCharset)) {
 				$sCharset = Utils::NormalizeCharset($sContentTypeCharset);
 			}
-
 			if (\strlen($sCharset)) {
 				$oHeaders->SetParentCharset($sCharset);
 			}
@@ -174,14 +172,14 @@ class Message implements \JsonSerializable
 			$oMessage->sMessageId = $oHeaders->ValueByName(MimeHeader::MESSAGE_ID);
 			$oMessage->sContentType = $oHeaders->ValueByName(MimeHeader::CONTENT_TYPE);
 
-			$oMessage->oFrom = $oHeaders->GetAsEmailCollection(MimeHeader::FROM_, $bCharsetAutoDetect);
-			$oMessage->oTo = $oHeaders->GetAsEmailCollection(MimeHeader::TO_, $bCharsetAutoDetect);
-			$oMessage->oCc = $oHeaders->GetAsEmailCollection(MimeHeader::CC, $bCharsetAutoDetect);
-			$oMessage->oBcc = $oHeaders->GetAsEmailCollection(MimeHeader::BCC, $bCharsetAutoDetect);
+			$oMessage->oFrom = $oHeaders->GetAsEmailCollection(MimeHeader::FROM_);
+			$oMessage->oTo = $oHeaders->GetAsEmailCollection(MimeHeader::TO_);
+			$oMessage->oCc = $oHeaders->GetAsEmailCollection(MimeHeader::CC);
+			$oMessage->oBcc = $oHeaders->GetAsEmailCollection(MimeHeader::BCC);
 
-			$oMessage->oSender = $oHeaders->GetAsEmailCollection(MimeHeader::SENDER, $bCharsetAutoDetect);
-			$oMessage->oReplyTo = $oHeaders->GetAsEmailCollection(MimeHeader::REPLY_TO, $bCharsetAutoDetect);
-			$oMessage->oDeliveredTo = $oHeaders->GetAsEmailCollection(MimeHeader::DELIVERED_TO, $bCharsetAutoDetect);
+			$oMessage->oSender = $oHeaders->GetAsEmailCollection(MimeHeader::SENDER);
+			$oMessage->oReplyTo = $oHeaders->GetAsEmailCollection(MimeHeader::REPLY_TO);
+			$oMessage->oDeliveredTo = $oHeaders->GetAsEmailCollection(MimeHeader::DELIVERED_TO);
 
 			$oMessage->InReplyTo = $oHeaders->ValueByName(MimeHeader::IN_REPLY_TO);
 			$oMessage->References = Utils::StripSpaces(

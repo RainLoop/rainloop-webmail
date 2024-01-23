@@ -23,7 +23,7 @@ class Header implements \JsonSerializable
 
 	private string $sFullValue;
 
-	private string $sEncodedValueForReparse;
+	private string $sEncodedValue;
 
 	private ?ParameterCollection $oParameters = null;
 
@@ -39,10 +39,10 @@ class Header implements \JsonSerializable
 	{
 		$this->sName = \trim($sName);
 		$this->sFullValue = \trim($sValue);
-		$this->sEncodedValueForReparse = '';
+		$this->sEncodedValue = '';
 
 		if (\strlen($sEncodedValueForReparse) && ($this->IsEmail() || $this->IsSubject() || $this->IsParameterized())) {
-			$this->sEncodedValueForReparse = \trim($sEncodedValueForReparse);
+			$this->sEncodedValue = \trim($sEncodedValueForReparse);
 		}
 
 		if (\strlen($this->sFullValue) && $this->IsParameterized()) {
@@ -101,13 +101,18 @@ class Header implements \JsonSerializable
 		return $this->sFullValue;
 	}
 
+	public function EncodedValue() : string
+	{
+		return $this->sEncodedValue ?: $this->sFullValue;
+	}
+
 	public function SetParentCharset(string $sParentCharset) : Header
 	{
-		if ($this->sParentCharset !== $sParentCharset && \strlen($this->sEncodedValueForReparse)) {
+		if ($this->sParentCharset !== $sParentCharset && \strlen($this->sEncodedValue)) {
 			$this->initInputData(
 				$this->sName,
-				\trim(\MailSo\Base\Utils::DecodeHeaderValue($this->sEncodedValueForReparse, $sParentCharset)),
-				$this->sEncodedValueForReparse
+				\trim(\MailSo\Base\Utils::DecodeHeaderValue($this->sEncodedValue, $sParentCharset)),
+				$this->sEncodedValue
 			);
 		}
 
@@ -187,9 +192,9 @@ class Header implements \JsonSerializable
 	public function ValueWithCharsetAutoDetect() : string
 	{
 		if (!\MailSo\Base\Utils::IsAscii($this->Value())
-		 && \strlen($this->sEncodedValueForReparse)
-		 && !\MailSo\Base\Utils::IsAscii($this->sEncodedValueForReparse)
-		 && ($mEncoding = \mb_detect_encoding($this->sEncodedValueForReparse, 'auto', true))
+		 && \strlen($this->sEncodedValue)
+		 && !\MailSo\Base\Utils::IsAscii($this->sEncodedValue)
+		 && ($mEncoding = \mb_detect_encoding($this->sEncodedValue, 'auto', true))
 		) {
 			$this->SetParentCharset($mEncoding);
 		}

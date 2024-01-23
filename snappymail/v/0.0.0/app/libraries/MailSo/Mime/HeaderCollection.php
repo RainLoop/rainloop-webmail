@@ -17,16 +17,13 @@ namespace MailSo\Mime;
  */
 class HeaderCollection extends \MailSo\Base\Collection
 {
-
-	protected string $sRawHeaders = '';
-
 	protected string $sParentCharset = '';
 
-	function __construct(string $sRawHeaders = '', bool $bStoreRawHeaders = true, string $sParentCharset = '')
+	function __construct(string $sRawHeaders = '', string $sParentCharset = '')
 	{
 		parent::__construct();
 		if (\strlen($sRawHeaders)) {
-			$this->Parse($sRawHeaders, $bStoreRawHeaders, $sParentCharset);
+			$this->Parse($sRawHeaders, $sParentCharset);
 		}
 	}
 
@@ -53,13 +50,13 @@ class HeaderCollection extends \MailSo\Base\Collection
 		return $oHeader ? ($bCharsetAutoDetect ? $oHeader->ValueWithCharsetAutoDetect() : $oHeader->Value()) : '';
 	}
 
-	public function ValuesByName(string $sHeaderName, bool $bCharsetAutoDetect = false) : array
+	public function ValuesByName(string $sHeaderName) : array
 	{
 		$aResult = array();
 		$sHeaderNameLower = \strtolower($sHeaderName);
 		foreach ($this as $oHeader) {
 			if ($sHeaderNameLower === \strtolower($oHeader->Name())) {
-				$aResult[] = $bCharsetAutoDetect ? $oHeader->ValueWithCharsetAutoDetect() : $oHeader->Value();
+				$aResult[] = $oHeader->Value();
 			}
 		}
 		return $aResult;
@@ -74,11 +71,12 @@ class HeaderCollection extends \MailSo\Base\Collection
 		return $this;
 	}
 
-	public function GetAsEmailCollection(string $sHeaderName, bool $bCharsetAutoDetect = false) : ?EmailCollection
+	public function GetAsEmailCollection(string $sHeaderName) : ?EmailCollection
 	{
-		return new EmailCollection(
-			$this->ValueByName($sHeaderName, $bCharsetAutoDetect)
-		);
+		if ($oHeader = $this->GetByName($sHeaderName)) {
+			return new EmailCollection($oHeader->EncodedValue());
+		}
+		return new EmailCollection();
 	}
 
 	public function ParameterValue(string $sHeaderName, string $sParamName) : string
@@ -110,19 +108,9 @@ class HeaderCollection extends \MailSo\Base\Collection
 		return $this;
 	}
 
-	public function Clear() : void
-	{
-		parent::Clear();
-		$this->sRawHeaders = '';
-	}
-
-	public function Parse(string $sRawHeaders, bool $bStoreRawHeaders = false, string $sParentCharset = '') : self
+	public function Parse(string $sRawHeaders, string $sParentCharset = '') : self
 	{
 		$this->Clear();
-
-		if ($bStoreRawHeaders) {
-			$this->sRawHeaders = $sRawHeaders;
-		}
 
 		if (\strlen($this->sParentCharset)) {
 			$this->sParentCharset = $sParentCharset;

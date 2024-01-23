@@ -219,7 +219,7 @@ abstract class Utils
 		return \preg_replace('/ ([\r]?[\n])/m', ' ', $sInputValue);
 	}
 
-	public static function DecodeHeaderValue(string $sEncodedValue, string $sIncomingCharset = '', string $sForcedIncomingCharset = '') : string
+	public static function DecodeHeaderValue(string $sEncodedValue, string $sIncomingCharset = '') : string
 	{
 		$sValue = $sEncodedValue;
 		if (\strlen($sIncomingCharset)) {
@@ -276,8 +276,7 @@ abstract class Utils
 			}
 
 			if (\strlen($aTempArr[0])) {
-				$sCharset = \strlen($sForcedIncomingCharset) ? $sForcedIncomingCharset : $aTempArr[0];
-				$sCharset = static::NormalizeCharset($sCharset, true);
+				$sCharset = static::NormalizeCharset($aTempArr[0], true);
 
 				if ('' === $sMainCharset) {
 					$sMainCharset = $sCharset;
