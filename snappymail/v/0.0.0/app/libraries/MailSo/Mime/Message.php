@@ -51,6 +51,13 @@ class Message extends Part
 		$this->oAttachmentCollection = new AttachmentCollection;
 	}
 
+	private function getHeaderValue(string $name)
+	{
+		return isset($this->aHeadersValue[$name])
+			? $this->aHeadersValue[$name]
+			: null;
+	}
+
 	public function DoesNotAddDefaultXMailer() : void
 	{
 		$this->bAddDefaultXMailer = false;
@@ -58,8 +65,7 @@ class Message extends Part
 
 	public function MessageId() : string
 	{
-		return empty($this->aHeadersValue[Enumerations\Header::MESSAGE_ID]) ? ''
-			: $this->aHeadersValue[Enumerations\Header::MESSAGE_ID];
+		return $this->getHeaderValue(Enumerations\Header::MESSAGE_ID) ?: '';
 	}
 
 	public function SetMessageId(string $sMessageId) : void
@@ -79,52 +85,31 @@ class Message extends Part
 
 	public function GetSubject() : string
 	{
-		return isset($this->aHeadersValue[Enumerations\Header::SUBJECT]) ?
-			$this->aHeadersValue[Enumerations\Header::SUBJECT] : '';
+		return $this->getHeaderValue(Enumerations\Header::SUBJECT) ?: '';
 	}
 
 	public function GetFrom() : ?Email
 	{
-		if (isset($this->aHeadersValue[Enumerations\Header::FROM_]) &&
-			$this->aHeadersValue[Enumerations\Header::FROM_] instanceof Email)
-		{
-			return $this->aHeadersValue[Enumerations\Header::FROM_];
-		}
-
-		return null;
+		$value = $this->getHeaderValue(Enumerations\Header::FROM_);
+		return ($value instanceof Email) ? $value : null;
 	}
 
-	public function GetTo() : EmailCollection
+	public function GetTo() : ?EmailCollection
 	{
-		if (isset($this->aHeadersValue[Enumerations\Header::TO_]) &&
-			$this->aHeadersValue[Enumerations\Header::TO_] instanceof EmailCollection)
-		{
-			return $this->aHeadersValue[Enumerations\Header::TO_]->Unique();
-		}
-
-		return new EmailCollection;
+		$value = $this->getHeaderValue(Enumerations\Header::TO_);
+		return ($value instanceof EmailCollection) ? $value->Unique() : null;
 	}
 
 	public function GetCc() : ?EmailCollection
 	{
-		if (isset($this->aHeadersValue[Enumerations\Header::CC]) &&
-			$this->aHeadersValue[Enumerations\Header::CC] instanceof EmailCollection)
-		{
-			return $this->aHeadersValue[Enumerations\Header::CC]->Unique();
-		}
-
-		return null;
+		$value = $this->getHeaderValue(Enumerations\Header::CC);
+		return ($value instanceof EmailCollection) ? $value->Unique() : null;
 	}
 
 	public function GetBcc() : ?EmailCollection
 	{
-		if (isset($this->aHeadersValue[Enumerations\Header::BCC]) &&
-			$this->aHeadersValue[Enumerations\Header::BCC] instanceof EmailCollection)
-		{
-			return $this->aHeadersValue[Enumerations\Header::BCC]->Unique();
-		}
-
-		return null;
+		$value = $this->getHeaderValue(Enumerations\Header::BCC);
+		return ($value instanceof EmailCollection) ? $value->Unique() : null;
 	}
 
 	public function GetRcpt() : EmailCollection
@@ -133,8 +118,9 @@ class Message extends Part
 
 		$headers = array(Enumerations\Header::TO_, Enumerations\Header::CC, Enumerations\Header::BCC);
 		foreach ($headers as $header) {
-			if (isset($this->aHeadersValue[$header]) && $this->aHeadersValue[$header] instanceof EmailCollection) {
-				foreach ($this->aHeadersValue[$header] as $oEmail) {
+			$value = $this->getHeaderValue($header);
+			if ($value instanceof EmailCollection) {
+				foreach ($value as $oEmail) {
 					$oResult->append($oEmail);
 				}
 			}
@@ -144,8 +130,9 @@ class Message extends Part
 		$aReturn = array();
 		$headers = array(Enumerations\Header::TO_, Enumerations\Header::CC, Enumerations\Header::BCC);
 		foreach ($headers as $header) {
-			if (isset($this->aHeadersValue[$header]) && $this->aHeadersValue[$header] instanceof EmailCollection) {
-				foreach ($this->aHeadersValue[$header] as $oEmail) {
+			$value = $this->getHeaderValue($header);
+			if ($value instanceof EmailCollection) {
+				foreach ($value as $oEmail) {
 					$oResult->append($oEmail);
 					$sEmail = $oEmail->GetEmail();
 					if (!isset($aReturn[$sEmail])) {

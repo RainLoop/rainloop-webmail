@@ -196,11 +196,6 @@ class Header implements \JsonSerializable
 		return $this->Value();
 	}
 
-	private function IsReparsed() : bool
-	{
-		return $this->IsEmail() || $this->IsSubject() || $this->IsParameterized();
-	}
-
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{

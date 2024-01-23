@@ -806,11 +806,11 @@ trait Messages
 
 			if ($oSmtpClient->Settings->usePhpMail) {
 				if (\MailSo\Base\Utils::FunctionCallable('mail')) {
-					$aToCollection = $oMessage->GetTo();
-					if ($aToCollection && $oFrom) {
+					$oToCollection = $oMessage->GetTo();
+					if ($oToCollection && $oFrom) {
 						$sRawBody = \stream_get_contents($rMessageStream);
 						if (!empty($sRawBody)) {
-							$sMailTo = \trim($aToCollection->ToString(true));
+							$sMailTo = \trim($oToCollection->ToString(true));
 							$sMailSubject = \trim($oMessage->GetSubject());
 							$sMailSubject = \strlen($sMailSubject) ? \MailSo\Base\Utils::EncodeHeaderValue($sMailSubject) : '';
 

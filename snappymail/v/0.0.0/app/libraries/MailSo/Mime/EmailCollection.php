@@ -33,15 +33,6 @@ class EmailCollection extends \MailSo\Base\Collection
 		parent::append($oEmail, $bToTop);
 	}
 
-	public function MergeWithOtherCollection(EmailCollection $oEmails) : self
-	{
-		foreach ($oEmails as $oEmail) {
-			$this->append($oEmail);
-		}
-
-		return $this;
-	}
-
 	public function Unique() : self
 	{
 		$aReturn = array();
