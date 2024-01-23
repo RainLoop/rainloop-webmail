@@ -86,11 +86,6 @@ class Header implements \JsonSerializable
 		return $this->sName;
 	}
 
-	public function NameWithDelimitrom() : string
-	{
-		return $this->sName . ': ';
-	}
-
 	public function Value() : string
 	{
 		return $this->sValue;
@@ -160,7 +155,8 @@ class Header implements \JsonSerializable
 		}
 
 		// https://www.rfc-editor.org/rfc/rfc2822#section-2.1.1, avoid folding immediately after the header name
-		return $this->NameWithDelimitrom() . \wordwrap($sResult, 78 - \strlen($this->NameWithDelimitrom()) - 1, "\r\n ");
+		$sName = $this->sName . ': ';
+		return $sName . \wordwrap($sResult, 78 - \strlen($sName) - 1, "\r\n ");
 	}
 
 	private function IsSubject() : bool
@@ -207,7 +203,7 @@ class Header implements \JsonSerializable
 		$aResult = array(
 			'@Object' => 'Object/MimeHeader',
 			'name' => $this->sName,
-			'value' => $this->sValue
+			'value' => $this->sValue // $this->EncodedValue()
 		);
 		if ($this->oParameters->count()) {
 			$aResult['parameters'] = $this->oParameters;
