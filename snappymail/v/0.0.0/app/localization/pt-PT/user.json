@@ -210,7 +210,7 @@
 		"ADD_MENU_TAGS": "Etiquetas",
 		"BUTTON_SHARE_ALL": "Todos",
 		"BUTTON_SYNC": "Sincronização (CardDAV)",
-		"SEND_TO_ALL_CONTACT_EMAILS": "Send to all contact emails"
+		"SEND_TO_ALL_CONTACT_EMAILS": "Enviar para todos os contactos"
 	},
 	"COMPOSE": {
 		"LINK_SHOW_INPUTS": "Mostrar todos os campos",
@@ -255,7 +255,7 @@
 		"TITLE_UPDATE_IDENTITY": "Atualizar identidade?",
 		"BUTTON_ADD_IDENTITY": "Adicionar",
 		"BUTTON_UPDATE_IDENTITY": "Atualizar",
-		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
+		"LABEL_SIGNATURE_ADD": "Adicionar\/Editar assinatura",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Nas respostas, inserir esta assinatura acima da mensagem citada"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -455,7 +455,7 @@
 		"IMAGES_OPTION_WHITELIST": "Lista Branca ou perguntar",
 		"IMAGES_OPTION_ALWAYS": "Mostrar sempre",
 		"IMAGES_WHITELIST": "Lista Branca de imagens",
-		"MESSAGE_POPUP_WINDOW": "Popup in new window instead of tab"
+		"MESSAGE_POPUP_WINDOW": "Abrir em nova janela em vez de um separador"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Adicionar destinatários automaticamente à sua lista de endereços",
