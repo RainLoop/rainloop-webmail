@@ -135,7 +135,7 @@ class PdoAddressBook
 			return false;
 		}
 
-		$sPath = $oClient->__UrlPath__;
+		$sPath = $oClient->urlPath;
 
 		$time = \microtime(true);
 		$aRemoteSyncData = $this->prepareDavSyncData($oClient, $sPath);

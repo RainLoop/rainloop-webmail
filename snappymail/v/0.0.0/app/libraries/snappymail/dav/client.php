@@ -10,7 +10,7 @@ namespace SnappyMail\DAV;
 
 class Client
 {
-//	public $__UrlPath__;
+	public $urlPath;
 
 	const
 		NS_DAV  = 'urn:DAV',

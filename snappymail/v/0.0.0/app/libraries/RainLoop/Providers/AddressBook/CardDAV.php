@@ -187,7 +187,7 @@ trait CardDAV
 				if (!$oClient) {
 					return $aContactsPaths;
 				}
-				$sNextPath = $oClient->__UrlPath__;
+				$sNextPath = $oClient->urlPath;
 			}
 
 			if ($sPath != $sNextPath) {
@@ -219,7 +219,7 @@ trait CardDAV
 				if (!$oClient) {
 					return $aContactsPaths;
 				}
-				$sCurrentUserPrincipal = $oClient->__UrlPath__;
+				$sCurrentUserPrincipal = $oClient->urlPath;
 			}
 
 			$aResponse = $this->detectionPropFind($oClient, $sCurrentUserPrincipal);
@@ -243,7 +243,7 @@ trait CardDAV
 			if (!$oClient) {
 				return $aContactsPaths;
 			}
-			$sAddressbookHomeSet = $oClient->__UrlPath__;
+			$sAddressbookHomeSet = $oClient->urlPath;
 		}
 
 		$aResponse = $this->detectionPropFind($oClient, $sAddressbookHomeSet);
@@ -287,7 +287,7 @@ trait CardDAV
 				}
 			}
 			if ($bGood) {
-				$oClient->__UrlPath__ = $sPath;
+				$oClient->urlPath = $sPath;
 			}
 		}
 
@@ -332,7 +332,7 @@ trait CardDAV
 		$oClient = new DAVClient($aSettings);
 		$oClient->setVerifyPeer(false);
 
-		$oClient->__UrlPath__ = $aUrl['path'];
+		$oClient->urlPath = $aUrl['path'];
 
 		$this->logWrite('DavClient: User: '.$aSettings['userName'].', Url: '.$sUrl, \LOG_INFO, 'DAV');
 
@@ -361,7 +361,7 @@ trait CardDAV
 
 		$oClient = $this->getDavClientFromUrl($sUrl, $sUser, $sPassword, $sProxy);
 
-		$sPath = $oClient->__UrlPath__;
+		$sPath = $oClient->urlPath;
 
 		$bGood = true;
 		if ('' === $sPath || '/' === $sPath || !$this->checkContactsPath($oClient, $sPath)) {
