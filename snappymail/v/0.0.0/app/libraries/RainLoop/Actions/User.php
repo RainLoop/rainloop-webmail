@@ -177,6 +177,7 @@ trait User
 		});
 
 		$this->setSettingsFromParams($oSettings, 'EditorDefaultType', 'string');
+		$this->setSettingsFromParams($oSettings, 'editorWysiwyg', 'string');
 		$this->setSettingsFromParams($oSettings, 'requestReadReceipt', 'bool');
 		$this->setSettingsFromParams($oSettings, 'requestDsn', 'bool');
 		$this->setSettingsFromParams($oSettings, 'requireTLS', 'bool');

@@ -119,6 +119,20 @@
 			}
 		}"></div>
 	</div>
+	<div class="control-group" data-bind="visible: hasWysiwygs">
+		<label>WYSIWYG</label>
+		<div data-bind="component: {
+			name: 'Select',
+			params: {
+				options: wysiwygs,
+				value: editorWysiwyg,
+				trigger: editorWysiwygTrigger,
+				optionsText: 'name',
+				optionsValue: 'name'
+			}
+		}"></div>
+	</div>
+
 	<div class="control-group">
 		<div>
 			<div data-bind="component: {

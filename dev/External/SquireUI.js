@@ -318,11 +318,6 @@ class SquireUI
 		wysiwyg.className = 'squire-wysiwyg';
 		wysiwyg.dir = 'auto';
 		this.mode = ''; // 'plain' | 'wysiwyg'
-		this.__plain = {
-			getRawData: () => this.plain.value,
-			setRawData: plain => this.plain.value = plain
-		};
-
 		this.container = container;
 		this.squire = squire;
 		this.plain = plain;
@@ -530,15 +525,6 @@ class SquireUI
 			console.dir({select:e.range});
 		});
 */
-
-		// CKEditor gimmicks used by HtmlEditor
-		this.plugins = {
-			plain: true
-		};
-		this.focusManager = {
-			hasFocus: () => squire._isFocused,
-			blur: () => squire.blur()
-		};
 	}
 
 	doAction(name) {
@@ -576,7 +562,6 @@ class SquireUI
 		this.modeSelect.selectedIndex = 'plain' == this.mode ? 1 : 0;
 	}
 
-	// CKeditor gimmicks used by HtmlEditor
 	on(type, fn) {
 		if ('mode' == type) {
 			this.onModeChange = fn;
@@ -641,6 +626,18 @@ class SquireUI
 		range.setStart(node, 0);
 		range.setEnd(node, 0);
 		squire.setSelection( range );
+	}
+
+	getPlainData() {
+		return this.plain.value;
+	}
+
+	setPlainData(text) {
+		this.plain.value = text;
+	}
+
+	blur() {
+		this.squire.blur();
 	}
 
 	focus() {

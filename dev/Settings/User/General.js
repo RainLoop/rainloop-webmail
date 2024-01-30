@@ -5,6 +5,7 @@ import { SaveSettingStatus } from 'Common/Enums';
 import { LayoutSideView, LayoutBottomView } from 'Common/EnumsUser';
 import { setRefreshFoldersInterval } from 'Common/Folders';
 import { Settings, SettingsGet } from 'Common/Globals';
+import { WYSIWYGS } from 'Common/Html';
 import { isArray } from 'Common/Utils';
 import { addSubscribablesTo, addComputablesTo } from 'External/ko';
 import { i18n, translateTrigger, translatorReload, convertLangName } from 'Common/Translator';
@@ -44,7 +45,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		['useThreads',
 		 // These use addSetting()
 		 'layout', 'messageReadDelay', 'messagesPerPage', 'checkMailInterval',
-		 'editorDefaultType', 'msgDefaultAction', 'maxBlockquotesLevel',
+		 'editorDefaultType', 'editorWysiwyg', 'msgDefaultAction', 'maxBlockquotesLevel',
 		 // These are in addSettings()
 		 'requestReadReceipt', 'requestDsn', 'requireTLS', 'pgpSign', 'pgpEncrypt',
 		 'viewHTML', 'viewImages', 'viewImagesWhitelist', 'removeColors', 'allowStyles', 'allowDraftAutosave',
@@ -58,6 +59,8 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.languageTrigger = ko.observable(SaveSettingStatus.Idle);
 
 		this.identities = IdentityUserStore;
+
+		this.wysiwygs = WYSIWYGS;
 
 		addComputablesTo(this, {
 			languageFullName: () => convertLangName(this.language()),
@@ -80,6 +83,8 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 				];
 			},
 
+			hasWysiwygs: () => 1 < WYSIWYGS().length,
+
 			msgDefaultActions: () => {
 				translateTrigger();
 				return [
@@ -99,6 +104,7 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		});
 
 		this.addSetting('EditorDefaultType');
+		this.addSetting('editorWysiwyg');
 		this.addSetting('MsgDefaultAction');
 		this.addSetting('MessageReadDelay');
 		this.addSetting('MessagesPerPage');

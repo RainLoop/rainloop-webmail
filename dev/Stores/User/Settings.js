@@ -47,6 +47,7 @@ export const SettingsUserStore = new class {
 
 			layout: 1,
 			editorDefaultType: 'Html',
+			editorWysiwyg: 'Squire',
 			msgDefaultAction: 1
 		});
 
@@ -78,9 +79,10 @@ export const SettingsUserStore = new class {
 
 	init() {
 		const self = this;
-		self.editorDefaultType(SettingsGet('EditorDefaultType'));
 
 		[
+			'EditorDefaultType',
+			'editorWysiwyg',
 			'messageNewWindow',
 			'messageReadAuto',
 			'MsgDefaultAction',

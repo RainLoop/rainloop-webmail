@@ -91,7 +91,7 @@ Object.assign(ko.bindingHandlers, {
 				};
 
 			if (ko.isObservable(fValue)) {
-				editor = new HtmlEditor(element, fUpdateKoValue, fOnReady, fUpdateKoValue);
+				editor = new HtmlEditor(element, fOnReady, fUpdateKoValue, fUpdateKoValue);
 
 				fValue.__fetchEditorValue = fUpdateKoValue;
 

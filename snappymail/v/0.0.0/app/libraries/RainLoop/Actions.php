@@ -702,6 +702,7 @@ class Actions
 					'DesktopNotifications' => true,
 					'Layout' => (int) $oConfig->Get('defaults', 'view_layout', Enumerations\Layout::SIDE_PREVIEW),
 					'EditorDefaultType' => \str_replace('Forced', '', $oConfig->Get('defaults', 'view_editor_type', '')),
+					'editorWysiwyg' => 'Squire',
 					'UseCheckboxesInList' => (bool) $oConfig->Get('defaults', 'view_use_checkboxes', true),
 					'showNextMessage' => (bool) $oConfig->Get('defaults', 'view_show_next_message', false),
 					'AutoLogout' => (int) $oConfig->Get('defaults', 'autologout', 30),
@@ -766,6 +767,7 @@ class Actions
 					}
 
 					$aResult['EditorDefaultType'] = \str_replace('Forced', '', $oSettings->GetConf('EditorDefaultType', $aResult['EditorDefaultType']));
+					$aResult['editorWysiwyg'] = $oSettings->GetConf('editorWysiwyg', $aResult['editorWysiwyg']);
 					$aResult['requestReadReceipt'] = (bool) $oSettings->GetConf('requestReadReceipt', false);
 					$aResult['requestDsn'] = (bool) $oSettings->GetConf('requestDsn', false);
 					$aResult['requireTLS'] = (bool) $oSettings->GetConf('requireTLS', false);

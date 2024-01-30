@@ -725,20 +725,12 @@ export const
 
 	WYSIWYGS = ko.observableArray();
 
-WYSIWYGS.push(['Squire', (owner, container, onReady)=>{
-	let squire = new SquireUI(container);
-	setTimeout(()=>onReady(squire), 1);
-/*
-	squire.on('blur', () => owner.blurTrigger());
-	squire.on('focus', () => clearTimeout(owner.blurTimer));
-	squire.on('mode', () => {
-		owner.blurTrigger();
-		owner.onModeChange?.(!owner.isPlain());
-	});
-*/
-}]);
+WYSIWYGS.push({
+	name: 'Squire',
+	construct: (owner, container, onReady) => onReady(new SquireUI(container))
+});
 
-rl.registerWYSIWYG = (name, construct) => WYSIWYGS.push([name, construct]);
+rl.registerWYSIWYG = (name, construct) => WYSIWYGS.push({name, construct});
 
 export class HtmlEditor {
 	/**
@@ -747,7 +739,7 @@ export class HtmlEditor {
 	 * @param {Function=} onReady
 	 * @param {Function=} onModeChange
 	 */
-	constructor(element, onBlur = null, onReady = null, onModeChange = null) {
+	constructor(element, onReady = null, onModeChange = null, onBlur = null) {
 		this.blurTimer = 0;
 
 		this.onBlur = onBlur;
@@ -757,10 +749,10 @@ export class HtmlEditor {
 			onReady = onReady ? [onReady] : [];
 			this.onReady = fn => onReady.push(fn);
 			// TODO: make 'which' user configurable
-//			const which = 'CKEditor4',
-//				wysiwyg = WYSIWYGS.find(item => which == item[0]) || WYSIWYGS.find(item => 'Squire' == item[0]);
-			const wysiwyg = WYSIWYGS.find(item => 'Squire' == item[0]);
-			wysiwyg[1](this, element, editor => {
+			const which = SettingsUserStore.editorWysiwyg(),
+				wysiwyg = WYSIWYGS.find(item => which == item.name) || WYSIWYGS.find(item => 'Squire' == item.name);
+//			const wysiwyg = WYSIWYGS.find(item => 'Squire' == item.name);
+			wysiwyg.construct(this, element, editor => setTimeout(()=>{
 				this.editor = editor;
 				editor.on('blur', () => this.blurTrigger());
 				editor.on('focus', () => clearTimeout(this.blurTimer));
@@ -770,7 +762,7 @@ export class HtmlEditor {
 				});
 				this.onReady = fn => fn();
 				onReady.forEach(fn => fn());
-			});
+			},1));
 		}
 	}
 
@@ -826,8 +818,8 @@ export class HtmlEditor {
 		let result = '';
 		if (this.editor) {
 			try {
-				if (this.isPlain() && this.editor.plugins.plain && this.editor.__plain) {
-					result = this.editor.__plain.getRawData();
+				if (this.isPlain()) {
+					result = this.editor.getPlainData();
 				} else {
 					result = this.editor.getData();
 				}
@@ -862,8 +854,8 @@ export class HtmlEditor {
 			this.clearCachedSignature();
 			try {
 				editor.setMode(mode);
-				if (this.isPlain() && editor.plugins.plain && editor.__plain) {
-					editor.__plain.setRawData(data);
+				if (this.isPlain()) {
+					editor.setPlainData(data);
 				} else {
 					editor.setData(data);
 				}
@@ -883,16 +875,8 @@ export class HtmlEditor {
 		this.onReady(() => this.editor.focus());
 	}
 
-	hasFocus() {
-		try {
-			return !!this.editor?.focusManager.hasFocus;
-		} catch (e) {
-			return false;
-		}
-	}
-
 	blur() {
-		this.onReady(() => this.editor.focusManager.blur(true));
+		this.onReady(() => this.editor.blur());
 	}
 
 	clear() {

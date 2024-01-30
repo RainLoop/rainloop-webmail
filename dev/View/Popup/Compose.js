@@ -704,7 +704,6 @@ export class ComposePopupView extends AbstractViewPopup {
 				// setTimeout(() => {
 				this.oEditor = new HtmlEditor(
 					this.editorArea(),
-					null,
 					() => fOnInit(this.oEditor),
 					bHtml => this.isHtml(!!bHtml)
 				);
