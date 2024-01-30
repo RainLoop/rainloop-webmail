@@ -386,7 +386,8 @@
 		"IMAGEURL": "Bild URL",
 		"IMAGEUPLOAD": "Bilddatei auswählen",
 		"UNDO": "Rückgängig",
-		"REDO": "Wiederholen"
+		"REDO": "Wiederholen",
+		"REMOVESTYLE": "Remove style"
 	},
 	"SETTINGS_LABELS": {
 		"GENERAL": "Allgemein",

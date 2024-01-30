@@ -270,6 +270,13 @@ class SquireUI
 							btn.classList.toggle('active', 'source' == this.mode);
 						}
 					}
+				},
+
+				clear: {
+					removeStyle: {
+						html: '⎚',
+						cmd: () => squire.setStyle()
+					}
 				}
 			},
 

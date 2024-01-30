@@ -386,7 +386,8 @@
 		"IMAGEURL": "Odnośnik obrazu",
 		"IMAGEUPLOAD": "Wybierz obraz",
 		"UNDO": "Cofnij",
-		"REDO": "Ponów"
+		"REDO": "Ponów",
+		"REMOVESTYLE": "Remove style"
 	},
 	"SETTINGS_LABELS": {
 		"GENERAL": "Ogólne",

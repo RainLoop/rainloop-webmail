@@ -386,7 +386,8 @@
 		"IMAGEURL": "Image URL",
 		"IMAGEUPLOAD": "Image select",
 		"UNDO": "Undo",
-		"REDO": "Redo"
+		"REDO": "Redo",
+		"REMOVESTYLE": "Remove style"
 	},
 	"SETTINGS_LABELS": {
 		"GENERAL": "Общи",

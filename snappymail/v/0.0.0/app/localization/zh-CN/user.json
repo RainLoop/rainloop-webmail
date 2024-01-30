@@ -386,7 +386,8 @@
 		"IMAGEURL": "图片 URL",
 		"IMAGEUPLOAD": "选择图片",
 		"UNDO": "撤销",
-		"REDO": "重做"
+		"REDO": "重做",
+		"REMOVESTYLE": "Remove style"
 	},
 	"SETTINGS_LABELS": {
 		"GENERAL": "常规",

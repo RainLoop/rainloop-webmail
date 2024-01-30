@@ -1808,12 +1808,12 @@ const
 
 	setAttributes = (node, props) => {
 		props && Object.entries(props).forEach(([k,v]) => {
-			if ("style" === k && typeof v === "object") {
-				Object.entries(v).forEach(([k,v]) => node.style[k] = v);
-			} else if (v != null) {
-				node.setAttribute(k, v);
-			} else {
+			if (null == v) {
 				node.removeAttribute(k);
+			} else if ("style" === k && typeof v === "object") {
+				Object.entries(v).forEach(([k,v]) => node.style[k] = v);
+			} else {
+				node.setAttribute(k, v);
 			}
 		});
 	},
@@ -2262,7 +2262,7 @@ class Squire
 			},
 			formatRemove: event => {
 				event.preventDefault();
-				this.setStyle(null);
+				this.setStyle();
 			},
 			formatSetBlockTextDirection: event => {
 				event.preventDefault();
@@ -3665,9 +3665,20 @@ class Squire
 		let end = range ? range.endContainer : 0;
 		// When the selection is all the text inside an element, set style on the element itself
 		if ("dir" == name || (isTextNode(start) && 0 === range.startOffset && start === end && end.length === range.endOffset)) {
-			this.saveUndoState(range);
+			this._recordUndoState(range);
 			setAttributes(start.parentNode, {[name]: value});
-			this.setRange(range);
+//			this.setRange(range);
+			this._docWasChanged();
+		}
+		// Else when it should remove the attribute
+		else if (null == value) {
+			this._recordUndoState(range);
+			let node = getClosest(range.commonAncestorContainer, this._root, '*');
+			range.collapsed
+				? setAttributes(node, {[name]: value})
+				: node.querySelectorAll('*').forEach(el => setAttributes(el, {[name]: value}));
+//			this.setRange(range);
+			this._docWasChanged();
 		}
 		// Else create a span element
 		else {

@@ -386,7 +386,8 @@
 		"IMAGEURL": "Imagem por URL",
 		"IMAGEUPLOAD": "Escolher imagem",
 		"UNDO": "Desfazer",
-		"REDO": "Refazer"
+		"REDO": "Refazer",
+		"REMOVESTYLE": "Remove style"
 	},
 	"SETTINGS_LABELS": {
 		"GENERAL": "Geral",

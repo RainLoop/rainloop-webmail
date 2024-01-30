@@ -386,7 +386,8 @@
 		"IMAGEURL": "圖片 URL",
 		"IMAGEUPLOAD": "圖片選取",
 		"UNDO": "復原",
-		"REDO": "取消復原"
+		"REDO": "取消復原",
+		"REMOVESTYLE": "Remove style"
 	},
 	"SETTINGS_LABELS": {
 		"GENERAL": "一般設定",
