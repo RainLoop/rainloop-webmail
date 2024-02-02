@@ -28,7 +28,7 @@
 		"REPLY_TO": "Odpisz do",
 		"SAVE": "Zapisz",
 		"SAVE_CHANGES": "Zapisać zmiany?",
-		"SEARCH": "Nie znaleziono żadnych kontaktów",
+		"SEARCH": "Szukaj",
 		"SPAM": "Spam",
 		"SUBJECT": "Temat",
 		"TEST": "Testuj",
@@ -178,7 +178,7 @@
 		"LABEL_ORGANIZATION": "Organizacja",
 		"LABEL_DEPARTMENT": "Departament",
 		"LABEL_TITLE": "Tytuł",
-		"TAB_CRYPTO": "Krypto",
+		"TAB_CRYPTO": "Kryptografia",
 		"ASK": "Pytaj",
 		"NEVER": "Nigdy",
 		"ALWAYS": "Zawsze",
@@ -210,7 +210,7 @@
 		"ADD_MENU_TAGS": "Tagi",
 		"BUTTON_SHARE_ALL": "Wszystkim",
 		"BUTTON_SYNC": "Synchronizacja (CardDAV)",
-		"SEND_TO_ALL_CONTACT_EMAILS": "Send to all contact emails"
+		"SEND_TO_ALL_CONTACT_EMAILS": "Wyślij na wszystkie adresy email dla tego kontaktu"
 	},
 	"COMPOSE": {
 		"LINK_SHOW_INPUTS": "Pokaż wszystkie pola",
@@ -255,7 +255,7 @@
 		"TITLE_UPDATE_IDENTITY": "Czy zaktualizować tożsamość?",
 		"BUTTON_ADD_IDENTITY": "Dodaj",
 		"BUTTON_UPDATE_IDENTITY": "Aktualizuj",
-		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
+		"LABEL_SIGNATURE_ADD": "Dodaj\/Edytuj podpis",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Umieszczaj ten podpis przed cytowanym tekstem w odpowiedziach"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -386,8 +386,7 @@
 		"IMAGEURL": "Odnośnik obrazu",
 		"IMAGEUPLOAD": "Wybierz obraz",
 		"UNDO": "Cofnij",
-		"REDO": "Ponów",
-		"REMOVESTYLE": "Remove style"
+		"REDO": "Ponów"
 	},
 	"SETTINGS_LABELS": {
 		"GENERAL": "Ogólne",
@@ -456,7 +455,7 @@
 		"IMAGES_OPTION_WHITELIST": "Dodaj do białej listy lub pytaj",
 		"IMAGES_OPTION_ALWAYS": "Zawsze pokazuj",
 		"IMAGES_WHITELIST": "Biała lista obrazów",
-		"MESSAGE_POPUP_WINDOW": "Popup in new window instead of tab"
+		"MESSAGE_POPUP_WINDOW": "Pokaż w nowym oknie zamiast w nowej karcie"
 	},
 	"SETTINGS_CONTACTS": {
 		"LABEL_CONTACTS_AUTOSAVE": "Automatycznie dodawaj odbiorców do książki adresowej",
