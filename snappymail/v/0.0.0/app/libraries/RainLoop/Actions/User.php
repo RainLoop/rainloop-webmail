@@ -37,8 +37,6 @@ trait User
 		$sEmail = \MailSo\Base\Utils::Trim($this->GetActionParam('Email', ''));
 		$sPassword = $this->GetActionParam('Password', '');
 
-		$this->logMask($sPassword);
-
 		try {
 			$oAccount = $this->LoginProcess($sEmail, $sPassword);
 		} catch (\Throwable $oException) {

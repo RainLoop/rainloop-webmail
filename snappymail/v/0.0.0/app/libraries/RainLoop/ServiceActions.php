@@ -126,11 +126,11 @@ class ServiceActions
 					case 'DoLogin':
 					case 'DoAdminLogin':
 					case 'DoAccountAdd':
-						$this->Logger()->AddSecret($this->oActions->GetActionParam('Password', ''));
+						$this->oActions->logMask($this->oActions->GetActionParam('Password', ''));
 						break;
 				}
 */
-				$this->Logger()->Write(Utils::jsonEncode($aPost), \LOG_INFO, 'POST', true);
+				$this->Logger()->Write(Utils::jsonEncode($aPost), \LOG_INFO, 'POST');
 			} else if (3 < \count($this->aPaths) && $this->oHttp->IsGet()) {
 				$this->oActions->SetActionParams(array(
 					'RawKey' => empty($this->aPaths[3]) ? '' : $this->aPaths[3]

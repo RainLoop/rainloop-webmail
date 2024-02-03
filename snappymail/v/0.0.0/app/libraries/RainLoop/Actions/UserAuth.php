@@ -124,6 +124,8 @@ trait UserAuth
 	{
 		$sInputEmail = $sEmail;
 
+		$this->logMask($sPassword);
+
 		$sLogin = '';
 		$this->resolveLoginCredentials($sEmail, $sPassword, $sLogin);
 
