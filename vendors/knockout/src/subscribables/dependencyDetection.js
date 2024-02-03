@@ -1,6 +1,6 @@
 (() => {
 
-var outerFrames = [],
+let outerFrames = [],
     currentFrame,
     lastId = 0,
 
@@ -25,7 +25,7 @@ ko.dependencyDetection = {
         }
     },
 
-    ignore: (callback, callbackTarget, callbackArgs) => {
+    ignore(callback, callbackTarget, callbackArgs) {
         try {
             begin();
             return callback.apply(callbackTarget, callbackArgs || []);

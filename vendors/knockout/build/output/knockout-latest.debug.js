@@ -141,7 +141,7 @@ ko.utils.domData = {
         }
         return value;
     },
-    getOrSet: function(node, key, value) {
+    getOrSet(node, key, value) {
         return this.get(node, key) || this.set(node, key, value);
     },
     clear: node => dataStore.delete(node),
@@ -308,19 +308,23 @@ class koSubscription
 
 ko.subscribable = function () {
     Object.setPrototypeOf(this, ko_subscribable_fn);
-    ko_subscribable_fn.init(this);
+    ko_subscribable_fn['init'](this);
 }
 
 var defaultEvent = "change";
 
+//const IS_SUBSCRIBABLE = Symbol('IS_SUBSCRIBABLE');
+
 var ko_subscribable_fn = {
-    init: instance => {
+//    [IS_SUBSCRIBABLE]: 1,
+
+    'init': instance => {
         instance._subscriptions = new Map();
         instance._subscriptions.set("change", new Set);
         instance._versionNumber = 1;
     },
 
-    subscribe: function (callback, callbackTarget, event) {
+    'subscribe'(callback, callbackTarget, event) {
         var self = this;
 
         event = event || defaultEvent;
@@ -339,7 +343,7 @@ var ko_subscribable_fn = {
         return subscription;
     },
 
-    notifySubscribers: function (valueToNotify, event) {
+    notifySubscribers(valueToNotify, event) {
         event = event || defaultEvent;
         if (event === defaultEvent) {
             this.updateVersion();
@@ -359,19 +363,19 @@ var ko_subscribable_fn = {
         }
     },
 
-    getVersion: function () {
+    getVersion() {
         return this._versionNumber;
     },
 
-    hasChanged: function (versionToCheck) {
+    hasChanged(versionToCheck) {
         return this.getVersion() !== versionToCheck;
     },
 
-    updateVersion: function () {
+    updateVersion() {
         ++this._versionNumber;
     },
 
-    limit: function(limitFunction) {
+    limit(limitFunction) {
         var self = this, selfIsObservable = ko.isObservable(self),
             ignoreBeforeChange, notifyNextChange, previousValue, pendingValue, didUpdate,
             beforeChange = 'beforeChange';
@@ -432,17 +436,17 @@ var ko_subscribable_fn = {
         };
     },
 
-    hasSubscriptionsForEvent: function(event) {
+    hasSubscriptionsForEvent(event) {
         return (this._subscriptions.get(event) || []).size;
     },
 
-    isDifferent: function(oldValue, newValue) {
+    isDifferent(oldValue, newValue) {
         return !this.equalityComparer || !this.equalityComparer(oldValue, newValue);
     },
 
     toString: () => '[object Object]',
 
-    extend: function(requestedExtenders) {
+    'extend'(requestedExtenders) {
         var target = this;
         if (requestedExtenders) {
             ko.utils.objectForEach(requestedExtenders, (key, value) => {
@@ -456,20 +460,17 @@ var ko_subscribable_fn = {
     }
 };
 
-ko.exportProperty(ko_subscribable_fn, 'init', ko_subscribable_fn.init);
-ko.exportProperty(ko_subscribable_fn, 'subscribe', ko_subscribable_fn.subscribe);
-ko.exportProperty(ko_subscribable_fn, 'extend', ko_subscribable_fn.extend);
-
 // For browsers that support proto assignment, we overwrite the prototype of each
 // observable instance. Since observables are functions, we need Function.prototype
 // to still be in the prototype chain.
 ko.subscribable['fn'] = Object.setPrototypeOf(ko_subscribable_fn, Function.prototype);
 
+//ko.isSubscribable = obj => !!(obj && obj[IS_SUBSCRIBABLE]);
 ko.isSubscribable = instance =>
-    typeof instance?.subscribe == "function" && typeof instance.notifySubscribers == "function";
+    typeof instance?.['subscribe'] == "function" && typeof instance.notifySubscribers == "function";
 (() => {
 
-var outerFrames = [],
+let outerFrames = [],
     currentFrame,
     lastId = 0,
 
@@ -494,7 +495,7 @@ ko.dependencyDetection = {
         }
     },
 
-    ignore: (callback, callbackTarget, callbackArgs) => {
+    ignore(callback, callbackTarget, callbackArgs) {
         try {
             begin();
             return callback.apply(callbackTarget, callbackArgs || []);
@@ -513,6 +514,7 @@ ko.dependencyDetection = {
 })();
 const observableLatestValue = Symbol('_latestValue'),
     length = 'length';
+//const IS_OBSERVABLE = Symbol('IS_OBSERVABLE');
 
 ko.observable = initialValue => {
     function observable() {
@@ -523,7 +525,7 @@ ko.observable = initialValue => {
             if (observable.isDifferent(observable[observableLatestValue], arguments[0])) {
                 observable.valueWillMutate();
                 observable[observableLatestValue] = arguments[0];
-                observable.valueHasMutated();
+                observable['valueHasMutated']();
             }
             return this; // Permits chained assignments
         }
@@ -539,7 +541,7 @@ ko.observable = initialValue => {
     });
 
     // Inherit from 'subscribable'
-    ko.subscribable['fn'].init(observable);
+    ko.subscribable['fn']['init'](observable);
 
     // Inherit from 'observable'
     return Object.setPrototypeOf(observable, observableFn);
@@ -547,17 +549,18 @@ ko.observable = initialValue => {
 
 // Define prototype for observables
 var observableFn = {
-    'toJSON': function() {
+//    [IS_OBSERVABLE]: 1,
+    'toJSON'() {
         let value = this[observableLatestValue];
         return value?.toJSON?.() || value;
     },
     equalityComparer: valuesArePrimitiveAndEqual,
-    peek: function() { return this[observableLatestValue]; },
-    valueHasMutated: function () {
+    peek() { return this[observableLatestValue]; },
+    'valueHasMutated'() {
         this.notifySubscribers(this[observableLatestValue], 'spectate');
         this.notifySubscribers(this[observableLatestValue]);
     },
-    valueWillMutate: function () { this.notifySubscribers(this[observableLatestValue], 'beforeChange'); }
+    valueWillMutate() { this.notifySubscribers(this[observableLatestValue], 'beforeChange'); }
 };
 
 // Note that for browsers that don't support proto assignment, the
@@ -567,6 +570,7 @@ Object.setPrototypeOf(observableFn, ko.subscribable['fn']);
 var protoProperty = ko.observable.protoProperty = '__ko_proto__';
 observableFn[protoProperty] = ko.observable;
 
+//ko.isObservable = obj => !!(obj && obj[IS_OBSERVABLE]);
 ko.isObservable = instance => {
     var proto = typeof instance == 'function' && instance[protoProperty];
     if (proto && proto !== observableFn[protoProperty] && proto !== ko.computed['fn'][protoProperty]) {
@@ -584,7 +588,6 @@ ko.isWriteableObservable = instance => {
 ko.exportSymbol('observable', ko.observable);
 ko.exportSymbol('isObservable', ko.isObservable);
 ko.exportSymbol('observable.fn', observableFn);
-ko.exportProperty(observableFn, 'valueHasMutated', observableFn.valueHasMutated);
 ko.observableArray = initialValues => {
     initialValues = initialValues || [];
 
@@ -594,10 +597,13 @@ ko.observableArray = initialValues => {
     return Object.setPrototypeOf(ko.observable(initialValues), ko.observableArray['fn']).extend({'trackArrayChanges':true});
 };
 
+//const IS_OBSERVABLE_ARRAY = Symbol('IS_OBSERVABLE_ARRAY');
+
 // Note that for browsers that don't support proto assignment, the
 // inheritance chain is created manually in the ko.observableArray constructor
 ko.observableArray['fn'] = Object.setPrototypeOf({
-    'remove': function (valueOrPredicate) {
+//    [IS_OBSERVABLE_ARRAY]: 1,
+    'remove'(valueOrPredicate) {
         var underlyingArray = this.peek();
         var removed = false;
         var predicate = typeof valueOrPredicate == "function" && !ko.isObservable(valueOrPredicate)
@@ -614,7 +620,7 @@ ko.observableArray['fn'] = Object.setPrototypeOf({
                 underlyingArray.splice(i, 1);
             }
         }
-        removed && this.valueHasMutated();
+        removed && this['valueHasMutated']();
     }
 }, ko.observable['fn']);
 
@@ -634,7 +640,7 @@ Object.getOwnPropertyNames(Array.prototype).forEach(methodName => {
                 this.valueWillMutate();
                 this.cacheDiffForKnownOperation(underlyingArray, methodName, args);
                 var methodCallResult = underlyingArray[methodName](...args);
-                this.valueHasMutated();
+                this['valueHasMutated']();
                 // The native sort and reverse methods return a reference to the array, but it makes more sense to return the observable array instead.
                 return methodCallResult === underlyingArray ? this : methodCallResult;
             };
@@ -647,11 +653,11 @@ Object.getOwnPropertyNames(Array.prototype).forEach(methodName => {
     }
 });
 
-ko.isObservableArray = instance => {
-    return ko.isObservable(instance)
+//ko.isObservableArray = obj => !!(obj && obj[IS_OBSERVABLE_ARRAY]);
+ko.isObservableArray = instance =>
+    ko.isObservable(instance)
         && typeof instance["remove"] == "function"
         && typeof instance["push"] == "function";
-};
 
 ko.exportSymbol('observableArray', ko.observableArray);
 ko.exportSymbol('isObservableArray', ko.isObservableArray);
@@ -729,13 +735,13 @@ ko.extenders['trackArrayChanges'] = (target, options) => {
         trackingChanges = true;
 
         // Track how many times the array actually changed value
-        spectateSubscription = target.subscribe(() => ++pendingChanges, null, "spectate");
+        spectateSubscription = target['subscribe'](() => ++pendingChanges, null, "spectate");
 
         // Each time the array changes value, capture a clone so that on the next
         // change it's possible to produce a diff
         previousContents = [].concat(target.peek() || []);
         cachedDiff = null;
-        changeSubscription = target.subscribe(notifyChanges);
+        changeSubscription = target['subscribe'](notifyChanges);
     }
 
     function getChanges(previousContents, currentContents) {
@@ -859,7 +865,7 @@ ko.computed = (evaluatorFunctionOrOptions, options) => {
     computedObservable.hasWriteFunction = typeof writeFunction === "function";
 
     // Inherit from 'subscribable'
-    ko.subscribable['fn'].init(computedObservable);
+    ko.subscribable['fn']['init'](computedObservable);
 
     // Inherit from 'computed'
     Object.setPrototypeOf(computedObservable, computedFn);
@@ -948,10 +954,10 @@ function evaluateImmediate_CallReadThenEndDependencyDetection(state, dependencyD
 
 var computedFn = {
     equalityComparer: valuesArePrimitiveAndEqual,
-    getDependenciesCount: function () {
+    getDependenciesCount() {
         return this[computedState].dependenciesCount;
     },
-    getDependencies: function () {
+    getDependencies() {
         var dependencyTracking = this[computedState].dependencyTracking, dependentObservables = [];
 
         ko.utils.objectForEach(dependencyTracking, (id, dependency) =>
@@ -960,7 +966,7 @@ var computedFn = {
 
         return dependentObservables;
     },
-    hasAncestorDependency: function (obs) {
+    hasAncestorDependency(obs) {
         if (!this[computedState].dependenciesCount) {
             return false;
         }
@@ -968,7 +974,7 @@ var computedFn = {
         return dependencies.includes(obs)
             || !!dependencies.find(dep => dep.hasAncestorDependency && dep.hasAncestorDependency(obs));
     },
-    addDependencyTracking: function (id, target, trackingObj) {
+    addDependencyTracking(id, target, trackingObj) {
         if (this[computedState].pure && target === this) {
             throw Error("A 'pure' computed must not be called recursively");
         }
@@ -977,7 +983,7 @@ var computedFn = {
         trackingObj._order = this[computedState].dependenciesCount++;
         trackingObj._version = target.getVersion();
     },
-    haveDependenciesChanged: function () {
+    haveDependenciesChanged() {
         var id, dependency, dependencyTracking = this[computedState].dependencyTracking;
         for (id in dependencyTracking) {
             if (Object.prototype.hasOwnProperty.call(dependencyTracking, id)) {
@@ -988,17 +994,17 @@ var computedFn = {
             }
         }
     },
-    markDirty: function () {
+    markDirty() {
         // Process "dirty" events if we can handle delayed notifications
         if (!this[computedState].isBeingEvaluated) {
             this._evalDelayed?.(false /*isChange*/);
         }
     },
-    isActive: function () {
+    isActive() {
         var state = this[computedState];
         return state.isDirty || state.dependenciesCount > 0;
     },
-    respondToChange: function () {
+    respondToChange() {
         // Ignore "change" events if we've already scheduled a delayed notification
         if (!this._notificationIsPending) {
             this.evaluatePossiblyAsync();
@@ -1006,10 +1012,10 @@ var computedFn = {
             this[computedState].isStale = true;
         }
     },
-    subscribeToDependency: function (target) {
-        return target.subscribe(this.evaluatePossiblyAsync, this);
+    subscribeToDependency(target) {
+        return target['subscribe'](this.evaluatePossiblyAsync, this);
     },
-    evaluatePossiblyAsync: function () {
+    evaluatePossiblyAsync() {
         var computedObservable = this,
             throttleEvaluationTimeout = computedObservable['throttleEvaluation'];
         if (throttleEvaluationTimeout >= 0) {
@@ -1023,7 +1029,7 @@ var computedFn = {
             computedObservable.evaluateImmediate(true /*notifyChange*/);
         }
     },
-    evaluateImmediate: function (notifyChange) {
+    evaluateImmediate(notifyChange) {
         var computedObservable = this,
             state = computedObservable[computedState],
             disposeWhen = state.disposeWhen,
@@ -1059,7 +1065,7 @@ var computedFn = {
 
         return changed;
     },
-    evaluateImmediate_CallReadWithDependencyDetection: function (notifyChange) {
+    evaluateImmediate_CallReadWithDependencyDetection(notifyChange) {
         // This function is really just part of the evaluateImmediate logic. You would never call it from anywhere else.
         // Factoring it out into a separate function means it can be independent of the try/catch block in evaluateImmediate,
         // which contributes to saving about 40% off the CPU overhead of computed evaluation (on V8 at least).
@@ -1121,7 +1127,7 @@ var computedFn = {
 
         return changed;
     },
-    peek: function (evaluate) {
+    peek(evaluate) {
         // By default, peek won't re-evaluate, except while the computed is sleeping.
         // Pass in true to evaluate if needed.
         var state = this[computedState];
@@ -1130,7 +1136,7 @@ var computedFn = {
         }
         return state.latestValue;
     },
-    limit: function (limitFunction) {
+    limit(limitFunction) {
         var self = this;
         // Override the limit function with one that delays evaluation as well
         ko.subscribable['fn'].limit.call(self, limitFunction);
@@ -1158,7 +1164,7 @@ var computedFn = {
             self._limitChange(self, !isChange /* isDirty */);
         };
     },
-    dispose: function () {
+    dispose() {
         var state = this[computedState];
         if (!state.isSleeping && state.dependencyTracking) {
             ko.utils.objectForEach(state.dependencyTracking, (id, dependency) =>
@@ -1181,7 +1187,7 @@ var computedFn = {
 };
 
 var pureComputedOverrides = {
-    beforeSubscriptionAdd: function (event) {
+    beforeSubscriptionAdd(event) {
         // If asleep, wake up the computed by subscribing to any dependencies.
         var computedObservable = this,
             state = computedObservable[computedState];
@@ -1220,7 +1226,7 @@ var pureComputedOverrides = {
             }
         }
     },
-    afterSubscriptionRemove: function (event) {
+    afterSubscriptionRemove(event) {
         var state = this[computedState];
         if (!state.isDisposed && event == 'change' && !this.hasSubscriptionsForEvent('change')) {
             ko.utils.objectForEach(state.dependencyTracking, (id, dependency) => {
@@ -1237,7 +1243,7 @@ var pureComputedOverrides = {
             this.notifySubscribers(undefined, "asleep");
         }
     },
-    getVersion: function () {
+    getVersion() {
         // Because a pure computed is not automatically updated while it is sleeping, we can't
         // simply return the version number. Instead, we check if any of the dependencies have
         // changed and conditionally re-evaluate the computed observable.
@@ -1878,7 +1884,7 @@ ko.bindingEvent = {
         if (options?.['notifyImmediately'] && bindingInfo.notifiedEvents[event]) {
             ko.dependencyDetection.ignore(callback, context, [node]);
         }
-        return bindingInfo.eventSubscribable.subscribe(callback, context, event);
+        return bindingInfo.eventSubscribable['subscribe'](callback, context, event);
     },
 
     notify: (node, event) => {
@@ -2169,11 +2175,11 @@ ko.exportSymbol('dataFor', ko.dataFor);
                 // Join the loading process that is already underway, or start a new one.
                 var subscribable = loadingSubscribablesCache[componentName];
                 if (subscribable) {
-                    subscribable.subscribe(callback);
+                    subscribable['subscribe'](callback);
                 } else {
                     // It's not started loading yet. Start loading, and when it's done, move it to loadedDefinitionsCache.
                     subscribable = loadingSubscribablesCache[componentName] = new ko.subscribable();
-                    subscribable.subscribe(callback);
+                    subscribable['subscribe'](callback);
 
                     loadComponent(componentName, definition => {
                         loadedDefinitionsCache.set(componentName, definition);
@@ -2380,7 +2386,7 @@ ko.bindingHandlers['attr'] = {
 
 ko.bindingHandlers['checked'] = {
     'after': ['value', 'attr'],
-    'init': function (element, valueAccessor, allBindings) {
+    'init'(element, valueAccessor, allBindings) {
         var isCheckbox = element.type == "checkbox",
             isRadio = element.type == "radio";
 
@@ -2494,7 +2500,7 @@ ko.bindingHandlers['checked'] = {
 //ko.expressionRewriting.twoWayBindings['checked'] = true;
 
 ko.bindingHandlers['checkedValue'] = {
-    'update': function (element, valueAccessor) {
+    'update'(element, valueAccessor) {
         element.value = ko.utils.unwrapObservable(valueAccessor());
     }
 };
@@ -2540,7 +2546,7 @@ ko.bindingHandlers['disable'] = {
 // e.g. click:handler instead of the usual full-length event:{click:handler}
 function makeEventHandlerShortcut(eventName) {
     ko.bindingHandlers[eventName] = {
-        'init': function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+        'init'(element, valueAccessor, allBindings, viewModel, bindingContext) {
             return ko.bindingHandlers['event']['init'].call(this, element,
                 () => ({[eventName]: valueAccessor()}), // newValueAccessor
                 allBindings, viewModel, bindingContext);
@@ -2549,7 +2555,7 @@ function makeEventHandlerShortcut(eventName) {
 }
 
 ko.bindingHandlers['event'] = {
-    'init' : (element, valueAccessor, allBindings, viewModel, bindingContext) => {
+    'init'(element, valueAccessor, allBindings, viewModel, bindingContext) {
         ko.utils.objectForEach(valueAccessor() || {}, eventName => {
             if (typeof eventName == "string") {
                 element.addEventListener(eventName, (...args) => {
@@ -3092,7 +3098,7 @@ ko.bindingHandlers['value'] = {
 
         if (isSelectElement) {
             var updateFromModelComputed;
-            ko.bindingEvent.subscribe(element, ko.bindingEvent.childrenComplete, () => {
+            ko.bindingEvent['subscribe'](element, ko.bindingEvent.childrenComplete, () => {
                 if (!updateFromModelComputed) {
                     registerEventHandler("change", valueUpdateHandler);
                     updateFromModelComputed = ko.computed(updateFromModel, { disposeWhenNodeIsRemoved: element });
@@ -3355,7 +3361,7 @@ makeEventHandlerShortcut('click');
         if (!options['beforeRemove'] && ko.isObservableArray(arrayOrObservableArray)) {
             setDomNodeChildrenFromArrayMapping(arrayOrObservableArray.peek());
 
-            var subscription = arrayOrObservableArray.subscribe(changeList => {
+            var subscription = arrayOrObservableArray['subscribe'](changeList => {
                 setDomNodeChildrenFromArrayMapping(arrayOrObservableArray(), changeList);
             }, null, "arrayChange");
             subscription.disposeWhenNodeIsRemoved(targetNode);

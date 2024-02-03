@@ -10,11 +10,11 @@
                 // Join the loading process that is already underway, or start a new one.
                 var subscribable = loadingSubscribablesCache[componentName];
                 if (subscribable) {
-                    subscribable.subscribe(callback);
+                    subscribable['subscribe'](callback);
                 } else {
                     // It's not started loading yet. Start loading, and when it's done, move it to loadedDefinitionsCache.
                     subscribable = loadingSubscribablesCache[componentName] = new ko.subscribable();
-                    subscribable.subscribe(callback);
+                    subscribable['subscribe'](callback);
 
                     loadComponent(componentName, definition => {
                         loadedDefinitionsCache.set(componentName, definition);

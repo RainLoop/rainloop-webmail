@@ -188,7 +188,7 @@ ko.bindingEvent = {
         if (options?.['notifyImmediately'] && bindingInfo.notifiedEvents[event]) {
             ko.dependencyDetection.ignore(callback, context, [node]);
         }
-        return bindingInfo.eventSubscribable.subscribe(callback, context, event);
+        return bindingInfo.eventSubscribable['subscribe'](callback, context, event);
     },
 
     notify: (node, event) => {

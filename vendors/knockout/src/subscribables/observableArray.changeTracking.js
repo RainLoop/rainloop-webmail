@@ -72,13 +72,13 @@ ko.extenders['trackArrayChanges'] = (target, options) => {
         trackingChanges = true;
 
         // Track how many times the array actually changed value
-        spectateSubscription = target.subscribe(() => ++pendingChanges, null, "spectate");
+        spectateSubscription = target['subscribe'](() => ++pendingChanges, null, "spectate");
 
         // Each time the array changes value, capture a clone so that on the next
         // change it's possible to produce a diff
         previousContents = [].concat(target.peek() || []);
         cachedDiff = null;
-        changeSubscription = target.subscribe(notifyChanges);
+        changeSubscription = target['subscribe'](notifyChanges);
     }
 
     function getChanges(previousContents, currentContents) {

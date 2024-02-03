@@ -168,7 +168,7 @@
         if (!options['beforeRemove'] && ko.isObservableArray(arrayOrObservableArray)) {
             setDomNodeChildrenFromArrayMapping(arrayOrObservableArray.peek());
 
-            var subscription = arrayOrObservableArray.subscribe(changeList => {
+            var subscription = arrayOrObservableArray['subscribe'](changeList => {
                 setDomNodeChildrenFromArrayMapping(arrayOrObservableArray(), changeList);
             }, null, "arrayChange");
             subscription.disposeWhenNodeIsRemoved(targetNode);

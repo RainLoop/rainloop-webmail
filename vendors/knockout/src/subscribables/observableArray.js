@@ -7,10 +7,13 @@ ko.observableArray = initialValues => {
     return Object.setPrototypeOf(ko.observable(initialValues), ko.observableArray['fn']).extend({'trackArrayChanges':true});
 };
 
+//const IS_OBSERVABLE_ARRAY = Symbol('IS_OBSERVABLE_ARRAY');
+
 // Note that for browsers that don't support proto assignment, the
 // inheritance chain is created manually in the ko.observableArray constructor
 ko.observableArray['fn'] = Object.setPrototypeOf({
-    'remove': function (valueOrPredicate) {
+//    [IS_OBSERVABLE_ARRAY]: 1,
+    'remove'(valueOrPredicate) {
         var underlyingArray = this.peek();
         var removed = false;
         var predicate = typeof valueOrPredicate == "function" && !ko.isObservable(valueOrPredicate)
@@ -27,7 +30,7 @@ ko.observableArray['fn'] = Object.setPrototypeOf({
                 underlyingArray.splice(i, 1);
             }
         }
-        removed && this.valueHasMutated();
+        removed && this['valueHasMutated']();
     }
 }, ko.observable['fn']);
 
@@ -47,7 +50,7 @@ Object.getOwnPropertyNames(Array.prototype).forEach(methodName => {
                 this.valueWillMutate();
                 this.cacheDiffForKnownOperation(underlyingArray, methodName, args);
                 var methodCallResult = underlyingArray[methodName](...args);
-                this.valueHasMutated();
+                this['valueHasMutated']();
                 // The native sort and reverse methods return a reference to the array, but it makes more sense to return the observable array instead.
                 return methodCallResult === underlyingArray ? this : methodCallResult;
             };
@@ -60,11 +63,11 @@ Object.getOwnPropertyNames(Array.prototype).forEach(methodName => {
     }
 });
 
-ko.isObservableArray = instance => {
-    return ko.isObservable(instance)
+//ko.isObservableArray = obj => !!(obj && obj[IS_OBSERVABLE_ARRAY]);
+ko.isObservableArray = instance =>
+    ko.isObservable(instance)
         && typeof instance["remove"] == "function"
         && typeof instance["push"] == "function";
-};
 
 ko.exportSymbol('observableArray', ko.observableArray);
 ko.exportSymbol('isObservableArray', ko.isObservableArray);

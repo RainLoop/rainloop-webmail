@@ -14,7 +14,7 @@ ko.utils.domData = {
         }
         return value;
     },
-    getOrSet: function(node, key, value) {
+    getOrSet(node, key, value) {
         return this.get(node, key) || this.set(node, key, value);
     },
     clear: node => dataStore.delete(node),

@@ -95,7 +95,7 @@ ko.bindingHandlers['value'] = {
 
         if (isSelectElement) {
             var updateFromModelComputed;
-            ko.bindingEvent.subscribe(element, ko.bindingEvent.childrenComplete, () => {
+            ko.bindingEvent['subscribe'](element, ko.bindingEvent.childrenComplete, () => {
                 if (!updateFromModelComputed) {
                     registerEventHandler("change", valueUpdateHandler);
                     updateFromModelComputed = ko.computed(updateFromModel, { disposeWhenNodeIsRemoved: element });

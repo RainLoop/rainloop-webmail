@@ -54,7 +54,7 @@ ko.computed = (evaluatorFunctionOrOptions, options) => {
     computedObservable.hasWriteFunction = typeof writeFunction === "function";
 
     // Inherit from 'subscribable'
-    ko.subscribable['fn'].init(computedObservable);
+    ko.subscribable['fn']['init'](computedObservable);
 
     // Inherit from 'computed'
     Object.setPrototypeOf(computedObservable, computedFn);
@@ -143,10 +143,10 @@ function evaluateImmediate_CallReadThenEndDependencyDetection(state, dependencyD
 
 var computedFn = {
     equalityComparer: valuesArePrimitiveAndEqual,
-    getDependenciesCount: function () {
+    getDependenciesCount() {
         return this[computedState].dependenciesCount;
     },
-    getDependencies: function () {
+    getDependencies() {
         var dependencyTracking = this[computedState].dependencyTracking, dependentObservables = [];
 
         ko.utils.objectForEach(dependencyTracking, (id, dependency) =>
@@ -155,7 +155,7 @@ var computedFn = {
 
         return dependentObservables;
     },
-    hasAncestorDependency: function (obs) {
+    hasAncestorDependency(obs) {
         if (!this[computedState].dependenciesCount) {
             return false;
         }
@@ -163,7 +163,7 @@ var computedFn = {
         return dependencies.includes(obs)
             || !!dependencies.find(dep => dep.hasAncestorDependency && dep.hasAncestorDependency(obs));
     },
-    addDependencyTracking: function (id, target, trackingObj) {
+    addDependencyTracking(id, target, trackingObj) {
         if (this[computedState].pure && target === this) {
             throw Error("A 'pure' computed must not be called recursively");
         }
@@ -172,7 +172,7 @@ var computedFn = {
         trackingObj._order = this[computedState].dependenciesCount++;
         trackingObj._version = target.getVersion();
     },
-    haveDependenciesChanged: function () {
+    haveDependenciesChanged() {
         var id, dependency, dependencyTracking = this[computedState].dependencyTracking;
         for (id in dependencyTracking) {
             if (Object.prototype.hasOwnProperty.call(dependencyTracking, id)) {
@@ -183,17 +183,17 @@ var computedFn = {
             }
         }
     },
-    markDirty: function () {
+    markDirty() {
         // Process "dirty" events if we can handle delayed notifications
         if (!this[computedState].isBeingEvaluated) {
             this._evalDelayed?.(false /*isChange*/);
         }
     },
-    isActive: function () {
+    isActive() {
         var state = this[computedState];
         return state.isDirty || state.dependenciesCount > 0;
     },
-    respondToChange: function () {
+    respondToChange() {
         // Ignore "change" events if we've already scheduled a delayed notification
         if (!this._notificationIsPending) {
             this.evaluatePossiblyAsync();
@@ -201,10 +201,10 @@ var computedFn = {
             this[computedState].isStale = true;
         }
     },
-    subscribeToDependency: function (target) {
-        return target.subscribe(this.evaluatePossiblyAsync, this);
+    subscribeToDependency(target) {
+        return target['subscribe'](this.evaluatePossiblyAsync, this);
     },
-    evaluatePossiblyAsync: function () {
+    evaluatePossiblyAsync() {
         var computedObservable = this,
             throttleEvaluationTimeout = computedObservable['throttleEvaluation'];
         if (throttleEvaluationTimeout >= 0) {
@@ -218,7 +218,7 @@ var computedFn = {
             computedObservable.evaluateImmediate(true /*notifyChange*/);
         }
     },
-    evaluateImmediate: function (notifyChange) {
+    evaluateImmediate(notifyChange) {
         var computedObservable = this,
             state = computedObservable[computedState],
             disposeWhen = state.disposeWhen,
@@ -254,7 +254,7 @@ var computedFn = {
 
         return changed;
     },
-    evaluateImmediate_CallReadWithDependencyDetection: function (notifyChange) {
+    evaluateImmediate_CallReadWithDependencyDetection(notifyChange) {
         // This function is really just part of the evaluateImmediate logic. You would never call it from anywhere else.
         // Factoring it out into a separate function means it can be independent of the try/catch block in evaluateImmediate,
         // which contributes to saving about 40% off the CPU overhead of computed evaluation (on V8 at least).
@@ -316,7 +316,7 @@ var computedFn = {
 
         return changed;
     },
-    peek: function (evaluate) {
+    peek(evaluate) {
         // By default, peek won't re-evaluate, except while the computed is sleeping.
         // Pass in true to evaluate if needed.
         var state = this[computedState];
@@ -325,7 +325,7 @@ var computedFn = {
         }
         return state.latestValue;
     },
-    limit: function (limitFunction) {
+    limit(limitFunction) {
         var self = this;
         // Override the limit function with one that delays evaluation as well
         ko.subscribable['fn'].limit.call(self, limitFunction);
@@ -353,7 +353,7 @@ var computedFn = {
             self._limitChange(self, !isChange /* isDirty */);
         };
     },
-    dispose: function () {
+    dispose() {
         var state = this[computedState];
         if (!state.isSleeping && state.dependencyTracking) {
             ko.utils.objectForEach(state.dependencyTracking, (id, dependency) =>
@@ -376,7 +376,7 @@ var computedFn = {
 };
 
 var pureComputedOverrides = {
-    beforeSubscriptionAdd: function (event) {
+    beforeSubscriptionAdd(event) {
         // If asleep, wake up the computed by subscribing to any dependencies.
         var computedObservable = this,
             state = computedObservable[computedState];
@@ -415,7 +415,7 @@ var pureComputedOverrides = {
             }
         }
     },
-    afterSubscriptionRemove: function (event) {
+    afterSubscriptionRemove(event) {
         var state = this[computedState];
         if (!state.isDisposed && event == 'change' && !this.hasSubscriptionsForEvent('change')) {
             ko.utils.objectForEach(state.dependencyTracking, (id, dependency) => {
@@ -432,7 +432,7 @@ var pureComputedOverrides = {
             this.notifySubscribers(undefined, "asleep");
         }
     },
-    getVersion: function () {
+    getVersion() {
         // Because a pure computed is not automatically updated while it is sleeping, we can't
         // simply return the version number. Instead, we check if any of the dependencies have
         // changed and conditionally re-evaluate the computed observable.

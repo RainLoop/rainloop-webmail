@@ -1,5 +1,6 @@
 const observableLatestValue = Symbol('_latestValue'),
     length = 'length';
+//const IS_OBSERVABLE = Symbol('IS_OBSERVABLE');
 
 ko.observable = initialValue => {
     function observable() {
@@ -10,7 +11,7 @@ ko.observable = initialValue => {
             if (observable.isDifferent(observable[observableLatestValue], arguments[0])) {
                 observable.valueWillMutate();
                 observable[observableLatestValue] = arguments[0];
-                observable.valueHasMutated();
+                observable['valueHasMutated']();
             }
             return this; // Permits chained assignments
         }
@@ -26,7 +27,7 @@ ko.observable = initialValue => {
     });
 
     // Inherit from 'subscribable'
-    ko.subscribable['fn'].init(observable);
+    ko.subscribable['fn']['init'](observable);
 
     // Inherit from 'observable'
     return Object.setPrototypeOf(observable, observableFn);
@@ -34,17 +35,18 @@ ko.observable = initialValue => {
 
 // Define prototype for observables
 var observableFn = {
-    'toJSON': function() {
+//    [IS_OBSERVABLE]: 1,
+    'toJSON'() {
         let value = this[observableLatestValue];
         return value?.toJSON?.() || value;
     },
     equalityComparer: valuesArePrimitiveAndEqual,
-    peek: function() { return this[observableLatestValue]; },
-    valueHasMutated: function () {
+    peek() { return this[observableLatestValue]; },
+    'valueHasMutated'() {
         this.notifySubscribers(this[observableLatestValue], 'spectate');
         this.notifySubscribers(this[observableLatestValue]);
     },
-    valueWillMutate: function () { this.notifySubscribers(this[observableLatestValue], 'beforeChange'); }
+    valueWillMutate() { this.notifySubscribers(this[observableLatestValue], 'beforeChange'); }
 };
 
 // Note that for browsers that don't support proto assignment, the
@@ -54,6 +56,7 @@ Object.setPrototypeOf(observableFn, ko.subscribable['fn']);
 var protoProperty = ko.observable.protoProperty = '__ko_proto__';
 observableFn[protoProperty] = ko.observable;
 
+//ko.isObservable = obj => !!(obj && obj[IS_OBSERVABLE]);
 ko.isObservable = instance => {
     var proto = typeof instance == 'function' && instance[protoProperty];
     if (proto && proto !== observableFn[protoProperty] && proto !== ko.computed['fn'][protoProperty]) {
@@ -71,4 +74,3 @@ ko.isWriteableObservable = instance => {
 ko.exportSymbol('observable', ko.observable);
 ko.exportSymbol('isObservable', ko.isObservable);
 ko.exportSymbol('observable.fn', observableFn);
-ko.exportProperty(observableFn, 'valueHasMutated', observableFn.valueHasMutated);
