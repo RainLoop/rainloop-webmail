@@ -68,7 +68,7 @@
 		"LABEL_STORAGE_DSN": "Adres DSN",
 		"LABEL_STORAGE_USER": "Użytkownik",
 		"LABEL_STORAGE_PASSWORD": "Hasło",
-		"SQLITE_GLOBAL": "Use a global DB instead of per account",
+		"SQLITE_GLOBAL": "Używaj globalnej bazy kontaktów zamiast indywidualnych dla każdego konta.",
 		"ALERT_NOTICE": "Ostrzeżenie!",
 		"SUGGESTIONS_LIMIT": "Limit sugestii",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Nie używaj tej bazy danych z dużą ilością aktywnych użytkowników.",
