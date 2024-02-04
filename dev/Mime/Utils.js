@@ -4,6 +4,8 @@ import { AttachmentModel } from 'Model/Attachment';
 import { FileInfo } from 'Common/File';
 import { BEGIN_PGP_MESSAGE } from 'Stores/User/Pgp';
 
+import { EmailModel } from 'Model/Email';
+
 /**
  * @param string data
  * @param MessageModel message
@@ -20,7 +22,16 @@ export function MimeToMessage(data, message)
 		subject && message.subject(subject);
 
 		// EmailCollectionModel
-		['from','to'].forEach(name => message[name].fromString(struct.headerValue(name)));
+		['from','to'].forEach(name => {
+			const items = message[name];
+			struct.headerValue(name)?.forEach(item => {
+				item = new EmailModel(item.email, item.name);
+				// Make them unique
+				if (item.email && item.name || !items.find(address => address.email == item.email)) {
+					items.push(item);
+				}
+			});
+		});
 
 		struct.forEach(part => {
 			let cd = part.header('content-disposition'),
@@ -66,6 +77,7 @@ export function MimeToMessage(data, message)
 		const text = struct.getByContentType('text/plain');
 		message.plain(text ? text.body : '');
 		message.html(html);
+console.dir({message});
 	} else {
 		message.plain(data);
 	}

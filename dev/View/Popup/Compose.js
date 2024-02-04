@@ -36,7 +36,8 @@ import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import Remote from 'Remote/User/Fetch';
 
 import { ComposeAttachmentModel } from 'Model/ComposeAttachment';
-import { EmailModel, addressparser } from 'Model/Email';
+import { EmailModel } from 'Model/Email';
+import { addressparser } from 'Mime/Address';
 
 import { decorateKoCommands, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';

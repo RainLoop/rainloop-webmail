@@ -1,6 +1,7 @@
 import { AbstractCollectionModel } from 'Model/AbstractCollection';
-import { EmailModel, addressparser } from 'Model/Email';
+import { EmailModel } from 'Model/Email';
 import { forEachObjectValue } from 'Common/Utils';
+import { addressparser } from 'Mime/Address';
 
 'use strict';
 

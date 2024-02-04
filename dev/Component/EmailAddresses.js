@@ -1,5 +1,6 @@
 import { doc, createElement, addEventsListeners } from 'Common/Globals';
-import { EmailModel, addressparser } from 'Model/Email';
+import { EmailModel } from 'Model/Email';
+import { addressparser } from 'Mime/Address';
 
 const contentType = 'snappymail/emailaddress',
 	getAddressKey = li => li?.emailaddress?.key,
