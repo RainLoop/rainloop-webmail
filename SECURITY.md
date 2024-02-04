@@ -6,15 +6,15 @@ Currently due to the fast development only the latest version receives security 
 
 | Version  | Supported |
 | -------- | --------- |
-| 2.13.x   | ✔         |
-| < 2.13.0 | ❌         |
+| 2.30.x   | ✔         |
+| < 2.30.0 | ❌         |
 
 ## Reporting a Vulnerability
 
 Please report security issues or vulnerabilities as an encrypted email to [security@snappymail.eu](mailto:security@snappymail.eu).
 Your report should be detailed enough with clear steps to reproduce and classify the found vulnerability.
 
-You can find the PGP public key below and on the major public keyservers like [pgp.key-server.io](https://pgp.key-server.io).
+You can find the PGP public key below and on the major public keyservers like [keys.openpgp.org](https://keys.openpgp.org).
 ```
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Comment: Type: 255-bit EdDSA
