@@ -16,12 +16,13 @@ export function ParseMime(text)
 			this.boundary = '';
 			this.bodyText = '';
 			// https://datatracker.ietf.org/doc/html/rfc2822#section-3.6
+			// https://datatracker.ietf.org/doc/html/rfc4021
 			this.headers = {
 				// Required
 				date = null,
 				from = [], // mailbox-list
 				// Optional
-				sender          = [], // MUST occur with multi-address
+				sender          = [], // mailbox MUST occur with multi-address
 				'reply-to'      = [], // address-list
 				to              = [], // address-list
 				cc              = [], // address-list
@@ -34,7 +35,6 @@ export function ParseMime(text)
 				comments        = [], // unstructured
 				keywords        = [], // phrase *("," phrase)
 				// https://datatracker.ietf.org/doc/html/rfc2822#section-3.6.6
-				trace           = [],
 				'resent-date'   = [],
 				'resent-from'   = [],
 				'resent-sender' = [],
@@ -42,13 +42,15 @@ export function ParseMime(text)
 				'resent-cc'     = [],
 				'resent-bcc'    = [],
 				'resent-msg-id' = [],
+				// https://datatracker.ietf.org/doc/html/rfc2822#section-3.6.7
+				trace           = [],
+				'return-path'   = '', // angle-addr
+				received        = [],
 				// optional others outside RFC2822
-				'mime-version'              = '',
+				'mime-version'              = '', // RFC2045
 				'content-transfer-encoding' = '',
 				'content-type'              = '',
-				'delivered-to'              = '', // angle-addr
-				'return-path'               = '', // angle-addr
-				'received'                  = [],
+				'delivered-to'              = [], // RFC9228 addr-spec
 				'authentication-results'    = '', // dkim, spf, dmarc
 				'dkim-signature'            = '',
 				'x-rspamd-queue-id'         = '',
@@ -57,6 +59,7 @@ export function ParseMime(text)
 				'x-rspamd-server'           = '',
 				'x-spamd-result'            = '',
 				'x-remote-address'          = '',
+				// etc.
 			};
 		}
 */

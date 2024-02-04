@@ -77,7 +77,6 @@ export function MimeToMessage(data, message)
 		const text = struct.getByContentType('text/plain');
 		message.plain(text ? text.body : '');
 		message.html(html);
-console.dir({message});
 	} else {
 		message.plain(data);
 	}

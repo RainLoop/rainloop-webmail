@@ -52,4 +52,24 @@ export class EmailCollectionModel extends AbstractCollectionModel
 		}
 	}
 
+	/**
+	 * @param {array} [{name: "Name", email: "address@domain"}]
+	 */
+/*
+	static fromArray(addresses) {
+		let list = new this();
+		list.fromArray(addresses);
+		return list;
+	}
+	fromArray(addresses) {
+		addresses.forEach(item => {
+			item = new EmailModel(item.email, item.name);
+			// Make them unique
+			if (item.email && item.name || !this.find(address => address.email == item.email)) {
+				this.push(item);
+			}
+		});
+	}
+*/
+
 }

@@ -235,11 +235,11 @@ export class MessageModel extends AbstractModel {
 			this.messageId = headers.valueByName('Message-Id');
 			this.subject(headers.valueByName('Subject'));
 			this.sender = EmailCollectionModel.fromString(headers.valueByName('Sender'));
-			this.from = EmailCollectionModel.fromString(headers.valueByName('From'));
-			this.replyTo = EmailCollectionModel.fromString(headers.valueByName('Reply-To'));
-			this.to = EmailCollectionModel.fromString(headers.valueByName('To'));
-			this.cc = EmailCollectionModel.fromString(headers.valueByName('Cc'));
-			this.bcc = EmailCollectionModel.fromString(headers.valueByName('Bcc'));
+			this.from = EmailCollectionModel.fromArray(headers.valueByName('From'));
+			this.replyTo = EmailCollectionModel.fromArray(headers.valueByName('Reply-To'));
+			this.to = EmailCollectionModel.fromArray(headers.valueByName('To'));
+			this.cc = EmailCollectionModel.fromArray(headers.valueByName('Cc'));
+			this.bcc = EmailCollectionModel.fromArray(headers.valueByName('Bcc'));
 			this.inReplyTo = headers.valueByName('In-Reply-To');
 
 			this.deliveredTo = EmailCollectionModel.fromString(headers.valueByName('Delivered-To'));
