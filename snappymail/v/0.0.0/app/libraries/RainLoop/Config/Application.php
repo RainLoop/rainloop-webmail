@@ -57,6 +57,10 @@ class Application extends \RainLoop\Config\AbstractConfig
 			}
 		}
 
+		if (!\in_array($this->Get('logs', 'time_zone', ''), \DateTimeZone::listIdentifiers())) {
+			$this->Set('logs', 'time_zone', 'UTC');
+		}
+
 		return $bResult;
 	}
 
