@@ -143,7 +143,7 @@
 		"BUTTON_BACK_TO_IMAP": "Ritorna alle impostazioni IMAP",
 		"BUTTON_BACK": "Indietro",
 		"BUTTON_UPDATE": "Aggiorna",
-		"NEW_DOMAIN_DESC": "This domain configuration will allow you to work <br>with <i>%NAME%<\/i> email addresses.",
+		"NEW_DOMAIN_DESC": "This domain configuration will allow you to work with <strong>%NAME%<\/strong> email addresses.",
 		"WHITE_LIST_ALERT": "Lista degli utenti del dominio ai quali webmail può accedere.\nUsa uno spazio come delimitatore."
 	},
 	"POPUPS_PLUGIN": {

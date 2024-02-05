@@ -143,7 +143,7 @@
 		"BUTTON_BACK_TO_IMAP": "IMAP 設定に戻る",
 		"BUTTON_BACK": "戻る",
 		"BUTTON_UPDATE": "更新",
-		"NEW_DOMAIN_DESC": "このドメイン設定を使用すると、<i>%NAME%<\/i>メールアドレスで動作するようになります。",
+		"NEW_DOMAIN_DESC": "このドメイン設定を使用すると、<strong>%NAME%<\/strong>メールアドレスで動作するようになります。",
 		"WHITE_LIST_ALERT": "ドメインの一覧は、Webメールのアクセスを許可されています。\n区切り文字としてスペースを使用してください。\n"
 	},
 	"POPUPS_PLUGIN": {

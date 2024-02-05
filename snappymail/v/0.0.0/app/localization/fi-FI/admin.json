@@ -143,7 +143,7 @@
 		"BUTTON_BACK_TO_IMAP": "Takaisin IMAP asetuksiin",
 		"BUTTON_BACK": "Takaisin",
 		"BUTTON_UPDATE": "Päivitä",
-		"NEW_DOMAIN_DESC": "Tämän verkkotunnuksen asetukset sallivat käyttää <br> <i>%NAME%<i> säkhöpostiosoitteita.",
+		"NEW_DOMAIN_DESC": "Tämän verkkotunnuksen asetukset sallivat käyttää  <strong>%NAME%<strong> säkhöpostiosoitteita.",
 		"WHITE_LIST_ALERT": "Lista domain käyttäjistä joihin webmaililla on oikeus.\nErottele välilyönnillä.\n"
 	},
 	"POPUPS_PLUGIN": {

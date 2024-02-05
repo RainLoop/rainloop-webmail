@@ -143,7 +143,7 @@
 		"BUTTON_BACK_TO_IMAP": "Volver a la configuración IMAP",
 		"BUTTON_BACK": "Volver",
 		"BUTTON_UPDATE": "Actualizar",
-		"NEW_DOMAIN_DESC": "Esta configuración de Dominio le permitirá trabajar <br>con direcciones de correo tipo @<i>%NAME%<\/i>.",
+		"NEW_DOMAIN_DESC": "Esta configuración de Dominio le permitirá trabajar con direcciones de correo tipo @<strong>%NAME%<\/strong>.",
 		"WHITE_LIST_ALERT": "Lista de dominios con que los usuarios pueden ingresar.\nUse un espacio como delimitador.\n"
 	},
 	"POPUPS_PLUGIN": {

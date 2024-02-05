@@ -143,7 +143,7 @@
 		"BUTTON_BACK_TO_IMAP": "Atgal į IMAP nustatymus",
 		"BUTTON_BACK": "Atgal",
 		"BUTTON_UPDATE": "Atnaujinti",
-		"NEW_DOMAIN_DESC": "Šie nustatymai leis jums dirbti <br> su <i>%NAME%<\/i> domeno pašto adresais.",
+		"NEW_DOMAIN_DESC": "Šie nustatymai leis jums dirbti  su <strong>%NAME%<\/strong> domeno pašto adresais.",
 		"WHITE_LIST_ALERT": "Domeno vartotojų sąrašas, kuriems leista naudotis web paštu.\nNaudokite tarpo simbolį kaip skyriklį.\n"
 	},
 	"POPUPS_PLUGIN": {

@@ -143,7 +143,7 @@
 		"BUTTON_BACK_TO_IMAP": "Itzuli IMAP ezarpenetara",
 		"BUTTON_BACK": "Atzera",
 		"BUTTON_UPDATE": "Eguneratu",
-		"NEW_DOMAIN_DESC": "Domeinu honen konfigurazioak <br><i>%NAME%<\/i> email kontuarekin lan egitea ahalbideratuko dizu.",
+		"NEW_DOMAIN_DESC": "Domeinu honen konfigurazioak <strong>%NAME%<\/strong> email kontuarekin lan egitea ahalbideratuko dizu.",
 		"WHITE_LIST_ALERT": "Webmailak sartzeko baimena duen domeinuko erabiltzaileen zerrenda.\nErabili hutsunea banatzaile bezala.\n"
 	},
 	"POPUPS_PLUGIN": {

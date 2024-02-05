@@ -143,7 +143,7 @@
 		"BUTTON_BACK_TO_IMAP": "Trở về cài đặt IMAP",
 		"BUTTON_BACK": "Trở về",
 		"BUTTON_UPDATE": "Cập nhật",
-		"NEW_DOMAIN_DESC": "Thiết lập tên miền cho phép bạn thao tác với <br>với địa chỉ email của <i>%NAME%<\/i>.",
+		"NEW_DOMAIN_DESC": "Thiết lập tên miền cho phép bạn thao tác với với địa chỉ email của <strong>%NAME%<\/strong>.",
 		"WHITE_LIST_ALERT": "Danh sách những người dùng tên miền mà webmail được quyền truy cập.\nSử dụng dấu cách làm dấu phân cách mỗi tên.\n"
 	},
 	"POPUPS_PLUGIN": {

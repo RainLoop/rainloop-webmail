@@ -143,7 +143,7 @@
 		"BUTTON_BACK_TO_IMAP": "Tilbage til IMAP indstillinger",
 		"BUTTON_BACK": "Tilbage",
 		"BUTTON_UPDATE": "Opdater",
-		"NEW_DOMAIN_DESC": "Denne domæne konfiguration tillader <i>%NAME%<\/i> e-mail adresser.",
+		"NEW_DOMAIN_DESC": "Denne domæne konfiguration tillader <strong>%NAME%<\/strong> e-mail adresser.",
 		"WHITE_LIST_ALERT": "Liste med godkendte domæne for webmail opsætning.\nBrug mellemrum til at separere domæner.\n"
 	},
 	"POPUPS_PLUGIN": {

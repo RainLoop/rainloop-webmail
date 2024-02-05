@@ -143,7 +143,7 @@
 		"BUTTON_BACK_TO_IMAP": "回到 IMAP 设置",
 		"BUTTON_BACK": "返回",
 		"BUTTON_UPDATE": "更新",
-		"NEW_DOMAIN_DESC": "此域名配置将允许您<br>和<i>%NAME%<\/i>电子邮件地址一起工作.",
+		"NEW_DOMAIN_DESC": "此域名配置将允许您和<strong>%NAME%<\/strong>电子邮件地址一起工作.",
 		"WHITE_LIST_ALERT": "允许访问的域用户；使用空格分隔。\n"
 	},
 	"POPUPS_PLUGIN": {

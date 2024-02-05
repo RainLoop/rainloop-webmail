@@ -143,7 +143,7 @@
 		"BUTTON_BACK_TO_IMAP": "Nazaj na nastavitve IMAP",
 		"BUTTON_BACK": "Nazaj",
 		"BUTTON_UPDATE": "Posodobi",
-		"NEW_DOMAIN_DESC": "Ta konfiguiracija domene bo omogočala delo <br>z <i>%NAME%<\/i> e-naslovi.",
+		"NEW_DOMAIN_DESC": "Ta konfiguiracija domene bo omogočala delo z <strong>%NAME%<\/strong> e-naslovi.",
 		"WHITE_LIST_ALERT": "Seznam uporabnikov domene, do katerih je omogočen dostop.\nUporabnike ločite s presledkom.\n"
 	},
 	"POPUPS_PLUGIN": {

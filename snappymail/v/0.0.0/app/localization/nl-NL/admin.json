@@ -143,7 +143,7 @@
 		"BUTTON_BACK_TO_IMAP": "Terug naar IMAP instellingen",
 		"BUTTON_BACK": "Terug",
 		"BUTTON_UPDATE": "Update",
-		"NEW_DOMAIN_DESC": "Dit domein stelt u in staat om <br>met <i>%NAME%<\/i> e-mail adressen te werken.",
+		"NEW_DOMAIN_DESC": "Dit domein stelt u in staat om met <strong>%NAME%<\/strong> e-mail adressen te werken.",
 		"WHITE_LIST_ALERT": "Lijst van gebruikers die dit domein mogen gebruiken.\nGebruik een spatie als scheidingsteken."
 	},
 	"POPUPS_PLUGIN": {

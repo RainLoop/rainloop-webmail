@@ -143,7 +143,7 @@
 		"BUTTON_BACK_TO_IMAP": "Tillbaka till IMAP inställningar",
 		"BUTTON_BACK": "Tillbaka",
 		"BUTTON_UPDATE": "Uppdatera",
-		"NEW_DOMAIN_DESC": "Denna domän konfiguration gör att du kan arbeta <br>med <i>%NAME%<\/ i> e-postadresser.",
+		"NEW_DOMAIN_DESC": "Denna domän konfiguration gör att du kan arbeta med <strong>%NAME%<\/strong> e-postadresser.",
 		"WHITE_LIST_ALERT": "Lista över domänanvändare som tillåts.\nAnvända ett utrymme som avgränsare.\n"
 	},
 	"POPUPS_PLUGIN": {

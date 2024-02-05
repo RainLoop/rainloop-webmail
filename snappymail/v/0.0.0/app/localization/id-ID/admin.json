@@ -143,7 +143,7 @@
 		"BUTTON_BACK_TO_IMAP": "Kembali ke pengaturan IMAP",
 		"BUTTON_BACK": "Kembali",
 		"BUTTON_UPDATE": "Perbarui",
-		"NEW_DOMAIN_DESC": "Domain ini mengizinkan anda bekerja dengan alamat email <br>juga<i>%NAME%<\/i> ",
+		"NEW_DOMAIN_DESC": "Domain ini mengizinkan anda bekerja dengan alamat email juga<strong>%NAME%<\/strong> ",
 		"WHITE_LIST_ALERT": "Daftar domain webmail user yang diizinkan diakses.\nGunakan spasi untuk pemisahnya\n"
 	},
 	"POPUPS_PLUGIN": {

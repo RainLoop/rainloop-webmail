@@ -143,7 +143,7 @@
 		"BUTTON_BACK_TO_IMAP": "Tilbake til IMAP-innstillinger",
 		"BUTTON_BACK": "Tilbake",
 		"BUTTON_UPDATE": "Oppdater",
-		"NEW_DOMAIN_DESC": "Dette domeneoppsettet lar deg jobbe <br> med e-postadresser ved <i>%NAME%<\/i>.",
+		"NEW_DOMAIN_DESC": "Dette domeneoppsettet lar deg jobbe  med e-postadresser ved <strong>%NAME%<\/strong>.",
 		"WHITE_LIST_ALERT": "Liste over domenebrukere som programmet skal ha tilgang til.\nHold verdier adskilt med mellomrom."
 	},
 	"POPUPS_PLUGIN": {
