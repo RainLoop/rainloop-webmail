@@ -59,7 +59,7 @@ abstract class DNS
 			}
 		}
 		if (!$mxhosts) {
-			\getmxrr($hostname, $mxhosts);
+			\getmxrr($domain, $mxhosts);
 		}
 		\ksort($mxhosts);
 		return \array_values($mxhosts);

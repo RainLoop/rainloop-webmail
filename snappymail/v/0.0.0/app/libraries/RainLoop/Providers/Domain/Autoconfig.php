@@ -14,16 +14,19 @@ abstract class Autoconfig
 		$autoconfig = static::resolve($domain, $emailaddress);
 		// Else try MX
 		if (!$autoconfig) {
-			$regex = '/([^\.]+\.(?:'
-				. \str_replace('.', '\\.', \implode('|', static::publicsuffixes()))
-				. '|[^\.]+'
-				. '))$/';
+			// regular expression is too large
+			$suffixes = static::publicsuffixes();
 			$hostnames = [];
 			foreach (\SnappyMail\DNS::MX($domain) as $hostname) {
-				$mxbasedomain = [];
 				// Extract only the second-level domain from the MX hostname
-				if (\preg_match($regex, $hostname, $mxbasedomain)) {
-					$mxfulldomain = $mxbasedomain = $mxbasedomain[1];
+				$mxbasedomain = \explode('.', $hostname);
+				$i = -2;
+				while (\in_array(\implode('.', \array_slice($mxbasedomain, $i)), $suffixes)) {
+					--$i;
+				}
+				$mxbasedomain = \implode('.', \array_slice($mxbasedomain, $i));
+				if ($mxbasedomain) {
+					$mxfulldomain = $mxbasedomain;
 					if (\substr_count($hostname, '.') > \substr_count($mxbasedomain, '.')) {
 						// Remove the first component from the MX hostname
 						$mxfulldomain = \explode('.', $hostname, 2)[1];
@@ -32,12 +35,14 @@ abstract class Autoconfig
 				}
 			}
 			foreach ($hostnames as $mxfulldomain => $mxbasedomain) {
-				$autoconfig = static::resolve($mxfulldomain, $emailaddress);
-				if (!$autoconfig && $mxfulldomain != $mxbasedomain) {
-					$autoconfig = static::resolve($mxbasedomain, $emailaddress);
-				}
-				if ($autoconfig) {
-					break;
+				if ($domain != $mxfulldomain) {
+					$autoconfig = static::resolve($mxfulldomain, $emailaddress);
+					if (!$autoconfig && $mxfulldomain != $mxbasedomain && $domain != $mxbasedomain) {
+						$autoconfig = static::resolve($mxbasedomain, $emailaddress);
+					}
+					if ($autoconfig) {
+						break;
+					}
 				}
 			}
 		}
@@ -96,7 +101,7 @@ abstract class Autoconfig
 			if ($data) {
 				$list = \array_filter(
 					\explode("\n", $data),
-					fn($text) => \strlen($text) && '/' !== $text[0]
+					fn($text) => \strlen($text) && '/' !== $text[0] && '*' !== $text[0] && \substr_count($text, '.')
 				);
 			}
 			// Don't lookup for 24 hours
