@@ -83,7 +83,7 @@ abstract class Autoconfig
 		$oCache = \RainLoop\Api::Actions()->Cacher();
 		$list = $oCache->Get('public_suffix_list') ?: null;
 		if ($list) {
-			$list = \json_decode($list);
+			$list = \json_decode($list, true);
 			if ($list[1] < \time()) {
 				$list = null;
 			} else {

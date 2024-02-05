@@ -309,8 +309,7 @@ export class DomainPopupView extends AbstractViewPopup {
 	autoconfig() {
 		let domain = this.name();
 		Remote.request('AdminDomainAutoconfig', (iError, oData) => {
-			console.dir({iError, oData});
-			if (!iError) {
+			if (oData?.Result?.config) {
 				let server = oData.Result.config.incomingServer[0];
 				this.imapHost(server.hostname);
 				this.imapPort(server.port);
