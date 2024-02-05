@@ -126,10 +126,18 @@ class SnappyMailHelper
 
 	public static function getLoginCredentials() : array
 	{
+		$sUID = \OC::$server->getUserSession()->getUser()->getUID();
+
+		if (\OC::$server->getSession()->get('is_oidc')) {
+			$sAccessToken = \OC::$server->getSession()->get('oidc_access_token');
+			if ($sAccessToken) {
+				return [$sUID, "oidc@nextcloud", $sAccessToken];
+			}
+		}
+
 		$sEmail = '';
 		$sPassword = '';
 		$config = \OC::$server->getConfig();
-		$sUID = \OC::$server->getUserSession()->getUser()->getUID();
 		$ocSession = \OC::$server->getSession();
 		// Only use the user's password in the current session if they have
 		// enabled auto-login using Nextcloud username or email address.
