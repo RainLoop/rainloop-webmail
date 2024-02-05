@@ -22,6 +22,38 @@ Content-Transfer-Encoding: quoted-printable
 <!DOCTYPE html><html><head><meta http-equiv=3D"Content-Type" content=3D"t=
 ext/html; charset=3Dutf-8">
 <script type=3D"application/ld+json">
+{
+	"@context": "http://schema.org",
+	"@type": "FlightReservation",
+	"reservationNumber": "RXJ34P",
+	"underName": {
+		"@type": "Person",
+		"name": "Eva Green"
+	},
+	"reservationFor": {
+		"@type": "Flight",
+		"flightNumber": "110",
+		"airline": {
+			"@type": "Airline",
+			"name": "United",
+			"iataCode": "UA"
+		},
+		"departureAirport": {
+			"@type": "Airport",
+			"name": "San Francisco Airport",
+			"iataCode": "SFO"
+		},
+		"departureTime": "2027-03-04T20:15:00-08:00",
+		"arrivalAirport": {
+			"@type": "Airport",
+			"iataCode": "JFK",
+			"name": "John F. Kennedy International Airport"
+		},
+		"arrivalTime": "2027-03-05T06:30:00-05:00"
+	}
+}
+</script>
+<script type=3D"application/ld+json">
 [
 	{
 		"@context": "http://schema.org/",
