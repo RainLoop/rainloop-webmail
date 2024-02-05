@@ -112,11 +112,12 @@ class Logger extends \SplFixedArray
 		string $sWord
 	) : void
 	{
-//		$this->bShowSecrets && $this->Write("AddSecret '{$sWord}'", \LOG_INFO, '', false);
+//		$this->bShowSecrets && $this->Write("AddSecret '{$sWord}'", \LOG_INFO);
 		$sWord = \trim($sWord);
 		if (\strlen($sWord)) {
 			$this->aSecretWords[] = $sWord;
 			$this->aSecretWords = \array_unique($this->aSecretWords);
+			\usort($this->aSecretWords, fn($a,$b) => \strlen($b) - \strlen($a));
 		}
 	}
 
@@ -220,8 +221,7 @@ class Logger extends \SplFixedArray
 		}
 	}
 
-	public function Write(string $sDesc, int $iType = \LOG_INFO,
-		string $sName = '', bool $bSearchSecretWords = true, bool $bDiplayCrLf = false) : bool
+	public function Write(string $sDesc, int $iType = \LOG_INFO, string $sName = '', bool $bDiplayCrLf = false) : bool
 	{
 		if ($this->iLevel < $iType) {
 			return true;
@@ -229,7 +229,7 @@ class Logger extends \SplFixedArray
 
 		$this->bUsed = true;
 
-		if ($bSearchSecretWords && !$this->bShowSecrets && $this->aSecretWords) {
+		if (!$this->bShowSecrets && $this->aSecretWords) {
 			$sDesc = \str_replace($this->aSecretWords, '*******', $sDesc);
 		}
 

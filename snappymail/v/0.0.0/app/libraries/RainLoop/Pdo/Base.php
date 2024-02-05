@@ -187,9 +187,9 @@ abstract class Base
 	{
 		if ($this->oLogger) {
 			if ($mData instanceof \Throwable) {
-				$this->oLogger->WriteException($mData, \LOG_ERR, 'SQL');
+				$this->logException($mData, \LOG_ERR, 'SQL');
 			} else if (\is_scalar($mData)) {
-				$this->oLogger->Write((string) $mData, \LOG_INFO, 'SQL');
+				$this->logWrite((string) $mData, \LOG_INFO, 'SQL');
 			} else {
 				$this->oLogger->WriteDump($mData, \LOG_INFO, 'SQL');
 			}

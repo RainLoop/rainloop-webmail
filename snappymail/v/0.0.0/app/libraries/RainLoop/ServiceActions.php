@@ -110,7 +110,7 @@ class ServiceActions
 
 			$sMethodName = 'Do'.$sAction;
 
-			$this->Logger()->Write('Action: '.$sMethodName, \LOG_INFO, 'JSON');
+			$this->oActions->logWrite('Action: '.$sMethodName, \LOG_INFO, 'JSON');
 
 			$aPost = $_POST ?? null;
 			if ($aPost) {
@@ -130,7 +130,7 @@ class ServiceActions
 						break;
 				}
 */
-				$this->Logger()->Write(Utils::jsonEncode($aPost), \LOG_INFO, 'POST');
+				$this->oActions->logWrite(Utils::jsonEncode($aPost), \LOG_INFO, 'POST');
 			} else if (3 < \count($this->aPaths) && $this->oHttp->IsGet()) {
 				$this->oActions->SetActionParams(array(
 					'RawKey' => empty($this->aPaths[3]) ? '' : $this->aPaths[3]
@@ -184,15 +184,15 @@ class ServiceActions
 
 		if ($this->Logger()->IsEnabled()) {
 			if (\strlen($sObResult)) {
-				$this->Logger()->Write($sObResult, \LOG_ERR, 'OB-DATA');
+				$this->oActions->logWrite($sObResult, \LOG_ERR, 'OB-DATA');
 			}
 
 			if ($oException) {
-				$this->Logger()->WriteException($oException, \LOG_ERR);
+				$this->oActions->logException($oException, \LOG_ERR);
 			}
 
 			$iLimit = (int) $this->Config()->Get('labs', 'log_ajax_response_write_limit', 0);
-			$this->Logger()->Write(0 < $iLimit && $iLimit < \strlen($sResult)
+			$this->oActions->logWrite(0 < $iLimit && $iLimit < \strlen($sResult)
 					? \substr($sResult, 0, $iLimit).'...' : $sResult, \LOG_INFO, 'JSON');
 		}
 
@@ -252,10 +252,10 @@ class ServiceActions
 
 		$sObResult = \ob_get_clean();
 		if (\strlen($sObResult)) {
-			$this->Logger()->Write($sObResult, \LOG_ERR, 'OB-DATA');
+			$this->oActions->logWrite($sObResult, \LOG_ERR, 'OB-DATA');
 		}
 
-		$this->Logger()->Write($sResult, \LOG_INFO, 'UPLOAD');
+		$this->oActions->logWrite($sResult, \LOG_INFO, 'UPLOAD');
 
 		return $sResult;
 	}
@@ -369,12 +369,12 @@ class ServiceActions
 		}
 
 		if (\strlen($sRawError)) {
-			$this->Logger()->Write($sRawError, \LOG_ERR);
+			$this->oActions->logWrite($sRawError, \LOG_ERR);
 			$this->Logger()->WriteDump($this->aPaths, \LOG_ERR, 'PATHS');
 		}
 
 		if ($oException) {
-			$this->Logger()->WriteException($oException, \LOG_ERR, 'RAW');
+			$this->oActions->logException($oException, \LOG_ERR, 'RAW');
 		}
 
 		return $sResult;
@@ -481,7 +481,7 @@ class ServiceActions
 				}
 				catch (\Throwable $oException)
 				{
-					$this->Logger()->WriteException($oException, \LOG_ERR, 'LESS');
+					$this->oActions->logException($oException, \LOG_ERR, 'LESS');
 				}
 			}
 
@@ -526,7 +526,7 @@ class ServiceActions
 		$this->oHttp->ServerNoCache();
 
 		\header('Content-Type: text/plain; charset=utf-8');
-		$this->oActions->Logger()->Write('Pong', \LOG_INFO, 'PING');
+		$this->oActions->logWrite('Pong', \LOG_INFO, 'PING');
 		return 'Pong';
 	}
 
@@ -598,7 +598,7 @@ class ServiceActions
 					}
 					catch (\Throwable $oException)
 					{
-						$this->Logger()->WriteException($oException);
+						$this->oActions->logException($oException);
 					}
 				}
 			}
@@ -632,7 +632,7 @@ class ServiceActions
 		$this->oHttp->ServerNoCache();
 		try {
 			$sResult = Utils::jsonEncode($this->oActions->AppData($bAdmin));
-			$this->Logger()->Write($sResult, \LOG_INFO, 'APPDATA');
+			$this->oActions->logWrite($sResult, \LOG_INFO, 'APPDATA');
 			return $sResult;
 		} catch (\Throwable $oException) {
 			$this->Logger()->WriteExceptionShort($oException);

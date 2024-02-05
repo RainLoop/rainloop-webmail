@@ -29,10 +29,9 @@ trait Inherit
 		$this->oLogger = $oLogger;
 	}
 
-	public function logWrite(string $sDesc, int $iType = \LOG_INFO,
-		string $sName = '', bool $bSearchSecretWords = true, bool $bDiplayCrLf = false): bool
+	public function logWrite(string $sDesc, int $iType = \LOG_INFO, string $sName = '', bool $bDiplayCrLf = false): bool
 	{
-		return $this->oLogger && $this->oLogger->Write($sDesc, $iType, $sName, $bSearchSecretWords, $bDiplayCrLf);
+		return $this->oLogger && $this->oLogger->Write($sDesc, $iType, $sName, $bDiplayCrLf);
 	}
 
 	public function logException(\Throwable $oException, int $iType = \LOG_NOTICE, string $sName = ''): void
