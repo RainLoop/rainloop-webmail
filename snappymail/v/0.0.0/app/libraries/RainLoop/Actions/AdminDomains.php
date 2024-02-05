@@ -74,6 +74,17 @@ trait AdminDomains
 		));
 	}
 
+	public function DoAdminDomainAutoconfig() : array
+	{
+		$this->IsAdminLoggined();
+		$sDomain = $this->GetActionParam('domain');
+		$sEmail = "test@{$sDomain}";
+		return $this->DefaultResponse(array(
+			'email' => $sEmail,
+			'config' => \RainLoop\Providers\Domain\Autoconfig::discover($sEmail)
+		));
+	}
+
 	public function DoAdminDomainTest() : array
 	{
 		$this->IsAdminLoggined();

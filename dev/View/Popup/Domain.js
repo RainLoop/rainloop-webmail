@@ -306,6 +306,28 @@ export class DomainPopupView extends AbstractViewPopup {
 		this.testingSmtpError(false);
 	}
 
+	autoconfig() {
+		let domain = this.name();
+		Remote.request('AdminDomainAutoconfig', (iError, oData) => {
+			console.dir({iError, oData});
+			if (!iError) {
+				let server = oData.Result.config.incomingServer[0];
+				this.imapHost(server.hostname);
+				this.imapPort(server.port);
+				this.imapType('STARTTLS' === server.socketType ? 2 : ('SSL' === server.socketType ? 1 : 0));
+				this.imapShortLogin('%EMAILADDRESS%' !== server.username);
+
+				server = oData.Result.config.outgoingServer[0];
+				this.smtpHost(server.hostname);
+				this.smtpPort(server.port);
+				this.smtpType('STARTTLS' === server.socketType ? 2 : ('SSL' === server.socketType ? 1 : 0));
+				this.smtpShortLogin('%EMAILADDRESS%' !== server.username);
+				this.smtpUseAuth(!!server.authentication);
+				this.smtpUsePhpMail(false);
+			}
+		}, {domain});
+	}
+
 	onShow(oDomain) {
 		this.saving(false);
 		this.clearTesting();

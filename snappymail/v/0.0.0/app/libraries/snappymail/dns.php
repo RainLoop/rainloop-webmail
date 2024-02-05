@@ -48,4 +48,20 @@ abstract class DNS
 		}
 		return $BIMI;
 	}
+
+	public static function MX(string $domain) : array
+	{
+		$mxhosts = array();
+		$values = \dns_get_record($domain, \DNS_MX);
+		if ($values) {
+			foreach ($values as $record) {
+				$mxhosts[$record['pri']] = $record['target'];
+			}
+		}
+		if (!$mxhosts) {
+			\getmxrr($hostname, $mxhosts);
+		}
+		\ksort($mxhosts);
+		return \array_values($mxhosts);
+	}
 }
