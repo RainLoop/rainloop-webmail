@@ -1,7 +1,7 @@
 import 'External/ko';
 import ko from 'ko';
 import { RFC822 } from 'Common/File';
-import { HtmlEditor } from 'Common/Html';
+import { HtmlEditor } from 'Common/HtmlEditor';
 import { timeToNode } from 'Common/Translator';
 import { doc, elementById, addEventsListeners, dropdowns, leftPanelDisabled } from 'Common/Globals';
 import { EmailAddressesComponent } from 'Component/EmailAddresses';

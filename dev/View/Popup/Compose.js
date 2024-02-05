@@ -11,7 +11,8 @@ import {
 } from 'Common/EnumsUser';
 
 import { pInt, isArray, arrayLength, b64Encode } from 'Common/Utils';
-import { encodeHtml, HtmlEditor, htmlToPlain } from 'Common/Html';
+import { encodeHtml, htmlToPlain } from 'Common/Html';
+import { HtmlEditor } from 'Common/HtmlEditor';
 import { koArrayWithDestroy, addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';

@@ -5,7 +5,7 @@ import { SaveSettingStatus } from 'Common/Enums';
 import { LayoutSideView, LayoutBottomView } from 'Common/EnumsUser';
 import { setRefreshFoldersInterval } from 'Common/Folders';
 import { Settings, SettingsGet } from 'Common/Globals';
-import { WYSIWYGS } from 'Common/Html';
+import { WYSIWYGS } from 'Common/HtmlEditor';
 import { isArray } from 'Common/Utils';
 import { addSubscribablesTo, addComputablesTo } from 'External/ko';
 import { i18n, translateTrigger, translatorReload, convertLangName } from 'Common/Translator';
