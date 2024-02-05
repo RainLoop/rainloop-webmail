@@ -1,5 +1,5 @@
 import { createElement } from 'Common/Globals';
-import { forEachObjectEntry, pInt } from 'Common/Utils';
+import { forEachObjectEntry, isArray, pInt } from 'Common/Utils';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
 const
@@ -207,7 +207,8 @@ export const
 			bqLevel = parseInt(SettingsUserStore.maxBlockquotesLevel()),
 
 			result = {
-				hasExternals: false
+				hasExternals: false,
+				linkedData: []
 			},
 
 			findAttachmentByCid = cId => oAttachments.findByCid(cId),
@@ -269,6 +270,7 @@ export const
 			// Not supported by <template> element
 //			.replace(/<!doctype[^>]*>/gi, '')
 //			.replace(/<\?xml[^>]*\?>/gi, '')
+			.replace(/<(\/?)head(\s[^>]*)?>/gi, '')
 			.replace(/<(\/?)body(\s[^>]*)?>/gi, '<$1div class="mail-body"$2>')
 //			.replace(/<\/?(html|head)[^>]*>/gi, '')
 			// Fix Reddit https://github.com/the-djmaze/snappymail/issues/540
@@ -283,6 +285,21 @@ export const
 		while (nodeIterator.nextNode()) {
 			nodeIterator.referenceNode.remove();
 		}
+
+		/**
+		 * Basic support for Linked Data (Structured Email)
+		 * https://json-ld.org/
+		 * https://structured.email/
+		 **/
+		tmpl.content.querySelectorAll('script[type="application/ld+json"]').forEach(oElement => {
+			// Could be array of objects or single object
+			try {
+				const data = JSON.parse(oElement.textContent);
+				(isArray(data) ? data : [data]).forEach(entry => result.linkedData.push(entry));
+			} catch (e) {
+				console.error(e, oElement.textContent);
+			}
+		});
 
 		tmpl.content.querySelectorAll(
 			disallowedTags

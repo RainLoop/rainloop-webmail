@@ -87,6 +87,12 @@ export class MessageModel extends AbstractModel {
 			size: 0,
 			readReceipt: '',
 			preview: null,
+			/**
+			 * Basic support for Linked Data (Structured Email)
+			 * https://json-ld.org/
+			 * https://structured.email/
+			 **/
+			linkedData: [],
 
 			attachments: ko.observableArray(new AttachmentCollectionModel),
 			threads: ko.observableArray(),
@@ -367,6 +373,7 @@ export class MessageModel extends AbstractModel {
 				let result = msgHtml(this);
 				this.hasExternals(result.hasExternals);
 				this.hasImages(!!result.hasExternals);
+				this.linkedData = result.linkedData;
 				body.innerHTML = result.html;
 				if (!this.isSpam && FolderUserStore.spamFolder() != this.folder) {
 					if ('always' === SettingsUserStore.viewImages()) {

@@ -1,0 +1,283 @@
+Return-Path: <json-ld@example.com>
+Delivered-To: json-ld@example.com
+MIME-Version: 1.0
+Date: Mon, 05 Feb 2024 12:37:15 +0000
+Content-Type: multipart/alternative;
+ boundary="46987ad0-df2c-4cc8-8c7b-20e34b1f9bbf-1"
+From: json-ld@example.com
+Message-ID: <2cb0cdd30d1a7ec8c810710da8dc14eedaf10e7e@example.com>
+TLS-Required: No
+Subject: test json-ld
+To: json-ld@example.com
+
+--46987ad0-df2c-4cc8-8c7b-20e34b1f9bbf-1
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+test json-ld
+--46987ad0-df2c-4cc8-8c7b-20e34b1f9bbf-1
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html><html><head><meta http-equiv=3D"Content-Type" content=3D"t=
+ext/html; charset=3Dutf-8">
+<script type=3D"application/ld+json">
+[
+	{
+		"@context": "http://schema.org/",
+		"@type": "Person",
+		"name": "Jane Doe",
+		"jobTitle": "Professor",
+		"telephone": "(425) 123-4567",
+		"url": "http://www.janedoe.com"
+	},
+	{
+		"@context": {
+			"ical": "http://www.w3.org/2002/12/cal/ical#",
+			"xsd": "http://www.w3.org/2001/XMLSchema#",
+			"ical:dtstart": {
+				"@type": "xsd:dateTime"
+			}
+		},
+		"ical:summary": "Lady Gaga Concert",
+		"ical:location": "New Orleans Arena, New Orleans, Louisiana, USA",
+		"ical:dtstart": "2011-04-09T20:00:00Z"
+	},
+	{
+		"@context": {
+			"name": "http://schema.org/name",
+			"description": "http://schema.org/description",
+			"image": {
+				"@id": "http://schema.org/image",
+				"@type": "@id"
+			},
+			"geo": "http://schema.org/geo",
+			"latitude": {
+				"@id": "http://schema.org/latitude",
+				"@type": "xsd:float"
+			},
+			"longitude": {
+				"@id": "http://schema.org/longitude",
+				"@type": "xsd:float"
+			},
+			"xsd": "http://www.w3.org/2001/XMLSchema#"
+		},
+		"name": "The Empire State Building",
+		"description": "The Empire State Building is a 102-story landmark in New York City.",
+		"image": "http://www.civil.usherbrooke.ca/cours/gci215a/empire-state-building.jpg",
+		"geo": {
+			"latitude": "40.75",
+			"longitude": "73.98"
+		}
+	},
+	{
+		"@context": {
+			"gr": "http://purl.org/goodrelations/v1#",
+			"pto": "http://www.productontology.org/id/",
+			"foaf": "http://xmlns.com/foaf/0.1/",
+			"xsd": "http://www.w3.org/2001/XMLSchema#",
+			"foaf:page": {
+				"@type": "@id"
+			},
+			"gr:acceptedPaymentMethods": {
+				"@type": "@id"
+			},
+			"gr:hasBusinessFunction": {
+				"@type": "@id"
+			},
+			"gr:hasCurrencyValue": {
+				"@type": "xsd:float"
+			}
+		},
+		"@id": "http://example.org/cars/for-sale#tesla",
+		"@type": "gr:Offering",
+		"gr:name": "Used Tesla Roadster",
+		"gr:description": "Need to sell fast and furiously",
+		"gr:hasBusinessFunction": "gr:Sell",
+		"gr:acceptedPaymentMethods": "gr:Cash",
+		"gr:hasPriceSpecification": {
+			"gr:hasCurrencyValue": "85000",
+			"gr:hasCurrency": "USD"
+		},
+		"gr:includes": {
+			"@type": [
+				"gr:Individual",
+				"pto:Vehicle"
+			],
+			"gr:name": "Tesla Roadster",
+			"foaf:page": "http://www.teslamotors.com/roadster"
+		}
+	},
+	{
+		"@context": {
+			"name": "http://rdf.data-vocabulary.org/#name",
+			"ingredient": "http://rdf.data-vocabulary.org/#ingredients",
+			"yield": "http://rdf.data-vocabulary.org/#yield",
+			"instructions": "http://rdf.data-vocabulary.org/#instructions",
+			"step": {
+				"@id": "http://rdf.data-vocabulary.org/#step",
+				"@type": "xsd:integer"
+			},
+			"description": "http://rdf.data-vocabulary.org/#description",
+			"xsd": "http://www.w3.org/2001/XMLSchema#"
+		},
+		"name": "Mojito",
+		"ingredient": [
+			"12 fresh mint leaves",
+			"1/2 lime, juiced with pulp",
+			"1 tablespoons white sugar",
+			"1 cup ice cubes",
+			"2 fluid ounces white rum",
+			"1/2 cup club soda"
+		],
+		"yield": "1 cocktail",
+		"instructions": [
+			{
+				"step": 1,
+				"description": "Crush lime juice, mint and sugar together in glass."
+			},
+			{
+				"step": 2,
+				"description": "Fill glass to top with ice cubes."
+			},
+			{
+				"step": 3,
+				"description": "Pour white rum over ice."
+			},
+			{
+				"step": 4,
+				"description": "Fill the rest of glass with club soda, stir."
+			},
+			{
+				"step": 5,
+				"description": "Garnish with a lime wedge."
+			}
+		]
+	},
+	{
+		"@context": {
+			"dc11": "http://purl.org/dc/elements/1.1/",
+			"ex": "http://example.org/vocab#",
+			"xsd": "http://www.w3.org/2001/XMLSchema#",
+			"ex:contains": {
+				"@type": "@id"
+			}
+		},
+		"@graph": [
+			{
+				"@id": "http://example.org/library",
+				"@type": "ex:Library",
+				"ex:contains": "http://example.org/library/the-republic"
+			},
+			{
+				"@id": "http://example.org/library/the-republic",
+				"@type": "ex:Book",
+				"dc11:creator": "Plato",
+				"dc11:title": "The Republic",
+				"ex:contains": "http://example.org/library/the-republic#introduction"
+			},
+			{
+				"@id": "http://example.org/library/the-republic#introduction",
+				"@type": "ex:Chapter",
+				"dc11:description": "An introductory chapter on The Republic.",
+				"dc11:title": "The Introduction"
+			}
+		]
+	},
+	{
+		"@context": "https://www.w3.org/ns/activitystreams",
+		"@type": "Create",
+		"actor": {
+			"@type": "Person",
+			"@id": "acct:sally@example.org",
+			"name": "Sally"
+		},
+		"object": {
+			"@type": "Note",
+			"content": "This is a simple note"
+		},
+		"published": "2015-01-25T12:34:56Z"
+	},
+	{
+		"@context": "http://schema.org",
+		"@type": "FoodEstablishmentReservation",
+		"reservationNumber": "OT12345",
+		"reservationStatus": "http://schema.org/Confirmed",
+		"underName": {
+			"@type": "Person",
+			"name": "John Smith"
+		},
+		"reservationFor": {
+			"@type": "FoodEstablishment",
+			"name": "Wagamama",
+			"address": {
+				"@type": "PostalAddress",
+				"streetAddress": "1 Tavistock Street",
+				"addressLocality": "London",
+				"addressRegion": "Greater London",
+				"postalCode": "WC2E 7PG",
+				"addressCountry": "United Kingdom"
+			}
+		},
+		"startTime": "2027-04-10T08:00:00+00:00",
+		"partySize": "2"
+	},
+	{
+		"@context": "http://schema.org",
+		"@type": "ParcelDelivery",
+		"deliveryAddress": {
+			"@type": "PostalAddress",
+			"streetAddress": "757 Westwood Plaza",
+			"addressLocality": "Los Angeles",
+			"addressRegion": "CA",
+			"addressCountry": "US",
+			"postalCode": "90095"
+		},
+		"expectedArrivalUntil": "2016-11-12T12:00:00-09:00",
+		"carrier": {
+			"@type": "Organization",
+			"name": "FedEx"
+		},
+		"itemShipped": {
+			"@type": "Product",
+			"name": "A bottle of beer"
+		},
+		"partOfOrder": {
+			"@type": "Order",
+			"orderNumber": "159487-sh-1971",
+			"merchant": {
+				"@type": "Organization",
+				"name": "SomeRetailer.com"
+			}
+		}
+	}
+]
+</script>
+<script type=3D"application/ld+json">
+[
+{
+    "@context": "http://schema.org/",
+    "@type": "PromotionCard",
+    "image": "IMAGE_URL1",
+    "url": "PROMO_URL1",
+    "headline": "HEADLINE1",
+    "price": "PRICE1",
+    "priceCurrency": "PRICE_CURRENCY1",
+    "discountValue": "DISCOUNT_VALUE1"
+},
+{
+    "@context": "http://schema.org/",
+    "@type": "PromotionCard",
+    "image": "IMAGE_URL2",
+    "url": "PROMO_URL2",
+    "headline": "HEADLINE2",
+    "price": "PRICE2",
+    "priceCurrency": "PRICE_CURRENCY2",
+    "discountValue": "DISCOUNT_VALUE2"
+}
+]
+</script></head><body>
+Example of Linked Data (Structured Email)
+
+</body></html>
+--46987ad0-df2c-4cc8-8c7b-20e34b1f9bbf-1--

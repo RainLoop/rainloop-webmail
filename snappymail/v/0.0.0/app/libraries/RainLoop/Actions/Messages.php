@@ -1066,6 +1066,12 @@ trait Messages
 			$oMessage->SubParts->append($oPart);
 
 			$sHtml = \MailSo\Base\HtmlUtils::BuildHtml($sHtml, $aFoundCids, $aFoundDataURL, $aFoundContentLocationUrls);
+
+			$aLinkedData = $this->GetActionParam('linkedData', []);
+			if ($aLinkedData) {
+				$sHtml = \str_replace('</head>', '<script type="application/ld+json">'.\json_encode($aLinkedData).'</script></head>', $sHtml);
+			}
+
 			$this->Plugins()->RunHook('filter.message-html', array($oAccount, $oMessage, &$sHtml));
 
 			// First add plain

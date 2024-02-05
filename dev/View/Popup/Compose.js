@@ -1415,7 +1415,13 @@ export class ComposePopupView extends AbstractViewPopup {
 				// Only used at send, not at save:
 				dsn: this.requestDsn() ? 1 : 0,
 				requireTLS: this.requireTLS() ? 1 : 0,
-				readReceiptRequest: this.requestReadReceipt() ? 1 : 0
+				readReceiptRequest: this.requestReadReceipt() ? 1 : 0,
+				/**
+				 * Basic support for Linked Data (Structured Email)
+				 * https://json-ld.org/
+				 * https://structured.email/
+				 **/
+				linkedData: []
 			},
 			recipients = draft ? [identity.email()] : this.allRecipients(),
 			sign = !draft && this.pgpSign() && this.canPgpSign(),
