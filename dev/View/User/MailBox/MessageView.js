@@ -155,7 +155,7 @@ export class MailMessageView extends AbstractViewRight {
 					: ''
 				).join(' '),
 
-			askReadReceipt: () => currentMessage()?.readReceipt()
+			askReadReceipt: () => currentMessage()?.readReceipt
 				&& !(MessagelistUserStore.isDraftFolder() || MessagelistUserStore.isSentFolder())
 				&& !currentMessage()?.flags().includes('$mdnsent')
 				&& !currentMessage()?.flags().includes('\\answered'),
@@ -526,7 +526,7 @@ export class MailMessageView extends AbstractViewRight {
 	 */
 	readReceipt() {
 		let oMessage = currentMessage()
-		if (oMessage.readReceipt()) {
+		if (oMessage.readReceipt) {
 			Remote.request('SendReadReceiptMessage', iError => {
 				if (!iError) {
 					oMessage.flags.push('$mdnsent');
@@ -535,7 +535,7 @@ export class MailMessageView extends AbstractViewRight {
 			}, {
 				messageFolder: oMessage.folder,
 				messageUid: oMessage.uid,
-				readReceipt: oMessage.readReceipt(),
+				readReceipt: oMessage.readReceipt,
 				subject: i18n('READ_RECEIPT/SUBJECT', { SUBJECT: oMessage.subject() }),
 				plain: i18n('READ_RECEIPT/BODY', { 'READ-RECEIPT': AccountUserStore.email() })
 			});

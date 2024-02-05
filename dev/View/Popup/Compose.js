@@ -1194,7 +1194,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			const attachment = new ComposeAttachmentModel(
 				message.requestHash,
 				message.subject() /*+ '-' + Jua.randomId()*/ + '.eml',
-				message.size()
+				message.size
 			);
 			attachment.fromMessage = true;
 			attachment.complete(true);

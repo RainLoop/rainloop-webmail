@@ -103,7 +103,7 @@ Object.assign(ko.bindingHandlers, {
 		}
 	},
 
-	moment: {
+	time: {
 		init: ttn,
 		update: ttn
 	},

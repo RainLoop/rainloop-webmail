@@ -144,7 +144,7 @@ export const
 				time = Date.parse(element.dateTime) / 1000;
 			}
 
-			let key = element.dataset.momentFormat;
+			let key = element.dataset.timeFormat;
 			if (key) {
 				element.textContent = timestampToString(time, key);
 				if ('FULL' !== key && 'FROMNOW' !== key) {

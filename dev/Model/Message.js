@@ -56,42 +56,51 @@ export class MessageModel extends AbstractModel {
 	constructor() {
 		super();
 
-		this.folder = '';
-		this.uid = 0;
-		this.hash = '';
-		this.from = new EmailCollectionModel;
-		this.to = new EmailCollectionModel;
-		this.cc = new EmailCollectionModel;
-		this.bcc = new EmailCollectionModel;
-		this.sender = new EmailCollectionModel;
-		this.replyTo = new EmailCollectionModel;
-		this.deliveredTo = new EmailCollectionModel;
-		this.body = null;
-		this.draftInfo = [];
-		this.dkim = [];
-		this.spf = [];
-		this.dmarc = [];
-		this.messageId = '';
-		this.inReplyTo = '';
-		this.references = '';
-		this.autocrypt = {/*addr:'', 'prefer-encrypt':'nopreference', keydata:'BASE64'*/};
+		Object.assign(this, {
+			folder: '',
+			uid: 0,
+			hash: '',
+			from: new EmailCollectionModel,
+			to: new EmailCollectionModel,
+			cc: new EmailCollectionModel,
+			bcc: new EmailCollectionModel,
+			sender: new EmailCollectionModel,
+			replyTo: new EmailCollectionModel,
+			deliveredTo: new EmailCollectionModel,
+			body: null,
+			draftInfo: [],
+			dkim: [],
+			spf: [],
+			dmarc: [],
+			messageId: '',
+			inReplyTo: '',
+			references: '',
+			autocrypt: {/*addr:'', 'prefer-encrypt':'nopreference', keydata:'BASE64'*/},
+			hasVirus: null, // or boolean when scanned
+			priority: 3, // Normal
+			internalTimestamp: 0,
+			senderEmailsString: '',
+			senderClearEmailsString: '',
+			isSpam: false,
+			spamScore: 0,
+			spamResult: '',
+			size: 0,
+			readReceipt: '',
+			preview: null,
+
+			attachments: ko.observableArray(new AttachmentCollectionModel),
+			threads: ko.observableArray(),
+			threadUnseen: ko.observableArray(),
+			unsubsribeLinks: ko.observableArray(),
+			flags: ko.observableArray(),
+			headers: ko.observableArray(new MimeHeaderCollectionModel)
+		});
 
 		addObservablesTo(this, {
 			subject: '',
 			plain: '',
 			html: '',
-			preview: null,
-			size: 0,
-			spamScore: 0,
-			spamResult: '',
-			isSpam: false,
-			hasVirus: null, // or boolean when scanned
 			dateTimestamp: 0,
-			internalTimestamp: 0,
-			priority: 3, // Normal
-
-			senderEmailsString: '',
-			senderClearEmailsString: '',
 
 			deleted: false,
 
@@ -111,19 +120,10 @@ export class MessageModel extends AbstractModel {
 			pgpEncrypted: null,
 			pgpDecrypted: false,
 
-			readReceipt: '',
-
 			// rfc8621
 			id: '',
 //			threadId: ''
 		});
-
-		this.attachments = ko.observableArray(new AttachmentCollectionModel);
-		this.threads = ko.observableArray();
-		this.threadUnseen = ko.observableArray();
-		this.unsubsribeLinks = ko.observableArray();
-		this.flags = ko.observableArray();
-		this.headers = ko.observableArray(new MimeHeaderCollectionModel);
 
 		addComputablesTo(this, {
 			attachmentIconClass: () =>
@@ -199,23 +199,23 @@ export class MessageModel extends AbstractModel {
 	}
 
 	spamStatus() {
-		let spam = this.spamResult();
-		return spam ? i18n(this.isSpam() ? 'GLOBAL/SPAM' : 'GLOBAL/NOT_SPAM') + ': ' + spam : '';
+		let spam = this.spamResult;
+		return spam ? i18n(this.isSpam ? 'GLOBAL/SPAM' : 'GLOBAL/NOT_SPAM') + ': ' + spam : '';
 	}
 
 	/**
 	 * @returns {string}
 	 */
 	friendlySize() {
-		return FileInfo.friendlySize(this.size());
+		return FileInfo.friendlySize(this.size);
 	}
 
 	computeSenderEmail() {
 		const list = this[
 			[FolderUserStore.sentFolder(), FolderUserStore.draftsFolder()].includes(this.folder) ? 'to' : 'from'
 		];
-		this.senderEmailsString(list.toString(true));
-		this.senderClearEmailsString(list.map(email => email?.email).filter(email => email).join(', '));
+		this.senderEmailsString = list.toString(true);
+		this.senderClearEmailsString = list.map(email => email?.email).filter(email => email).join(', ');
 	}
 
 	/**
@@ -250,9 +250,9 @@ export class MessageModel extends AbstractModel {
 				|| headers.valueByName('X-Priority');
 			if (value) {
 				if (/[h12]/.test(value[0])) {
-					this.priority(1);
+					this.priority = 1;
 				} else if (/[l45]/.test(value[0])) {
-					this.priority(5);
+					this.priority = 5;
 				}
 			}
 
@@ -264,13 +264,13 @@ export class MessageModel extends AbstractModel {
 			}
 
 			if (headers.valueByName('X-Virus')) {
-				this.hasVirus(true);
+				this.hasVirus = true;
 			}
 			if (value = headers.valueByName('X-Virus-Status')) {
 				if (value.includes('infected')) {
-					this.hasVirus(true);
+					this.hasVirus = true;
 				} else if (value.includes('clean')) {
-					this.hasVirus(false);
+					this.hasVirus = false;
 				}
 			}
 /*
@@ -301,7 +301,7 @@ export class MessageModel extends AbstractModel {
 			checked: this.checked(),
 			unseen: this.isUnseen(),
 			focused: this.focused(),
-			priorityHigh: this.priority() === 1,
+			priorityHigh: this.priority === 1,
 			withAttachments: !!this.attachments().length,
 			// hasChildrenMessage: 1 < this.threadsLen()
 		}, (key, value) => value && classes.push(key));
@@ -368,7 +368,7 @@ export class MessageModel extends AbstractModel {
 				this.hasExternals(result.hasExternals);
 				this.hasImages(!!result.hasExternals);
 				body.innerHTML = result.html;
-				if (!this.isSpam() && FolderUserStore.spamFolder() != this.folder) {
+				if (!this.isSpam && FolderUserStore.spamFolder() != this.folder) {
 					if ('always' === SettingsUserStore.viewImages()) {
 						this.showExternalImages();
 					}

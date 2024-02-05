@@ -138,7 +138,7 @@
 		<div id="messageItem">
 			<div class="messageItemHeader" data-bind="if: message, i18nUpdate: message">
 				<div data-bind="hidden: showFullInfo">
-					<time class="date" data-moment-format="FULL" data-bind="visible: 0 < message().dateTimestamp(), moment: message().dateTimestamp()"></time>
+					<time class="date" data-time-format="FULL" data-bind="visible: 0 < message().dateTimestamp(), time: message().dateTimestamp()"></time>
 					<div class="informationShortWrp">
 						<div class="informationShort" data-bind="visible: message().to.length">
 							<span data-i18n="GLOBAL/TO"></span>:
@@ -149,9 +149,9 @@
 							<span data-bind="text: message().cc"></span>
 						</div>
 					</div>
-					<div class="informationShort" data-bind="visible: message().spamResult()">
+					<div class="informationShort" data-bind="visible: message().spamResult">
 						<span data-i18n="MESSAGE/SPAM_SCORE"></span>:
-						<meter min="0" max="100" optimum="0" low="33" high="66" data-bind="value: message().spamScore(), attr:{ title: message().spamStatus() }"></meter>
+						<meter min="0" max="100" optimum="0" low="33" high="66" data-bind="value: message().spamScore, attr:{ title: message().spamStatus() }"></meter>
 					</div>
 				</div>
 				<div class="informationFull" data-bind="visible: showFullInfo, with: message">
@@ -181,9 +181,9 @@
 						<tr data-bind="visible: dateTimestamp">
 							<td data-i18n="MESSAGE/LABEL_DATE"></td>
 							<td>
-								<time data-moment-format="FULL" data-bind="moment: dateTimestamp"></time>
+								<time data-time-format="FULL" data-bind="time: dateTimestamp"></time>
 								&nbsp;
-								(<time data-moment-format="FROMNOW" data-bind="moment: dateTimestamp"></time>)
+								(<time data-time-format="FROMNOW" data-bind="time: dateTimestamp"></time>)
 							</td>
 						</tr>
 						<tr data-bind="visible: spamResult">
@@ -196,7 +196,7 @@
 						</tr>
 					</table>
 				</div>
-				<div class="hasVirus" data-bind="visible: message().hasVirus()" data-i18n="MESSAGE/HAS_VIRUS_WARNING"></div>
+				<div class="hasVirus" data-bind="visible: message().hasVirus" data-i18n="MESSAGE/HAS_VIRUS_WARNING"></div>
 				<!-- ko if: tagsAllowed -->
 				<div class="messageTags">
 					<span data-i18n="MESSAGE/TAGS"></span>:

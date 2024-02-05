@@ -144,7 +144,7 @@
 						<i data-bind="css: attachmentIconClass"></i>
 					</div>
 					<div class="sizeParent" data-bind="text: friendlySize()"></div>
-					<time data-bind="attr:{'data-moment-format':$root.timeFormat()}, moment: dateTimestamp"></time>
+					<time data-bind="attr:{'data-time-format':$root.timeFormat()}, time: dateTimestamp"></time>
 				</div>
 			</div>
 			<!-- /ko -->
@@ -164,7 +164,7 @@
 						<i data-bind="css: attachmentIconClass"></i>
 					</div>
 					<div class="sizeParent" data-bind="text: friendlySize()"></div>
-					<time data-moment-format="AUTO" data-bind="moment: dateTimestamp"></time>
+					<time data-time-format="AUTO" data-bind="time: dateTimestamp"></time>
 				</div>
 			</div>
 		</div>
