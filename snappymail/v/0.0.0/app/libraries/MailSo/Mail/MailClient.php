@@ -593,7 +593,7 @@ class MailClient
 		$oParams->sSort = \implode(' ', $aSortTypes);
 
 		$bUseCache = $oCacher && $oCacher->IsInited();
-		$sSearchCriterias = \MailSo\Imap\SearchCriterias::fromString(
+		$oSearchCriterias = \MailSo\Imap\SearchCriterias::fromString(
 			$this->oImapClient,
 			$sFolderName,
 			$oParams->sSearch,
@@ -606,16 +606,20 @@ class MailClient
 		$bReturnUid = true;
 		if ($oParams->oSequenceSet) {
 			$bReturnUid = $oParams->oSequenceSet->UID;
-			$sSearchCriterias = $oParams->oSequenceSet . ' ' . $sSearchCriterias;
+			$oSearchCriterias->prepend($oParams->oSequenceSet);
 		}
+
+/*
+		$oSearchCriterias->fuzzy = $oParams->bSearchFuzzy && $this->oImapClient->hasCapability('SEARCH=FUZZY');
+*/
 
 		$sSerializedHash = '';
 		$sSerializedLog = '';
 		if ($bUseCache) {
 			$sSerializedHash = 'Get'
 				. ($bReturnUid ? 'UIDS/' : 'IDS/')
-				. "{$oParams->sSort}/{$this->oImapClient->Hash()}/{$sFolderName}/{$sSearchCriterias}";
-			$sSerializedLog = "\"{$sFolderName}\" / {$oParams->sSort} / {$sSearchCriterias}";
+				. "{$oParams->sSort}/{$this->oImapClient->Hash()}/{$sFolderName}/{$oSearchCriterias}";
+			$sSerializedLog = "\"{$sFolderName}\" / {$oParams->sSort} / {$oSearchCriterias}";
 
 			$sSerialized = $oCacher->Get($sSerializedHash);
 			if (!empty($sSerialized)) {
@@ -638,12 +642,12 @@ class MailClient
 		$aResultUids = [];
 		if ($bUseSort) {
 //			$this->oImapClient->hasCapability('ESORT')
-//			$aResultUids = $this->oImapClient->MessageSimpleESort($aSortTypes, $sSearchCriterias)['ALL'];
-			$aResultUids = $this->oImapClient->MessageSimpleSort($aSortTypes, $sSearchCriterias, $bReturnUid);
+//			$aResultUids = $this->oImapClient->MessageSimpleESort($aSortTypes, $oSearchCriterias)['ALL'];
+			$aResultUids = $this->oImapClient->MessageSimpleSort($aSortTypes, $oSearchCriterias, $bReturnUid);
 		} else {
 //			$this->oImapClient->hasCapability('ESEARCH')
-//			$aResultUids = $this->oImapClient->MessageSimpleESearch($sSearchCriterias, null, $bReturnUid)
-			$aResultUids = $this->oImapClient->MessageSimpleSearch($sSearchCriterias,        $bReturnUid);
+//			$aResultUids = $this->oImapClient->MessageSimpleESearch($oSearchCriterias, null, $bReturnUid)
+			$aResultUids = $this->oImapClient->MessageSimpleSearch($oSearchCriterias,        $bReturnUid);
 		}
 
 		if ($bUseCache) {

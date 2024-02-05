@@ -16,7 +16,7 @@ namespace MailSo\Imap;
  * @category MailSo
  * @package Mail
  */
-abstract class SearchCriterias
+class SearchCriterias
 {
 	const
 		RegEx = 'in|e?mail|from|to|subject|has|is|date|since|before|text|body|size|larger|bigger|smaller|maxsize|minsize|keyword|older_than|newer_than|on|senton|sentsince|sentbefore';
@@ -126,7 +126,29 @@ abstract class SearchCriterias
 		X RECENT
 	*/
 
-	public static function fromString(\MailSo\Imap\ImapClient $oImapClient, string $sFolderName, string $sSearch, bool $bHideDeleted, bool &$bUseCache = true) : string
+	private array $criterias = [];
+	public bool $fuzzy = false;
+
+	function prepend(string $rule)
+	{
+		\array_unshift($this->criterias, $rule);
+	}
+
+	function __toString() : string
+	{
+		if ($this->fuzzy) {
+			$keys = ['BCC','BODY','CC','FROM','SUBJECT','TEXT','TO'];
+			foreach ($this->criterias as $i => $key) {
+				if (\in_array($key, $keys)) {
+					$this->criterias[$i] = "FUZZY {$key}";
+				}
+			}
+		}
+		$sCriteriasResult = \trim(\implode(' ', $this->criterias));
+		return $sCriteriasResult ?: 'ALL';
+	}
+
+	public static function fromString(\MailSo\Imap\ImapClient $oImapClient, string $sFolderName, string $sSearch, bool $bHideDeleted, bool &$bUseCache = true) : self
 	{
 		$iTimeFilter = 0;
 		$aCriteriasResult = array();
@@ -332,9 +354,9 @@ abstract class SearchCriterias
 			$aCriteriasResult[] = $oImapClient->Settings->search_filter;
 		}
 
-		$sCriteriasResult = \trim(\implode(' ', $aCriteriasResult));
-
-		return $sCriteriasResult ?: 'ALL';
+		$search = new self;
+		$search->criterias = $aCriteriasResult;
+		return $search;
 	}
 
 	public static function escapeSearchString(\MailSo\Imap\ImapClient $oImapClient, string $sSearch) : string
