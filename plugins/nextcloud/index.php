@@ -13,6 +13,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function Init() : void
 	{
 		if (static::IsIntegrated()) {
+			\SnappyMail\Log::debug('Nextcloud', 'integrated');
 			$this->UseLangs(true);
 
 			$this->addHook('main.fabrica', 'MainFabrica');
@@ -39,6 +40,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$this->addHook('smtp.before-login', 'oidcLogin');
 			$this->addHook('sieve.before-login', 'oidcLogin');
 		} else {
+			\SnappyMail\Log::debug('Nextcloud', 'NOT integrated');
 			// \OC::$server->getConfig()->getAppValue('snappymail', 'snappymail-no-embed');
 			$this->addHook('main.content-security-policy', 'ContentSecurityPolicy');
 		}
@@ -214,6 +216,15 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 				$sCustomEmail = $config->getUserValue($sUID, 'snappymail', 'snappymail-email', '');
 				if ($sCustomEmail) {
 					$sEmail = $sCustomEmail;
+				}
+
+				if (!$sEmail && $this->Config()->Get('plugin', 'oidc', false)) {
+					if (\OC::$server->getSession()->get('is_oidc')) {
+						$sEmail = "{$sUID}@nextcloud";
+						$aResult['DevPassword'] = \OC::$server->getSession()->get('oidc_access_token');
+					} else {
+						\SnappyMail\Log::debug('Nextcloud', 'Not an OIDC login');
+					}
 				}
 				$aResult['DevEmail'] = $sEmail ?: '';
 			} else if (!empty($aResult['ContactsSync'])) {
