@@ -62,7 +62,7 @@ export class ContactsPopupView extends AbstractViewPopup {
 
 		this.selector.on('ItemSelect', contact => this.populateViewContact(contact));
 
-		this.selector.on('ItemGetUid', contact => contact ? contact.generateUid() : '');
+		this.selector.on('ItemGetUid', contact => contact ? contact.id() : '');
 
 		addComputablesTo(this, {
 			contactsPaginator: computedPaginatorHelper(
