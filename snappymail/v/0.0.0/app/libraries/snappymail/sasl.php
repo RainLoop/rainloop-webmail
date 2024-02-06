@@ -13,6 +13,11 @@ abstract class SASL
 		return null;
 	}
 
+	public function hasChallenge() : bool
+	{
+		return false;
+	}
+
 	public function verify(string $data) : bool
 	{
 		return false;

@@ -89,6 +89,11 @@ class Scram extends \SnappyMail\SASL
 		return $this->encode("{$cfmb},p={$proof}");
 	}
 
+	public function hasChallenge() : bool
+	{
+		return true;
+	}
+
 	public function verify(string $data) : bool
 	{
 		$v = static::parseMessage($this->decode($data));
