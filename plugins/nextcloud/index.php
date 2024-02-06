@@ -210,6 +210,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 					$sEmail = $sUID;
 				} else if ($config->getAppValue('snappymail', 'snappymail-autologin-with-email', false)) {
 					$sEmail = $config->getUserValue($sUID, 'settings', 'email', '');
+				} else {
+					\SnappyMail\Log::debug('Nextcloud', 'snappymail-autologin is off');
 				}
 				// If the user has set credentials for SnappyMail in their personal
 				// settings, override everything before and use those instead.
@@ -224,6 +226,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 					} else {
 						\SnappyMail\Log::debug('Nextcloud', 'Not an OIDC login');
 					}
+				} else {
+					\SnappyMail\Log::debug('Nextcloud', 'OIDC is off');
 				}
 				$aResult['DevEmail'] = $sEmail ?: '';
 			} else if (!empty($aResult['ContactsSync'])) {
