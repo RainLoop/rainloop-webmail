@@ -4,8 +4,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Nextcloud',
-		VERSION = '2.29',
-		RELEASE  = '2024-01-12',
+		VERSION = '2.30',
+		RELEASE  = '2024-02-05',
 		CATEGORY = 'Integrations',
 		DESCRIPTION = 'Integrate with Nextcloud v20+',
 		REQUIRED = '2.27.0';
@@ -217,8 +217,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 				if ($sCustomEmail) {
 					$sEmail = $sCustomEmail;
 				}
-
-				if (!$sEmail && $this->Config()->Get('plugin', 'oidc', false)) {
+				if ($this->Config()->Get('plugin', 'oidc', false)) {
 					if (\OC::$server->getSession()->get('is_oidc')) {
 						$sEmail = "{$sUID}@nextcloud";
 						$aResult['DevPassword'] = \OC::$server->getSession()->get('oidc_access_token');
