@@ -243,7 +243,7 @@ export class MailMessageList extends AbstractViewRight {
 
 		this.selector.on('MiddleClick', message => populateMessageBody(message, true));
 
-		this.selector.on('ItemGetUid', message => (message ? message.generateUid() : ''));
+		this.selector.on('ItemGetUid', message => (message ? message.folder + '/' + message.uid : ''));
 
 		this.selector.on('canSelect', () => MessagelistUserStore.canSelect());
 

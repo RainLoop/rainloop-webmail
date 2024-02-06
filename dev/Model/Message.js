@@ -449,13 +449,6 @@ export class MessageModel extends AbstractModel {
 	}
 
 	/**
-	 * @returns {string}
-	 */
-	generateUid() {
-		return this.folder + '/' + this.uid;
-	}
-
-	/**
 	 * @returns {MessageModel}
 	 *//*
 	clone() {
