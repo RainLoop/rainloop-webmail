@@ -200,6 +200,18 @@ class BodyStructure implements \JsonSerializable
 			}
 		}
 
+		/**
+		 * Still no text found?
+		 * Look in attachments as it could be an X-Mms-Message
+		 * https://github.com/the-djmaze/snappymail/issues/1294
+		 */
+		if (!$aParts) {
+			$gParts = $this->SearchByCallback(fn($oItem) => $oItem->isText());
+			foreach ($gParts as $oPart) {
+				$aParts[] = $oPart;
+			}
+		}
+
 		return $aParts;
 	}
 
