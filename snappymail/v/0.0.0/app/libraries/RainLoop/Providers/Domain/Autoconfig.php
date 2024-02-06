@@ -9,8 +9,7 @@ abstract class Autoconfig
 {
 	public static function discover(string $emailaddress) : ?array
 	{
-		$domain = \explode('@', $emailaddress);
-		$domain = \array_pop($domain);
+		$domain = \MailSo\Base\Utils::GetDomainFromEmail($emailaddress);
 		// First try
 		$autoconfig = static::resolve($domain, $emailaddress);
 		if ($autoconfig) {

@@ -433,15 +433,8 @@ abstract class Utils
 
 	public static function GetDomainFromEmail(string $sEmail) : string
 	{
-		$sResult = '';
-		if (\strlen($sEmail)) {
-			$iPos = \strrpos($sEmail, '@');
-			if (false !== $iPos && 0 < $iPos) {
-				$sResult = \substr($sEmail, $iPos + 1);
-			}
-		}
-
-		return $sResult;
+		$aParts = \explode('@', $sEmail);
+		return isset($aParts[1]) ? \array_pop($aParts) : '';
 	}
 
 	public static function GetClearDomainName(string $sDomain) : string

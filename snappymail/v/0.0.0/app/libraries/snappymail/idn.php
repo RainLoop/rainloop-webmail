@@ -62,8 +62,10 @@ abstract class IDN
 
 	private static function emailAddress(string $address, bool $toAscii) : string
 	{
-		if (\strpos($address, '@')) {
-			list($local, $domain) = \explode('@', $address, 2);
+		if (\str_contains($address, '@')) {
+			$local = \explode('@', $address);
+			$domain = \array_pop($local);
+			$local = \implode('@', $local);
 			$arr = \explode('.', $domain);
 			foreach ($arr as $k => $v) {
 				$conv = $toAscii ? static::toAscii($v) : static::toUtf8($v);

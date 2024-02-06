@@ -27,12 +27,12 @@ trait UserAuth
 		string &$sPassword,
 		string &$sLogin): void
 	{
-		$this->Plugins()->RunHook('login.credentials.step-1', array(&$sEmail));
-
 		$sEmail = \MailSo\Base\Utils::Trim($sEmail);
 		if ($this->Config()->Get('login', 'login_lowercase', true)) {
 			$sEmail = \mb_strtolower($sEmail);
 		}
+
+		$this->Plugins()->RunHook('login.credentials.step-1', array(&$sEmail));
 
 		if (!\str_contains($sEmail, '@')) {
 			$this->logWrite('The email address "' . $sEmail . '" is not complete', \LOG_INFO, 'LOGIN');
