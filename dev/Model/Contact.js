@@ -198,7 +198,7 @@ export class ContactModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	generateUid() {
-		return '' + this.id;
+		return this.id();
 	}
 
 	addEmail() {
