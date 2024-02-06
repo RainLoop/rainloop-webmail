@@ -22,6 +22,7 @@ class AdminSettings implements ISettings
 		$keys = [
 			'snappymail-autologin',
 			'snappymail-autologin-with-email',
+			'snappymail-autologin-oidc',
 			'snappymail-no-embed'
 		];
 		$parameters = [];

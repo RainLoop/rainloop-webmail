@@ -8,7 +8,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 		RELEASE  = '2024-02-05',
 		CATEGORY = 'Integrations',
 		DESCRIPTION = 'Integrate with Nextcloud v20+',
-		REQUIRED = '2.27.0';
+		REQUIRED = '2.34.0';
 
 	public function Init() : void
 	{
@@ -70,7 +70,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	public function oidcLogin(\RainLoop\Model\Account $oAccount, \MailSo\Net\NetClient $oClient, \MailSo\Net\ConnectSettings $oSettings) : void
 	{
-		if ($this->Config()->Get('plugin', 'oidc', false)
+		if (\OC::$server->getConfig()->getAppValue('snappymail', 'snappymail-autologin-oidc', false)
 		 && \OC::$server->getSession()->get('is_oidc')
 //		 && $oClient->supportsAuthType('OAUTHBEARER') // v2.28
 		) {
@@ -219,7 +219,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 				if ($sCustomEmail) {
 					$sEmail = $sCustomEmail;
 				}
-				if ($this->Config()->Get('plugin', 'oidc', false)) {
+				if ($config->getAppValue('snappymail', 'snappymail-autologin-oidc', false)) {
 					if (\OC::$server->getSession()->get('is_oidc')) {
 						$sEmail = "{$sUID}@nextcloud";
 						$aResult['DevPassword'] = \OC::$server->getSession()->get('oidc_access_token');
@@ -333,9 +333,6 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(true),
 			\RainLoop\Plugins\Property::NewInstance('calendar')->SetLabel('Enable "Put ICS in calendar"')
-				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
-				->SetDefaultValue(false),
-			\RainLoop\Plugins\Property::NewInstance('oidc')->SetLabel('Login with OIDC')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(false)
 		);

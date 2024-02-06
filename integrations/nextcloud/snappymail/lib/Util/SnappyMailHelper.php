@@ -152,6 +152,12 @@ class SnappyMailHelper
 			if ($sPassword) {
 				$sPassword = static::decodePassword($sPassword, $sUID);
 			}
+			if ($config->getAppValue('snappymail', 'snappymail-autologin-oidc', false) && $ocSession->get('is_oidc')) {
+				$sAccessToken = $ocSession->get('oidc_access_token');
+				if ($sAccessToken) {
+					$sPassword = $sAccessToken;
+				}
+			}
 		}
 
 		// If the user has set credentials for SnappyMail in their personal

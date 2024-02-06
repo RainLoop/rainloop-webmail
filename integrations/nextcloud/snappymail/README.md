@@ -79,6 +79,8 @@ If your IMAP server only accepts usernames without a domain (for example the lda
 If the user sets his credentials for the mailbox in his personal account under "Settings -> Additional settings", these credentials are used by SnappyMail to login.
 If no personal credentials are defined the mail address of the Nextcloud user and his password are used by SnappyMail to login. SnappyMail will lookup the "Domain" settings for a configuration that meets the domain part of the mail address passed as username.
 
+#### Option 4: Attempt to automatically login with OIDC when active
+
 ### Auto-connection for all Nextcloud users
 If your Nextcloud users base is synchronized with an email system, then it is possible that Nextcloud credentials could be used right away to access the centralized email system. In the SnappyMail admin settings, the Nextcloud administrator can then tick the "Automatically login with Nextcloud/Nextcloud user credentials" checkbox.
 
