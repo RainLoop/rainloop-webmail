@@ -7,49 +7,51 @@ namespace RainLoop\Providers\Domain;
 
 abstract class Autoconfig
 {
-	public static function discover(string $emailaddress)
+	public static function discover(string $emailaddress) : ?array
 	{
-		$domain = \explode('@', $emailaddress, 2)[1];
+		$domain = \explode('@', $emailaddress);
+		$domain = \array_pop($domain);
 		// First try
 		$autoconfig = static::resolve($domain, $emailaddress);
+		if ($autoconfig) {
+			return $autoconfig;
+		}
 		// Else try MX
-		if (!$autoconfig) {
-			// regular expression is too large
-			$suffixes = static::publicsuffixes();
-			$hostnames = [];
-			foreach (\SnappyMail\DNS::MX($domain) as $hostname) {
-				// Extract only the second-level domain from the MX hostname
-				$mxbasedomain = \explode('.', $hostname);
-				$i = -2;
-				while (\in_array(\implode('.', \array_slice($mxbasedomain, $i)), $suffixes)) {
-					--$i;
-				}
-				$mxbasedomain = \implode('.', \array_slice($mxbasedomain, $i));
-				if ($mxbasedomain) {
-					$mxfulldomain = $mxbasedomain;
-					if (\substr_count($hostname, '.') > \substr_count($mxbasedomain, '.')) {
-						// Remove the first component from the MX hostname
-						$mxfulldomain = \explode('.', $hostname, 2)[1];
-					}
-					$hostnames[$mxfulldomain] = $mxbasedomain;
-				}
+		$suffixes = static::publicsuffixes();
+		$hostnames = [];
+		foreach (\SnappyMail\DNS::MX($domain) as $hostname) {
+			// Extract only the second-level domain from the MX hostname
+			$mxbasedomain = \explode('.', $hostname);
+			$i = -2;
+			while (\in_array(\implode('.', \array_slice($mxbasedomain, $i)), $suffixes)) {
+				--$i;
 			}
-			foreach ($hostnames as $mxfulldomain => $mxbasedomain) {
-				if ($domain != $mxfulldomain) {
-					$autoconfig = static::resolve($mxfulldomain, $emailaddress);
-					if (!$autoconfig && $mxfulldomain != $mxbasedomain && $domain != $mxbasedomain) {
-						$autoconfig = static::resolve($mxbasedomain, $emailaddress);
-					}
-					if ($autoconfig) {
-						break;
-					}
+			$mxbasedomain = \implode('.', \array_slice($mxbasedomain, $i));
+			if ($mxbasedomain) {
+				$mxfulldomain = $mxbasedomain;
+				if (\substr_count($hostname, '.') > \substr_count($mxbasedomain, '.')) {
+					// Remove the first component from the MX hostname
+					$mxfulldomain = \explode('.', $hostname, 2)[1];
+				}
+				$hostnames[$mxfulldomain] = $mxbasedomain;
+			}
+		}
+		foreach ($hostnames as $mxfulldomain => $mxbasedomain) {
+			if ($domain != $mxfulldomain) {
+				$autoconfig = static::resolve($mxfulldomain, $emailaddress);
+				if (!$autoconfig && $mxfulldomain != $mxbasedomain && $domain != $mxbasedomain) {
+					$autoconfig = static::resolve($mxbasedomain, $emailaddress);
+				}
+				if ($autoconfig) {
+					return $autoconfig;
 				}
 			}
 		}
-		return $autoconfig;
+		// Else try Microsoft autodiscover
+		return static::autodiscover($domain);
 	}
 
-	private static function resolve(string $domain, string $emailaddress)
+	private static function resolve(string $domain, string $emailaddress) : ?array
 	{
 		$emailaddress = \urlencode($emailaddress);
 		foreach ([
@@ -77,10 +79,12 @@ abstract class Autoconfig
 						isset($data['outgoingServer'][0]) ? $data['outgoingServer'] : [$data['outgoingServer']],
 						fn($data) => 'smtp' === $data['@attributes']['type']
 					);
+					$data['canonical'] = $url;
 					return $data;
 				}
 			}
 		}
+		return null;
 	}
 
 	private static function publicsuffixes() : array
@@ -108,6 +112,88 @@ abstract class Autoconfig
 			$oCache->Set('public_suffix_list', \json_encode([$list, time() + 86400]));
 		}
 		return $list ?: [];
+	}
+
+	/**
+	 * This is Microsoft
+	 */
+	private static function autodiscover(string $domain) : ?array
+	{
+		foreach ([
+			"https://{$domain}",
+			"https://autodiscover.{$domain}",
+			"http://autodiscover.{$domain}"
+		] as $host) {
+			$result = static::autodiscover_resolve($host, $domain);
+			if ($result) {
+				return $result;
+			}
+		}
+		foreach (\SnappyMail\DNS::SRV("_autodiscover._tcp.{$domain}") as $record) {
+			if (443 == $record['port']) {
+				$result = static::autodiscover_resolve("https://{$record['target']}", $domain);
+			} else if (80 == $record['port']) {
+				$result = static::autodiscover_resolve("http://{$record['target']}", $domain);
+			} else {
+				$result = static::autodiscover_resolve("https://{$record['target']}:{$record['port']}", $domain);
+			}
+			if ($result) {
+				return $result;
+			}
+		}
+		return null;
+	}
+
+	private static function autodiscover_resolve(string $host, string $domain) : ?array
+	{
+		$email = "autodiscover@{$domain}";
+		$context = \stream_context_create(['http' => [
+			'method'  => 'POST',
+			'header'  => 'Content-Type: application/xml',
+			'content' => '<?xml version="1.0" encoding="utf-8" ?>
+		<Autodiscover xmlns="http://schemas.microsoft.com/exchange/autodiscover/outlook/requestschema/2006">
+			<Request>
+				<AcceptableResponseSchema>http://schemas.microsoft.com/exchange/autodiscover/outlook/responseschema/2006a</AcceptableResponseSchema>
+				<EMailAddress>'.$email.'</EMailAddress>
+			</Request>
+		</Autodiscover>'
+		]]);
+		$url = "{$host}/autodiscover/autodiscover.xml";
+		$xml = \file_get_contents($url, false, $context);
+		if ($xml) {
+			$data = \json_decode(
+				\json_encode(
+					\simplexml_load_string($xml, 'SimpleXMLElement', \LIBXML_NOCDATA)
+				), true);
+			if (!empty($data['Response']['Account']['Protocol']) && 'email' === $data['Response']['Account']['AccountType']) {
+				$result = [
+					'incomingServer' => [],
+					'outgoingServer' => []
+				];
+				foreach ($data['Response']['Account']['Protocol'] as $entry) {
+					if ('IMAP' === $entry['Type']) {
+						$result['incomingServer'][] = [
+							'hostname' => $entry['Server'],
+							'port' => $entry['Port'],
+							'socketType' => ('on' === $entry['SSL']) ? (993 == $entry['Port'] ? 'SSL' : 'STARTTLS') : '',
+							'authentication' => 'password-cleartext',
+							'username' => ($entry['LoginName'] === $email) ? '%EMAILADDRESS%' : ''
+						];
+					} else if ('SMTP' === $entry['Type']) {
+						$result['outgoingServer'][] = [
+							'hostname' => $entry['Server'],
+							'port' => $entry['Port'],
+							'socketType' => (587 == $entry['Port']) ? 'STARTTLS' : ('on' === $entry['SSL'] ? 'SSL' : ''),
+							'authentication' => 'password-cleartext',
+							'username' => ($entry['LoginName'] === $email) ? '%EMAILADDRESS%' : ''
+						];
+					}
+				}
+				$result['canonical'] = $url;
+				return $result;
+			}
+		}
+		return null;
 	}
 
 }

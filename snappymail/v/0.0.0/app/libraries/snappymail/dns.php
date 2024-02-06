@@ -64,4 +64,17 @@ abstract class DNS
 		\ksort($mxhosts);
 		return \array_values($mxhosts);
 	}
+
+	public static function SRV(string $domain) : array
+	{
+		$result = array();
+		$values = \dns_get_record($domain, \DNS_SRV);
+		if ($values) {
+			foreach ($values as $record) {
+				$result[$record['pri']] = $record;
+			}
+		}
+		\ksort($result);
+		return \array_values($result);
+	}
 }
