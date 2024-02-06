@@ -153,7 +153,9 @@
 		"SPAM_SCORE": "垃圾邮件分数",
 		"HAS_VIRUS_WARNING": "警告：检测到病毒",
 		"TAGS": "标签",
-		"NEW_TAG": "新标签"
+		"NEW_TAG": "新标签",
+		"ENABLE_TRACKING_LINKS": "Enable tracking links",
+		"TRACKING_ENABLED": "Links are now tracked when clicked!"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "重要",

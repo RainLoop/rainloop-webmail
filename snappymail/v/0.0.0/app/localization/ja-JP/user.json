@@ -153,7 +153,9 @@
 		"SPAM_SCORE": "Spam Score",
 		"HAS_VIRUS_WARNING": "警告: ウィルスが検出されました",
 		"TAGS": "タグ",
-		"NEW_TAG": "New tag"
+		"NEW_TAG": "New tag",
+		"ENABLE_TRACKING_LINKS": "Enable tracking links",
+		"TRACKING_ENABLED": "Links are now tracked when clicked!"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "重要",

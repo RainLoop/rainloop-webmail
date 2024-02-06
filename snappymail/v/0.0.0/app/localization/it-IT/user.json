@@ -153,7 +153,9 @@
 		"SPAM_SCORE": "Punteggio Spam",
 		"HAS_VIRUS_WARNING": "AVVISO: rilevato virus",
 		"TAGS": "Tag",
-		"NEW_TAG": "Nuovo tag"
+		"NEW_TAG": "Nuovo tag",
+		"ENABLE_TRACKING_LINKS": "Enable tracking links",
+		"TRACKING_ENABLED": "Links are now tracked when clicked!"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Importante",

@@ -109,7 +109,8 @@ export class MailMessageView extends AbstractViewRight {
 			actionsMenu: null,
 			// viewer
 			viewFromShort: '',
-			dkimData: ['none', '', '']
+			dkimData: ['none', '', ''],
+			nowTracking: false
 		});
 
 		this.moveAction = moveAction;
@@ -208,6 +209,7 @@ export class MailMessageView extends AbstractViewRight {
 					// TODO: make first param a user setting #683
 					this.viewFromShort(message.from.toString(false, true));
 					this.dkimData(message.dkim[0] || ['none', '', '']);
+					this.nowTracking(false);
 				} else {
 					MessagelistUserStore.selectedMessage(null);
 
@@ -498,6 +500,17 @@ export class MailMessageView extends AbstractViewRight {
 	 */
 	showImages() {
 		currentMessage().showExternalImages();
+	}
+
+	showTracking() {
+		const msg = currentMessage(), body = msg?.body;
+		if (body && msg.hasTracking()) {
+			let attr = 'data-x-href-tracking';
+			body.querySelectorAll('a['+attr+']').forEach(node => node.href = node.getAttribute(attr));
+//			attr = 'data-x-src-tracking';
+//			body.querySelectorAll('img['+attr+']').forEach(node => node.src = node.getAttribute(attr));
+			this.nowTracking(true);
+		}
 	}
 
 	whitelistText(txt) {

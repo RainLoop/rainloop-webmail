@@ -153,7 +153,9 @@
 		"SPAM_SCORE": "Spam Puntuzioa",
 		"HAS_VIRUS_WARNING": "KONTUZ: virusa detektatu da",
 		"TAGS": "Etiketak",
-		"NEW_TAG": "Etiketa berria"
+		"NEW_TAG": "Etiketa berria",
+		"ENABLE_TRACKING_LINKS": "Enable tracking links",
+		"TRACKING_ENABLED": "Links are now tracked when clicked!"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Garrantzitsua",

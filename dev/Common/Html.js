@@ -208,6 +208,7 @@ export const
 
 			result = {
 				hasExternals: false,
+				tracking: false,
 				linkedData: []
 			},
 
@@ -398,10 +399,14 @@ export const
 			if ('A' === name) {
 				value = oElement.href;
 				if (!/^([a-z]+):/i.test(value)) {
-					setAttribute('data-x-broken-href', value);
+					setAttribute('data-x-href-broken', value);
 					delAttribute('href');
 				} else {
 					oElement.href = stripTracking(value);
+					if (oElement.href != value) {
+						result.tracking = true;
+						setAttribute('data-x-href-tracking', value);
+					}
 					setAttribute('target', '_blank');
 //					setAttribute('rel', 'external nofollow noopener noreferrer');
 				}
@@ -423,9 +428,8 @@ export const
 			*/
 
 			let skipStyle = false;
-			if (hasAttribute('src')) {
-				value = stripTracking(delAttribute('src'));
-
+			value = delAttribute('src');
+			if (value) {
 				if ('IMG' === name) {
 					oElement.loading = 'lazy';
 					let attachment;
@@ -462,12 +466,18 @@ export const
 						oStyle.display = 'none';
 //						setAttribute('style', 'display:none');
 						setAttribute('data-x-src-hidden', value);
+//						result.tracking = true;
 					}
 					else if (httpre.test(value))
 					{
-						setAttribute('data-x-src', value);
+						let src = stripTracking(value);
+						if (src != value) {
+							result.tracking = true;
+							setAttribute('data-x-src-tracking', value);
+						}
+						setAttribute('data-x-src', src);
 						result.hasExternals = true;
-						oElement.alt || (oElement.alt = value.replace(/^.+\/([^/?]+).*$/, '$1').slice(-20));
+						oElement.alt || (oElement.alt = src.replace(/^.+\/([^/?]+).*$/, '$1').slice(-20));
 					}
 					else if (value.startsWith('data:image/'))
 					{

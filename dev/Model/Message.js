@@ -118,6 +118,7 @@ export class MessageModel extends AbstractModel {
 			isHtml: false,
 			hasImages: false,
 			hasExternals: false,
+			hasTracking: false,
 
 			pgpSigned: null,
 			pgpVerified: null,
@@ -373,6 +374,7 @@ export class MessageModel extends AbstractModel {
 				let result = msgHtml(this);
 				this.hasExternals(result.hasExternals);
 				this.hasImages(!!result.hasExternals);
+				this.hasTracking(!!result.tracking);
 				this.linkedData = result.linkedData;
 				body.innerHTML = result.html;
 				if (!this.isSpam && FolderUserStore.spamFolder() != this.folder) {

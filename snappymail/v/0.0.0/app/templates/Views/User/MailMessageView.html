@@ -287,6 +287,11 @@
 							</div>
 						</div>
 
+						<div class="btn-toolbar" data-bind="visible: message().hasTracking()">
+							<div class="btn" data-bind="visible: !nowTracking(), click: showTracking" data-icon="🔗" data-i18n="MESSAGE/ENABLE_TRACKING_LINKS"></div>
+							<div class="alert" data-bind="visible: nowTracking" data-i18n="MESSAGE/TRACKING_ENABLED" style="margin:0"></div>
+						</div>
+
 						<div data-bind="visible: message().pgpEncrypted()">
 							<div class="openpgp-control encrypted" data-bind="css: {success: message().pgpDecrypted()}">
 								<span data-icon="🔒" data-i18n="OPENPGP/ENCRYPTED_MESSAGE"></span>

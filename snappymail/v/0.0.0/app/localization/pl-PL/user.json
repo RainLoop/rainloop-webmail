@@ -153,7 +153,9 @@
 		"SPAM_SCORE": "Punktacja\/Reputacja spamu",
 		"HAS_VIRUS_WARNING": "Uwaga: wykryto wirusa!",
 		"TAGS": "Tagi",
-		"NEW_TAG": "Nowy tag"
+		"NEW_TAG": "Nowy tag",
+		"ENABLE_TRACKING_LINKS": "Enable tracking links",
+		"TRACKING_ENABLED": "Links are now tracked when clicked!"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Ważne",
@@ -386,7 +388,8 @@
 		"IMAGEURL": "Odnośnik obrazu",
 		"IMAGEUPLOAD": "Wybierz obraz",
 		"UNDO": "Cofnij",
-		"REDO": "Ponów"
+		"REDO": "Ponów",
+		"REMOVESTYLE": "Remove style"
 	},
 	"SETTINGS_LABELS": {
 		"GENERAL": "Ogólne",
