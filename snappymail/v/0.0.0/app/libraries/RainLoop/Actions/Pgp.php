@@ -10,6 +10,14 @@ trait Pgp
 	 * Also see trait Messages::DoMessagePgpVerify
 	 */
 
+	public function DoSearchPGPKey() : array
+	{
+		$result = \SnappyMail\PGP\Keyservers::get(
+			$this->GetActionParam('query', '')
+		);
+		return $this->DefaultResponse($result ?: false);
+	}
+
 	/**
 	 * @throws \MailSo\RuntimeException
 	 */

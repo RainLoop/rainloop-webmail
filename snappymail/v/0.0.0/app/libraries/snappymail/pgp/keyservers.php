@@ -8,6 +8,10 @@
  * https://datatracker.ietf.org/doc/html/rfc4387
  * https://datatracker.ietf.org/doc/html/rfc7929
  * https://datatracker.ietf.org/doc/html/draft-koch-openpgp-webkey-service-13
+ *
+ * GET https://keys.openpgp.org/pks/lookup?op=get&options=mr&search=security@snappymail.eu
+ * GET https://keys.openpgp.org/vks/v1/by-fingerprint/445D265124E6072671E64D0733F868A7E35E8277
+ * GET https://openpgpkey.example.org/.well-known/openpgpkey/example.org/hu/ihyath4noz8dsckzjbuyqnh4kbup6h4i?l=john.doe
  */
 
 namespace SnappyMail\PGP;
@@ -15,18 +19,16 @@ namespace SnappyMail\PGP;
 abstract class Keyservers
 {
 	public static $hosts = [
+		'https://keys.openpgp.org'
 /*
-		'https://keys.openpgp.org',
 		'https://pgp.mit.edu',
 		'https://keyring.debian.org',
 		'https://attester.flowcrypt.com',
 		'https://zimmermann.mayfirst.org',
 		'https://pool.sks-keyservers.net',
 		'https://keys.mailvelope.com',
-*/
 		'https://keyserver.ubuntu.com',
-		'https://keys.fedoraproject.org',
-		'https://keys.openpgp.org'
+*/
 	];
 
 	private static function fetch(string $host, string $op, string $search, bool $fingerprint = false, bool $exact = false) : ?\SnappyMail\HTTP\Response
@@ -36,7 +38,9 @@ abstract class Keyservers
 		$search = \urlencode($search);
 		$fingerprint = $fingerprint ? '&fingerprint=on' : '';
 		$exact = $exact ? '&exact=on' : '';
-		return static::HTTP()->doRequest('GET', "{$host}/pks/lookup?op={$op}&options=mr{$fingerprint}&search={$search}");
+		$url = "{$host}/pks/lookup?op={$op}&options=mr{$fingerprint}&search={$search}";
+		\SnappyMail\Log::debug('PGP', $url);
+		return static::HTTP()->doRequest('GET', $url);
 	}
 
 	private static $HTTP;
@@ -56,11 +60,12 @@ abstract class Keyservers
 	 */
 	public static function get(string $keyId) : string
 	{
+/*
 		// add the 0x prefix if absent
 		if ('0x' !== \substr($keyId, 0, 2)) {
 			$keyId = '0x' . $keyId;
 		}
-
+*/
 		foreach (static::$hosts as $host) {
 			$oResponse = static::fetch($host, 'get', $keyId);
 			if (!$oResponse) {
@@ -68,14 +73,14 @@ abstract class Keyservers
 				continue;
 			}
 			if (200 !== $oResponse->status) {
-				\SnappyMail\Log::info('PGP', "{$oResponse->status} for key {$keyId} on {$host}");
+				\SnappyMail\Log::debug('PGP', "{$oResponse->status} for key {$keyId} on {$host}");
 				continue;
 			}
 
 			return $oResponse->body;
 		}
 
-		throw new \Exception('Could not obtain public key from the keyserver.');
+		throw new \Exception('Could not obtain public key from the keyservers.');
 	}
 
 	/**
@@ -97,7 +102,7 @@ abstract class Keyservers
 				continue;
 			}
 			if (200 !== $oResponse->status) {
-				\SnappyMail\Log::info('PGP', "{$oResponse->status} for search `{$search}` on {$host}");
+				\SnappyMail\Log::debug('PGP', "{$oResponse->status} for search `{$search}` on {$host}");
 				continue;
 			}
 

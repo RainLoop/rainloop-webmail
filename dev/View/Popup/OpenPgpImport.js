@@ -4,11 +4,16 @@ import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
 
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
+import Remote from 'Remote/User/Fetch';
+import { i18n } from 'Common/Translator';
+
 export class OpenPgpImportPopupView extends AbstractViewPopup {
 	constructor() {
 		super('OpenPgpImport');
 
 		addObservablesTo(this, {
+			search: '',
+
 			key: '',
 			keyError: false,
 			keyErrorMessage: '',
@@ -23,6 +28,21 @@ export class OpenPgpImportPopupView extends AbstractViewPopup {
 			this.keyError(false);
 			this.keyErrorMessage('');
 		});
+	}
+
+	searchPGP() {
+		this.key(i18n('SUGGESTIONS/SEARCHING_DESC'));
+		Remote.request('SearchPGPKey',
+			(iError, oData) => {
+				if (iError) {
+					this.key(oData.ErrorMessage);
+				} else {
+					this.key(oData.Result);
+				}
+			}, {
+				query: this.search()
+			}
+		);
 	}
 
 	submitForm() {
