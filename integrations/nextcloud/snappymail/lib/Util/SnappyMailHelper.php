@@ -124,7 +124,7 @@ class SnappyMailHelper
 		}
 	}
 
-	public static function getLoginCredentials() : array
+	private static function getLoginCredentials() : array
 	{
 		$sUID = \OC::$server->getUserSession()->getUser()->getUID();
 
@@ -148,15 +148,20 @@ class SnappyMailHelper
 			} else if ($config->getAppValue('snappymail', 'snappymail-autologin-with-email', false)) {
 				$sEmail = $config->getUserValue($sUID, 'settings', 'email');
 				$sPassword = $ocSession['snappymail-password'];
-			}
-			if ($sPassword) {
-				$sPassword = static::decodePassword($sPassword, $sUID);
+			} else {
+				\SnappyMail\Log::debug('Nextcloud', 'snappymail-autologin is off');
 			}
 			if ($config->getAppValue('snappymail', 'snappymail-autologin-oidc', false) && $ocSession->get('is_oidc')) {
 				$sAccessToken = $ocSession->get('oidc_access_token');
 				if ($sAccessToken) {
 					$sPassword = $sAccessToken;
+				} else {
+					\SnappyMail\Log::debug('Nextcloud', 'OIDC no access_token');
 				}
+			} else if ($sPassword) {
+				$sPassword = static::decodePassword($sPassword, $sUID);
+			} else {
+				\SnappyMail\Log::debug('Nextcloud', 'OIDC is off');
 			}
 		}
 
