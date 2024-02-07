@@ -35,10 +35,12 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 			$this->addTemplate('templates/PopupsNextcloudFiles.html');
 			$this->addTemplate('templates/PopupsNextcloudCalendars.html');
-
+/*
+			// DISABLED https://github.com/the-djmaze/snappymail/issues/1420#issuecomment-1933045917
 			$this->addHook('imap.before-login', 'oidcLogin');
 			$this->addHook('smtp.before-login', 'oidcLogin');
 			$this->addHook('sieve.before-login', 'oidcLogin');
+*/
 		} else {
 			\SnappyMail\Log::debug('Nextcloud', 'NOT integrated');
 			// \OC::$server->getConfig()->getAppValue('snappymail', 'snappymail-no-embed');
@@ -68,6 +70,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 		return static::IsIntegrated() && \OC::$server->getUserSession()->isLoggedIn();
 	}
 
+	// https://apps.nextcloud.com/apps/oidc_login
+	// DISABLED https://github.com/the-djmaze/snappymail/issues/1420#issuecomment-1933045917
 	public function oidcLogin(\RainLoop\Model\Account $oAccount, \MailSo\Net\NetClient $oClient, \MailSo\Net\ConnectSettings $oSettings) : void
 	{
 		if (\OC::$server->getConfig()->getAppValue('snappymail', 'snappymail-autologin-oidc', false)

@@ -52,8 +52,9 @@ class FetchController extends Controller {
 					isset($_POST['snappymail-autologin']) ? '1' === $_POST['snappymail-autologin'] : false);
 				$this->config->setAppValue('snappymail', 'snappymail-autologin-with-email',
 					isset($_POST['snappymail-autologin']) ? '2' === $_POST['snappymail-autologin'] : false);
-				$this->config->setAppValue('snappymail', 'snappymail-autologin-oidc', isset($_POST['snappymail-autologin-oidc']));
 				$this->config->setAppValue('snappymail', 'snappymail-no-embed', isset($_POST['snappymail-no-embed']));
+				// DISABLED https://github.com/the-djmaze/snappymail/issues/1420#issuecomment-1933045917
+//				$this->config->setAppValue('snappymail', 'snappymail-autologin-oidc', isset($_POST['snappymail-autologin-oidc']));
 			} else {
 				return new JSONResponse([
 					'status' => 'error',

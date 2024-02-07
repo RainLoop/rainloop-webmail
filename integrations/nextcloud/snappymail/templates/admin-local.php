@@ -38,6 +38,7 @@
 				</div>
 			</p>
 			<br />
+<!-- DISABLED https://github.com/the-djmaze/snappymail/issues/1420#issuecomment-1933045917
 			<p>
 				<input id="snappymail-autologin-oidc" name="snappymail-autologin-oidc" type="checkbox" class="checkbox" <?php if ($_['snappymail-autologin-oidc']) echo 'checked="checked"'; ?>>
 				<label for="snappymail-autologin-oidc">
@@ -45,6 +46,7 @@
 				</label>
 			</p>
 			<br />
+-->
 			<p>
 				<input id="snappymail-no-embed" name="snappymail-no-embed" type="checkbox" class="checkbox" <?php if ($_['snappymail-no-embed']) echo 'checked="checked"'; ?>>
 				<label for="snappymail-no-embed">
