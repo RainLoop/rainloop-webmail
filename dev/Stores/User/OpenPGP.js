@@ -117,12 +117,16 @@ export const OpenPGPUserStore = new class {
 
 	loadKeyrings() {
 		if (window.openpgp) {
+			const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'}),
+				dedup = keys => (keys || [])
+					.filter((v, i, a) => a.findIndex(entry => entry.fingerprint == v.fingerprint) === i)
+					.sort((a, b) => collator.compare(a.emails[0], b.emails[0]));
 			loadOpenPgpKeys(publicKeysItem).then(keys => {
-				this.publicKeys(keys || []);
+				this.publicKeys(dedup(keys));
 				console.log('openpgp.js public keys loaded');
 			});
 			loadOpenPgpKeys(privateKeysItem).then(keys => {
-				this.privateKeys(keys || [])
+				this.privateKeys(dedup(keys));
 				console.log('openpgp.js private keys loaded');
 			});
 		}
@@ -138,12 +142,17 @@ export const OpenPGPUserStore = new class {
 	importKey(armoredKey) {
 		window.openpgp && openpgp.readKey({armoredKey:armoredKey}).then(key => {
 			if (!key.err) {
-				if (key.isPrivate()) {
-					this.privateKeys.push(new OpenPgpKeyModel(armoredKey, key));
-					storeOpenPgpKeys(this.privateKeys, privateKeysItem);
+				key = new OpenPgpKeyModel(armoredKey, key);
+				if (key.key.isPrivate()) {
+					if (!this.privateKeys.find(entry => entry.fingerprint == key.fingerprint)) {
+						this.privateKeys.push(key);
+						storeOpenPgpKeys(this.privateKeys, privateKeysItem);
+					}
 				} else {
-					this.publicKeys.push(new OpenPgpKeyModel(armoredKey, key));
-					storeOpenPgpKeys(this.publicKeys, publicKeysItem);
+					if (!this.publicKeys.find(entry => entry.fingerprint == key.fingerprint)) {
+						this.publicKeys.push(key);
+						storeOpenPgpKeys(this.publicKeys, publicKeysItem);
+					}
 				}
 			}
 		});
