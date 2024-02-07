@@ -73,7 +73,6 @@
 <!-- ko if: canOpenPGP -->
 <details>
 <summary class="legend">OpenPGP.js</summary>
-<button data-bind="click: importToOpenPGP" data-i18n="SETTINGS_OPENPGP/IMPORT_FROM_SERVER"></button>
 <table class="table table-hover list-table">
 	<tbody><tr><th colspan="4" data-i18n="SETTINGS_OPENPGP/TITLE_PRIVATE">Private keys</th></tr></tbody>
 	<tbody data-bind="foreach: openpgpkeysPrivate, i18nUpdate: openpgpkeysPrivate">
@@ -114,6 +113,7 @@
 		</tr>
 	</tbody>
 </table>
+<button class="btn" data-bind="click: importToOpenPGP" data-i18n="SETTINGS_OPENPGP/IMPORT_FROM_SERVER"></button>
 </details>
 <!-- /ko -->
 
