@@ -1,5 +1,14 @@
 <?php
 
+use RainLoop\Model\Account;
+use MailSo\Imap\ImapClient;
+use MailSo\Imap\Settings as ImapSettings;
+use MailSo\Sieve\SieveClient;
+use MailSo\Sieve\Settings as SieveSettings;
+use MailSo\Smtp\SmtpClient;
+use MailSo\Smtp\Settings as SmtpSettings;
+use MailSo\Mime\Message as MimeMessage;
+
 class ExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
@@ -32,8 +41,57 @@ class ExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->addTemplateHook(string $sName, string $sPlace, string $sLocalTemplateName, bool $bPrepend = false);
 */
 
-//		$this->addHook('login.credentials', 'FilterLoginCredentials');
+/*
+		$this->addHook("json.before-{actionname}",          "jsonBefore{actionname}");
+		$this->addHook("json.after-{actionname}",           "jsonAfter{actionname}");
 
+		$this->addHook('login.credentials.step-1',          'loginCredentialsStep1');
+		$this->addHook('login.credentials.step-2',          'loginCredentialsStep2');
+		$this->addHook('login.credentials',                 'loginCredentials');
+		$this->addHook('login.success',                     'loginSuccess');
+		$this->addHook('imap.before-connect',               'imapBeforeConnect');
+		$this->addHook('imap.after-connect',                'imapAfterConnect');
+		$this->addHook('imap.before-login',                 'imapBeforeLogin');
+		$this->addHook('imap.after-login',                  'imapAfterLogin');
+		$this->addHook('imap.message-headers',              'imapMessageHeaders');
+		$this->addHook('sieve.before-connect',              'sieveBeforeConnect');
+		$this->addHook('sieve.after-connect',               'sieveAfterConnect');
+		$this->addHook('sieve.before-login',                'sieveBeforeLogin');
+		$this->addHook('sieve.after-login',                 'sieveAfterLogin');
+		$this->addHook('smtp.before-connect',               'smtpBeforeConnect');
+		$this->addHook('smtp.after-connect',                'smtpAfterConnect');
+		$this->addHook('smtp.before-login',                 'smtpBeforeLogin');
+		$this->addHook('smtp.after-login',                  'smtpAfterLogin');
+		$this->addHook('filter.account',                    'filterAccount');
+		$this->addHook('filter.action-params',              'filterActionParams');
+		$this->addHook('filter.app-data',                   'filterAppData');
+		$this->addHook('filter.application-config',         'filterApplicationConfig');
+		$this->addHook('filter.build-message',              'filterBuildMessage');
+		$this->addHook('filter.build-read-receipt-message', 'filterBuildReadReceiptMessage');
+		$this->addHook('filter.domain',                     'filterDomain');
+		$this->addHook('filter.fabrica',                    'filterFabrica');
+		$this->addHook('filter.http-paths',                 'filterHttpPaths');
+		$this->addHook('filter.language',                   'filterLanguage');
+		$this->addHook('filter.message-html',               'filterMessageHtml');
+		$this->addHook('filter.message-plain',              'filterMessagePlain');
+		$this->addHook('filter.message-rcpt',               'filterMessageRcpt');
+		$this->addHook('filter.read-receipt-message-plain', 'filterReadReceiptMessagePlain');
+		$this->addHook('filter.result-message',             'filterResultMessage');
+		$this->addHook('filter.save-message',               'filterSaveMessage');
+		$this->addHook('filter.send-message',               'filterSendMessage');
+		$this->addHook('filter.send-message-stream',        'filterSendMessageStream');
+		$this->addHook('filter.send-read-receipt-message',  'filterSendReadReceiptMessage');
+		$this->addHook('filter.smtp-from',                  'filterSmtpFrom');
+		$this->addHook('filter.smtp-hidden-rcpt',           'filterSmtpHiddenRcpt');
+		$this->addHook('filter.smtp-message-stream',        'filterSmtpMessageStream');
+		$this->addHook('filter.upload-response',            'filterUploadResponse');
+		$this->addHook('json.attachments',                  'jsonAttachments');
+		$this->addHook('json.suggestions-input-parameters', 'jsonSuggestionsInputParameters');
+		$this->addHook('main.content-security-policy',      'mainContentSecurityPolicy');
+		$this->addHook('main.fabrica',                      'mainFabrica');
+		$this->addHook('service.app-delay-start-begin',     'serviceAppDelayStartBegin');
+		$this->addHook('service.app-delay-start-end',       'serviceAppDelayStartEnd');
+*/
 
 		$this->UseLangs(true); // start use langs folder
 
@@ -157,6 +215,193 @@ class ExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 	}
 
 /*
+	public function jsonBefore{actionname}(){};
+	public function jsonAfter{actionname}(array &$aResponse){};
+
+	public function loginCredentialsStep1(string &$sEmail)
+	{
+	}
+
+	public function loginCredentialsStep2(string &$sEmail, string &$sPassword)
+	{
+	}
+
+	public function loginCredentials(string &$sEmail, string &$sLogin, string &$sPassword)
+	{
+	}
+
+	public function loginSuccess(\RainLoop\Model\MainAccount $oAccount)
+	{
+	}
+
+	public function imapBeforeConnect(Account $oAccount, ImapClient $oImapClient, ImapSettings $oSettings)
+	{
+	}
+
+	public function imapAfterConnect(Account $oAccount, ImapClient $oImapClient, ImapSettings $oSettings)
+	{
+	}
+
+	public function imapBeforeLogin(Account $oAccount, ImapClient $oImapClient, ImapSettings $oSettings)
+	{
+	}
+
+	public function imapAfterLogin(Account $oAccount, ImapClient $oImapClient, bool $bSuccess, ImapSettings $oSettings)
+	{
+	}
+
+	public function imapMessageHeaders(array &$aHeaders)
+	{
+	}
+
+	public function sieveBeforeConnect(Account $oAccount, SieveClient $oSieveClient, SieveSettings $oSettings)
+	{
+	}
+
+	public function sieveAfterConnect(Account $oAccount, SieveClient $oSieveClient, SieveSettings $oSettings)
+	{
+	}
+
+	public function sieveBeforeLogin(Account $oAccount, SieveClient $oSieveClient, SieveSettings $oSettings)
+	{
+	}
+
+	public function sieveAfterLogin(Account $oAccount, SieveClient $oSieveClient, bool $bSuccess, SieveSettings $oSettings)
+	{
+	}
+
+	public function smtpBeforeConnect(Account $oAccount, SmtpClient $oSmtpClient, SmtpSettings $oSettings)
+	{
+	}
+
+	public function smtpAfterConnect(Account $oAccount, SmtpClient $oSmtpClient, SmtpSettings $oSettings)
+	{
+	}
+
+	public function smtpBeforeLogin(Account $oAccount, SmtpClient $oSmtpClient, SmtpSettings $oSettings)
+	{
+	}
+
+	public function smtpAfterLogin(Account $oAccount, SmtpClient $oSmtpClient, bool $bSuccess, SmtpSettings $oSettings)
+	{
+	}
+
+	public function filterAccount(Account $oAccount)
+	{
+	}
+
+	public function filterActionParams(string $sMethodName, array &$aCurrentActionParams)
+	{
+	}
+
+	public function filterAppData(bool $bAdmin, array &$aAppData)
+	{
+	}
+
+	public function filterApplicationConfig(\RainLoop\Config\Application $oConfig)
+	{
+	}
+
+	public function filterBuildMessage(MimeMessage $oMessage)
+	{
+	}
+
+	public function filterBuildReadReceiptMessage(MimeMessage $oMessage, Account $oAccount)
+	{
+	}
+
+	public function filterDomain(\RainLoop\Model\Domain $oDomain)
+	{
+	}
+
+	public function filterFabrica(string $sName, mixed &$mResult, Account $oAccount)
+	{
+	}
+
+	public function filterHttpPaths(array &$aPaths)
+	{
+	}
+
+	public function filterLanguage(string &$sLanguage, bool $bAdmin)
+	{
+	}
+
+	public function filterMessageHtml(Account $oAccount, MimeMessage $oMessage, string &$sTextConverted)
+	{
+	}
+
+	public function filterMessagePlain(Account $oAccount, MimeMessage $oMessage, string &$sTextConverted)
+	{
+	}
+
+	public function filterMessageRcpt(Account $oAccount, \MailSo\Mime\EmailCollection $oRcpt)
+	{
+	}
+
+	public function filterReadReceiptMessagePlain(Account $oAccount, MimeMessage $oMessage, string &$sText)
+	{
+	}
+
+	public function filterResultMessage(MimeMessage $oMessage)
+	{
+	}
+
+	public function filterSaveMessage(MimeMessage $oMessage)
+	{
+	}
+
+	public function filterSendMessage(MimeMessage $oMessage)
+	{
+	}
+
+	public function filterSendMessageStream(Account $oAccount, resource &$rMessageStream, int &$iMessageStreamSize)
+	{
+	}
+
+	public function filterSendReadReceiptMessage(MimeMessage $oMessage, Account $oAccount)
+	{
+	}
+
+	public function filterSmtpFrom(Account $oAccount, MimeMessage $oMessage, string &$sFrom)
+	{
+	}
+
+	public function filterSmtpHiddenRcpt(Account $oAccount, MimeMessage $oMessage, array &$aHiddenRcpt)
+	{
+	}
+
+	public function filterSmtpMessageStream(Account $oAccount, resource &$rMessageStream, int &$iMessageStreamSize)
+	{
+	}
+
+	public function filterUploadResponse(array &$aResponse)
+	{
+	}
+
+	public function jsonAttachments(\SnappyMail\AttachmentsAction $oData)
+	{
+	}
+
+	public function jsonSuggestionsInputParameters(string &$sQuery, int &$iLimit, Account $oAccount)
+	{
+	}
+
+	public function mainContentSecurityPolicy(\SnappyMail\HTTP\CSP $oCSP)
+	{
+	}
+
+	public function mainFabrica(string $sName, mixed &$mResult)
+	{
+	}
+
+	public function serviceAppDelayStartBegin()
+	{
+	}
+
+	public function serviceAppDelayStartEnd()
+	{
+	}
+
 	public function Config() : \RainLoop\Config\Plugin
 	public function Description() : string
 	public function FilterAppDataPluginSection(bool $bAdmin, bool $bAuth, array &$aConfig) : void
@@ -190,7 +435,7 @@ class ExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 	$this->Manager()->CompileCss(bool $bAdminScope = false) : string
 	$this->Manager()->CompileJs(bool $bAdminScope = false) : string
 	$this->Manager()->CompileTemplate(array &$aList, bool $bAdminScope = false) : void
-	$this->Manager()->InitAppData(bool $bAdmin, array &$aAppData, ?\RainLoop\Model\Account $oAccount = null) : self
+	$this->Manager()->InitAppData(bool $bAdmin, array &$aAppData, ?Account $oAccount = null) : self
 	$this->Manager()->AddHook(string $sHookName, $mCallbak) : self
 	$this->Manager()->AddCss(string $sFile, bool $bAdminScope = false) : self
 	$this->Manager()->AddJs(string $sFile, bool $bAdminScope = false) : self

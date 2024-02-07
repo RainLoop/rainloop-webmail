@@ -1,3 +1,5 @@
+Also see https://github.com/the-djmaze/snappymail/tree/master/plugins/example
+
 PHP
 ```php
 class Plugin extends \RainLoop\Plugins\AbstractPlugin
