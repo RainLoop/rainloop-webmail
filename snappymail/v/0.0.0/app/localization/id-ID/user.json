@@ -515,6 +515,7 @@
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Impor kunci",
 		"BUTTON_GENERATE_KEY_PAIR": "Buat kunci",
+		"IMPORT_FROM_SERVER": "Import from server",
 		"TITLE_PRIVATE": "Pribadi",
 		"TITLE_PUBLIC": "Publik",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."

@@ -515,6 +515,7 @@
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "وارد کردن کلید",
 		"BUTTON_GENERATE_KEY_PAIR": "تولید کلیدهای",
+		"IMPORT_FROM_SERVER": "Import from server",
 		"TITLE_PRIVATE": "خصوصی",
 		"TITLE_PUBLIC": "عمومی",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."

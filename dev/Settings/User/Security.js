@@ -15,7 +15,7 @@ import { showScreenPopup } from 'Knoin/Knoin';
 import { OpenPgpImportPopupView } from 'View/Popup/OpenPgpImport';
 import { OpenPgpGeneratePopupView } from 'View/Popup/OpenPgpGenerate';
 
-//import Remote from 'Remote/User/Fetch';
+import Remote from 'Remote/User/Fetch';
 
 export class UserSettingsSecurity extends AbstractViewSettings {
 	constructor() {
@@ -54,6 +54,16 @@ export class UserSettingsSecurity extends AbstractViewSettings {
 
 	generateOpenPgpKey() {
 		showScreenPopup(OpenPgpGeneratePopupView);
+	}
+
+	importToOpenPGP() {
+		OpenPGPUserStore.isSupported() && Remote.request('GetPGPKeys',
+			(iError, oData) => {
+				if (!iError && oData.Result) {
+					oData.Result.forEach(key => OpenPGPUserStore.importKey(key));
+				}
+			}
+		);
 	}
 
 	onBuild() {

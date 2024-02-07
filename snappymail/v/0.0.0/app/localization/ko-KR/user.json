@@ -515,6 +515,7 @@
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "키 가져오기",
 		"BUTTON_GENERATE_KEY_PAIR": "키 생성",
+		"IMPORT_FROM_SERVER": "Import from server",
 		"TITLE_PRIVATE": "비공개",
 		"TITLE_PUBLIC": "공개",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."

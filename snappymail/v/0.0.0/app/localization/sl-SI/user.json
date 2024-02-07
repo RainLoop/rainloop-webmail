@@ -515,6 +515,7 @@
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Uvozi ključ",
 		"BUTTON_GENERATE_KEY_PAIR": "Generiraj ključe",
+		"IMPORT_FROM_SERVER": "Import from server",
 		"TITLE_PRIVATE": "Zasebni",
 		"TITLE_PUBLIC": "Javni",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."

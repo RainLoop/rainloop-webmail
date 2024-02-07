@@ -515,6 +515,7 @@
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "匯入金鑰",
 		"BUTTON_GENERATE_KEY_PAIR": "產生密鑰",
+		"IMPORT_FROM_SERVER": "Import from server",
 		"TITLE_PRIVATE": "私密",
 		"TITLE_PUBLIC": "公開",
 		"GET_MAILVELOPE": "取得 Mailvelope 瀏覽器擴充功能"

@@ -515,6 +515,7 @@
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": " إستيراد مفتاح",
 		"BUTTON_GENERATE_KEY_PAIR": " توليد مفتاح",
+		"IMPORT_FROM_SERVER": "Import from server",
 		"TITLE_PRIVATE": "خاص",
 		"TITLE_PUBLIC": "عام",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."

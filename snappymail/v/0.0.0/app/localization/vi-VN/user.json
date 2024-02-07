@@ -515,6 +515,7 @@
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Nhập mật mã",
 		"BUTTON_GENERATE_KEY_PAIR": "Tạo một đôi mật mã",
+		"IMPORT_FROM_SERVER": "Import from server",
 		"TITLE_PRIVATE": "Mã lưu riêng",
 		"TITLE_PUBLIC": "Mã chia sẻ công cộng",
 		"GET_MAILVELOPE": "Tải về tiện ích trình duyệt cài thêm tên Mailvelope."

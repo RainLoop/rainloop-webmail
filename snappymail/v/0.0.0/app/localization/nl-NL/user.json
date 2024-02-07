@@ -515,6 +515,7 @@
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importeer sleutel",
 		"BUTTON_GENERATE_KEY_PAIR": "Genereer sleutels",
+		"IMPORT_FROM_SERVER": "Import from server",
 		"TITLE_PRIVATE": "Privé sleutel",
 		"TITLE_PUBLIC": "Publieke sleutel",
 		"GET_MAILVELOPE": "Verkrijg Mailvelope browser add-on."

@@ -515,6 +515,7 @@
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Внеси ключ",
 		"BUTTON_GENERATE_KEY_PAIR": "Генерирай ключ",
+		"IMPORT_FROM_SERVER": "Import from server",
 		"TITLE_PRIVATE": "Частен",
 		"TITLE_PUBLIC": "Публичен",
 		"GET_MAILVELOPE": "Get Mailvelope browser add-on."

@@ -10,6 +10,32 @@ trait Pgp
 	 * Also see trait Messages::DoMessagePgpVerify
 	 */
 
+	public function DoGetPGPKeys() : array
+	{
+		$result = [];
+
+		$keys = \SnappyMail\PGP\Backup::getKeys();
+		foreach ($keys['public'] as $key) {
+			$result[] = $key['value'];
+		}
+		foreach ($keys['private'] as $key) {
+			$result[] = $key['value'];
+		}
+
+		$GPG = $this->GnuPG();
+		if ($GPG) {
+			$keys = $GPG->keyInfo('');
+			foreach ($keys['public'] as $key) {
+				$key = $GPG->export($key['subkeys'][0]['fingerprint'] ?: $key['subkeys'][0]['keyid']);
+				if ($key) {
+					$result[] = $key;
+				}
+			}
+		}
+
+		return $this->DefaultResponse(\array_values(\array_unique($result)));
+	}
+
 	public function DoSearchPGPKey() : array
 	{
 		$result = \SnappyMail\PGP\Keyservers::get(

@@ -515,6 +515,7 @@
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Inportatu Gakoa",
 		"BUTTON_GENERATE_KEY_PAIR": "Sortu Gako Parea",
+		"IMPORT_FROM_SERVER": "Import from server",
 		"TITLE_PRIVATE": "Pribatua",
 		"TITLE_PUBLIC": "Publikoa",
 		"GET_MAILVELOPE": "Lortu Mailvelope nabigatzaileko gehigarria."
