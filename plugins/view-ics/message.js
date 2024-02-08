@@ -58,6 +58,7 @@
 				view.viewICS(null);
 				if (msg) {
 					// JSON-LD after parsing HTML
+					// See http://schema.org/
 					msg.linkedData.subscribe(data => {
 						if (!view.viewICS()) {
 							data.forEach(item => {
