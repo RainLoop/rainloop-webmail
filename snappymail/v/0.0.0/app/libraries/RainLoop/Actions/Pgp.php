@@ -190,7 +190,7 @@ trait Pgp
 		return $this->DefaultResponse($GPG ? $GPG->deleteKey($sKeyId, $bPrivate) : false);
 	}
 
-	public function DoGnupgImportKey() : array
+	public function DoPgpImportKey() : array
 	{
 		$sKey = $this->GetActionParam('key', '');
 		$sKeyId = $this->GetActionParam('keyId', '');
@@ -217,8 +217,17 @@ trait Pgp
 			}
 		}
 
-		$GPG = $sKey ? $this->GnuPG() : null;
-		return $this->DefaultResponse($GPG ? $GPG->import($sKey) : false);
+		$result = false;
+		if ($sKey) {
+			if ($this->GetActionParam('backup', '')) {
+				$result = $result || Backup::PGPKey($sKey);
+			}
+			if ($this->GetActionParam('gnuPG', '') && ($GPG = $this->GnuPG())) {
+				$result = $result || $GPG->import($sKey);
+			}
+		}
+
+		return $this->DefaultResponse($result);
 	}
 
 	/**

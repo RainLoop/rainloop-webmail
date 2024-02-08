@@ -19,7 +19,7 @@ export class OpenPgpImportPopupView extends AbstractViewPopup {
 			keyErrorMessage: '',
 
 			saveGnuPG: true,
-			saveServer: false
+			saveServer: true
 		});
 
 		this.canGnuPG = GnuPGUserStore.isSupported();
@@ -69,9 +69,22 @@ export class OpenPgpImportPopupView extends AbstractViewPopup {
 			match = reg.exec(keyTrimmed);
 			if (match && 0 < count) {
 				if (match[0] && match[1] && match[2] && match[1] === match[2]) {
-					this.saveGnuPG() && GnuPGUserStore.isSupported() && GnuPGUserStore.importKey(this.key(), (iError, oData) => {
-						iError && alert(oData.ErrorMessage);
-					});
+					const GnuPG = this.saveGnuPG() && GnuPGUserStore.isSupported(),
+						backup = this.saveServer();
+					if (GnuPG || backup()) {
+						Remote.request('PgpImportKey',
+							(iError, oData) => {
+								if (GnuPG && oData?.Result/* && (oData.Result.imported || oData.Result.secretimported)*/) {
+									GnuPGUserStore.loadKeyrings();
+								}
+								iError && alert(oData.ErrorMessage);
+							}, {
+								key: this.key(),
+								gnuPG: GnuPG,
+								backup: backup
+							}
+						);
+					}
 					OpenPGPUserStore.isSupported() && OpenPGPUserStore.importKey(this.key());
 				}
 

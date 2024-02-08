@@ -117,19 +117,6 @@ export const GnuPGUserStore = new class {
 		return SettingsCapa('GnuPG');
 	}
 
-	importKey(key, callback) {
-		Remote.request('GnupgImportKey',
-			(iError, oData) => {
-				if (oData?.Result/* && (oData.Result.imported || oData.Result.secretimported)*/) {
-					this.loadKeyrings();
-				}
-				callback?.(iError, oData);
-			}, {
-				key: key
-			}
-		);
-	}
-
 	/**
 		keyPair.privateKey
 		keyPair.publicKey
