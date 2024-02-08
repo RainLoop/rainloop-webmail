@@ -278,6 +278,8 @@ export const
 			.replace(/<span class="preview-text"[\s\S]+?<\/span>/, '')
 			// https://github.com/the-djmaze/snappymail/issues/900
 			.replace(/\u2028/g,' ')
+			// https://github.com/the-djmaze/snappymail/issues/1415
+			.replace(/<br>\s*<\/p>/gi,'</p>')
 			.trim();
 		html = '';
 
