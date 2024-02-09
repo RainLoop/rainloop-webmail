@@ -255,9 +255,10 @@
 	"POPUPS_IDENTITY": {
 		"TITLE_ADD_IDENTITY": "Identitás hozzáadás?",
 		"TITLE_UPDATE_IDENTITY": "Frissítsük az identitást?",
+		"LABEL": "Label",
 		"BUTTON_ADD_IDENTITY": "Hozzáadás",
 		"BUTTON_UPDATE_IDENTITY": "Frissítés",
-		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
+		"SIGNATURE": "Signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Szúrja be ezt az aláírást az idézett szöveg elé a válaszokban"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -416,7 +417,6 @@
 		"AUTOLOGIN_NEVER_OPTION_NAME": "Soha"
 	},
 	"SETTINGS_GENERAL": {
-		"LEGEND_GENERAL": "Általános",
 		"LANGUAGE": "Nyelv",
 		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identitás",

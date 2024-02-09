@@ -255,9 +255,10 @@
 	"POPUPS_IDENTITY": {
 		"TITLE_ADD_IDENTITY": "Tambah Identitas?",
 		"TITLE_UPDATE_IDENTITY": "Perbarui Identitas?",
+		"LABEL": "Label",
 		"BUTTON_ADD_IDENTITY": "Tambah",
 		"BUTTON_UPDATE_IDENTITY": "Perbarui",
-		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
+		"SIGNATURE": "Signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Sisipkan tanda tangan ini sebelum teks kutipan pada balasan"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -416,7 +417,6 @@
 		"AUTOLOGIN_NEVER_OPTION_NAME": "Tidak pernah"
 	},
 	"SETTINGS_GENERAL": {
-		"LEGEND_GENERAL": "Umum",
 		"LANGUAGE": "Bahasa",
 		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identitas",

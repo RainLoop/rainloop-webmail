@@ -255,9 +255,10 @@
 	"POPUPS_IDENTITY": {
 		"TITLE_ADD_IDENTITY": "Vil du legge til en identitet?",
 		"TITLE_UPDATE_IDENTITY": "Oppdater identitet",
+		"LABEL": "Label",
 		"BUTTON_ADD_IDENTITY": "Legg til",
 		"BUTTON_UPDATE_IDENTITY": "Oppdater",
-		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
+		"SIGNATURE": "Signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Legg til denne signaturen før sitert tekst"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -416,7 +417,6 @@
 		"AUTOLOGIN_NEVER_OPTION_NAME": "Aldri"
 	},
 	"SETTINGS_GENERAL": {
-		"LEGEND_GENERAL": "Generelt",
 		"LANGUAGE": "Språk",
 		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identitet",

@@ -255,9 +255,10 @@
 	"POPUPS_IDENTITY": {
 		"TITLE_ADD_IDENTITY": "Add Identity?",
 		"TITLE_UPDATE_IDENTITY": "Update Identity?",
+		"LABEL": "Label",
 		"BUTTON_ADD_IDENTITY": "Add",
 		"BUTTON_UPDATE_IDENTITY": "Update",
-		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
+		"SIGNATURE": "Signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Insert this signature before quoted text in replies"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -416,7 +417,6 @@
 		"AUTOLOGIN_NEVER_OPTION_NAME": "Never"
 	},
 	"SETTINGS_GENERAL": {
-		"LEGEND_GENERAL": "Vispārējie",
 		"LANGUAGE": "Valoda",
 		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identity",

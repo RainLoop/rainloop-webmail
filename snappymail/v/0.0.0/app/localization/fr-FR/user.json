@@ -255,9 +255,10 @@
 	"POPUPS_IDENTITY": {
 		"TITLE_ADD_IDENTITY": "Ajouter une identité ?",
 		"TITLE_UPDATE_IDENTITY": "Mettre à jour l'identité ?",
+		"LABEL": "Label",
 		"BUTTON_ADD_IDENTITY": "Ajouter",
 		"BUTTON_UPDATE_IDENTITY": "Mettre à jour",
-		"LABEL_SIGNATURE_ADD": "Ajouter\/Editer une signature",
+		"SIGNATURE": "Signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Insérer la signature avant le texte cité dans les réponses"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -416,7 +417,6 @@
 		"AUTOLOGIN_NEVER_OPTION_NAME": "Jamais"
 	},
 	"SETTINGS_GENERAL": {
-		"LEGEND_GENERAL": "Général",
 		"LANGUAGE": "Langue",
 		"HOUR_FORMAT": "Format horaire",
 		"IDENTITY": "Identité",

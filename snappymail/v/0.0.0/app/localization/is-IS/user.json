@@ -255,9 +255,10 @@
 	"POPUPS_IDENTITY": {
 		"TITLE_ADD_IDENTITY": "Bæta við auðkenni?",
 		"TITLE_UPDATE_IDENTITY": "Uppfæra auðkenni?",
+		"LABEL": "Label",
 		"BUTTON_ADD_IDENTITY": "Bæta við",
 		"BUTTON_UPDATE_IDENTITY": "Uppfæra",
-		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
+		"SIGNATURE": "Signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Setja þessa undirskrift inn á undan tilvitnuðum texta þegar verið er að svara"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -416,7 +417,6 @@
 		"AUTOLOGIN_NEVER_OPTION_NAME": "Aldrei"
 	},
 	"SETTINGS_GENERAL": {
-		"LEGEND_GENERAL": "Almennt",
 		"LANGUAGE": "Tungumál",
 		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Auðkenni",

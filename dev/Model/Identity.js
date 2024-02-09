@@ -11,6 +11,7 @@ export class IdentityModel extends AbstractModel {
 
 		addObservablesTo(this, {
 			id: '',
+			label: '',
 			email: '',
 			name: '',
 
@@ -29,8 +30,8 @@ export class IdentityModel extends AbstractModel {
 	 */
 	formattedName() {
 		const name = this.name(),
-			email = this.email();
-
-		return name ? name + ' <' + email + '>' : email;
+			email = this.email(),
+			label = this.label();
+		return (name ? `${name} ` : '') + `<${email}>` + (label ? ` (${label})` : '');
 	}
 }

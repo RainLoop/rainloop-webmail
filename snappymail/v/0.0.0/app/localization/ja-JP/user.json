@@ -255,9 +255,10 @@
 	"POPUPS_IDENTITY": {
 		"TITLE_ADD_IDENTITY": "メールの表示名を追加しますか？",
 		"TITLE_UPDATE_IDENTITY": "メールの表示名を更新しますか？",
+		"LABEL": "Label",
 		"BUTTON_ADD_IDENTITY": "追加",
 		"BUTTON_UPDATE_IDENTITY": "更新",
-		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
+		"SIGNATURE": "Signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "返信の引用テキストの前に署名を挿入する"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -416,7 +417,6 @@
 		"AUTOLOGIN_NEVER_OPTION_NAME": "しない"
 	},
 	"SETTINGS_GENERAL": {
-		"LEGEND_GENERAL": "全般",
 		"LANGUAGE": "言語",
 		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "表示名",

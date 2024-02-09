@@ -255,9 +255,10 @@
 	"POPUPS_IDENTITY": {
 		"TITLE_ADD_IDENTITY": "Adăugați un profil",
 		"TITLE_UPDATE_IDENTITY": "Actualizați profilul",
+		"LABEL": "Label",
 		"BUTTON_ADD_IDENTITY": "Adăugați",
 		"BUTTON_UPDATE_IDENTITY": "Actualizați",
-		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
+		"SIGNATURE": "Signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Insert this signature before quoted text in replies"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -416,7 +417,6 @@
 		"AUTOLOGIN_NEVER_OPTION_NAME": "Never"
 	},
 	"SETTINGS_GENERAL": {
-		"LEGEND_GENERAL": "Setări de bază",
 		"LANGUAGE": "Limbă",
 		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identity",

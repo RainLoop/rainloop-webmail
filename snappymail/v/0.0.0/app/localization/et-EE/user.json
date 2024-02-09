@@ -255,9 +255,10 @@
 	"POPUPS_IDENTITY": {
 		"TITLE_ADD_IDENTITY": "Lisan identiteedi?",
 		"TITLE_UPDATE_IDENTITY": "Muudan identiteeti?",
+		"LABEL": "Label",
 		"BUTTON_ADD_IDENTITY": "Lisa",
 		"BUTTON_UPDATE_IDENTITY": "Muuda",
-		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
+		"SIGNATURE": "Signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Sisesta see signatuur kirjades enne tsiteeritud teksti"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -416,7 +417,6 @@
 		"AUTOLOGIN_NEVER_OPTION_NAME": "Mitte kunagi"
 	},
 	"SETTINGS_GENERAL": {
-		"LEGEND_GENERAL": "Üldine",
 		"LANGUAGE": "Keel",
 		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Identiteet",

@@ -255,9 +255,10 @@
 	"POPUPS_IDENTITY": {
 		"TITLE_ADD_IDENTITY": "Nortasuna gehitu?",
 		"TITLE_UPDATE_IDENTITY": "Nortasuna eguneratu?",
+		"LABEL": "Label",
 		"BUTTON_ADD_IDENTITY": "Gehitu",
 		"BUTTON_UPDATE_IDENTITY": "Eguneratu",
-		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
+		"SIGNATURE": "Signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Txertatu sinadura hau erantzuteko testuaren aurretik"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -416,7 +417,6 @@
 		"AUTOLOGIN_NEVER_OPTION_NAME": "Inoiz"
 	},
 	"SETTINGS_GENERAL": {
-		"LEGEND_GENERAL": "Orokorra",
 		"LANGUAGE": "Hizkuntza",
 		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Nortasuna",

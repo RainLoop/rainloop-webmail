@@ -17,17 +17,15 @@ export class IdentityPopupView extends AbstractViewPopup {
 			id: '',
 			edit: false,
 
-			email: '',
-			emailFocused: false,
+			label: '',
+			labelFocused: false,
 
+			email: '',
 			name: '',
 			nameFocused: false,
 
 			replyTo: '',
-			showReplyTo: false,
-
 			bcc: '',
-			showBcc: false,
 
 			signature: '',
 			signatureInsertBefore: false,
@@ -66,9 +64,6 @@ export class IdentityPopupView extends AbstractViewPopup {
 	 * @param {?IdentityModel} oIdentity
 	 */
 	onShow(identity) {
-		this.showBcc(false);
-		this.showReplyTo(false);
-
 		this.submitRequest(false);
 		this.submitError('');
 
@@ -80,17 +75,16 @@ export class IdentityPopupView extends AbstractViewPopup {
 			identity.id(Jua.randomId());
 		}
 		this.id(identity.id() || '');
+		this.label(identity.label() || '');
 		this.name(identity.name());
 		this.email(identity.email());
 		this.replyTo(identity.replyTo());
-		this.showReplyTo(0 < identity.replyTo().length);
 		this.bcc(identity.bcc());
-		this.showBcc(0 < identity.bcc().length);
 		this.signature(identity.signature());
 		this.signatureInsertBefore(identity.signatureInsertBefore());
 	}
 
 	afterShow() {
-		this.id() ? this.emailFocused(true) : this.nameFocused(true);
+		this.id() ? this.labelFocused(true) : this.nameFocused(true);
 	}
 }

@@ -4,65 +4,71 @@
 	<h3 data-bind="visible: edit" data-i18n="POPUPS_IDENTITY/TITLE_UPDATE_IDENTITY"></h3>
 </header>
 <form id="identityform" class="modal-body" autocomplete="off" spellcheck="false" data-bind="submit: submitForm">
-	<div class="form-horizontal g-ui-user-select-none">
-		<div class="alert" data-bind="visible: '' !== submitError()">
-			<a href="#" class="close" data-bind="click: function () { submitError('') }">×</a>
-			<span data-bind="text: submitError"></span>
-		</div>
-		<div class="control-group">
-			<label data-i18n="GLOBAL/EMAIL"></label>
-			<div>
-				<div class="textEmail" data-bind="text: email, visible: !id()"></div>
-				<input name="Email" type="email" class="input-xlarge" autofocus=""
+	<div class="alert" data-bind="visible: '' !== submitError()">
+		<a href="#" class="close" data-bind="click: function () { submitError('') }">×</a>
+		<span data-bind="text: submitError"></span>
+	</div>
+
+	<div class="tabs">
+		<input type="radio" name="identitytabs" id="tab-identity" checked>
+		<label data-i18n="SETTINGS_LABELS/GENERAL" for="tab-identity" role="tab" aria-selected="true" aria-controls="panel1" tabindex="0"></label>
+		<div class="form-horizontal tab-content" role="tabpanel" aria-hidden="false">
+			<div class="control-group">
+				<label data-i18n="POPUPS_IDENTITY/LABEL"></label>
+				<div>
+					<input name="Label" type="text" class="input-xlarge" autofocus="" required=""
+						autocomplete="off" autocorrect="off" autocapitalize="off"
+						data-bind="value: label, hasfocus: labelFocused">
+				</div>
+			</div>
+			<div class="control-group">
+				<label data-i18n="GLOBAL/EMAIL"></label>
+				<div>
+					<div class="textEmail" data-bind="text: email, visible: !id()"></div>
+					<input name="Email" type="email" class="input-xlarge" autofocus=""
+						autocomplete="off" autocorrect="off" autocapitalize="off"
+						data-bind="visible: id, value: email, attr: {required: id}">
+				</div>
+			</div>
+			<div class="control-group">
+				<label data-i18n="GLOBAL/NAME"></label>
+				<input name="Name" type="text" class="input-xlarge"
 					autocomplete="off" autocorrect="off" autocapitalize="off"
-					data-bind="visible: id, value: email, hasfocus: emailFocused, attr: {required: id}">
+					data-bind="value: name, hasfocus: nameFocused">
 			</div>
 		</div>
-		<div class="control-group">
-			<label data-i18n="GLOBAL/NAME"></label>
-			<input name="Name" type="text" class="input-xlarge"
-				autocomplete="off" autocorrect="off" autocapitalize="off"
-				data-bind="value: name, hasfocus: nameFocused">
+
+		<input type="radio" name="identitytabs" id="tab-identity-signature">
+		<label data-i18n="POPUPS_IDENTITY/SIGNATURE" for="tab-identity-signature" role="tab" aria-selected="false" aria-controls="panel2" tabindex="0"></label>
+		<div class="form-horizontal tab-content" role="tabpanel" aria-hidden="false">
+			<div class="e-signature-place" data-bind="editor: signature"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'POPUPS_IDENTITY/LABEL_SIGNATURE_INSERT_BEFORE',
+					value: signatureInsertBefore,
+					name: 'SignatureInsertBefore'
+				}
+			}"></div>
 		</div>
-		<div class="control-group" data-bind="visible: showReplyTo">
-			<label data-i18n="GLOBAL/REPLY_TO"></label>
-			<input name="ReplyTo" type="email" class="inputReplyTo input-xlarge"
-				autocomplete="off" autocorrect="off" autocapitalize="off"
-				data-bind="value: replyTo">
-		</div>
-		<div class="control-group" data-bind="visible: showBcc">
-			<label data-i18n="GLOBAL/BCC"></label>
-			<input name="Bcc" type="email" class="inputBcc input-xlarge"
-				autocomplete="off" autocorrect="off" autocapitalize="off"
-				data-bind="value: bcc">
-		</div>
-		<div class="control-group" data-bind="visible: !showReplyTo() || !showBcc()">
-			<div>
-				<span data-bind="visible: !showReplyTo()">
-					<span class="g-ui-link" data-i18n="GLOBAL/REPLY_TO"
-						data-bind="click: function () { showReplyTo(true); }"></span>
-					&nbsp;&nbsp;
-				</span>
-				<span data-bind="visible: !showBcc()">
-					<span class="g-ui-link" data-i18n="GLOBAL/BCC"
-						data-bind="click: function () { showBcc(true); }"></span>
-				</span>
+
+		<input type="radio" name="identitytabs" id="tab-identity-advanced">
+		<label data-i18n="SETTINGS_FILTERS/ADVANCED" for="tab-identity-advanced" role="tab" aria-selected="false" aria-controls="panel3" tabindex="0"></label>
+		<div class="form-horizontal tab-content" role="tabpanel" aria-hidden="false">
+			<div class="control-group">
+				<label data-i18n="GLOBAL/REPLY_TO"></label>
+				<input name="ReplyTo" type="email" class="inputReplyTo input-xlarge"
+					autocomplete="off" autocorrect="off" autocapitalize="off"
+					data-bind="value: replyTo">
+			</div>
+			<div class="control-group">
+				<label data-i18n="GLOBAL/BCC"></label>
+				<input name="Bcc" type="email" class="inputBcc input-xlarge"
+					autocomplete="off" autocorrect="off" autocapitalize="off"
+					data-bind="value: bcc">
 			</div>
 		</div>
 	</div>
-	<hr>
-	<div class="control-group g-ui-user-select-none">
-		<h4 data-i18n="POPUPS_IDENTITY/LABEL_SIGNATURE_ADD"></h4>
-		<div data-bind="component: {
-			name: 'Checkbox',
-			params: {
-				label: 'POPUPS_IDENTITY/LABEL_SIGNATURE_INSERT_BEFORE',
-				value: signatureInsertBefore,
-				name: 'SignatureInsertBefore'
-			}
-		}"></div>
-	</div>
-	<div class="e-signature-place" data-bind="editor: signature"></div>
 </form>
 <footer>
 	<button form="identityform" class="btn buttonAddIdentity">

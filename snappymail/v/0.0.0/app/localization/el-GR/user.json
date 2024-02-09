@@ -255,9 +255,10 @@
 	"POPUPS_IDENTITY": {
 		"TITLE_ADD_IDENTITY": "Προσθήκη ταυτότητας;",
 		"TITLE_UPDATE_IDENTITY": "Ενημέρωση ταυτότητας;",
+		"LABEL": "Label",
 		"BUTTON_ADD_IDENTITY": "Προσθήκη",
 		"BUTTON_UPDATE_IDENTITY": "Ενημέρωση",
-		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
+		"SIGNATURE": "Signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Προσθήκη της υπογραφής πριν το προτότυπο κείμενο στις απαντήσεις"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -416,7 +417,6 @@
 		"AUTOLOGIN_NEVER_OPTION_NAME": "Ποτέ"
 	},
 	"SETTINGS_GENERAL": {
-		"LEGEND_GENERAL": "Γενικό",
 		"LANGUAGE": "Γλώσσα",
 		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Ταυτότητα",

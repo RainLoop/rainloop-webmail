@@ -255,9 +255,10 @@
 	"POPUPS_IDENTITY": {
 		"TITLE_ADD_IDENTITY": "Czy dodać tożsamość?",
 		"TITLE_UPDATE_IDENTITY": "Czy zaktualizować tożsamość?",
+		"LABEL": "Label",
 		"BUTTON_ADD_IDENTITY": "Dodaj",
 		"BUTTON_UPDATE_IDENTITY": "Aktualizuj",
-		"LABEL_SIGNATURE_ADD": "Dodaj\/Edytuj podpis",
+		"SIGNATURE": "Podpis",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Umieszczaj ten podpis przed cytowanym tekstem w odpowiedziach"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -416,7 +417,6 @@
 		"AUTOLOGIN_NEVER_OPTION_NAME": "Nigdy"
 	},
 	"SETTINGS_GENERAL": {
-		"LEGEND_GENERAL": "Ogólne",
 		"LANGUAGE": "Język",
 		"HOUR_FORMAT": "Format godziny",
 		"IDENTITY": "Tożsamość",

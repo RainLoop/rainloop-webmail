@@ -255,9 +255,10 @@
 	"POPUPS_IDENTITY": {
 		"TITLE_ADD_IDENTITY": "إضافة هوية؟",
 		"TITLE_UPDATE_IDENTITY": "تحديث الهوية؟",
+		"LABEL": "Label",
 		"BUTTON_ADD_IDENTITY": "إضافة",
 		"BUTTON_UPDATE_IDENTITY": "تحديث",
-		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
+		"SIGNATURE": "Signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "قم بوضع التوقيع قبل النص المأخوذ من الرسائل في عملية الرد"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -416,7 +417,6 @@
 		"AUTOLOGIN_NEVER_OPTION_NAME": "أبداَ"
 	},
 	"SETTINGS_GENERAL": {
-		"LEGEND_GENERAL": "عام",
 		"LANGUAGE": "اللغة",
 		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "الهوية",

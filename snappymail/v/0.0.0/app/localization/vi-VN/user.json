@@ -255,9 +255,10 @@
 	"POPUPS_IDENTITY": {
 		"TITLE_ADD_IDENTITY": "Thêm tên gọi mới?",
 		"TITLE_UPDATE_IDENTITY": "Cập nhật tên gọi?",
+		"LABEL": "Label",
 		"BUTTON_ADD_IDENTITY": "Thêm vào",
 		"BUTTON_UPDATE_IDENTITY": "Cập nhật",
-		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
+		"SIGNATURE": "Signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "Thêm chữ ký cuối thư này vào trước phần văn bản trích dẫn trong thư phản hồi"
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -416,7 +417,6 @@
 		"AUTOLOGIN_NEVER_OPTION_NAME": "Không tự động đăng xuất"
 	},
 	"SETTINGS_GENERAL": {
-		"LEGEND_GENERAL": "Tổng quan",
 		"LANGUAGE": "Ngôn ngữ",
 		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Tên gọi",

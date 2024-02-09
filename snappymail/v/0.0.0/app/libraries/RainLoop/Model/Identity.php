@@ -8,6 +8,8 @@ class Identity implements \JsonSerializable
 {
 	private string $sId;
 
+	private string $sLabel = '';
+
 	private string $sEmail;
 
 	private string $sName = '';
@@ -24,6 +26,11 @@ class Identity implements \JsonSerializable
 	{
 		$this->sId = $sId;
 		$this->sEmail = $sEmail;
+	}
+
+	function toMime() : \MailSo\Mime\Email
+	{
+		return new \MailSo\Mime\Email($this->sEmail, $this->sName);
 	}
 
 	public function Id(bool $bFillOnEmpty = false): string
@@ -48,16 +55,6 @@ class Identity implements \JsonSerializable
 		return $this->sName;
 	}
 
-	public function ReplyTo(): string
-	{
-		return $this->sReplyTo;
-	}
-
-	public function Bcc(): string
-	{
-		return $this->sBcc;
-	}
-
 	public function SetId(string $sId): Identity
 	{
 		$this->sId = $sId;
@@ -70,10 +67,9 @@ class Identity implements \JsonSerializable
 		return $this;
 	}
 
-	public function SetReplyTo(string $sReplyTo): Identity
+	public function ReplyTo(): string
 	{
-		$this->sReplyTo = $sReplyTo;
-		return $this;
+		return $this->sReplyTo;
 	}
 
 	public function SetBcc(string $sBcc): Identity
@@ -82,22 +78,11 @@ class Identity implements \JsonSerializable
 		return $this;
 	}
 
-	public function SetSignature(string $sSignature): Identity
-	{
-		$this->sSignature = $sSignature;
-		return $this;
-	}
-
-	public function SetSignatureInsertBefore(bool $bSignatureInsertBefore): Identity
-	{
-		$this->bSignatureInsertBefore = $bSignatureInsertBefore;
-		return $this;
-	}
-
 	public function FromJSON(array $aData, bool $bJson = false): bool
 	{
 		if (!empty($aData['Email'])) {
 			$this->sId = !empty($aData['Id']) ? $aData['Id'] : '';
+			$this->sLabel = isset($aData['Label']) ? $aData['Label'] : '';
 			$this->sEmail = $bJson ? Utils::IdnToAscii($aData['Email'], true) : $aData['Email'];
 			$this->sName = isset($aData['Name']) ? $aData['Name'] : '';
 			$this->sReplyTo = !empty($aData['ReplyTo']) ? $aData['ReplyTo'] : '';
@@ -116,6 +101,7 @@ class Identity implements \JsonSerializable
 	{
 		return array(
 			'Id' => $this->sId,
+			'Label' => $this->sLabel,
 			'Email' => $this->sEmail,
 			'Name' => $this->sName,
 			'ReplyTo' => $this->sReplyTo,
@@ -131,6 +117,7 @@ class Identity implements \JsonSerializable
 		return array(
 			'@Object' => 'Object/Identity',
 			'id' => $this->sId,
+			'label' => $this->sLabel,
 			'email' => Utils::IdnToUtf8($this->sEmail),
 			'name' => $this->sName,
 			'replyTo' => $this->sReplyTo,

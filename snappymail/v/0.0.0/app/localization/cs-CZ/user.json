@@ -255,9 +255,10 @@
 	"POPUPS_IDENTITY": {
 		"TITLE_ADD_IDENTITY": "Opravdu přidat?",
 		"TITLE_UPDATE_IDENTITY": "Uložit změny?",
+		"LABEL": "Label",
 		"BUTTON_ADD_IDENTITY": "Přidat",
 		"BUTTON_UPDATE_IDENTITY": "Uložit",
-		"LABEL_SIGNATURE_ADD": "Add\/Edit signature",
+		"SIGNATURE": "Signature",
 		"LABEL_SIGNATURE_INSERT_BEFORE": "V odpovědích vložit podpis před citovaný text."
 	},
 	"POPUPS_CREATE_FOLDER": {
@@ -416,7 +417,6 @@
 		"AUTOLOGIN_NEVER_OPTION_NAME": "Nikdy"
 	},
 	"SETTINGS_GENERAL": {
-		"LEGEND_GENERAL": "Všeobecné",
 		"LANGUAGE": "Jazyk",
 		"HOUR_FORMAT": "Hour format",
 		"IDENTITY": "Uživatel",
