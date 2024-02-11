@@ -59,6 +59,8 @@ export class MailFolderList extends AbstractViewLeft {
 					inbox.collapsed(false);
 				}
 				this.foldersListWithSingleInboxRootFolder(!multiple);
+				// https://github.com/the-djmaze/snappymail/issues/1427
+//				result.sort((a, b) => a.unreadEmails ? (b.unreadEmails ? 0 : -1) : (b.unreadEmails ? 1 : 0));
 				return result;
 			}
 		});
