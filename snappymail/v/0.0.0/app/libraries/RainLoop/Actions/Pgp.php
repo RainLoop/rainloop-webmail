@@ -219,6 +219,7 @@ trait Pgp
 
 		$result = false;
 		if ($sKey) {
+			$sKey = \trim($sKey);
 			if ($this->GetActionParam('backup', '')) {
 				$result = $result || Backup::PGPKey($sKey);
 			}
