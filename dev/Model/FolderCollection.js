@@ -254,6 +254,10 @@ export class FolderCollectionModel extends AbstractCollectionModel
 		return result;
 	}
 
+	visible() {
+		return this.filter(folder => folder.visible());
+	}
+
 	storeIt() {
 		FolderUserStore.displaySpecSetting(Settings.app('folderSpecLimit') < this.CountRec);
 
@@ -387,6 +391,7 @@ export class FolderModel extends AbstractModel {
 //			isSubscribed: () => this.attributes().includes('\\subscribed'),
 
 			hasVisibleSubfolders: () => !!this.subFolders().find(folder => folder.visible()),
+			visibleSubfolders: () => this.subFolders().visible(),
 
 			hasSubscriptions: () => this.isSubscribed() | !!this.subFolders().find(
 					oFolder => {

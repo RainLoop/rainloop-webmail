@@ -43,10 +43,8 @@ export class MailFolderList extends AbstractViewLeft {
 			foldersFilterVisible: () => 20 < FolderUserStore.folderList().CountRec,
 
 			folderListVisible: () => {
-				let result = FolderUserStore.folderList().filter(folder => folder.visible());
-				// https://github.com/the-djmaze/snappymail/issues/1427
-//				result.sort((a, b) => a.unreadEmails ? (b.unreadEmails ? 0 : -1) : (b.unreadEmails ? 1 : 0));
-				return 1 === result.length && result[0].isInbox() ? result[0].subFolders() : result;
+				let result = FolderUserStore.folderList().visible();
+				return 1 === result.length && result[0].isInbox() ? result[0].visibleSubfolders() : result;
 			}
 		});
 	}
