@@ -12,6 +12,12 @@ import { ThemeStore } from 'Stores/Theme';
 import Remote from 'Remote/User/Fetch';
 import { attachmentDownload } from 'Common/Links';
 
+import { AccountModel } from 'Model/Account';
+import { IdentityModel } from 'Model/Identity';
+import { AccountUserStore } from 'Stores/User/Account';
+import { IdentityUserStore } from 'Stores/User/Identity';
+import { isArray } from 'Common/Utils';
+
 export const
 
 moveAction = ko.observable(false),
@@ -19,6 +25,32 @@ moveAction = ko.observable(false),
 dropdownsDetectVisibility = (() =>
 	dropdownVisibility(!!dropdowns.find(item => item.classList.contains('show')))
 ).debounce(50),
+
+
+loadAccountsAndIdentities = () => {
+	AccountUserStore.loading(true);
+	IdentityUserStore.loading(true);
+
+	Remote.request('AccountsAndIdentities', (iError, oData) => {
+		AccountUserStore.loading(false);
+		IdentityUserStore.loading(false);
+
+		if (!iError) {
+			let items = oData.Result.Accounts;
+			AccountUserStore(isArray(items)
+				? items.map(oValue => new AccountModel(oValue.email, oValue.name))
+				: []
+			);
+			AccountUserStore.unshift(new AccountModel(SettingsGet('mainEmail'), '', false));
+
+			items = oData.Result.Identities;
+			IdentityUserStore(isArray(items)
+				? items.map(identityData => IdentityModel.reviveFromJson(identityData))
+				: []
+			);
+		}
+	});
+},
 
 /**
  * @param {string} link
