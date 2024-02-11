@@ -165,7 +165,7 @@
             ko.bindingEvent.notify(targetNode, ko.bindingEvent.childrenComplete);
         };
 
-        if (!options['beforeRemove'] && ko.isObservableArray(arrayOrObservableArray)) {
+        if (!options['beforeRemove'] && ko['isObservableArray'](arrayOrObservableArray)) {
             setDomNodeChildrenFromArrayMapping(arrayOrObservableArray.peek());
 
             var subscription = arrayOrObservableArray['subscribe'](changeList => {
@@ -188,7 +188,7 @@
     var templateComputedDomDataKey = ko.utils.domData.nextKey();
     function disposeOldComputedAndStoreNewOne(element, newComputed) {
         var oldComputed = ko.utils.domData.get(element, templateComputedDomDataKey);
-        oldComputed?.dispose?.();
+        oldComputed?.['dispose']?.();
         ko.utils.domData.set(element, templateComputedDomDataKey, (newComputed && (!newComputed.isActive || newComputed.isActive())) ? newComputed : undefined);
     }
 

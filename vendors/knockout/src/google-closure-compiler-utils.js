@@ -10,4 +10,3 @@ ko.exportSymbol = (koPath, object) => {
         target = target[tokens[i]];
     target[tokens[l]] = object;
 };
-ko.exportProperty = (owner, publicName, object) => owner[publicName] = object;

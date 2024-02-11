@@ -1,5 +1,5 @@
 const arrayChangeEventName = 'arrayChange';
-ko.extenders['trackArrayChanges'] = (target, options) => {
+ko['extenders']['trackArrayChanges'] = (target, options) => {
     // Use the provided options--each call to trackArrayChanges overwrites the previously set options
     target.compareArrayOptions = {};
     if (typeof options == "object") {
@@ -31,8 +31,8 @@ ko.extenders['trackArrayChanges'] = (target, options) => {
     target.afterSubscriptionRemove = event => {
         underlyingAfterSubscriptionRemoveFunction?.call(target, event);
         if (event === arrayChangeEventName && !target.hasSubscriptionsForEvent(arrayChangeEventName)) {
-            changeSubscription?.dispose();
-            spectateSubscription?.dispose();
+            changeSubscription?.['dispose']();
+            spectateSubscription?.['dispose']();
             spectateSubscription = changeSubscription = null;
             trackingChanges = false;
             previousContents = undefined;

@@ -106,7 +106,7 @@
 
                             // Stop tracking changes to the mapping for these nodes
                             if (mapData.dependentObservable) {
-                                mapData.dependentObservable.dispose();
+                                mapData.dependentObservable['dispose']();
                                 mapData.dependentObservable = undefined;
                             }
 

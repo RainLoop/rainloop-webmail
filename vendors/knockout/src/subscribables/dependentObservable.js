@@ -86,8 +86,8 @@ ko.computed = (evaluatorFunctionOrOptions, options) => {
     // Attach a DOM node disposal callback so that the computed will be proactively disposed as soon as the node is
     // removed using ko.removeNode. But skip if isActive is false (there will never be any dependencies to dispose).
     if (state.disposeWhenNodeIsRemoved && computedObservable.isActive()) {
-        ko.utils.domNodeDisposal.addDisposeCallback(state.disposeWhenNodeIsRemoved, state.domNodeDisposalCallback = () => {
-            computedObservable.dispose();
+        ko.utils.domNodeDisposal['addDisposeCallback'](state.disposeWhenNodeIsRemoved, state.domNodeDisposalCallback = () => {
+            computedObservable['dispose']();
         });
     }
 
@@ -96,7 +96,7 @@ ko.computed = (evaluatorFunctionOrOptions, options) => {
 
 // Utility function that disposes a given dependencyTracking entry
 function computedDisposeDependencyCallback(id, entryToDispose) {
-    entryToDispose?.dispose?.();
+    entryToDispose?.['dispose']?.();
 }
 
 // This function gets called each time a dependency is detected while evaluating a computed.
@@ -237,7 +237,7 @@ var computedFn = {
         if (state.disposeWhenNodeIsRemoved && !ko.utils.domNodeIsAttachedToDocument(state.disposeWhenNodeIsRemoved) || disposeWhen?.()) {
             // See comment above about suppressDisposalUntilDisposeWhenReturnsFalse
             if (!state.suppressDisposalUntilDisposeWhenReturnsFalse) {
-                computedObservable.dispose();
+                computedObservable['dispose']();
                 return;
             }
         } else {
@@ -285,7 +285,7 @@ var computedFn = {
         var newValue = evaluateImmediate_CallReadThenEndDependencyDetection(state, dependencyDetectionContext);
 
         if (!state.dependenciesCount) {
-            computedObservable.dispose();
+            computedObservable['dispose']();
             changed = true; // When evaluation causes a disposal, make sure all dependent computeds get notified so they'll see the new state
         } else {
             changed = computedObservable.isDifferent(state.latestValue, newValue);
@@ -353,11 +353,11 @@ var computedFn = {
             self._limitChange(self, !isChange /* isDirty */);
         };
     },
-    dispose() {
+    'dispose'() {
         var state = this[computedState];
         if (!state.isSleeping && state.dependencyTracking) {
             ko.utils.objectForEach(state.dependencyTracking, (id, dependency) =>
-                dependency.dispose?.()
+                dependency['dispose']?.()
             );
         }
         if (state.disposeWhenNodeIsRemoved && state.domNodeDisposalCallback) {
@@ -419,13 +419,13 @@ var pureComputedOverrides = {
         var state = this[computedState];
         if (!state.isDisposed && event == 'change' && !this.hasSubscriptionsForEvent('change')) {
             ko.utils.objectForEach(state.dependencyTracking, (id, dependency) => {
-                if (dependency.dispose) {
+                if (dependency['dispose']) {
                     state.dependencyTracking[id] = {
                         _target: dependency._target,
                         _order: dependency._order,
                         _version: dependency._version
                     };
-                    dependency.dispose();
+                    dependency['dispose']();
                 }
             });
             state.isSleeping = true;
@@ -451,11 +451,10 @@ Object.setPrototypeOf(computedFn, ko.subscribable['fn']);
 // Set the proto values for ko.computed
 var protoProp = ko.observable.protoProperty; // == "__ko_proto__"
 computedFn[protoProp] = ko.computed;
+ko.computed['fn'] = computedFn;
 
 ko.exportSymbol('computed', ko.computed);
-ko.exportSymbol('isComputed', instance => (typeof instance == 'function' && instance[protoProp] === computedFn[protoProp]));
-ko.exportSymbol('computed.fn', computedFn);
-ko.exportProperty(computedFn, 'dispose', computedFn.dispose);
+ko['isComputed'] = instance => (typeof instance == 'function' && instance[protoProp] === computedFn[protoProp]);
 
 ko.pureComputed = (evaluatorFunctionOrOptions) => {
     if (typeof evaluatorFunctionOrOptions === 'function') {

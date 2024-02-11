@@ -151,7 +151,7 @@ class AsyncCompleteContext {
         this.asyncDescendants = new Set;
         this.childrenComplete = false;
 
-        bindingInfo.asyncContext || ko.utils.domNodeDisposal.addDisposeCallback(node, asyncContextDispose);
+        bindingInfo.asyncContext || ko.utils.domNodeDisposal['addDisposeCallback'](node, asyncContextDispose);
 
         if (ancestorBindingInfo?.asyncContext) {
             ancestorBindingInfo.asyncContext.asyncDescendants.add(node);
@@ -360,7 +360,7 @@ function applyBindingsToNodeInternal(node, sourceBindings, bindingContext) {
                 var callback = bindings[ko.bindingEvent.childrenComplete]();
                 if (callback) {
                     var nodes = ko.virtualElements.childNodes(node);
-                    nodes.length && callback(nodes, ko.dataFor(nodes[0]));
+                    nodes.length && callback(nodes, ko['dataFor'](nodes[0]));
                 }
             });
         }
@@ -435,7 +435,7 @@ function getBindingContext(viewModelOrBindingContext, extendContextCallback) {
         : new ko.bindingContext(viewModelOrBindingContext, undefined, undefined, extendContextCallback);
 }
 
-ko.applyBindingAccessorsToNode = (node, bindings, viewModelOrBindingContext) =>
+ko['applyBindingAccessorsToNode'] = (node, bindings, viewModelOrBindingContext) =>
     applyBindingsToNodeInternal(node, bindings, getBindingContext(viewModelOrBindingContext));
 
 ko.applyBindingsToDescendants = (viewModelOrBindingContext, rootNode) => {
@@ -457,7 +457,7 @@ ko.applyBindings = function (viewModelOrBindingContext, rootNode, extendContextC
 };
 
 // Retrieving binding context from arbitrary nodes
-ko.dataFor = node => {
+ko['dataFor'] = node => {
     // We can only do something meaningful for elements and comment nodes (in particular, not text nodes, as IE can't store domdata for them)
     var context = node && [1,8].includes(node.nodeType) && ko.storedBindingContextForNode(node);
     return context ? context['$data'] : undefined;
@@ -465,5 +465,3 @@ ko.dataFor = node => {
 
 ko.exportSymbol('bindingHandlers', ko.bindingHandlers);
 ko.exportSymbol('applyBindings', ko.applyBindings);
-ko.exportSymbol('applyBindingAccessorsToNode', ko.applyBindingAccessorsToNode);
-ko.exportSymbol('dataFor', ko.dataFor);

@@ -8,10 +8,9 @@ class koSubscription
         this._isDisposed = false;
         this._node = null;
         this._domNodeDisposalCallback = null;
-        ko.exportProperty(this, 'dispose', this.dispose);
     }
 
-    dispose() {
+    'dispose'() {
         var self = this;
         if (!self._isDisposed) {
             self._domNodeDisposalCallback
@@ -26,7 +25,7 @@ class koSubscription
     disposeWhenNodeIsRemoved(node) {
         // MutationObserver ?
         this._node = node;
-        ko.utils.domNodeDisposal.addDisposeCallback(node, this._domNodeDisposalCallback = this.dispose.bind(this));
+        ko.utils.domNodeDisposal['addDisposeCallback'](node, this._domNodeDisposalCallback = this['dispose'].bind(this));
     }
 }
 
@@ -174,7 +173,7 @@ var ko_subscribable_fn = {
         var target = this;
         if (requestedExtenders) {
             ko.utils.objectForEach(requestedExtenders, (key, value) => {
-                var extenderHandler = ko.extenders[key];
+                var extenderHandler = ko['extenders'][key];
                 if (typeof extenderHandler == 'function') {
                     target = extenderHandler(target, value) || target;
                 }

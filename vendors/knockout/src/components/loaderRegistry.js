@@ -2,7 +2,7 @@
     var loadingSubscribablesCache = Object.create(null), // Tracks component loads that are currently in flight
         loadedDefinitionsCache = new Map();    // Tracks component loads that have already completed
 
-    ko.components = {
+    ko['components'] = {
         get: (componentName, callback) => {
             if (loadedDefinitionsCache.has(componentName)) {
                 callback(loadedDefinitionsCache.get(componentName));
@@ -32,7 +32,7 @@
             }
         },
 
-        register: (componentName, config) => {
+        'register': (componentName, config) => {
             if (!config) {
                 throw new Error('Invalid configuration for ' + componentName);
             }
@@ -102,7 +102,4 @@
             var found = (result['template'] && result[createViewModelKey]);
             callback(found ? result : null);
         };
-
-    ko.exportSymbol('components', ko.components);
-    ko.exportSymbol('components.register', ko.components.register);
 })();

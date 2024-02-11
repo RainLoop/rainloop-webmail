@@ -12,7 +12,7 @@
                         currentViewModelDispose.call(currentViewModel);
                     }
                     if (afterRenderSub) {
-                        afterRenderSub.dispose();
+                        afterRenderSub['dispose']();
                     }
                     afterRenderSub = null;
                     currentViewModel = null;
@@ -22,7 +22,7 @@
                 originalChildNodes = [...ko.virtualElements.childNodes(element)];
 
             ko.virtualElements.emptyNode(element);
-            ko.utils.domNodeDisposal.addDisposeCallback(element, disposeAssociatedComponentViewModel);
+            ko.utils.domNodeDisposal['addDisposeCallback'](element, disposeAssociatedComponentViewModel);
 
             ko.computed(() => {
                 var componentName = ko.utils.unwrapObservable(valueAccessor()),
@@ -40,7 +40,7 @@
                 var asyncContext = ko.bindingEvent.startPossiblyAsyncContentBinding(element, bindingContext);
 
                 var loadingOperationId = currentLoadingOperationId = ++componentLoadingOperationUniqueId;
-                ko.components.get(componentName, componentDefinition => {
+                ko['components'].get(componentName, componentDefinition => {
                     // If this is the current load operation for this element
                     if (currentLoadingOperationId === loadingOperationId) {
                         // Clean up previous state

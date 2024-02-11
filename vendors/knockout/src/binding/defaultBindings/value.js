@@ -5,7 +5,7 @@ ko.bindingHandlers['value'] = {
 
         // If the value binding is placed on a radio/checkbox, then just pass through to checkedValue and quit
         if (isInputElement && (element.type == "checkbox" || element.type == "radio")) {
-            ko.applyBindingAccessorsToNode(element, { 'checkedValue': valueAccessor });
+            ko['applyBindingAccessorsToNode'](element, { 'checkedValue': valueAccessor });
             return;
         }
 

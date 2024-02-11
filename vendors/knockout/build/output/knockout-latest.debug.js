@@ -24,8 +24,7 @@ ko.exportSymbol = (koPath, object) => {
         target = target[tokens[i]];
     target[tokens[l]] = object;
 };
-ko.exportProperty = (owner, publicName, object) => owner[publicName] = object;
-ko.exportSymbol('version', "3.5.1-sm");
+ko['version'] = "3.5.1-sm";
 ko.utils = {
     extend: (target, source) => source ? Object.assign(target, source) : target,
 
@@ -197,7 +196,7 @@ ko.utils.domNodeDisposal = (() => {
     };
 
     return {
-        addDisposeCallback : (node, callback) => {
+        'addDisposeCallback' : (node, callback) => {
             if (typeof callback != "function")
                 throw new Error("Callback must be a function");
             getDisposeCallbacksCollection(node, 1).add(callback);
@@ -235,8 +234,7 @@ ko.utils.domNodeDisposal = (() => {
 ko.cleanNode = ko.utils.domNodeDisposal.cleanNode; // Shorthand name for convenience
 ko.removeNode = ko.utils.domNodeDisposal.removeNode; // Shorthand name for convenience
 ko.exportSymbol('utils.domNodeDisposal', ko.utils.domNodeDisposal);
-ko.exportSymbol('utils.domNodeDisposal.addDisposeCallback', ko.utils.domNodeDisposal.addDisposeCallback);
-ko.extenders = {
+ko['extenders'] = {
     'debounce': (target, timeout) => target.limit(callback => debounce(callback, timeout)),
 
     'rateLimit': (target, timeout) => target.limit(callback => throttle(callback, timeout)),
@@ -273,8 +271,6 @@ function debounce(callback, timeout) {
     };
 }
 
-ko.exportSymbol('extenders', ko.extenders);
-
 class koSubscription
 {
     constructor (target, callback, disposeCallback) {
@@ -284,10 +280,9 @@ class koSubscription
         this._isDisposed = false;
         this._node = null;
         this._domNodeDisposalCallback = null;
-        ko.exportProperty(this, 'dispose', this.dispose);
     }
 
-    dispose() {
+    'dispose'() {
         var self = this;
         if (!self._isDisposed) {
             self._domNodeDisposalCallback
@@ -302,7 +297,7 @@ class koSubscription
     disposeWhenNodeIsRemoved(node) {
         // MutationObserver ?
         this._node = node;
-        ko.utils.domNodeDisposal.addDisposeCallback(node, this._domNodeDisposalCallback = this.dispose.bind(this));
+        ko.utils.domNodeDisposal['addDisposeCallback'](node, this._domNodeDisposalCallback = this['dispose'].bind(this));
     }
 }
 
@@ -450,7 +445,7 @@ var ko_subscribable_fn = {
         var target = this;
         if (requestedExtenders) {
             ko.utils.objectForEach(requestedExtenders, (key, value) => {
-                var extenderHandler = ko.extenders[key];
+                var extenderHandler = ko['extenders'][key];
                 if (typeof extenderHandler == 'function') {
                     target = extenderHandler(target, value) || target;
                 }
@@ -588,20 +583,20 @@ ko.isWriteableObservable = instance => {
 ko.exportSymbol('observable', ko.observable);
 ko.exportSymbol('isObservable', ko.isObservable);
 ko.exportSymbol('observable.fn', observableFn);
-ko.observableArray = initialValues => {
+ko['observableArray'] = initialValues => {
     initialValues = initialValues || [];
 
     if (typeof initialValues != 'object' || !('length' in initialValues))
         throw new Error("The argument passed when initializing an observable array must be an array, or null, or undefined.");
 
-    return Object.setPrototypeOf(ko.observable(initialValues), ko.observableArray['fn']).extend({'trackArrayChanges':true});
+    return Object.setPrototypeOf(ko.observable(initialValues), ko['observableArray']['fn']).extend({'trackArrayChanges':true});
 };
 
 const IS_OBSERVABLE_ARRAY = Symbol('IS_OBSERVABLE_ARRAY');
 
 // Note that for browsers that don't support proto assignment, the
 // inheritance chain is created manually in the ko.observableArray constructor
-ko.observableArray['fn'] = Object.setPrototypeOf({
+ko['observableArray']['fn'] = Object.setPrototypeOf({
     [IS_OBSERVABLE_ARRAY]: 1,
     'remove'(valueOrPredicate) {
         var underlyingArray = this.peek();
@@ -633,7 +628,7 @@ Object.getOwnPropertyNames(Array.prototype).forEach(methodName => {
             // https://developer.mozilla.org/tr/docs/Web/JavaScript/Reference/Global_Objects/Array/prototype#mutator_methods
             // Important: Do not add any additional functions here that may reasonably be used to *read* data from the array
             // because we'll eval them without causing subscriptions, so ko.computed output could end up getting stale
-            ko.observableArray['fn'][methodName] = function (...args) {
+            ko['observableArray']['fn'][methodName] = function (...args) {
                 // Use "peek" to avoid creating a subscription in any computed that we're executing in the context of
                 // (for consistency with mutating regular observables)
                 var underlyingArray = this.peek();
@@ -646,19 +641,16 @@ Object.getOwnPropertyNames(Array.prototype).forEach(methodName => {
             };
         } else {
             // Accessor and Iteration methods
-            ko.observableArray['fn'][methodName] = function (...args) {
+            ko['observableArray']['fn'][methodName] = function (...args) {
                 return this()[methodName](...args);
             };
         }
     }
 });
 
-ko.isObservableArray = obj => !!(obj && obj[IS_OBSERVABLE_ARRAY]);
-
-ko.exportSymbol('observableArray', ko.observableArray);
-ko.exportSymbol('isObservableArray', ko.isObservableArray);
+ko['isObservableArray'] = obj => !!(obj && obj[IS_OBSERVABLE_ARRAY]);
 const arrayChangeEventName = 'arrayChange';
-ko.extenders['trackArrayChanges'] = (target, options) => {
+ko['extenders']['trackArrayChanges'] = (target, options) => {
     // Use the provided options--each call to trackArrayChanges overwrites the previously set options
     target.compareArrayOptions = {};
     if (typeof options == "object") {
@@ -690,8 +682,8 @@ ko.extenders['trackArrayChanges'] = (target, options) => {
     target.afterSubscriptionRemove = event => {
         underlyingAfterSubscriptionRemoveFunction?.call(target, event);
         if (event === arrayChangeEventName && !target.hasSubscriptionsForEvent(arrayChangeEventName)) {
-            changeSubscription?.dispose();
-            spectateSubscription?.dispose();
+            changeSubscription?.['dispose']();
+            spectateSubscription?.['dispose']();
             spectateSubscription = changeSubscription = null;
             trackingChanges = false;
             previousContents = undefined;
@@ -893,8 +885,8 @@ ko.computed = (evaluatorFunctionOrOptions, options) => {
     // Attach a DOM node disposal callback so that the computed will be proactively disposed as soon as the node is
     // removed using ko.removeNode. But skip if isActive is false (there will never be any dependencies to dispose).
     if (state.disposeWhenNodeIsRemoved && computedObservable.isActive()) {
-        ko.utils.domNodeDisposal.addDisposeCallback(state.disposeWhenNodeIsRemoved, state.domNodeDisposalCallback = () => {
-            computedObservable.dispose();
+        ko.utils.domNodeDisposal['addDisposeCallback'](state.disposeWhenNodeIsRemoved, state.domNodeDisposalCallback = () => {
+            computedObservable['dispose']();
         });
     }
 
@@ -903,7 +895,7 @@ ko.computed = (evaluatorFunctionOrOptions, options) => {
 
 // Utility function that disposes a given dependencyTracking entry
 function computedDisposeDependencyCallback(id, entryToDispose) {
-    entryToDispose?.dispose?.();
+    entryToDispose?.['dispose']?.();
 }
 
 // This function gets called each time a dependency is detected while evaluating a computed.
@@ -1044,7 +1036,7 @@ var computedFn = {
         if (state.disposeWhenNodeIsRemoved && !ko.utils.domNodeIsAttachedToDocument(state.disposeWhenNodeIsRemoved) || disposeWhen?.()) {
             // See comment above about suppressDisposalUntilDisposeWhenReturnsFalse
             if (!state.suppressDisposalUntilDisposeWhenReturnsFalse) {
-                computedObservable.dispose();
+                computedObservable['dispose']();
                 return;
             }
         } else {
@@ -1092,7 +1084,7 @@ var computedFn = {
         var newValue = evaluateImmediate_CallReadThenEndDependencyDetection(state, dependencyDetectionContext);
 
         if (!state.dependenciesCount) {
-            computedObservable.dispose();
+            computedObservable['dispose']();
             changed = true; // When evaluation causes a disposal, make sure all dependent computeds get notified so they'll see the new state
         } else {
             changed = computedObservable.isDifferent(state.latestValue, newValue);
@@ -1160,11 +1152,11 @@ var computedFn = {
             self._limitChange(self, !isChange /* isDirty */);
         };
     },
-    dispose() {
+    'dispose'() {
         var state = this[computedState];
         if (!state.isSleeping && state.dependencyTracking) {
             ko.utils.objectForEach(state.dependencyTracking, (id, dependency) =>
-                dependency.dispose?.()
+                dependency['dispose']?.()
             );
         }
         if (state.disposeWhenNodeIsRemoved && state.domNodeDisposalCallback) {
@@ -1226,13 +1218,13 @@ var pureComputedOverrides = {
         var state = this[computedState];
         if (!state.isDisposed && event == 'change' && !this.hasSubscriptionsForEvent('change')) {
             ko.utils.objectForEach(state.dependencyTracking, (id, dependency) => {
-                if (dependency.dispose) {
+                if (dependency['dispose']) {
                     state.dependencyTracking[id] = {
                         _target: dependency._target,
                         _order: dependency._order,
                         _version: dependency._version
                     };
-                    dependency.dispose();
+                    dependency['dispose']();
                 }
             });
             state.isSleeping = true;
@@ -1258,11 +1250,10 @@ Object.setPrototypeOf(computedFn, ko.subscribable['fn']);
 // Set the proto values for ko.computed
 var protoProp = ko.observable.protoProperty; // == "__ko_proto__"
 computedFn[protoProp] = ko.computed;
+ko.computed['fn'] = computedFn;
 
 ko.exportSymbol('computed', ko.computed);
-ko.exportSymbol('isComputed', instance => (typeof instance == 'function' && instance[protoProp] === computedFn[protoProp]));
-ko.exportSymbol('computed.fn', computedFn);
-ko.exportProperty(computedFn, 'dispose', computedFn.dispose);
+ko['isComputed'] = instance => (typeof instance == 'function' && instance[protoProp] === computedFn[protoProp]);
 
 ko.pureComputed = (evaluatorFunctionOrOptions) => {
     if (typeof evaluatorFunctionOrOptions === 'function') {
@@ -1843,7 +1834,7 @@ class AsyncCompleteContext {
         this.asyncDescendants = new Set;
         this.childrenComplete = false;
 
-        bindingInfo.asyncContext || ko.utils.domNodeDisposal.addDisposeCallback(node, asyncContextDispose);
+        bindingInfo.asyncContext || ko.utils.domNodeDisposal['addDisposeCallback'](node, asyncContextDispose);
 
         if (ancestorBindingInfo?.asyncContext) {
             ancestorBindingInfo.asyncContext.asyncDescendants.add(node);
@@ -2052,7 +2043,7 @@ function applyBindingsToNodeInternal(node, sourceBindings, bindingContext) {
                 var callback = bindings[ko.bindingEvent.childrenComplete]();
                 if (callback) {
                     var nodes = ko.virtualElements.childNodes(node);
-                    nodes.length && callback(nodes, ko.dataFor(nodes[0]));
+                    nodes.length && callback(nodes, ko['dataFor'](nodes[0]));
                 }
             });
         }
@@ -2127,7 +2118,7 @@ function getBindingContext(viewModelOrBindingContext, extendContextCallback) {
         : new ko.bindingContext(viewModelOrBindingContext, undefined, undefined, extendContextCallback);
 }
 
-ko.applyBindingAccessorsToNode = (node, bindings, viewModelOrBindingContext) =>
+ko['applyBindingAccessorsToNode'] = (node, bindings, viewModelOrBindingContext) =>
     applyBindingsToNodeInternal(node, bindings, getBindingContext(viewModelOrBindingContext));
 
 ko.applyBindingsToDescendants = (viewModelOrBindingContext, rootNode) => {
@@ -2149,7 +2140,7 @@ ko.applyBindings = function (viewModelOrBindingContext, rootNode, extendContextC
 };
 
 // Retrieving binding context from arbitrary nodes
-ko.dataFor = node => {
+ko['dataFor'] = node => {
     // We can only do something meaningful for elements and comment nodes (in particular, not text nodes, as IE can't store domdata for them)
     var context = node && [1,8].includes(node.nodeType) && ko.storedBindingContextForNode(node);
     return context ? context['$data'] : undefined;
@@ -2157,13 +2148,11 @@ ko.dataFor = node => {
 
 ko.exportSymbol('bindingHandlers', ko.bindingHandlers);
 ko.exportSymbol('applyBindings', ko.applyBindings);
-ko.exportSymbol('applyBindingAccessorsToNode', ko.applyBindingAccessorsToNode);
-ko.exportSymbol('dataFor', ko.dataFor);
 (() => {
     var loadingSubscribablesCache = Object.create(null), // Tracks component loads that are currently in flight
         loadedDefinitionsCache = new Map();    // Tracks component loads that have already completed
 
-    ko.components = {
+    ko['components'] = {
         get: (componentName, callback) => {
             if (loadedDefinitionsCache.has(componentName)) {
                 callback(loadedDefinitionsCache.get(componentName));
@@ -2193,7 +2182,7 @@ ko.exportSymbol('dataFor', ko.dataFor);
             }
         },
 
-        register: (componentName, config) => {
+        'register': (componentName, config) => {
             if (!config) {
                 throw new Error('Invalid configuration for ' + componentName);
             }
@@ -2263,9 +2252,6 @@ ko.exportSymbol('dataFor', ko.dataFor);
             var found = (result['template'] && result[createViewModelKey]);
             callback(found ? result : null);
         };
-
-    ko.exportSymbol('components', ko.components);
-    ko.exportSymbol('components.register', ko.components.register);
 })();
 (() => {
     var componentLoadingOperationUniqueId = 0;
@@ -2281,7 +2267,7 @@ ko.exportSymbol('dataFor', ko.dataFor);
                         currentViewModelDispose.call(currentViewModel);
                     }
                     if (afterRenderSub) {
-                        afterRenderSub.dispose();
+                        afterRenderSub['dispose']();
                     }
                     afterRenderSub = null;
                     currentViewModel = null;
@@ -2291,7 +2277,7 @@ ko.exportSymbol('dataFor', ko.dataFor);
                 originalChildNodes = [...ko.virtualElements.childNodes(element)];
 
             ko.virtualElements.emptyNode(element);
-            ko.utils.domNodeDisposal.addDisposeCallback(element, disposeAssociatedComponentViewModel);
+            ko.utils.domNodeDisposal['addDisposeCallback'](element, disposeAssociatedComponentViewModel);
 
             ko.computed(() => {
                 var componentName = ko.utils.unwrapObservable(valueAccessor()),
@@ -2309,7 +2295,7 @@ ko.exportSymbol('dataFor', ko.dataFor);
                 var asyncContext = ko.bindingEvent.startPossiblyAsyncContentBinding(element, bindingContext);
 
                 var loadingOperationId = currentLoadingOperationId = ++componentLoadingOperationUniqueId;
-                ko.components.get(componentName, componentDefinition => {
+                ko['components'].get(componentName, componentDefinition => {
                     // If this is the current load operation for this element
                     if (currentLoadingOperationId === loadingOperationId) {
                         // Clean up previous state
@@ -3004,7 +2990,7 @@ ko.bindingHandlers['value'] = {
 
         // If the value binding is placed on a radio/checkbox, then just pass through to checkedValue and quit
         if (isInputElement && (element.type == "checkbox" || element.type == "radio")) {
-            ko.applyBindingAccessorsToNode(element, { 'checkedValue': valueAccessor });
+            ko['applyBindingAccessorsToNode'](element, { 'checkedValue': valueAccessor });
             return;
         }
 
@@ -3354,7 +3340,7 @@ makeEventHandlerShortcut('click');
             ko.bindingEvent.notify(targetNode, ko.bindingEvent.childrenComplete);
         };
 
-        if (!options['beforeRemove'] && ko.isObservableArray(arrayOrObservableArray)) {
+        if (!options['beforeRemove'] && ko['isObservableArray'](arrayOrObservableArray)) {
             setDomNodeChildrenFromArrayMapping(arrayOrObservableArray.peek());
 
             var subscription = arrayOrObservableArray['subscribe'](changeList => {
@@ -3377,7 +3363,7 @@ makeEventHandlerShortcut('click');
     var templateComputedDomDataKey = ko.utils.domData.nextKey();
     function disposeOldComputedAndStoreNewOne(element, newComputed) {
         var oldComputed = ko.utils.domData.get(element, templateComputedDomDataKey);
-        oldComputed?.dispose?.();
+        oldComputed?.['dispose']?.();
         ko.utils.domData.set(element, templateComputedDomDataKey, (newComputed && (!newComputed.isActive || newComputed.isActive())) ? newComputed : undefined);
     }
 
@@ -3688,7 +3674,7 @@ ko.utils.compareArrays = (() => {
 
                             // Stop tracking changes to the mapping for these nodes
                             if (mapData.dependentObservable) {
-                                mapData.dependentObservable.dispose();
+                                mapData.dependentObservable['dispose']();
                                 mapData.dependentObservable = undefined;
                             }
 

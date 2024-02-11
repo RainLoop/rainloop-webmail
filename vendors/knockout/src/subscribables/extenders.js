@@ -1,4 +1,4 @@
-ko.extenders = {
+ko['extenders'] = {
     'debounce': (target, timeout) => target.limit(callback => debounce(callback, timeout)),
 
     'rateLimit': (target, timeout) => target.limit(callback => throttle(callback, timeout)),
@@ -34,5 +34,3 @@ function debounce(callback, timeout) {
         timeoutInstance = setTimeout(callback, timeout);
     };
 }
-
-ko.exportSymbol('extenders', ko.extenders);

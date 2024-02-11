@@ -1,1 +1,1 @@
-ko.exportSymbol('version', "##VERSION##");
+ko['version'] = "##VERSION##";
