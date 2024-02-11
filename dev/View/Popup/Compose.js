@@ -346,7 +346,13 @@ export class ComposePopupView extends AbstractViewPopup {
 
 			sendSuccessButSaveError: value => !value && this.savedErrorDesc(''),
 
-			currentIdentity: value => value && this.from(value.formattedName()),
+			currentIdentity: value => {
+				if (value) {
+					this.from(value.formattedName());
+					this.pgpEncrypt(value.pgpEncrypt/* || SettingsUserStore.pgpEncrypt()*/);
+					this.pgpSign(value.pgpSign/* || SettingsUserStore.pgpSign()*/);
+				}
+			},
 
 			from: value => {
 				this.canPgpSign(false);
@@ -1387,14 +1393,6 @@ export class ComposePopupView extends AbstractViewPopup {
 //				this.dropMailvelope();
 			}
 		});
-	}
-
-	togglePgpSign() {
-		this.pgpSign(!this.pgpSign()/* && this.canPgpSign()*/);
-	}
-
-	togglePgpEncrypt() {
-		this.pgpEncrypt(!this.pgpEncrypt()/* && this.canPgpEncrypt()*/);
 	}
 
 	async getMessageRequestParams(sSaveFolder, draft)

@@ -60,13 +60,13 @@
 						<span data-i18n="COMPOSE/BUTTON_MARK_AS_IMPORTANT"></span>
 					</a>
 				</li>
-				<li data-bind="click: togglePgpSign, visible: canPgpSign">
+				<li data-bind="toggle: pgpSign, visible: canPgpSign">
 					<a>
 						<i class="fontastic" data-bind="text: pgpSign() ? '☑' : '☐'"></i>
 						<span data-icon="✍" data-i18n="OPENPGP/LABEL_SIGN"></span>
 					</a>
 				</li>
-				<li data-bind="click: togglePgpEncrypt, visible: canPgpEncrypt">
+				<li data-bind="toggle: pgpEncrypt, visible: canPgpEncrypt">
 					<a>
 						<i class="fontastic" data-bind="text: pgpEncrypt() || 'mailvelope' == viewArea() ? '☑' : '☐'"></i>
 						<span data-icon="🔒" data-i18n="OPENPGP/LABEL_ENCRYPT"></span>
@@ -137,10 +137,10 @@
 		<div style="display:flex">
 			<div class="btn-group" style="flex-grow:1"></div>
 			<div class="btn-group">
-				<a class="btn fontastic" data-bind="click: togglePgpSign, visible: canPgpSign, css: {'btn-success': pgpSign()}" data-i18n="[title]OPENPGP/LABEL_SIGN">
+				<a class="btn fontastic" data-bind="toggle: pgpSign, visible: canPgpSign, css: {'btn-success': pgpSign()}" data-i18n="[title]OPENPGP/LABEL_SIGN">
 					✍
 				</a>
-				<a class="btn fontastic" data-bind="click: togglePgpEncrypt, visible: canPgpEncrypt, css: {'btn-success': pgpEncrypt() || 'mailvelope' == viewArea()}" data-i18n="[title]OPENPGP/LABEL_ENCRYPT">
+				<a class="btn fontastic" data-bind="toggle: pgpEncrypt, visible: canPgpEncrypt, css: {'btn-success': pgpEncrypt() || 'mailvelope' == viewArea()}" data-i18n="[title]OPENPGP/LABEL_ENCRYPT">
 					🔒
 				</a>
 			</div>

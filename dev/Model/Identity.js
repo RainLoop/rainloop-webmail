@@ -21,6 +21,9 @@ export class IdentityModel extends AbstractModel {
 			signature: '',
 			signatureInsertBefore: false,
 
+			pgpSign: false,
+			pgpEncrypt: false,
+
 			askDelete: false
 		});
 	}

@@ -9,16 +9,16 @@
 		<span data-bind="text: submitError"></span>
 	</div>
 
-	<div class="tabs">
+	<div class="tabs" data-bind="with: identity">
 		<input type="radio" name="identitytabs" id="tab-identity" checked>
 		<label data-i18n="SETTINGS_LABELS/GENERAL" for="tab-identity" role="tab" aria-selected="true" aria-controls="panel1" tabindex="0"></label>
 		<div class="form-horizontal tab-content" role="tabpanel" aria-hidden="false">
 			<div class="control-group">
 				<label data-i18n="POPUPS_IDENTITY/LABEL"></label>
 				<div>
-					<input name="Label" type="text" class="input-xlarge" autofocus="" required=""
+					<input name="Label" type="text" class="input-xlarge" autofocus=""
 						autocomplete="off" autocorrect="off" autocapitalize="off"
-						data-bind="value: label, hasfocus: labelFocused">
+						data-bind="value: label, hasfocus: $root.labelFocused">
 				</div>
 			</div>
 			<div class="control-group">
@@ -34,7 +34,7 @@
 				<label data-i18n="GLOBAL/NAME"></label>
 				<input name="Name" type="text" class="input-xlarge"
 					autocomplete="off" autocorrect="off" autocapitalize="off"
-					data-bind="value: name, hasfocus: nameFocused">
+					data-bind="value: name, hasfocus: $root.nameFocused">
 			</div>
 		</div>
 
@@ -67,6 +67,35 @@
 					autocomplete="off" autocorrect="off" autocapitalize="off"
 					data-bind="value: bcc">
 			</div>
+
+			<div class="legend" data-i18n="CONTACTS/TAB_CRYPTO"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'OPENPGP/LABEL_SIGN',
+					value: pgpSign,
+					name: 'PgpSign'
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'OPENPGP/LABEL_ENCRYPT',
+					value: pgpEncrypt,
+					name: 'PgpEncrypt'
+				}
+			}"></div>
+<!--
+			<div class="control-group">
+				<label data-i18n="OPENPGP/LABEL_ENCRYPT"></label>
+				<select name="PgpEncrypt" data-bind="value: pgpEncrypt">
+					<option value="Ask" data-i18n="CONTACTS/ASK"></option>
+					<option value="Never" data-i18n="CONTACTS/NEVER"></option>
+					<option value="Always" data-i18n="CONTACTS/ALWAYS"></option>
+					<option value="IfPossible" data-i18n="CONTACTS/ALWAYS_IF_POSSIBLE"></option>
+				</select>
+			</div>
+-->
 		</div>
 	</div>
 </form>

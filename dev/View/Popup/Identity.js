@@ -15,22 +15,10 @@ export class IdentityPopupView extends AbstractViewPopup {
 		super('Identity');
 
 		addObservablesTo(this, {
-			id: '',
+			identity: null,
 			edit: false,
-
-			label: '',
 			labelFocused: false,
-
-			email: '',
-			name: '',
 			nameFocused: false,
-
-			replyTo: '',
-			bcc: '',
-
-			signature: '',
-			signatureInsertBefore: false,
-
 			submitRequest: false,
 			submitError: ''
 		});
@@ -43,11 +31,12 @@ export class IdentityPopupView extends AbstractViewPopup {
 
 	submitForm(form) {
 		if (!this.submitRequest() && form.reportValidity()) {
-			this.signature?.__fetchEditorValue?.();
+			let identity = this.identity();
+			identity.signature?.__fetchEditorValue?.();
 			this.submitRequest(true);
 			const data = new FormData(form);
-			data.set('Id', this.id());
-			data.set('Signature', this.signature());
+			data.set('Id', identity.id());
+			data.set('Signature', identity.signature());
 			Remote.request('IdentityUpdate', iError => {
 					this.submitRequest(false);
 					if (iError) {
@@ -67,7 +56,6 @@ export class IdentityPopupView extends AbstractViewPopup {
 	onShow(identity) {
 		this.submitRequest(false);
 		this.submitError('');
-
 		if (identity) {
 			this.edit(true);
 		} else {
@@ -75,17 +63,10 @@ export class IdentityPopupView extends AbstractViewPopup {
 			identity = new IdentityModel;
 			identity.id(Jua.randomId());
 		}
-		this.id(identity.id() || '');
-		this.label(identity.label() || '');
-		this.name(identity.name());
-		this.email(identity.email());
-		this.replyTo(identity.replyTo());
-		this.bcc(identity.bcc());
-		this.signature(identity.signature());
-		this.signatureInsertBefore(identity.signatureInsertBefore());
+		this.identity(identity);
 	}
 
 	afterShow() {
-		this.id() ? this.labelFocused(true) : this.nameFocused(true);
+		this.identity().id() ? this.labelFocused(true) : this.nameFocused(true);
 	}
 }

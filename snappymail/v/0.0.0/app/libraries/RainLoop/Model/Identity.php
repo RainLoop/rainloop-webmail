@@ -22,6 +22,9 @@ class Identity implements \JsonSerializable
 
 	private bool $bSignatureInsertBefore = false;
 
+	private bool $bPgpEncrypt = false;
+	private bool $bPgpSign = false;
+
 	function __construct(string $sId = '', string $sEmail = '')
 	{
 		$this->sId = $sId;
@@ -89,7 +92,8 @@ class Identity implements \JsonSerializable
 			$this->sBcc = !empty($aData['Bcc']) ? $aData['Bcc'] : '';
 			$this->sSignature = !empty($aData['Signature']) ? $aData['Signature'] : '';
 			$this->bSignatureInsertBefore = !empty($aData['SignatureInsertBefore']);
-
+			$this->bPgpEncrypt = !empty($aData['PgpEncrypt']);
+			$this->bPgpSign = !empty($aData['PgpSign']);
 			return true;
 		}
 
@@ -107,7 +111,9 @@ class Identity implements \JsonSerializable
 			'ReplyTo' => $this->sReplyTo,
 			'Bcc' => $this->sBcc,
 			'Signature' => $this->sSignature,
-			'SignatureInsertBefore' => $this->bSignatureInsertBefore
+			'SignatureInsertBefore' => $this->bSignatureInsertBefore,
+			'PgpEncrypt' => $this->bPgpEncrypt,
+			'PgpSign' => $this->bPgpSign
 		);
 	}
 
@@ -123,7 +129,9 @@ class Identity implements \JsonSerializable
 			'replyTo' => $this->sReplyTo,
 			'bcc' => $this->sBcc,
 			'signature' => $this->sSignature,
-			'signatureInsertBefore' => $this->bSignatureInsertBefore
+			'signatureInsertBefore' => $this->bSignatureInsertBefore,
+			'pgpEncrypt' => $this->bPgpEncrypt,
+			'pgpSign' => $this->bPgpSign
 		);
 	}
 
