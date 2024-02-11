@@ -28,6 +28,11 @@ export const
 
 	dispose = disposable => isFunction(disposable?.dispose) && disposable.dispose(),
 
+	onEvent = (element, event, fn) => {
+		element.addEventListener(event, fn);
+		ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeEventListener(event, fn));
+	},
+
 	onKey = (key, element, fValueAccessor, fAllBindings, model) => {
 		let fn = event => {
 			if (key == event.key) {
@@ -36,8 +41,7 @@ export const
 				fValueAccessor().call(model);
 			}
 		};
-		element.addEventListener('keydown', fn);
-		ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeEventListener('keydown', fn));
+		onEvent(element, 'keydown', fn);
 	},
 
 	// With this we don't need delegateRunOnDestroy
@@ -80,6 +84,15 @@ Object.assign(ko.bindingHandlers, {
 	onSpace: {
 		init: (element, fValueAccessor, fAllBindings, model) =>
 			onKey(' ', element, fValueAccessor, fAllBindings, model)
+	},
+
+	toggle: {
+		init: (element, fValueAccessor) => {
+			let observable = fValueAccessor(),
+				fn = () => observable(!observable());
+			onEvent(element, 'click', fn);
+			onEvent(element, 'keydown', event => ' ' == event.key && fn());
+		}
 	},
 
 	i18nUpdate: {

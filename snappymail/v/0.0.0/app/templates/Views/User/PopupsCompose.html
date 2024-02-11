@@ -12,49 +12,49 @@
 	<span class="saved-text hide-mobile" data-bind="text: savedTimeText"></span>
 
 	<div class="pull-right">
-		<a class="btn hide-mobile" data-i18n="GLOBAL/BCC" data-bind="visible: !showBcc(), click: function () { showBcc(true); }"></a>
-		<a class="btn hide-mobile" data-i18n="GLOBAL/CC" data-bind="visible: !showCc(), click: function () { showCc(true); }"></a>
+		<a class="btn hide-mobile" data-i18n="GLOBAL/BCC" data-bind="visible: !showBcc(), toggle: showBcc"></a>
+		<a class="btn hide-mobile" data-i18n="GLOBAL/CC" data-bind="visible: !showCc(), toggle: showCc"></a>
 		<a class="btn fontastic" data-bind="visible: allowContacts, command: contactsCommand" data-i18n="[title]GLOBAL/CONTACTS">📇</a>
 		<div class="btn-group dropdown" data-bind="registerBootstrapDropdown: true" style="display:inline-block;vertical-align:top">
 			<a class="btn dropdown-toggle fontastic">☰</a>
 			<menu class="dropdown-menu right-edge" role="menu">
-				<li data-bind="click: function () { showBcc(!showBcc()); }">
+				<li data-bind="toggle: showBcc">
 					<a>
 						<i class="fontastic" data-bind="text: showBcc() ? '☑' : '☐'"></i>
 						<span data-i18n="GLOBAL/BCC"></span>
 					</a>
 				</li>
-				<li data-bind="click: function () { showCc(!showCc()); }">
+				<li data-bind="toggle: showCc">
 					<a>
 						<i class="fontastic" data-bind="text: showCc() ? '☑' : '☐'"></i>
 						<span data-i18n="GLOBAL/CC"></span>
 					</a>
 				</li>
-				<li data-bind="click: function () { showReplyTo(!showReplyTo()); }">
+				<li data-bind="toggle: showReplyTo">
 					<a>
 						<i class="fontastic" data-bind="text: showReplyTo() ? '☑' : '☐'"></i>
 						<span data-i18n="GLOBAL/REPLY_TO"></span>
 					</a>
 				</li>
-				<li data-bind="click: function () { requestReadReceipt(!requestReadReceipt()); }">
+				<li data-bind="toggle: requestReadReceipt">
 					<a>
 						<i class="fontastic" data-bind="text: requestReadReceipt() ? '☑' : '☐'"></i>
 						<span data-i18n="COMPOSE/BUTTON_REQUEST_READ_RECEIPT"></span>
 					</a>
 				</li>
-				<li data-bind="click: function () { requestDsn(!requestDsn()); }">
+				<li data-bind="toggle: requestDsn">
 					<a>
 						<i class="fontastic" data-bind="text: requestDsn() ? '☑' : '☐'"></i>
 						<span data-i18n="COMPOSE/BUTTON_REQUEST_DSN"></span>
 					</a>
 				</li>
-				<li data-bind="click: function () { requireTLS(!requireTLS()); }">
+				<li data-bind="toggle: requireTLS">
 					<a>
 						<i class="fontastic" data-bind="text: requireTLS() ? '☑' : '☐'"></i>
 						<span data-i18n="COMPOSE/BUTTON_REQUIRE_TLS"></span>
 					</a>
 				</li>
-				<li data-bind="click: function () { markAsImportant(!markAsImportant()); }">
+				<li data-bind="toggle: markAsImportant">
 					<a>
 						<i class="fontastic" data-bind="text: markAsImportant() ? '☑' : '☐'"></i>
 						<span data-i18n="COMPOSE/BUTTON_MARK_AS_IMPORTANT"></span>
