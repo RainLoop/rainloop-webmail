@@ -34,7 +34,8 @@ export class AdminSettingsConfig /*extends AbstractViewSettings*/ {
 							name: skey,
 							value: item[0],
 							type: getInputType(item[0], skey.includes('password')),
-							comment: item[1]
+							comment: item[1],
+							options: item[2]
 						});
 					});
 					cfg.push(section);

@@ -23,6 +23,8 @@ class ActionsAdmin extends Actions
 	{
 		$aConfig = $this->Config()->jsonSerialize();
 		unset($aConfig['version']);
+		$aConfig['logs']['time_zone'][1] = '';
+		$aConfig['logs']['time_zone'][2] = \DateTimeZone::listIdentifiers();
 		return $this->DefaultResponse($aConfig);
 	}
 
