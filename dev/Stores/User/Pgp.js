@@ -9,6 +9,8 @@ import { SettingsCapa, SettingsGet } from 'Common/Globals';
 import { GnuPGUserStore } from 'Stores/User/GnuPG';
 import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
 
+import Remote from 'Remote/User/Fetch';
+
 // https://mailvelope.github.io/mailvelope/Keyring.html
 let mailvelopeKeyring = null;
 
@@ -73,6 +75,22 @@ export const
 		 */
 		isEncrypted(text) {
 			return 0 === text.trim().indexOf(BEGIN_PGP_MESSAGE);
+		}
+
+		importKey(key, gnuPG, backup) {
+			if (gnuPG || backup) {
+				Remote.request('PgpImportKey',
+					(iError, oData) => {
+						if (gnuPG && oData?.Result/* && (oData.Result.imported || oData.Result.secretimported)*/) {
+							GnuPGUserStore.loadKeyrings();
+						}
+						iError && alert(oData.ErrorMessage);
+					}, {
+						key, gnuPG, backup
+					}
+				);
+			}
+			OpenPGPUserStore.isSupported() && OpenPGPUserStore.importKey(key);
 		}
 
 		async mailvelopeHasPublicKeyForEmails(recipients) {

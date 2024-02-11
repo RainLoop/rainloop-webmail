@@ -1,6 +1,6 @@
 import { addObservablesTo } from 'External/ko';
 import { GnuPGUserStore } from 'Stores/User/GnuPG';
-import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
+import { PgpUserStore } from 'Stores/User/Pgp';
 
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
@@ -94,23 +94,8 @@ export class OpenPgpImportPopupView extends AbstractViewPopup {
 				if (match[0] && match[1] && match[2] && match[1] === match[2]) {
 					const GnuPG = this.saveGnuPG() && GnuPGUserStore.isSupported(),
 						backup = this.saveServer();
-					if (GnuPG || backup()) {
-						Remote.request('PgpImportKey',
-							(iError, oData) => {
-								if (GnuPG && oData?.Result/* && (oData.Result.imported || oData.Result.secretimported)*/) {
-									GnuPGUserStore.loadKeyrings();
-								}
-								iError && alert(oData.ErrorMessage);
-							}, {
-								key: this.key(),
-								gnuPG: GnuPG,
-								backup: backup
-							}
-						);
-					}
-					OpenPGPUserStore.isSupported() && OpenPGPUserStore.importKey(this.key());
+					PgpUserStore.importKey(this.key(), GnuPG, backup);
 				}
-
 				--count;
 				done = false;
 			} else {

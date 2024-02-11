@@ -28,9 +28,12 @@ import { SettingsUserStore } from 'Stores/User/Settings';
 import { IdentityUserStore } from 'Stores/User/Identity';
 import { AccountUserStore } from 'Stores/User/Account';
 import { FolderUserStore } from 'Stores/User/Folder';
+
 import { PgpUserStore } from 'Stores/User/Pgp';
 import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
 import { GnuPGUserStore } from 'Stores/User/GnuPG';
+//import { OpenPgpImportPopupView } from 'View/Popup/OpenPgpImport';
+
 import { MessageUserStore } from 'Stores/User/Message';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
 
@@ -46,6 +49,7 @@ import { AbstractViewPopup } from 'Knoin/AbstractViews';
 import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
 import { AskPopupView } from 'View/Popup/Ask';
 import { ContactsPopupView } from 'View/Popup/Contacts';
+
 /*
 import { ThemeStore } from 'Stores/Theme';
 
@@ -350,10 +354,11 @@ export class ComposePopupView extends AbstractViewPopup {
 				value && PgpUserStore.getKeyForSigning(value).then(result => {
 					console.log({
 						email: value,
-						canPgpSign:result
+						canPgpSign:!!result
 					});
-					this.canPgpSign(result)
+					this.canPgpSign(!!result)
 				});
+				this.initPgpEncrypt();
 			},
 
 			cc: value => {
@@ -858,7 +863,10 @@ export class ComposePopupView extends AbstractViewPopup {
 
 			switch (options.mode) {
 				case ComposeType.Reply:
-				case ComposeType.ReplyAll:
+				case ComposeType.ReplyAll: {
+//					if (1 == oLastMessage.to.length) {
+//						setTimeout(() => this.from(emailArrayToStringLineHelper(oLastMessage.to)), 1);
+//					}
 					if (ComposeType.Reply === options.mode) {
 						this.to(emailArrayToStringLineHelper(oLastMessage.replyEmails(excludeEmail)));
 					} else {
@@ -872,8 +880,30 @@ export class ComposePopupView extends AbstractViewPopup {
 					this.sInReplyTo = oLastMessage.messageId;
 					this.sReferences = (oLastMessage.references + ' ' + oLastMessage.messageId).trim();
 					// OpenPGP “Transferable Public Key”
-//					oLastMessage.autocrypt?.keydata
-					break;
+					let autocrypt = {}, value = oLastMessage.headers().valueByName('autocrypt');
+					if (value) {
+						value.split(';').forEach(entry => {
+							entry = entry.split('=', 2);
+							autocrypt[entry[0].trim()] = entry[1].trim();
+						});
+						if (autocrypt.addr && autocrypt.keydata) {
+							PgpUserStore.hasPublicKeyForEmails([autocrypt.addr]).then(result =>
+								result || PgpUserStore.importKey(
+									'-----BEGIN PGP PUBLIC KEY BLOCK-----\n\n'
+									 + autocrypt.keydata
+									 + '\n-----END PGP PUBLIC KEY BLOCK-----',
+									 true, true)
+/*
+								result || showScreenPopup(OpenPgpImportPopupView,
+									['-----BEGIN PGP PUBLIC KEY BLOCK-----\n\n'
+									 + autocrypt.keydata
+									 + '\n-----END PGP PUBLIC KEY BLOCK-----']
+								)
+*/
+							);
+						}
+					}
+				} break;
 
 				case ComposeType.Forward:
 				case ComposeType.ForwardAsAttachment:
