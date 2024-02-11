@@ -597,12 +597,12 @@ ko.observableArray = initialValues => {
     return Object.setPrototypeOf(ko.observable(initialValues), ko.observableArray['fn']).extend({'trackArrayChanges':true});
 };
 
-//const IS_OBSERVABLE_ARRAY = Symbol('IS_OBSERVABLE_ARRAY');
+const IS_OBSERVABLE_ARRAY = Symbol('IS_OBSERVABLE_ARRAY');
 
 // Note that for browsers that don't support proto assignment, the
 // inheritance chain is created manually in the ko.observableArray constructor
 ko.observableArray['fn'] = Object.setPrototypeOf({
-//    [IS_OBSERVABLE_ARRAY]: 1,
+    [IS_OBSERVABLE_ARRAY]: 1,
     'remove'(valueOrPredicate) {
         var underlyingArray = this.peek();
         var removed = false;
@@ -653,11 +653,7 @@ Object.getOwnPropertyNames(Array.prototype).forEach(methodName => {
     }
 });
 
-//ko.isObservableArray = obj => !!(obj && obj[IS_OBSERVABLE_ARRAY]);
-ko.isObservableArray = instance =>
-    ko.isObservable(instance)
-        && typeof instance["remove"] == "function"
-        && typeof instance["push"] == "function";
+ko.isObservableArray = obj => !!(obj && obj[IS_OBSERVABLE_ARRAY]);
 
 ko.exportSymbol('observableArray', ko.observableArray);
 ko.exportSymbol('isObservableArray', ko.isObservableArray);
