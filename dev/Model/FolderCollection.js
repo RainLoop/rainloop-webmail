@@ -21,7 +21,7 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 
 import { /*koComputable,*/ addObservablesTo } from 'External/ko';
 
-//import { mailBox } from 'Common/Links';
+import { mailBox } from 'Common/Links';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -476,7 +476,7 @@ export class FolderModel extends AbstractModel {
 					folder => folder.unreadCount() | folder.hasSubscribedUnreadMessagesSubfolders()
 				).length
 */
-//			,href: () => this.canBeSelected() && mailBox(this.fullNameHash)
+			,href: () => this.canBeSelected() && mailBox(this.fullNameHash)
 		});
 	}
 

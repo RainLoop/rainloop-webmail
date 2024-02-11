@@ -1,7 +1,7 @@
 <li>
 	<a data-bind="dropmessages: $data,
 	   css: { 'selected': selected() && !isSystemFolder(), 'system': isSystemFolder, 'selectable': canBeSelected, 'unread-sub': hasSubscribedUnreadMessagesSubfolders, 'anim-action-class': actionBlink },
-	   attr: { 'data-unread': unreadCount }">
+	   attr: { 'data-unread': unreadCount, href: href }">
 		<i data-bind="css: collapsedCss()"></i>
 		<!-- ko text: name --><!-- /ko -->
 	</a>

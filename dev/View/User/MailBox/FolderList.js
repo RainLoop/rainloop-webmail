@@ -39,6 +39,8 @@ export class MailFolderList extends AbstractViewLeft {
 
 		this.foldersFilter = foldersFilter;
 
+		this.filterUnseen = ko.observable(false);
+
 		addComputablesTo(this, {
 			foldersFilterVisible: () => 20 < FolderUserStore.folderList().CountRec,
 
