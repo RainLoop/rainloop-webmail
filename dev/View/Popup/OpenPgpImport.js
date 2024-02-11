@@ -32,7 +32,7 @@ export class OpenPgpImportPopupView extends AbstractViewPopup {
 
 	searchPGP() {
 		this.key(i18n('SUGGESTIONS/SEARCHING_DESC'));
-		Remote.request('SearchPGPKey',
+		const fn = () => Remote.request('SearchPGPKey',
 			(iError, oData) => {
 				if (iError) {
 					this.key(oData.ErrorMessage);
@@ -43,6 +43,29 @@ export class OpenPgpImportPopupView extends AbstractViewPopup {
 				query: this.search()
 			}
 		);
+		fetch(
+			`https://keys.openpgp.org/pks/lookup?op=get&options=mr&search=${this.search()}`,
+			{
+				method: 'GET',
+				mode: 'cors',
+				cache: 'no-cache',
+				redirect: 'error',
+				referrerPolicy: 'no-referrer',
+				credentials: 'omit'
+			}
+		)
+		.then(response => {
+			if ('application/pgp-keys' == response.headers.get('Content-Type')) {
+				response.text().then(body => this.key(body));
+			} else {
+				fn();
+			}
+		})
+		.catch(e => {
+			this.key('keys.openpgp.org: ' + e?.message + '\nTrying local...');
+			fn();
+			throw e;
+		});
 	}
 
 	submitForm() {
