@@ -92,6 +92,9 @@ abstract class Header
 
 		// https://autocrypt.org/level1.html#the-autocrypt-header
 		AUTOCRYPT = 'Autocrypt',
+		// Deprecated https://datatracker.ietf.org/doc/html/draft-josefsson-openpgp-mailnews-header-07
+//		X_PGP_KEY = 'X-PGP-Key',
+//		OPENPGP = 'OpenPGP', // url="https://www.irf.se/pgp/robert.labudda" id=11FA93ABE6892CA7D58CB0BE6392A597DE44B055
 
 		// https://www.ietf.org/archive/id/draft-brand-indicators-for-message-identification-04.html#bimi-selector
 		BIMI_SELECTOR = 'BIMI-Selector',
