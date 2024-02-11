@@ -35,8 +35,6 @@ export class MailFolderList extends AbstractViewLeft {
 
 		this.moveAction = moveAction;
 
-		this.foldersListWithSingleInboxRootFolder = ko.observable(false);
-
 		this.allowContacts = AppUserStore.allowContacts();
 
 		this.foldersFilter = foldersFilter;
@@ -45,23 +43,10 @@ export class MailFolderList extends AbstractViewLeft {
 			foldersFilterVisible: () => 20 < FolderUserStore.folderList().CountRec,
 
 			folderListVisible: () => {
-				let multiple = false,
-					inbox, visible,
-					result = FolderUserStore.folderList().filter(folder => {
-						if (folder.isInbox()) {
-							inbox = folder;
-						}
-						visible = folder.visible();
-						multiple |= visible && !folder.isInbox();
-						return visible;
-					});
-				if (inbox && !multiple) {
-					inbox.collapsed(false);
-				}
-				this.foldersListWithSingleInboxRootFolder(!multiple);
+				let result = FolderUserStore.folderList().filter(folder => folder.visible());
 				// https://github.com/the-djmaze/snappymail/issues/1427
 //				result.sort((a, b) => a.unreadEmails ? (b.unreadEmails ? 0 : -1) : (b.unreadEmails ? 1 : 0));
-				return result;
+				return 1 === result.length && result[0].isInbox() ? result[0].subFolders() : result;
 			}
 		});
 	}
