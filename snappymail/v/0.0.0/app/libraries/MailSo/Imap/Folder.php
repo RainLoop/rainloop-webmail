@@ -148,6 +148,7 @@ class Folder implements \JsonSerializable
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
+		$selectable = $this->Selectable();
 		$result = array(
 			'@Object' => 'Object/Folder',
 			'name' => $this->Name(),
@@ -163,16 +164,17 @@ class Folder implements \JsonSerializable
 			'size' => $this->SIZE,
 			'role' => $this->Role(),
 
-			'myRights' => [
-				'mayReadItems'   => !$this->myRights || ($this->myRights->hasRight('l') && $this->myRights->hasRight('r')),
-				'mayAddItems'    => !$this->myRights || $this->myRights->hasRight('i'),
-				'mayRemoveItems' => !$this->myRights || ($this->myRights->hasRight('t') && $this->myRights->hasRight('e')),
-				'maySetSeen'     => !$this->myRights || $this->myRights->hasRight('s'),
-				'maySetKeywords' => !$this->myRights || $this->myRights->hasRight('w'),
-				'mayCreateChild' => !$this->myRights || $this->myRights->hasRight('k'),
-				'mayRename'      => !$this->myRights || $this->myRights->hasRight('x'),
-				'mayDelete'      => !$this->myRights || $this->myRights->hasRight('x'),
-				'maySubmit'      => !$this->myRights || $this->myRights->hasRight('p')
+			'rights' => $this->myRights,
+			'myRights' => $this->myRights ? $this->myRights->JMAP() : [
+				'mayReadItems'   => $selectable,
+				'mayAddItems'    => $selectable,
+				'mayRemoveItems' => $selectable,
+				'maySetSeen'     => $selectable,
+				'maySetKeywords' => $selectable,
+				'mayCreateChild' => $selectable,
+				'mayRename'      => $selectable,
+				'mayDelete'      => $selectable,
+				'maySubmit'      => $selectable
 			]
 		);
 		if ($this->etag) {

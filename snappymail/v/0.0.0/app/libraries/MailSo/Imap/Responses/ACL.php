@@ -46,4 +46,19 @@ class ACL implements \JsonSerializable
 		return $this->rights;
 	}
 
+	public function JMAP() : array
+	{
+		return [
+			'mayReadItems'   => ($this->hasRight('l') && $this->hasRight('r')),
+			'mayAddItems'    => $this->hasRight('i'),
+			'mayRemoveItems' => ($this->hasRight('t') && $this->hasRight('e')),
+			'maySetSeen'     => $this->hasRight('s'),
+			'maySetKeywords' => $this->hasRight('w'),
+			'mayCreateChild' => $this->hasRight('k'),
+			'mayRename'      => $this->hasRight('x'),
+			'mayDelete'      => $this->hasRight('x'),
+			'maySubmit'      => $this->hasRight('p')
+		];
+	}
+
 }

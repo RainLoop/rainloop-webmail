@@ -366,20 +366,19 @@ export class FolderModel extends AbstractModel {
 			})
 			.extend({ notify: 'always' });
 */
-/*
-		https://www.rfc-editor.org/rfc/rfc8621.html#section-2
-		"myRights": {
-			"mayAddItems": true,
-			"mayRename": false,
-			"maySubmit": true,
-			"mayDelete": false,
-			"maySetKeywords": true,
-			"mayRemoveItems": true,
-			"mayCreateChild": true,
-			"maySetSeen": true,
-			"mayReadItems": true
-		},
-*/
+
+		// https://www.rfc-editor.org/rfc/rfc8621.html#section-2
+		this.myRights = {
+			'mayAddItems': true,
+			'mayCreateChild': true,
+			'mayDelete': true,
+			'mayReadItems': true,
+			'mayRemoveItems': true,
+			'mayRename': true,
+			'maySetKeywords': true,
+			'maySetSeen': true,
+			'maySubmit': true
+		};
 
 		this.addComputables({
 
