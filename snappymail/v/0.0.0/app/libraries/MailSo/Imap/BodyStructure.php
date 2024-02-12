@@ -11,8 +11,6 @@
 
 namespace MailSo\Imap;
 
-use MailSo\Mime\ParameterCollection;
-
 /**
  * @category MailSo
  * @package Imap

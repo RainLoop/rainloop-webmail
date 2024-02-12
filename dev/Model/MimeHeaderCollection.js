@@ -29,4 +29,10 @@ export class MimeHeaderCollectionModel extends AbstractCollectionModel
 		return header ? header.value : '';
 	}
 
+	valuesByName(name)
+	{
+		name = name.toLowerCase();
+		return this.filter(header => header.name.toLowerCase() === name).map(header => header.value);
+	}
+
 }

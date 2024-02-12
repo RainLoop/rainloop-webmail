@@ -20,7 +20,7 @@ const
 				? {password:Passphrases.get(key), remember:false}
 				: await AskPopupView.password('GnuPG key<br>' + key + ' ' + privateKey.emails[0], 'OPENPGP/'+btnTxt);
 		pass && pass.remember && Passphrases.set(key, pass.password);
-		return pass.password;
+		return pass?.password;
 	},
 
 	findGnuPGKey = (keys, query/*, sign*/) =>
@@ -77,29 +77,31 @@ export const GnuPGUserStore = new class {
 								);
 							}
 						};
-						key.view = () => {
-							const fetch = pass => Remote.request('GnupgExportKey',
-									(iError, oData) => {
-										if (oData?.Result) {
-											key.armor = oData.Result;
-											showScreenPopup(OpenPgpKeyPopupView, [key]);
-										} else {
-											Passphrases.delete(key.id);
-										}
-									}, {
-										keyId: key.id,
-										isPrivate: isPrivate,
-										passphrase: pass
-									}
-								);
-							if (isPrivate) {
-								askPassphrase(key, 'POPUP_VIEW_TITLE').then(passphrase => {
-									(null !== passphrase) && fetch(passphrase);
-								});
+						key.fetch = async callback => {
+							if (key.armor) {
+								callback && callback();
 							} else {
-								fetch('');
+								let pass = '';
+								if (isPrivate) {
+									pass = await askPassphrase(key, 'POPUP_VIEW_TITLE');
+								}
+								if (null != pass) {
+									const result = await Remote.post('GnupgExportKey', null, {
+											keyId: key.id,
+											isPrivate: isPrivate,
+											passphrase: pass
+										});
+									if (result?.Result) {
+										key.armor = result.Result;
+										callback && callback();
+									} else {
+										Passphrases.delete(key.id);
+									}
+								}
 							}
+							return key.armor;
 						};
+						key.view = () => key.fetch(() => showScreenPopup(OpenPgpKeyPopupView, [key]));
 						return key;
 					};
 					this.publicKeys(oData.Result.public.map(key => initKey(key, 0)));

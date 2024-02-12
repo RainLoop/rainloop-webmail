@@ -15,6 +15,7 @@ import { FileInfo, RFC822 } from 'Common/File';
 import { AttachmentCollectionModel } from 'Model/AttachmentCollection';
 import { EmailCollectionModel } from 'Model/EmailCollection';
 import { MimeHeaderCollectionModel } from 'Model/MimeHeaderCollection';
+//import { MimeHeaderAutocryptModel } from 'Model/MimeHeaderAutocrypt';
 import { AbstractModel } from 'Knoin/AbstractModel';
 
 import PreviewHTML from 'Html/PreviewMessage.html';
@@ -75,7 +76,7 @@ export class MessageModel extends AbstractModel {
 			messageId: '',
 			inReplyTo: '',
 			references: '',
-			autocrypt: {/*addr:'', 'prefer-encrypt':'nopreference', keydata:'BASE64'*/},
+//			autocrypt: ko.observableArray(),
 			hasVirus: null, // or boolean when scanned
 			priority: 3, // Normal
 			internalTimestamp: 0,
@@ -287,12 +288,9 @@ export class MessageModel extends AbstractModel {
 			}
 
 			// https://autocrypt.org/level1.html#the-autocrypt-header
-			if (value = headers.valueByName('Autocrypt')) {
-				value.split(';').forEach(entry => {
-					entry = entry.trim().split('=', 2);
-					json.autocrypt[entry[0]] = entry[1];
-				});
-			}
+			headers.valuesByName('Autocrypt').forEach(value => {
+				this.autocrypt.push(new MimeHeaderAutocryptModel(value));
+			});
 */
 			return true;
 		}

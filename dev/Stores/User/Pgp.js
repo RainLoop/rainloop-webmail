@@ -106,8 +106,7 @@ export const
 		 * Returns the first library that can.
 		 */
 		async hasPublicKeyForEmails(recipients) {
-			const count = recipients.length;
-			if (count) {
+			if (recipients.length) {
 				if (GnuPGUserStore.hasPublicKeyForEmails(recipients)) {
 					return 'gnupg';
 				}
@@ -228,12 +227,37 @@ export const
 			}
 		}
 
+		getPublicKeyOfEmails(recipients) {
+			if (recipients.length) {
+				let result = {};
+				recipients.forEach(email => {
+					OpenPGPUserStore.publicKeys().forEach(key => {
+						if (key.emails.includes(email)) {
+							result[email] = key.armor;
+						}
+					});
+					GnuPGUserStore.publicKeys.map(async key => {
+						if (!result[email] && key.emails.includes(email)) {
+							result[email] = await key.fetch();
+						}
+					});
+				});
+				return result;
+			}
+			return false;
+		}
+
 		/**
 		 * Returns headers that should be added to an outgoing email.
 		 * So far this is only the autocrypt header.
 		 */
 	/*
-		mailvelopeKeyring.additionalHeadersForOutgoingEmail(headers)
+		mailvelopeKeyring.additionalHeadersForOutgoingEmail(from: 'abc@web.de')
+		.then(function(additional) {
+			console.log('additionalHeadersForOutgoingEmail', additional);
+			// logs: {autocrypt: "addr=abc@web.de; prefer-encrypt=mutual; keydata=..."}
+		});
+
 		mailvelopeKeyring.addSyncHandler(syncHandlerObj)
 		mailvelopeKeyring.createKeyBackupContainer(selector, options)
 		mailvelopeKeyring.createKeyGenContainer(selector, {

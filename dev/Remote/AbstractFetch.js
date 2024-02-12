@@ -170,13 +170,6 @@ export class AbstractFetchRemote
 		});
 	}
 
-	/**
-	 * @param {?Function} fCallback
-	 */
-	getPublicKey(fCallback) {
-		this.request('GetPublicKey', fCallback);
-	}
-
 	setTrigger(trigger, value) {
 		if (trigger) {
 			value = !!value;

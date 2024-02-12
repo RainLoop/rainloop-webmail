@@ -41,6 +41,7 @@ import Remote from 'Remote/User/Fetch';
 
 import { ComposeAttachmentModel } from 'Model/ComposeAttachment';
 import { EmailModel } from 'Model/Email';
+import { MimeHeaderAutocryptModel } from 'Model/MimeHeaderAutocrypt';
 import { addressparser } from 'Mime/Address';
 
 import { decorateKoCommands, showScreenPopup } from 'Knoin/Knoin';
@@ -885,13 +886,8 @@ export class ComposePopupView extends AbstractViewPopup {
 					this.aDraftInfo = ['reply', oLastMessage.uid, oLastMessage.folder];
 					this.sInReplyTo = oLastMessage.messageId;
 					this.sReferences = (oLastMessage.references + ' ' + oLastMessage.messageId).trim();
-					// OpenPGP “Transferable Public Key”
-					let autocrypt = {}, value = oLastMessage.headers().valueByName('autocrypt');
-					if (value) {
-						value.split(';').forEach(entry => {
-							entry = entry.split('=', 2);
-							autocrypt[entry[0].trim()] = entry[1].trim();
-						});
+					oLastMessage.headers().valuesByName('autocrypt').forEach(value => {
+						let autocrypt = new MimeHeaderAutocryptModel(value);
 						if (autocrypt.addr && autocrypt.keydata) {
 							PgpUserStore.hasPublicKeyForEmails([autocrypt.addr]).then(result =>
 								result || PgpUserStore.importKey(
@@ -908,7 +904,7 @@ export class ComposePopupView extends AbstractViewPopup {
 */
 							);
 						}
-					}
+					});
 				} break;
 
 				case ComposeType.Forward:
@@ -1444,6 +1440,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				dsn: this.requestDsn() ? 1 : 0,
 				requireTLS: this.requireTLS() ? 1 : 0,
 				readReceiptRequest: this.requestReadReceipt() ? 1 : 0,
+				autocrypt: [],
 				/**
 				 * Basic support for Linked Data (Structured Email)
 				 * https://json-ld.org/
@@ -1475,6 +1472,11 @@ export class ComposePopupView extends AbstractViewPopup {
 			params.encrypted = draft
 				? await this.mailvelope.createDraft()
 				: await this.mailvelope.encrypt(recipients);
+/*
+			Object.entries(PgpUserStore.getPublicKeyOfEmails(recipients) || {}).forEach(([k,v]) =>
+				params.autocrypt.push({addr:k, keydata:v.replace(/-----(BEGIN|END) PGP PUBLIC KEY BLOCK-----/).trim()})
+			);
+*/
 		} else if (sign || encrypt) {
 			if (!draft && !hasAttachments && !Text.length) {
 				throw i18n('COMPOSE/ERROR_EMPTY_BODY');
@@ -1522,6 +1524,9 @@ export class ComposePopupView extends AbstractViewPopup {
 				}
 			}
 			if (encrypt) {
+				Object.entries(PgpUserStore.getPublicKeyOfEmails(recipients) || {}).forEach(([k,v]) =>
+					params.autocrypt.push({addr:k, keydata:v.replace(/-----(BEGIN|END) PGP PUBLIC KEY BLOCK-----/).trim()})
+				);
 				if ('openpgp' == encrypt) {
 					// Doesn't encrypt attachments
 					params.encrypted = await OpenPGPUserStore.encrypt(data.toString(), recipients);

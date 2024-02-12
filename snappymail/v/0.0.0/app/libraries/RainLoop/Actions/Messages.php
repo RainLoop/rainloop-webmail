@@ -1034,6 +1034,11 @@ trait Messages
 		$oMessage->SetInReplyTo($this->GetActionParam('inReplyTo', ''));
 		$oMessage->SetReferences($this->GetActionParam('references', ''));
 
+		$aAutocrypt = $this->GetActionParam('autocrypt', []);
+		foreach ($aAutocrypt as $header) {
+			$oMessage->SetCustomHeader('Autocrypt', "addr={$header['addr']}; keydata={$header['keydata']}");
+		}
+
 		$aFoundCids = array();
 		$aFoundDataURL = array();
 		$aFoundContentLocationUrls = array();

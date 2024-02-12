@@ -169,6 +169,7 @@ class Header implements \JsonSerializable
 		return \in_array(\strtolower($this->sName), array(
 			\strtolower(Enumerations\Header::CONTENT_TYPE),
 			\strtolower(Enumerations\Header::CONTENT_DISPOSITION)
+//			,\strtolower(Enumerations\Header::AUTOCRYPT)
 		));
 	}
 
