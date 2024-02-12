@@ -17,59 +17,40 @@ namespace MailSo\Imap;
  */
 class NamespaceResult
 {
-	private string $sPersonal = '';
+	// prefix => separator
+	private array $namespaces = [
+//		'' => '.', // default
+//		'virtual.' => '.',
+//		'shared.' => '.',
+//		etc.
+	];
 
-	private string $sPersonalDelimiter = '';
-/*
-	private string $sOtherUser = '';
-
-	private string $sOtherUserDelimiter = '';
-
-	private string $sShared = '';
-
-	private string $sSharedDelimiter = '';
-*/
 	function __construct(Response $oImapResponse)
 	{
-		$space = static::getNamespace($oImapResponse, 2);
-		if ($space) {
-			$this->sPersonal = $space[0];
-			$this->sPersonalDelimiter = $space[1];
+		// * NAMESPACE (("" ".")("virtual." ".")) (("shared." ".")) NIL\r\n
+		$i = 1;
+		while (isset($oImapResponse->ResponseList[++$i])) {
+			$entries = $oImapResponse->ResponseList[$i];
+			if ($entries) {
+				foreach ($entries as $entry) {
+					if (\is_array($entry) && 2 <= \count($entry)) {
+						$this->namespaces[$entry[0]] = $entry[1];
+					}
+				}
+			}
 		}
-/*
-		$space = static::getNamespace($oImapResponse, 3);
-		if ($space) {
-			$this->sOtherUser = $space[0];
-			$this->sOtherUserDelimiter = $space[1];
-		}
-
-		$space = static::getNamespace($oImapResponse, 4);
-		if ($space) {
-			$this->sShared = $space[0];
-			$this->sSharedDelimiter = $space[1];
-		}
-*/
 	}
 
-	public function GetPersonalNamespace() : string
+	public function GetPrivateNamespace() : string
 	{
-		return $this->sPersonal;
-	}
-
-	private static function getNamespace(Response $oImapResponse, int $section) : ?array
-	{
-		if (isset($oImapResponse->ResponseList[$section][0])
-		 && \is_array($oImapResponse->ResponseList[$section][0])
-		 && 2 <= \count($oImapResponse->ResponseList[$section][0]))
-		{
-			$sName = $oImapResponse->ResponseList[$section][0][0];
-			$sDelimiter = $oImapResponse->ResponseList[$section][0][1];
-			$sName = 'INBOX'.$sDelimiter === \substr(\strtoupper($sName), 0, 6)
-				? 'INBOX'.$sDelimiter.\substr($sName, 6)
-				: $sName;
-			return [$sName, $sDelimiter];
+		$sName = '';
+		if (isset($oImapResponse->ResponseList[2][0][0])) {
+			$sName = $oImapResponse->ResponseList[2][0][0];
+			$sSeparator = $oImapResponse->ResponseList[2][0][1];
+			if ('INBOX'.$sSeparator === \substr(\strtoupper($sName), 0, 6)) {
+				$sName = 'INBOX'.$sSeparator.\substr($sName, 6);
+			};
 		}
-		return null;
+		return $sName;
 	}
-
 }

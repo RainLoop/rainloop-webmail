@@ -384,10 +384,15 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 	}
 
-	public function GetPersonalNamespace() : string
+	public function GetPrivateNamespace() : string
 	{
 		$oNamespace = $this->GetNamespace();
-		return $oNamespace ? $oNamespace->GetPersonalNamespace() : '';
+		return $oNamespace ? $oNamespace->GetPrivateNamespace() : '';
+	}
+	/** Deprecated */
+	public function GetPersonalNamespace() : string
+	{
+		return $this->GetPrivateNamespace();
 	}
 
 	/**

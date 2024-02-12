@@ -77,7 +77,7 @@ trait Folders
 				array(
 					'quotaUsage' => $aQuota ? $aQuota[0] * 1024 : null,
 					'quotaLimit' => $aQuota ? $aQuota[1] * 1024 : null,
-					'namespace' => $this->ImapClient()->GetPersonalNamespace(),
+					'namespace' => $this->ImapClient()->GetPrivateNamespace(),
 					'capabilities' => $aCapabilities
 				)
 			);
