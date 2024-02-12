@@ -32,18 +32,22 @@
 	</div>
 	<div class="control-group" data-bind="if: ACL">
 		<label>ACL</label>
-		<table class="table table-hover table-bordered" style="width:auto"><tbody data-bind="foreach: ACL">
-			<tr><th colspan="2" data-bind="text: identifier"></th></tr>
-			<tr><td>mayAddItems</td><td data-bind="text: mayAddItems ? '☑' : '☐'"></td></tr>
-			<tr><td>mayCreateChild</td><td data-bind="text: mayCreateChild ? '☑' : '☐'"></td></tr>
-			<tr><td>mayDelete</td><td data-bind="text: mayDelete ? '☑' : '☐'"></td></tr>
-			<tr><td>mayReadItems</td><td data-bind="text: mayReadItems ? '☑' : '☐'"></td></tr>
-			<tr><td>mayRemoveItems</td><td data-bind="text: mayRemoveItems ? '☑' : '☐'"></td></tr>
-			<tr><td>mayRename</td><td data-bind="text: mayRename ? '☑' : '☐'"></td></tr>
-			<tr><td>maySetKeywords</td><td data-bind="text: maySetKeywords ? '☑' : '☐'"></td></tr>
-			<tr><td>maySetSeen</td><td data-bind="text: maySetSeen ? '☑' : '☐'"></td></tr>
-			<tr><td>maySubmit</td><td data-bind="text: maySubmit ? '☑' : '☐'"></td></tr>
-		</tbody></table>
+		<div data-bind="foreach: ACL">
+			<details>
+				<summary data-bind="text: identifier"></summary>
+				<table class="table table-hover table-bordered" style="width:auto"><tbody>
+					<tr><td>mayAddItems</td><td data-bind="text: mayAddItems ? '☑' : '☐'"></td></tr>
+					<tr><td>mayCreateChild</td><td data-bind="text: mayCreateChild ? '☑' : '☐'"></td></tr>
+					<tr><td>mayDelete</td><td data-bind="text: mayDelete ? '☑' : '☐'"></td></tr>
+					<tr><td>mayReadItems</td><td data-bind="text: mayReadItems ? '☑' : '☐'"></td></tr>
+					<tr><td>mayRemoveItems</td><td data-bind="text: mayRemoveItems ? '☑' : '☐'"></td></tr>
+					<tr><td>mayRename</td><td data-bind="text: mayRename ? '☑' : '☐'"></td></tr>
+					<tr><td>maySetKeywords</td><td data-bind="text: maySetKeywords ? '☑' : '☐'"></td></tr>
+					<tr><td>maySetSeen</td><td data-bind="text: maySetSeen ? '☑' : '☐'"></td></tr>
+					<tr><td>maySubmit</td><td data-bind="text: maySubmit ? '☑' : '☐'"></td></tr>
+				</tbody></table>
+			</details>
+		</div>
 	</div>
 </form>
 <footer>
