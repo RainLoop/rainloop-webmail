@@ -427,9 +427,9 @@ class PGP extends Base
 		if (!$key) {
 			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $keyId);
 		}
-		if (!$private && $this->keyInfo($keyId, 1)) {
-			throw new \Exception('Delete private key first: ' . $keyId);
-		}
+//		if (!$private && $this->keyInfo($keyId, 1)) {
+//			throw new \Exception('Delete private key first: ' . $keyId);
+//		}
 
 		$result = $this->exec([
 			'--batch',
