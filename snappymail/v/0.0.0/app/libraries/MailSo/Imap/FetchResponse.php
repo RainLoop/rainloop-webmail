@@ -132,7 +132,7 @@ class FetchResponse
 	public static function isValidImapResponse(Response $oImapResponse) : bool
 	{
 		return
-			true !== $oImapResponse->IsStatusResponse
+			!$oImapResponse->IsStatusResponse
 			&& Enumerations\ResponseType::UNTAGGED === $oImapResponse->ResponseType
 			&& 3 < \count($oImapResponse->ResponseList) && 'FETCH' === $oImapResponse->ResponseList[2]
 			&& \is_array($oImapResponse->ResponseList[3]);

@@ -515,6 +515,13 @@ class ImapClient extends \MailSo\Net\NetClient
 					$oResponse = $this->partialParseResponse();
 					$oResult->append($oResponse);
 
+					if ($oResponse->IsStatusResponse
+					 && Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
+					 && Enumerations\ResponseStatus::PREAUTH === $oResponse->StatusOrIndex
+					) {
+						break;
+					}
+
 					// RFC 5530
 					if ($sEndTag === $oResponse->Tag && \is_array($oResponse->OptionalResponse) && 'CLIENTBUG' === $oResponse->OptionalResponse[0]) {
 						// The server has detected a client bug.
