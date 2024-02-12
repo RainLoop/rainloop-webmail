@@ -165,7 +165,7 @@ class Folder implements \JsonSerializable
 			'role' => $this->Role(),
 
 			'rights' => $this->myRights,
-			'myRights' => $this->myRights ? $this->myRights->JMAP() : [
+			'myRights' => $this->myRights ?: [
 				'mayReadItems'   => $selectable,
 				'mayAddItems'    => $selectable,
 				'mayRemoveItems' => $selectable,

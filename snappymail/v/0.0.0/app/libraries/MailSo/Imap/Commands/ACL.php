@@ -61,13 +61,18 @@ trait ACL
 					return $rights->hasRight('i');
 				case 'EXPUNGE':
 					return $rights->hasRight('e');
-
-//				case 'SUBSCRIBE':
-//				case 'UNSUBSCRIBE':
-//				case 'CLOSE':
-//				case 'FETCH':
-//				case 'STORE':
-
+/*
+				case 'SUBSCRIBE':
+					return $rights->hasRight('l') || true;
+				case 'UNSUBSCRIBE':
+					return true;
+				case 'CLOSE':
+					return $rights->hasRight('e') || true;
+				case 'FETCH':
+					return $rights->hasRight('s') || true;
+				case 'STORE':
+					return $rights->hasRight('s') || $rights->hasRight('w') || $rights->hasRight('t');
+*/
 				case 'GETACL':
 				case 'SETACL':
 				case 'LISTRIGHTS':
@@ -104,13 +109,17 @@ trait ACL
 		$oResponses = $this->SendRequestGetResponse('GETACL', array($this->EscapeFolderName($sFolderName)));
 		$aResult = array();
 		foreach ($oResponses as $oResponse) {
+			// * ACL INBOX.shared demo@snappymail.eu akxeilprwtscd foobar@snappymail.eu akxeilprwtscd demo2@snappymail.eu lrwstipekxacd
 			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
 				&& isset($oResponse->ResponseList[4])
 				&& 'ACL' === $oResponse->ResponseList[1]
 				&& $sFolderName === $oResponse->ResponseList[2]
 			)
 			{
-				$aResult[$oResponse->ResponseList[3]] = static::aclRightsToClass(\array_slice($oResponse->ResponseList, 4));
+				$c = \count($oResponse->ResponseList);
+				for ($i = 3; $i < $c; $i += 2) {
+					$aResult[$oResponse->ResponseList[$i]] = new ACLResponse(\str_split($oResponse->ResponseList[$i+1]));
+				}
 			}
 		}
 		return $aResult;

@@ -321,4 +321,39 @@ trait Folders
 
 		return $this->DefaultResponse($this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
 	}
+
+	public function DoFolderACL() : array
+	{
+		$this->initMailClientConnection();
+		return $this->DefaultResponse(
+			$this->ImapClient()->FolderGetACL(
+				$this->GetActionParam('folder', '')
+			)
+		);
+	}
+
+	public function DoFolderDeleteACL() : array
+	{
+		$this->initMailClientConnection();
+		$this->ImapClient()->FolderDeleteACL(
+			$this->GetActionParam('folder', ''),
+			$this->GetActionParam('identifier', '')
+		);
+		return $this->TrueResponse();
+	}
+
+	public function DoFolderSetACL() : array
+	{
+//		$oImapClient->FolderSetACL('INBOX', 'demo@snappymail.eu', 'lrwstipekxacd');
+//		$oImapClient->FolderSetACL($sFolderFullName, 'demo@snappymail.eu', 'lrwstipekxacd');
+//		$oImapClient->FolderSetACL($sFolderFullName, 'foobar@snappymail.eu', 'lr');
+		$this->initMailClientConnection();
+		$this->ImapClient()->FolderSetACL(
+			$this->GetActionParam('folder', ''),
+			$this->GetActionParam('identifier', ''),
+			$this->GetActionParam('rights', '')
+		);
+		return $this->TrueResponse();
+	}
+
 }

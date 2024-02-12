@@ -1,0 +1,54 @@
+<header>
+	<a href="#" class="close" data-bind="click: close">×</a>
+	<h3 data-bind="text: folder()?.fullName"></h3>
+</header>
+<form id="folderform" class="modal-body form-horizontal" autocomplete="off" spellcheck="false" data-bind="submit: submitForm">
+	<div data-bind="with: folder">
+		<div class="control-group">
+			<label data-i18n="GLOBAL/NAME"></label>
+			<input name="folder" type="text"
+				autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+				required="" data-bind="textInput: nameForEdit, hasfocus: editing">
+		</div>
+		<div class="control-group">
+			<label data-i18n="POPUPS_FILTER/SELECT_FIELD_SIZE"></label>
+			<span data-bind="text: friendlySize"></span>
+		</div>
+		<div class="control-group">
+			<label data-i18n="MESSAGE_LIST/MENU_SELECT_UNSEEN"></label>
+			<span data-bind="text: unreadEmails"></span>
+			/ <span data-bind="text: totalEmails"></span>
+		</div>
+		<!-- ko if: canBeSubscribed -->
+		<div class="control-group" data-bind="component: {
+			name: 'Checkbox',
+			params: {
+				name: 'subscribe',
+				label: 'SETTINGS_FOLDERS/BUTTON_SUBSCRIBE',
+				value: isSubscribed
+			}
+		}"></div>
+		<!-- /ko -->
+	</div>
+	<div class="control-group" data-bind="if: ACL">
+		<label>ACL</label>
+		<table class="table table-hover table-bordered" style="width:auto"><tbody data-bind="foreach: ACL">
+			<tr><th colspan="2" data-bind="text: identifier"></th></tr>
+			<tr><td>mayAddItems</td><td data-bind="text: mayAddItems ? '☑' : '☐'"></td></tr>
+			<tr><td>mayCreateChild</td><td data-bind="text: mayCreateChild ? '☑' : '☐'"></td></tr>
+			<tr><td>mayDelete</td><td data-bind="text: mayDelete ? '☑' : '☐'"></td></tr>
+			<tr><td>mayReadItems</td><td data-bind="text: mayReadItems ? '☑' : '☐'"></td></tr>
+			<tr><td>mayRemoveItems</td><td data-bind="text: mayRemoveItems ? '☑' : '☐'"></td></tr>
+			<tr><td>mayRename</td><td data-bind="text: mayRename ? '☑' : '☐'"></td></tr>
+			<tr><td>maySetKeywords</td><td data-bind="text: maySetKeywords ? '☑' : '☐'"></td></tr>
+			<tr><td>maySetSeen</td><td data-bind="text: maySetSeen ? '☑' : '☐'"></td></tr>
+			<tr><td>maySubmit</td><td data-bind="text: maySubmit ? '☑' : '☐'"></td></tr>
+		</tbody></table>
+	</div>
+</form>
+<footer>
+	<button form="folderform" class="btn">
+		<i class="icon-folder-add"></i>
+		<span data-i18n="GLOBAL/SAVE"></span>
+	</button>
+</footer>

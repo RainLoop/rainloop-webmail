@@ -27,6 +27,9 @@ import Remote from 'Remote/User/Fetch';
 
 import { FileInfo } from 'Common/File';
 
+import { FolderPopupView } from 'View/Popup/Folder';
+import { showScreenPopup } from 'Knoin/Knoin';
+
 const
 //	isPosNumeric = value => null != value && /^[0-9]*$/.test(value.toString()),
 
@@ -481,7 +484,8 @@ export class FolderModel extends AbstractModel {
 	}
 
 	edit() {
-		this.canBeEdited() && this.editing(true);
+//		this.canBeEdited() && this.editing(true);
+		this.canBeEdited() && showScreenPopup(FolderPopupView, [this]);
 	}
 
 	unedit() {

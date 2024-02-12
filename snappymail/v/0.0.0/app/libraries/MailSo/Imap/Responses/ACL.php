@@ -43,11 +43,6 @@ class ACL implements \JsonSerializable
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
-		return $this->rights;
-	}
-
-	public function JMAP() : array
-	{
 		return [
 			'mayReadItems'   => ($this->hasRight('l') && $this->hasRight('r')),
 			'mayAddItems'    => $this->hasRight('i'),
@@ -57,7 +52,8 @@ class ACL implements \JsonSerializable
 			'mayCreateChild' => $this->hasRight('k'),
 			'mayRename'      => $this->hasRight('x'),
 			'mayDelete'      => $this->hasRight('x'),
-			'maySubmit'      => $this->hasRight('p')
+			'maySubmit'      => $this->hasRight('p'),
+			'raw' => \implode('', $this->rights)
 		];
 	}
 
