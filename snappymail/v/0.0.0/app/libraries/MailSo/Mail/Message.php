@@ -14,6 +14,7 @@ namespace MailSo\Mail;
 use MailSo\Base\Utils;
 use MailSo\Imap\Enumerations\FetchType;
 use MailSo\Mime\Enumerations\Header as MimeHeader;
+use SnappyMail\GPG\PGP as GPG;
 
 /**
  * @category MailSo
@@ -379,8 +380,8 @@ class Message implements \JsonSerializable
 
 						if (\str_contains($sText, '-----BEGIN PGP MESSAGE-----')) {
 							$keyIds = [];
-							if (\SnappyMail\PGP\GPG::isSupported()) {
-								$GPG = new \SnappyMail\PGP\GPG('');
+							if (GPG::isSupported()) {
+								$GPG = new GPG('');
 								$keyIds = $GPG->getEncryptedMessageKeys($sText);
 							}
 							$oMessage->pgpEncrypted = [

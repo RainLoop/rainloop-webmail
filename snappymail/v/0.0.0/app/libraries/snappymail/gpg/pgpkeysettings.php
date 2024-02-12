@@ -1,8 +1,8 @@
 <?php
 
-namespace SnappyMail\PGP;
+namespace SnappyMail\GPG;
 
-class GPGKeySettings
+class PGPKeySettings
 {
 	public
 		// Primary key

@@ -3,6 +3,8 @@
 namespace RainLoop\Actions;
 
 use SnappyMail\PGP\Backup;
+use SnappyMail\PGP\Keyservers;
+use SnappyMail\PGP\GnuPG;
 
 trait Pgp
 {
@@ -14,7 +16,7 @@ trait Pgp
 	{
 		$result = [];
 
-		$keys = \SnappyMail\PGP\Backup::getKeys();
+		$keys = Backup::getKeys();
 		foreach ($keys['public'] as $key) {
 			$result[] = $key['value'];
 		}
@@ -38,7 +40,7 @@ trait Pgp
 
 	public function DoSearchPGPKey() : array
 	{
-		$result = \SnappyMail\PGP\Keyservers::get(
+		$result = Keyservers::get(
 			$this->GetActionParam('query', '')
 		);
 		return $this->DefaultResponse($result ?: false);
@@ -47,7 +49,7 @@ trait Pgp
 	/**
 	 * @throws \MailSo\RuntimeException
 	 */
-	public function GnuPG() : ?\SnappyMail\PGP\GnuPG
+	public function GnuPG() : ?GnuPG
 	{
 		$oAccount = $this->getMainAccountFromToken();
 		if (!$oAccount) {
@@ -103,7 +105,7 @@ trait Pgp
 			}
 		}
 
-		return \SnappyMail\PGP\GnuPG::getInstance($homedir);
+		return GnuPG::getInstance($homedir);
 	}
 
 	public function DoGnupgDecrypt() : array
@@ -203,14 +205,14 @@ trait Pgp
 						$sEmail = $aMatch[0];
 					}
 					if ($sEmail) {
-						$aKeys = \SnappyMail\PGP\Keyservers::index($sEmail);
+						$aKeys = Keyservers::index($sEmail);
 						if ($aKeys) {
 							$sKeyId = $aKeys[0]['keyid'];
 						}
 					}
 				}
 				if ($sKeyId) {
-					$sKey = \SnappyMail\PGP\Keyservers::get($sKeyId);
+					$sKey = Keyservers::get($sKeyId);
 				}
 			} catch (\Throwable $e) {
 				// ignore
@@ -237,7 +239,7 @@ trait Pgp
 	 */
 	public function DoGetStoredPGPKeys() : array
 	{
-		return $this->DefaultResponse(\SnappyMail\PGP\Backup::getKeys());
+		return $this->DefaultResponse(Backup::getKeys());
 	}
 
 	/**

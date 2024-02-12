@@ -6,13 +6,15 @@ defined('GNUPG_SIG_MODE_NORMAL') || define('GNUPG_SIG_MODE_NORMAL', 0);
 defined('GNUPG_SIG_MODE_DETACH') || define('GNUPG_SIG_MODE_DETACH', 1);
 defined('GNUPG_SIG_MODE_CLEAR') || define('GNUPG_SIG_MODE_CLEAR', 2);
 
+use SnappyMail\GPG\PGP as GPG;
+
 class GnuPG
 {
 	private
 		$homedir,
 		// Instance of gnupg pecl extension https://www.php.net/gnupg
 		$GnuPG,
-		// Instance of \SnappyMail\PGP\GPG
+		// Instance of \SnappyMail\GPG\PGP
 		$GPG;
 
 	function __construct(string $homedir)
