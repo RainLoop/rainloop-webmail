@@ -157,6 +157,12 @@ class Message extends Part
 		return $this;
 	}
 
+	public function SetAutocrypt(array $aValue) : self
+	{
+		$this->aHeadersValue['Autocrypt'] = $aValue;
+		return $this;
+	}
+
 	public function SetSubject(string $sSubject) : self
 	{
 		$this->aHeadersValue[Enumerations\Header::SUBJECT] = $sSubject;
@@ -415,7 +421,11 @@ class Message extends Part
 		}
 
 		foreach ($this->aHeadersValue as $sName => $mValue) {
-			if (!($bWithoutBcc && \strtolower(Enumerations\Header::BCC) === \strtolower($sName))) {
+			if ('autocrypt' === \strtolower($sName)) {
+				foreach ($mValue as $key) {
+					$oRootPart->Headers->AddByName($sName, $key);
+				}
+			} else if (!($bWithoutBcc && \strtolower(Enumerations\Header::BCC) === \strtolower($sName))) {
 				$oRootPart->Headers->SetByName($sName, (string) $mValue);
 			}
 		}

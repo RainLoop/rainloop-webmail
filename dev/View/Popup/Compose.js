@@ -1474,7 +1474,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				: await this.mailvelope.encrypt(recipients);
 /*
 			Object.entries(PgpUserStore.getPublicKeyOfEmails(recipients) || {}).forEach(([k,v]) =>
-				params.autocrypt.push({addr:k, keydata:v.replace(/-----(BEGIN|END) PGP PUBLIC KEY BLOCK-----/).trim()})
+				params.autocrypt.push({addr:k, keydata:v.replace(/-----(BEGIN|END) PGP PUBLIC KEY BLOCK-----/g).trim()})
 			);
 */
 		} else if (sign || encrypt) {
@@ -1525,7 +1525,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			}
 			if (encrypt) {
 				Object.entries(PgpUserStore.getPublicKeyOfEmails(recipients) || {}).forEach(([k,v]) =>
-					params.autocrypt.push({addr:k, keydata:v.replace(/-----(BEGIN|END) PGP PUBLIC KEY BLOCK-----/).trim()})
+					params.autocrypt.push({addr:k, keydata:v.replace(/-----(BEGIN|END) PGP PUBLIC KEY BLOCK-----/g, '').trim()})
 				);
 				if ('openpgp' == encrypt) {
 					// Doesn't encrypt attachments

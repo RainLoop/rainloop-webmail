@@ -1035,9 +1035,9 @@ trait Messages
 		$oMessage->SetReferences($this->GetActionParam('references', ''));
 
 		$aAutocrypt = $this->GetActionParam('autocrypt', []);
-		foreach ($aAutocrypt as $header) {
-			$oMessage->SetCustomHeader('Autocrypt', "addr={$header['addr']}; keydata={$header['keydata']}");
-		}
+		$oMessage->SetAutocrypt(
+			\array_map(fn($header)=>"addr={$header['addr']}; keydata={$header['keydata']}", $aAutocrypt)
+		);
 
 		$aFoundCids = array();
 		$aFoundDataURL = array();
