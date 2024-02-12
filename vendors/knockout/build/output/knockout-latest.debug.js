@@ -119,7 +119,7 @@ ko.utils = {
     unwrapObservable: value => ko.isObservable(value) ? value() : value,
 
     setTextContent: (element, textContent) =>
-        element.textContent = ko.utils.unwrapObservable(textContent) || ""
+        element.textContent = ko.utils.unwrapObservable(textContent)
 };
 
 ko.exportSymbol('utils', ko.utils);
