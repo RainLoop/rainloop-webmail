@@ -457,7 +457,7 @@ export class ComposePopupView extends AbstractViewPopup {
 	}
 
 	sendCommand() {
-		let sSentFolder = FolderUserStore.sentFolder();
+		let sSentFolder = this.currentIdentity()?.sentFolder || FolderUserStore.sentFolder();
 
 		this.attachmentsInProcessError(false);
 		this.attachmentsInErrorError(false);

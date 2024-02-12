@@ -1,5 +1,5 @@
 
-import { addObservablesTo } from 'External/ko';
+import { addObservablesTo, koComputable } from 'External/ko';
 
 import { getNotification } from 'Common/Translator';
 import { loadAccountsAndIdentities } from 'Common/UtilsUser';
@@ -9,6 +9,10 @@ import Remote from 'Remote/User/Fetch';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 import { IdentityModel } from 'Model/Identity';
+
+import { folderListOptionsBuilder } from 'Common/Folders';
+import { i18n } from 'Common/Translator';
+import { defaultOptionsAfterRender } from 'Common/Utils';
 
 export class IdentityPopupView extends AbstractViewPopup {
 	constructor() {
@@ -27,6 +31,13 @@ export class IdentityPopupView extends AbstractViewPopup {
 		this.replyTo.valueHasMutated();
 		this.bcc.valueHasMutated();
 */
+		this.folderSelectList = koComputable(() =>
+			folderListOptionsBuilder(
+				[],
+				[['', '('+i18n('GLOBAL/DEFAULT')+')']]
+			)
+		);
+		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 	}
 
 	submitForm(form) {

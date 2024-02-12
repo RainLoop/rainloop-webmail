@@ -20,6 +20,8 @@ class Identity implements \JsonSerializable
 
 	private string $sSignature = '';
 
+	private string $sSentFolder = '';
+
 	private bool $bSignatureInsertBefore = false;
 
 	private bool $bPgpEncrypt = false;
@@ -92,8 +94,9 @@ class Identity implements \JsonSerializable
 			$this->sBcc = !empty($aData['Bcc']) ? $aData['Bcc'] : '';
 			$this->sSignature = !empty($aData['Signature']) ? $aData['Signature'] : '';
 			$this->bSignatureInsertBefore = !empty($aData['SignatureInsertBefore']);
-			$this->bPgpEncrypt = !empty($aData['PgpEncrypt']);
-			$this->bPgpSign = !empty($aData['PgpSign']);
+			$this->sSentFolder = isset($aData['sentFolder']) ? $aData['sentFolder'] : '';
+			$this->bPgpEncrypt = !empty($aData['pgpEncrypt']);
+			$this->bPgpSign = !empty($aData['pgpSign']);
 			return true;
 		}
 
@@ -112,8 +115,9 @@ class Identity implements \JsonSerializable
 			'Bcc' => $this->sBcc,
 			'Signature' => $this->sSignature,
 			'SignatureInsertBefore' => $this->bSignatureInsertBefore,
-			'PgpEncrypt' => $this->bPgpEncrypt,
-			'PgpSign' => $this->bPgpSign
+			'sentFolder' => $this->sSentFolder,
+			'pgpEncrypt' => $this->bPgpEncrypt,
+			'pgpSign' => $this->bPgpSign
 		);
 	}
 
@@ -130,6 +134,7 @@ class Identity implements \JsonSerializable
 			'bcc' => $this->sBcc,
 			'signature' => $this->sSignature,
 			'signatureInsertBefore' => $this->bSignatureInsertBefore,
+			'sentFolder' => $this->sSentFolder,
 			'pgpEncrypt' => $this->bPgpEncrypt,
 			'pgpSign' => $this->bPgpSign
 		);

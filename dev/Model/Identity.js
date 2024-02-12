@@ -17,6 +17,7 @@ export class IdentityModel extends AbstractModel {
 
 			replyTo: '',
 			bcc: '',
+			sentFolder: '',
 
 			signature: '',
 			signatureInsertBefore: false,
