@@ -575,12 +575,14 @@ trait Folders
 			}
 		}
 
+		// ACL RIGHTS=texk
 		if ($this->hasCapability('ACL') || $this->CapabilityValue('RIGHTS')) {
 			foreach ($oFolderCollection as $oFolder) {
 				if ($oFolder->Selectable()) try {
 					$oFolder->myRights = $this->FolderMyRights($oFolder->FullName);
 				} catch (\Throwable $oException) {
-					// Ignore error
+					// BAD Error in IMAP command MYRIGHTS: ACLs disabled
+					break;
 				}
 			}
 		}

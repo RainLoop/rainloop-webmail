@@ -19,13 +19,24 @@ use MailSo\Imap\Responses\ACL as ACLResponse;
  */
 trait ACL
 {
+	private $ACLDisabled = false;
+
 	/**
 	 * https://datatracker.ietf.org/doc/html/rfc4314#section-4
 	 */
 	public function ACLAllow(string $sFolderName, string $command) : bool
 	{
-		if ($this->hasCapability('ACL') || $this->CapabilityValue('RIGHTS')) {
+		if ($this->ACLDisabled) {
+			return false;
+		}
+
+		// The "RIGHTS=" capability MUST NOT include any of the rights defined in RFC 2086:
+		// "l", "r", "s", "w", "i", "p", "a", "c", "d", and the digits ("0" .. "9")
+		// So it is: RIGHTS=texk
+		$mainRights = \str_split($this->CapabilityValue('RIGHTS') ?: '');
+		if ($this->hasCapability('ACL') || $mainRights) {
 			if ('MYRIGHTS' === $command) {
+				// at least one of the "l", "r", "i", "k", "x", "a" rights is required
 				return true;
 			}
 			$rights = $this->FolderMyRights($sFolderName);
@@ -130,16 +141,22 @@ trait ACL
 	{
 //		if ($this->ACLAllow($sFolderName, 'MYRIGHTS')) {
 //		if ($this->hasCapability('ACL')) {
-		$oResponses = $this->SendRequestGetResponse('MYRIGHTS', array($this->EscapeFolderName($sFolderName)));
-		foreach ($oResponses as $oResponse) {
-			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
-				&& isset($oResponse->ResponseList[3])
-				&& 'MYRIGHTS' === $oResponse->ResponseList[1]
-				&& $sFolderName === $oResponse->ResponseList[2]
-			)
-			{
-				return static::aclRightsToClass(\array_slice($oResponse->ResponseList, 3));
+		try {
+			$oResponses = $this->SendRequestGetResponse('MYRIGHTS', array($this->EscapeFolderName($sFolderName)));
+			foreach ($oResponses as $oResponse) {
+				if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
+					&& isset($oResponse->ResponseList[3])
+					&& 'MYRIGHTS' === $oResponse->ResponseList[1]
+					&& $sFolderName === $oResponse->ResponseList[2]
+				)
+				{
+					return static::aclRightsToClass(\array_slice($oResponse->ResponseList, 3));
+				}
 			}
+		} catch (\Throwable $oException) {
+			// \MailSo\Imap\Exceptions\NegativeResponseException: Error in IMAP command MYRIGHTS: ACLs disabled
+			$this->ACLDisabled = true;
+			throw $oException;
 		}
 		return null;
 	}
