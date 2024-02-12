@@ -44,7 +44,6 @@ class Backup
 		$oActions = \RainLoop\Api::Actions();
 		$oAccount = $oActions->getMainAccountFromToken();
 		if ($oAccount) {
-			$keyId = $keyId ? "0x{$keyId}" : \sha1($key);
 			$dir = $oActions->StorageProvider()->GenerateFilePath(
 				$oAccount,
 				\RainLoop\Providers\Storage\Enumerations\StorageType::PGP,
