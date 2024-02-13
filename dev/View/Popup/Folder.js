@@ -13,8 +13,8 @@ export class FolderPopupView extends AbstractViewPopup {
 		this.ACL = ko.observableArray();
 	}
 
-	onClose() {
-		this.folder().unedit();
+	afterHide() {
+		this.folder().editing(false);
 	}
 
 	submitForm(form) {
@@ -32,7 +32,7 @@ export class FolderPopupView extends AbstractViewPopup {
 		}, {
 			folder: folder.fullName
 		});
-		!folder.type() && folder.exists && folder.selectable() && folder.editing(true);
+		folder.editing(!folder.type() && folder.exists && folder.selectable());
 		this.folder(folder);
 	}
 }

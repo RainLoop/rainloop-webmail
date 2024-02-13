@@ -485,10 +485,6 @@ export class FolderModel extends AbstractModel {
 		showScreenPopup(FolderPopupView, [this]);
 	}
 
-	unedit() {
-		this.editing(false);
-	}
-
 	rename() {
 		const folder = this,
 			nameToEdit = folder.nameForEdit().trim();
@@ -520,8 +516,6 @@ export class FolderModel extends AbstractModel {
 						+ '.\n' + error.message);
 				});
 		}
-
-		folder.editing(false);
 	}
 
 	/**
