@@ -4,7 +4,7 @@
 </header>
 <form id="folderform" class="modal-body form-horizontal" autocomplete="off" spellcheck="false" data-bind="submit: submitForm">
 	<div data-bind="with: folder">
-		<div class="control-group">
+		<div class="control-group" data-bind="if: editing">
 			<label data-i18n="GLOBAL/NAME"></label>
 			<input name="folder" type="text"
 				autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
@@ -30,7 +30,7 @@
 		}"></div>
 		<!-- /ko -->
 	</div>
-	<div class="control-group" data-bind="if: ACL">
+	<div class="control-group" data-bind="if: ACLAllowed">
 		<label>ACL</label>
 		<div data-bind="foreach: ACL">
 			<details>

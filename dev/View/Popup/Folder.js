@@ -1,8 +1,7 @@
-import { addObservablesTo } from 'External/ko';
-
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
-
+import { addObservablesTo } from 'External/ko';
 import Remote from 'Remote/User/Fetch';
+import { FolderUserStore } from 'Stores/User/Folder';
 
 export class FolderPopupView extends AbstractViewPopup {
 	constructor() {
@@ -10,7 +9,7 @@ export class FolderPopupView extends AbstractViewPopup {
 		addObservablesTo(this, {
 			folder: null // FolderModel
 		});
-
+		this.ACLAllowed = FolderUserStore.hasCapability('ACL');
 		this.ACL = ko.observableArray();
 	}
 
@@ -26,19 +25,14 @@ export class FolderPopupView extends AbstractViewPopup {
 
 	beforeShow(folder) {
 		this.ACL([]);
-		folder.editing(true);
-		this.folder(folder);
-		Remote.request('FolderACL', (iError, data) => {
+		this.ACLAllowed && Remote.request('FolderACL', (iError, data) => {
 			if (!iError && data.Result) {
-				this.ACL(
-					Object.entries(data.Result).map(([key, value]) => {
-						value.identifier = key;
-						return value;
-					})
-				);
+				this.ACL(Object.values(data.Result));
 			}
 		}, {
 			folder: folder.fullName
 		});
+		!folder.type() && folder.exists && folder.selectable() && folder.editing(true);
+		this.folder(folder);
 	}
 }

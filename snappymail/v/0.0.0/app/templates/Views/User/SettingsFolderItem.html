@@ -1,8 +1,6 @@
 <tr data-bind="css: { 'selectable': selectable, 'system': isSystemFolder }">
 	<td data-bind="css: 'deep-' + deep">
-		<span class="folder-name" data-bind="text: name, css: { 'can-be-edited': canBeEdited },
-			click: edit,
-			tooltipErrorTip: errorMsg"></span>
+		<span class="folder-name" data-bind="text: name, click: edit, tooltipErrorTip: errorMsg"></span>
 		<span class="folder-system-name" data-bind="text: nameInfo, visible: isSystemFolder"></span>
 		<span class="folder-size" data-bind="text: friendlySize, visible: size"></span>
 	</td>

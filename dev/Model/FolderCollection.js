@@ -402,8 +402,6 @@ export class FolderModel extends AbstractModel {
 					}
 				),
 
-			canBeEdited: () => !this.type() && this.exists/* && this.selectable()*/,
-
 			isSystemFolder: () => this.type()
 				| (FolderUserStore.allowKolab() && !!this.kolabType() & !SettingsUserStore.unhideKolabFolders()),
 
@@ -484,8 +482,7 @@ export class FolderModel extends AbstractModel {
 	}
 
 	edit() {
-//		this.canBeEdited() && this.editing(true);
-		this.canBeEdited() && showScreenPopup(FolderPopupView, [this]);
+		showScreenPopup(FolderPopupView, [this]);
 	}
 
 	unedit() {

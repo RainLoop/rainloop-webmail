@@ -576,7 +576,7 @@ trait Folders
 		}
 /*
 		// RFC 4314
-		if ($this->hasCapability('ACL') || $this->CapabilityValue('RIGHTS')) {
+		if ($this->hasCapability('ACL')) {
 			foreach ($oFolderCollection as $oFolder) {
 				if ($oFolder->Selectable()) try {
 					$oFolder->myRights = $this->FolderMyRights($oFolder->FullName);
