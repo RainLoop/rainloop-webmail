@@ -163,7 +163,7 @@ class Folder implements \JsonSerializable
 			'id' => $this->MAILBOXID,
 			'size' => $this->SIZE,
 			'role' => $this->Role(),
-
+/*
 			'rights' => $this->myRights,
 			'myRights' => $this->myRights ?: [
 				'mayReadItems'   => $selectable,
@@ -176,6 +176,7 @@ class Folder implements \JsonSerializable
 				'mayDelete'      => $selectable,
 				'maySubmit'      => $selectable
 			]
+*/
 		);
 		if ($this->etag) {
 			$result['etag'] = $this->etag;

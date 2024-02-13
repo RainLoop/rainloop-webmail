@@ -369,7 +369,7 @@ export class FolderModel extends AbstractModel {
 			})
 			.extend({ notify: 'always' });
 */
-
+/*
 		// https://www.rfc-editor.org/rfc/rfc8621.html#section-2
 		this.myRights = {
 			'mayAddItems': true,
@@ -382,7 +382,7 @@ export class FolderModel extends AbstractModel {
 			'maySetSeen': true,
 			'maySubmit': true
 		};
-
+*/
 		this.addComputables({
 
 			isInbox: () => FolderType.Inbox === this.type(),
