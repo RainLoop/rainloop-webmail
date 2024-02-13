@@ -5,9 +5,13 @@ function typeCast(curValue, newValue) {
 	if (null != curValue) {
 		switch (typeof curValue)
 		{
-		case 'boolean': return 0 != newValue && !!newValue;
-		case 'number': return isFinite(newValue) ? parseFloat(newValue) : 0;
-		case 'string': return null != newValue ? '' + newValue : '';
+		case 'boolean':
+			return 0 != newValue && !!newValue;
+		case 'number':
+			newValue = parseFloat(newValue);
+			return isFinite(newValue) ? newValue : 0;
+		case 'string':
+			return null != newValue ? '' + newValue : '';
 		case 'object':
 			if (curValue.constructor.reviveFromJson) {
 				return curValue.constructor.reviveFromJson(newValue);
