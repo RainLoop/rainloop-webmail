@@ -273,7 +273,8 @@ export const FileInfo = {
 	},
 
 	friendlySize: bytes => {
-		bytes = parseInt(bytes, 10) || 0;
+		bytes = parseInt(bytes, 10);
+		bytes = isFinite(bytes) ? bytes : 0;
 		let i = bytes ? Math.floor(Math.log(bytes) / Math.log(1024)) : 0;
 		return (bytes / Math.pow(1024, i)).toFixed(2>i ? 0 : 1) + ' ' + sizes[i];
 	}
