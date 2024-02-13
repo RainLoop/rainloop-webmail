@@ -109,7 +109,7 @@ export class UserSettingsFolders /*extends AbstractViewSettings*/ {
 	}
 
 	hideError() {
-		this.error('');
+		FolderUserStore.error('');
 	}
 
 	toggleFolderKolabType(folder, event) {
