@@ -314,7 +314,7 @@ class MailClient
 				))
 			), $iPrevUidNext.':*', true);
 
-			foreach ($aFetchResponse as /* @var $oFetchResponse \MailSo\Imap\FetchResponse */ $oFetchResponse) {
+			foreach ($aFetchResponse as $oFetchResponse) {
 				$aFlags = \array_map('strtolower', $oFetchResponse->GetFetchValue(FetchType::FLAGS));
 
 				if (!\in_array(\strtolower(MessageFlag::SEEN), $aFlags)) {
@@ -502,7 +502,7 @@ class MailClient
 			$aFetchIterator = $this->oImapClient->FetchIterate($aFetchItems, (string) $oRange, $oRange->UID);
 			// FETCH does not respond in the id order of the SequenceSet, so we prefill $aCollection for the right sort order.
 			$aCollection = \array_fill_keys($oRange->getArrayCopy(), null);
-			foreach ($aFetchIterator as /* @var $oFetchResponseItem \MailSo\Imap\FetchResponse */ $oFetchResponseItem) {
+			foreach ($aFetchIterator as $oFetchResponseItem) {
 				$id = $oRange->UID
 					? $oFetchResponseItem->GetFetchValue(FetchType::UID)
 					: $oFetchResponseItem->oImapResponse->ResponseList[1];

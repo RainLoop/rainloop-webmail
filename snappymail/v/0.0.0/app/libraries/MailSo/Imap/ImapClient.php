@@ -544,14 +544,14 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $oResult;
 	}
 
-//	public function yieldUntaggedResponses(string $sEndTag = null) : \Generator
-	public function yieldUntaggedResponses(string $sEndTag = null) : iterable
+//	public function yieldUntaggedResponses() : \Generator
+	public function yieldUntaggedResponses() : iterable
 	{
 		try {
 			$oResult = new ResponseCollection;
 
 			if (\is_resource($this->ConnectionResource())) {
-				$sEndTag = $sEndTag ?: $this->getCurrentTag();
+				$sEndTag = $this->getCurrentTag();
 
 				while (true) {
 					$oResponse = $this->partialParseResponse();

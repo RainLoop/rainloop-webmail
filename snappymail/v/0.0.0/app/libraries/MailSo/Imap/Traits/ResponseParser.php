@@ -82,9 +82,9 @@ trait ResponseParser
 		$bIsGotoDefault = false;
 
 		$sAtomBuilder = $bTreatAsAtom ? '' : null;
-		$aList = array();
+		$aResponseList = array();
 		if ($bRoot) {
-			$aList =& $oImapResponse->ResponseList;
+			$aResponseList =& $oImapResponse->ResponseList;
 		}
 
 		while (true) {
@@ -143,7 +143,7 @@ trait ResponseParser
 					if ($bTreatAsAtom) {
 						$sAtomBuilder .= $sChar . $mResult . ('[' === $sChar ? ']' : ')');
 					} else {
-						$aList[] = $mResult;
+						$aResponseList[] = $mResult;
 						if ($bRoot && $oImapResponse->IsStatusResponse) {
 							$oImapResponse->OptionalResponse = $mResult;
 							$bIsGotoDefault = true;
@@ -164,13 +164,13 @@ trait ResponseParser
 
 						if ($this->partialResponseLiteralCallbacks($sParentToken, $sPreviousAtomUpperCase, $iLiteralLen)) {
 							if (!$bTreatAsAtom) {
-								$aList[] = '';
+								$aResponseList[] = '';
 							}
 						} else {
 							$sLiteral = $this->partialResponseLiteral($iLiteralLen);
 							if (null !== $sLiteral) {
 								if (!$bTreatAsAtom) {
-									$aList[] = $sLiteral;
+									$aResponseList[] = $sLiteral;
 //									$this->writeLog('{'.$iLiteralLen.'} '.$sLiteral, \LOG_INFO);
 								} else {
 									\SnappyMail\Log::notice('IMAP', 'Literal treated as atom and skipped');
@@ -220,7 +220,7 @@ trait ResponseParser
 							if ($bTreatAsAtom) {
 								$sAtomBuilder .= \stripslashes(\substr($this->sResponseBuffer, $iPos, $iOffset + $iLength - $iPos + 1));
 							} else {
-								$aList[] = \stripslashes(\substr($this->sResponseBuffer, $iPos + 1, $iOffset + $iLength - $iPos - 1));
+								$aResponseList[] = \stripslashes(\substr($this->sResponseBuffer, $iPos + 1, $iOffset + $iLength - $iPos - 1));
 							}
 							$iPos = $iOffset + $iLength + 1;
 							break 2;
@@ -286,28 +286,28 @@ trait ResponseParser
 					if ($iPos > $iCharBlockStartPos || null !== $sAtomBuilder) {
 						$sLastCharBlock = \substr($this->sResponseBuffer, $iCharBlockStartPos, $iPos - $iCharBlockStartPos);
 						if (null === $sAtomBuilder) {
-							$aList[] = 'NIL' === $sLastCharBlock ? null : $sLastCharBlock;
+							$aResponseList[] = 'NIL' === $sLastCharBlock ? null : $sLastCharBlock;
 							$sPreviousAtomUpperCase = \strtoupper($sLastCharBlock);
 						} else {
 							$sAtomBuilder .= $sLastCharBlock;
 
 							if (!$bTreatAsAtom) {
-								$aList[] = $sAtomBuilder;
+								$aResponseList[] = $sAtomBuilder;
 								$sPreviousAtomUpperCase = \strtoupper($sAtomBuilder);
 								$sAtomBuilder = null;
 							}
 						}
 
 						if ($bRoot) {
-							if (!isset($oImapResponse->Tag) && 1 === \count($aList)) {
-								$oImapResponse->setTag($aList[0]);
+							if (!isset($oImapResponse->Tag) && 1 === \count($aResponseList)) {
+								$oImapResponse->setTag($aResponseList[0]);
 								if ($this->getCurrentTag() === $oImapResponse->Tag) {
 									$oImapResponse->ResponseType = ResponseType::TAGGED;
 								}
 							}
-							else if (!isset($oImapResponse->StatusOrIndex) && 2 === \count($aList))
+							else if (!isset($oImapResponse->StatusOrIndex) && 2 === \count($aResponseList))
 							{
-								$oImapResponse->setStatus($aList[1]);
+								$oImapResponse->setStatus($aResponseList[1]);
 							}
 							else if (ResponseType::CONTINUATION === $oImapResponse->ResponseType
 								|| $oImapResponse->IsStatusResponse)
@@ -321,7 +321,7 @@ trait ResponseParser
 
 		$this->iResponseBufParsedPos = $iPos;
 
-		return $bTreatAsAtom ? $sAtomBuilder : $aList;
+		return $bTreatAsAtom ? $sAtomBuilder : $aResponseList;
 	}
 
 	private function partialResponseLiteral($iLiteralLen) : ?string

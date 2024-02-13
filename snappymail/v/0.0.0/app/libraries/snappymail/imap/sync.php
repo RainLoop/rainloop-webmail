@@ -4,7 +4,6 @@ namespace SnappyMail\Imap;
 
 use MailSo\Imap\Enumerations\FetchType;
 use MailSo\Imap\Enumerations\MessageFlag;
-use MailSo\Imap\FetchResponse;
 use MailSo\Mime\Enumerations\Header;
 
 class Sync
