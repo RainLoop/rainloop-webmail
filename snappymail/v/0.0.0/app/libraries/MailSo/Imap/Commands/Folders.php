@@ -574,8 +574,8 @@ trait Folders
 				}
 			}
 		}
-
-		// ACL RIGHTS=texk
+/*
+		// RFC 4314
 		if ($this->hasCapability('ACL') || $this->CapabilityValue('RIGHTS')) {
 			foreach ($oFolderCollection as $oFolder) {
 				if ($oFolder->Selectable()) try {
@@ -586,7 +586,7 @@ trait Folders
 				}
 			}
 		}
-
+*/
 		if (!$bInbox && !$sParentFolderName && !isset($oFolderCollection['INBOX'])) {
 			$oFolderCollection['INBOX'] = new Folder('INBOX', $sDelimiter);
 		}

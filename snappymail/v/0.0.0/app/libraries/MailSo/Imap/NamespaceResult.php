@@ -15,42 +15,71 @@ namespace MailSo\Imap;
  * @category MailSo
  * @package Imap
  */
-class NamespaceResult
+class NamespaceResult implements \JsonSerializable
 {
-	// prefix => separator
-	private array $namespaces = [
-//		'' => '.', // default
-//		'virtual.' => '.',
-//		'shared.' => '.',
-//		etc.
-	];
+	public array
+		$aPersonal = [],
+		$aOtherUsers = [],
+		$aShared = [];
 
 	function __construct(Response $oImapResponse)
 	{
-		// * NAMESPACE (("" ".")("virtual." ".")) (("shared." ".")) NIL\r\n
-		$i = 1;
-		while (isset($oImapResponse->ResponseList[++$i])) {
-			$entries = $oImapResponse->ResponseList[$i];
-			if ($entries) {
-				foreach ($entries as $entry) {
-					if (\is_array($entry) && 2 <= \count($entry)) {
-						$this->namespaces[$entry[0]] = $entry[1];
-					}
+		if (!empty($oImapResponse->ResponseList[2])) {
+			foreach ($oImapResponse->ResponseList[2] as $entry) {
+				if (\is_array($entry) && 2 <= \count($entry)) {
+					$this->aPersonal[] = [
+						'prefix' => \array_shift($entry),
+						'separator' => \array_shift($entry),
+						'extension' => $entry
+					];
+				}
+			}
+		}
+		if (!empty($oImapResponse->ResponseList[3])) {
+			foreach ($oImapResponse->ResponseList[3] as $entry) {
+				if (\is_array($entry) && 2 <= \count($entry)) {
+					$this->aOtherUsers[] = [
+						'prefix' => \array_shift($entry),
+						'separator' => \array_shift($entry),
+						'extension' => $entry
+					];
+				}
+			}
+		}
+		if (!empty($oImapResponse->ResponseList[4])) {
+			foreach ($oImapResponse->ResponseList[4] as $entry) {
+				if (\is_array($entry) && 2 <= \count($entry)) {
+					$this->aShared[] = [
+						'prefix' => \array_shift($entry),
+						'separator' => \array_shift($entry),
+						'extension' => $entry
+					];
 				}
 			}
 		}
 	}
 
-	public function GetPrivateNamespace() : string
+	public function GetPersonalPrefix() : string
 	{
-		$sName = '';
-		if (isset($oImapResponse->ResponseList[2][0][0])) {
-			$sName = $oImapResponse->ResponseList[2][0][0];
-			$sSeparator = $oImapResponse->ResponseList[2][0][1];
-			if ('INBOX'.$sSeparator === \substr(\strtoupper($sName), 0, 6)) {
-				$sName = 'INBOX'.$sSeparator.\substr($sName, 6);
+		$sPrefix = '';
+		if (isset($this->aPersonal[0])) {
+			$sPrefix = $this->aPersonal[0]['prefix'];
+			$sSeparator = $this->aPersonal[0]['separator'];
+			if ('INBOX'.$sSeparator === \substr(\strtoupper($sPrefix), 0, 6)) {
+				$sPrefix = 'INBOX'.$sSeparator.\substr($sPrefix, 6);
 			};
 		}
-		return $sName;
+		return $sPrefix;
+	}
+
+	#[\ReturnTypeWillChange]
+	public function jsonSerialize()
+	{
+		return array(
+			'@Object' => 'Object/Namespaces',
+			'personal' => $this->aPersonal,
+			'users' => $this->aOtherUsers,
+			'shared' => $this->aShared,
+		);
 	}
 }

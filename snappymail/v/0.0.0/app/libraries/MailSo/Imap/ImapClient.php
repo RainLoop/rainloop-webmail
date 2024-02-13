@@ -363,7 +363,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function GetNamespace() : ?NamespaceResult
+	public function GetNamespaces() : ?NamespaceResult
 	{
 		if (!$this->hasCapability('NAMESPACE')) {
 			return null;
@@ -382,17 +382,6 @@ class ImapClient extends \MailSo\Net\NetClient
 		} catch (\Throwable $e) {
 			$this->writeLogException($e, \LOG_ERR);
 		}
-	}
-
-	public function GetPrivateNamespace() : string
-	{
-		$oNamespace = $this->GetNamespace();
-		return $oNamespace ? $oNamespace->GetPrivateNamespace() : '';
-	}
-	/** Deprecated */
-	public function GetPersonalNamespace() : string
-	{
-		return $this->GetPrivateNamespace();
 	}
 
 	/**
@@ -523,6 +512,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					if ($oResponse->IsStatusResponse
 					 && Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
 					 && Enumerations\ResponseStatus::PREAUTH === $oResponse->StatusOrIndex
+//					 && (Enumerations\ResponseStatus::PREAUTH === $oResponse->StatusOrIndex || Enumerations\ResponseStatus::BYE === $oResponse->StatusOrIndex)
 					) {
 						break;
 					}

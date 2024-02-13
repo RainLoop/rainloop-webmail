@@ -55,7 +55,24 @@ trait Folders
 			$HideUnsubscribed = (bool) $oSettingsLocal->GetConf('HideUnsubscribed', $HideUnsubscribed);
 		}
 
+		$oNamespaces = $this->ImapClient()->GetNamespaces();
 		$oFolderCollection = $this->MailClient()->Folders('', '*', $HideUnsubscribed);
+		if (isset($oNamespaces->aOtherUsers[0])) {
+			$oCollection = $this->MailClient()->Folders($oNamespaces->aOtherUsers[0]['prefix'], '*', $HideUnsubscribed);
+			if ($oCollection) {
+				foreach ($oCollection as $oFolder) {
+					$oFolderCollection[$oFolder->FullName] = $oFolder;
+				}
+			}
+		}
+		if (isset($oNamespaces->aShared[0])) {
+			$oCollection = $this->MailClient()->Folders($oNamespaces->aShared[0]['prefix'], '*', $HideUnsubscribed);
+			if ($oCollection) {
+				foreach ($oCollection as $oFolder) {
+					$oFolderCollection[$oFolder->FullName] = $oFolder;
+				}
+			}
+		}
 
 		if ($oFolderCollection) {
 			$aQuota = null;
@@ -77,7 +94,8 @@ trait Folders
 				array(
 					'quotaUsage' => $aQuota ? $aQuota[0] * 1024 : null,
 					'quotaLimit' => $aQuota ? $aQuota[1] * 1024 : null,
-					'namespace' => $this->ImapClient()->GetPrivateNamespace(),
+					'namespace' => $oNamespaces->GetPersonalPrefix(),
+					'namespaces' => $oNamespaces,
 					'capabilities' => $aCapabilities
 				)
 			);
