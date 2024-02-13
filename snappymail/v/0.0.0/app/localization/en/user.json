@@ -359,7 +359,7 @@
 		"ERROR_FILE_PARTIALLY_UPLOADED": "File was partially uploaded due to unknown error",
 		"ERROR_NO_FILE_UPLOADED": "No file uploaded",
 		"ERROR_MISSING_TEMP_FOLDER": "The temporary file is missing",
-		"ERROR_ON_SAVING_FILE": "An unknown file upload error occurred",
+		"ERROR_ON_SAVING_FILE": "Saving uploaded file failed",
 		"ERROR_FILE_TYPE": "Invalid file type",
 		"ERROR_UNKNOWN": "An unknown file upload error occurred"
 	},
