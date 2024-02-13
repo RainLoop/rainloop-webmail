@@ -470,11 +470,11 @@ export class FolderModel extends AbstractModel {
 
 			hasSubscribedUnreadMessagesSubfolders: () =>
 				!!this.subFolders().find(
-					folder => folder.unreadCount() | folder.hasSubscribedUnreadMessagesSubfolders()
+					folder => folder.unreadEmails() | folder.hasSubscribedUnreadMessagesSubfolders()
 				)
 /*
 				!!this.subFolders().filter(
-					folder => folder.unreadCount() | folder.hasSubscribedUnreadMessagesSubfolders()
+					folder => folder.unreadEmails() | folder.hasSubscribedUnreadMessagesSubfolders()
 				).length
 */
 			,href: () => this.canBeSelected() && mailBox(this.fullNameHash)
