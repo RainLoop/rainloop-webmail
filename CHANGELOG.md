@@ -1,4 +1,4 @@
-## 2.34.0 – 2024-02-13
+## 2.34.1 – 2024-02-13
 
 ### Added
 - Autocrypt support
@@ -66,6 +66,7 @@
 - Save multiple as .eml
   [#1425](https://github.com/the-djmaze/snappymail/issues/1425)
 - Disabled support for Nextcloud OpenID Connect
+  [#1420](https://github.com/the-djmaze/snappymail/issues/1420)
 
 
 ## 2.33.0 – 2024-01-22
