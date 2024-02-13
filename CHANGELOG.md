@@ -1,3 +1,73 @@
+## 2.34.0 – 2024-02-13
+
+### Added
+- Autocrypt support
+  [#342](https://github.com/the-djmaze/snappymail/issues/342)
+- Load the mailboxes/folders of all namespaces (other users, global, shared, etc.)
+- Load keys from server into OpenPGP.js
+  [#973](https://github.com/the-djmaze/snappymail/issues/973)
+- Import PGP Keys from remote key servers
+- Sort Inbox Folders with Unread Messages First
+  [#1427](https://github.com/the-djmaze/snappymail/issues/1427)
+- Define JMAP FolderModel.myRights
+- Identity Management: add identity display name
+  [#1405](https://github.com/the-djmaze/snappymail/issues/1405)
+- Identity Management: add per-identity "sent" folder
+  [#1404](https://github.com/the-djmaze/snappymail/issues/1404)
+- Some support for JSON-LD / Structured Email
+  [#1422](https://github.com/the-djmaze/snappymail/issues/1422)
+- Domain Autoconfig and Microsoft's autodiscover (and also as extension/plugin)
+- View MMS messages that are received via email
+  [#1294](https://github.com/the-djmaze/snappymail/issues/1294)
+- Draft code for S/MIME
+  [#259](https://github.com/the-djmaze/snappymail/issues/259)
+
+### Changed
+- Many OpenPGP improvements
+  [#89](https://github.com/the-djmaze/snappymail/issues/89)
+- Allow CSP connect-src CORS for keys.openpgp.org to directly fetch PGP keys
+- Improved handling of visible folders
+- KnockoutJS Replace some ko.exportSymbol('*') in favour of ko['*']
+- KnockoutJS use Symbol for isObservableArray()
+- Simplify generating folderListVisible
+- Drop the bSearchSecretWords param from logger
+- Transparent background for text
+  [#1412](https://github.com/the-djmaze/snappymail/issues/1412)
+- Enable OpenPGP.js by default at install
+- Added folder edit popup for improved IMAP ACL Support
+  [#157](https://github.com/the-djmaze/snappymail/issues/157)
+- Process all IMAP namespaces
+- Update Polish by @tinola
+- Update Portuguese by @ner00
+
+### Fixed
+- Make time_zone a select list due to PEBKAC
+- Workaround Outlook generated double spacing
+  [#1415](https://github.com/the-djmaze/snappymail/issues/1415)
+- HTML Parser is not picking up the full Unsubscribe URL in the attached text file
+  [#1225](https://github.com/the-djmaze/snappymail/issues/1225)
+- Contacts - it auto "Select All", after entry delete
+  [#1411](https://github.com/the-djmaze/snappymail/issues/1411)
+- Message header parsing issue
+  [#1403](https://github.com/the-djmaze/snappymail/issues/1403)
+- apple-touch-icon should not be transparent
+  [#1408](https://github.com/the-djmaze/snappymail/issues/1408)
+- Creation of dynamic property is deprecated
+  [#1409](https://github.com/the-djmaze/snappymail/issues/1409)
+- Ask/send readReceipt was broken
+- OpenPGP public key can not be removed anymore after importing private key of subkey
+  [#1384](https://github.com/the-djmaze/snappymail/issues/1384)
+- KnockoutJS failed to output text '0'
+- JavaScript friendlySize() failed on 0
+- Workaround Dovecot `PREAUTH [CAPABILITY (null)]` issue
+- Workaround disabled ACL could cause "Disconnected: Too many invalid IMAP commands"
+
+### Nextcloud
+- Save multiple as .eml
+  [#1425](https://github.com/the-djmaze/snappymail/issues/1425)
+- Disabled support for Nextcloud OpenID Connect
+
+
 ## 2.33.0 – 2024-01-22
 
 ### Added

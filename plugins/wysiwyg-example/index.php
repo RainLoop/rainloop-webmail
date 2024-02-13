@@ -1,6 +1,6 @@
 <?php
 
-class WysiwygQuillPlugin extends \RainLoop\Plugins\AbstractPlugin
+class WysiwygExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'WYSIWYG Example',

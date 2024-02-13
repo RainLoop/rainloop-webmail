@@ -140,26 +140,26 @@ RainLoop 1.17 vs SnappyMail
 
 |js/*           	|RainLoop 	|Snappy   	|
 |---------------	|--------:	|--------:	|
-|admin.js        	|2.170.153	|   80.563	|
-|app.js          	|4.207.787	|  410.974	|
+|admin.js        	|2.170.153	|   81.613	|
+|app.js          	|4.207.787	|  421.481	|
 |boot.js         	|  868.735	|    4.142	|
-|libs.js         	|  658.812	|  192.606	|
+|libs.js         	|  658.812	|  192.625	|
 |sieve.js         	|        0	|   84.707	|
 |polyfills.js    	|  334.608	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|8.240.095	|  773.277	|
+|TOTAL           	|8.240.095	|  784.853	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
-|admin.min.js    	|  256.831	|   39.461	| 73.606	| 13.218	| 60.877  	| 11.841	|
-|app.min.js      	|  515.367	|  187.193	|139.456	| 63.375	|110.485  	| 54.428	|
+|admin.min.js    	|  256.831	|   40.119	| 73.606	| 13.425	| 60.877  	| 12.028	|
+|app.min.js      	|  515.367	|  190.884	|139.456	| 64.643	|110.485  	| 55.533	|
 |boot.min.js     	|   84.659	|    2.084	| 26.998	|  1.202	| 23.643  	|  1.003	|
-|libs.min.js     	|  584.772	|   92.780	|180.901	| 34.489	|155.182  	| 30.953	|
+|libs.min.js     	|  584.772	|   92.664	|180.901	| 34.414	|155.182  	| 30.850	|
 |sieve.min.js     	|        0	|   41.164	|      0	| 10.365	|      0  	|  9.359	|
 |polyfills.min.js	|   32.837	|        0	| 11.406	|      0	| 10.175  	|      0	|
-|TOTAL user      	|1.217.635	|  282.057	|358.761	| 99.066	|299.485  	| 86.384	|
-|TOTAL user+sieve	|1.217.635	|  323.221	|358.761	|109.431	|299.485  	| 95.743	|
-|TOTAL admin     	|  959.099	|  134.325	|292.911	| 48.909	|249.877  	| 43.797	|
+|TOTAL user      	|1.217.635	|  285.632	|358.761	|100.259	|299.485  	| 87.386	|
+|TOTAL user+sieve	|1.217.635	|  326.796	|358.761	|110.624	|299.485  	| 96.745	|
+|TOTAL admin     	|  959.099	|  134.867	|292.911	| 49.041	|249.877  	| 43.881	|
 
 For a user it is around 69% smaller and faster than traditional RainLoop.
 
@@ -188,12 +188,12 @@ For a user it is around 69% smaller and faster than traditional RainLoop.
 
 |css/*       	|RainLoop	|Snappy   	|RL gzip	|SM gzip	|SM brotli	|
 |------------	|-------:	|------:	|------:	|------:	|--------:	|
-|app.css     	| 340.331	| 84.484	| 46.946	| 17.627	| 15.110	|
-|app.min.css 	| 274.947	| 67.910	| 39.647	| 15.541	| 13.547	|
+|app.css     	| 340.331	| 84.444	| 46.946	| 17.613	| 15.077	|
+|app.min.css 	| 274.947	| 67.834	| 39.647	| 15.528	| 13.542	|
 |boot.css    	|       	|  1.326	|       	|    664	|    545	|
 |boot.min.css	|       	|  1.071	|       	|    590	|    474	|
-|admin.css    	|       	| 30.641	|       	|  7.028	|  6.111	|
-|admin.min.css	|       	| 24.742	|       	|  6.352	|  5.599	|
+|admin.css    	|       	| 30.576	|       	|  7.013	|  6.096	|
+|admin.min.css	|       	| 24.692	|       	|  6.336	|  5.579	|
 
 ### PGP
 RainLoop uses the old OpenPGP.js v2
@@ -224,5 +224,3 @@ Still TODO:
 |ckeditor	|       ?	| 520.035	|      ?	|  155.916	|
 
 CKEditor including the 7 asset requests (css,language,plugins,icons) is 633.46 KB / 180.47 KB (gzip).
-
-To use the old CKEditor, you must install the plugin.
