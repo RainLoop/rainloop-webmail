@@ -29,7 +29,7 @@ class NamespaceResult implements \JsonSerializable
 				if (\is_array($entry) && 2 <= \count($entry)) {
 					$this->aPersonal[] = [
 						'prefix' => \array_shift($entry),
-						'separator' => \array_shift($entry),
+						'delimiter' => \array_shift($entry),
 						'extension' => $entry
 					];
 				}
@@ -40,7 +40,7 @@ class NamespaceResult implements \JsonSerializable
 				if (\is_array($entry) && 2 <= \count($entry)) {
 					$this->aOtherUsers[] = [
 						'prefix' => \array_shift($entry),
-						'separator' => \array_shift($entry),
+						'delimiter' => \array_shift($entry),
 						'extension' => $entry
 					];
 				}
@@ -51,7 +51,7 @@ class NamespaceResult implements \JsonSerializable
 				if (\is_array($entry) && 2 <= \count($entry)) {
 					$this->aShared[] = [
 						'prefix' => \array_shift($entry),
-						'separator' => \array_shift($entry),
+						'delimiter' => \array_shift($entry),
 						'extension' => $entry
 					];
 				}
@@ -64,9 +64,9 @@ class NamespaceResult implements \JsonSerializable
 		$sPrefix = '';
 		if (isset($this->aPersonal[0])) {
 			$sPrefix = $this->aPersonal[0]['prefix'];
-			$sSeparator = $this->aPersonal[0]['separator'];
-			if ('INBOX'.$sSeparator === \substr(\strtoupper($sPrefix), 0, 6)) {
-				$sPrefix = 'INBOX'.$sSeparator.\substr($sPrefix, 6);
+			$sDelimiter = $this->aPersonal[0]['delimiter'];
+			if ('INBOX'.$sDelimiter === \substr(\strtoupper($sPrefix), 0, 6)) {
+				$sPrefix = 'INBOX'.$sDelimiter.\substr($sPrefix, 6);
 			};
 		}
 		return $sPrefix;

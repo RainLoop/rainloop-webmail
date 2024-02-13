@@ -947,50 +947,22 @@ class MailClient
 	/**
 	 * @throws \InvalidArgumentException
 	 */
-	public function FolderMove(string $sPrevFolderFullName, string $sNextFolderFullNameInUtf, bool $bSubscribeOnMove = true) : self
-	{
-		if (!$this->oImapClient->FolderHierarchyDelimiter($sPrevFolderFullName)) {
-			// TODO: Translate
-			throw new \MailSo\RuntimeException('Cannot move non-existent folder.');
-		}
-		return $this->folderModify($sPrevFolderFullName, $sNextFolderFullNameInUtf, $bSubscribeOnMove);
-	}
-
-	/**
-	 * @throws \InvalidArgumentException
-	 */
-	public function FolderRename(string $sPrevFolderFullName, string $sNewTopFolderNameInUtf, bool $bSubscribeOnRename = true) : string
-	{
-		$sDelimiter = $this->oImapClient->FolderHierarchyDelimiter($sPrevFolderFullName);
-		if (!$sDelimiter) {
-			// TODO: Translate
-			throw new \MailSo\RuntimeException('Cannot rename non-existent folder.');
-		}
-
-		if (\strlen($sDelimiter) && false !== \strpos($sNewTopFolderNameInUtf, $sDelimiter)) {
-			// TODO: Translate
-			throw new \MailSo\RuntimeException('New folder name contains delimiter.');
-		}
-
-		$iLast = \strrpos($sPrevFolderFullName, $sDelimiter);
-		$sNewFolderFullName = (false === $iLast ? '' : \substr($sPrevFolderFullName, 0, $iLast + 1))
-			. $sNewTopFolderNameInUtf;
-
-		$this->folderModify($sPrevFolderFullName, $sNewFolderFullName, $bSubscribeOnRename);
-
-		return $sNewFolderFullName;
-	}
-
-	/**
-	 * @throws \ValueError
-	 * @throws \MailSo\RuntimeException
-	 */
-	protected function folderModify(string $sPrevFolderFullName, string $sNewFolderFullName, bool $bSubscribe) : self
+	public function FolderRename(string $sPrevFolderFullName, string $sNewFolderFullName, bool $bSubscribe = true) : self
 	{
 		if (!\strlen($sPrevFolderFullName) || !\strlen($sNewFolderFullName)) {
 			throw new \ValueError;
 		}
 
+		if (!$this->oImapClient->FolderHierarchyDelimiter($sPrevFolderFullName)) {
+			// TODO: Translate
+			throw new \MailSo\RuntimeException('Cannot rename non-existent folder.');
+		}
+/*
+		if (\strlen($sDelimiter) && false !== \strpos($sNewFolderFullName, $sDelimiter)) {
+			// TODO: Translate
+			throw new \MailSo\RuntimeException('New folder name contains delimiter.');
+		}
+*/
 		$oSubscribedFolders = array();
 		if ($bSubscribe) {
 			$oSubscribedFolders = $this->oImapClient->FolderSubscribeList($sPrevFolderFullName, '*');

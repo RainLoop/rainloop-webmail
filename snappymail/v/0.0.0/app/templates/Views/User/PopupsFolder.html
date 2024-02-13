@@ -3,13 +3,31 @@
 	<h3 data-bind="text: folder()?.fullName"></h3>
 </header>
 <form id="folderform" class="modal-body form-horizontal" autocomplete="off" spellcheck="false" data-bind="submit: submitForm">
+	<div class="control-group" data-bind="if: editing">
+		<label data-i18n="POPUPS_CREATE_FOLDER/LABEL_PARENT"></label>
+		<select name="parent" data-bind="options: parentFolderSelectList, value: parentFolder,
+			optionsText: 'name', optionsValue: 'id', optionsAfterRender: defaultOptionsAfterRender"></select>
+	</div>
+	<div class="control-group" data-bind="if: editing">
+		<label data-i18n="GLOBAL/NAME"></label>
+		<input name="folder" type="text"
+			autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+			required="" data-bind="textInput: name">
+	</div>
 	<div data-bind="with: folder">
-		<div class="control-group" data-bind="if: editing">
-			<label data-i18n="GLOBAL/NAME"></label>
-			<input name="folder" type="text"
-				autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-				required="" data-bind="textInput: nameForEdit">
+		<!-- ko if: canBeSubscribed -->
+		<div class="control-group">
+			<label></label>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					name: 'subscribe',
+					label: 'SETTINGS_FOLDERS/BUTTON_SUBSCRIBE',
+					value: isSubscribed
+				}
+			}"></div>
 		</div>
+		<!-- /ko -->
 		<div class="control-group">
 			<label data-i18n="POPUPS_FILTER/SELECT_FIELD_SIZE"></label>
 			<span data-bind="text: friendlySize"></span>
@@ -19,16 +37,6 @@
 			<span data-bind="text: unreadEmails"></span>
 			/ <span style="margin:0" data-bind="text: totalEmails"></span>
 		</div>
-		<!-- ko if: canBeSubscribed -->
-		<div class="control-group" data-bind="component: {
-			name: 'Checkbox',
-			params: {
-				name: 'subscribe',
-				label: 'SETTINGS_FOLDERS/BUTTON_SUBSCRIBE',
-				value: isSubscribed
-			}
-		}"></div>
-		<!-- /ko -->
 	</div>
 	<div class="control-group" data-bind="if: ACLAllowed">
 		<label>ACL</label>

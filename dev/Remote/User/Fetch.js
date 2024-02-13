@@ -64,16 +64,6 @@ class RemoteUserFetch extends AbstractFetchRemote {
 			[key]: value
 		});
 	}
-
-/*
-	folderMove(sPrevFolderFullName, sNewFolderFullName, bSubscribe) {
-		return this.post('FolderMove', FolderUserStore.foldersRenaming, {
-			folder: sPrevFolderFullName,
-			newFolder: sNewFolderFullName,
-			subscribe: bSubscribe ? 1 : 0
-		});
-	}
-*/
 }
 
 export default new RemoteUserFetch();

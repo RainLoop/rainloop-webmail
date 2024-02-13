@@ -1,24 +1,42 @@
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
-import { addObservablesTo } from 'External/ko';
+import { addObservablesTo, koComputable } from 'External/ko';
 import Remote from 'Remote/User/Fetch';
 import { FolderUserStore } from 'Stores/User/Folder';
+
+import { defaultOptionsAfterRender } from 'Common/Utils';
+import { folderListOptionsBuilder } from 'Common/Folders';
 
 export class FolderPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Folder');
 		addObservablesTo(this, {
-			folder: null // FolderModel
+			folder: null, // FolderModel
+			parentFolder: '',
+			name: '',
+			editing: false
 		});
 		this.ACLAllowed = FolderUserStore.hasCapability('ACL');
 		this.ACL = ko.observableArray();
+
+		this.parentFolderSelectList = koComputable(() =>
+			folderListOptionsBuilder(
+				[],
+				[['', '']],
+				oItem => oItem ? oItem.detailedName() : '',
+				item => !item.subFolders.allow
+					|| (FolderUserStore.namespace && !item.fullName.startsWith(FolderUserStore.namespace))
+			)
+		);
+
+		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 	}
 
 	afterHide() {
-		this.folder().editing(false);
+		this.editing(false);
 	}
 
 	submitForm(form) {
-		this.folder().rename();
+		this.folder().rename(this.name(), this.parentFolder());
 		console.dir({form});
 		this.close();
 	}
@@ -32,7 +50,9 @@ export class FolderPopupView extends AbstractViewPopup {
 		}, {
 			folder: folder.fullName
 		});
-		folder.editing(!folder.type() && folder.exists && folder.selectable());
+		this.editing(!folder.type() && folder.exists && folder.selectable());
+		this.name(folder.name()),
+		this.parentFolder(folder.parentName);
 		this.folder(folder);
 	}
 }

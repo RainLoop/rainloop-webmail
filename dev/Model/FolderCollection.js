@@ -116,6 +116,8 @@ export class FolderCollectionModel extends AbstractCollectionModel
 		this.namespace;
 		this.optimized
 		this.capabilities
+		this.allow; // allow adding
+//		this.exist;
 	}
 */
 
@@ -303,6 +305,7 @@ export class FolderModel extends AbstractModel {
 		super();
 
 		this.fullName = '';
+		this.parentName = '';
 		this.delimiter = '';
 		this.deep = 0;
 		this.expires = 0;
@@ -323,12 +326,10 @@ export class FolderModel extends AbstractModel {
 
 			focused: false,
 			selected: false,
-			editing: false,
 			isSubscribed: true,
 			checkable: false, // Check for new messages
 			askDelete: false,
 
-			nameForEdit: '',
 			errorMsg: '',
 
 			totalEmails: 0,
@@ -348,7 +349,6 @@ export class FolderModel extends AbstractModel {
 		this.addSubscribables({
 			kolabType: sValue => this.metadata[FolderMetadataKeys.KolabFolderType] = sValue,
 			permanentFlags: aValue => this.tagsAllowed(aValue.includes('\\*')),
-			editing: value => value && this.nameForEdit(this.name()),
 			unreadEmails: unread => FolderType.Inbox === this.type() && fireEvent('mailbox.inbox-unread-count', unread)
 		});
 
@@ -485,18 +485,21 @@ export class FolderModel extends AbstractModel {
 		showScreenPopup(FolderPopupView, [this]);
 	}
 
-	rename() {
+	rename(nameToEdit, parentName) {
+		nameToEdit = nameToEdit.trim();
 		const folder = this,
-			nameToEdit = folder.nameForEdit().trim();
-		if (nameToEdit && folder.name() !== nameToEdit) {
+			oldFullname = folder.fullName,
+			newFullname = parentName + folder.delimiter + nameToEdit;
+		if (nameToEdit && newFullname != oldFullname) {
 			Remote.abort('Folders').post('FolderRename', FolderUserStore.foldersRenaming, {
-					folder: folder.fullName,
-					newFolderName: nameToEdit,
+					oldName: oldFullname,
+					newName: newFullname,
 					subscribe: folder.isSubscribed() ? 1 : 0
 				})
-				.then(data => {
-					folder.name(nameToEdit/*data.name*/);
-					if (folder.subFolders.length) {
+				.then(() => {
+					folder.fullName = newFullname;
+					folder.name(nameToEdit);
+					if (folder.subFolders.length || folder.parentName != parentName) {
 						Remote.setTrigger(FolderUserStore.foldersLoading, true);
 //						clearTimeout(Remote.foldersTimeout);
 //						Remote.foldersTimeout = setTimeout(loadFolders, 500);
@@ -504,7 +507,6 @@ export class FolderModel extends AbstractModel {
 						// TODO: rename all subfolders with folder.delimiter to prevent reload?
 					} else {
 						removeFolderFromCacheList(folder.fullName);
-						folder.fullName = data.Result.fullName;
 						setFolder(folder);
 						const parent = getFolderFromCacheList(folder.parentName);
 						sortFolders(parent ? parent.subFolders : FolderUserStore.folderList);

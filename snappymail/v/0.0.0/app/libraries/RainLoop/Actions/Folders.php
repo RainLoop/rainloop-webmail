@@ -190,15 +190,15 @@ trait Folders
 	/**
 	 * @throws \MailSo\RuntimeException
 	 */
-	public function DoFolderMove() : array
+	public function DoFolderRename() : array
 	{
 		$this->initMailClientConnection();
 
 		try
 		{
-			$this->MailClient()->FolderMove(
-				$this->GetActionParam('folder', ''),
-				$this->GetActionParam('newFolder', ''),
+			$sFullName = $this->MailClient()->FolderRename(
+				$this->GetActionParam('oldName', ''),
+				$this->GetActionParam('newName', ''),
 				!empty($this->GetActionParam('subscribe', 1))
 			);
 		}
@@ -208,34 +208,6 @@ trait Folders
 		}
 
 		return $this->TrueResponse();
-	}
-
-	/**
-	 * @throws \MailSo\RuntimeException
-	 */
-	public function DoFolderRename() : array
-	{
-		$this->initMailClientConnection();
-
-		$sName = $this->GetActionParam('newFolderName', '');
-		try
-		{
-			$sFullName = $this->MailClient()->FolderRename(
-				$this->GetActionParam('folder', ''),
-				$sName,
-				!empty($this->GetActionParam('subscribe', 1))
-			);
-		}
-		catch (\Throwable $oException)
-		{
-			throw new ClientException(Notifications::CantRenameFolder, $oException);
-		}
-
-//		FolderInformation(string $sFolderName, int $iPrevUidNext = 0, array $aUids = array())
-		return $this->DefaultResponse(array(
-			'name' => $sName,
-			'fullName' => $sFullName,
-		));
 	}
 
 	/**
