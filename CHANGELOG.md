@@ -1,3 +1,12 @@
+## 2.34.2 – 2024-02-14
+
+### Fixed
+- Message was sent but not saved to sent items folder
+  [#1432](https://github.com/the-djmaze/snappymail/issues/1432)
+- Login with scram failed
+  [#1433](https://github.com/the-djmaze/snappymail/issues/1433)
+
+
 ## 2.34.1 – 2024-02-13
 
 ### Added
