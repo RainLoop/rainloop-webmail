@@ -65,8 +65,12 @@ class Message implements \JsonSerializable
 		$aThreadUnseenUIDs = [];
 
 	private ?array $DraftInfo = null;
+
 	private ?array $pgpSigned = null;
 	private ?array $pgpEncrypted = null;
+
+	private ?array $smimeSigned = null;
+	private ?array $smimeEncrypted = null;
 
 	private ?\MailSo\Mime\EmailCollection
 		$oFrom = null,
@@ -309,26 +313,44 @@ class Message implements \JsonSerializable
 		if ($oBodyStructure) {
 			$gEncryptedParts = $oBodyStructure->SearchByContentType('multipart/encrypted');
 			foreach ($gEncryptedParts as $oPart) {
-				if ($oPart->IsPgpEncrypted()) {
+				if ($oPart->isPgpEncrypted()) {
 					$oMessage->pgpEncrypted = [
 						'partId' => $oPart->SubParts()[1]->PartID()
 					];
 				}
 			}
 
+			$gEncryptedParts = $oBodyStructure->SearchByContentType('application/pkcs7-mime');
+			foreach ($gEncryptedParts as $oPart) {
+				if ($oPart->isSMimeEncrypted()) {
+					$oMessage->smimeEncrypted = [
+						'partId' => $oPart->PartID()
+					];
+				} else if ($oPart->isSMimeSigned()) {
+					$oMessage->smimeSigned = [
+						'sigPartId' => $oPart->PartID(),
+						'micAlg' => $oHeaders ? (string) $oHeaders->ParameterValue(MimeHeader::CONTENT_TYPE, 'micalg') : ''
+					];
+				}
+			}
+
 			$gSignatureParts = $oBodyStructure->SearchByContentType('multipart/signed');
 			foreach ($gSignatureParts as $oPart) {
-				if (!$oPart->IsPgpSigned()) {
-					continue;
+				if ($oPart->isPgpSigned()) {
+					$oMessage->pgpSigned = [
+						// /?/Raw/&q[]=/0/Download/&q[]=/...
+						// /?/Raw/&q[]=/0/View/&q[]=/...
+						'bodyPartId' => $oPart->SubParts()[0]->PartID(),
+						'sigPartId' => $oPart->SubParts()[1]->PartID(),
+						'micAlg' => $oHeaders ? (string) $oHeaders->ParameterValue(MimeHeader::CONTENT_TYPE, 'micalg') : ''
+					];
+				} else if ($oPart->isSMimeSigned()) {
+					$oMessage->smimeSigned = [
+						'bodyPartId' => $oPart->SubParts()[0]->PartID(),
+						'sigPartId' => $oPart->SubParts()[1]->PartID(),
+						'micAlg' => $oHeaders ? (string) $oHeaders->ParameterValue(MimeHeader::CONTENT_TYPE, 'micalg') : ''
+					];
 				}
-				$oPgpSignaturePart = $oPart->SubParts()[1];
-				$oMessage->pgpSigned = [
-					// /?/Raw/&q[]=/0/Download/&q[]=/...
-					// /?/Raw/&q[]=/0/View/&q[]=/...
-					'bodyPartId' => $oPart->SubParts()[0]->PartID(),
-					'sigPartId' => $oPgpSignaturePart->PartID(),
-					'micAlg' => $oHeaders ? (string) $oHeaders->ParameterValue(MimeHeader::CONTENT_TYPE, 'micalg') : ''
-				];
 /*
 				// An empty section specification refers to the entire message, including the header.
 				// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].

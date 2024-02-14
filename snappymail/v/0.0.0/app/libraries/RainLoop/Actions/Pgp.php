@@ -146,7 +146,7 @@ trait Pgp
 			);
 		}
 
-		if ($oPart && $oPart->IsPgpSigned()) {
+		if ($oPart && $oPart->isPgpSigned()) {
 //			$GPG->verifyStream($oPart->SubParts[0]->Body, \stream_get_contents($oPart->SubParts[1]->Body));
 //			$result['signatures'] = $oPart->SubParts[0];
 		}

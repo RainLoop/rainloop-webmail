@@ -152,7 +152,7 @@ class MailClient
 /*
 				$gSignatureParts = $oBodyStructure->SearchByContentType('multipart/signed');
 				foreach ($gSignatureParts as $oPart) {
-					if ($oPart->IsPgpSigned()) {
+					if ($oPart->isPgpSigned()) {
 						// An empty section specification refers to the entire message, including the header.
 						// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
 						$aFetchItems[] = FetchType::BODY_PEEK.'['.$oPart->SubParts()[0]->PartID().'.MIME]';

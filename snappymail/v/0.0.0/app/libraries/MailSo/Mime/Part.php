@@ -80,20 +80,29 @@ class Part
 		return $sResult;
 	}
 
-	public function IsPgpSigned() : bool
+	// https://datatracker.ietf.org/doc/html/rfc3156#section-5
+	public function isPgpSigned() : bool
 	{
-		// https://datatracker.ietf.org/doc/html/rfc3156#section-5
 		$header = $this->Headers->GetByName(Enumerations\Header::CONTENT_TYPE);
 		return $header
 		 && \preg_match('#multipart/signed.+protocol=["\']?application/pgp-signature#si', $header->FullValue())
 		 // The multipart/signed body MUST consist of exactly two parts.
 		 && 2 === \count($this->SubParts)
-		 && $this->SubParts[1]->IsPgpSignature();
+		 && 'application/pgp-signature' === $this->SubParts[1]->ContentType();
 	}
 
-	public function IsPgpSignature() : bool
+	// https://www.rfc-editor.org/rfc/rfc8551.html#section-3.5
+	public function isSMimeSigned() : bool
 	{
-		return \in_array($this->ContentType(), array('application/pgp-signature', 'application/pkcs7-signature'));
+		$header = $this->Headers->GetByName(Enumerations\Header::CONTENT_TYPE);
+		return ($header
+			&& \preg_match('#multipart/signed.+protocol=["\']?application/pkcs7-signature#si', $header->FullValue())
+			// The multipart/signed body MUST consist of exactly two parts.
+			&& 2 === \count($this->SubParts)
+			&& 'application/pkcs7-signature' === $this->SubParts[1]->ContentType()
+		) || ($header
+			&& \preg_match('#application/pkcs7-mime.+smime-type=["\']?signed-data#si', $header->FullValue())
+		);
 	}
 
 	public static function FromFile(string $sFileName) : ?self

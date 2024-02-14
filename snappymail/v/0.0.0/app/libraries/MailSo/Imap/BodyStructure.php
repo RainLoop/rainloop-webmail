@@ -127,9 +127,9 @@ class BodyStructure implements \JsonSerializable
 		return 'text/html' === $this->sContentType || 'text/plain' === $this->sContentType;
 	}
 
-	public function IsPgpEncrypted() : bool
+	// https://datatracker.ietf.org/doc/html/rfc3156#section-4
+	public function isPgpEncrypted() : bool
 	{
-		// https://datatracker.ietf.org/doc/html/rfc3156#section-4
 		return 'multipart/encrypted' === $this->sContentType
 		 && !empty($this->aContentTypeParams['protocol'])
 		 && 'application/pgp-encrypted' === \strtolower(\trim($this->aContentTypeParams['protocol']))
@@ -140,20 +140,39 @@ class BodyStructure implements \JsonSerializable
 //		 && 'Version: 1' === $this->aSubParts[0]->Body()
 	}
 
-	public function IsPgpSigned() : bool
+	// https://datatracker.ietf.org/doc/html/rfc3156#section-5
+	public function isPgpSigned() : bool
 	{
-		// https://datatracker.ietf.org/doc/html/rfc3156#section-5
 		return 'multipart/signed' === $this->sContentType
 		 && !empty($this->aContentTypeParams['protocol'])
 		 && 'application/pgp-signature' === \strtolower(\trim($this->aContentTypeParams['protocol']))
 		 // The multipart/signed body MUST consist of exactly two parts.
 		 && 2 === \count($this->aSubParts)
-		 && $this->aSubParts[1]->IsPgpSignature();
+		 && 'application/pgp-signature' === $this->aSubParts[1]->ContentType();
 	}
 
-	public function IsPgpSignature() : bool
+	// https://datatracker.ietf.org/doc/html/rfc2633#section-3.3
+	public function isSMimeEncrypted() : bool
 	{
-		return \in_array($this->sContentType, ['application/pgp-signature', 'application/pkcs7-signature']);
+		$type = \strtolower(\trim($this->aContentTypeParams['smime-type'] ?? ''));
+		return 'application/pkcs7-mime' === $this->sContentType
+		 && !empty($this->aContentTypeParams['smime-type'])
+		 && ('enveloped-data' === $type || 'authenveloped-data' === $type);
+	}
+
+	// https://www.rfc-editor.org/rfc/rfc8551.html#section-3.5
+	public function isSMimeSigned() : bool
+	{
+		return ('multipart/signed' === $this->sContentType
+			&& !empty($this->aContentTypeParams['protocol'])
+			&& 'application/pkcs7-signature' === \strtolower(\trim($this->aContentTypeParams['protocol']))
+			// The multipart/signed body MUST consist of exactly two parts.
+			&& 2 === \count($this->aSubParts)
+			&& 'application/pkcs7-signature' === $this->aSubParts[1]->ContentType()
+		) || ('application/pkcs7-mime' === $this->sContentType
+			&& !empty($this->aContentTypeParams['smime-type'])
+			&& 'signed-data' === \strtolower(\trim($this->aContentTypeParams['smime-type']))
+		);
 	}
 
 	public function IsAttachment() : bool
@@ -192,7 +211,7 @@ class BodyStructure implements \JsonSerializable
 		if (!$aParts) {
 			$gEncryptedParts = $this->SearchByContentType('multipart/encrypted');
 			foreach ($gEncryptedParts as $oPart) {
-				if ($oPart->IsPgpEncrypted() && $oPart->SubParts()[1]->isInline()) {
+				if ($oPart->isPgpEncrypted() && $oPart->SubParts()[1]->isInline()) {
 					return array($oPart->SubParts()[1]);
 				}
 			}
@@ -242,7 +261,7 @@ class BodyStructure implements \JsonSerializable
 	{
 		return $this->SearchByCallback(function ($oItem, $oParent) {
 //			return $oItem->IsAttachment();
-			return $oItem->IsAttachment() && (!$oParent || !$oParent->IsPgpEncrypted());
+			return $oItem->IsAttachment() && (!$oParent || !$oParent->isPgpEncrypted());
 		});
 	}
 
