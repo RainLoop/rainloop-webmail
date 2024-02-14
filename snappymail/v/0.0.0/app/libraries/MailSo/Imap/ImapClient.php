@@ -181,7 +181,9 @@ class ImapClient extends \MailSo\Net\NetClient
 					$this->logMask($sChallenge);
 					$this->sendRaw($sChallenge);
 					$oResponse = $this->getResponse();
-					$SASL->verify($this->getResponseValue($oResponse));
+					$SASL->verify($this->getResponseValue($oResponse, Enumerations\ResponseType::CONTINUATION));
+					$this->sendRaw('');
+					$oResponse = $this->getResponse();
 				}
 			}
 			else if ('XOAUTH2' === $type || 'OAUTHBEARER' === $type)
