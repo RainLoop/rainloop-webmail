@@ -59,21 +59,25 @@ trait Folders
 
 		$oNamespaces = $this->ImapClient()->GetNamespaces();
 		if ($oNamespaces) {
-			if (isset($oNamespaces->aOtherUsers[0])) {
+			if (isset($oNamespaces->aOtherUsers[0])) try {
 				$oCollection = $this->MailClient()->Folders($oNamespaces->aOtherUsers[0]['prefix'], '*', $HideUnsubscribed);
 				if ($oCollection) {
 					foreach ($oCollection as $oFolder) {
 						$oFolderCollection[$oFolder->FullName] = $oFolder;
 					}
 				}
+			} catch (\Throwable $e) {
+				// https://github.com/the-djmaze/snappymail/issues/1438
 			}
-			if (isset($oNamespaces->aShared[0])) {
+			if (isset($oNamespaces->aShared[0])) try {
 				$oCollection = $this->MailClient()->Folders($oNamespaces->aShared[0]['prefix'], '*', $HideUnsubscribed);
 				if ($oCollection) {
 					foreach ($oCollection as $oFolder) {
 						$oFolderCollection[$oFolder->FullName] = $oFolder;
 					}
 				}
+			} catch (\Throwable $e) {
+				// https://github.com/the-djmaze/snappymail/issues/1438
 			}
 		}
 
