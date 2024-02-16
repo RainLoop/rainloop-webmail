@@ -976,6 +976,9 @@ trait Messages
 		return $oMessage;
 	}
 
+	/**
+	 * called by DoSaveMessage and DoSendMessage
+	 */
 	private function buildMessage(Account $oAccount, bool $bWithDraftInfo = true) : \MailSo\Mime\Message
 	{
 		$oMessage = new \MailSo\Mime\Message();
@@ -1048,11 +1051,14 @@ trait Messages
 			$aSigned = \explode("\r\n\r\n", $sSigned, 2);
 //			$sBoundary = \preg_replace('/^.+boundary="([^"]+)".+$/Dsi', '$1', $aSigned[0]);
 			$sBoundary = $this->GetActionParam('boundary', '');
+//			\preg_match('/protocol="(application/[^"]+)"/', $aSigned[0], $match);
+//			$sProtocol = $match[1][0];
+			$sProtocol = 'application/pgp-signature';
 
 			$oPart = new MimePart;
 			$oPart->Headers->AddByName(
 				MimeEnumHeader::CONTENT_TYPE,
-				'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"; boundary="'.$sBoundary.'"'
+				'multipart/signed; micalg="pgp-sha256"; protocol="'.$sProtocol.'"; boundary="'.$sBoundary.'"'
 			);
 			$oPart->Body = $aSigned[1];
 			$oMessage->SubParts->append($oPart);
@@ -1176,8 +1182,9 @@ trait Messages
 			}
 		}
 
-		$sFingerprint = $this->GetActionParam('signFingerprint', '');
 		$sPassphrase = $this->GetActionParam('signPassphrase', '');
+
+		$sFingerprint = $this->GetActionParam('signFingerprint', '');
 		if ($sFingerprint) {
 			$GPG = $this->GnuPG();
 			$oBody = $oMessage->GetRootPart();
@@ -1216,13 +1223,53 @@ trait Messages
 			$oSignaturePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, '7Bit');
 			$oSignaturePart->Body = $sSignature;
 			$oPart->SubParts->append($oSignaturePart);
+		} else {
+			$sCertificate = $this->GetActionParam('signCertificate', '');
+			$sPrivateKey = $this->GetActionParam('signPrivateKey', '');
+			if ($sCertificate && $sPrivateKey) {
+				$oBody = $oMessage->GetRootPart();
+
+				$resource = $oBody->ToStream();
+				\MailSo\Base\StreamFilters\LineEndings::appendTo($resource);
+				$tmp = new \SnappyMail\File\Temporary;
+				$tmp->writeFromStream($resource);
+
+				$oBody->Body = null;
+				$oBody->SubParts->Clear();
+				$oMessage->SubParts->Clear();
+				$oMessage->Attachments()->Clear();
+
+				$SMIME = new \SnappyMail\SMime\OpenSSL;
+				$SMIME->setPrivateKey($sPrivateKey, $sPassphrase);
+				$sSignature = $SMIME->sign($tmp, $sCertificate);
+
+				if (!$sSignature) {
+					throw new \Exception('GnuPG sign() failed');
+				}
+
+				$oPart = new MimePart;
+				$oPart->Headers->AddByName(
+					MimeEnumHeader::CONTENT_TYPE,
+					'multipart/signed; micalg="sha-512"; protocol="application/pkcs7-signature"'
+				);
+				$oMessage->SubParts->append($oPart);
+
+				$fp = $tmp->fopen();
+				\rewind($fp);
+				$oBody->Raw = $fp;
+				$oPart->SubParts->append($oBody);
+
+				$oSignaturePart = new MimePart;
+				$oSignaturePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'application/pkcs7-signature; name="signature.p7s"');
+				$oSignaturePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, '7Bit');
+				$oSignaturePart->Body = $sSignature;
+				$oPart->SubParts->append($oSignaturePart);
+			}
 		}
 
 		$aFingerprints = \json_decode($this->GetActionParam('encryptFingerprints', ''), true);
 		if ($aFingerprints) {
-			$GPG = $this->GnuPG();
-			$oBody = $oMessage->GetRootPart();
-			$resource = $oBody->ToStream();
+			$resource = $oMessage->GetRootPart()->ToStream();
 			$fp = \fopen('php://temp', 'r+b');
 //			\stream_copy_to_stream($resource, $fp); // Fails
 			while (!\feof($resource)) \fwrite($fp, \fread($resource, 8192));
@@ -1230,11 +1277,30 @@ trait Messages
 			$oMessage->SubParts->Clear();
 			$oMessage->Attachments()->Clear();
 
+			$GPG = $this->GnuPG();
 			foreach ($aFingerprints as $sFingerprint) {
 				$GPG->addEncryptKey($sFingerprint);
 			}
-
 			$oMessage->addPgpEncrypted($GPG->encryptStream($fp));
+		} else {
+			$aCertificates = \json_decode($this->GetActionParam('encryptCertificates', ''), true);
+			if ($aCertificates) {
+				$tmp = new \SnappyMail\File\Temporary;
+				$tmp->writeFromStream($oMessage->GetRootPart()->ToStream());
+
+				$oMessage->SubParts->Clear();
+				$oMessage->Attachments()->Clear();
+
+//				$SMIME = new \SnappyMail\SMime(/*$homedir*/);
+				$SMIME = new \SnappyMail\SMime\OpenSSL;
+/*
+				foreach ($aCertificates as $sCertificate) {
+					$SMIME->addEncryptKey($sCertificate);
+				}
+*/
+				$sEncrypted = $SMIME->encrypt($tmp, $aCertificates);
+				$oMessage->addSMimepEncrypted($sEncrypted);
+			}
 		}
 
 		$this->Plugins()->RunHook('filter.build-message', array($oMessage));

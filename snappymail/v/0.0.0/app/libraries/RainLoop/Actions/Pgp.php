@@ -77,7 +77,7 @@ trait Pgp
 			// First try a symbolic link
 			$tmpdir = \sys_get_temp_dir() . '/snappymail';
 //			if (\RainLoop\Utils::inOpenBasedir($tmpdir) &&
-			is_dir($tmpdir) || \mkdir($tmpdir, 0700);
+			\is_dir($tmpdir) || \mkdir($tmpdir, 0700);
 			if (\is_dir($tmpdir) && \is_writable($tmpdir)) {
 				$link = $tmpdir . '/' . \md5($homedir);
 				if (\is_link($link) || \symlink($homedir, $link)) {
