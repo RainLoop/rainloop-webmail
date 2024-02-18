@@ -23,8 +23,9 @@
             "security_level": 1
         },
         "disabled_capabilities": [
-            "STATUS=SIZE",
-            "PREVIEW"
+            "METADATA",
+            "PREVIEW",
+            "STATUS=SIZE"
         ],
         "use_expunge_all_on_delete": false,
         "fast_simple_search": true,
