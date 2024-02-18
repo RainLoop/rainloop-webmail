@@ -223,7 +223,7 @@
 		"DISCARD_UNSAVED_DATA": "Slet ikke gemt data?",
 		"ATTACH_FILES": "Vedhæft filer",
 		"ATTACH_DROP_FILES_DESC": "Slip filer her",
-		"REPLY_MESSAGE_TITLE": "Den %DATE% klokken %TIME%, skrev %EMAIL%:",
+		"REPLY_MESSAGE_TITLE": "Den %DATETIME%, skrev %EMAIL%:",
 		"FORWARD_MESSAGE_TOP_TITLE": "-------- Videresendt meddelelse -------",
 		"FORWARD_MESSAGE_TOP_SENT": "Sendt",
 		"EMPTY_TO_ERROR_DESC": "Tilføj minimum en modtager",
