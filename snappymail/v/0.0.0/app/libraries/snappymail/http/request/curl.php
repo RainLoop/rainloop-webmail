@@ -51,15 +51,20 @@ class CURL extends \SnappyMail\HTTP\Request
 			\curl_setopt($c, CURLOPT_HTTPHEADER, $extra_headers);
 		}
 		if ($this->auth['user'] && $this->auth['type']) {
-			$auth = 0;
-			if ($this->auth['type'] & self::AUTH_BASIC) {
-				$auth |= CURLAUTH_BASIC;
+			if ($this->auth['type'] & self::AUTH_BEARER ) {
+				\curl_setopt($c, CURLOPT_HTTPAUTH, CURLAUTH_BEARER);
+				\curl_setopt($c, CURLOPT_XOAUTH2_BEARER, $this->auth['pass']);
+			} else {
+				$auth = 0;
+				if ($this->auth['type'] & self::AUTH_BASIC) {
+					$auth |= CURLAUTH_BASIC;
+				}
+				if ($this->auth['type'] & self::AUTH_DIGEST) {
+					$auth |= CURLAUTH_DIGEST;
+				}
+				\curl_setopt($c, CURLOPT_HTTPAUTH, $auth);
+				\curl_setopt($c, CURLOPT_USERPWD,  $this->auth['user'] . ':' . $this->auth['pass']);
 			}
-			if ($this->auth['type'] & self::AUTH_DIGEST) {
-				$auth |= CURLAUTH_DIGEST;
-			}
-			\curl_setopt($c, CURLOPT_HTTPAUTH, $auth);
-			\curl_setopt($c, CURLOPT_USERPWD,  $this->auth['user'] . ':' . $this->auth['pass']);
 		}
 		if ($this->proxy) {
 			\curl_setopt($c, CURLOPT_PROXY, $this->proxy);

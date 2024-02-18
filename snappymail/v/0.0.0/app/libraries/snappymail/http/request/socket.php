@@ -105,7 +105,7 @@ class Socket extends \SnappyMail\HTTP\Request
 					return $this->__doRequest($method, $request_url, $body, $extra_headers);
 				}
 				// Digest authentication
-				else if ($this->auth['type'] & self::AUTH_DIGEST && \preg_match("/WWW-Authenticate:\\s+Digest\\s+([^\\r\\n]*)/i", $data, $match)) {
+				if ($this->auth['type'] & self::AUTH_DIGEST && \preg_match("/WWW-Authenticate:\\s+Digest\\s+([^\\r\\n]*)/i", $data, $match)) {
 					$challenge = [];
 					foreach (\split(',', $match[1]) as $i) {
 						$ii = \split('=', \trim($i), 2);
@@ -134,6 +134,11 @@ class Socket extends \SnappyMail\HTTP\Request
 						. (empty($challenge['opaque']) ? '' : ', opaque="' . $challenge['opaque'] . '"')
 						. (empty($challenge['qop']) ? '' : ', qop="auth", nc=' . $nc . ', cnonce="' . $challenge['cnonce'] . '"');
 
+					\fclose($sock);
+					return $this->__doRequest($method, $request_url, $body, $extra_headers);
+				}
+				if ($this->auth['type'] & self::AUTH_BEARER) {
+					$extra_headers['Authorization'] = "Authorization: Bearer {$this->auth['pass']}";
 					\fclose($sock);
 					return $this->__doRequest($method, $request_url, $body, $extra_headers);
 				}

@@ -9,7 +9,8 @@ abstract class Request
 		 * Authentication
 		 */
 		AUTH_BASIC = 1,
-		AUTH_DIGEST = 2;
+		AUTH_DIGEST = 2,
+		AUTH_BEARER = 3;
 
 	public
 		$timeout = 5, // timeout in seconds.
