@@ -135,8 +135,8 @@ trait Folders
 			FolderStatus::UIDNEXT,
 			FolderStatus::UIDVALIDITY
 		);
-		// RFC 4551
-		if ($this->hasCapability('CONDSTORE')) {
+		// RFC 4551 or RFC 5162
+		if ($this->hasCapability('CONDSTORE') || $this->hasCapability('QRESYNC')) {
 			$aStatusItems[] = FolderStatus::HIGHESTMODSEQ;
 		}
 		// RFC 7889

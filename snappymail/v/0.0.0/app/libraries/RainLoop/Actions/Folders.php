@@ -68,6 +68,8 @@ trait Folders
 				}
 			} catch (\Throwable $e) {
 				// https://github.com/the-djmaze/snappymail/issues/1438
+				// $oAccount->Domain()->ImapSettings()->disabled_capabilities[] = 'NAMESPACE';
+				// $this->DomainProvider()->Save($oAccount->Domain());
 			}
 			if (isset($oNamespaces->aShared[0])) try {
 				$oCollection = $this->MailClient()->Folders($oNamespaces->aShared[0]['prefix'], '*', $HideUnsubscribed);
@@ -78,6 +80,8 @@ trait Folders
 				}
 			} catch (\Throwable $e) {
 				// https://github.com/the-djmaze/snappymail/issues/1438
+				// $oAccount->Domain()->ImapSettings()->disabled_capabilities[] = 'NAMESPACE';
+				// $this->DomainProvider()->Save($oAccount->Domain());
 			}
 		}
 
