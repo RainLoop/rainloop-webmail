@@ -79,10 +79,13 @@
 					}
 				}"></div>
 
-				<h4 data-i18n="POPUPS_DOMAIN/DISABLE_CAPABILITIES"></h4>
+				<h4>
+					<span data-i18n="POPUPS_DOMAIN/DISABLE_CAPABILITIES"></span>
+					<a style="margin-left:0.5em" href="https://github.com/the-djmaze/snappymail/wiki/IMAP-capabilities" target="_blank">ⓘ</a>
+				</h4>
 
-				<div data-bind="foreach: imapCapabilities">
-					<div style="display: inline-block; width: 33%; min-width: 16em">
+				<div data-bind="foreach: imapCapabilities" style="columns: 16em auto">
+					<div>
 						<label class="e-component e-checkbox material-design">
 							<div>
 								<input type="checkbox" data-bind="checked: $parent.imapDisabled_capabilities,  value: $data"/>

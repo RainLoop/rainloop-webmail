@@ -332,14 +332,15 @@ export class DomainPopupView extends AbstractViewPopup {
 		this.clearTesting();
 		this.edit(false);
 		this.imapCapabilities([
+			'BINARY',
 			'LIST-STATUS',
 			'METADATA',
 			'MOVE',
+			'NAMESPACE',
+			'PREVIEW',
 			'SORT',
-			'THREAD',
-			'BINARY',
 			'STATUS=SIZE',
-			'PREVIEW'
+			'THREAD'
 		]);
 		this.imapDisabled_capabilities(['PREVIEW','STATUS=SIZE']);
 		forEachObjectEntry(domainDefaults, (key, value) => this[key](value));
