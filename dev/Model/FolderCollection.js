@@ -488,8 +488,9 @@ export class FolderModel extends AbstractModel {
 	rename(nameToEdit, parentName) {
 		nameToEdit = nameToEdit.trim();
 		const folder = this,
+			parentFolder = getFolderFromCacheList(parentName),
 			oldFullname = folder.fullName,
-			newFullname = parentName + folder.delimiter + nameToEdit;
+			newFullname = (parentFolder ? (parentName + parentFolder.delimiter) : '') + nameToEdit;
 		if (nameToEdit && newFullname != oldFullname) {
 			Remote.abort('Folders').post('FolderRename', FolderUserStore.foldersRenaming, {
 					oldName: oldFullname,
@@ -508,8 +509,7 @@ export class FolderModel extends AbstractModel {
 					} else {
 						removeFolderFromCacheList(folder.fullName);
 						setFolder(folder);
-						const parent = getFolderFromCacheList(folder.parentName);
-						sortFolders(parent ? parent.subFolders : FolderUserStore.folderList);
+						sortFolders(parentFolder ? parentFolder.subFolders : FolderUserStore.folderList);
 					}
 				})
 				.catch(error => {
