@@ -100,7 +100,7 @@
 						{
 							'msgHash': msg.requestHash,
 							'folder': folder,
-							'filename': msg.subject() + '-' + msg.requestHash
+							'filename': msg.subject()
 						}
 					);
 				});

@@ -4,8 +4,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Nextcloud',
-		VERSION = '2.30',
-		RELEASE  = '2024-02-08',
+		VERSION = '2.31',
+		RELEASE  = '2024-02-18',
 		CATEGORY = 'Integrations',
 		DESCRIPTION = 'Integrate with Nextcloud v20+',
 		REQUIRED = '2.34.0';
@@ -119,7 +119,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		$sSaveFolder = \ltrim($this->jsonParam('folder', ''), '/');
 //		$aValues = \RainLoop\Api::Actions()->decodeRawKey($this->jsonParam('msgHash', ''));
-		$aValues = \json_decode(\MailSo\Base\Utils::UrlSafeBase64Decode($this->jsonParam('msgHash', '')), true);
+		$msgHash = $this->jsonParam('msgHash', '');
+		$aValues = \json_decode(\MailSo\Base\Utils::UrlSafeBase64Decode($msgHash), true);
 		$aResult = [
 			'folder' => '',
 			'filename' => '',
@@ -139,7 +140,10 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 				$oFiles->is_dir($sSaveFolder) || $oFiles->mkdir($sSaveFolder);
 			}
 			$aResult['folder'] = $sSaveFolder;
-			$aResult['filename'] = ($this->jsonParam('filename', '') ?: \date('YmdHis')) . '.eml';
+			$aResult['filename'] = \MailSo\Base\Utils::SecureFileName(
+				\mb_substr($this->jsonParam('filename', '') ?: \date('YmdHis'), 0, 100)
+			) . '.' . \md5($msgHash) . '.eml';
+
 
 			$oMailClient->MessageMimeStream(
 				function ($rResource) use ($oFiles, $aResult) {
