@@ -24,8 +24,11 @@ class Identity implements \JsonSerializable
 
 	private bool $bSignatureInsertBefore = false;
 
-	private bool $bPgpEncrypt = false;
-	private bool $bPgpSign = false;
+	private bool $pgpEncrypt = false;
+	private bool $pgpSign = false;
+
+	private string $SMimeKey = '';
+	private string $SMimeCertificate = '';
 
 	function __construct(string $sId = '', string $sEmail = '')
 	{
@@ -95,8 +98,10 @@ class Identity implements \JsonSerializable
 			$this->sSignature = !empty($aData['Signature']) ? $aData['Signature'] : '';
 			$this->bSignatureInsertBefore = !empty($aData['SignatureInsertBefore']);
 			$this->sSentFolder = isset($aData['sentFolder']) ? $aData['sentFolder'] : '';
-			$this->bPgpEncrypt = !empty($aData['pgpEncrypt']);
-			$this->bPgpSign = !empty($aData['pgpSign']);
+			$this->pgpEncrypt = !empty($aData['pgpEncrypt']);
+			$this->pgpSign = !empty($aData['pgpSign']);
+			$this->SMimeKey = isset($aData['smimeKey']) ? $aData['smimeKey'] : '';
+			$this->SMimeCertificate = isset($aData['smimeCertificate']) ? $aData['smimeCertificate'] : '';
 			return true;
 		}
 
@@ -116,8 +121,10 @@ class Identity implements \JsonSerializable
 			'Signature' => $this->sSignature,
 			'SignatureInsertBefore' => $this->bSignatureInsertBefore,
 			'sentFolder' => $this->sSentFolder,
-			'pgpEncrypt' => $this->bPgpEncrypt,
-			'pgpSign' => $this->bPgpSign
+			'pgpEncrypt' => $this->pgpEncrypt,
+			'pgpSign' => $this->pgpSign,
+			'smimeKey' => $this->SMimeKey,
+			'smimeCertificate' => $this->SMimeCertificate
 		);
 	}
 
@@ -135,8 +142,10 @@ class Identity implements \JsonSerializable
 			'signature' => $this->sSignature,
 			'signatureInsertBefore' => $this->bSignatureInsertBefore,
 			'sentFolder' => $this->sSentFolder,
-			'pgpEncrypt' => $this->bPgpEncrypt,
-			'pgpSign' => $this->bPgpSign
+			'pgpEncrypt' => $this->pgpEncrypt,
+			'pgpSign' => $this->pgpSign,
+			'smimeKey' => $this->SMimeKey,
+			'smimeCertificate' => $this->SMimeCertificate
 		);
 	}
 

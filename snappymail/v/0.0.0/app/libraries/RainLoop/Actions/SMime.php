@@ -29,7 +29,7 @@ trait SMime
 			\RainLoop\Providers\Storage\Enumerations\StorageType::ROOT
 		), '/') . '/.smime';
 */
-		$sEmail = $this->GetActionParam('Email', '') ?: $oAccount->Email();
+		$sEmail = $this->GetActionParam('email', '') ?: $oAccount->Email();
 
 		$cert = new Certificate();
 		$cert->distinguishedName['emailAddress'] = $sEmail;

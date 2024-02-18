@@ -25,6 +25,9 @@ export class IdentityModel extends AbstractModel {
 			pgpSign: false,
 			pgpEncrypt: false,
 
+			smimeKey: '',
+			smimeCertificate: '',
+
 			askDelete: false
 		});
 	}

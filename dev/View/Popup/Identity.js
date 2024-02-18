@@ -38,6 +38,20 @@ export class IdentityPopupView extends AbstractViewPopup {
 			)
 		);
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
+
+		this.createSelfSigned = this.createSelfSigned.bind(this);
+	}
+
+	createSelfSigned() {
+		let identity = this.identity();
+		Remote.request('CreateSMimeCertificate', (iError, oData) => {
+			if (oData.Result.x509) {
+				identity.smimeKey(oData.Result.pkey);
+				identity.smimeCertificate(oData.Result.x509);
+			}
+		}, {
+			email: identity.email()
+		});
 	}
 
 	submitForm(form) {
