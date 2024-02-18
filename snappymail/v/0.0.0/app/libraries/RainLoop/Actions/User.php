@@ -17,6 +17,7 @@ trait User
 	use Messages;
 	use Attachments;
 	use Pgp;
+//	use SMime;
 
 	private ?Suggestions $oSuggestionsProvider = null;
 
