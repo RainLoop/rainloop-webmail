@@ -10,6 +10,7 @@ use SnappyMail\File\Temporary;
 
 class OpenSSL
 {
+	private string $homedir;
 	private array $headers = [];
 	private int $flags = 0;
 	private int $cipher_algo = \OPENSSL_CIPHER_AES_128_CBC;
@@ -18,6 +19,61 @@ class OpenSSL
 	// Used for sign and decrypt
 	private $certificate; // OpenSSLCertificate|array|string
 	private $privateKey; // OpenSSLAsymmetricKey|OpenSSLCertificate|array|string
+
+	function __construct(string $homedir)
+	{
+		$this->homedir = $homedir;
+	}
+
+	public function certificates() : array
+	{
+		$keys = [];
+		foreach (\glob("{$this->homedir}/*.key") as $file) {
+			$data = \file_get_contents($file);
+			// Can't check ENCRYPTED PRIVATE KEY
+			if (\str_contains($data, '-----BEGIN PRIVATE KEY-----')) {
+				$keys[] = [\basename($file), $data];
+			}
+		}
+		$result = [];
+		foreach (\glob("{$this->homedir}/*.crt") as $file) {
+			$name = \basename($file);
+			$certificate = \file_get_contents($file);
+			$data = \openssl_x509_parse($certificate);
+			if ($data) {
+				$short = [
+					'file' => \basename($file),
+					'CN' => $data['subject']['CN'],
+					'emailAddress' => $data['subject']['emailAddress'],
+					'validTo' => \gmdate('Y-m-d\\TH:i:s\\Z', $data['validTo_time_t']),
+					'smimesign' => false,
+					'smimeencrypt' => false,
+					'privateKey' => null // not found or encrypted
+				];
+				foreach ($data['purposes'] as $purpose) {
+					if ('smimesign' === $purpose[2] || 'smimeencrypt' === $purpose[2]) {
+						// [general availability, tested purpose]
+						$short[$purpose[2]] = $purpose[0] || $purpose[1];
+					}
+				}
+				foreach ($keys as $key) {
+					if (\openssl_x509_check_private_key($certificate, $key[1])) {
+						$short['privateKey'] = $key[0];
+						break;
+					}
+				}
+				$result[] = $short;
+			} else {
+				\error_log("OpenSSL parse({$file}): " . \openssl_error_string());
+			}
+		}
+		return $result;
+	}
+
+	public function privateKeys() : array
+	{
+//		\glob("{$this->homedir}/*.key");
+	}
 
 	public static function isSupported() : bool
 	{
@@ -110,7 +166,7 @@ class OpenSSL
 			$this->certificate,
 			$this->privateKey,
 			$this->headers,
-			$detached ? \PKCS7_DETACHED | \PKCS7_BINARY : \PKCS7_BINARY, // | PKCS7_NOCERTS | PKCS7_NOATTR
+			$detached ? \PKCS7_DETACHED | \PKCS7_BINARY : 0, // | PKCS7_NOCERTS | PKCS7_NOATTR
 			$this->untrusted_certificates_filename
 		)) {
 			throw new \RuntimeException('OpenSSL sign: ' . \openssl_error_string());
@@ -153,16 +209,20 @@ class OpenSSL
 		throw new \RuntimeException('OpenSSL sign: failed to find p7s');
 	}
 
-	public function verify(/*string|Temporary*/$input, ?string $signers_certificates_filename = null, bool $returnBody)
+	/**
+	 * $opaque = true, when the message is not detached
+	 */
+	public function verify(/*string|Temporary*/$input, ?string $signers_certificates_filename = null, bool $opaque = false)
 	{
 		if (\is_string($input)) {
 			$tmp = new Temporary('smimein-');
 			if (!$tmp->putContents($input)) {
 				return null;
 			}
+			$opaque |= \str_contains($input, 'application/pkcs7-mime') || \str_contains($input, 'application/x-pkcs7-mime');
 			$input = $tmp;
 		}
-		$output = $returnBody ? new Temporary('smimeout-') : null;
+		$output = $opaque ? new Temporary('smimeout-') : null;
 		if (true !== \openssl_pkcs7_verify(
 			$input->filename(),
 //			$flags = 0, // \PKCS7_NOVERIFY | \PKCS7_NOCHAIN | \PKCS7_NOSIGS

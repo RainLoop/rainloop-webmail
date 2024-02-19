@@ -15,6 +15,8 @@ import { showScreenPopup } from 'Knoin/Knoin';
 import { OpenPgpImportPopupView } from 'View/Popup/OpenPgpImport';
 import { OpenPgpGeneratePopupView } from 'View/Popup/OpenPgpGenerate';
 
+import { SMimeUserStore } from 'Stores/User/SMime';
+
 import Remote from 'Remote/User/Fetch';
 
 export class UserSettingsSecurity extends AbstractViewSettings {
@@ -42,6 +44,8 @@ export class UserSettingsSecurity extends AbstractViewSettings {
 
 		this.openpgpkeysPublic = OpenPGPUserStore.publicKeys;
 		this.openpgpkeysPrivate = OpenPGPUserStore.privateKeys;
+
+		this.smimeCertificates = SMimeUserStore;
 
 		this.canOpenPGP = SettingsCapa('OpenPGP');
 		this.canGnuPG = GnuPGUserStore.isSupported();

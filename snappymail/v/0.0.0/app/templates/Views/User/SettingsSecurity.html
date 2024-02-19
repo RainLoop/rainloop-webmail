@@ -23,8 +23,8 @@
 <!-- /ko -->
 
 <!-- ko if: canGnuPG -->
-<details>
-<summary class="legend">GnuPG</summary>
+<details style="margin:1em 0">
+<summary style="font-size:larger;font-weight:bold">GnuPG</summary>
 <table class="table table-hover list-table">
 	<tbody><tr><th colspan="4" data-i18n="SETTINGS_OPENPGP/TITLE_PRIVATE">Private keys</th></tr></tbody>
 	<tbody data-bind="foreach: gnupgPrivateKeys, i18nUpdate: gnupgPrivateKeys">
@@ -71,8 +71,8 @@
 <!-- /ko -->
 
 <!-- ko if: canOpenPGP -->
-<details>
-<summary class="legend">OpenPGP.js</summary>
+<details style="margin:1em 0">
+<summary style="font-size:larger;font-weight:bold">OpenPGP.js</summary>
 <table class="table table-hover list-table">
 	<tbody><tr><th colspan="4" data-i18n="SETTINGS_OPENPGP/TITLE_PRIVATE">Private keys</th></tr></tbody>
 	<tbody data-bind="foreach: openpgpkeysPrivate, i18nUpdate: openpgpkeysPrivate">
@@ -117,8 +117,36 @@
 </details>
 <!-- /ko -->
 
-<details>
-<summary class="legend">Mailvelope</summary>
+<details style="margin:1em 0">
+<summary style="font-size:larger;font-weight:bold">Mailvelope</summary>
 <a data-bind="visible: !canMailvelope" href="https://mailvelope.com/en/help" target="_blank" data-i18n="SETTINGS_OPENPGP/GET_MAILVELOPE"></a>
 <div id="mailvelope-settings" style="height:40em" data-bind="visible: canMailvelope"></div>
+</details>
+
+<details>
+<summary class="legend">S/MIME Certificates</summary>
+<table class="table table-hover list-table">
+	<tbody data-bind="foreach: smimeCertificates">
+		<tr>
+			<td>
+				<span data-bind="visible: smimesign" class="fontastic" data-i18n="[title]CRYPTO/VERIFY">✔</span>
+				<span data-bind="visible: smimeencrypt" class="fontastic" data-i18n="[title]CRYPTO/ENCRYPT">🔒</span>
+				<span class="key-name" data-bind="text: CN"></span>
+				<span class="key-user" data-bind="text: emailAddress"></span>
+			</td>
+			<td>
+				<time data-time-format="FULL" data-bind="attr:{datetime:validTo}"></time>
+			</td>
+<!--
+			<td>
+				<a class="btn btn-small btn-danger button-confirm-delete" data-bind="css: {'delete-access': askDelete()}, click: remove"
+					data-i18n="GLOBAL/ARE_YOU_SURE"></a>
+			</td>
+			<td>
+				<span class="delete-key fontastic" data-bind="visible: !askDelete(), click: openForDeletion">🗑</span>
+			</td>
+-->
+		</tr>
+	</tbody>
+</table>
 </details>

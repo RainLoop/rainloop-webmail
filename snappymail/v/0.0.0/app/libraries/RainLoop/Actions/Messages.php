@@ -1124,7 +1124,7 @@ trait Messages
 
 				$detached = true;
 
-				$SMIME = new \SnappyMail\SMime\OpenSSL;
+				$SMIME = $this->SMIME();
 				$SMIME->setCertificate($sCertificate);
 				$SMIME->setPrivateKey($sPrivateKey, $sPassphrase);
 				$sSignature = $SMIME->sign($tmp, $detached);
@@ -1186,8 +1186,7 @@ trait Messages
 				$oMessage->SubParts->Clear();
 				$oMessage->Attachments()->Clear();
 
-//				$SMIME = new \SnappyMail\SMime(/*$homedir*/);
-				$SMIME = new \SnappyMail\SMime\OpenSSL;
+				$SMIME = $this->SMIME();
 /*
 				foreach ($aCertificates as $sCertificate) {
 					$SMIME->addEncryptKey($sCertificate);
