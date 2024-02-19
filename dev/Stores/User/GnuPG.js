@@ -206,7 +206,7 @@ export const GnuPGUserStore = new class {
 				data.bodyPart = data.bodyPart.raw;
 				data.sigPart = data.sigPart.body;
 			}
-			let response = await Remote.post('MessagePgpVerify', null, data);
+			let response = await Remote.post('PgpVerifyMessage', null, data);
 			if (response?.Result) {
 				return {
 					fingerprint: response.Result.fingerprint,

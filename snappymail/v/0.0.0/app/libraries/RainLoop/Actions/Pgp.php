@@ -10,10 +10,6 @@ use MailSo\Mime\Enumerations\Header as MimeEnumHeader;
 
 trait Pgp
 {
-	/**
-	 * Also see trait Messages::DoMessagePgpVerify
-	 */
-
 	public function DoGetPGPKeys() : array
 	{
 		$result = [];
@@ -295,7 +291,7 @@ trait Pgp
 	/**
 	 * https://datatracker.ietf.org/doc/html/rfc3156#section-5
 	 */
-	public function DoMessagePgpVerify() : array
+	public function DoPgpVerifyMessage() : array
 	{
 		$sFolderName = $this->GetActionParam('folder', '');
 		$iUid = (int) $this->GetActionParam('uid', 0);

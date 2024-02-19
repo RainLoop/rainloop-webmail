@@ -239,7 +239,7 @@ export const OpenPGPUserStore = new class {
 			data.tryGnuPG = 0;
 			let response;
 			if (data.sigPartId) {
-				response = await Remote.post('MessagePgpVerify', null, data);
+				response = await Remote.post('PgpVerifyMessage', null, data);
 			} else if (data.bodyPart) {
 				// MimePart
 				response = { Result: { text: data.bodyPart.raw, signature: data.sigPart.body } };
