@@ -1231,7 +1231,7 @@ trait Messages
 
 				$resource = $oBody->ToStream();
 				\MailSo\Base\StreamFilters\LineEndings::appendTo($resource);
-				$tmp = new \SnappyMail\File\Temporary;
+				$tmp = new \SnappyMail\File\Temporary('mimepart');
 				$tmp->writeFromStream($resource);
 
 				$oBody->Body = null;
@@ -1244,7 +1244,7 @@ trait Messages
 				$sSignature = $SMIME->sign($tmp, $sCertificate);
 
 				if (!$sSignature) {
-					throw new \Exception('GnuPG sign() failed');
+					throw new \Exception('S/MIME sign() failed');
 				}
 
 				$oPart = new MimePart;
@@ -1261,7 +1261,7 @@ trait Messages
 
 				$oSignaturePart = new MimePart;
 				$oSignaturePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'application/pkcs7-signature; name="signature.p7s"');
-				$oSignaturePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, '7Bit');
+				$oSignaturePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, 'base64');
 				$oSignaturePart->Body = $sSignature;
 				$oPart->SubParts->append($oSignaturePart);
 			}
@@ -1285,7 +1285,7 @@ trait Messages
 		} else {
 			$aCertificates = \json_decode($this->GetActionParam('encryptCertificates', ''), true);
 			if ($aCertificates) {
-				$tmp = new \SnappyMail\File\Temporary;
+				$tmp = new \SnappyMail\File\Temporary('mimepart');
 				$tmp->writeFromStream($oMessage->GetRootPart()->ToStream());
 
 				$oMessage->SubParts->Clear();

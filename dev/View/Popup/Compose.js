@@ -250,11 +250,15 @@ export class ComposePopupView extends AbstractViewPopup {
 			showBcc: false,
 			showReplyTo: false,
 
-			pgpSign: false,
+			doSign: false,
+			doEncrypt: false,
+
 			canPgpSign: false,
-			pgpEncrypt: false,
 			canPgpEncrypt: false,
 			canMailvelope: false,
+
+			canSMimeSign: false,
+			canSMimeEncrypt: false,
 
 			draftsFolder: '',
 			draftUid: 0,
@@ -330,6 +334,9 @@ export class ComposePopupView extends AbstractViewPopup {
 			attachmentsInProcessCount: () => this.attachmentsInProcess.length,
 			isDraft: () => this.draftsFolder() && this.draftUid(),
 
+			canSign: () => this.canPgpSign() | this.canSMimeSign(),
+			canEncrypt: () => this.canPgpEncrypt() | this.canSMimeEncrypt(),
+
 			identitiesOptions: () =>
 				IdentityUserStore.map(item => ({
 					item: item,
@@ -349,9 +356,11 @@ export class ComposePopupView extends AbstractViewPopup {
 
 			currentIdentity: value => {
 				if (value) {
+					const smime = !!(value.smimeKey() && value.smimeCertificate());
 					this.from(value.formattedName());
-					this.pgpEncrypt(value.pgpEncrypt()/* || SettingsUserStore.pgpEncrypt()*/);
-					this.pgpSign(value.pgpSign()/* || SettingsUserStore.pgpSign()*/);
+					this.doEncrypt(value.pgpEncrypt()/* || SettingsUserStore.pgpEncrypt()*/);
+					this.doSign(smime || value.pgpSign()/* || SettingsUserStore.pgpSign()*/);
+					this.canSMimeSign(smime);
 				}
 			},
 
@@ -361,9 +370,9 @@ export class ComposePopupView extends AbstractViewPopup {
 				value && PgpUserStore.getKeyForSigning(value).then(result => {
 					console.log({
 						email: value,
-						canPgpSign:!!result
+						canPgpSign:result
 					});
-					this.canPgpSign(!!result)
+					this.canPgpSign(result)
 				});
 				this.initPgpEncrypt();
 			},
@@ -426,7 +435,7 @@ export class ComposePopupView extends AbstractViewPopup {
 						case 'K': quota *= 1024;
 					}
 					// Issue: can't select signing key
-//					this.pgpSign(this.pgpSign() || confirm('Sign this message?'));
+//					this.doSign(this.doSign() || confirm('Sign this message?'));
 					mailvelope.createEditorContainer('#mailvelope-editor', PgpUserStore.mailvelopeKeyring, {
 						// https://mailvelope.github.io/mailvelope/global.html#EditorContainerOptions
 						quota: Math.max(2048, (quota / 1024)) - 48, // (text + attachments) limit in kilobytes
@@ -438,7 +447,7 @@ export class ComposePopupView extends AbstractViewPopup {
 						quotedMailHeader: '', // header to be added before the quoted mail
 						keepAttachments: false, // add attachments of quotedMail to editor (default: false)
 						// Issue: can't select signing key
-						signMsg: this.pgpSign()
+						signMsg: this.doSign()
 */
 					}).then(editor => this.mailvelope = editor);
 				}
@@ -1338,8 +1347,8 @@ export class ComposePopupView extends AbstractViewPopup {
 		this.showBcc(false);
 		this.showReplyTo(false);
 
-		this.pgpSign(SettingsUserStore.pgpSign());
-		this.pgpEncrypt(SettingsUserStore.pgpEncrypt());
+		this.doSign(SettingsUserStore.pgpSign());
+		this.doEncrypt(SettingsUserStore.pgpEncrypt());
 
 		this.attachments([]);
 
@@ -1449,8 +1458,8 @@ export class ComposePopupView extends AbstractViewPopup {
 				linkedData: []
 			},
 			recipients = draft ? [identity.email()] : this.allRecipients(),
-			sign = !draft && this.pgpSign() && this.canPgpSign(),
-			encrypt = this.pgpEncrypt() && this.canPgpEncrypt(),
+			sign = !draft && this.doSign() && (this.canPgpSign() || this.canSMimeSign()),
+			encrypt = this.doEncrypt() && (this.canPgpEncrypt() || this.canSMimeEncrypt()),
 			isHtml = this.oEditor.isHtml();
 
 		if (isHtml) {
@@ -1497,30 +1506,37 @@ export class ComposePopupView extends AbstractViewPopup {
 				alternative.children.push(data);
 				data = alternative;
 			}
-			if (!draft && sign?.[1]) {
-				if ('openpgp' == sign[0]) {
-					// Doesn't sign attachments
-					params.html = params.plain = '';
-					let signed = new MimePart;
-					signed.headers['Content-Type'] =
-						'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"';
-					signed.headers['Content-Transfer-Encoding'] = '7Bit';
-					signed.children.push(data);
-					let signature = new MimePart;
-					signature.headers['Content-Type'] = 'application/pgp-signature; name="signature.asc"';
-					signature.headers['Content-Transfer-Encoding'] = '7Bit';
-					signature.body = await OpenPGPUserStore.sign(data.toString(), sign[1], 1);
-					signed.children.push(signature);
-					params.signed = signed.toString();
-					params.boundary = signed.boundary;
-					data = signed;
-				} else if ('gnupg' == sign[0]) {
-					// TODO: sign in PHP fails
-//					params.signData = data.toString();
-					params.signFingerprint = sign[1].fingerprint;
-					params.signPassphrase = await GnuPGUserStore.sign(sign[1]);
-				} else {
-					throw 'Signing with ' + sign[0] + ' not yet implemented';
+			if (sign) {
+				if (sign?.[1]) {
+					if ('openpgp' == sign[0]) {
+						// Doesn't sign attachments
+						params.html = params.plain = '';
+						let signed = new MimePart;
+						signed.headers['Content-Type'] =
+							'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"';
+						signed.headers['Content-Transfer-Encoding'] = '7Bit';
+						signed.children.push(data);
+						let signature = new MimePart;
+						signature.headers['Content-Type'] = 'application/pgp-signature; name="signature.asc"';
+						signature.headers['Content-Transfer-Encoding'] = '7Bit';
+						signature.body = await OpenPGPUserStore.sign(data.toString(), sign[1], 1);
+						signed.children.push(signature);
+						params.signed = signed.toString();
+						params.boundary = signed.boundary;
+						data = signed;
+					} else if ('gnupg' == sign[0]) {
+						// TODO: sign in PHP fails
+	//					params.signData = data.toString();
+						params.signFingerprint = sign[1].fingerprint;
+						params.signPassphrase = await GnuPGUserStore.sign(sign[1]);
+					} else {
+						throw 'Signing with ' + sign[0] + ' not yet implemented';
+					}
+				} else if (this.canSMimeSign()) {
+					params.signCertificate = identity.smimeCertificate();
+					params.signPrivateKey = identity.smimeKey();
+					const pass = await AskPopupView.password('S/MIME key', 'OPENPGP/LABEL_SIGN');
+					params.signPassphrase = pass?.password;
 				}
 			}
 			if (encrypt) {
@@ -1534,6 +1550,9 @@ export class ComposePopupView extends AbstractViewPopup {
 				} else if ('gnupg' == encrypt) {
 					// Does encrypt attachments
 					params.encryptFingerprints = JSON.stringify(GnuPGUserStore.getPublicKeyFingerprints(recipients));
+//				} else {
+//					// S/MIME
+//					params.encryptCertificates = '';
 				} else {
 					throw 'Encryption with ' + encrypt + ' not yet implemented';
 				}

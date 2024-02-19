@@ -6,6 +6,8 @@ class Certificate
 {
 	public
 		$x509 = null,
+		$pkey = null,
+
 		$digest = 'sha256',
 		$cipher = \OPENSSL_CIPHER_AES_256_CBC,
 		$keyBits = 4096,
@@ -32,10 +34,17 @@ class Certificate
 	 * A string having the format file://path/to/cert.pem; the named file must contain a PEM encoded certificate
 	 * A string containing the content of a certificate, PEM encoded, may start with -----BEGIN CERTIFICATE-----
 	 */
-	function __construct($x509cert = null)
+	function __construct($x509cert = null, $privateKey = null)
 	{
 		if ($x509cert) {
-			$this->x509 = \openssl_x509_read($x509cert);
+			$x509cert = \openssl_x509_read($x509cert);
+			if (!$x509cert) {
+				throw new \RuntimeException('OpenSSL x509: ' . \openssl_error_string());
+			}
+			$this->x509 = $x509cert;
+			if ($privateKey && \openssl_x509_check_private_key($this->x509, $privateKey)) {
+				$this->pkey = $privateKey;
+			}
 		}
 	}
 

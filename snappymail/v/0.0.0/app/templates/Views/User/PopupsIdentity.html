@@ -55,40 +55,37 @@
 		<input type="radio" name="identitytabs" id="tab-identity-crypto">
 		<label data-i18n="CONTACTS/TAB_CRYPTO" for="tab-identity-crypto" role="tab" aria-selected="false" aria-controls="panel3" tabindex="0"></label>
 		<div class="form-horizontal tab-content" role="tabpanel" aria-hidden="false">
-			<details>
-				<summary><strong>PGP</strong></summary>
-				<div class="control-group">
-					<div data-bind="component: {
-						name: 'Checkbox',
-						params: {
-							label: 'OPENPGP/LABEL_SIGN',
-							value: pgpSign,
-							name: 'pgpSign'
-						}
-					}"></div>
-				</div>
-				<div class="control-group">
-					<div data-bind="component: {
-						name: 'Checkbox',
-						params: {
-							label: 'OPENPGP/LABEL_ENCRYPT',
-							value: pgpEncrypt,
-							name: 'pgpEncrypt'
-						}
-					}"></div>
-				</div>
+			<div class="control-group">
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'OPENPGP/LABEL_SIGN',
+						value: pgpSign,
+						name: 'pgpSign'
+					}
+				}"></div>
+			</div>
+			<div class="control-group">
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'OPENPGP/LABEL_ENCRYPT',
+						value: pgpEncrypt,
+						name: 'pgpEncrypt'
+					}
+				}"></div>
+			</div>
 <!--
-				<div class="control-group">
-					<label data-i18n="OPENPGP/LABEL_ENCRYPT"></label>
-					<select name="PgpEncrypt" data-bind="value: pgpEncrypt">
-						<option value="Ask" data-i18n="CONTACTS/ASK"></option>
-						<option value="Never" data-i18n="CONTACTS/NEVER"></option>
-						<option value="Always" data-i18n="CONTACTS/ALWAYS"></option>
-						<option value="IfPossible" data-i18n="CONTACTS/ALWAYS_IF_POSSIBLE"></option>
-					</select>
-				</div>
+			<div class="control-group">
+				<label data-i18n="OPENPGP/LABEL_ENCRYPT"></label>
+				<select name="PgpEncrypt" data-bind="value: pgpEncrypt">
+					<option value="Ask" data-i18n="CONTACTS/ASK"></option>
+					<option value="Never" data-i18n="CONTACTS/NEVER"></option>
+					<option value="Always" data-i18n="CONTACTS/ALWAYS"></option>
+					<option value="IfPossible" data-i18n="CONTACTS/ALWAYS_IF_POSSIBLE"></option>
+				</select>
+			</div>
 -->
-			</details>
 			<details>
 				<summary><strong>S/MIME</strong></summary>
 				<div class="control-group">

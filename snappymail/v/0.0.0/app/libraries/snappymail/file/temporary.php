@@ -4,7 +4,7 @@ namespace SnappyMail\File;
 
 class Temporary
 {
-	protected static string $filename = '';
+	protected string $filename = '';
 
 	function __construct(string $name, bool $prefix = true)
 	{
@@ -15,7 +15,7 @@ class Temporary
 			throw new \Exception("Failed to create directory {$tmpdir}");
 		}
 		if (!\is_writable($tmpdir)) {
-			throw new \Exception("Failed to access directory {$tmpdir}");
+//			throw new \Exception("Failed to access directory {$tmpdir}");
 		}
 		if ($prefix) {
 			$this->filename = \tempnam($tmpdir, $name);
@@ -42,10 +42,10 @@ class Temporary
 	private $fp = null;
 	public function fopen()/* : resource|false*/
 	{
-		if (!$fp) {
-			$fp = \fopen($this->filename, 'r+b');
+		if (!$this->fp) {
+			$this->fp = \fopen($this->filename, 'r+b');
 		}
-		return $fp;
+		return $this->fp;
 	}
 
 	public function writeFromStream(/*resource*/ $from)/* : int|false*/

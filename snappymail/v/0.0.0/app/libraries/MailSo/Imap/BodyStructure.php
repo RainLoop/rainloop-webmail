@@ -11,6 +11,8 @@
 
 namespace MailSo\Imap;
 
+use MailSo\Mime\Enumerations\ContentType;
+
 /**
  * @category MailSo
  * @package Imap
@@ -165,10 +167,10 @@ class BodyStructure implements \JsonSerializable
 	{
 		return ('multipart/signed' === $this->sContentType
 			&& !empty($this->aContentTypeParams['protocol'])
-			&& 'application/pkcs7-signature' === \strtolower(\trim($this->aContentTypeParams['protocol']))
+			&& ContentType::isPkcs7Signature(\strtolower(\trim($this->aContentTypeParams['protocol'])))
 			// The multipart/signed body MUST consist of exactly two parts.
 			&& 2 === \count($this->aSubParts)
-			&& 'application/pkcs7-signature' === $this->aSubParts[1]->ContentType()
+			&& ContentType::isPkcs7Signature($this->aSubParts[1]->ContentType())
 		) || ('application/pkcs7-mime' === $this->sContentType
 			&& !empty($this->aContentTypeParams['smime-type'])
 			&& 'signed-data' === \strtolower(\trim($this->aContentTypeParams['smime-type']))

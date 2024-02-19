@@ -24,6 +24,9 @@ class OpenSSL
 	) : void
 	{
 		$this->private_key = \openssl_pkey_get_private($private_key, $passphrase);
+		if (!$this->private_key) {
+			throw new \RuntimeException('OpenSSL setPrivateKey: ' . \openssl_error_string());
+		}
 	}
 
 	public function decrypt(string $data, $certificate = null, $private_key = null) : ?string
@@ -67,31 +70,35 @@ class OpenSSL
 			}
 		}
 		$output = new Temporary('smimeout-');
-		if (!$input->putContents($data) || !\openssl_pkcs7_sign(
+		if (!\openssl_pkcs7_sign(
 			$input->filename(),
 			$output->filename(),
 			$certificate ?: $this->certificate, // \openssl_pkey_get_public();
 			$private_key ?: $this->private_key, // \openssl_pkey_get_private($private_key, ?string $passphrase = null);
 			$this->headers,
-			\PKCS7_DETACHED, // | PKCS7_NOCERTS | PKCS7_NOATTR
+			\PKCS7_DETACHED | \PKCS7_BINARY, // | PKCS7_NOCERTS | PKCS7_NOATTR
 			$this->untrusted_certificates_filename
 		)) {
-			return null;
+			throw new \RuntimeException('OpenSSL sign: ' . \openssl_error_string());
 		}
-/*
+
 		$body = $output->getContents();
-		// The message returned by openssl contains both headers and body, so need to split them up
-		$parts = explode("\n\n", $body, 2);
-		$this->MIMEHeader .= $parts[0] . static::$LE . static::$LE;
-		$body = $parts[1];
-*/
-		return $output->getContents();
+		if (\preg_match('/\\.p7s"\R\R(.+?)------/s', $body, $match)) {
+			return \trim($match[1]);
+		}
+
+		throw new \RuntimeException('OpenSSL sign: failed to find p7s');
 	}
 
 	public function verify(string $data, $signers_certificates_filename = null)
 	{
-		$input = new Temporary('smimein-');
-		return $input->putContents($data) && true === \openssl_pkcs7_verify(
+		if (\is_string($input)) {
+			$input = new Temporary('smimein-');
+			if (!$input->putContents($data)) {
+				return null;
+			}
+		}
+		return true === \openssl_pkcs7_verify(
 			$input->filename(),
 			$flags = 0,
 			$signers_certificates_filename ?: null,

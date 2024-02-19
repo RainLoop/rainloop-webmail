@@ -11,6 +11,8 @@
 
 namespace MailSo\Mime;
 
+use MailSo\Mime\Enumerations\ContentType;
+
 /**
  * @category MailSo
  * @package Mime
@@ -96,10 +98,10 @@ class Part
 	{
 		$header = $this->Headers->GetByName(Enumerations\Header::CONTENT_TYPE);
 		return ($header
-			&& \preg_match('#multipart/signed.+protocol=["\']?application/pkcs7-signature#si', $header->FullValue())
+			&& \preg_match('#multipart/signed.+protocol=["\']?application/(x-)?pkcs7-signature#si', $header->FullValue())
 			// The multipart/signed body MUST consist of exactly two parts.
 			&& 2 === \count($this->SubParts)
-			&& 'application/pkcs7-signature' === $this->SubParts[1]->ContentType()
+			&& ContentType::isPkcs7Signature($this->SubParts[1]->ContentType())
 		) || ($header
 			&& \preg_match('#application/pkcs7-mime.+smime-type=["\']?signed-data#si', $header->FullValue())
 		);
