@@ -30,6 +30,8 @@ const
 		p7c: app+'pkcs7-mime',
 		p7m: app+'pkcs7-mime',
 		p7s: app+'pkcs7-signature',
+		p12: app+'pkcs12',
+		pfx: app+'x-pkcs12',
 		torrent: app+'x-bittorrent',
 
 		// scripts
@@ -205,9 +207,8 @@ export const FileInfo = {
 			case 'pdf' == type || 'pdf' == ext:
 				result = FileType.Pdf;
 				break;
-			case [app+'pgp-signature', app+'pgp-keys'].includes(mimeType)
-				|| [exts.p7m, exts.p7s].includes(mimeType)
-				|| ['asc', 'pem', 'ppk', 'p7s', 'p7m'].includes(ext):
+			case [app+'pgp-signature', app+'pgp-keys', exts.p7m, exts.p7s, exts.p12, exts.pfx].includes(mimeType)
+				|| ['asc', 'pem', 'ppk', 'p7s', 'p7m', 'p12', 'pfx'].includes(ext):
 				result = FileType.Certificate;
 				break;
 			case match(msOffice+'.wordprocessingml') || match(openDoc+'.text') || match('vnd.ms-word')
