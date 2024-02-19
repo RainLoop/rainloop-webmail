@@ -29,9 +29,11 @@ trait SMime
 			\RainLoop\Providers\Storage\Enumerations\StorageType::ROOT
 		), '/') . '/.smime';
 */
+		$sName = $this->GetActionParam('name', '') ?: $oAccount->Name();
 		$sEmail = $this->GetActionParam('email', '') ?: $oAccount->Email();
 
 		$cert = new Certificate();
+		$cert->distinguishedName['commonName'] = $sName;
 		$cert->distinguishedName['emailAddress'] = $sEmail;
 		$result = $cert->createSelfSigned('demo');
 		return $this->DefaultResponse($result ?: false);

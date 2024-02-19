@@ -1,12 +1,4 @@
 <?php
-/**
- * openssl req -new -newkey rsa:1024 -days 730 -nodes -x509 -keyout www.example.com.key -out www.example.com.crt
- *
- * Generate private key file (2048 BIT)
- * 		openssl genrsa -aes128 -out private.key -passout pass:ownPassword 2048
- * Generate private certificate
- * 		openssl req -x509 -sha256 -new -key private.key -passin pass:ownPassword -days 1825 -out private.cer
- */
 
 namespace SnappyMail\SMime;
 
@@ -16,17 +8,12 @@ class Certificate
 		$x509 = null,
 		$digest = 'sha256',
 		$cipher = \OPENSSL_CIPHER_AES_256_CBC,
-		$keyBits = 2048,
+		$keyBits = 4096,
 		$keyType = \OPENSSL_KEYTYPE_RSA,
-		$days    = 1825, // max 5 years, EV = 1185, DV/OV = 825
+		$days    = 1185, // EV = 1185, DV/OV = 825
 		$distinguishedName = array(
-			'commonName'             => 'SnappyMail', // max 64 bytes
-			'countryName'            => 'XX', // NL
-			'localityName'           => 'N/A',
-			'stateOrProvinceName'    => 'N/A',
-			'organizationName'       => 'SnappyMail',
-			'organizationalUnitName' => '',
-			'emailAddress'           => ''  // max 64 bytes
+			'commonName'   => '', // max 64 bytes
+			'emailAddress' => ''  // max 64 bytes
 		),
 		$challengePassphrase; // min 4, max 20 bytes
 
@@ -54,9 +41,6 @@ class Certificate
 
 	function __destruct()
 	{
-		if ($this->x509) {
-			\openssl_x509_free($this->x509);
-		}
 	}
 
 	/**
@@ -121,11 +105,8 @@ class Certificate
 
 	public function createSelfSigned($passphrase = null) : array
 	{
-		if ($this->x509) {
-			\openssl_x509_free($this->x509);
-		}
-
-		$configargs = array(
+		$options = array(
+			'config'             => __DIR__ . '/openssl.cnf',
 			'digest_alg'         => $this->digest,
 			'private_key_bits'   => $this->keyBits,
 			'private_key_type'   => $this->keyType,
@@ -133,9 +114,9 @@ class Certificate
 			'encrypt_key_cipher' => $this->cipher,
 			// v3_ca    = Extensions to use when signing a CA
 			// usr_cert = Extensions for when we sign normal certs (specified as default)
-			'x509_extensions'    => 'v3_ca', // usr_cert
-			// v3_req   = Extensions to add to a certificate request
-//			'req_extensions'     => 'v3_req',
+			'x509_extensions'    => 'snappymail_ca', // v3_ca | usr_cert
+			// Extensions to add to a certificate request
+			'req_extensions'     => 'snappymail_req', // v3_req
 		);
 
 		$dn = $this->distinguishedName;
@@ -143,23 +124,36 @@ class Certificate
 			unset($dn['organizationalUnitName']);
 		}
 
-		$privkey    = null; // openssl_pkey_new($configargs);
-		$csr        = \openssl_csr_new($dn, $privkey, $configargs);
-		$this->x509 = $csr ? \openssl_csr_sign($csr, null, $privkey, $this->days, $configargs) : null;
-		if ($this->x509) {
-			$privatekey = '';
-			$publickey = '';
-			$csrStr = '';
-			\openssl_pkey_export($privkey, $privatekey, $passphrase);
-			\openssl_x509_export($this->x509, $publickey);
-			\openssl_csr_export($csr, $csrStr);
-			return array(
-				'pkey' => $privatekey,
-				'x509' => $publickey,
-				'csr'  => $csrStr,
-//				'pkcs12' => $this->asPKCS12($privkey, $passphrase/*, array $args = array()*/)
+		$pkey = null; // openssl_pkey_new($options);
+		$csr  = \openssl_csr_new($dn, $pkey, $options);
+		if ($csr) {
+			$this->x509 = \openssl_csr_sign(
+				$csr,
+				\file_get_contents(__DIR__ . '/snappymail.crt'),
+				\file_get_contents(__DIR__ . '/snappymail.key'),
+				$this->days,
+				$options
 			);
+			if ($this->x509/* && $this->canSign() && $this->canEncrypt()*/) {
+				$privatekey = '';
+				$certificate = '';
+				$csrStr = '';
+				\openssl_pkey_export($pkey, $privatekey, $passphrase);
+				\openssl_x509_export($this->x509, $certificate);
+				return array(
+					'pkey' => $privatekey,
+					'x509' => $certificate,
+//					'pkcs12' => $this->asPKCS12($pkey, $passphrase/*, array $args = array()*/)
+//					'canSign' => $this->canSign(),
+//					'canEncrypt' => $this->canEncrypt()
+				);
+			} else {
+				throw new \RuntimeException('OpenSSL sign: ' . \openssl_error_string());
+			}
+		} else {
+			throw new \RuntimeException('OpenSSL csr: ' . \openssl_error_string());
 		}
+		return [];
 	}
 
 	// returns binary data
