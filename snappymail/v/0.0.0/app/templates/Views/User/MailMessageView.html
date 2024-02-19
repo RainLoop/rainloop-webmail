@@ -305,8 +305,16 @@
 							</div>
 						</div>
 
+						<div data-bind="visible: message().smimeEncrypted()">
+							<div class="smime-control encrypted" data-bind="css: {success: message().smimeDecrypted()}">
+								<span data-icon="🔒" data-i18n="OPENPGP/ENCRYPTED_MESSAGE"></span>
+<!-- TODO
+								<button class="btn" data-bind="click: smimeDecrypt" data-i18n="CRYPTO/DECRYPT"></button>
+-->
+							</div>
+						</div>
 						<div data-bind="visible: message().smimeSigned()">
-							<div class="openpgp-control signed" data-bind="css: {success: message().smimeVerified() && message().smimeVerified().success, error: message().smimeVerified() && !message().smimeVerified().success}">
+							<div class="smime-control signed" data-bind="css: {success: message().smimeVerified() && message().smimeVerified().success, error: message().smimeVerified() && !message().smimeVerified().success}">
 								<span data-icon="✍" data-i18n="SMIME/SIGNED_MESSAGE"></span>
 								<button class="btn" data-bind="click: smimeVerify" data-i18n="CRYPTO/VERIFY"></button>
 							</div>

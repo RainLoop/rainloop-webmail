@@ -619,6 +619,13 @@ export class MailMessageView extends AbstractViewRight {
 		});
 	}
 
+	smimeDecrypt() {
+/*
+		// TODO: find private key and certificate to decrypt
+		const oMessage = currentMessage();
+*/
+	}
+
 	smimeVerify(/*self, event*/) {
 		const message = currentMessage();
 		let data = message.smimeSigned(); // { partId: "1", micAlg: "pgp-sha256" }

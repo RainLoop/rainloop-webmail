@@ -115,16 +115,17 @@ export class MessageModel extends AbstractModel {
 			hasExternals: false,
 			hasTracking: false,
 
+			encrypted: false,
+
 			pgpSigned: null,
 			pgpVerified: null,
-
-			encrypted: false,
 			pgpEncrypted: null,
 			pgpDecrypted: false,
 
 			smimeSigned: null,
 			smimeVerified: null,
 			smimeEncrypted: null,
+			smimeDecrypted: false,
 
 			// rfc8621
 			id: '',
