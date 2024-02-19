@@ -164,7 +164,7 @@ export const FileInfo = {
 	 */
 	getType: (ext, mimeType) => {
 		ext = lowerCase(ext);
-		mimeType = lowerCase(mimeType).replace('csv/plain', 'text/csv');
+		mimeType = lowerCase(mimeType).replace('csv/plain', 'text/csv').replace('x-','');
 
 		let key = ext + mimeType;
 		if (cache[key]) {
@@ -173,7 +173,7 @@ export const FileInfo = {
 
 		let result = FileType.Unknown;
 		const mimeTypeParts = mimeType.split('/'),
-			type = mimeTypeParts[1].replace('x-','').replace('-compressed',''),
+			type = mimeTypeParts[1].replace('-compressed',''),
 			match = str => mimeType.includes(str),
 			archive = /^(zip|7z|tar|rar|gzip|bzip|bzip2)$/;
 
@@ -206,8 +206,8 @@ export const FileInfo = {
 				result = FileType.Pdf;
 				break;
 			case [app+'pgp-signature', app+'pgp-keys'].includes(mimeType)
-				|| ['asc', 'pem', 'ppk'].includes(ext)
-				|| [app+'pkcs7-signature'].includes(mimeType) || 'p7s' == ext:
+				|| [exts.p7m, exts.p7s].includes(mimeType)
+				|| ['asc', 'pem', 'ppk', 'p7s', 'p7m'].includes(ext):
 				result = FileType.Certificate;
 				break;
 			case match(msOffice+'.wordprocessingml') || match(openDoc+'.text') || match('vnd.ms-word')
