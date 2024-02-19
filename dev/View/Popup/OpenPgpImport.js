@@ -32,7 +32,7 @@ export class OpenPgpImportPopupView extends AbstractViewPopup {
 
 	searchPGP() {
 		this.key(i18n('SUGGESTIONS/SEARCHING_DESC'));
-		const fn = () => Remote.request('SearchPGPKey',
+		const fn = () => Remote.request('PgpSearchKey',
 			(iError, oData) => {
 				if (iError) {
 					this.key(oData.ErrorMessage);

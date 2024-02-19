@@ -36,7 +36,7 @@ trait Pgp
 		return $this->DefaultResponse(\array_values(\array_unique($result)));
 	}
 
-	public function DoSearchPGPKey() : array
+	public function DoPgpSearchKey() : array
 	{
 		$result = Keyservers::get(
 			$this->GetActionParam('query', '')
