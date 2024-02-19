@@ -44,7 +44,7 @@ export class IdentityPopupView extends AbstractViewPopup {
 
 	createSelfSigned() {
 		let identity = this.identity();
-		Remote.request('CreateSMimeCertificate', (iError, oData) => {
+		Remote.request('SMimeCreateCertificate', (iError, oData) => {
 			if (oData.Result.x509) {
 				identity.smimeKey(oData.Result.pkey);
 				identity.smimeCertificate(oData.Result.x509);

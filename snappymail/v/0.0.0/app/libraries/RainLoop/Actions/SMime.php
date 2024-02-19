@@ -21,7 +21,7 @@ trait SMime
 	/**
 	 * Can be use by Identity
 	 */
-	public function DoCreateSMimeCertificate() : array
+	public function DoSMimeCreateCertificate() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 /*
@@ -41,7 +41,7 @@ trait SMime
 		return $this->DefaultResponse($result ?: false);
 	}
 
-	public function DoMessageSMimeVerify() : array
+	public function DoSMimeVerifyMessage() : array
 	{
 		$sFolderName = $this->GetActionParam('folder', '');
 		$iUid = (int) $this->GetActionParam('uid', 0);
@@ -72,7 +72,7 @@ trait SMime
 		}
 		$sBody .= $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sPartId.']');
 
-		$SMIME = new \SnappyMail\SMime\OpenSSL;
+		$SMIME = new OpenSSL;
 		$result = $SMIME->verify($sBody, null, !$bDetached);
 
 		return $this->DefaultResponse($result);
