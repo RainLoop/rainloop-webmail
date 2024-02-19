@@ -32,11 +32,12 @@ trait SMime
 */
 		$sName = $this->GetActionParam('name', '') ?: $oAccount->Name();
 		$sEmail = $this->GetActionParam('email', '') ?: $oAccount->Email();
+		$sPassphrase = $this->GetActionParam('passphrase', '');
 
 		$cert = new Certificate();
 		$cert->distinguishedName['commonName'] = $sName;
 		$cert->distinguishedName['emailAddress'] = $sEmail;
-		$result = $cert->createSelfSigned('demo');
+		$result = $cert->createSelfSigned($sPassphrase);
 		return $this->DefaultResponse($result ?: false);
 	}
 
