@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Веднъж започнат, този процес не може да бъде прекратен или отказан.",
 		"TITLE_CLEARING_PROCESS": "Прочистване на папката..."
 	},
+	"CRYPTO": {
+		"SIGN": "Подпиши",
+		"ENCRYPT": "Шифровай",
+		"DECRYPT": "Дешифрирай",
+		"VERIFY": "Verify",
+		"GOOD_SIGNATURE": "Валиден подпис за %USER%",
+		"ERROR": "%TYPE% грешка: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Внасяне на OpenPGP ключ",
 		"POPUP_IMPORT_BUTTON": "Внеси",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "Създаване на OpenPGP ключове",
 		"POPUP_GENERATE_BUTTON": "Създай",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "Подпиши",
-		"LABEL_ENCRYPT": "Шифровай",
-		"BUTTON_DECRYPT": "Дешифрирай",
-		"BUTTON_VERIFY": "Verify",
 		"SIGNED_MESSAGE": "Подписано с OpenPGP",
 		"ENCRYPTED_MESSAGE": "Шифровано с OpenPGP",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
-		"GOOD_SIGNATURE": "Валиден подпис за %USER%",
-		"ERROR": "OpenPGP грешка: %ERROR%"
+		"BACKUP_ON_SERVER": "Store (encrypted) on server"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "Подписано с S\/MIME",
+		"ENCRYPTED_MESSAGE": "Шифровано с S\/MIME"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Създай филтър?",

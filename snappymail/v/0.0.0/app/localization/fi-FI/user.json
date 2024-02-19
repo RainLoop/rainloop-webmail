@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Tätä toimintoa ei voi peruuttaa.",
 		"TITLE_CLEARING_PROCESS": "Tyhjennetään kansiota..."
 	},
+	"CRYPTO": {
+		"SIGN": "Allekirjoita",
+		"ENCRYPT": "Salaa",
+		"DECRYPT": "Pura",
+		"VERIFY": "Verify",
+		"GOOD_SIGNATURE": "Oikea allekirjoitus %USER% lle",
+		"ERROR": "%TYPE% virhe: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Tuo OpenPGP avain",
 		"POPUP_IMPORT_BUTTON": "Tuo",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "Luo OpenPGP avain",
 		"POPUP_GENERATE_BUTTON": "Generoi",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "Allekirjoita",
-		"LABEL_ENCRYPT": "Salaa",
-		"BUTTON_DECRYPT": "Pura",
-		"BUTTON_VERIFY": "Verify",
 		"SIGNED_MESSAGE": "OpenPGP allekirjoitettu viesti",
 		"ENCRYPTED_MESSAGE": "OpenPGP salattu visti",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
-		"GOOD_SIGNATURE": "Oikea allekirjoitus %USER% lle",
-		"ERROR": "OpenPGP virhe: %ERROR%"
+		"BACKUP_ON_SERVER": "Store (encrypted) on server"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "S\/MIME allekirjoitettu viesti",
+		"ENCRYPTED_MESSAGE": "S\/MIME salattu visti"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Luo suodatin?",

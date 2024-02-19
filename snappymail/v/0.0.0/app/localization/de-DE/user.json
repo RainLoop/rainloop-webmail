@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Einmal begonnen, kann dieser Vorgang nicht mehr abgebrochen werden.",
 		"TITLE_CLEARING_PROCESS": "Ordner wird gelöscht ..."
 	},
+	"CRYPTO": {
+		"SIGN": "Unterschrift",
+		"ENCRYPT": "Verschlüsseln",
+		"DECRYPT": "Entschlüsseln",
+		"VERIFY": "Überprüfen",
+		"GOOD_SIGNATURE": "Gültige Unterschrift von %USER%",
+		"ERROR": "%TYPE%-Fehler: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "OpenPGP-Schlüssel importieren",
 		"POPUP_IMPORT_BUTTON": "Importieren",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "OpenPGP-Schlüssel generieren",
 		"POPUP_GENERATE_BUTTON": "Generieren",
 		"LABEL_KEY_TYPE": "Typ",
-		"LABEL_SIGN": "Unterschrift",
-		"LABEL_ENCRYPT": "Verschlüsseln",
-		"BUTTON_DECRYPT": "Entschlüsseln",
-		"BUTTON_VERIFY": "Überprüfen",
 		"SIGNED_MESSAGE": "OpenPGP-signierte Nachricht",
 		"ENCRYPTED_MESSAGE": "OpenPGP-verschlüsselte Nachricht",
 		"STORE_IN_GNUPG": "Auf dem Server als GnuPG speichern",
-		"BACKUP_ON_SERVER": "Auf dem Server verschlüsselt speichern",
-		"GOOD_SIGNATURE": "Gültige Unterschrift von %USER%",
-		"ERROR": "OpenPGP-Fehler: %ERROR%"
+		"BACKUP_ON_SERVER": "Auf dem Server verschlüsselt speichern"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "S\/MIME-signierte Nachricht",
+		"ENCRYPTED_MESSAGE": "S\/MIME-verschlüsselte Nachricht"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Filter erstellen?",

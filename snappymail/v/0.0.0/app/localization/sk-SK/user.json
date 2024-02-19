@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Tento proces nie je možné prerušiť.",
 		"TITLE_CLEARING_PROCESS": "Odstraňujem priečinok..."
 	},
+	"CRYPTO": {
+		"SIGN": "Sign",
+		"ENCRYPT": "Encrypt",
+		"DECRYPT": "Decrypt",
+		"VERIFY": "Verify",
+		"GOOD_SIGNATURE": "Good signature from %USER%",
+		"ERROR": "%TYPE% error: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importovať kľúč OpenPGP",
 		"POPUP_IMPORT_BUTTON": "Import",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "Generate OpenPGP keys",
 		"POPUP_GENERATE_BUTTON": "Generate",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "Sign",
-		"LABEL_ENCRYPT": "Encrypt",
-		"BUTTON_DECRYPT": "Decrypt",
-		"BUTTON_VERIFY": "Verify",
 		"SIGNED_MESSAGE": "Správa podpísaná s OpenPGP",
 		"ENCRYPTED_MESSAGE": "Správa šifrovaná s OpenPGP",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
-		"GOOD_SIGNATURE": "Good signature from %USER%",
-		"ERROR": "OpenPGP error: %ERROR%"
+		"BACKUP_ON_SERVER": "Store (encrypted) on server"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "Správa podpísaná s S\/MIME",
+		"ENCRYPTED_MESSAGE": "Správa šifrovaná s S\/MIME"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Create a filter?",

@@ -1538,7 +1538,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				} else if (this.canSMimeSign()) {
 					params.signCertificate = identity.smimeCertificate();
 					params.signPrivateKey = identity.smimeKey();
-					const pass = await AskPopupView.password('S/MIME key', 'OPENPGP/LABEL_SIGN');
+					const pass = await AskPopupView.password('S/MIME key', 'CRYPTO/SIGN');
 					params.signPassphrase = pass?.password;
 				}
 			}

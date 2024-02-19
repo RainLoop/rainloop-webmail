@@ -20,7 +20,7 @@ const
 			key.emails.includes(query) || query == key.id || query == key.fingerprint
 		),
 
-	decryptKey = async (privateKey, btnTxt = 'LABEL_SIGN') => {
+	decryptKey = async (privateKey, btnTxt = 'SIGN') => {
 		if (privateKey.key.isDecrypted()) {
 			return privateKey.key;
 		}
@@ -29,7 +29,7 @@ const
 				? {password:Passphrases.get(key), remember:false}
 				: await AskPopupView.password(
 					'OpenPGP.js key<br>' + key + ' ' + privateKey.emails[0],
-					'OPENPGP/'+btnTxt
+					'CRYPTO/'+btnTxt
 				);
 		if (pass) {
 			const passphrase = pass.password,
@@ -210,7 +210,7 @@ export const OpenPGPUserStore = new class {
 			}
 		}
 		if (privateKey) try {
-			const decryptedKey = await decryptKey(privateKey, 'BUTTON_DECRYPT');
+			const decryptedKey = await decryptKey(privateKey, 'DECRYPT');
 			if (decryptedKey) {
 				const publicKey = findOpenPGPKey(this.publicKeys, sender/*, sign*/);
 				return await openpgp.decrypt({

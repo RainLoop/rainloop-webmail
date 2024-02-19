@@ -18,7 +18,7 @@ class Temporary
 //			throw new \Exception("Failed to access directory {$tmpdir}");
 		}
 		if ($prefix) {
-			$this->filename = \tempnam($tmpdir, $name);
+			$this->filename = @\tempnam($tmpdir, $name);
 		} else {
 			$this->filename = $tmpdir . '/' . $name;
 		}
@@ -31,7 +31,7 @@ class Temporary
 
 	function __toString() : string
 	{
-		$this->filename;
+		return $this->filename;
 	}
 
 	public function filename() : string

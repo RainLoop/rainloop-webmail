@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Αφού ξεκινήσει, η διαδικασία δεν σταματά ή ακυρώνεται.",
 		"TITLE_CLEARING_PROCESS": "Διαγραφή όλων των μηνυμάτων στο φάκελο..."
 	},
+	"CRYPTO": {
+		"SIGN": "Υπογραφή",
+		"ENCRYPT": "Κρυπτογράφηση",
+		"DECRYPT": "Αποκρυπτογράφηση",
+		"VERIFY": "Verify",
+		"GOOD_SIGNATURE": "Good signature from %USER%",
+		"ERROR": "%TYPE% error: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Εισαγωγή κλειδιού OpenPGP",
 		"POPUP_IMPORT_BUTTON": "Εισαγωγή",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "Δημιουργία κλειδιών OpenPGP",
 		"POPUP_GENERATE_BUTTON": "Δημιουργία",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "Υπογραφή",
-		"LABEL_ENCRYPT": "Κρυπτογράφηση",
-		"BUTTON_DECRYPT": "Αποκρυπτογράφηση",
-		"BUTTON_VERIFY": "Verify",
 		"SIGNED_MESSAGE": "Μήνυμα υπογεγραμμένο με OpenPGP",
 		"ENCRYPTED_MESSAGE": "Μήνυμα κωδικοποιημένο με OpenPGP",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
-		"GOOD_SIGNATURE": "Good signature from %USER%",
-		"ERROR": "OpenPGP error: %ERROR%"
+		"BACKUP_ON_SERVER": "Store (encrypted) on server"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "Μήνυμα υπογεγραμμένο με S\/MIME",
+		"ENCRYPTED_MESSAGE": "Μήνυμα κωδικοποιημένο με S\/MIME"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Δημιουργία φίλτρου;",

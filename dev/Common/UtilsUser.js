@@ -292,6 +292,8 @@ viewMessage = (oMessage, popup) => {
 				class:'b-text-part'
 					+ (oMessage.pgpSigned() ? ' openpgp-signed' : '')
 					+ (oMessage.pgpEncrypted() ? ' openpgp-encrypted' : '')
+					+ (oMessage.smimeSigned() ? ' smime-signed' : '')
+					+ (oMessage.smimeEncrypted() ? ' smime-encrypted' : '')
 			});
 			MessageUserStore.purgeCache();
 		}

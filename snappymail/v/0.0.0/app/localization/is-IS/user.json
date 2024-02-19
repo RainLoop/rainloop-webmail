@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Það er ekki hægt að hætta við aðgerðina eftir að búið er að keyra hana.",
 		"TITLE_CLEARING_PROCESS": "Tæmi möppu..."
 	},
+	"CRYPTO": {
+		"SIGN": "Undirrita",
+		"ENCRYPT": "Dulrita",
+		"DECRYPT": "Afkóða",
+		"VERIFY": "Verify",
+		"GOOD_SIGNATURE": "Gild undirritun frá %USER%",
+		"ERROR": "%TYPE% villa: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Flytja inn OpenPGP-lykil",
 		"POPUP_IMPORT_BUTTON": "Flytja inn",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "Búa til OpenPGP-lykla",
 		"POPUP_GENERATE_BUTTON": "Útbúa",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "Undirrita",
-		"LABEL_ENCRYPT": "Dulrita",
-		"BUTTON_DECRYPT": "Afkóða",
-		"BUTTON_VERIFY": "Verify",
 		"SIGNED_MESSAGE": "Skeyti undirritað með OpenPGP",
 		"ENCRYPTED_MESSAGE": "Skeyti dulritað með OpenPGP",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
-		"GOOD_SIGNATURE": "Gild undirritun frá %USER%",
-		"ERROR": "OpenPGP villa: %ERROR%"
+		"BACKUP_ON_SERVER": "Store (encrypted) on server"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "Skeyti undirritað með S\/MIME",
+		"ENCRYPTED_MESSAGE": "Skeyti dulritað með S\/MIME"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Búa til síu?",

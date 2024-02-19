@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Після початку очищення, процес <strong style=\"color:red\">неможливо<\/strong> буде зупинити чи відмінити.",
 		"TITLE_CLEARING_PROCESS": "Очищення теки..."
 	},
+	"CRYPTO": {
+		"SIGN": "Підпис",
+		"ENCRYPT": "Шифрування",
+		"DECRYPT": "Дешифрувати",
+		"VERIFY": "Verify",
+		"GOOD_SIGNATURE": "Підтверджена сигнатура для %USER%",
+		"ERROR": "%TYPE% помилка: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Імпорт OpenPGP ключа",
 		"POPUP_IMPORT_BUTTON": "Імпорт",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "Генерація OpenPGP ключа",
 		"POPUP_GENERATE_BUTTON": "Створити",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "Підпис",
-		"LABEL_ENCRYPT": "Шифрування",
-		"BUTTON_DECRYPT": "Дешифрувати",
-		"BUTTON_VERIFY": "Verify",
 		"SIGNED_MESSAGE": "OpenPGP підписане повідомлення",
 		"ENCRYPTED_MESSAGE": "OpenPGP шифроване повідомлення",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
-		"GOOD_SIGNATURE": "Підтверджена сигнатура для %USER%",
-		"ERROR": "OpenPGP помилка: %ERROR%"
+		"BACKUP_ON_SERVER": "Store (encrypted) on server"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "S\/MIME підписане повідомлення",
+		"ENCRYPTED_MESSAGE": "S\/MIME шифроване повідомлення"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Створити фільтер?",

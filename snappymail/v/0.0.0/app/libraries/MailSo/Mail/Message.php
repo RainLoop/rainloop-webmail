@@ -328,8 +328,9 @@ class Message implements \JsonSerializable
 					];
 				} else if ($oPart->isSMimeSigned()) {
 					$oMessage->smimeSigned = [
-						'sigPartId' => $oPart->PartID(),
-						'micAlg' => $oHeaders ? (string) $oHeaders->ParameterValue(MimeHeader::CONTENT_TYPE, 'micalg') : ''
+						'partId' => $oPart->PartID(),
+						'micAlg' => $oHeaders ? (string) $oHeaders->ParameterValue(MimeHeader::CONTENT_TYPE, 'micalg') : '',
+						'detached' => false
 					];
 				}
 			}
@@ -346,9 +347,9 @@ class Message implements \JsonSerializable
 					];
 				} else if ($oPart->isSMimeSigned()) {
 					$oMessage->smimeSigned = [
-						'bodyPartId' => $oPart->SubParts()[0]->PartID(),
-						'sigPartId' => $oPart->SubParts()[1]->PartID(),
-						'micAlg' => $oHeaders ? (string) $oHeaders->ParameterValue(MimeHeader::CONTENT_TYPE, 'micalg') : ''
+						'partId' => $oPart->PartID(),
+						'micAlg' => $oHeaders ? (string) $oHeaders->ParameterValue(MimeHeader::CONTENT_TYPE, 'micalg') : '',
+						'detached' => true
 					];
 				}
 /*
@@ -547,6 +548,13 @@ class Message implements \JsonSerializable
 		}
 		if ($this->pgpEncrypted) {
 			$result['pgpEncrypted'] = $this->pgpEncrypted;
+		}
+
+		if ($this->smimeSigned) {
+			$result['smimeSigned'] = $this->smimeSigned;
+		}
+		if ($this->smimeEncrypted) {
+			$result['smimeEncrypted'] = $this->smimeEncrypted;
 		}
 
 		if ($this->aThreadUIDs) {

@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Hvis du går videre, blir meldingene slettet for godt.",
 		"TITLE_CLEARING_PROCESS": "Tømmer mappe …"
 	},
+	"CRYPTO": {
+		"SIGN": "Signer",
+		"ENCRYPT": "Krypter",
+		"DECRYPT": "Dekrypter",
+		"VERIFY": "Verify",
+		"GOOD_SIGNATURE": "Gyldig signatur fra %USER%",
+		"ERROR": "%TYPE%-feil: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importer OpenPGP-nøkkel",
 		"POPUP_IMPORT_BUTTON": "Importer",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "Lag OpenPGP-nøkler",
 		"POPUP_GENERATE_BUTTON": "Lag",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "Signer",
-		"LABEL_ENCRYPT": "Krypter",
-		"BUTTON_DECRYPT": "Dekrypter",
-		"BUTTON_VERIFY": "Verify",
 		"SIGNED_MESSAGE": "OpenPGP-signert melding",
 		"ENCRYPTED_MESSAGE": "OpenPGP-kryptert melding",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
-		"GOOD_SIGNATURE": "Gyldig signatur fra %USER%",
-		"ERROR": "OpenPGP-feil: %ERROR%"
+		"BACKUP_ON_SERVER": "Store (encrypted) on server"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "S\/MIME-signert melding",
+		"ENCRYPTED_MESSAGE": "S\/MIME-kryptert melding"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Vil du lage et filter?",

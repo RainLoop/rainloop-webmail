@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Eens in gang gezet kan het proces niet geannuleerd worden!",
 		"TITLE_CLEARING_PROCESS": "Folder aan het leegmaken..."
 	},
+	"CRYPTO": {
+		"SIGN": "Ondertekenen",
+		"ENCRYPT": "Versleutelen",
+		"DECRYPT": "Ontsleutelen",
+		"VERIFY": "Verifiëren",
+		"GOOD_SIGNATURE": "Juiste handtekening van %USER%",
+		"ERROR": "%TYPE% foutmelding: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importeer OpenPGP sleutel",
 		"POPUP_IMPORT_BUTTON": "Importeer",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "Genereer OpenPGP sleutels",
 		"POPUP_GENERATE_BUTTON": "Genereer",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "Ondertekenen",
-		"LABEL_ENCRYPT": "Versleutelen",
-		"BUTTON_DECRYPT": "Ontsleutelen",
-		"BUTTON_VERIFY": "Verifiëren",
 		"SIGNED_MESSAGE": "OpenPGP ondertekend bericht",
 		"ENCRYPTED_MESSAGE": "OpenPGP versleuteld bericht",
 		"STORE_IN_GNUPG": "Bewaar op de server in GnuPG",
-		"BACKUP_ON_SERVER": "Bewaar (versleuteld) op de server",
-		"GOOD_SIGNATURE": "Juiste handtekening van %USER%",
-		"ERROR": "OpenPGP foutmelding: %ERROR%"
+		"BACKUP_ON_SERVER": "Bewaar (versleuteld) op de server"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "S\/MIME ondertekend bericht",
+		"ENCRYPTED_MESSAGE": "S\/MIME versleuteld bericht"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Filter toevoegen",

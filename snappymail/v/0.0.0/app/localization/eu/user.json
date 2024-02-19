@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Behin hasita, ekintza hau ezin da gelditu edo utzi.",
 		"TITLE_CLEARING_PROCESS": "Karpeta garbitzen..."
 	},
+	"CRYPTO": {
+		"SIGN": "Sinatu",
+		"ENCRYPT": "Zifratu",
+		"DECRYPT": "Deszifratu",
+		"VERIFY": "Egiaztatu",
+		"GOOD_SIGNATURE": "%USER%-en sinadura egokia",
+		"ERROR": "%TYPE% errorea: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Inportatu OpenPGP gakoa",
 		"POPUP_IMPORT_BUTTON": "Inportatu",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "Sortu OpenPGP gako parea",
 		"POPUP_GENERATE_BUTTON": "Sortu",
 		"LABEL_KEY_TYPE": "Mota",
-		"LABEL_SIGN": "Sinatu",
-		"LABEL_ENCRYPT": "Zifratu",
-		"BUTTON_DECRYPT": "Deszifratu",
-		"BUTTON_VERIFY": "Egiaztatu",
 		"SIGNED_MESSAGE": "OpenPGP sinatutako mezua",
 		"ENCRYPTED_MESSAGE": "OpenPGP zifratutako mezua",
 		"STORE_IN_GNUPG": "Zerbitzarian gorden GnuPG-n",
-		"BACKUP_ON_SERVER": "Zerbitzarian gorde (zifratuta)",
-		"GOOD_SIGNATURE": "%USER%-en sinadura egokia",
-		"ERROR": "OpenPGP errorea: %ERROR%"
+		"BACKUP_ON_SERVER": "Zerbitzarian gorde (zifratuta)"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "S\/MIME sinatutako mezua",
+		"ENCRYPTED_MESSAGE": "S\/MIME zifratutako mezua"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Sortu iragazkia?",

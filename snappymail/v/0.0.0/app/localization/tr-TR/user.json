@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Bu işlem bir kez başladıktan sonra, işlem durdurulamaz veya iptal edilemez.",
 		"TITLE_CLEARING_PROCESS": "Klasör temizleniyor..."
 	},
+	"CRYPTO": {
+		"SIGN": "Giriş Yap",
+		"ENCRYPT": "Şifrele",
+		"DECRYPT": "Decrypt",
+		"VERIFY": "Verify",
+		"GOOD_SIGNATURE": "Geçerli imza %USER%",
+		"ERROR": "%TYPE% hatası: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "OpenPGP key'i içe aktar",
 		"POPUP_IMPORT_BUTTON": "İçe aktar",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "OpenPGP key'leri Oluştur",
 		"POPUP_GENERATE_BUTTON": "Oluştur",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "Giriş Yap",
-		"LABEL_ENCRYPT": "Şifrele",
-		"BUTTON_DECRYPT": "Decrypt",
-		"BUTTON_VERIFY": "Verify",
 		"SIGNED_MESSAGE": "OpenPGP imzalı mesaj",
 		"ENCRYPTED_MESSAGE": "OpenPGP şifreli mesaj",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
-		"GOOD_SIGNATURE": "Geçerli imza %USER%",
-		"ERROR": "OpenPGP hatası: %ERROR%"
+		"BACKUP_ON_SERVER": "Store (encrypted) on server"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "S\/MIME imzalı mesaj",
+		"ENCRYPTED_MESSAGE": "S\/MIME şifreli mesaj"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Create a filter?",

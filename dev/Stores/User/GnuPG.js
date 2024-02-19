@@ -14,11 +14,11 @@ import { AskPopupView } from 'View/Popup/Ask';
 import { Passphrases } from 'Storage/Passphrases';
 
 const
-	askPassphrase = async (privateKey, btnTxt = 'LABEL_SIGN') => {
+	askPassphrase = async (privateKey, btnTxt = 'SIGN') => {
 		const key = privateKey.id,
 			pass = Passphrases.has(key)
 				? {password:Passphrases.get(key), remember:false}
-				: await AskPopupView.password('GnuPG key<br>' + key + ' ' + privateKey.emails[0], 'OPENPGP/'+btnTxt);
+				: await AskPopupView.password('GnuPG key<br>' + key + ' ' + privateKey.emails[0], 'CRYPTO/'+btnTxt);
 		pass && pass.remember && Passphrases.set(key, pass.password);
 		return pass?.password;
 	},
@@ -180,7 +180,7 @@ export const GnuPGUserStore = new class {
 					uid: message.uid,
 					partId: pgpInfo.partId,
 					keyId: key.id,
-					passphrase: await askPassphrase(key, 'BUTTON_DECRYPT'),
+					passphrase: await askPassphrase(key, 'DECRYPT'),
 					data: '' // message.plain() optional
 				}
 				if (null !== params.passphrase) {

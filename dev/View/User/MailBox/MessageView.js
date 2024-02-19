@@ -600,7 +600,7 @@ export class MailMessageView extends AbstractViewRight {
 			}
 /*
 			if (result?.success) {
-				i18n('OPENPGP/GOOD_SIGNATURE', {
+				i18n('CRYPTO/GOOD_SIGNATURE', {
 					USER: validKey.user + ' (' + validKey.id + ')'
 				});
 				message.getText()
@@ -610,12 +610,34 @@ export class MailMessageView extends AbstractViewRight {
 						? keyIds.map(item => item?.toHex?.()).filter(v => v).join(', ')
 						: '';
 
-				i18n('OPENPGP/ERROR', {
+				i18n('CRYPTO/ERROR', {
+					TYPE: 'OpenPGP',
 					ERROR: 'message'
 				}) + (additional ? ' (' + additional + ')' : '');
 			}
 */
 		});
+	}
+
+	smimeVerify(/*self, event*/) {
+		const message = currentMessage();
+		let data = message.smimeSigned(); // { partId: "1", micAlg: "pgp-sha256" }
+		if (data) {
+			data = { ...data }; // clone
+			data.folder = message.folder;
+			data.uid = message.uid;
+			data.bodyPart = data.bodyPart?.raw;
+			Remote.post('MessageSMimeVerify', null, data).then(response => {
+				if (response?.Result) {
+					if (response.Result.body) {
+						MimeToMessage(response.Result.body, message);
+						message.html() ? message.viewHtml() : message.viewPlain();
+						response.Result.body = null;
+					}
+					message.smimeVerified(response.Result);
+				}
+			});
+		}
 	}
 
 }

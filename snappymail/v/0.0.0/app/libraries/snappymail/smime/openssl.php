@@ -4,6 +4,10 @@ namespace SnappyMail\SMime;
 
 use SnappyMail\File\Temporary;
 
+/**
+ * PHP 8.3.0 PKCS7_NOOLDMIMETYPE
+ */
+
 class OpenSSL
 {
 	private array $headers = [];
@@ -45,45 +49,59 @@ class OpenSSL
 		}
 	}
 
-	public function decrypt(string $data) : ?string
+	public function decrypt(/*string|Temporary*/ $input) : ?string
 	{
-		$input = new Temporary('smimein-');
+		if (\is_string($input)) {
+			$tmp = new Temporary('smimein-');
+			if (!$tmp->putContents($input)) {
+				return null;
+			}
+			$input = $tmp;
+		}
 		$output = new Temporary('smimeout-');
-		return ($input->putContents($data) && \openssl_pkcs7_decrypt(
+		if (!\openssl_pkcs7_decrypt(
 			$input->filename(),
 			$output->filename(),
 			$this->certificate,
 			$this->privateKey
-		)) ? $output->getContents() : null;
+		)) {
+			throw new \RuntimeException('OpenSSL decrypt: ' . \openssl_error_string());
+		}
+		return $output->getContents();
 	}
 
 	public function encrypt(/*string|Temporary*/$input, array $certificates) : ?string
 	{
 		if (\is_string($input)) {
-			$input = new Temporary('smimein-');
-			if (!$input->putContents($data)) {
+			$tmp = new Temporary('smimein-');
+			if (!$tmp->putContents($input)) {
 				return null;
 			}
+			$input = $tmp;
 		}
 		$output = new Temporary('smimeout-');
 		$flags = \defined('PKCS7_NOOLDMIMETYPE') ? \PKCS7_NOOLDMIMETYPE : 0;
-		return \openssl_pkcs7_encrypt(
+		if (!\openssl_pkcs7_encrypt(
 			$input->filename(),
 			$output->filename(),
 			$certificates,
 			$this->headers,
 			$flags,
 			$this->cipher_algo
-		) ? $output->getContents() : null;
+		)) {
+			throw new \RuntimeException('OpenSSL encrypt: ' . \openssl_error_string());
+		}
+		return $output->getContents();
 	}
 
 	public function sign(/*string|Temporary*/$input, bool $detached = true)
 	{
 		if (\is_string($input)) {
-			$input = new Temporary('smimein-');
-			if (!$input->putContents($data)) {
+			$tmp = new Temporary('smimein-');
+			if (!$tmp->putContents($input)) {
 				return null;
 			}
+			$input = $tmp;
 		}
 		$output = new Temporary('smimeout-');
 		if (!\openssl_pkcs7_sign(
@@ -135,22 +153,31 @@ class OpenSSL
 		throw new \RuntimeException('OpenSSL sign: failed to find p7s');
 	}
 
-	public function verify(string $data, $signers_certificates_filename = null)
+	public function verify(/*string|Temporary*/$input, ?string $signers_certificates_filename = null, bool $returnBody)
 	{
 		if (\is_string($input)) {
-			$input = new Temporary('smimein-');
-			if (!$input->putContents($data)) {
+			$tmp = new Temporary('smimein-');
+			if (!$tmp->putContents($input)) {
 				return null;
 			}
+			$input = $tmp;
 		}
-		return true === \openssl_pkcs7_verify(
+		$output = $returnBody ? new Temporary('smimeout-') : null;
+		if (true !== \openssl_pkcs7_verify(
 			$input->filename(),
-			$flags = 0,
+//			$flags = 0, // \PKCS7_NOVERIFY | \PKCS7_NOCHAIN | \PKCS7_NOSIGS
+			\PKCS7_NOVERIFY | \PKCS7_NOCHAIN | \PKCS7_NOSIGS,
 			$signers_certificates_filename ?: null,
 			$ca_info = [],
 			$this->untrusted_certificates_filename,
-			$content = null,
+			$output ? $output->filename() : null,
 			$output_filename = null
-		);
+		)) {
+			throw new \RuntimeException('OpenSSL verify: ' . \openssl_error_string());
+		}
+		return [
+			'body' => $output ? $output->getContents() : null,
+			'success' => true
+		];
 	}
 }

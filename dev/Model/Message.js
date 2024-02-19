@@ -122,6 +122,10 @@ export class MessageModel extends AbstractModel {
 			pgpEncrypted: null,
 			pgpDecrypted: false,
 
+			smimeSigned: null,
+			smimeVerified: null,
+			smimeEncrypted: null,
+
 			// rfc8621
 			id: '',
 //			threadId: ''

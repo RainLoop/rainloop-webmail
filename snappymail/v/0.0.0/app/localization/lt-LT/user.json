@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Pradėjus veiksmą, jis nebesustabdomas.",
 		"TITLE_CLEARING_PROCESS": "Valomas katalogas..."
 	},
+	"CRYPTO": {
+		"SIGN": "Parašas",
+		"ENCRYPT": "Šifravimas",
+		"DECRYPT": "Decrypt",
+		"VERIFY": "Verify",
+		"GOOD_SIGNATURE": "Tinkamas parašas nuo %USER%",
+		"ERROR": "%TYPE% klaida: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importuoti OpenPGP raktą",
 		"POPUP_IMPORT_BUTTON": "Importuoti",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "Sukurti OpenPGP raktą",
 		"POPUP_GENERATE_BUTTON": "Sukurti",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "Parašas",
-		"LABEL_ENCRYPT": "Šifravimas",
-		"BUTTON_DECRYPT": "Decrypt",
-		"BUTTON_VERIFY": "Verify",
 		"SIGNED_MESSAGE": "OpenPGP pasirašytas pranešimas",
 		"ENCRYPTED_MESSAGE": "OpenPGP šifruotas pranešimas",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
-		"GOOD_SIGNATURE": "Tinkamas parašas nuo %USER%",
-		"ERROR": "OpenPGP klaida: %ERROR%"
+		"BACKUP_ON_SERVER": "Store (encrypted) on server"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "S\/MIME pasirašytas pranešimas",
+		"ENCRYPTED_MESSAGE": "S\/MIME šifruotas pranešimas"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Sukurti filtrą?",

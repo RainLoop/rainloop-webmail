@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Uma vez iniciado, o processo não pode ser interrompido ou cancelado.",
 		"TITLE_CLEARING_PROCESS": "A eliminar a pasta..."
 	},
+	"CRYPTO": {
+		"SIGN": "Assinar",
+		"ENCRYPT": "Encriptar",
+		"DECRYPT": "Desencriptar",
+		"VERIFY": "Validar",
+		"GOOD_SIGNATURE": "Boa assinatura de %USER%",
+		"ERROR": "Erro %TYPE%: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importar chave OpenPGP",
 		"POPUP_IMPORT_BUTTON": "Importar",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "Gerar chaves OpenPGP",
 		"POPUP_GENERATE_BUTTON": "Gerar",
 		"LABEL_KEY_TYPE": "Tipo",
-		"LABEL_SIGN": "Assinar",
-		"LABEL_ENCRYPT": "Encriptar",
-		"BUTTON_DECRYPT": "Desencriptar",
-		"BUTTON_VERIFY": "Validar",
 		"SIGNED_MESSAGE": "Mensagem assinada com OpenPGP",
 		"ENCRYPTED_MESSAGE": "Mensagem encriptada com OpenPGP",
 		"STORE_IN_GNUPG": "Guardar no servidor em GnuPG",
-		"BACKUP_ON_SERVER": "Guardar (encriptado) no servidor",
-		"GOOD_SIGNATURE": "Boa assinatura de %USER%",
-		"ERROR": "Erro OpenPGP: %ERROR%"
+		"BACKUP_ON_SERVER": "Guardar (encriptado) no servidor"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "Mensagem assinada com S\/MIME",
+		"ENCRYPTED_MESSAGE": "Mensagem encriptada com S\/MIME"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Criar um filtro?",

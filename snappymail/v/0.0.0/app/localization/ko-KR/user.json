@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "작업이 시작되면 중지하거나 취소할 수 없습니다.",
 		"TITLE_CLEARING_PROCESS": "폴더를 비우는 중..."
 	},
+	"CRYPTO": {
+		"SIGN": "로그인",
+		"ENCRYPT": "암호화",
+		"DECRYPT": "복호화",
+		"VERIFY": "Verify",
+		"GOOD_SIGNATURE": "%USER%(으)로부터 수신한 양호한 서명",
+		"ERROR": "%TYPE% 오류: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "OpenPGP 키 가져오기",
 		"POPUP_IMPORT_BUTTON": "가져오기",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "OpenPGP 키 생성",
 		"POPUP_GENERATE_BUTTON": "생성",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "로그인",
-		"LABEL_ENCRYPT": "암호화",
-		"BUTTON_DECRYPT": "복호화",
-		"BUTTON_VERIFY": "Verify",
 		"SIGNED_MESSAGE": "OpenPGP로 서명된 메세지입니다.",
 		"ENCRYPTED_MESSAGE": "OpenPGP로 암호화된 메세지입니다.",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
-		"GOOD_SIGNATURE": "%USER%(으)로부터 수신한 양호한 서명",
-		"ERROR": "OpenPGP 오류: %ERROR%"
+		"BACKUP_ON_SERVER": "Store (encrypted) on server"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "S\/MIME로 서명된 메세지입니다.",
+		"ENCRYPTED_MESSAGE": "S\/MIME로 암호화된 메세지입니다."
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "필터를 생성할까요?",

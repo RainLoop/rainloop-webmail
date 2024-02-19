@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Po rozpoczęciu nie będzie możliwe przerwanie lub anulowanie zadania.",
 		"TITLE_CLEARING_PROCESS": "Trwa usuwanie wszystkich wiadomości z folderu..."
 	},
+	"CRYPTO": {
+		"SIGN": "Podpisz",
+		"ENCRYPT": "Zaszyfruj",
+		"DECRYPT": "Odszyfruj",
+		"VERIFY": "Weryfikuj",
+		"GOOD_SIGNATURE": "Poprawnie podpisana przez %USER%",
+		"ERROR": "Błąd %TYPE%: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importowanie klucza OpenPGP",
 		"POPUP_IMPORT_BUTTON": "Importuj",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "Generowanie klucza OpenPGP",
 		"POPUP_GENERATE_BUTTON": "Generuj",
 		"LABEL_KEY_TYPE": "Typ",
-		"LABEL_SIGN": "Podpisz",
-		"LABEL_ENCRYPT": "Zaszyfruj",
-		"BUTTON_DECRYPT": "Odszyfruj",
-		"BUTTON_VERIFY": "Weryfikuj",
 		"SIGNED_MESSAGE": "Wiadomość podpisana OpenPGP",
 		"ENCRYPTED_MESSAGE": "Wiadomość zaszyfrowana OpenPGP",
 		"STORE_IN_GNUPG": "Przechowuj na serwerze w GnuPG",
-		"BACKUP_ON_SERVER": "Przechowywanie (zaszyfrowane) na serwerze",
-		"GOOD_SIGNATURE": "Poprawnie podpisana przez %USER%",
-		"ERROR": "Błąd OpenPGP: %ERROR%"
+		"BACKUP_ON_SERVER": "Przechowywanie (zaszyfrowane) na serwerze"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "Wiadomość podpisana S\/MIME",
+		"ENCRYPTED_MESSAGE": "Wiadomość zaszyfrowana S\/MIME"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Czy stworzyć filtr?",

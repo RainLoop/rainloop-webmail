@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Une fois lancé, le processus ne peut pas être interrompu ou annulé.",
 		"TITLE_CLEARING_PROCESS": "Purge du dossier..."
 	},
+	"CRYPTO": {
+		"SIGN": "Signer",
+		"ENCRYPT": "Chiffer",
+		"DECRYPT": "Déchiffrer",
+		"VERIFY": "Vérifier",
+		"GOOD_SIGNATURE": "Signature valide pour %USER%",
+		"ERROR": "Erreur %TYPE%: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importer la clef OpenPGP",
 		"POPUP_IMPORT_BUTTON": "Importer",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "Générer les clés OpenPGP",
 		"POPUP_GENERATE_BUTTON": "Générer",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "Signer",
-		"LABEL_ENCRYPT": "Chiffer",
-		"BUTTON_DECRYPT": "Déchiffrer",
-		"BUTTON_VERIFY": "Vérifier",
 		"SIGNED_MESSAGE": "Message signé par OpenPGP",
 		"ENCRYPTED_MESSAGE": "Message chiffré par OpenPGP",
 		"STORE_IN_GNUPG": "Stocker sur le serveur dans GnuPG",
-		"BACKUP_ON_SERVER": "Stocker (chiffré) sur le serveur",
-		"GOOD_SIGNATURE": "Signature valide pour %USER%",
-		"ERROR": "Erreur OpenPGP: %ERROR%"
+		"BACKUP_ON_SERVER": "Stocker (chiffré) sur le serveur"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "Message signé par S\/MIME",
+		"ENCRYPTED_MESSAGE": "Message chiffré par S\/MIME"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Créer un filtre ?",

@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Begitu dimulai, proses tidak dapat dibatalkan atau ditunda.",
 		"TITLE_CLEARING_PROCESS": "Membersihkan folder..."
 	},
+	"CRYPTO": {
+		"SIGN": "Tandatangan",
+		"ENCRYPT": "Enkripsi",
+		"DECRYPT": "Deskripsi",
+		"VERIFY": "Verify",
+		"GOOD_SIGNATURE": "Tandatangan sah dari user %USER%",
+		"ERROR": "Kesalahan %TYPE%: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Impor kunci OpenPGP",
 		"POPUP_IMPORT_BUTTON": "Impor",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "Buat kunci OpenPGP",
 		"POPUP_GENERATE_BUTTON": "Buat",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "Tandatangan",
-		"LABEL_ENCRYPT": "Enkripsi",
-		"BUTTON_DECRYPT": "Deskripsi",
-		"BUTTON_VERIFY": "Verify",
 		"SIGNED_MESSAGE": "Pesan bertanda-tangan OpenPGP",
 		"ENCRYPTED_MESSAGE": "Pesan terenkripsi OpenPGP",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
-		"GOOD_SIGNATURE": "Tandatangan sah dari user %USER%",
-		"ERROR": "Kesalahan OpenPGP: %ERROR%"
+		"BACKUP_ON_SERVER": "Store (encrypted) on server"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "Pesan bertanda-tangan S\/MIME",
+		"ENCRYPTED_MESSAGE": "Pesan terenkripsi S\/MIME"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Buat filter?",

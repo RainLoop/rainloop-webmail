@@ -5,6 +5,8 @@ namespace RainLoop\Actions;
 use SnappyMail\PGP\Backup;
 use SnappyMail\PGP\Keyservers;
 use SnappyMail\PGP\GnuPG;
+use MailSo\Imap\Enumerations\FetchType;
+use MailSo\Mime\Enumerations\Header as MimeEnumHeader;
 
 trait Pgp
 {
@@ -288,5 +290,120 @@ trait Pgp
 		$key = $this->GetActionParam('key', '');
 		$keyId = $this->GetActionParam('keyId', '');
 		return $this->DefaultResponse(($key && $keyId && Backup::PGPKey($key, $keyId)));
+	}
+
+	/**
+	 * https://datatracker.ietf.org/doc/html/rfc3156#section-5
+	 */
+	public function DoMessagePgpVerify() : array
+	{
+		$sFolderName = $this->GetActionParam('folder', '');
+		$iUid = (int) $this->GetActionParam('uid', 0);
+		$sBodyPart = $this->GetActionParam('bodyPart', '');
+		$sSigPart = $this->GetActionParam('sigPart', '');
+		if ($sBodyPart) {
+			$result = [
+				'text' => \preg_replace('/\\r?\\n/su', "\r\n", $sBodyPart),
+				'signature' => $this->GetActionParam('sigPart', '')
+			];
+		} else {
+			$sBodyPartId = $this->GetActionParam('bodyPartId', '');
+			$sSigPartId = $this->GetActionParam('sigPartId', '');
+//			$sMicAlg = $this->GetActionParam('micAlg', '');
+
+			$this->initMailClientConnection();
+			$oImapClient = $this->ImapClient();
+			$oImapClient->FolderExamine($sFolderName);
+
+			$aParts = [
+				FetchType::BODY_PEEK.'['.$sBodyPartId.']',
+				// An empty section specification refers to the entire message, including the header.
+				// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
+				FetchType::BODY_PEEK.'['.$sBodyPartId.'.MIME]'
+			];
+			if ($sSigPartId) {
+				$aParts[] = FetchType::BODY_PEEK.'['.$sSigPartId.']';
+			}
+
+			$oFetchResponse = $oImapClient->Fetch($aParts, $iUid, true)[0];
+
+			$sBodyMime = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.'.MIME]');
+			if ($sSigPartId) {
+				$result = [
+					'text' => \preg_replace('/\\r?\\n/su', "\r\n",
+						$sBodyMime . $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']')
+					),
+					'signature' => preg_replace('/[^\x00-\x7F]/', '',
+						$oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sSigPartId.']')
+					)
+				];
+			} else {
+				// clearsigned text
+				$result = [
+					'text' => $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']'),
+					'signature' => ''
+				];
+				$decode = (new \MailSo\Mime\HeaderCollection($sBodyMime))->ValueByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING);
+				if ('base64' === $decode) {
+					$result['text'] = \base64_decode($result['text']);
+				} else if ('quoted-printable' === $decode) {
+					$result['text'] = \quoted_printable_decode($result['text']);
+				}
+			}
+		}
+
+		// Try by default as OpenPGP.js sets useGnuPG to 0
+		if ($this->GetActionParam('tryGnuPG', 1)) {
+			$GPG = $this->GnuPG();
+			if ($GPG) {
+				$info = $this->GnuPG()->verify($result['text'], $result['signature']);
+//				$info = $this->GnuPG()->verifyStream($fp, $result['signature']);
+				if (empty($info[0])) {
+					$result = false;
+				} else {
+					$info = $info[0];
+
+					/**
+					* https://code.woboq.org/qt5/include/gpg-error.h.html
+					* status:
+						0 = GPG_ERR_NO_ERROR
+						1 = GPG_ERR_GENERAL
+						9 = GPG_ERR_NO_PUBKEY
+						117440513 = General error
+						117440520 = Bad signature
+					*/
+
+					$summary = \defined('GNUPG_SIGSUM_VALID') ? [
+						GNUPG_SIGSUM_VALID => 'The signature is fully valid.',
+						GNUPG_SIGSUM_GREEN => 'The signature is good but one might want to display some extra information. Check the other bits.',
+						GNUPG_SIGSUM_RED => 'The signature is bad. It might be useful to check other bits and display more information, i.e. a revoked certificate might not render a signature invalid when the message was received prior to the cause for the revocation.',
+						GNUPG_SIGSUM_KEY_REVOKED => 'The key or at least one certificate has been revoked.',
+						GNUPG_SIGSUM_KEY_EXPIRED => 'The key or one of the certificates has expired. It is probably a good idea to display the date of the expiration.',
+						GNUPG_SIGSUM_SIG_EXPIRED => 'The signature has expired.',
+						GNUPG_SIGSUM_KEY_MISSING => 'Can’t verify due to a missing key or certificate.',
+						GNUPG_SIGSUM_CRL_MISSING => 'The CRL (or an equivalent mechanism) is not available.',
+						GNUPG_SIGSUM_CRL_TOO_OLD => 'Available CRL is too old.',
+						GNUPG_SIGSUM_BAD_POLICY => 'A policy requirement was not met.',
+						GNUPG_SIGSUM_SYS_ERROR => 'A system error occurred.',
+//						GNUPG_SIGSUM_TOFU_CONFLICT = 'A TOFU conflict was detected.',
+					] : [];
+
+					// Verified, so no need to return $result['text'] and $result['signature']
+					$result = [
+						'fingerprint' => $info['fingerprint'],
+						'validity' => $info['validity'],
+						'status' => $info['status'],
+						'summary' => $info['summary'],
+						'message' => \implode("\n", \array_filter($summary, function($k) use ($info) {
+							return $info['summary'] & $k;
+						}, ARRAY_FILTER_USE_KEY))
+					];
+				}
+			} else {
+				$result = false;
+			}
+		}
+
+		return $this->DefaultResponse($result);
 	}
 }

@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "一旦執行操作，就無法中斷或取消。",
 		"TITLE_CLEARING_PROCESS": "正在清除資料夾..."
 	},
+	"CRYPTO": {
+		"SIGN": "簽署",
+		"ENCRYPT": "加密",
+		"DECRYPT": "解密",
+		"VERIFY": "驗證",
+		"GOOD_SIGNATURE": "來自「%USER%」的良好簽署",
+		"ERROR": "%TYPE% 錯誤: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "匯入 OpenPGP 金鑰",
 		"POPUP_IMPORT_BUTTON": "匯入",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "產生 OpenPGP 金鑰",
 		"POPUP_GENERATE_BUTTON": "產生",
 		"LABEL_KEY_TYPE": "類型",
-		"LABEL_SIGN": "簽署",
-		"LABEL_ENCRYPT": "加密",
-		"BUTTON_DECRYPT": "解密",
-		"BUTTON_VERIFY": "驗證",
 		"SIGNED_MESSAGE": "已透過 OpenPGP 簽署郵件",
 		"ENCRYPTED_MESSAGE": "已透過 OpenPGP 加密郵件",
 		"STORE_IN_GNUPG": "以 GnuPG 儲存在伺服器上",
-		"BACKUP_ON_SERVER": "在伺服器中儲存 (已加密)",
-		"GOOD_SIGNATURE": "來自「%USER%」的良好簽署",
-		"ERROR": "OpenPGP 錯誤: %ERROR%"
+		"BACKUP_ON_SERVER": "在伺服器中儲存 (已加密)"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "已透過 S\/MIME 簽署郵件",
+		"ENCRYPTED_MESSAGE": "已透過 S\/MIME 加密郵件"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "是否要建立篩選器？",

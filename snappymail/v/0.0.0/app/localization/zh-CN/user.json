@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "一旦操作执行，将不可中断和撤销！",
 		"TITLE_CLEARING_PROCESS": "文件夹清理中..."
 	},
+	"CRYPTO": {
+		"SIGN": "签名",
+		"ENCRYPT": "加密",
+		"DECRYPT": "解密",
+		"VERIFY": "Verify",
+		"GOOD_SIGNATURE": "来自 %USER% 的可用签名",
+		"ERROR": "%TYPE% 错误： %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "导入 OpenPGP 密钥",
 		"POPUP_IMPORT_BUTTON": "导入",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "生成 OpenPGP 密钥",
 		"POPUP_GENERATE_BUTTON": "生成",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "签名",
-		"LABEL_ENCRYPT": "加密",
-		"BUTTON_DECRYPT": "解密",
-		"BUTTON_VERIFY": "Verify",
 		"SIGNED_MESSAGE": "由 OpenPGP 签名",
 		"ENCRYPTED_MESSAGE": "由 OpenPGP 加密",
 		"STORE_IN_GNUPG": "以 GnuPG 存储在服务器",
-		"BACKUP_ON_SERVER": "加密存储在服务器",
-		"GOOD_SIGNATURE": "来自 %USER% 的可用签名",
-		"ERROR": "OpenPGP 错误： %ERROR%"
+		"BACKUP_ON_SERVER": "加密存储在服务器"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "由 S\/MIME 签名",
+		"ENCRYPTED_MESSAGE": "由 S\/MIME 加密"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "创建筛选条件？",

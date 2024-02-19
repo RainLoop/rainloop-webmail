@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Ha egyszer elindult, a folyamatot nem lehet megszakítani.",
 		"TITLE_CLEARING_PROCESS": "Mappa ürítés..."
 	},
+	"CRYPTO": {
+		"SIGN": "Aláírás",
+		"ENCRYPT": "Titkosítás",
+		"DECRYPT": "Visszafejtés",
+		"VERIFY": "Verify",
+		"GOOD_SIGNATURE": "Jó aláírás tőle: %USER%",
+		"ERROR": "%TYPE% hiba: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "OpenPGP kulcs importálás",
 		"POPUP_IMPORT_BUTTON": "Importálás",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "OpenPGP kulcs generálás",
 		"POPUP_GENERATE_BUTTON": "Generálás",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "Aláírás",
-		"LABEL_ENCRYPT": "Titkosítás",
-		"BUTTON_DECRYPT": "Visszafejtés",
-		"BUTTON_VERIFY": "Verify",
 		"SIGNED_MESSAGE": "OpenPGP aláírt üzenet",
 		"ENCRYPTED_MESSAGE": "OpenPGP kódolt üzenet",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
-		"GOOD_SIGNATURE": "Jó aláírás tőle: %USER%",
-		"ERROR": "OpenPGP hiba: %ERROR%"
+		"BACKUP_ON_SERVER": "Store (encrypted) on server"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "S\/MIME aláírt üzenet",
+		"ENCRYPTED_MESSAGE": "S\/MIME kódolt üzenet"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Szűrő létrehozás?",

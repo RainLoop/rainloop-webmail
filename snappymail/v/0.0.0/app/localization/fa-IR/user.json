@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "زمانی که این عملیات شروع شود قابل لغو یا انصراف نیست.",
 		"TITLE_CLEARING_PROCESS": "خالی کردن شاخه..."
 	},
+	"CRYPTO": {
+		"SIGN": "امضاء",
+		"ENCRYPT": "رمزنگاری",
+		"DECRYPT": "رمزگشایی",
+		"VERIFY": "Verify",
+		"GOOD_SIGNATURE": "امضای صحیح از %USER%",
+		"ERROR": "خطای %TYPE%: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "واردکردن کلید OpenPGP",
 		"POPUP_IMPORT_BUTTON": "وارد‌کردن",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "تولید کلید‌های OpenPGP",
 		"POPUP_GENERATE_BUTTON": "تولید",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "امضاء",
-		"LABEL_ENCRYPT": "رمزنگاری",
-		"BUTTON_DECRYPT": "رمزگشایی",
-		"BUTTON_VERIFY": "Verify",
 		"SIGNED_MESSAGE": "پیام توسط  OpenPGP امضاء شد",
 		"ENCRYPTED_MESSAGE": "پیام توسط  OpenPGP رمزنگاری شد",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
-		"GOOD_SIGNATURE": "امضای صحیح از %USER%",
-		"ERROR": "خطای OpenPGP: %ERROR%"
+		"BACKUP_ON_SERVER": "Store (encrypted) on server"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "پیام توسط  S\/MIME امضاء شد",
+		"ENCRYPTED_MESSAGE": "پیام توسط  S\/MIME رمزنگاری شد"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "یک فیلتر ایجاد شود؟",

@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Một khi bắt đầu, quá trình xóa này sẽ không thể ngưng giữa chừng hay hủy bỏ.",
 		"TITLE_CLEARING_PROCESS": "Đang xóa thư mục..."
 	},
+	"CRYPTO": {
+		"SIGN": "Ký xác nhận",
+		"ENCRYPT": "Mã hóa",
+		"DECRYPT": "Gỡ mã hóa",
+		"VERIFY": "Xác minh",
+		"GOOD_SIGNATURE": "Chữ ký ổn từ %USER%",
+		"ERROR": "Lỗi %TYPE%: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Nhập mật mã OpenPGP",
 		"POPUP_IMPORT_BUTTON": "Nhập",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "Tạo một đôi mật mã OpenPGP",
 		"POPUP_GENERATE_BUTTON": "Tạo",
 		"LABEL_KEY_TYPE": "Loại",
-		"LABEL_SIGN": "Ký xác nhận",
-		"LABEL_ENCRYPT": "Mã hóa",
-		"BUTTON_DECRYPT": "Gỡ mã hóa",
-		"BUTTON_VERIFY": "Xác minh",
 		"SIGNED_MESSAGE": "Thư đã được ký xác nhận bằng mã OpenPGP",
 		"ENCRYPTED_MESSAGE": "Thư đã được mã hóa bởi OpenPGP",
 		"STORE_IN_GNUPG": "Lưu trữ trên máy chủ trong GnuPG",
-		"BACKUP_ON_SERVER": "Lưu trữ (đã được mã hóa) trên máy chủ",
-		"GOOD_SIGNATURE": "Chữ ký ổn từ %USER%",
-		"ERROR": "Lỗi OpenPGP: %ERROR%"
+		"BACKUP_ON_SERVER": "Lưu trữ (đã được mã hóa) trên máy chủ"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "Thư đã được ký xác nhận bằng mã S\/MIME",
+		"ENCRYPTED_MESSAGE": "Thư đã được mã hóa bởi S\/MIME"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Tạo một tấm lọc mới?",

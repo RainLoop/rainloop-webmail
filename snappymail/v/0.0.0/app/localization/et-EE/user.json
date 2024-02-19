@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Juba alustatud protsessi ei saa tühistada või katkestada.",
 		"TITLE_CLEARING_PROCESS": "Tühjendan kausta..."
 	},
+	"CRYPTO": {
+		"SIGN": "Allkirjasta",
+		"ENCRYPT": "Krüpteeri",
+		"DECRYPT": "Dekrüpteeri",
+		"VERIFY": "Verify",
+		"GOOD_SIGNATURE": "Korralik signatuur kasutajalt %USER%",
+		"ERROR": "%TYPE% viga: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Impordi OpenPGP võti",
 		"POPUP_IMPORT_BUTTON": "Impordi",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "Genereeri OpenPGP võtmed",
 		"POPUP_GENERATE_BUTTON": "Genereeri",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "Allkirjasta",
-		"LABEL_ENCRYPT": "Krüpteeri",
-		"BUTTON_DECRYPT": "Dekrüpteeri",
-		"BUTTON_VERIFY": "Verify",
 		"SIGNED_MESSAGE": "OpenPGP abil signeeritud kiri",
 		"ENCRYPTED_MESSAGE": "OpenPGP abil krüpteeritud kiri",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
-		"GOOD_SIGNATURE": "Korralik signatuur kasutajalt %USER%",
-		"ERROR": "OpenPGP viga: %ERROR%"
+		"BACKUP_ON_SERVER": "Store (encrypted) on server"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "S\/MIME abil signeeritud kiri",
+		"ENCRYPTED_MESSAGE": "S\/MIME abil krüpteeritud kiri"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Filtri loomine",

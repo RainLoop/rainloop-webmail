@@ -63,13 +63,13 @@
 				<li data-bind="toggle: doSign, visible: canSign">
 					<a>
 						<i class="fontastic" data-bind="text: doSign() ? '☑' : '☐'"></i>
-						<span data-icon="✍" data-i18n="OPENPGP/LABEL_SIGN"></span>
+						<span data-icon="✍" data-i18n="CRYPTO/SIGN"></span>
 					</a>
 				</li>
 				<li data-bind="toggle: doEncrypt, visible: canEncrypt">
 					<a>
 						<i class="fontastic" data-bind="text: doEncrypt() || 'mailvelope' == viewArea() ? '☑' : '☐'"></i>
-						<span data-icon="🔒" data-i18n="OPENPGP/LABEL_ENCRYPT"></span>
+						<span data-icon="🔒" data-i18n="CRYPTO/ENCRYPT"></span>
 					</a>
 				</li>
 			</menu>
@@ -137,10 +137,10 @@
 		<div style="display:flex">
 			<div class="btn-group" style="flex-grow:1"></div>
 			<div class="btn-group">
-				<a class="btn fontastic" data-bind="toggle: doSign, visible: canSign, css: {'btn-success': doSign()}" data-i18n="[title]OPENPGP/LABEL_SIGN">
+				<a class="btn fontastic" data-bind="toggle: doSign, visible: canSign, css: {'btn-success': doSign()}" data-i18n="[title]CRYPTO/SIGN">
 					✍
 				</a>
-				<a class="btn fontastic" data-bind="toggle: doEncrypt, visible: canEncrypt, css: {'btn-success': doEncrypt() || 'mailvelope' == viewArea()}" data-i18n="[title]OPENPGP/LABEL_ENCRYPT">
+				<a class="btn fontastic" data-bind="toggle: doEncrypt, visible: canEncrypt, css: {'btn-success': doEncrypt() || 'mailvelope' == viewArea()}" data-i18n="[title]CRYPTO/ENCRYPT">
 					🔒
 				</a>
 			</div>

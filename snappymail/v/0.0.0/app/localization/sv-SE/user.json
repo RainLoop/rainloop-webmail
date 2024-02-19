@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "När detta är startat kan det inte avbrytas.",
 		"TITLE_CLEARING_PROCESS": "Rensar mappen..."
 	},
+	"CRYPTO": {
+		"SIGN": "Signera",
+		"ENCRYPT": "Kryptera",
+		"DECRYPT": "Avkryptera",
+		"VERIFY": "Verify",
+		"GOOD_SIGNATURE": "Godkänd signatur för %USER%",
+		"ERROR": "%TYPE%-fel: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Import av OpenPGP-nyckel",
 		"POPUP_IMPORT_BUTTON": "Importera",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "Skapa OpenPGP-nycklar",
 		"POPUP_GENERATE_BUTTON": "Skapa",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "Signera",
-		"LABEL_ENCRYPT": "Kryptera",
-		"BUTTON_DECRYPT": "Avkryptera",
-		"BUTTON_VERIFY": "Verify",
 		"SIGNED_MESSAGE": "OpenPGP-signerat meddelande",
 		"ENCRYPTED_MESSAGE": "OpenPGP-krypterat meddelande",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
-		"GOOD_SIGNATURE": "Godkänd signatur för %USER%",
-		"ERROR": "OpenPGP-fel: %ERROR%"
+		"BACKUP_ON_SERVER": "Store (encrypted) on server"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "S\/MIME-signerat meddelande",
+		"ENCRYPTED_MESSAGE": "S\/MIME-krypterat meddelande"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Skapa ett filter?",

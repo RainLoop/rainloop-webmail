@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "После начала очистки, процесс <strong style=\"color:red\">нельзя<\/strong> будет остановить или отменить.",
 		"TITLE_CLEARING_PROCESS": "Очистка папки..."
 	},
+	"CRYPTO": {
+		"SIGN": "Подпись",
+		"ENCRYPT": "Шифрование",
+		"DECRYPT": "Расшифровать",
+		"VERIFY": "Проверить",
+		"GOOD_SIGNATURE": "Подтвержденная сигнатура для %USER%",
+		"ERROR": "%TYPE% ошибка: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Импорт OpenPGP ключа",
 		"POPUP_IMPORT_BUTTON": "Импорт",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "Генерация OpenPGP ключа",
 		"POPUP_GENERATE_BUTTON": "Создать",
 		"LABEL_KEY_TYPE": "Тип",
-		"LABEL_SIGN": "Подпись",
-		"LABEL_ENCRYPT": "Шифрование",
-		"BUTTON_DECRYPT": "Расшифровать",
-		"BUTTON_VERIFY": "Проверить",
 		"SIGNED_MESSAGE": "OpenPGP подписанное сообщение",
 		"ENCRYPTED_MESSAGE": "OpenPGP шифрованное сообщение",
 		"STORE_IN_GNUPG": "Хранить на сервере в GnuPG",
-		"BACKUP_ON_SERVER": "Хранить (с шифрованием) на сервере",
-		"GOOD_SIGNATURE": "Подтвержденная сигнатура для %USER%",
-		"ERROR": "OpenPGP ошибка: %ERROR%"
+		"BACKUP_ON_SERVER": "Хранить (с шифрованием) на сервере"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "S\/MIME подписанное сообщение",
+		"ENCRYPTED_MESSAGE": "S\/MIME шифрованное сообщение"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Создать фильтр?",

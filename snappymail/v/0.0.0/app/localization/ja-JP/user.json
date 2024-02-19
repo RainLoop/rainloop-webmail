@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "一度始めると、中止やキャンセルができません。",
 		"TITLE_CLEARING_PROCESS": "フォルダを消去しています..."
 	},
+	"CRYPTO": {
+		"SIGN": "署名",
+		"ENCRYPT": "暗号化",
+		"DECRYPT": "復号化",
+		"VERIFY": "Verify",
+		"GOOD_SIGNATURE": "%USER%からの正しい署名",
+		"ERROR": "%TYPE% エラー: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "OpenPGPキーをインポート",
 		"POPUP_IMPORT_BUTTON": "インポート",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "OpenPGPキーを生成",
 		"POPUP_GENERATE_BUTTON": "生成",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "署名",
-		"LABEL_ENCRYPT": "暗号化",
-		"BUTTON_DECRYPT": "復号化",
-		"BUTTON_VERIFY": "Verify",
 		"SIGNED_MESSAGE": "OpenPGP署名済みメッセージ",
 		"ENCRYPTED_MESSAGE": "OpenPGP暗号化メッセージ",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
-		"GOOD_SIGNATURE": "%USER%からの正しい署名",
-		"ERROR": "OpenPGP エラー: %ERROR%"
+		"BACKUP_ON_SERVER": "Store (encrypted) on server"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "S\/MIME署名済みメッセージ",
+		"ENCRYPTED_MESSAGE": "S\/MIME暗号化メッセージ"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "フィルターを作成しますか?",

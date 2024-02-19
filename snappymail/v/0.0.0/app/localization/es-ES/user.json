@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Una vez comenzado el proceso no se puede abortar ni cancelar.",
 		"TITLE_CLEARING_PROCESS": "Purgando carpeta..."
 	},
+	"CRYPTO": {
+		"SIGN": "Firmar",
+		"ENCRYPT": "Encriptar",
+		"DECRYPT": "Descifrar",
+		"VERIFY": "Verify",
+		"GOOD_SIGNATURE": "Buena firma de %USER%",
+		"ERROR": "Error %TYPE%: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importar clave OpenPGP",
 		"POPUP_IMPORT_BUTTON": "Importar",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "Generar clave OpenPGP",
 		"POPUP_GENERATE_BUTTON": "Generar",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "Firmar",
-		"LABEL_ENCRYPT": "Encriptar",
-		"BUTTON_DECRYPT": "Descifrar",
-		"BUTTON_VERIFY": "Verify",
 		"SIGNED_MESSAGE": "Mensaje firmado mediante OpenPGP",
 		"ENCRYPTED_MESSAGE": "Mensaje cifrado mediante OpenPGP",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
-		"GOOD_SIGNATURE": "Buena firma de %USER%",
-		"ERROR": "Error OpenPGP: %ERROR%"
+		"BACKUP_ON_SERVER": "Store (encrypted) on server"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "Mensaje firmado mediante S\/MIME",
+		"ENCRYPTED_MESSAGE": "Mensaje cifrado mediante S\/MIME"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "¿Crear un filtro?",

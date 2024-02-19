@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "Tega postopka ne bo mogoče preklicati ali zaustaviti.",
 		"TITLE_CLEARING_PROCESS": "Čistim mapo."
 	},
+	"CRYPTO": {
+		"SIGN": "Podpis",
+		"ENCRYPT": "Šifriranje",
+		"DECRYPT": "Dešifriraj",
+		"VERIFY": "Verify",
+		"GOOD_SIGNATURE": "Dober podpis od %USER%",
+		"ERROR": "%TYPE% napaka: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Uvoz OpenPGP ključa",
 		"POPUP_IMPORT_BUTTON": "Uvozi",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "Generiraj OpenPGP ključe",
 		"POPUP_GENERATE_BUTTON": "Generiraj",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "Podpis",
-		"LABEL_ENCRYPT": "Šifriranje",
-		"BUTTON_DECRYPT": "Dešifriraj",
-		"BUTTON_VERIFY": "Verify",
 		"SIGNED_MESSAGE": "Sporočilo, podpisano z OpenPGP",
 		"ENCRYPTED_MESSAGE": "Sporočilo, šifrirano z OpenPGP",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
-		"GOOD_SIGNATURE": "Dober podpis od %USER%",
-		"ERROR": "OpenPGP napaka: %ERROR%"
+		"BACKUP_ON_SERVER": "Store (encrypted) on server"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "Sporočilo, podpisano z S\/MIME",
+		"ENCRYPTED_MESSAGE": "Sporočilo, šifrirano z S\/MIME"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Ustvarim filter?",

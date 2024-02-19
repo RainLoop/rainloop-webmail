@@ -274,6 +274,14 @@
 		"DANGER_DESC_HTML_2": "في حال بدء العملية , فلا يمكن ايقافها او الغائها",
 		"TITLE_CLEARING_PROCESS": "...يتم دمج المجلد"
 	},
+	"CRYPTO": {
+		"SIGN": "تسجيل",
+		"ENCRYPT": "تشفير",
+		"DECRYPT": "فك تشفير",
+		"VERIFY": "Verify",
+		"GOOD_SIGNATURE": "توقيع جيد من  %USER%",
+		"ERROR": "%TYPE% error: %ERROR%"
+	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "OpenPGP استيراد مفتاح",
 		"POPUP_IMPORT_BUTTON": "استيراد",
@@ -282,16 +290,14 @@
 		"POPUP_GENERATE_TITLE": "OpenPGP توليد مفتاح",
 		"POPUP_GENERATE_BUTTON": "قم بالتوليد",
 		"LABEL_KEY_TYPE": "Type",
-		"LABEL_SIGN": "تسجيل",
-		"LABEL_ENCRYPT": "تشفير",
-		"BUTTON_DECRYPT": "فك تشفير",
-		"BUTTON_VERIFY": "Verify",
 		"SIGNED_MESSAGE": "OpenPGP signed message",
 		"ENCRYPTED_MESSAGE": "OpenPGP encrypted message",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server",
-		"GOOD_SIGNATURE": "توقيع جيد من  %USER%",
-		"ERROR": "OpenPGP error: %ERROR%"
+		"BACKUP_ON_SERVER": "Store (encrypted) on server"
+	},
+	"SMIME": {
+		"SIGNED_MESSAGE": "S\/MIME signed message",
+		"ENCRYPTED_MESSAGE": "S\/MIME encrypted message"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "إنشاء عامل تصفية؟",
