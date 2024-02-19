@@ -1239,31 +1239,43 @@ trait Messages
 				$oMessage->SubParts->Clear();
 				$oMessage->Attachments()->Clear();
 
+				$detached = true;
+
 				$SMIME = new \SnappyMail\SMime\OpenSSL;
+				$SMIME->setCertificate($sCertificate);
 				$SMIME->setPrivateKey($sPrivateKey, $sPassphrase);
-				$sSignature = $SMIME->sign($tmp, $sCertificate);
+				$sSignature = $SMIME->sign($tmp, $detached);
 
 				if (!$sSignature) {
-					throw new \Exception('S/MIME sign() failed');
+					throw new \RuntimeException('S/MIME sign() failed');
 				}
 
 				$oPart = new MimePart;
-				$oPart->Headers->AddByName(
-					MimeEnumHeader::CONTENT_TYPE,
-					'multipart/signed; micalg="sha-512"; protocol="application/pkcs7-signature"'
-				);
 				$oMessage->SubParts->append($oPart);
+				if ($detached) {
+					$oPart->Headers->AddByName(
+						MimeEnumHeader::CONTENT_TYPE,
+						'multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature"'
+					);
 
-				$fp = $tmp->fopen();
-				\rewind($fp);
-				$oBody->Raw = $fp;
-				$oPart->SubParts->append($oBody);
+					$fp = $tmp->fopen();
+					\rewind($fp);
+					$oBody->Raw = $fp;
+					$oPart->SubParts->append($oBody);
 
-				$oSignaturePart = new MimePart;
-				$oSignaturePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'application/pkcs7-signature; name="signature.p7s"');
-				$oSignaturePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, 'base64');
-				$oSignaturePart->Body = $sSignature;
-				$oPart->SubParts->append($oSignaturePart);
+					$oSignaturePart = new MimePart;
+					$oSignaturePart->Headers->AddByName(MimeEnumHeader::CONTENT_TYPE, 'application/pkcs7-signature; name="signature.p7s"');
+					$oSignaturePart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, 'base64');
+					$oSignaturePart->Body = $sSignature;
+					$oPart->SubParts->append($oSignaturePart);
+				} else {
+					$oPart->Headers->AddByName(
+						MimeEnumHeader::CONTENT_TYPE,
+						'application/pkcs7-mime; smime-type=signed-data; name="smime.p7m"'
+					);
+					$oPart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, 'base64');
+					$oPart->Body = $sSignature;
+				}
 			}
 		}
 

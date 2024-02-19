@@ -103,7 +103,7 @@ class Part
 			&& 2 === \count($this->SubParts)
 			&& ContentType::isPkcs7Signature($this->SubParts[1]->ContentType())
 		) || ($header
-			&& \preg_match('#application/pkcs7-mime.+smime-type=["\']?signed-data#si', $header->FullValue())
+			&& \preg_match('#application/(x-)?pkcs7-mime.+smime-type=["\']?signed-data#si', $header->FullValue())
 		);
 	}
 

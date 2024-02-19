@@ -10,34 +10,50 @@ class OpenSSL
 	private int $flags = 0;
 	private int $cipher_algo = \OPENSSL_CIPHER_AES_128_CBC;
 	private ?string $untrusted_certificates_filename = null;
+
+	// Used for sign and decrypt
 	private $certificate; // OpenSSLCertificate|array|string
-	private $private_key; // OpenSSLAsymmetricKey|OpenSSLCertificate|array|string
+	private $privateKey; // OpenSSLAsymmetricKey|OpenSSLCertificate|array|string
 
 	public static function isSupported() : bool
 	{
 		return \defined('PKCS7_DETACHED');
 	}
 
-	public function setPrivateKey($private_key = null,
+	public function setCertificate(/*OpenSSLCertificate|string*/$certificate)
+	{
+		$this->certificate = \openssl_x509_read($certificate);
+		if (!$this->certificate) {
+			throw new \RuntimeException('OpenSSL x509: ' . \openssl_error_string());
+		}
+		if ($this->privateKey && !\openssl_x509_check_private_key($this->certificate, $this->privateKey)) {
+			throw new \RuntimeException('OpenSSL x509: ' . \openssl_error_string());
+		}
+	}
+
+	public function setPrivateKey(/*OpenSSLAsymmetricKey|string*/$privateKey,
 		#[\SensitiveParameter]
 		?string $passphrase = null
 	) : void
 	{
-		$this->private_key = \openssl_pkey_get_private($private_key, $passphrase);
-		if (!$this->private_key) {
+		$this->privateKey = \openssl_pkey_get_private($privateKey, $passphrase);
+		if (!$this->privateKey) {
+			throw new \RuntimeException('OpenSSL setPrivateKey: ' . \openssl_error_string());
+		}
+		if ($this->certificate && !\openssl_x509_check_private_key($this->certificate, $this->privateKey)) {
 			throw new \RuntimeException('OpenSSL setPrivateKey: ' . \openssl_error_string());
 		}
 	}
 
-	public function decrypt(string $data, $certificate = null, $private_key = null) : ?string
+	public function decrypt(string $data) : ?string
 	{
 		$input = new Temporary('smimein-');
 		$output = new Temporary('smimeout-');
 		return ($input->putContents($data) && \openssl_pkcs7_decrypt(
 			$input->filename(),
 			$output->filename(),
-			$certificate ?: $this->certificate, // \openssl_pkey_get_public();
-			$private_key ?: $this->private_key  // \openssl_pkey_get_private($private_key, ?string $passphrase = null);
+			$this->certificate,
+			$this->privateKey
 		)) ? $output->getContents() : null;
 	}
 
@@ -61,7 +77,7 @@ class OpenSSL
 		) ? $output->getContents() : null;
 	}
 
-	public function sign(/*string|Temporary*/$input, $certificate = null, $private_key = null)
+	public function sign(/*string|Temporary*/$input, bool $detached = true)
 	{
 		if (\is_string($input)) {
 			$input = new Temporary('smimein-');
@@ -73,18 +89,47 @@ class OpenSSL
 		if (!\openssl_pkcs7_sign(
 			$input->filename(),
 			$output->filename(),
-			$certificate ?: $this->certificate, // \openssl_pkey_get_public();
-			$private_key ?: $this->private_key, // \openssl_pkey_get_private($private_key, ?string $passphrase = null);
+			$this->certificate,
+			$this->privateKey,
 			$this->headers,
-			\PKCS7_DETACHED | \PKCS7_BINARY, // | PKCS7_NOCERTS | PKCS7_NOATTR
+			$detached ? \PKCS7_DETACHED | \PKCS7_BINARY : \PKCS7_BINARY, // | PKCS7_NOCERTS | PKCS7_NOATTR
 			$this->untrusted_certificates_filename
 		)) {
 			throw new \RuntimeException('OpenSSL sign: ' . \openssl_error_string());
 		}
 
-		$body = $output->getContents();
-		if (\preg_match('/\\.p7s"\R\R(.+?)------/s', $body, $match)) {
-			return \trim($match[1]);
+		/**
+		 * Only fetch the signed part
+		 */
+		$fp = $output->fopen();
+		$micalg = '';
+		while (!\feof($fp)) {
+			$line = \fgets($fp);
+			$fp = $output->fopen();
+			while (!\feof($fp)) {
+				$line = \fgets($fp);
+/*
+				if (!$micalg && \str_contains($line, 'Content-Type: multipart/signed')) {
+					\preg_match('/micalg="([^"+])"/', $line, $match);
+					$micalg = $match[1];
+				}
+*/
+				if (($detached && \str_contains($line, 'Content-Type: application/x-pkcs7-signature'))
+				 || (!$detached && \str_contains($line, 'Content-Type: application/x-pkcs7-mime'))
+				) {
+					// Skip headers
+					while (\trim(\fgets($fp)));
+					// Fetch the body
+					$data = '';
+					do {
+						$line = \fgets($fp);
+						if (!\trim($line)) {
+							return $data;
+						}
+						$data .= $line;
+					} while (true);
+				}
+			}
 		}
 
 		throw new \RuntimeException('OpenSSL sign: failed to find p7s');

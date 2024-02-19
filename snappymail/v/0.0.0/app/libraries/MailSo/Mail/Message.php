@@ -320,7 +320,7 @@ class Message implements \JsonSerializable
 				}
 			}
 
-			$gEncryptedParts = $oBodyStructure->SearchByContentType('application/pkcs7-mime');
+			$gEncryptedParts = $oBodyStructure->SearchByContentTypes(['application/pkcs7-mime','application/x-pkcs7-mime']);
 			foreach ($gEncryptedParts as $oPart) {
 				if ($oPart->isSMimeEncrypted()) {
 					$oMessage->smimeEncrypted = [

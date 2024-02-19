@@ -157,7 +157,7 @@ class BodyStructure implements \JsonSerializable
 	public function isSMimeEncrypted() : bool
 	{
 		$type = \strtolower(\trim($this->aContentTypeParams['smime-type'] ?? ''));
-		return 'application/pkcs7-mime' === $this->sContentType
+		return ContentType::isPkcs7Mime($this->sContentType)
 		 && !empty($this->aContentTypeParams['smime-type'])
 		 && ('enveloped-data' === $type || 'authenveloped-data' === $type);
 	}
@@ -171,7 +171,7 @@ class BodyStructure implements \JsonSerializable
 			// The multipart/signed body MUST consist of exactly two parts.
 			&& 2 === \count($this->aSubParts)
 			&& ContentType::isPkcs7Signature($this->aSubParts[1]->ContentType())
-		) || ('application/pkcs7-mime' === $this->sContentType
+		) || (ContentType::isPkcs7Mime($this->sContentType)
 			&& !empty($this->aContentTypeParams['smime-type'])
 			&& 'signed-data' === \strtolower(\trim($this->aContentTypeParams['smime-type']))
 		);
@@ -272,6 +272,13 @@ class BodyStructure implements \JsonSerializable
 		$sContentType = \strtolower($sContentType);
 		return $this->SearchByCallback(function ($oItem) use ($sContentType) {
 			return $sContentType === $oItem->sContentType;
+		});
+	}
+
+	public function SearchByContentTypes(array $aContentTypes) : iterable
+	{
+		return $this->SearchByCallback(function ($oItem) use ($aContentTypes) {
+			return \in_array($oItem->sContentType, $aContentTypes);
 		});
 	}
 

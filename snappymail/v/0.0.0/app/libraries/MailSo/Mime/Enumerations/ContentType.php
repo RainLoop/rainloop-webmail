@@ -25,6 +25,12 @@ abstract class ContentType
 	const PKCS7_SIGNATURE = 'application/pkcs7-signature';
 	const PKCS7_MIME = 'application/pkcs7-mime';
 
+	public static function isPkcs7Mime(string $data) : bool
+	{
+		return 'application/pkcs7-mime' === $data
+			|| 'application/x-pkcs7-mime' === $data;
+	}
+
 	public static function isPkcs7Signature(string $data) : bool
 	{
 		return 'application/pkcs7-signature' === $data

@@ -253,7 +253,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			doSign: false,
 			doEncrypt: false,
 
-			canPgpSign: false,
+			pgpSignKey: false,
 			canPgpEncrypt: false,
 			canMailvelope: false,
 
@@ -334,7 +334,10 @@ export class ComposePopupView extends AbstractViewPopup {
 			attachmentsInProcessCount: () => this.attachmentsInProcess.length,
 			isDraft: () => this.draftsFolder() && this.draftUid(),
 
-			canSign: () => this.canPgpSign() | this.canSMimeSign(),
+			canSign: () => {
+				let s = this.canSMimeSign();
+				return this.pgpSignKey() || s;
+			},
 			canEncrypt: () => this.canPgpEncrypt() | this.canSMimeEncrypt(),
 
 			identitiesOptions: () =>
@@ -365,14 +368,14 @@ export class ComposePopupView extends AbstractViewPopup {
 			},
 
 			from: value => {
-				this.canPgpSign(false);
+				this.pgpSignKey(false);
 				value = getEmail(value);
 				value && PgpUserStore.getKeyForSigning(value).then(result => {
 					console.log({
 						email: value,
-						canPgpSign:result
+						pgpSignKey:result
 					});
-					this.canPgpSign(result)
+					this.pgpSignKey(result)
 				});
 				this.initPgpEncrypt();
 			},
@@ -1458,7 +1461,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				linkedData: []
 			},
 			recipients = draft ? [identity.email()] : this.allRecipients(),
-			sign = !draft && this.doSign() && (this.canPgpSign() || this.canSMimeSign()),
+			sign = !draft && this.doSign() && (this.pgpSignKey() || this.canSMimeSign()),
 			encrypt = this.doEncrypt() && (this.canPgpEncrypt() || this.canSMimeEncrypt()),
 			isHtml = this.oEditor.isHtml();
 
