@@ -225,7 +225,7 @@ class Part
 		$this->addEncrypted($sEncrypted, 'application/pgp-encrypted');
 	}
 
-	public function addSMimepEncrypted(string $sEncrypted)
+	public function addSMimeEncrypted(string $sEncrypted)
 	{
 		$this->addEncrypted($sEncrypted, 'application/pkcs7-mime');
 	}

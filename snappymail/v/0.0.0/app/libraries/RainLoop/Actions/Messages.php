@@ -1194,7 +1194,7 @@ trait Messages
 				}
 */
 				$sEncrypted = $SMIME->encrypt($tmp, $aCertificates);
-				$oMessage->addSMimepEncrypted($sEncrypted);
+				$oMessage->addSMimeEncrypted($sEncrypted);
 			}
 		}
 
