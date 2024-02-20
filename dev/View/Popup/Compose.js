@@ -1538,8 +1538,10 @@ export class ComposePopupView extends AbstractViewPopup {
 				} else if (this.canSMimeSign()) {
 					params.signCertificate = identity.smimeCertificate();
 					params.signPrivateKey = identity.smimeKey();
-					const pass = await AskPopupView.password('S/MIME key', 'CRYPTO/SIGN');
-					params.signPassphrase = pass?.password;
+					if (identity.smimeKey().includes('-----BEGIN ENCRYPTED PRIVATE KEY-----')) {
+						const pass = await AskPopupView.password('S/MIME private key', 'CRYPTO/SIGN');
+						params.signPassphrase = pass?.password;
+					}
 				}
 			}
 			if (encrypt) {
@@ -1555,7 +1557,7 @@ export class ComposePopupView extends AbstractViewPopup {
 					params.encryptFingerprints = JSON.stringify(GnuPGUserStore.getPublicKeyFingerprints(recipients));
 //				} else {
 //					// S/MIME
-//					params.encryptCertificates = '';
+//					params.encryptCertificates = [];
 				} else {
 					throw 'Encryption with ' + encrypt + ' not yet implemented';
 				}
