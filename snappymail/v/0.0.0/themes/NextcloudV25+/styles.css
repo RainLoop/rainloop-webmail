@@ -1850,8 +1850,8 @@ html.sm-msgView-bottom #rl-app .messageView {
 	height: 30px;
 }
 
-#rl-app .messageView .openpgp-control.encrypted,
-#rl-app .messageView .openpgp-control.signed {
+#rl-app .messageView .crypto-control.encrypted,
+#rl-app .messageView .crypto-control.signed {
 	border-radius: var(--nc-border-radius);
 }
 
