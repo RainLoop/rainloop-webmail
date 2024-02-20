@@ -3,6 +3,7 @@
 namespace RainLoop\Model;
 
 use MailSo\Base\Utils;
+use SnappyMail\SensitiveString;
 
 class Identity implements \JsonSerializable
 {
@@ -27,8 +28,8 @@ class Identity implements \JsonSerializable
 	private bool $pgpEncrypt = false;
 	private bool $pgpSign = false;
 
-	private string $SMimeKey = '';
-	private string $SMimeCertificate = '';
+	private ?SensitiveString $smimeKey = null;
+	private string $smimeCertificate = '';
 
 	function __construct(string $sId = '', string $sEmail = '')
 	{
@@ -100,8 +101,8 @@ class Identity implements \JsonSerializable
 			$this->sSentFolder = isset($aData['sentFolder']) ? $aData['sentFolder'] : '';
 			$this->pgpEncrypt = !empty($aData['pgpEncrypt']);
 			$this->pgpSign = !empty($aData['pgpSign']);
-			$this->SMimeKey = isset($aData['smimeKey']) ? $aData['smimeKey'] : '';
-			$this->SMimeCertificate = isset($aData['smimeCertificate']) ? $aData['smimeCertificate'] : '';
+			$this->smimeKey = new SensitiveString(isset($aData['smimeKey']) ? $aData['smimeKey'] : '');
+			$this->smimeCertificate = isset($aData['smimeCertificate']) ? $aData['smimeCertificate'] : '';
 			return true;
 		}
 
@@ -123,8 +124,8 @@ class Identity implements \JsonSerializable
 			'sentFolder' => $this->sSentFolder,
 			'pgpEncrypt' => $this->pgpEncrypt,
 			'pgpSign' => $this->pgpSign,
-			'smimeKey' => $this->SMimeKey,
-			'smimeCertificate' => $this->SMimeCertificate
+			'smimeKey' => (string) $this->smimeKey,
+			'smimeCertificate' => $this->smimeCertificate
 		);
 	}
 
@@ -144,8 +145,8 @@ class Identity implements \JsonSerializable
 			'sentFolder' => $this->sSentFolder,
 			'pgpEncrypt' => $this->pgpEncrypt,
 			'pgpSign' => $this->pgpSign,
-			'smimeKey' => $this->SMimeKey,
-			'smimeCertificate' => $this->SMimeCertificate
+			'smimeKey' => (string) $this->smimeKey,
+			'smimeCertificate' => $this->smimeCertificate
 		);
 	}
 

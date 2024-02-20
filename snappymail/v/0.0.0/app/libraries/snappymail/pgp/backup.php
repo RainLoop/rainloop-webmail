@@ -25,7 +25,7 @@ class Backup
 				$key = \SnappyMail\Crypt::Encrypt($key, $hash);
 				$key[1] = \base64_encode($key[1]);
 				$key[2] = \base64_encode($key[2]);
-				$key[] = \hash_hmac('sha1', $key[2], $hash);
+				$key[3] = \hash_hmac('sha1', $key[2], $hash);
 				return !!\file_put_contents("{$dir}{$keyId}.key", \json_encode($key));
 			}
 			if (\str_contains($key, 'PGP PUBLIC KEY')) {

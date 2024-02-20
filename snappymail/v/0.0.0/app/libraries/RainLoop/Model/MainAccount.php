@@ -5,51 +5,62 @@ namespace RainLoop\Model;
 use RainLoop\Utils;
 use RainLoop\Exceptions\ClientException;
 use RainLoop\Providers\Storage\Enumerations\StorageType;
+use SnappyMail\SensitiveString;
 
 class MainAccount extends Account
 {
-	/**
-	 * @var string
-	 */
-	private string $sCryptKey = '';
+	private ?SensitiveString $sCryptKey = null;
 /*
-	public function resealCryptKey(string $sOldPass, string $sNewPass) : string
+	public function resealCryptKey(
+		#[\SensitiveParameter]
+		string $sOldPass,
+		#[\SensitiveParameter]
+		string $sNewPass
+	) : bool
 	{
 		$oStorage = \RainLoop\Api::Actions()->StorageProvider();
-		$sKey = $oStorage->Get($this, StorageType::ROOT, 'cryptkey');
+		$sKey = $oStorage->Get($this, StorageType::ROOT, '.cryptkey');
 		if ($sKey) {
 			$sKey = \SnappyMail\Crypt::DecryptUrlSafe($sKey, $sOldPass);
-			$sKey = \SnappyMail\Crypt::EncryptUrlSafe($sKey, $sNewPass);
-			$oStorage->Put($this, StorageType::ROOT, 'cryptkey', $sKey);
-			$sKey = \SnappyMail\Crypt::DecryptUrlSafe($sKey, $sNewPass);
-			$this->SetCryptKey($sKey);
+			if ($sKey) {
+				$sKey = \SnappyMail\Crypt::EncryptUrlSafe($sKey, $sNewPass);
+				if ($sKey) {
+					$oStorage->Put($this, StorageType::ROOT, '.cryptkey', $sKey);
+					$sKey = \SnappyMail\Crypt::DecryptUrlSafe($sKey, $sNewPass);
+					$this->SetCryptKey($sKey);
+					return true;
+				}
+			}
 		}
+		return false;
 	}
 */
 	public function CryptKey() : string
 	{
 		if (!$this->sCryptKey) {
+			$sKey = \sha1($this->IncPassword() . APP_SALT, true);
 /*
 			// Seal the cryptkey so that people who change their login password
 			// can use the old password to re-seal the cryptkey
 			$oStorage = \RainLoop\Api::Actions()->StorageProvider();
-			$sKey = $oStorage->Get($this, StorageType::ROOT, 'cryptkey');
+			$sKey = $oStorage->Get($this, StorageType::ROOT, '.cryptkey');
 			if (!$sKey) {
-				$sKey = $this->IncPassword();
-//				$sKey = \random_bytes(32);
+				$sKey = \sha1($this->IncPassword() . APP_SALT, true);
 				$sKey = \SnappyMail\Crypt::EncryptUrlSafe($sKey, $this->IncPassword());
-				$oStorage->Put($this, StorageType::ROOT, 'cryptkey', $sKey);
+				$oStorage->Put($this, StorageType::ROOT, '.cryptkey', $sKey);
 			}
 			$sKey = \SnappyMail\Crypt::DecryptUrlSafe($sKey, $this->IncPassword());
-			$this->SetCryptKey($sKey);
 */
-			$this->SetCryptKey($this->IncPassword());
+			$this->SetCryptKey($sKey);
 		}
 		return $this->sCryptKey;
 	}
 
-	public function SetCryptKey(string $sKey) : void
+	public function SetCryptKey(
+		#[\SensitiveParameter]
+		string $sKey
+	) : void
 	{
-		$this->sCryptKey = \sha1($sKey . APP_SALT, true);
+		$this->sCryptKey = new SensitiveString($sKey);
 	}
 }
