@@ -623,14 +623,6 @@ export class MailMessageView extends AbstractViewRight {
 	}
 
 	async smimeDecrypt() {
-/*
-		$sCertificate = $this->GetActionParam('signCertificate', '');
-		$sPrivateKey = $this->GetActionParam('signPrivateKey', '');
-		$sPassphrase = $this->GetActionParam('passphrase', '');
-
-		// TODO: find private key and certificate to decrypt
-		const oMessage = currentMessage();
-*/
 		const message = currentMessage();
 		let data = message.smimeEncrypted(); // { partId: "1" }
 		const addresses = message.from.concat(message.to, message.cc, message.bcc).map(item => item.email),
@@ -642,7 +634,7 @@ export class MailMessageView extends AbstractViewRight {
 //			data.bodyPart = data.bodyPart?.raw;
 			data.certificate = identity.smimeCertificate();
 			data.privateKey = identity.smimeKey();
-			if (identity.smimeKey().includes('-----BEGIN ENCRYPTED PRIVATE KEY-----')) {
+			if (identity.smimeKeyEncrypted()) {
 				const pass = await AskPopupView.password('S/MIME private key', 'CRYPTO/DECRYPT');
 				data.passphrase = pass?.password;
 			}
@@ -672,7 +664,7 @@ export class MailMessageView extends AbstractViewRight {
 						message.html() ? message.viewHtml() : message.viewPlain();
 						response.Result.body = null;
 					}
-					message.smimeVerified(response.Result);
+					message.smimeVerified(true);
 				}
 			});
 		}

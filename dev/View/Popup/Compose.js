@@ -1400,6 +1400,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				|| SMimeUserStore.find(certificate => email == certificate.emailAddress && certificate.smimeencrypt)
 			).length : 0;
 		this.canSMimeEncrypt(length && length === count);
+		console.log({canSMimeEncrypt:this.canSMimeEncrypt()});
 	}
 
 	async getMessageRequestParams(sSaveFolder, draft)
@@ -1537,7 +1538,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				} else if (this.canSMimeSign()) {
 					params.signCertificate = identity.smimeCertificate();
 					params.signPrivateKey = identity.smimeKey();
-					if (identity.smimeKey().includes('-----BEGIN ENCRYPTED PRIVATE KEY-----')) {
+					if (identity.smimeKeyEncrypted()) {
 						const pass = await AskPopupView.password('S/MIME private key', 'CRYPTO/SIGN');
 						params.signPassphrase = pass?.password;
 					}

@@ -1,5 +1,5 @@
 import { AbstractModel } from 'Knoin/AbstractModel';
-import { addObservablesTo } from 'External/ko';
+import { addObservablesTo, addComputablesTo } from 'External/ko';
 
 export class IdentityModel extends AbstractModel {
 	/**
@@ -29,6 +29,12 @@ export class IdentityModel extends AbstractModel {
 			smimeCertificate: '',
 
 			askDelete: false
+		});
+
+		addComputablesTo(this, {
+			smimeKeyEncrypted: () => this.smimeKey().includes('-----BEGIN ENCRYPTED PRIVATE KEY-----')
+//			smimeKeyValid: () => this.smimeKeyEncrypted() | this.smimeKey().includes('-----BEGIN PRIVATE KEY-----')
+//			smimeCertificateValid: () => this.smimeKey().includes('-----BEGIN CERTIFICATE-----')
 		});
 	}
 
