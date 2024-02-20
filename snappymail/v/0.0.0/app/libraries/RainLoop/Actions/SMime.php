@@ -71,6 +71,47 @@ trait SMime
 		return $this->DefaultResponse($result ?: false);
 	}
 
+	public function DoSMimeDecryptMessage() : array
+	{
+		$sFolderName = $this->GetActionParam('folder', '');
+		$iUid = (int) $this->GetActionParam('uid', 0);
+		$sPartId = $this->GetActionParam('partId', '');
+		$sCertificate = $this->GetActionParam('certificate', '');
+		$sPrivateKey = $this->GetActionParam('privateKey', '');
+		$sPassphrase = $this->GetActionParam('passphrase', '');
+		$this->logMask($sPassphrase);
+
+		$this->initMailClientConnection();
+		$oImapClient = $this->ImapClient();
+		$oImapClient->FolderExamine($sFolderName);
+
+		if ('TEXT' === $sPartId) {
+			$oFetchResponse = $oImapClient->Fetch([
+				FetchType::BODY_PEEK.'['.$sPartId.']',
+				// An empty section specification refers to the entire message, including the header.
+				// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
+				FetchType::BODY_HEADER_PEEK
+			], $iUid, true)[0];
+			$sBody = $oFetchResponse->GetFetchValue(FetchType::BODY_HEADER);
+		} else {
+			$oFetchResponse = $oImapClient->Fetch([
+				FetchType::BODY_PEEK.'['.$sPartId.']',
+				// An empty section specification refers to the entire message, including the header.
+				// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
+				FetchType::BODY_PEEK.'['.$sPartId.'.MIME]'
+			], $iUid, true)[0];
+			$sBody = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sPartId.'.MIME]');
+		}
+		$sBody .= $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sPartId.']');
+
+		$SMIME = $this->SMIME();
+		$SMIME->setCertificate($sCertificate);
+		$SMIME->setPrivateKey($sPrivateKey, $sPassphrase);
+		$result = $SMIME->decrypt($sBody);
+
+		return $this->DefaultResponse($result ?: false);
+	}
+
 	public function DoSMimeVerifyMessage() : array
 	{
 		$sFolderName = $this->GetActionParam('folder', '');

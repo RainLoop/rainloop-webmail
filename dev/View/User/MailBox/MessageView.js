@@ -54,6 +54,9 @@ import { showScreenPopup } from 'Knoin/Knoin';
 import { OpenPgpImportPopupView } from 'View/Popup/OpenPgpImport';
 import { GnuPGUserStore } from 'Stores/User/GnuPG';
 import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
+import { IdentityUserStore } from 'Stores/User/Identity';
+
+import { AskPopupView } from 'View/Popup/Ask';
 
 const
 	oMessageScrollerDom = () => elementById('messageItem') || {},
@@ -619,11 +622,39 @@ export class MailMessageView extends AbstractViewRight {
 		});
 	}
 
-	smimeDecrypt() {
+	async smimeDecrypt() {
 /*
+		$sCertificate = $this->GetActionParam('signCertificate', '');
+		$sPrivateKey = $this->GetActionParam('signPrivateKey', '');
+		$sPassphrase = $this->GetActionParam('passphrase', '');
+
 		// TODO: find private key and certificate to decrypt
 		const oMessage = currentMessage();
 */
+		const message = currentMessage();
+		let data = message.smimeEncrypted(); // { partId: "1" }
+		const addresses = message.from.concat(message.to, message.cc, message.bcc).map(item => item.email),
+			identity = IdentityUserStore.find(item => addresses.includes(item.email()));
+		if (data && identity) {
+			data = { ...data }; // clone
+			data.folder = message.folder;
+			data.uid = message.uid;
+//			data.bodyPart = data.bodyPart?.raw;
+			data.certificate = identity.smimeCertificate();
+			data.privateKey = identity.smimeKey();
+			if (identity.smimeKey().includes('-----BEGIN ENCRYPTED PRIVATE KEY-----')) {
+				const pass = await AskPopupView.password('S/MIME private key', 'CRYPTO/DECRYPT');
+				data.passphrase = pass?.password;
+			}
+
+			Remote.post('SMimeDecryptMessage', null, data).then(response => {
+				if (response?.Result) {
+					message.smimeDecrypted(true);
+					MimeToMessage(response.Result, message);
+					message.html() ? message.viewHtml() : message.viewPlain();
+				}
+			});
+		}
 	}
 
 	smimeVerify(/*self, event*/) {
