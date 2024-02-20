@@ -1,3 +1,29 @@
+## 2.35.0 – 2024-02-20
+
+### Added
+- S/MIME support
+  [#259](https://github.com/the-djmaze/snappymail/issues/259)
+
+### Changed
+- Disable IMAP METADATA by default (hardly used)
+- Update Polish translation by @tinola
+- Rename CSS .openpgp-control to .crypto-control
+- Renamed some methods in PHP
+
+### Fixed
+- When moving a folder/mailbox check for parent delimiter
+- Mask `passphrase` in the logs for PHP < 8.2
+- Added some missing translations
+- Sign messages using PGP
+- Check for CONDSTORE or QRESYNC to get the HIGHESTMODSEQ
+- Unable to login on certain IMAP server since 2.34.2
+  [#1438](https://github.com/the-djmaze/snappymail/issues/1438)
+
+### Nextcloud
+- Save as .eml
+  [#1425](https://github.com/the-djmaze/snappymail/issues/1425)
+
+
 ## 2.34.2 – 2024-02-14
 
 ### Fixed

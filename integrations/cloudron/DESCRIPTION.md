@@ -1,4 +1,4 @@
-This app packages SnappyMail <upstream>2.34.2</upstream>.
+This app packages SnappyMail <upstream>2.35.0</upstream>.
 
 SnappyMail is a simple, modern, lightweight & fast web-based email client.
 

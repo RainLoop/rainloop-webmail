@@ -154,8 +154,8 @@
 		"HAS_VIRUS_WARNING": "WAARSCHUWING: virus gedetecteerd",
 		"TAGS": "Labels",
 		"NEW_TAG": "Nieuwe label",
-		"ENABLE_TRACKING_LINKS": "Enable tracking links",
-		"TRACKING_ENABLED": "Links are now tracked when clicked!"
+		"ENABLE_TRACKING_LINKS": "Schakel trackinglinks in",
+		"TRACKING_ENABLED": "Links worden nu bijgehouden wanneer erop wordt geklikt!"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Belangrijk",
@@ -212,7 +212,7 @@
 		"ADD_MENU_TAGS": "Labels",
 		"BUTTON_SHARE_ALL": "Iedereen",
 		"BUTTON_SYNC": "Synchroniseren (CardDAV)",
-		"SEND_TO_ALL_CONTACT_EMAILS": "Send to all contact emails"
+		"SEND_TO_ALL_CONTACT_EMAILS": "Verzend naar alle e-mailadressen"
 	},
 	"COMPOSE": {
 		"LINK_SHOW_INPUTS": "Toon alle velden",
@@ -281,8 +281,8 @@
 		"VERIFY": "Verifiëren",
 		"GOOD_SIGNATURE": "Juiste handtekening van %USER%",
 		"ERROR": "%TYPE% foutmelding: %ERROR%",
-		"CREATE_SELF_SIGNED": "Create self-signed",
-		"VALID_UNTIL": "Valid until"
+		"CREATE_SELF_SIGNED": "Zelfondertekend certificaat aanmaken",
+		"VALID_UNTIL": "Geldig tot"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importeer OpenPGP sleutel",
@@ -295,11 +295,11 @@
 		"SIGNED_MESSAGE": "OpenPGP ondertekend bericht",
 		"ENCRYPTED_MESSAGE": "OpenPGP versleuteld bericht",
 		"STORE_IN_GNUPG": "Bewaar op de server in GnuPG",
-		"STORE_PUBLIC_KEY_IN_GNUPG": "Store public key on server in GnuPG",
-		"STORE_PRIVATE_KEY_IN_GNUPG": "Store private key on server in GnuPG",
+		"STORE_PUBLIC_KEY_IN_GNUPG": "Bewaar openbare sleutel op de server in GnuPG",
+		"STORE_PRIVATE_KEY_IN_GNUPG": "Bewaar privésleutel op de server in GnuPG",
 		"BACKUP_ON_SERVER": "Bewaar (versleuteld) op de server",
-		"BACKUP_PUBLIC_KEY_ON_SERVER": "Backup public key on server",
-		"BACKUP_PRIVATE_KEY_ON_SERVER": "Backup private key on server"
+		"BACKUP_PUBLIC_KEY_ON_SERVER": "Maak een back-up van de openbare sleutel op de server",
+		"BACKUP_PRIVATE_KEY_ON_SERVER": "Maak een back-up van de privésleutel op de server"
 	},
 	"SMIME": {
 		"SIGNED_MESSAGE": "S\/MIME ondertekend bericht",
@@ -527,7 +527,7 @@
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importeer sleutel",
 		"BUTTON_GENERATE_KEY_PAIR": "Genereer sleutels",
-		"IMPORT_FROM_SERVER": "Import from server",
+		"IMPORT_FROM_SERVER": "Importeren vanaf de server",
 		"TITLE_PRIVATE": "Privé sleutel",
 		"TITLE_PUBLIC": "Publieke sleutel",
 		"GET_MAILVELOPE": "Verkrijg Mailvelope browser add-on."
