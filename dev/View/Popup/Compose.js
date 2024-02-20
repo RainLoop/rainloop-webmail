@@ -903,18 +903,8 @@ export class ComposePopupView extends AbstractViewPopup {
 						let autocrypt = new MimeHeaderAutocryptModel(value);
 						if (autocrypt.addr && autocrypt.keydata) {
 							PgpUserStore.hasPublicKeyForEmails([autocrypt.addr]).then(result =>
-								result || PgpUserStore.importKey(
-									'-----BEGIN PGP PUBLIC KEY BLOCK-----\n\n'
-									 + autocrypt.keydata
-									 + '\n-----END PGP PUBLIC KEY BLOCK-----',
-									 true, true)
-/*
-								result || showScreenPopup(OpenPgpImportPopupView,
-									['-----BEGIN PGP PUBLIC KEY BLOCK-----\n\n'
-									 + autocrypt.keydata
-									 + '\n-----END PGP PUBLIC KEY BLOCK-----']
-								)
-*/
+								result || PgpUserStore.importKey(autocrypt.pem(), true, true)
+//								result || showScreenPopup(OpenPgpImportPopupView, [autocrypt.pem()])
 							);
 						}
 					});

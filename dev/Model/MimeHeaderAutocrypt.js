@@ -24,7 +24,7 @@ export class MimeHeaderAutocryptModel/* extends AbstractModel*/
 		return `addr=${this.addr}; keydata=${this.keydata}`;
 	}
 
-	key() {
+	pem() {
 		return '-----BEGIN PGP PUBLIC KEY BLOCK-----\n\n'
 			+ this.keydata
 			+ '\n-----END PGP PUBLIC KEY BLOCK-----';

@@ -18,6 +18,8 @@ export const
 	BEGIN_PGP_MESSAGE = '-----BEGIN PGP MESSAGE-----',
 //	BEGIN_PGP_SIGNATURE = '-----BEGIN PGP SIGNATURE-----',
 //	BEGIN_PGP_SIGNED = '-----BEGIN PGP SIGNED MESSAGE-----',
+//	BEGIN_PGP_PUBLIC_KEY = '-----BEGIN PGP PUBLIC KEY BLOCK-----',
+//	END_PGP_PUBLIC_KEY = '-----END PGP PUBLIC KEY BLOCK-----',
 
 	PgpUserStore = new class {
 		init() {
