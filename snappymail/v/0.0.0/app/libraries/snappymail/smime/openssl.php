@@ -27,12 +27,12 @@ class OpenSSL
 
 	public function certificates() : array
 	{
-		$keys = [];
-
 		$cacheFile = "{$this->homedir}/certificates.json";
-		if (\file_exists($cacheFile)) {
-			$keys = \json_decode(\file_get_contents($cacheFile), true);
-		} else {
+		$result = \file_exists($cacheFile)
+			? \json_decode(\file_get_contents($cacheFile), true)
+			: null;
+		if (!\is_array($result)) {
+			$keys = [];
 			foreach (\glob("{$this->homedir}/*.key") as $file) {
 				$data = \file_get_contents($file);
 				// Can't check ENCRYPTED PRIVATE KEY
