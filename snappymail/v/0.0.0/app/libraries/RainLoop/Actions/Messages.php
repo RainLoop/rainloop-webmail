@@ -1066,6 +1066,7 @@ trait Messages
 		}
 
 		$sPassphrase = $this->GetActionParam('signPassphrase', '');
+		$this->logMask($sPassphrase);
 
 		$sFingerprint = $this->GetActionParam('signFingerprint', '');
 		if ($sFingerprint) {
