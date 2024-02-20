@@ -194,14 +194,14 @@ class Part
 		return \MailSo\Base\StreamWrappers\SubStreams::CreateStream($aSubStreams);
 	}
 
-	public function addEncrypted(string $sEncrypted, string $sType)
+	public function addPgpEncrypted(string $sEncrypted)
 	{
 		$oPart = new self;
-		$oPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE, 'multipart/encrypted; protocol="'.$sType.'"');
+		$oPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE, 'multipart/encrypted; protocol="application/pgp-encrypted"');
 		$this->SubParts->append($oPart);
 
 		$oSubPart = new self;
-		$oSubPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE, $sType);
+		$oSubPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE, 'application/pgp-encrypted');
 		$oSubPart->Headers->AddByName(Enumerations\Header::CONTENT_DISPOSITION, 'attachment');
 		$oSubPart->Headers->AddByName(Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
 		$oSubPart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString('Version: 1');
@@ -209,25 +209,10 @@ class Part
 
 		$oSubPart = new self;
 		$oSubPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE, 'application/octet-stream');
-		if ('application/pgp-encrypted' === $sType) {
-			$oSubPart->Headers->AddByName(Enumerations\Header::CONTENT_DISPOSITION, 'inline; filename="msg.asc"');
-		}
-		if ('application/pkcs7-mime' === $sType) {
-			$oSubPart->Headers->AddByName(Enumerations\Header::CONTENT_DISPOSITION, 'inline; filename="msg.p7m"');
-		}
+		$oSubPart->Headers->AddByName(Enumerations\Header::CONTENT_DISPOSITION, 'inline; filename="msg.asc"');
 		$oSubPart->Headers->AddByName(Enumerations\Header::CONTENT_TRANSFER_ENCODING, '7Bit');
 		$oSubPart->Body = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString($sEncrypted);
 		$oPart->SubParts->append($oSubPart);
-	}
-
-	public function addPgpEncrypted(string $sEncrypted)
-	{
-		$this->addEncrypted($sEncrypted, 'application/pgp-encrypted');
-	}
-
-	public function addSMimeEncrypted(string $sEncrypted)
-	{
-		$this->addEncrypted($sEncrypted, 'application/pkcs7-mime');
 	}
 
 	public function addPlain(string $sPlain)

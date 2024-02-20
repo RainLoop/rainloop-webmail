@@ -162,7 +162,24 @@ class OpenSSL
 		)) {
 			throw new \RuntimeException('OpenSSL encrypt: ' . \openssl_error_string());
 		}
-		return $output->getContents();
+
+		/**
+		 * Only fetch the body part
+		 */
+		$fp = $output->fopen();
+		// Skip headers
+		while (\trim(\fgets($fp)));
+		// Fetch the body
+		$encrypted = '';
+		do {
+			$line = \fgets($fp);
+			if (!\trim($line)) {
+				return $encrypted;
+			}
+			$encrypted .= $line;
+		} while (true);
+
+		return $data;
 	}
 
 	public function sign(/*string|Temporary*/$input, bool $detached = true)
@@ -188,7 +205,7 @@ class OpenSSL
 		}
 
 		/**
-		 * Only fetch the signed part
+		 * Only fetch the signed body part
 		 */
 		$fp = $output->fopen();
 		$micalg = '';
@@ -209,13 +226,13 @@ class OpenSSL
 					// Skip headers
 					while (\trim(\fgets($fp)));
 					// Fetch the body
-					$data = '';
+					$signature = '';
 					do {
 						$line = \fgets($fp);
 						if (!\trim($line)) {
-							return $data;
+							return $signature;
 						}
-						$data .= $line;
+						$signature .= $line;
 					} while (true);
 				}
 			}

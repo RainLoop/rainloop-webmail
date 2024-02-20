@@ -1179,22 +1179,31 @@ trait Messages
 			}
 			$oMessage->addPgpEncrypted($GPG->encryptStream($fp));
 		} else {
-			$aCertificates = \json_decode($this->GetActionParam('encryptCertificates', ''), true);
+			$aCertificates = $this->GetActionParam('encryptCertificates', []);
 			if ($aCertificates) {
-				$tmp = new \SnappyMail\File\Temporary('mimepart');
-				$tmp->writeFromStream($oMessage->GetRootPart()->ToStream());
+				$oBody = $oMessage->GetRootPart();
 
+				$resource = $oBody->ToStream();
+				\MailSo\Base\StreamFilters\LineEndings::appendTo($resource);
+				$tmp = new \SnappyMail\File\Temporary('mimepart');
+				$tmp->writeFromStream($resource);
+
+				$oBody->Body = null;
+				$oBody->SubParts->Clear();
 				$oMessage->SubParts->Clear();
 				$oMessage->Attachments()->Clear();
 
 				$SMIME = $this->SMIME();
-/*
-				foreach ($aCertificates as $sCertificate) {
-					$SMIME->addEncryptKey($sCertificate);
-				}
-*/
 				$sEncrypted = $SMIME->encrypt($tmp, $aCertificates);
-				$oMessage->addSMimeEncrypted($sEncrypted);
+
+				$oPart = new MimePart;
+				$oMessage->SubParts->append($oPart);
+				$oPart->Headers->AddByName(
+					MimeEnumHeader::CONTENT_TYPE,
+					'application/pkcs7-mime; smime-type=enveloped-data; name="smime.p7m"'
+				);
+				$oPart->Headers->AddByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING, 'base64');
+				$oPart->Body = $sEncrypted;
 			}
 		}
 

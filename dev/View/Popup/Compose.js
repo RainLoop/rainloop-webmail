@@ -1545,24 +1545,34 @@ export class ComposePopupView extends AbstractViewPopup {
 				}
 			}
 			if (encrypt) {
-				Object.entries(PgpUserStore.getPublicKeyOfEmails(recipients) || {}).forEach(([k,v]) =>
-					params.autocrypt.push({addr:k, keydata:v.replace(/-----(BEGIN|END) PGP PUBLIC KEY BLOCK-----/g, '').trim()})
-				);
+				const autocrypt = () =>
+					Object.entries(PgpUserStore.getPublicKeyOfEmails(recipients) || {}).forEach(([k,v]) =>
+						params.autocrypt.push({
+							addr: k,
+							keydata: v.replace(/-----(BEGIN|END) PGP PUBLIC KEY BLOCK-----/g, '').trim()
+						})
+					);
 				if ('openpgp' == encrypt) {
 					// Doesn't encrypt attachments
 					params.encrypted = await OpenPGPUserStore.encrypt(data.toString(), recipients);
 					params.signed = '';
+					autocrypt();
 				} else if ('gnupg' == encrypt) {
 					// Does encrypt attachments
 					params.encryptFingerprints = JSON.stringify(GnuPGUserStore.getPublicKeyFingerprints(recipients));
-//				} else {
-//					// S/MIME
-//					params.encryptCertificates = [];
+					autocrypt();
+/*
+				} else if (identity && identity.smimeCertificate()) {
+					// TODO: S/MIME certificates of all recipients
+					params.encryptCertificates = [identity.smimeCertificate()];
+				}
+*/
 				} else {
 					throw 'Encryption with ' + encrypt + ' not yet implemented';
 				}
 			}
 		}
+
 		return params;
 	}
 }
