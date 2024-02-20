@@ -148,6 +148,57 @@ trait SMime
 
 		$result = $this->SMIME()->verify($sBody, null, !$bDetached);
 
+		// Import the certificates automatically
+		$sBody = $this->GetActionParam('sigPart', '');
+		$sPartId = $this->GetActionParam('sigPartId', '') ?: $sPartId;
+		if (!$sBody && $sPartId) {
+			$sBody = $oImapClient->Fetch(
+				[FetchType::BODY_PEEK.'['.$sPartId.']'],
+				$iUid,
+				true
+			)[0]->GetFetchValue(FetchType::BODY.'['.$sPartId.']');
+		}
+		if ($sBody) {
+			$sBody = \trim($sBody);
+			$certificates = [];
+			\openssl_pkcs7_read(
+				"-----BEGIN CERTIFICATE-----\n\n{$sBody}\n-----END CERTIFICATE-----",
+				$certificates
+			) || \error_log("OpenSSL openssl_pkcs7_read: " . \openssl_error_string());
+			foreach ($certificates as $certificate) {
+				$this->SMIME()->storeCertificate($certificate);
+			}
+		}
+
 		return $this->DefaultResponse($result);
+	}
+
+	public function DoSMimeImportCertificatesFromMessage() : array
+	{
+/*
+		$sBody = $this->GetActionParam('sigPart', '');
+		if (!$sBody) {
+			$sPartId = $this->GetActionParam('sigPartId', '') ?: $this->GetActionParam('partId', '');
+			$this->initMailClientConnection();
+			$oImapClient = $this->ImapClient();
+			$oImapClient->FolderExamine($this->GetActionParam('folder', ''));
+			$sBody = $oImapClient->Fetch([
+				FetchType::BODY_PEEK.'['.$sPartId.']'
+			], (int) $this->GetActionParam('uid', 0), true)[0]
+			->GetFetchValue(FetchType::BODY.'['.$sPartId.']');
+		}
+		$sBody = \trim($sBody);
+		$certificates = [];
+		\openssl_pkcs7_read(
+			"-----BEGIN CERTIFICATE-----\n\n{$sBody}\n-----END CERTIFICATE-----",
+			$certificates
+		);
+
+		foreach ($certificates as $certificate) {
+			$this->SMIME()->storeCertificate($certificate);
+		}
+
+		return $this->DefaultResponse($certificates);
+*/
 	}
 }

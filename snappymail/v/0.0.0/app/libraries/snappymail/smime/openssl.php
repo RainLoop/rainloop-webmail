@@ -30,7 +30,24 @@ class OpenSSL
 		return \file_get_contents("{$this->homedir}/{$filename}");
 	}
 
-	public function certificates() : array
+	public function storeCertificate(string $certificate) : bool
+	{
+		$data = \openssl_x509_parse(\openssl_x509_read($certificate));
+		if (!$data) {
+			\error_log("OpenSSL parse: " . \openssl_error_string());
+			return false;
+		}
+		$key = \str_replace(':', '', $data['extensions']['subjectKeyIdentifier'] ?? $data['hash']);
+		$filename = "{$this->homedir}/{$key}.crt";
+		if (!\file_exists($filename)) {
+			\file_put_contents("{$this->homedir}/{$key}.crt", $certificate);
+//			\unlink("{$this->homedir}/certificates.json");
+			$this->certificates(true);
+		}
+		return true;
+	}
+
+	public function certificates(bool $force = false) : array
 	{
 		$cacheFile = "{$this->homedir}/certificates.json";
 		$result = \file_exists($cacheFile)

@@ -76,6 +76,7 @@ export function MimeToMessage(data, message)
 					message.smimeSigned({
 						micAlg: type.micalg,
 						bodyPart: part,
+						sigPart: part.parts[1], // For importing
 						detached: true
 					});
 				}

@@ -348,6 +348,7 @@ class Message implements \JsonSerializable
 				} else if ($oPart->isSMimeSigned()) {
 					$oMessage->smimeSigned = [
 						'partId' => $oPart->PartID(),
+						'sigPartId' => $oPart->SubParts()[1]->PartID(),
 						'micAlg' => $oHeaders ? (string) $oHeaders->ParameterValue(MimeHeader::CONTENT_TYPE, 'micalg') : '',
 						'detached' => true
 					];
