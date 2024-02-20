@@ -28,46 +28,60 @@ class OpenSSL
 	public function certificates() : array
 	{
 		$keys = [];
-		foreach (\glob("{$this->homedir}/*.key") as $file) {
-			$data = \file_get_contents($file);
-			// Can't check ENCRYPTED PRIVATE KEY
-			if (\str_contains($data, '-----BEGIN PRIVATE KEY-----')) {
-				$keys[] = [\basename($file), $data];
-			}
-		}
-		$result = [];
-		foreach (\glob("{$this->homedir}/*.crt") as $file) {
-			$name = \basename($file);
-			$certificate = \file_get_contents($file);
-			$data = \openssl_x509_parse($certificate);
-			if ($data) {
-				$short = [
-					'file' => \basename($file),
-					'CN' => $data['subject']['CN'],
-					'emailAddress' => $data['subject']['emailAddress'],
-//					'validTo' => \gmdate('Y-m-d\\TH:i:s\\Z', $data['validTo_time_t']),
-					'validTo_time_t' => $data['validTo_time_t'],
-					'smimesign' => false,
-					'smimeencrypt' => false,
-					'privateKey' => null // not found or encrypted
-				];
-				foreach ($data['purposes'] as $purpose) {
-					if ('smimesign' === $purpose[2] || 'smimeencrypt' === $purpose[2]) {
-						// [general availability, tested purpose]
-						$short[$purpose[2]] = $purpose[0] || $purpose[1];
-					}
+
+		$cacheFile = "{$this->homedir}/certificates.json";
+		if (\file_exists($cacheFile)) {
+			$keys = \json_decode(\file_get_contents($cacheFile), true);
+		} else {
+			foreach (\glob("{$this->homedir}/*.key") as $file) {
+				$data = \file_get_contents($file);
+				// Can't check ENCRYPTED PRIVATE KEY
+				if (\str_contains($data, '-----BEGIN PRIVATE KEY-----')) {
+					$keys[] = [\basename($file), $data];
 				}
-				foreach ($keys as $key) {
-					if (\openssl_x509_check_private_key($certificate, $key[1])) {
-						$short['privateKey'] = $key[0];
-						break;
-					}
-				}
-				$result[] = $short;
-			} else {
-				\error_log("OpenSSL parse({$file}): " . \openssl_error_string());
 			}
+			$result = [];
+			foreach (\glob("{$this->homedir}/*.crt") as $file) {
+				$filename = \basename($file);
+				$certificate = \file_get_contents($file);
+				$data = \openssl_x509_parse($certificate);
+				if ($data) {
+					$key = \str_replace(':', '', $data['extensions']['subjectKeyIdentifier'] ?? $data['hash']);
+					if ("{$key}.crt" != $filename && \rename("{$this->homedir}/{$filename}", "{$this->homedir}/{$key}.crt")) {
+						$filename = "{$key}.crt";
+					}
+//					Use $data['extensions']['authorityKeyIdentifier'] to bundle parent certificate
+					$short = [
+						'file' => $filename,
+						'id' => $key,
+						'CN' => $data['subject']['CN'],
+						'emailAddress' => $data['subject']['emailAddress'],
+//						'validTo' => \gmdate('Y-m-d\\TH:i:s\\Z', $data['validTo_time_t']),
+						'validTo_time_t' => $data['validTo_time_t'],
+						'smimesign' => false,
+						'smimeencrypt' => false,
+						'privateKey' => null // not found or encrypted
+					];
+					foreach ($data['purposes'] as $purpose) {
+						if ('smimesign' === $purpose[2] || 'smimeencrypt' === $purpose[2]) {
+							// [general availability, tested purpose]
+							$short[$purpose[2]] = $purpose[0] || $purpose[1];
+						}
+					}
+					foreach ($keys as $key) {
+						if (\openssl_x509_check_private_key($certificate, $key[1])) {
+							$short['privateKey'] = $key[0];
+							break;
+						}
+					}
+					$result[] = $short;
+				} else {
+					\error_log("OpenSSL parse({$file}): " . \openssl_error_string());
+				}
+			}
+			\file_put_contents($cacheFile, \json_encode($result));
 		}
+
 		return $result;
 	}
 

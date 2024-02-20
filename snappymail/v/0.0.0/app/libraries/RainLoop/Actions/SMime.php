@@ -51,20 +51,6 @@ trait SMime
 			$this->SMIME()->certificates()
 		);
 	}
-/*
-DoGetPGPKeys() : array
-DoPgpSearchKey() : array
-DoGnupgDecrypt() : array
-DoGnupgGetKeys() : array
-DoGnupgExportKey() : array
-DoGnupgGenerateKey() : array
-DoGnupgDeleteKey() : array
-DoPgpImportKey() : array
-DoGetStoredPGPKeys() : array
-DoPgpStoreKeyPair() : array
-DoStorePGPKey() : array
-DoPgpVerifyMessage() : array
-*/
 
 	/**
 	 * Can be use by Identity
