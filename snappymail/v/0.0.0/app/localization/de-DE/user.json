@@ -295,7 +295,11 @@
 		"SIGNED_MESSAGE": "OpenPGP-signierte Nachricht",
 		"ENCRYPTED_MESSAGE": "OpenPGP-verschlüsselte Nachricht",
 		"STORE_IN_GNUPG": "Auf dem Server als GnuPG speichern",
-		"BACKUP_ON_SERVER": "Auf dem Server verschlüsselt speichern"
+		"STORE_PUBLIC_KEY_IN_GNUPG": "Store public key on server in GnuPG",
+		"STORE_PRIVATE_KEY_IN_GNUPG": "Store private key on server in GnuPG",
+		"BACKUP_ON_SERVER": "Auf dem Server verschlüsselt speichern",
+		"BACKUP_PUBLIC_KEY_ON_SERVER": "Backup public key on server",
+		"BACKUP_PRIVATE_KEY_ON_SERVER": "Backup private key on server"
 	},
 	"SMIME": {
 		"SIGNED_MESSAGE": "S\/MIME-signierte Nachricht",

@@ -35,7 +35,7 @@
 		<div data-bind="component: {
 			name: 'Checkbox',
 			params: {
-				label: 'Backup public key on server',
+				label: 'OPENPGP/BACKUP_PUBLIC_KEY_ON_SERVER',
 				value: backupPublicKey
 			}
 		}"></div>
@@ -43,7 +43,7 @@
 		<div data-bind="component: {
 			name: 'Checkbox',
 			params: {
-				label: 'Backup private key on server',
+				label: 'OPENPGP/BACKUP_PRIVATE_KEY_ON_SERVER',
 				value: backupPrivateKey
 			}
 		}"></div>
@@ -51,7 +51,7 @@
 		<div data-bind="visible: canGnuPG, component: {
 			name: 'Checkbox',
 			params: {
-				label: 'Store public key on server in GnuPG',
+				label: 'OPENPGP/STORE_PUBLIC_KEY_IN_GNUPG',
 				value: saveGnuPGPublic
 			}
 		}"></div>
@@ -59,7 +59,7 @@
 		<div data-bind="visible: canGnuPG, component: {
 			name: 'Checkbox',
 			params: {
-				label: 'Store private key on server in GnuPG',
+				label: 'OPENPGP/STORE_PRIVATE_KEY_IN_GNUPG',
 				value: saveGnuPGPrivate
 			}
 		}"></div>

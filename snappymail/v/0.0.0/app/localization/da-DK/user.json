@@ -295,7 +295,11 @@
 		"SIGNED_MESSAGE": "OpenPGP signeret meddelelse",
 		"ENCRYPTED_MESSAGE": "OpenPGP krypteret meddelelse",
 		"STORE_IN_GNUPG": "Store on server in GnuPG",
-		"BACKUP_ON_SERVER": "Store (encrypted) on server"
+		"STORE_PUBLIC_KEY_IN_GNUPG": "Store public key on server in GnuPG",
+		"STORE_PRIVATE_KEY_IN_GNUPG": "Store private key on server in GnuPG",
+		"BACKUP_ON_SERVER": "Store (encrypted) on server",
+		"BACKUP_PUBLIC_KEY_ON_SERVER": "Backup public key on server",
+		"BACKUP_PRIVATE_KEY_ON_SERVER": "Backup private key on server"
 	},
 	"SMIME": {
 		"SIGNED_MESSAGE": "S\/MIME signeret meddelelse",
