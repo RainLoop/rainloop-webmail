@@ -1194,6 +1194,17 @@ trait Messages
 				$oMessage->Attachments()->Clear();
 
 				$SMIME = $this->SMIME();
+				$certificates = $SMIME->certificates();
+				// Load certificates by id
+				foreach ($aCertificates as &$sCertificate) {
+					if (!\str_contains($sCertificate, '-----BEGIN CERTIFICATE-----')) {
+						foreach ($certificates as $certificate) {
+							if ($certificate['id'] === $sCertificate) {
+								$sCertificate = $SMIME->getCertificate($certificate['file']);
+							}
+						}
+					}
+				}
 				$sEncrypted = $SMIME->encrypt($tmp, $aCertificates);
 
 				$oPart = new MimePart;

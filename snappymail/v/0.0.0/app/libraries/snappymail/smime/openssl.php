@@ -25,6 +25,11 @@ class OpenSSL
 		$this->homedir = $homedir;
 	}
 
+	public function getCertificate(string $filename)/* : string*/
+	{
+		return \file_get_contents("{$this->homedir}/{$filename}");
+	}
+
 	public function certificates() : array
 	{
 		$cacheFile = "{$this->homedir}/certificates.json";

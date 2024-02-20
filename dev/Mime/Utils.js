@@ -12,7 +12,6 @@ import { EmailModel } from 'Model/Email';
  */
 export function MimeToMessage(data, message)
 {
-	let signed;
 	const struct = ParseMime(data);
 	if (struct.headers) {
 		let html = struct.getByContentType('text/html'),
@@ -65,12 +64,21 @@ export function MimeToMessage(data, message)
 				} else {
 					message.attachments.push(attachment);
 				}
-			} else if ('multipart/signed' === type.value && 'application/pgp-signature' === type.params.protocol) {
-				signed = {
-					micAlg: type.micalg,
-					bodyPart: part.parts[0],
-					sigPart: part.parts[1]
-				};
+			} else if ('multipart/signed' === type.value) {
+				let protocol = type.params.protocol;
+				if ('application/pgp-signature' === protocol) {
+					message.pgpSigned({
+						micAlg: type.micalg,
+						bodyPart: part.parts[0],
+						sigPart: part.parts[1]
+					});
+				} else if ('application/pkcs7-signature' === protocol.replace('x-')) {
+					message.smimeSigned({
+						micAlg: type.micalg,
+						bodyPart: part,
+						detached: true
+					});
+				}
 			}
 		});
 
@@ -81,10 +89,9 @@ export function MimeToMessage(data, message)
 		message.plain(data);
 	}
 
-	if (!signed && message.plain().includes(BEGIN_PGP_MESSAGE)) {
-		signed = true;
+	if (message.plain().includes(BEGIN_PGP_MESSAGE)) {
+		message.pgpSigned(true);
 	}
-	message.pgpSigned(signed);
 
 	// TODO: Verify instantly?
 }

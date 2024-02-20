@@ -33,6 +33,7 @@ import { PgpUserStore } from 'Stores/User/Pgp';
 import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
 import { GnuPGUserStore } from 'Stores/User/GnuPG';
 //import { OpenPgpImportPopupView } from 'View/Popup/OpenPgpImport';
+import { SMimeUserStore } from 'Stores/User/SMime';
 
 import { MessageUserStore } from 'Stores/User/Message';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
@@ -377,21 +378,21 @@ export class ComposePopupView extends AbstractViewPopup {
 					});
 					this.pgpSignKey(result)
 				});
-				this.initPgpEncrypt();
+				this.initEncrypt();
 			},
 
 			cc: value => {
 				if (false === this.showCc() && value.length) {
 					this.showCc(true);
 				}
-				this.initPgpEncrypt();
+				this.initEncrypt();
 			},
 
 			bcc: value => {
 				if (false === this.showBcc() && value.length) {
 					this.showBcc(true);
 				}
-				this.initPgpEncrypt();
+				this.initEncrypt();
 			},
 
 			replyTo: value => {
@@ -410,7 +411,7 @@ export class ComposePopupView extends AbstractViewPopup {
 				if (this.emptyToError() && value.length) {
 					this.emptyToError(false);
 				}
-				this.initPgpEncrypt();
+				this.initEncrypt();
 			},
 
 			attachmentsInProcess: value => {
@@ -1387,7 +1388,7 @@ export class ComposePopupView extends AbstractViewPopup {
 			].join(',').split(',').map(value => getEmail(value.trim())).validUnique();
 	}
 
-	initPgpEncrypt() {
+	initEncrypt() {
 		const recipients = this.allRecipients();
 		PgpUserStore.hasPublicKeyForEmails(recipients).then(result => {
 			console.log({canPgpEncrypt:result});
@@ -1401,6 +1402,14 @@ export class ComposePopupView extends AbstractViewPopup {
 //				this.dropMailvelope();
 			}
 		});
+		const count = recipients.length,
+			identity = this.currentIdentity(),
+			from = (identity.smimeKey() && identity.smimeCertificate()) ? identity.email() : null,
+			length = count ? recipients.filter(email =>
+				email == from
+				|| SMimeUserStore.find(certificate => email == certificate.emailAddress && certificate.smimeencrypt)
+			).length : 0;
+		this.canSMimeEncrypt(length && length === count);
 	}
 
 	async getMessageRequestParams(sSaveFolder, draft)
@@ -1561,12 +1570,13 @@ export class ComposePopupView extends AbstractViewPopup {
 					// Does encrypt attachments
 					params.encryptFingerprints = JSON.stringify(GnuPGUserStore.getPublicKeyFingerprints(recipients));
 					autocrypt();
-/*
-				} else if (identity && identity.smimeCertificate()) {
-					// TODO: S/MIME certificates of all recipients
+				} else if (this.canSMimeEncrypt() && identity && identity.smimeKey() && identity.smimeCertificate()) {
 					params.encryptCertificates = [identity.smimeCertificate()];
-				}
-*/
+					SMimeUserStore.forEach(certificate => {
+						certificate.emailAddress != identity.email()
+						&& recipients.includes(certificate.emailAddress)
+						&& params.encryptCertificates.push(certificate.id)
+					});
 				} else {
 					throw 'Encryption with ' + encrypt + ' not yet implemented';
 				}

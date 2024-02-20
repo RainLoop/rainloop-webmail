@@ -35,7 +35,7 @@ import { AccountUserStore } from 'Stores/User/Account';
 import { ContactUserStore } from 'Stores/User/Contact';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { PgpUserStore } from 'Stores/User/Pgp';
-import { SMimeUserStore } from 'Stores/User/SMime';
+//import { SMimeUserStore } from 'Stores/User/SMime';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { ThemeStore, initThemes } from 'Stores/Theme';
 import { LanguageStore } from 'Stores/Language';
@@ -217,7 +217,8 @@ export class AppUser extends AbstractApp {
 						setInterval(reloadTime, 60000);
 
 						PgpUserStore.init();
-						SMimeUserStore.loadCertificates();
+// TODO:
+//						SMimeUserStore.loadCertificates();
 
 						setTimeout(() => mailToHelper(SettingsGet('mailToEmail')), 500);
 

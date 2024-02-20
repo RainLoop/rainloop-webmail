@@ -114,34 +114,37 @@ trait SMime
 
 	public function DoSMimeVerifyMessage() : array
 	{
-		$sFolderName = $this->GetActionParam('folder', '');
-		$iUid = (int) $this->GetActionParam('uid', 0);
-		$sPartId = $this->GetActionParam('partId', '');
-		$sMicAlg = $this->GetActionParam('micAlg', '');
+		$sBody = $this->GetActionParam('bodyPart', '');
 		$bDetached = !empty($this->GetActionParam('detached', 0));
+		if (!$sBody) {
+			$sFolderName = $this->GetActionParam('folder', '');
+			$iUid = (int) $this->GetActionParam('uid', 0);
+			$sPartId = $this->GetActionParam('partId', '');
+			$sMicAlg = $this->GetActionParam('micAlg', '');
 
-		$this->initMailClientConnection();
-		$oImapClient = $this->ImapClient();
-		$oImapClient->FolderExamine($sFolderName);
+			$this->initMailClientConnection();
+			$oImapClient = $this->ImapClient();
+			$oImapClient->FolderExamine($sFolderName);
 
-		if ('TEXT' === $sPartId) {
-			$oFetchResponse = $oImapClient->Fetch([
-				FetchType::BODY_PEEK.'['.$sPartId.']',
-				// An empty section specification refers to the entire message, including the header.
-				// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
-				FetchType::BODY_HEADER_PEEK
-			], $iUid, true)[0];
-			$sBody = $oFetchResponse->GetFetchValue(FetchType::BODY_HEADER);
-		} else {
-			$oFetchResponse = $oImapClient->Fetch([
-				FetchType::BODY_PEEK.'['.$sPartId.']',
-				// An empty section specification refers to the entire message, including the header.
-				// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
-				FetchType::BODY_PEEK.'['.$sPartId.'.MIME]'
-			], $iUid, true)[0];
-			$sBody = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sPartId.'.MIME]');
+			if ('TEXT' === $sPartId) {
+				$oFetchResponse = $oImapClient->Fetch([
+					FetchType::BODY_PEEK.'['.$sPartId.']',
+					// An empty section specification refers to the entire message, including the header.
+					// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
+					FetchType::BODY_HEADER_PEEK
+				], $iUid, true)[0];
+				$sBody = $oFetchResponse->GetFetchValue(FetchType::BODY_HEADER);
+			} else {
+				$oFetchResponse = $oImapClient->Fetch([
+					FetchType::BODY_PEEK.'['.$sPartId.']',
+					// An empty section specification refers to the entire message, including the header.
+					// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
+					FetchType::BODY_PEEK.'['.$sPartId.'.MIME]'
+				], $iUid, true)[0];
+				$sBody = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sPartId.'.MIME]');
+			}
+			$sBody .= $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sPartId.']');
 		}
-		$sBody .= $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sPartId.']');
 
 		$result = $this->SMIME()->verify($sBody, null, !$bDetached);
 
