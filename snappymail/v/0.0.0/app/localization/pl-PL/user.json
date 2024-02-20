@@ -281,8 +281,8 @@
 		"VERIFY": "Weryfikuj",
 		"GOOD_SIGNATURE": "Poprawnie podpisana przez %USER%",
 		"ERROR": "Błąd %TYPE%: %ERROR%",
-		"CREATE_SELF_SIGNED": "Create self-signed",
-		"VALID_UNTIL": "Valid until"
+		"CREATE_SELF_SIGNED": "Utwórz samodzielnie podpisanym certyfikatem",
+		"VALID_UNTIL": "Ważny do"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importowanie klucza OpenPGP",
@@ -295,11 +295,11 @@
 		"SIGNED_MESSAGE": "Wiadomość podpisana OpenPGP",
 		"ENCRYPTED_MESSAGE": "Wiadomość zaszyfrowana OpenPGP",
 		"STORE_IN_GNUPG": "Przechowuj na serwerze w GnuPG",
-		"STORE_PUBLIC_KEY_IN_GNUPG": "Store public key on server in GnuPG",
-		"STORE_PRIVATE_KEY_IN_GNUPG": "Store private key on server in GnuPG",
-		"BACKUP_ON_SERVER": "Przechowywanie (zaszyfrowane) na serwerze",
-		"BACKUP_PUBLIC_KEY_ON_SERVER": "Backup public key on server",
-		"BACKUP_PRIVATE_KEY_ON_SERVER": "Backup private key on server"
+		"STORE_PUBLIC_KEY_IN_GNUPG": "Przechowuj klucz publiczny na serwerze w GnuPG",
+		"STORE_PRIVATE_KEY_IN_GNUPG": "Przechowuj klucz prywatny na serwerze w GnuPG",
+		"BACKUP_ON_SERVER": "Przechowuj (zaszyfrowane) na serwerze",
+		"BACKUP_PUBLIC_KEY_ON_SERVER": "Utwórz kopię zapasową klucza publicznego na serwerze",
+		"BACKUP_PRIVATE_KEY_ON_SERVER": "Utwórz kopię zapasową klucza prywatnego na serwerze"
 	},
 	"SMIME": {
 		"SIGNED_MESSAGE": "Wiadomość podpisana S\/MIME",
