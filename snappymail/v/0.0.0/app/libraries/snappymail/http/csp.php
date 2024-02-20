@@ -5,7 +5,7 @@
 
 namespace SnappyMail\HTTP;
 
-class CSP
+class CSP implements \Stringable
 {
 	public
 		$report = false,

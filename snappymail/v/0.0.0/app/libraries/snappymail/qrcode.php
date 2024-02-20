@@ -19,7 +19,7 @@
 
 namespace SnappyMail;
 
-class QRCode
+class QRCode implements \Stringable
 {
 
 	const
