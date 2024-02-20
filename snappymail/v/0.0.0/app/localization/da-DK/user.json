@@ -280,7 +280,9 @@
 		"DECRYPT": "Dekrypter",
 		"VERIFY": "Verify",
 		"GOOD_SIGNATURE": "Accepteret signatur for %USER\"",
-		"ERROR": "%TYPE% fejl: %ERROR%"
+		"ERROR": "%TYPE% fejl: %ERROR%",
+		"CREATE_SELF_SIGNED": "Create self-signed",
+		"VALID_UNTIL": "Valid until"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importer OpenPGP nøgle",

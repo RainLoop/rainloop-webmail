@@ -280,7 +280,9 @@
 		"DECRYPT": "Avkryptera",
 		"VERIFY": "Verify",
 		"GOOD_SIGNATURE": "Godkänd signatur för %USER%",
-		"ERROR": "%TYPE%-fel: %ERROR%"
+		"ERROR": "%TYPE%-fel: %ERROR%",
+		"CREATE_SELF_SIGNED": "Create self-signed",
+		"VALID_UNTIL": "Valid until"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Import av OpenPGP-nyckel",

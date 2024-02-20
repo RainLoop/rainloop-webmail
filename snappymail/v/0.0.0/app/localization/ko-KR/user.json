@@ -280,7 +280,9 @@
 		"DECRYPT": "복호화",
 		"VERIFY": "Verify",
 		"GOOD_SIGNATURE": "%USER%(으)로부터 수신한 양호한 서명",
-		"ERROR": "%TYPE% 오류: %ERROR%"
+		"ERROR": "%TYPE% 오류: %ERROR%",
+		"CREATE_SELF_SIGNED": "Create self-signed",
+		"VALID_UNTIL": "Valid until"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "OpenPGP 키 가져오기",

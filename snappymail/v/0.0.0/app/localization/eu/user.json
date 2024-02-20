@@ -280,7 +280,9 @@
 		"DECRYPT": "Deszifratu",
 		"VERIFY": "Egiaztatu",
 		"GOOD_SIGNATURE": "%USER%-en sinadura egokia",
-		"ERROR": "%TYPE% errorea: %ERROR%"
+		"ERROR": "%TYPE% errorea: %ERROR%",
+		"CREATE_SELF_SIGNED": "Create self-signed",
+		"VALID_UNTIL": "Valid until"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Inportatu OpenPGP gakoa",

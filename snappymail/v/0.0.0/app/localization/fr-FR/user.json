@@ -280,7 +280,9 @@
 		"DECRYPT": "Déchiffrer",
 		"VERIFY": "Vérifier",
 		"GOOD_SIGNATURE": "Signature valide pour %USER%",
-		"ERROR": "Erreur %TYPE%: %ERROR%"
+		"ERROR": "Erreur %TYPE%: %ERROR%",
+		"CREATE_SELF_SIGNED": "Create self-signed",
+		"VALID_UNTIL": "Valid until"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importer la clef OpenPGP",

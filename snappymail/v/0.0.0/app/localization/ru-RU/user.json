@@ -280,7 +280,9 @@
 		"DECRYPT": "Расшифровать",
 		"VERIFY": "Проверить",
 		"GOOD_SIGNATURE": "Подтвержденная сигнатура для %USER%",
-		"ERROR": "%TYPE% ошибка: %ERROR%"
+		"ERROR": "%TYPE% ошибка: %ERROR%",
+		"CREATE_SELF_SIGNED": "Create self-signed",
+		"VALID_UNTIL": "Valid until"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Импорт OpenPGP ключа",

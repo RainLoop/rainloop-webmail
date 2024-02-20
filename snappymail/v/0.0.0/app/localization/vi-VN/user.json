@@ -280,7 +280,9 @@
 		"DECRYPT": "Gỡ mã hóa",
 		"VERIFY": "Xác minh",
 		"GOOD_SIGNATURE": "Chữ ký ổn từ %USER%",
-		"ERROR": "Lỗi %TYPE%: %ERROR%"
+		"ERROR": "Lỗi %TYPE%: %ERROR%",
+		"CREATE_SELF_SIGNED": "Create self-signed",
+		"VALID_UNTIL": "Valid until"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Nhập mật mã OpenPGP",

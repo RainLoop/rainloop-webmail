@@ -14,6 +14,8 @@ import { folderListOptionsBuilder } from 'Common/Folders';
 import { i18n } from 'Common/Translator';
 import { defaultOptionsAfterRender } from 'Common/Utils';
 
+import { AskPopupView } from 'View/Popup/Ask';
+
 export class IdentityPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Identity');
@@ -42,16 +44,21 @@ export class IdentityPopupView extends AbstractViewPopup {
 		this.createSelfSigned = this.createSelfSigned.bind(this);
 	}
 
-	createSelfSigned() {
-		let identity = this.identity();
-		Remote.request('SMimeCreateCertificate', (iError, oData) => {
-			if (oData.Result.x509) {
-				identity.smimeKey(oData.Result.pkey);
-				identity.smimeCertificate(oData.Result.x509);
-			}
-		}, {
-			email: identity.email()
-		});
+	async createSelfSigned() {
+		const identity = this.identity(),
+			pass = await AskPopupView.password('', 'CRYPTO/CREATE_SELF_SIGNED');
+		if (pass) {
+			Remote.request('SMimeCreateCertificate', (iError, oData) => {
+				if (oData.Result.x509) {
+					identity.smimeKey(oData.Result.pkey);
+					identity.smimeCertificate(oData.Result.x509);
+				}
+			}, {
+				name: identity.name(),
+				email: identity.email(),
+				passphrase: pass.password
+			});
+		}
 	}
 
 	submitForm(form) {

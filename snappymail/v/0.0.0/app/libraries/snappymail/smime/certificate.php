@@ -55,7 +55,7 @@ class Certificate
 	/**
 	 * Verifies if a certificate can be used for a particular purpose
 	 */
-	public function checkPurpose($purpose, array $cainfo = array(), $untrustedfile = null)/*: bool|int*/
+	public function checkPurpose(int $purpose, array $cainfo = array(), ?string $untrustedfile = null)/*: bool|int*/
 	{
 		if ($this->x509) {
 			return \openssl_x509_checkpurpose($this->x509, $purpose, $cainfo, $untrustedfile);
@@ -80,7 +80,7 @@ class Certificate
 	/**
 	 * Returns the certificate in a PEM encoded format string
 	 */
-	public function export($notext = true) : ?string
+	public function export(bool $notext = true) : ?string
 	{
 		if ($this->x509) {
 			$output = '';
@@ -94,7 +94,7 @@ class Certificate
 	/**
 	 * Returns the fingerprint or digest of the certificate
 	 */
-	public function fingerprint($hash_algorithm = 'sha1', $raw_output = false)/*: string|bool*/
+	public function fingerprint(string $hash_algorithm = 'sha1', bool $raw_output = false)/*: string|bool*/
 	{
 		return $this->x509 ? \openssl_x509_fingerprint($this->x509, $hash_algorithm, $raw_output) : false;
 	}
@@ -102,17 +102,17 @@ class Certificate
 	/**
 	 * Returns the certificate information as an array
 	 */
-	public function info($shortnames = true) /*: array|bool*/
+	public function info(bool $shortnames = true) /*: array|bool*/
 	{
 		return $this->x509 ? \openssl_x509_parse($this->x509, $shortnames) : false;
 	}
 
-	public static function getCipherMethods($aliases = false) : array
+	public static function getCipherMethods(bool $aliases = false) : array
 	{
 		return \openssl_get_cipher_methods($aliases);
 	}
 
-	public function createSelfSigned($passphrase = null) : array
+	public function createSelfSigned(string $passphrase = '') : array
 	{
 		$options = array(
 			'config'             => __DIR__ . '/openssl.cnf',
@@ -144,6 +144,7 @@ class Certificate
 				$options
 			);
 			if ($this->x509/* && $this->canSign() && $this->canEncrypt()*/) {
+				$this->pkey = $pkey;
 				$privatekey = '';
 				$certificate = '';
 				$csrStr = '';
@@ -166,10 +167,10 @@ class Certificate
 	}
 
 	// returns binary data
-	public function asPKCS12($priv_key, $pass = null, array $args = array()) : string
+	public function asPKCS12(string $pass = '', array $args = array()) : string
 	{
 		$out = '';
-    	\openssl_pkcs12_export($this->x509, $out, $priv_key, $pass, $args);
+    	\openssl_pkcs12_export($this->x509, $out, $this->pkey, $pass, $args);
     	return $out;
 	}
 }

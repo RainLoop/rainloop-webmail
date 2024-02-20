@@ -280,7 +280,9 @@
 		"DECRYPT": "Deskripsi",
 		"VERIFY": "Verify",
 		"GOOD_SIGNATURE": "Tandatangan sah dari user %USER%",
-		"ERROR": "Kesalahan %TYPE%: %ERROR%"
+		"ERROR": "Kesalahan %TYPE%: %ERROR%",
+		"CREATE_SELF_SIGNED": "Create self-signed",
+		"VALID_UNTIL": "Valid until"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Impor kunci OpenPGP",

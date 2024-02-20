@@ -280,7 +280,9 @@
 		"DECRYPT": "解密",
 		"VERIFY": "Verify",
 		"GOOD_SIGNATURE": "来自 %USER% 的可用签名",
-		"ERROR": "%TYPE% 错误： %ERROR%"
+		"ERROR": "%TYPE% 错误： %ERROR%",
+		"CREATE_SELF_SIGNED": "Create self-signed",
+		"VALID_UNTIL": "Valid until"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "导入 OpenPGP 密钥",

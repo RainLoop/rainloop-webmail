@@ -280,7 +280,9 @@
 		"DECRYPT": "Afkóða",
 		"VERIFY": "Verify",
 		"GOOD_SIGNATURE": "Gild undirritun frá %USER%",
-		"ERROR": "%TYPE% villa: %ERROR%"
+		"ERROR": "%TYPE% villa: %ERROR%",
+		"CREATE_SELF_SIGNED": "Create self-signed",
+		"VALID_UNTIL": "Valid until"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Flytja inn OpenPGP-lykil",

@@ -280,7 +280,9 @@
 		"DECRYPT": "Dekrüpteeri",
 		"VERIFY": "Verify",
 		"GOOD_SIGNATURE": "Korralik signatuur kasutajalt %USER%",
-		"ERROR": "%TYPE% viga: %ERROR%"
+		"ERROR": "%TYPE% viga: %ERROR%",
+		"CREATE_SELF_SIGNED": "Create self-signed",
+		"VALID_UNTIL": "Valid until"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Impordi OpenPGP võti",

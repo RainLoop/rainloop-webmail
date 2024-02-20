@@ -45,7 +45,8 @@ class OpenSSL
 					'file' => \basename($file),
 					'CN' => $data['subject']['CN'],
 					'emailAddress' => $data['subject']['emailAddress'],
-					'validTo' => \gmdate('Y-m-d\\TH:i:s\\Z', $data['validTo_time_t']),
+//					'validTo' => \gmdate('Y-m-d\\TH:i:s\\Z', $data['validTo_time_t']),
+					'validTo_time_t' => $data['validTo_time_t'],
 					'smimesign' => false,
 					'smimeencrypt' => false,
 					'privateKey' => null // not found or encrypted

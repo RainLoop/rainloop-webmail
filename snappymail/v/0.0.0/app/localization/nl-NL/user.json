@@ -280,7 +280,9 @@
 		"DECRYPT": "Ontsleutelen",
 		"VERIFY": "Verifiëren",
 		"GOOD_SIGNATURE": "Juiste handtekening van %USER%",
-		"ERROR": "%TYPE% foutmelding: %ERROR%"
+		"ERROR": "%TYPE% foutmelding: %ERROR%",
+		"CREATE_SELF_SIGNED": "Create self-signed",
+		"VALID_UNTIL": "Valid until"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importeer OpenPGP sleutel",

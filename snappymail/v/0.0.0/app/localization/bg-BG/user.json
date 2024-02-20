@@ -280,7 +280,9 @@
 		"DECRYPT": "Дешифрирай",
 		"VERIFY": "Verify",
 		"GOOD_SIGNATURE": "Валиден подпис за %USER%",
-		"ERROR": "%TYPE% грешка: %ERROR%"
+		"ERROR": "%TYPE% грешка: %ERROR%",
+		"CREATE_SELF_SIGNED": "Create self-signed",
+		"VALID_UNTIL": "Valid until"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Внасяне на OpenPGP ключ",

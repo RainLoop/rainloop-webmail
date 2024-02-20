@@ -280,7 +280,9 @@
 		"DECRYPT": "فك تشفير",
 		"VERIFY": "Verify",
 		"GOOD_SIGNATURE": "توقيع جيد من  %USER%",
-		"ERROR": "%TYPE% error: %ERROR%"
+		"ERROR": "%TYPE% error: %ERROR%",
+		"CREATE_SELF_SIGNED": "Create self-signed",
+		"VALID_UNTIL": "Valid until"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "OpenPGP استيراد مفتاح",

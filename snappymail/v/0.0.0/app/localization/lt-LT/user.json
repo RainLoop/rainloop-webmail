@@ -280,7 +280,9 @@
 		"DECRYPT": "Decrypt",
 		"VERIFY": "Verify",
 		"GOOD_SIGNATURE": "Tinkamas parašas nuo %USER%",
-		"ERROR": "%TYPE% klaida: %ERROR%"
+		"ERROR": "%TYPE% klaida: %ERROR%",
+		"CREATE_SELF_SIGNED": "Create self-signed",
+		"VALID_UNTIL": "Valid until"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importuoti OpenPGP raktą",

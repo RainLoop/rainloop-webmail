@@ -280,7 +280,9 @@
 		"DECRYPT": "Pura",
 		"VERIFY": "Verify",
 		"GOOD_SIGNATURE": "Oikea allekirjoitus %USER% lle",
-		"ERROR": "%TYPE% virhe: %ERROR%"
+		"ERROR": "%TYPE% virhe: %ERROR%",
+		"CREATE_SELF_SIGNED": "Create self-signed",
+		"VALID_UNTIL": "Valid until"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Tuo OpenPGP avain",

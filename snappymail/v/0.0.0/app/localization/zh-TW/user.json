@@ -280,7 +280,9 @@
 		"DECRYPT": "解密",
 		"VERIFY": "驗證",
 		"GOOD_SIGNATURE": "來自「%USER%」的良好簽署",
-		"ERROR": "%TYPE% 錯誤: %ERROR%"
+		"ERROR": "%TYPE% 錯誤: %ERROR%",
+		"CREATE_SELF_SIGNED": "Create self-signed",
+		"VALID_UNTIL": "Valid until"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "匯入 OpenPGP 金鑰",

@@ -280,7 +280,9 @@
 		"DECRYPT": "Dešifriraj",
 		"VERIFY": "Verify",
 		"GOOD_SIGNATURE": "Dober podpis od %USER%",
-		"ERROR": "%TYPE% napaka: %ERROR%"
+		"ERROR": "%TYPE% napaka: %ERROR%",
+		"CREATE_SELF_SIGNED": "Create self-signed",
+		"VALID_UNTIL": "Valid until"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Uvoz OpenPGP ključa",

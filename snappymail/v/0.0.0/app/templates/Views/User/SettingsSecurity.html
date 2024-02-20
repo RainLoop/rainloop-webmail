@@ -126,16 +126,16 @@
 <details>
 <summary class="legend">S/MIME Certificates</summary>
 <table class="table table-hover list-table">
-	<tbody data-bind="foreach: smimeCertificates">
+	<tbody data-bind="foreach: smimeCertificates, i18nUpdate: smimeCertificates">
 		<tr>
 			<td>
 				<span data-bind="visible: smimesign" class="fontastic" data-i18n="[title]CRYPTO/VERIFY">✔</span>
 				<span data-bind="visible: smimeencrypt" class="fontastic" data-i18n="[title]CRYPTO/ENCRYPT">🔒</span>
 				<span class="key-name" data-bind="text: CN"></span>
 				<span class="key-user" data-bind="text: emailAddress"></span>
-			</td>
-			<td>
-				<time data-time-format="FULL" data-bind="attr:{datetime:validTo}"></time>
+				<br/>
+				<span data-i18n="CRYPTO/VALID_UNTIL"></span>:
+				<time data-time-format="FULL" data-bind="time:validTo_time_t"></time>
 			</td>
 <!--
 			<td>
