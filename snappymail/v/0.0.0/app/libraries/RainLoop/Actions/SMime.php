@@ -62,6 +62,7 @@ trait SMime
 		$sName = $this->GetActionParam('name', '') ?: $oAccount->Name();
 		$sEmail = $this->GetActionParam('email', '') ?: $oAccount->Email();
 		$sPassphrase = $this->GetActionParam('passphrase', '');
+		$this->logMask($sPassphrase);
 
 		$cert = new Certificate();
 		$cert->distinguishedName['commonName'] = $sName;

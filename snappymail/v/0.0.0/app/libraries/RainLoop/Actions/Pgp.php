@@ -113,10 +113,10 @@ trait Pgp
 			return $this->FalseResponse();
 		}
 
-		$GPG->addDecryptKey(
-			$this->GetActionParam('keyId', ''),
-			$this->GetActionParam('passphrase', '')
-		);
+		$sPassphrase = $this->GetActionParam('passphrase', '');
+		$this->logMask($sPassphrase);
+
+		$GPG->addDecryptKey($this->GetActionParam('keyId', ''), $sPassphrase);
 
 		$sData = $this->GetActionParam('data', '');
 		$oPart = null;
@@ -160,10 +160,12 @@ trait Pgp
 
 	public function DoGnupgExportKey() : array
 	{
+		$sPassphrase = $this->GetActionParam('passphrase', '');
+		$this->logMask($sPassphrase);
 		$GPG = $this->GnuPG();
 		return $this->DefaultResponse($GPG ? $GPG->export(
 			$this->GetActionParam('keyId', ''),
-			$this->GetActionParam('passphrase', '')
+			$sPassphrase
 		) : false);
 	}
 
@@ -174,9 +176,11 @@ trait Pgp
 		if ($GPG) {
 			$sName = $this->GetActionParam('name', '');
 			$sEmail = $this->GetActionParam('email', '');
+			$sPassphrase = $this->GetActionParam('passphrase', '');
+			$this->logMask($sPassphrase);
 			$fingerprint = $GPG->generateKey(
 				$sName ? "{$sName} <{$sEmail}>" : $sEmail,
-				$this->GetActionParam('passphrase', '')
+				$sPassphrase
 			);
 		}
 		return $this->DefaultResponse($fingerprint);
