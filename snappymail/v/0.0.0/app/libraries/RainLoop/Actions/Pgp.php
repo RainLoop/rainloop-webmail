@@ -297,16 +297,15 @@ trait Pgp
 	 */
 	public function DoPgpVerifyMessage() : array
 	{
-		$sFolderName = $this->GetActionParam('folder', '');
-		$iUid = (int) $this->GetActionParam('uid', 0);
 		$sBodyPart = $this->GetActionParam('bodyPart', '');
-		$sSigPart = $this->GetActionParam('sigPart', '');
 		if ($sBodyPart) {
 			$result = [
 				'text' => \preg_replace('/\\r?\\n/su', "\r\n", $sBodyPart),
 				'signature' => $this->GetActionParam('sigPart', '')
 			];
 		} else {
+			$sFolderName = $this->GetActionParam('folder', '');
+			$iUid = (int) $this->GetActionParam('uid', 0);
 			$sBodyPartId = $this->GetActionParam('bodyPartId', '');
 			$sSigPartId = $this->GetActionParam('sigPartId', '');
 //			$sMicAlg = $this->GetActionParam('micAlg', '');
