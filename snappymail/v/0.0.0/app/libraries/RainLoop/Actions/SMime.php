@@ -115,11 +115,11 @@ trait SMime
 	public function DoSMimeVerifyMessage() : array
 	{
 		$sBody = $this->GetActionParam('bodyPart', '');
+		$sPartId = $this->GetActionParam('partId', '');
 		$bDetached = !empty($this->GetActionParam('detached', 0));
-		if (!$sBody) {
+		if (!$sBody && $sPartId) {
 			$sFolderName = $this->GetActionParam('folder', '');
 			$iUid = (int) $this->GetActionParam('uid', 0);
-			$sPartId = $this->GetActionParam('partId', '');
 			$sMicAlg = $this->GetActionParam('micAlg', '');
 
 			$this->initMailClientConnection();

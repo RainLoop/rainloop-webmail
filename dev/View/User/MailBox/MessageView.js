@@ -657,6 +657,7 @@ export class MailMessageView extends AbstractViewRight {
 			data.folder = message.folder;
 			data.uid = message.uid;
 			data.bodyPart = data.bodyPart?.raw;
+			data.sigPart = data.sigPart?.raw;
 			Remote.post('SMimeVerifyMessage', null, data).then(response => {
 				if (response?.Result) {
 					if (response.Result.body) {
@@ -664,7 +665,7 @@ export class MailMessageView extends AbstractViewRight {
 						message.html() ? message.viewHtml() : message.viewPlain();
 						response.Result.body = null;
 					}
-					message.smimeVerified(true);
+					message.smimeVerified(response.Result);
 				}
 			});
 		}
