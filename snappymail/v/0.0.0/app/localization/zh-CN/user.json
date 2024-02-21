@@ -302,8 +302,10 @@
 		"BACKUP_PRIVATE_KEY_ON_SERVER": "Backup private key on server"
 	},
 	"SMIME": {
+		"CERTIFICATES": "S\/MIME Certificates",
 		"SIGNED_MESSAGE": "由 S\/MIME 签名",
-		"ENCRYPTED_MESSAGE": "由 S\/MIME 加密"
+		"ENCRYPTED_MESSAGE": "由 S\/MIME 加密",
+		"PRIVATE_KEY_OF": "S\/MIME private key of %EMAIL%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "创建筛选条件？",

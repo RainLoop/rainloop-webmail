@@ -302,8 +302,10 @@
 		"BACKUP_PRIVATE_KEY_ON_SERVER": "Backup private key on server"
 	},
 	"SMIME": {
+		"CERTIFICATES": "S\/MIME Certificates",
 		"SIGNED_MESSAGE": "S\/MIME signeret meddelelse",
-		"ENCRYPTED_MESSAGE": "S\/MIME krypteret meddelelse"
+		"ENCRYPTED_MESSAGE": "S\/MIME krypteret meddelelse",
+		"PRIVATE_KEY_OF": "S\/MIME private key of %EMAIL%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Opret filter?",

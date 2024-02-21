@@ -635,7 +635,10 @@ export class MailMessageView extends AbstractViewRight {
 			data.certificate = identity.smimeCertificate();
 			data.privateKey = identity.smimeKey();
 			if (identity.smimeKeyEncrypted()) {
-				pass = await Passphrases.ask(identity, 'S/MIME private key ' + identity.email(), 'CRYPTO/DECRYPT');
+				pass = await Passphrases.ask(identity,
+					i18n('SMIME/PRIVATE_KEY_OF', {EMAIL: identity.email()}),
+					'CRYPTO/DECRYPT'
+				);
 				if (!pass) {
 					return;
 				}

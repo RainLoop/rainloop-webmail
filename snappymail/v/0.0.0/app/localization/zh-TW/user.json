@@ -302,8 +302,10 @@
 		"BACKUP_PRIVATE_KEY_ON_SERVER": "Backup private key on server"
 	},
 	"SMIME": {
+		"CERTIFICATES": "S\/MIME Certificates",
 		"SIGNED_MESSAGE": "已透過 S\/MIME 簽署郵件",
-		"ENCRYPTED_MESSAGE": "已透過 S\/MIME 加密郵件"
+		"ENCRYPTED_MESSAGE": "已透過 S\/MIME 加密郵件",
+		"PRIVATE_KEY_OF": "S\/MIME private key of %EMAIL%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "是否要建立篩選器？",

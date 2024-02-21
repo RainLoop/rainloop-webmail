@@ -302,8 +302,10 @@
 		"BACKUP_PRIVATE_KEY_ON_SERVER": "Backup private key on server"
 	},
 	"SMIME": {
+		"CERTIFICATES": "S\/MIME Certificates",
 		"SIGNED_MESSAGE": "S\/MIME로 서명된 메세지입니다.",
-		"ENCRYPTED_MESSAGE": "S\/MIME로 암호화된 메세지입니다."
+		"ENCRYPTED_MESSAGE": "S\/MIME로 암호화된 메세지입니다.",
+		"PRIVATE_KEY_OF": "S\/MIME private key of %EMAIL%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "필터를 생성할까요?",

@@ -302,8 +302,10 @@
 		"BACKUP_PRIVATE_KEY_ON_SERVER": "Maak een back-up van de privésleutel op de server"
 	},
 	"SMIME": {
+		"CERTIFICATES": "S\/MIME Certificaten",
 		"SIGNED_MESSAGE": "S\/MIME ondertekend bericht",
-		"ENCRYPTED_MESSAGE": "S\/MIME versleuteld bericht"
+		"ENCRYPTED_MESSAGE": "S\/MIME versleuteld bericht",
+		"PRIVATE_KEY_OF": "S\/MIME privésleutel van %EMAIL%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Filter toevoegen",

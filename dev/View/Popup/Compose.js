@@ -1544,7 +1544,7 @@ export class ComposePopupView extends AbstractViewPopup {
 					if (identity.smimeKeyEncrypted()) {
 						const pass = await Passphrases.ask(
 							params.signPrivateKey,
-							'S/MIME private key ' + identity.email(),
+							i18n('SMIME/PRIVATE_KEY_OF', {EMAIL: identity.email()}),
 							'CRYPTO/DECRYPT'
 						);
 						params.signPassphrase = pass?.password;
