@@ -657,7 +657,7 @@ export class MailMessageView extends AbstractViewRight {
 			data.folder = message.folder;
 			data.uid = message.uid;
 			data.bodyPart = data.bodyPart?.raw;
-			data.sigPart = data.sigPart?.raw;
+			data.sigPart = data.sigPart?.bodyRaw;
 			Remote.post('SMimeVerifyMessage', null, data).then(response => {
 				if (response?.Result) {
 					if (response.Result.body) {
