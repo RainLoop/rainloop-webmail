@@ -10,7 +10,6 @@ import Remote from 'Remote/User/Fetch';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 import { OpenPgpKeyPopupView } from 'View/Popup/OpenPgpKey';
-import { AskPopupView } from 'View/Popup/Ask';
 
 import { Passphrases } from 'Storage/Passphrases';
 
@@ -25,12 +24,11 @@ const
 			return privateKey.key;
 		}
 		const key = privateKey.id,
-			pass = Passphrases.has(key)
-				? {password:Passphrases.get(key), remember:false}
-				: await AskPopupView.password(
-					'OpenPGP.js key<br>' + key + ' ' + privateKey.emails[0],
-					'CRYPTO/'+btnTxt
-				);
+			pass = await Passphrases.ask(
+				key,
+				'OpenPGP.js key<br>' + key + ' ' + privateKey.emails[0],
+				'CRYPTO/'+btnTxt
+			);
 		if (pass) {
 			const passphrase = pass.password,
 				result = await openpgp.decryptKey({

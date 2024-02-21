@@ -34,6 +34,7 @@ import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
 import { GnuPGUserStore } from 'Stores/User/GnuPG';
 //import { OpenPgpImportPopupView } from 'View/Popup/OpenPgpImport';
 import { SMimeUserStore } from 'Stores/User/SMime';
+import { Passphrases } from 'Storage/Passphrases';
 
 import { MessageUserStore } from 'Stores/User/Message';
 import { MessagelistUserStore } from 'Stores/User/Messagelist';
@@ -470,7 +471,8 @@ export class ComposePopupView extends AbstractViewPopup {
 	}
 
 	sendCommand() {
-		let sSentFolder = this.currentIdentity()?.sentFolder?.() || FolderUserStore.sentFolder();
+		const identity = this.currentIdentity();
+		let sSentFolder = identity?.sentFolder?.() || FolderUserStore.sentFolder();
 
 		this.attachmentsInProcessError(false);
 		this.attachmentsInErrorError(false);
@@ -520,6 +522,7 @@ export class ComposePopupView extends AbstractViewPopup {
 									}
 									this.savedErrorDesc(msg);
 								} else {
+									params.signPassphrase && Passphrases.delete(identity);
 									this.sendError(true);
 									this.sendErrorDesc(getNotification(iError, data?.ErrorMessage)
 										|| getNotification(Notifications.CantSendMessage));
@@ -1539,8 +1542,13 @@ export class ComposePopupView extends AbstractViewPopup {
 					params.signCertificate = identity.smimeCertificate();
 					params.signPrivateKey = identity.smimeKey();
 					if (identity.smimeKeyEncrypted()) {
-						const pass = await AskPopupView.password('S/MIME private key', 'CRYPTO/SIGN');
+						const pass = await Passphrases.ask(
+							params.signPrivateKey,
+							'S/MIME private key ' + identity.email(),
+							'CRYPTO/DECRYPT'
+						);
 						params.signPassphrase = pass?.password;
+//						pass && pass.remember && Passphrases.set(identity, pass.password);
 					}
 				}
 			}

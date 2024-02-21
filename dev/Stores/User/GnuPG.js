@@ -9,20 +9,10 @@ import Remote from 'Remote/User/Fetch';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 import { OpenPgpKeyPopupView } from 'View/Popup/OpenPgpKey';
-import { AskPopupView } from 'View/Popup/Ask';
 
 import { Passphrases } from 'Storage/Passphrases';
 
 const
-	askPassphrase = async (privateKey, btnTxt = 'SIGN') => {
-		const key = privateKey.id,
-			pass = Passphrases.has(key)
-				? {password:Passphrases.get(key), remember:false}
-				: await AskPopupView.password('GnuPG key<br>' + key + ' ' + privateKey.emails[0], 'CRYPTO/'+btnTxt);
-		pass && pass.remember && Passphrases.set(key, pass.password);
-		return pass?.password;
-	},
-
 	findGnuPGKey = (keys, query/*, sign*/) =>
 		keys.find(key =>
 //			key[sign ? 'can_sign' : 'can_decrypt']
@@ -77,14 +67,22 @@ export const GnuPGUserStore = new class {
 								);
 							}
 						};
+						if (isPrivate) {
+							key.password = async (btnTxt = 'SIGN') => {
+								const pass = await Passphrases.ask(
+									key,
+									'GnuPG key<br>' + key.id + ' ' + key.emails[0],
+									'CRYPTO/'+btnTxt
+								);
+								pass && pass.remember && Passphrases.set(key, pass.password);
+								return pass?.password;
+							};
+						}
 						key.fetch = async callback => {
 							if (key.armor) {
 								callback && callback();
 							} else {
-								let pass = '';
-								if (isPrivate) {
-									pass = await askPassphrase(key, 'POPUP_VIEW_TITLE');
-								}
+								let pass = isPrivate ? await key.password('POPUP_VIEW_TITLE') : '';
 								if (null != pass) {
 									const result = await Remote.post('GnupgExportKey', null, {
 											keyId: key.id,
@@ -95,7 +93,7 @@ export const GnuPGUserStore = new class {
 										key.armor = result.Result;
 										callback && callback();
 									} else {
-										Passphrases.delete(key.id);
+										Passphrases.delete(key);
 									}
 								}
 							}
@@ -180,7 +178,7 @@ export const GnuPGUserStore = new class {
 					uid: message.uid,
 					partId: pgpInfo.partId,
 					keyId: key.id,
-					passphrase: await askPassphrase(key, 'DECRYPT'),
+					passphrase: await key.password('DECRYPT'),
 					data: '' // message.plain() optional
 				}
 				if (null !== params.passphrase) {
@@ -188,7 +186,7 @@ export const GnuPGUserStore = new class {
 					if (result?.Result && false !== result.Result.data) {
 						return result.Result;
 					}
-					Passphrases.delete(key.id);
+					Passphrases.delete(key);
 				}
 			}
 		}
@@ -217,7 +215,7 @@ export const GnuPGUserStore = new class {
 	}
 
 	async sign(privateKey) {
-		return await askPassphrase(privateKey);
+		return await privateKey.password();
 	}
 
 };

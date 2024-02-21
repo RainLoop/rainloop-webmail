@@ -56,7 +56,7 @@ import { GnuPGUserStore } from 'Stores/User/GnuPG';
 import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
 import { IdentityUserStore } from 'Stores/User/Identity';
 
-import { AskPopupView } from 'View/Popup/Ask';
+import { Passphrases } from 'Storage/Passphrases';
 
 const
 	oMessageScrollerDom = () => elementById('messageItem') || {},
@@ -624,7 +624,7 @@ export class MailMessageView extends AbstractViewRight {
 
 	async smimeDecrypt() {
 		const message = currentMessage();
-		let data = message.smimeEncrypted(); // { partId: "1" }
+		let pass, data = message.smimeEncrypted(); // { partId: "1" }
 		const addresses = message.from.concat(message.to, message.cc, message.bcc).map(item => item.email),
 			identity = IdentityUserStore.find(item => addresses.includes(item.email()));
 		if (data && identity) {
@@ -635,15 +635,18 @@ export class MailMessageView extends AbstractViewRight {
 			data.certificate = identity.smimeCertificate();
 			data.privateKey = identity.smimeKey();
 			if (identity.smimeKeyEncrypted()) {
-				const pass = await AskPopupView.password('S/MIME private key', 'CRYPTO/DECRYPT');
+				pass = await Passphrases.ask(identity, 'S/MIME private key ' + identity.email(), 'CRYPTO/DECRYPT');
+				if (!pass) {
+					return;
+				}
 				data.passphrase = pass?.password;
 			}
-
 			Remote.post('SMimeDecryptMessage', null, data).then(response => {
 				if (response?.Result) {
 					message.smimeDecrypted(true);
 					MimeToMessage(response.Result, message);
 					message.html() ? message.viewHtml() : message.viewPlain();
+					pass && pass.remember && Passphrases.set(identity, pass.password);
 				}
 			});
 		}
