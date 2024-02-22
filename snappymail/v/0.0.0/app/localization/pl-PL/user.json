@@ -281,7 +281,7 @@
 		"VERIFY": "Weryfikuj",
 		"GOOD_SIGNATURE": "Poprawnie podpisana przez %USER%",
 		"ERROR": "Błąd %TYPE%: %ERROR%",
-		"CREATE_SELF_SIGNED": "Utwórz samodzielnie podpisanym certyfikatem",
+		"CREATE_SELF_SIGNED": "Utwórz samodzielnie podpisany certyfikat",
 		"VALID_UNTIL": "Ważny do"
 	},
 	"OPENPGP": {
