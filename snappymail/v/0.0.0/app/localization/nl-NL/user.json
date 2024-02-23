@@ -302,6 +302,7 @@
 		"BACKUP_PRIVATE_KEY_ON_SERVER": "Maak een back-up van de privésleutel op de server"
 	},
 	"SMIME": {
+		"POPUP_IMPORT_TITLE": "Importeer S\/MIME certificaat",
 		"CERTIFICATES": "S\/MIME Certificaten",
 		"SIGNED_MESSAGE": "S\/MIME ondertekend bericht",
 		"ENCRYPTED_MESSAGE": "S\/MIME versleuteld bericht",

@@ -302,6 +302,7 @@
 		"BACKUP_PRIVATE_KEY_ON_SERVER": "Backup private key on server"
 	},
 	"SMIME": {
+		"POPUP_IMPORT_TITLE": "Import S\/MIME certificate",
 		"CERTIFICATES": "S\/MIME Certificates",
 		"SIGNED_MESSAGE": "Mensaje firmado mediante S\/MIME",
 		"ENCRYPTED_MESSAGE": "Mensaje cifrado mediante S\/MIME",

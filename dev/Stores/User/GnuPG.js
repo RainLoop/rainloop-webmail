@@ -35,7 +35,8 @@ export const GnuPGUserStore = new class {
 		this.keyring = null;
 		this.publicKeys([]);
 		this.privateKeys([]);
-		Remote.request('GnupgGetKeys',
+		SettingsCapa('GnuPG')
+		&& Remote.request('GnupgGetKeys',
 			(iError, oData) => {
 				if (oData?.Result) {
 					this.keyring = oData.Result;
