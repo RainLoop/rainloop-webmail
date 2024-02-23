@@ -70,8 +70,7 @@ export const GnuPGUserStore = new class {
 						};
 						if (isPrivate) {
 							key.password = async (btnTxt = 'SIGN') => {
-								const pass = await Passphrases.ask(
-									key,
+								const pass = await Passphrases.ask(key,
 									'GnuPG key<br>' + key.id + ' ' + key.emails[0],
 									'CRYPTO/'+btnTxt
 								);
