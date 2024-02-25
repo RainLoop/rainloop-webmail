@@ -5,7 +5,7 @@ if (defined('APP_VERSION_ROOT_PATH')) {
 
 // PHP 8
 if (\PHP_VERSION_ID < 80000) {
-	require __DIR__ . '/php8.php';
+	require __DIR__ . '/app/libraries/polyfill/php8.php';
 }
 
 if (!defined('APP_VERSION')) {
