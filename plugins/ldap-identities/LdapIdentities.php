@@ -178,6 +178,15 @@ class LdapIdentities implements IIdentities
 			return false;
 		}
 
+		// Activate StartTLS
+		if ($this->config->starttls) {
+			$starttlsResult = ldap_start_tls($ldap);
+			if (!$starttlsResult) {
+				$this->ldapAvailable = false;
+				return false;
+			}
+		}
+		
 		$this->ldap = $ldap;
 		$this->ldapConnected = true;
 		return true;

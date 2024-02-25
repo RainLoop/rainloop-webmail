@@ -8,10 +8,10 @@ class LdapIdentitiesPlugin extends AbstractPlugin
 {
 	const
 		NAME     = 'LDAP Identities',
-		VERSION  = '2.1',
+		VERSION  = '2.2',
 		AUTHOR   = 'FWest98',
 		URL      = 'https://github.com/FWest98',
-		RELEASE  = '2022-11-09',
+		RELEASE  = '2024-02-22',
 		REQUIRED = '2.20.0',
 		CATEGORY = 'Accounts',
 		DESCRIPTION = 'Adds functionality to import account identities from LDAP.';
@@ -57,6 +57,12 @@ class LdapIdentitiesPlugin extends AbstractPlugin
 				->SetLabel("LDAP Protocol Version")
 				->SetType(PluginPropertyType::SELECTION)
 				->SetDefaultValue([2, 3]),
+				
+			Property::NewInstance(LdapConfig::CONFIG_STARTTLS)
+				->SetLabel("Use StartTLS")
+				->SetType(PluginPropertyType::BOOL)
+				->SetDescription("Whether or not to use TLS encrypted connection")
+				->SetDefaultValue(true),
 
 			Property::NewInstance(LdapConfig::CONFIG_BIND_USER)
 				->SetLabel("Bind User DN")
