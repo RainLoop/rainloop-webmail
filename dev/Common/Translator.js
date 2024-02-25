@@ -102,8 +102,7 @@ export const
 
 	timestampToString = (timeStampInUTC, formatStr) => {
 		const now = Date.now(),
-			time = 0 < timeStampInUTC ? Math.min(now, timeStampInUTC * 1000) : (0 === timeStampInUTC ? now : 0);
-
+			time = 0 < timeStampInUTC ? timeStampInUTC * 1000 : (0 === timeStampInUTC ? now : 0);
 		if (31536000000 < time) {
 			const m = new Date(time), h = LanguageStore.hourCycle();
 			switch (formatStr) {
