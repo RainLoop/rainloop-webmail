@@ -671,7 +671,7 @@ export class MailMessageView extends AbstractViewRight {
 						message.html() ? message.viewHtml() : message.viewPlain();
 						response.Result.body = null;
 					}
-					message.smimeVerified(response.Result);
+					message.smimeVerified(response.Result.success);
 				}
 			});
 		}

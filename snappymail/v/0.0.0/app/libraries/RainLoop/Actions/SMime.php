@@ -118,32 +118,12 @@ trait SMime
 		$sPartId = $this->GetActionParam('partId', '');
 		$bDetached = !empty($this->GetActionParam('detached', 0));
 		if (!$sBody && $sPartId) {
-			$sFolderName = $this->GetActionParam('folder', '');
 			$iUid = (int) $this->GetActionParam('uid', 0);
-			$sMicAlg = $this->GetActionParam('micAlg', '');
-
+//			$sMicAlg = $this->GetActionParam('micAlg', '');
 			$this->initMailClientConnection();
 			$oImapClient = $this->ImapClient();
-			$oImapClient->FolderExamine($sFolderName);
-
-			if ('TEXT' === $sPartId) {
-				$oFetchResponse = $oImapClient->Fetch([
-					FetchType::BODY_PEEK.'['.$sPartId.']',
-					// An empty section specification refers to the entire message, including the header.
-					// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
-					FetchType::BODY_HEADER_PEEK
-				], $iUid, true)[0];
-				$sBody = $oFetchResponse->GetFetchValue(FetchType::BODY_HEADER);
-			} else {
-				$oFetchResponse = $oImapClient->Fetch([
-					FetchType::BODY_PEEK.'['.$sPartId.']',
-					// An empty section specification refers to the entire message, including the header.
-					// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
-					FetchType::BODY_PEEK.'['.$sPartId.'.MIME]'
-				], $iUid, true)[0];
-				$sBody = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sPartId.'.MIME]');
-			}
-			$sBody .= $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sPartId.']');
+			$oImapClient->FolderExamine($this->GetActionParam('folder', ''));
+			$sBody = $oImapClient->FetchMessagePart($iUid, $sPartId);
 		}
 
 		$result = $this->SMIME()->verify($sBody, null, !$bDetached);
@@ -151,7 +131,7 @@ trait SMime
 		// Import the certificates automatically
 		$sBody = $this->GetActionParam('sigPart', '');
 		$sPartId = $this->GetActionParam('sigPartId', '') ?: $sPartId;
-		if (!$sBody && $sPartId) {
+		if (!$sBody && $sPartId && $oImapClient) {
 			$sBody = $oImapClient->Fetch(
 				[FetchType::BODY_PEEK.'['.$sPartId.']'],
 				$iUid,

@@ -132,6 +132,26 @@ trait Messages
 		return $aReturn;
 	}
 
+	public function FetchMessagePart(int $iUid, string $sPartId) : string
+	{
+		if ('TEXT' === $sPartId) {
+			$oFetchResponse = $this->Fetch([
+				FetchType::BODY_PEEK.'['.$sPartId.']',
+				FetchType::BODY_HEADER_PEEK
+			], $iUid, true)[0];
+			$sHeader = $oFetchResponse->GetFetchValue(FetchType::BODY_HEADER);
+		} else {
+			$oFetchResponse = $this->Fetch([
+				FetchType::BODY_PEEK.'['.$sPartId.']',
+				// An empty section specification refers to the entire message, including the header.
+				// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
+				FetchType::BODY_PEEK.'['.$sPartId.'.MIME]'
+			], $iUid, true)[0];
+			$sHeader = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sPartId.'.MIME]');
+		}
+		return $sHeader . $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sPartId.']');
+	}
+
 	/**
 	 * Appends message to specified folder
 	 *

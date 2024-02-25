@@ -312,7 +312,7 @@
 							</div>
 						</div>
 						<div data-bind="visible: message().smimeSigned()">
-							<div class="crypto-control signed" data-bind="css: {success: message().smimeVerified() && message().smimeVerified().success, error: message().smimeVerified() && !message().smimeVerified().success}">
+							<div class="crypto-control signed" data-bind="css: {success: true === message().smimeVerified(), error: false === message().smimeVerified()}">
 								<span data-icon="✍" data-i18n="SMIME/SIGNED_MESSAGE"></span>
 								<button class="btn" data-bind="click: smimeVerify" data-i18n="CRYPTO/VERIFY"></button>
 							</div>

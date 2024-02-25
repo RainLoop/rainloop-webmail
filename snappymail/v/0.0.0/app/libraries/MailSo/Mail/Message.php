@@ -69,7 +69,7 @@ class Message implements \JsonSerializable
 	private ?array $pgpSigned = null;
 	private ?array $pgpEncrypted = null;
 
-	private ?array $smimeSigned = null;
+	public ?array $smimeSigned = null;
 	private ?array $smimeEncrypted = null;
 
 	private ?\MailSo\Mime\EmailCollection
