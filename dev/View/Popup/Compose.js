@@ -356,8 +356,8 @@ export class ComposePopupView extends AbstractViewPopup {
 			currentIdentity: value => {
 				if (value) {
 					this.from(value.formattedName());
-					this.doEncrypt(value.pgpEncrypt()/* || SettingsUserStore.pgpEncrypt()*/);
-					this.doSign(value.pgpSign()/* || SettingsUserStore.pgpSign()*/);
+					this.doEncrypt(value.pgpEncrypt() || SettingsUserStore.pgpEncrypt());
+					this.doSign(value.pgpSign() || SettingsUserStore.pgpSign());
 				}
 			},
 
