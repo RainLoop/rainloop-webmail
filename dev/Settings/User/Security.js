@@ -16,6 +16,7 @@ import { OpenPgpImportPopupView } from 'View/Popup/OpenPgpImport';
 import { OpenPgpGeneratePopupView } from 'View/Popup/OpenPgpGenerate';
 
 import { SMimeUserStore } from 'Stores/User/SMime';
+import { SMimeImportPopupView } from 'View/Popup/SMimeImport';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -68,6 +69,10 @@ export class UserSettingsSecurity extends AbstractViewSettings {
 				}
 			}
 		);
+	}
+
+	importToSMime() {
+		showScreenPopup(SMimeImportPopupView);
 	}
 
 	onBuild() {

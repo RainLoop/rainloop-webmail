@@ -24,8 +24,7 @@ const
 			return privateKey.key;
 		}
 		const key = privateKey.id,
-			pass = await Passphrases.ask(
-				key,
+			pass = await Passphrases.ask(privateKey,
 				'OpenPGP.js key<br>' + key + ' ' + privateKey.emails[0],
 				'CRYPTO/'+btnTxt
 			);
@@ -35,7 +34,7 @@ const
 					privateKey: privateKey.key,
 					passphrase
 				});
-			result && pass.remember && Passphrases.set(key, passphrase);
+			result && pass.remember && Passphrases.set(privateKey, passphrase);
 			return result;
 		}
 	},

@@ -173,6 +173,15 @@ trait SMime
 		return $this->DefaultResponse($result);
 	}
 
+	public function DoSMimeImportCertificate() : array
+	{
+		return $this->DefaultResponse(
+			$this->SMIME()->storeCertificate(
+				$this->GetActionParam('pem', '')
+			)
+		);
+	}
+
 	public function DoSMimeImportCertificatesFromMessage() : array
 	{
 /*
