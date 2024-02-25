@@ -281,7 +281,7 @@
 		"VERIFY": "Weryfikuj",
 		"GOOD_SIGNATURE": "Poprawnie podpisana przez %USER%",
 		"ERROR": "Błąd %TYPE%: %ERROR%",
-		"CREATE_SELF_SIGNED": "Utwórz samodzielnie podpisanym certyfikatem",
+		"CREATE_SELF_SIGNED": "Utwórz samodzielnie podpisany certyfikat",
 		"VALID_UNTIL": "Ważny do"
 	},
 	"OPENPGP": {
@@ -303,10 +303,10 @@
 	},
 	"SMIME": {
 		"POPUP_IMPORT_TITLE": "Import S\/MIME certificate",
-		"CERTIFICATES": "S\/MIME Certificates",
+		"CERTIFICATES": "Certyfikaty S\/MIME",
 		"SIGNED_MESSAGE": "Wiadomość podpisana S\/MIME",
 		"ENCRYPTED_MESSAGE": "Wiadomość zaszyfrowana S\/MIME",
-		"PRIVATE_KEY_OF": "S\/MIME private key of %EMAIL%"
+		"PRIVATE_KEY_OF": "Klucz prywatny S\/MIME adresu %EMAIL%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Czy stworzyć filtr?",
