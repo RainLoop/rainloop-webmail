@@ -302,7 +302,7 @@
 		"BACKUP_PRIVATE_KEY_ON_SERVER": "Utwórz kopię zapasową klucza prywatnego na serwerze"
 	},
 	"SMIME": {
-		"POPUP_IMPORT_TITLE": "Import S\/MIME certificate",
+		"POPUP_IMPORT_TITLE": "Importuj certyfikat S\/MIME",
 		"CERTIFICATES": "Certyfikaty S\/MIME",
 		"SIGNED_MESSAGE": "Wiadomość podpisana S\/MIME",
 		"ENCRYPTED_MESSAGE": "Wiadomość zaszyfrowana S\/MIME",
