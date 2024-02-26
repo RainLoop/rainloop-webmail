@@ -302,6 +302,7 @@
 							<div class="crypto-control signed" data-bind="css: {success: message().pgpVerified() && message().pgpVerified().success, error: message().pgpVerified() && !message().pgpVerified().success}">
 								<span data-icon="✍" data-i18n="OPENPGP/SIGNED_MESSAGE"></span>
 								<button class="btn" data-bind="visible: pgpSupported, click: pgpVerify" data-i18n="CRYPTO/VERIFY"></button>
+								<div data-icon="⚠" data-bind="visible: message().pgpVerified()?.error, text: message().pgpVerified()?.error"></div>
 							</div>
 						</div>
 

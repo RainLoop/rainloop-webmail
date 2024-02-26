@@ -183,7 +183,7 @@ export const GnuPGUserStore = new class {
 				}
 				if (null !== params.passphrase) {
 					const result = await Remote.post('GnupgDecrypt', null, params);
-					if (result?.Result && false !== result.Result.data) {
+					if (result?.Result?.data) {
 						return result.Result;
 					}
 					Passphrases.delete(key);
@@ -208,7 +208,8 @@ export const GnuPGUserStore = new class {
 			if (response?.Result) {
 				return {
 					fingerprint: response.Result.fingerprint,
-					success: 0 == response.Result.status // GOODSIG
+					success: 0 == response.Result.status, // GOODSIG
+					error: response.Result.message
 				};
 			}
 		}
