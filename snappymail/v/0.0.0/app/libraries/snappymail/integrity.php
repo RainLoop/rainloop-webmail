@@ -97,6 +97,7 @@ abstract class Integrity
 	public static function phpExtensions()
 	{
 		$aRequirements = array(
+			'openssl'  => extension_loaded('openssl'),
 			'mbstring' => extension_loaded('mbstring'),
 			'Zlib'     => extension_loaded('zlib'),
 			// enabled by default:
