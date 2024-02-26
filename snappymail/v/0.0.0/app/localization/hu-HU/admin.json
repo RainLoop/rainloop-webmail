@@ -85,7 +85,7 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Biztonság",
 		"LABEL_USE_IMAGE_PROXY": "Helyi proxy használata a külső képekhez",
-		"LABEL_ALLOW_OPEN_PGP": "OpenPGP engedélyezése",
+		"LABEL_ALLOW_OPENPGP": "OpenPGP engedélyezése",
 		"LABEL_SHOW_PHP_INFO": "PHP információ megjelenítése",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Admin panel hozzáférés hitelesítés",
 		"LABEL_CURRENT_PASSWORD": "Jelenlegi jelszó",

@@ -85,7 +85,7 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Sauga",
 		"LABEL_USE_IMAGE_PROXY": "naudoti vietinį šliuzą (proxy) išoriniams paveikslėliams",
-		"LABEL_ALLOW_OPEN_PGP": "Leisti OpenPGP",
+		"LABEL_ALLOW_OPENPGP": "Leisti OpenPGP",
 		"LABEL_SHOW_PHP_INFO": "Rodyti PHP informaciją",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Valdymo skydo prieigos rekvizitai",
 		"LABEL_CURRENT_PASSWORD": "Dabartinis slaptažodis",

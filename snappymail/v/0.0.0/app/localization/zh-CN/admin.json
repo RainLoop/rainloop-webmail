@@ -85,7 +85,7 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "安全",
 		"LABEL_USE_IMAGE_PROXY": "对外部图片使用本地代理",
-		"LABEL_ALLOW_OPEN_PGP": "允许使用 OpenPGP",
+		"LABEL_ALLOW_OPENPGP": "允许使用 OpenPGP",
 		"LABEL_SHOW_PHP_INFO": "显示 PHP 信息",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "管理员面板访问凭据",
 		"LABEL_CURRENT_PASSWORD": "当前密码",

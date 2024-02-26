@@ -85,7 +85,7 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "セキュリティ",
 		"LABEL_USE_IMAGE_PROXY": "外部イメージにローカルProxyを使う",
-		"LABEL_ALLOW_OPEN_PGP": "OpenPGPを使う",
+		"LABEL_ALLOW_OPENPGP": "OpenPGPを使う",
 		"LABEL_SHOW_PHP_INFO": "PHP情報を表示",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "管理画面アクセス情報",
 		"LABEL_CURRENT_PASSWORD": "現在のパスワード",

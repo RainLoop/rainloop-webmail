@@ -85,7 +85,7 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Seguridad",
 		"LABEL_USE_IMAGE_PROXY": "Utilizar un proxy local para mostrar imágenes externas",
-		"LABEL_ALLOW_OPEN_PGP": "Permitir OpenPGP",
+		"LABEL_ALLOW_OPENPGP": "Permitir OpenPGP",
 		"LABEL_SHOW_PHP_INFO": "Mostrar información de PHP",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Credenciales de Acceso al panel de control",
 		"LABEL_CURRENT_PASSWORD": "Contraseña actual",

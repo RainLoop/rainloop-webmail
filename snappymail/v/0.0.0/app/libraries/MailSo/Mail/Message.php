@@ -543,7 +543,7 @@ class Message implements \JsonSerializable
 			$result['html'] = $this->sHtml;
 			$result['plain'] = $this->sPlain;
 		}
-//		$this->GetCapa(Capa::OPEN_PGP) || $this->GetCapa(Capa::GNUPG)
+//		$this->GetCapa(Capa::OPENPGP) || $this->GetCapa(Capa::GNUPG)
 		if ($this->pgpSigned) {
 			$result['pgpSigned'] = $this->pgpSigned;
 		}

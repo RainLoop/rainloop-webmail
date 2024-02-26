@@ -85,7 +85,7 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Sikkerhet",
 		"LABEL_USE_IMAGE_PROXY": "Bruk lokal mellomtjener for eksterne bilder",
-		"LABEL_ALLOW_OPEN_PGP": "Tillat OpenPGP",
+		"LABEL_ALLOW_OPENPGP": "Tillat OpenPGP",
 		"LABEL_SHOW_PHP_INFO": "Vis PHP-informasjon",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Akkreditiver for admin-panel",
 		"LABEL_CURRENT_PASSWORD": "Gjeldende passord",

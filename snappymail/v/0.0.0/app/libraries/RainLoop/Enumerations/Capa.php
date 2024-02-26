@@ -5,7 +5,7 @@ namespace RainLoop\Enumerations;
 abstract class Capa
 {
 	const GNUPG = 'GnuPG';
-	const OPEN_PGP = 'OpenPGP';
+	const OPENPGP = 'OpenPGP';
 	const THEMES = 'Themes';
 	const USER_BACKGROUND = 'UserBackground';
 	const SIEVE = 'Sieve';
