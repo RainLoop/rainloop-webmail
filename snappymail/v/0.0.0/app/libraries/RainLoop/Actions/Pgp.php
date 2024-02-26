@@ -221,15 +221,11 @@ trait Pgp
 			}
 		}
 
-		$result = false;
+		$result = [];
 		if ($sKey) {
 			$sKey = \trim($sKey);
-			if ($this->GetActionParam('backup', '')) {
-				$result = $result || Backup::PGPKey($sKey);
-			}
-			if ($this->GetActionParam('gnuPG', '') && ($GPG = $this->GnuPG())) {
-				$result = $result || $GPG->import($sKey);
-			}
+			$result['backup'] = $this->GetActionParam('backup', '') && Backup::PGPKey($sKey);
+			$result['gnuPG'] = $this->GetActionParam('gnuPG', '') && ($GPG = $this->GnuPG()) && $GPG->import($sKey);
 		}
 
 		return $this->DefaultResponse($result);
