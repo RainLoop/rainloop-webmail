@@ -142,7 +142,7 @@ trait SMime
 			$sBody = \trim($sBody);
 			$certificates = [];
 			\openssl_pkcs7_read(
-				"-----BEGIN CERTIFICATE-----\n\n{$sBody}\n-----END CERTIFICATE-----",
+				"-----BEGIN PKCS7-----\n\n{$sBody}\n-----END PKCS7-----",
 				$certificates
 			) || \error_log("OpenSSL openssl_pkcs7_read: " . \openssl_error_string());
 			foreach ($certificates as $certificate) {
@@ -179,7 +179,7 @@ trait SMime
 		$sBody = \trim($sBody);
 		$certificates = [];
 		\openssl_pkcs7_read(
-			"-----BEGIN CERTIFICATE-----\n\n{$sBody}\n-----END CERTIFICATE-----",
+			"-----BEGIN PKCS7-----\n\n{$sBody}\n-----END PKCS7-----",
 			$certificates
 		);
 

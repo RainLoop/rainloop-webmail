@@ -142,6 +142,19 @@ class OpenSSL
 		}
 	}
 
+/*
+	public function asn1parse(/*string|Temporary* / $input) : ?string
+	{
+		if (\is_string($input)) {
+			$tmp = new Temporary('smimein-');
+			if (!$tmp->putContents($input)) {
+				return null;
+			}
+			$input = $tmp;
+		}
+		`openssl asn1parse -in $input->filename()`
+	}
+*/
 	public function decrypt(/*string|Temporary*/ $input) : ?string
 	{
 		if (\is_string($input)) {
