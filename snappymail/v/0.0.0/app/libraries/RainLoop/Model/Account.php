@@ -306,4 +306,11 @@ abstract class Account implements \JsonSerializable
 		return $bResult;
 	}
 
+/*
+	// Stores settings in AdditionalAccount else MainAccount
+	public function settingsLocal() : \RainLoop\Settings
+	{
+		return \RainLoop\Api::Actions()->SettingsProvider(true)->Load($this);
+	}
+*/
 }

@@ -63,4 +63,11 @@ class MainAccount extends Account
 	{
 		$this->sCryptKey = new SensitiveString($sKey);
 	}
+/*
+	// Stores settings in MainAccount
+	public function settings() : \RainLoop\Settings
+	{
+		return \RainLoop\Api::Actions()->SettingsProvider()->Load($this);
+	}
+*/
 }
