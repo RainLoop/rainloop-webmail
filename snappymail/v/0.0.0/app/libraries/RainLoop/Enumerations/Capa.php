@@ -4,15 +4,15 @@ namespace RainLoop\Enumerations;
 
 abstract class Capa
 {
+	const ADDITIONAL_ACCOUNTS = 'AdditionalAccounts';
+	const ATTACHMENTS_ACTIONS = 'AttachmentsActions';
+	const ATTACHMENT_THUMBNAILS = 'AttachmentThumbnails';
+	const CONTACTS = 'Contacts';
+	const DANGEROUS_ACTIONS = 'DangerousActions';
 	const GNUPG = 'GnuPG';
+	const IDENTITIES = 'Identities';
 	const OPENPGP = 'OpenPGP';
+	const SIEVE = 'Sieve';
 	const THEMES = 'Themes';
 	const USER_BACKGROUND = 'UserBackground';
-	const SIEVE = 'Sieve';
-	const ATTACHMENT_THUMBNAILS = 'AttachmentThumbnails';
-	const ADDITIONAL_ACCOUNTS = 'AdditionalAccounts';
-	const IDENTITIES = 'Identities';
-	const CONTACTS = 'Contacts';
-	const ATTACHMENTS_ACTIONS = 'AttachmentsActions';
-	const DANGEROUS_ACTIONS = 'DangerousActions';
 }

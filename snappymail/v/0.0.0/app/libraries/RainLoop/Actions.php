@@ -2,6 +2,8 @@
 
 namespace RainLoop;
 
+use RainLoop\Enumerations\Capa;
+
 class Actions
 {
 	use Actions\Admin;
@@ -471,7 +473,7 @@ class Actions
 			$oDriver = null;
 			try {
 //				if ($this->oConfig->Get('contacts', 'enable', false)) {
-				if ($this->GetCapa(Enumerations\Capa::CONTACTS)) {
+				if ($this->GetCapa(Capa::CONTACTS)) {
 					$oDriver = $this->fabrica('address-book', $oAccount);
 				}
 				if ($oAccount && $oDriver) {
@@ -712,7 +714,7 @@ class Actions
 				]);
 
 				$aAttachmentsActions = array();
-				if ($this->GetCapa(Enumerations\Capa::ATTACHMENTS_ACTIONS)) {
+				if ($this->GetCapa(Capa::ATTACHMENTS_ACTIONS)) {
 					if (\class_exists('PharData') || \class_exists('ZipArchive')) {
 						$aAttachmentsActions[] = 'zip';
 					}
@@ -809,7 +811,7 @@ class Actions
 					$aResult['fontSerif'] = $oSettings->GetConf('fontSerif', '');
 					$aResult['fontMono'] = $oSettings->GetConf('fontMono', '');
 
-					if ($this->GetCapa(Enumerations\Capa::USER_BACKGROUND)) {
+					if ($this->GetCapa(Capa::USER_BACKGROUND)) {
 						$aResult['userBackgroundName'] = (string)$oSettings->GetConf('UserBackgroundName', '');
 						$aResult['userBackgroundHash'] = (string)$oSettings->GetConf('UserBackgroundHash', '');
 					}
@@ -971,26 +973,26 @@ class Actions
 		if (!$aResult) {
 			$oConfig = $this->oConfig;
 			$aResult = array(
-				'AdditionalAccounts'   => (bool) $oConfig->Get('webmail', 'allow_additional_accounts', false),
-				'AttachmentThumbnails' => (bool) $oConfig->Get('interface', 'show_attachment_thumbnail', true)
+				Capa::ADDITIONAL_ACCOUNTS   => (bool) $oConfig->Get('webmail', 'allow_additional_accounts', false),
+				Capa::ATTACHMENT_THUMBNAILS => (bool) $oConfig->Get('interface', 'show_attachment_thumbnail', true)
 					&& ($bAdmin
 						|| \extension_loaded('gd')
 						|| \extension_loaded('gmagick')
 						|| \extension_loaded('imagick')
 					),
-				'AttachmentsActions'   => (bool) $oConfig->Get('capa', 'attachments_actions', false),
-				'Contacts'             => (bool) $oConfig->Get('contacts', 'enable', false),
-				'DangerousActions'     => (bool) $oConfig->Get('capa', 'dangerous_actions', true),
-				'GnuPG'                => (bool) $oConfig->Get('security', 'openpgp', false) && \SnappyMail\PGP\GnuPG::isSupported(),
-				'Identities'           => (bool) $oConfig->Get('webmail', 'allow_additional_identities', false),
-				'Kolab'                => false, // See Kolab plugin
-				'OpenPGP'              => (bool) $oConfig->Get('security', 'openpgp', false),
-				'Sieve'                => false,
-				'Themes'               => (bool) $oConfig->Get('webmail', 'allow_themes', false),
-				'UserBackground'       => (bool) $oConfig->Get('webmail', 'allow_user_background', false)
+				Capa::ATTACHMENTS_ACTIONS => (bool) $oConfig->Get('capa', 'attachments_actions', false),
+				Capa::CONTACTS            => (bool) $oConfig->Get('contacts', 'enable', false),
+				Capa::DANGEROUS_ACTIONS   => (bool) $oConfig->Get('capa', 'dangerous_actions', true),
+				Capa::GNUPG               => (bool) $oConfig->Get('security', 'openpgp', false) && \SnappyMail\PGP\GnuPG::isSupported(),
+				Capa::IDENTITIES          => (bool) $oConfig->Get('webmail', 'allow_additional_identities', false),
+				Capa::OPENPGP             => (bool) $oConfig->Get('security', 'openpgp', false),
+				Capa::SIEVE               => false,
+				Capa::THEMES              => (bool) $oConfig->Get('webmail', 'allow_themes', false),
+				Capa::USER_BACKGROUND     => (bool) $oConfig->Get('webmail', 'allow_user_background', false),
+				'Kolab'                   => false, // See Kolab plugin
 			);
 		}
-		$aResult['Sieve'] = $bAdmin || ($oAccount && $oAccount->Domain()->UseSieve());
+		$aResult[Capa::SIEVE] = $bAdmin || ($oAccount && $oAccount->Domain()->UseSieve());
 		return $aResult;
 	}
 
