@@ -12,6 +12,9 @@ SMimeUserStore.loadCertificates = () => {
 	SMimeUserStore.loading(true);
 	Remote.request('SMimeGetCertificates', (iError, oData) => {
 		SMimeUserStore.loading(false);
-		iError || SMimeUserStore(oData.Result);
+		const collator = new Intl.Collator(undefined, {sensitivity: 'base'});
+		iError || SMimeUserStore(oData.Result.sort(
+			(a, b) => collator.compare(a.emailAddress, b.emailAddress) || (b.validTo_time_t - a.validTo_time_t)
+		));
 	});
 };
