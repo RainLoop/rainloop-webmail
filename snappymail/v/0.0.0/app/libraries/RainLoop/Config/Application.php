@@ -262,7 +262,6 @@ Default is "site=same-origin;site=none"')
 			),
 
 			'capa' => array(
-				'quota' => array(true),
 				'dangerous_actions' => array(true, 'Allow clear folder and delete messages without moving to trash'),
 				'attachments_actions' => array(true, 'Allow download attachments as Zip (and optionally others)')
 			),
@@ -419,7 +418,7 @@ Enables caching in the system'),
 
 			'labs' => array(
 				'date_from_headers' => array(true, 'Display message RFC 2822 date and time header, instead of the arrival internal date.'),
-				'allow_message_append' => array(false),
+				'allow_message_append' => array(false, 'Allow drag & drop .eml files from system into messages list'),
 				'login_fault_delay' => array(5, 'When login fails, wait N seconds before responding'),
 				'log_ajax_response_write_limit' => array(300),
 				'smtp_show_server_errors' => array(false),

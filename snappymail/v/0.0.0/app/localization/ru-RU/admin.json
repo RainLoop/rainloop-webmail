@@ -7,7 +7,8 @@
 		"UPDATE": "Обновить",
 		"USERNAME": "Имя пользователя",
 		"PASSWORD": "Пароль",
-		"CANCEL": "Отменить"
+		"CANCEL": "Отменить",
+		"SEARCH": "Поиск"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Логин",

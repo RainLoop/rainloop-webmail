@@ -7,7 +7,8 @@
 		"UPDATE": "Atualizar",
 		"USERNAME": "Nome de usuário",
 		"PASSWORD": "Senha",
-		"CANCEL": "Cancelar"
+		"CANCEL": "Cancelar",
+		"SEARCH": "Nenhum contato encontrado"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Usuário",

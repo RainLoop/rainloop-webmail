@@ -25,6 +25,8 @@ class ActionsAdmin extends Actions
 		unset($aConfig['version']);
 		$aConfig['logs']['time_zone'][1] = '';
 		$aConfig['logs']['time_zone'][2] = \DateTimeZone::listIdentifiers();
+		$aConfig['login']['sign_me_auto'][2] = ['DefaultOff','DefaultOn','Unused'];
+		$aConfig['defaults']['view_images'][2] = ['ask','match','always'];
 		return $this->DefaultResponse($aConfig);
 	}
 

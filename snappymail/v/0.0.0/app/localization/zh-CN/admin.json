@@ -7,7 +7,8 @@
 		"UPDATE": "更新",
 		"USERNAME": "用户名",
 		"PASSWORD": "密码",
-		"CANCEL": "取消"
+		"CANCEL": "取消",
+		"SEARCH": "搜索"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "登录",

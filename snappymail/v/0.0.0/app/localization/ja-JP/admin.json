@@ -7,7 +7,8 @@
 		"UPDATE": "更新",
 		"USERNAME": "ユーザー名",
 		"PASSWORD": "パスワード",
-		"CANCEL": "キャンセル"
+		"CANCEL": "キャンセル",
+		"SEARCH": "検索"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ログイン",

@@ -985,7 +985,6 @@ class Actions
 				'Identities'           => (bool) $oConfig->Get('webmail', 'allow_additional_identities', false),
 				'Kolab'                => false, // See Kolab plugin
 				'OpenPGP'              => (bool) $oConfig->Get('security', 'openpgp', false),
-				'Quota'                => (bool) $oConfig->Get('capa', 'quota', true),
 				'Sieve'                => false,
 				'Themes'               => (bool) $oConfig->Get('webmail', 'allow_themes', false),
 				'UserBackground'       => (bool) $oConfig->Get('webmail', 'allow_user_background', false)

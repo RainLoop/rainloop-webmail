@@ -7,7 +7,32 @@ export class AdminSettingsConfig /*extends AbstractViewSettings*/ {
 
 	constructor() {
 		this.config = ko.observableArray();
+		this.search = ko.observableArray();
 		this.saved = ko.observable(false).extend({ falseTimeout: 5000 });
+
+		this.search.subscribe(value => {
+			const v = value.toLowerCase(),
+				qsa = (node, selector, fn) => node.querySelectorAll(selector).forEach(fn),
+				match = node => node.textContent.toLowerCase().includes(v);
+			if (v.length) {
+				qsa(this.viewModelDom, 'tbody', tbody => {
+					let show = match(tbody.querySelector('th'));
+					if (show) {
+						qsa(tbody, '[hidden]', n => n.hidden = false);
+					} else {
+						qsa(tbody, 'tbody td:first-child', td => {
+							let hide = !match(td);
+							show = show || !hide;
+//							td.closest('tr').hidden = hide;
+							td.parentNode.hidden = hide;
+						});
+					}
+					tbody.hidden = !show;
+				});
+			} else {
+				qsa(this.viewModelDom, 'table [hidden]', n => n.hidden = false);
+			}
+		});
 	}
 
 	beforeShow() {

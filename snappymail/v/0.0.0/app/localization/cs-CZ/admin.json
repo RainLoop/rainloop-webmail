@@ -7,7 +7,8 @@
 		"UPDATE": "Aktualizovat",
 		"USERNAME": "Uživatelské jméno",
 		"PASSWORD": "Heslo",
-		"CANCEL": "Zrušit"
+		"CANCEL": "Zrušit",
+		"SEARCH": "Nebyly nalezeny žádné kontakty"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",

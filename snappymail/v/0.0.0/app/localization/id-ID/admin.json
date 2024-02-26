@@ -7,7 +7,8 @@
 		"UPDATE": "Pembaruan",
 		"USERNAME": "Nama belakang",
 		"PASSWORD": "Sandi",
-		"CANCEL": "Batal"
+		"CANCEL": "Batal",
+		"SEARCH": "Tidak ditemukan kontak"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
