@@ -1383,7 +1383,7 @@ export class ComposePopupView extends AbstractViewPopup {
 		this.signOptions(options);
 	}
 
-	initEncrypt() {
+	async initEncrypt() {
 		const recipients = this.allRecipients(),
 			options = [];
 
@@ -1394,14 +1394,12 @@ export class ComposePopupView extends AbstractViewPopup {
 			OpenPGPUserStore.hasPublicKeyForEmails(recipients)
 			&& options.push('OpenPGP');
 
-			MailvelopeUserStore.hasPublicKeyForEmails(recipients).then(result => {
-				if (result) {
-					options.push('Mailvelope');
-				} else {
-					'mailvelope' === this.viewArea() && this.bodyArea();
-	//				this.dropMailvelope();
-				}
-			});
+			if (await MailvelopeUserStore.hasPublicKeyForEmails(recipients)) {
+				options.push('Mailvelope');
+			} else {
+				'mailvelope' === this.viewArea() && this.bodyArea();
+//				this.dropMailvelope();
+			}
 
 			const count = recipients.length,
 				identity = this.currentIdentity(),
