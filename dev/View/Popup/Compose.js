@@ -66,7 +66,7 @@ const
 
 	tpl = createElement('template'),
 
-	base64_encode = text => b64Encode(text).match(/.{1,76}/g).join('\r\n'),
+	base64_encode = text => text ? b64Encode(text).match(/.{1,76}/g).join('\r\n') : '',
 
 	getEmail = value => addressparser(value)[0]?.email || false,
 
