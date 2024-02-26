@@ -39,6 +39,15 @@ const
 		}
 	},
 
+	collator = new Intl.Collator(undefined, {sensitivity: 'base'}),
+	sort = keys => keys.sort(
+//		(a, b) => collator.compare(a.emails[0], b.emails[0]) || collator.compare(a.fingerprint, b.fingerprint)
+		(a, b) => collator.compare(a.emails[0], b.emails[0]) || collator.compare(a.id, b.id)
+	),
+	dedup = keys => sort((keys || [])
+		.filter((v, i, a) => a.findIndex(entry => entry.fingerprint == v.fingerprint) === i)
+	),
+
 	/**
 	 * OpenPGP.js v5 removed the localStorage (keyring)
 	 * This should be compatible with the old OpenPGP.js v2
@@ -114,10 +123,6 @@ export const OpenPGPUserStore = new class {
 
 	loadKeyrings() {
 		if (window.openpgp) {
-			const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'}),
-				dedup = keys => (keys || [])
-					.filter((v, i, a) => a.findIndex(entry => entry.fingerprint == v.fingerprint) === i)
-					.sort((a, b) => collator.compare(a.emails[0], b.emails[0]));
 			loadOpenPgpKeys(publicKeysItem).then(keys => {
 				this.publicKeys(dedup(keys));
 				console.log('openpgp.js public keys loaded');
@@ -140,16 +145,12 @@ export const OpenPGPUserStore = new class {
 		window.openpgp && openpgp.readKey({armoredKey:armoredKey}).then(key => {
 			if (!key.err) {
 				key = new OpenPgpKeyModel(armoredKey, key);
-				if (key.key.isPrivate()) {
-					if (!this.privateKeys.find(entry => entry.fingerprint == key.fingerprint)) {
-						this.privateKeys.push(key);
-						storeOpenPgpKeys(this.privateKeys, privateKeysItem);
-					}
-				} else {
-					if (!this.publicKeys.find(entry => entry.fingerprint == key.fingerprint)) {
-						this.publicKeys.push(key);
-						storeOpenPgpKeys(this.publicKeys, publicKeysItem);
-					}
+				const isPrivate = key.key.isPrivate(),
+					keys = isPrivate ? this.privateKeys : this.publicKeys;
+				if (!keys.find(entry => entry.fingerprint == key.fingerprint)) {
+					keys.push(key);
+					keys(sort(keys));
+					storeOpenPgpKeys(keys, isPrivate ? privateKeysItem : publicKeysItem);
 				}
 			}
 		});

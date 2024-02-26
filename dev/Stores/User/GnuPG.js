@@ -101,9 +101,13 @@ export const GnuPGUserStore = new class {
 						};
 						key.view = () => key.fetch(() => showScreenPopup(OpenPgpKeyPopupView, [key]));
 						return key;
-					};
-					this.publicKeys(oData.Result.public.map(key => initKey(key, 0)));
-					this.privateKeys(oData.Result.private.map(key => initKey(key, 1)));
+					},
+					collator = new Intl.Collator(undefined, {sensitivity: 'base'}),
+					sort = keys => keys.sort(
+						(a, b) => collator.compare(a.emails[0], b.emails[0]) || collator.compare(a.id, b.id)
+					);
+					this.publicKeys(sort(oData.Result.public.map(key => initKey(key, 0))));
+					this.privateKeys(sort(oData.Result.private.map(key => initKey(key, 1))));
 					console.log('gnupg ready');
 				}
 			}
