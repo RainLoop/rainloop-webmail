@@ -27,8 +27,7 @@ abstract class ConnectionSecurityType
 	{
 		$iPort = (int) $iPort;
 		$iResult = (int) $iSecurityType;
-		if (self::AUTO_DETECT === $iSecurityType)
-		{
+		if (self::AUTO_DETECT === $iSecurityType) {
 			switch (true)
 			{
 				case 993 === $iPort:
@@ -39,8 +38,7 @@ abstract class ConnectionSecurityType
 			}
 		}
 
-		if (self::SSL === $iResult && !\in_array('ssl', \stream_get_transports()))
-		{
+		if (self::SSL === $iResult && !\in_array('ssl', \stream_get_transports())) {
 			$iResult = self::NONE;
 		}
 

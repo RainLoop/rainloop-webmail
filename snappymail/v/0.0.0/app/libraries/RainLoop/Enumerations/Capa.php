@@ -2,7 +2,7 @@
 
 namespace RainLoop\Enumerations;
 
-class Capa
+abstract class Capa
 {
 	const GNUPG = 'GnuPG';
 	const OPEN_PGP = 'OpenPGP';
@@ -16,5 +16,4 @@ class Capa
 	const QUOTA = 'Quota';
 	const ATTACHMENTS_ACTIONS = 'AttachmentsActions';
 	const DANGEROUS_ACTIONS = 'DangerousActions';
-	const AUTOLOGOUT = ''; // Obsolete
 }

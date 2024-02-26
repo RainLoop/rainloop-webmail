@@ -8,7 +8,7 @@ enum StorageType: int {
 	case USER = 1;
 }
 */
-class StorageType
+abstract class StorageType
 {
 	const USER = 1;
 	const CONFIG = 2;
