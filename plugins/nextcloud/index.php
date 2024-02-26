@@ -328,6 +328,12 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 					$this->Config()->Get('plugin', 'ignoreSystemAddressbook', true)
 				);
 			}
+/*
+			if ('storage' === $sName || 'storage-local' === $sName) {
+				require_once __DIR__ . '/storage.php';
+				$oDriver = new \NextcloudStorage(APP_PRIVATE_DATA.'storage', $sName === 'storage-local');
+			}
+*/
 		}
 	}
 
