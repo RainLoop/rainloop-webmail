@@ -261,7 +261,7 @@ trait UserAuth
 							$this->oMainAuthAccount = $oMainAuthAccount;
 						} else {
 							$this->StorageProvider()->Clear($oMainAuthAccount, StorageType::SESSION, $sToken);
-							\SnappyMail\Log::notice('TOKENS', 'SESSION_TOKEN value invalid: ' . \gettype($sTokenValue));
+							\SnappyMail\Log::notice('TOKENS', 'SESSION_TOKEN value invalid: ' . \get_debug_type($sTokenValue));
 						}
 					} else {
 						\SnappyMail\Log::notice('TOKENS', 'AUTH_SPEC_TOKEN_KEY invalid');

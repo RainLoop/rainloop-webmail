@@ -172,12 +172,12 @@ function standardSerializer(Writer $writer, $value): void
                 $writer->write($item);
                 $writer->endElement();
             } else {
-                throw new \InvalidArgumentException('The writer does not know how to serialize arrays with keys of type: '.gettype($name));
+                throw new \InvalidArgumentException('The writer does not know how to serialize arrays with keys of type: '.get_debug_type($name));
             }
         }
     } elseif (is_object($value)) {
         throw new \InvalidArgumentException('The writer cannot serialize objects of class: '.get_class($value));
     } elseif (!is_null($value)) {
-        throw new \InvalidArgumentException('The writer cannot serialize values of type: '.gettype($value));
+        throw new \InvalidArgumentException('The writer cannot serialize values of type: '.get_debug_type($value));
     }
 }
