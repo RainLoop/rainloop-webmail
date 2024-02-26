@@ -45,6 +45,13 @@
 	};
 
 	/**
+	 * https://github.com/tc39/proposal-regex-escaping
+	 */
+	if (!RegExp.escape){
+		RegExp.escape = s => String(s).replace(/[\\^$*+?.()|[\]{}]/g, '\\$&');
+	}
+
+	/**
 	 * Every time the function is executed,
 	 * it will delay the execution with the given amount of milliseconds.
 	 */

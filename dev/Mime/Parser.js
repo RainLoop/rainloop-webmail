@@ -175,7 +175,7 @@ export function ParseMime(text)
 			let boundary = headers['content-type']?.params.boundary;
 			if (boundary) {
 				part.boundary = boundary;
-				let regex = new RegExp('(?:^|\r?\n)--' + boundary + '(?:--)?(?:\r?\n|$)', 'g'),
+				let regex = new RegExp('(?:^|\r?\n)--' + RegExp.escape(boundary) + '(?:--)?(?:\r?\n|$)', 'g'),
 					body = mimePart.slice(head.length),
 					bodies = body.split(regex),
 					pos = part.bodyStart;
