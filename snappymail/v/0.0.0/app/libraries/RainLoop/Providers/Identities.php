@@ -27,6 +27,11 @@ class Identities extends AbstractProvider
 		});
 	}
 
+	public function IsActive() : bool;
+	{
+		return true;
+	}
+
 	/**
 	 * @param Account $account
 	 * @param bool $allowMultipleIdentities
