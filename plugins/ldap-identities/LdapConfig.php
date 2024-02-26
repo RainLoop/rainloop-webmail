@@ -8,6 +8,7 @@ class LdapConfig
 	public const CONFIG_SERVER = "server";
 	public const CONFIG_PROTOCOL_VERSION = "server_version";
 	public const CONFIG_STARTTLS = "starttls";
+	public const CONFIG_MAIL_PREFIX = "mail_prefix";
 
 	public const CONFIG_BIND_USER = "bind_user";
 	public const CONFIG_BIND_PASSWORD = "bind_password";
@@ -30,6 +31,7 @@ class LdapConfig
 	public $server;
 	public $protocol;
 	public $starttls;
+	public $mail_prefix;
 	public $bind_user;
 	public $bind_password;
 	public $user_base;
@@ -51,6 +53,7 @@ class LdapConfig
 		$ldap->server = trim($config->Get("plugin", self::CONFIG_SERVER));
 		$ldap->protocol = (int)trim($config->Get("plugin", self::CONFIG_PROTOCOL_VERSION, 3));
 		$ldap->starttls = (bool)trim($config->Get("plugin", self::CONFIG_STARTTLS));
+		$ldap->mail_prefix = trim($config->Get("plugin", self::CONFIG_MAIL_PREFIX));
 		$ldap->bind_user = trim($config->Get("plugin", self::CONFIG_BIND_USER));
 		$ldap->bind_password = trim($config->Get("plugin", self::CONFIG_BIND_PASSWORD));
 		$ldap->user_base = trim($config->Get("plugin", self::CONFIG_USER_BASE));
