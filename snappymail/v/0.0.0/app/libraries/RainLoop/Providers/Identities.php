@@ -27,7 +27,7 @@ class Identities extends AbstractProvider
 		});
 	}
 
-	public function IsActive() : bool;
+	public function IsActive() : bool
 	{
 		return true;
 	}
