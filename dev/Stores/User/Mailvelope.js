@@ -53,7 +53,7 @@ export const MailvelopeUserStore = {
 				let emails = [...message.from,...message.to,...message.cc].validUnique(),
 					i = emails.length;
 				while (i--) {
-					if (await this.getMailvelopePrivateKeyFor(emails[i].email)) {
+					if (await this.getPrivateKeyFor(emails[i].email)) {
 						/**
 						* https://mailvelope.github.io/mailvelope/Mailvelope.html#createEncryptedFormContainer
 						* Creates an iframe to display an encrypted form
