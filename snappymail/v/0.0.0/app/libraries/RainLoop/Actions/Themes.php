@@ -187,7 +187,7 @@ trait Themes
 
 									$oSettings->SetConf('UserBackgroundName', $sName);
 									$oSettings->SetConf('UserBackgroundHash', $sHash);
-									$this->SettingsProvider()->Save($oAccount, $oSettings);
+									$oSettings->save();
 								}
 							}
 						}

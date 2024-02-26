@@ -192,7 +192,7 @@ trait Folders
 
 		$oSettingsLocal->SetConf('CheckableFolder', \json_encode(\array_unique($aCheckableFolder)));
 
-		return $this->DefaultResponse($this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
+		return $this->DefaultResponse($oSettingsLocal->save());
 	}
 
 	/**
@@ -320,7 +320,7 @@ trait Folders
 		$oSettingsLocal->SetConf('TrashFolder', $this->GetActionParam('trash', ''));
 		$oSettingsLocal->SetConf('ArchiveFolder', $this->GetActionParam('archive', ''));
 
-		return $this->DefaultResponse($this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
+		return $this->DefaultResponse($oSettingsLocal->save());
 	}
 
 	public function DoFolderACL() : array

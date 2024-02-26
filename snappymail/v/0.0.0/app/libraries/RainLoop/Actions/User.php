@@ -61,7 +61,7 @@ trait User
 
 				if ($sCurrentLanguage !== $sLanguage) {
 					$oSettings->SetConf('language', $sLanguage);
-					$this->SettingsProvider()->Save($oAccount, $oSettings);
+					$oSettings->save();
 				}
 			}
 		}
@@ -219,8 +219,7 @@ trait User
 		$this->setSettingsFromParams($oSettingsLocal, 'ShowUnreadCount', 'bool');
 		$this->setSettingsFromParams($oSettingsLocal, 'CheckMailInterval', 'int');
 
-		return $this->DefaultResponse($this->SettingsProvider()->Save($oAccount, $oSettings) &&
-			$this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
+		return $this->DefaultResponse($oSettings->save() && $oSettingsLocal->save());
 	}
 
 	public function DoQuota() : array
@@ -263,12 +262,11 @@ trait User
 
 	public function DoClearUserBackground() : array
 	{
-		$oAccount = $this->getAccountFromToken();
-
 		if (!$this->GetCapa(Capa::USER_BACKGROUND)) {
 			return $this->FalseResponse();
 		}
 
+		$oAccount = $this->getAccountFromToken();
 		$oSettings = $this->SettingsProvider()->Load($oAccount);
 		if ($oAccount && $oSettings) {
 			$this->StorageProvider()->Clear($oAccount,
@@ -280,8 +278,7 @@ trait User
 			$oSettings->SetConf('UserBackgroundHash', '');
 		}
 
-		return $this->DefaultResponse($oAccount && $oSettings ?
-			$this->SettingsProvider()->Save($oAccount, $oSettings) : false);
+		return $this->DefaultResponse($oAccount && $oSettings ? $oSettings->save() : false);
 	}
 
 	private function setSettingsFromParams(\RainLoop\Settings $oSettings, string $sConfigName, string $sType = 'string', ?callable $cCallback = null) : void

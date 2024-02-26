@@ -2,6 +2,12 @@
 
 namespace RainLoop\Providers\Storage\Enumerations;
 
+/**
+ * PHP 8.1
+enum StorageType: int {
+	case USER = 1;
+}
+*/
 class StorageType
 {
 	const USER = 1;

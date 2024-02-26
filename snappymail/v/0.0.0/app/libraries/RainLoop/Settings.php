@@ -2,11 +2,16 @@
 
 namespace RainLoop;
 
+use RainLoop\Model\Account;
+use RainLoop\Providers\Settings as SettingsProvider;
+
 class Settings implements \JsonSerializable
 {
-	protected array $aData = array();
+	protected array $aData;
+	protected Account $oAccount;
+	protected SettingsProvider $oProvider;
 
-	public function __construct(array $aData)
+	public function __construct(SettingsProvider $oProvider, Account $oAccount, array $aData)
 	{
 		if (isset($aData['SpamFolder']) && !isset($aData['JunkFolder'])) {
 			$aData['JunkFolder'] = $aData['SpamFolder'];
@@ -19,6 +24,13 @@ class Settings implements \JsonSerializable
 			unset($aData['Language']);
 		}
 		$this->aData = $aData;
+		$this->oAccount = $oAccount;
+		$this->oProvider = $oProvider;
+	}
+
+	public function save() : bool
+	{
+		return $this->oProvider->Save($this->oAccount, $this);
 	}
 
 	public function toArray() : array

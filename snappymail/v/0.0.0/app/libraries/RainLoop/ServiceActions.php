@@ -588,7 +588,7 @@ class ServiceActions
 							}
 
 							if ($bNeedToSettings) {
-								$this->SettingsProvider()->Save($oAccount, $oSettings);
+								$oSettings->save();
 							}
 						}
 
