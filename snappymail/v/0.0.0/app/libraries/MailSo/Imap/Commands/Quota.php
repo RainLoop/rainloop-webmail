@@ -50,8 +50,8 @@ trait Quota
 		if (!$this->hasCapability('QUOTA')) {
 			return null;
 		}
+		$aReturn = array(0, 0, 0, 0);
 		$oResponseCollection = $this->SendRequest(($root?'GETQUOTAROOT':'GETQUOTA') . " {$this->EscapeFolderName($sFolderName)}");
-		$aReturn = array(0, 0);
 		foreach ($this->yieldUntaggedResponses() as $oResponse) {
 			if ('QUOTA' === $oResponse->StatusOrIndex
 				&& isset($oResponse->ResponseList[3])

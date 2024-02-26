@@ -86,14 +86,11 @@ trait Folders
 		}
 
 		if ($oFolderCollection) {
-			$aQuota = null;
-			if ($this->GetCapa(Capa::QUOTA)) {
-				try {
-//					$aQuota = $this->ImapClient()->Quota();
-					$aQuota = $this->ImapClient()->QuotaRoot();
-				} catch (\Throwable $oException) {
-					// ignore
-				}
+			try {
+//				$aQuota = $this->ImapClient()->Quota();
+				$aQuota = $this->ImapClient()->QuotaRoot();
+			} catch (\Throwable $oException) {
+				// ignore
 			}
 
 			$aCapabilities = \array_values(\array_filter($this->ImapClient()->Capability() ?: [], function ($item) {

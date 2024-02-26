@@ -225,21 +225,14 @@ trait User
 	public function DoQuota() : array
 	{
 		$oAccount = $this->initMailClientConnection();
-
-		if (!$this->GetCapa(Capa::QUOTA)) {
-			return $this->DefaultResponse(array(0, 0, 0, 0));
-		}
-
 		try
 		{
-			$aQuota = $this->ImapClient()->QuotaRoot();
+			return $this->DefaultResponse($this->ImapClient()->QuotaRoot() ?: [0, 0, 0, 0]);
 		}
 		catch (\Throwable $oException)
 		{
 			throw new ClientException(Notifications::MailServerError, $oException);
 		}
-
-		return $this->DefaultResponse($aQuota);
 	}
 
 	public function DoSuggestions() : array

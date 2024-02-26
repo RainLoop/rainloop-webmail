@@ -13,7 +13,6 @@ abstract class Capa
 	const ADDITIONAL_ACCOUNTS = 'AdditionalAccounts';
 	const IDENTITIES = 'Identities';
 	const CONTACTS = 'Contacts';
-	const QUOTA = 'Quota';
 	const ATTACHMENTS_ACTIONS = 'AttachmentsActions';
 	const DANGEROUS_ACTIONS = 'DangerousActions';
 }
