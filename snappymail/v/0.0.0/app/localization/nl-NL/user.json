@@ -282,7 +282,8 @@
 		"GOOD_SIGNATURE": "Juiste handtekening van %USER%",
 		"ERROR": "%TYPE% foutmelding: %ERROR%",
 		"CREATE_SELF_SIGNED": "Zelfondertekend certificaat aanmaken",
-		"VALID_UNTIL": "Geldig tot"
+		"VALID_UNTIL": "Geldig tot",
+		"PRIVATE_KEY": "Privésleutel"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importeer OpenPGP sleutel",
@@ -303,6 +304,7 @@
 	},
 	"SMIME": {
 		"POPUP_IMPORT_TITLE": "Importeer S\/MIME certificaat",
+		"CERTIFICATE": "Certificaat",
 		"CERTIFICATES": "S\/MIME Certificaten",
 		"SIGNED_MESSAGE": "S\/MIME ondertekend bericht",
 		"ENCRYPTED_MESSAGE": "S\/MIME versleuteld bericht",

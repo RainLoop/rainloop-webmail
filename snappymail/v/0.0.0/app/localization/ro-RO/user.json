@@ -282,7 +282,8 @@
 		"GOOD_SIGNATURE": "Good signature from %USER%",
 		"ERROR": "%TYPE% error: %ERROR%",
 		"CREATE_SELF_SIGNED": "Create self-signed",
-		"VALID_UNTIL": "Valid until"
+		"VALID_UNTIL": "Valid until",
+		"PRIVATE_KEY": "Private key"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Import OpenPGP key",
@@ -303,6 +304,7 @@
 	},
 	"SMIME": {
 		"POPUP_IMPORT_TITLE": "Import S\/MIME certificate",
+		"CERTIFICATE": "Certificate",
 		"CERTIFICATES": "S\/MIME Certificates",
 		"SIGNED_MESSAGE": "S\/MIME signed message",
 		"ENCRYPTED_MESSAGE": "S\/MIME encrypted message",

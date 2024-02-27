@@ -282,7 +282,8 @@
 		"GOOD_SIGNATURE": "%USER%(으)로부터 수신한 양호한 서명",
 		"ERROR": "%TYPE% 오류: %ERROR%",
 		"CREATE_SELF_SIGNED": "Create self-signed",
-		"VALID_UNTIL": "Valid until"
+		"VALID_UNTIL": "Valid until",
+		"PRIVATE_KEY": "Private key"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "OpenPGP 키 가져오기",
@@ -303,6 +304,7 @@
 	},
 	"SMIME": {
 		"POPUP_IMPORT_TITLE": "Import S\/MIME certificate",
+		"CERTIFICATE": "Certificate",
 		"CERTIFICATES": "S\/MIME Certificates",
 		"SIGNED_MESSAGE": "S\/MIME로 서명된 메세지입니다.",
 		"ENCRYPTED_MESSAGE": "S\/MIME로 암호화된 메세지입니다.",

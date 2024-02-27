@@ -282,7 +282,8 @@
 		"GOOD_SIGNATURE": "%USER%からの正しい署名",
 		"ERROR": "%TYPE% エラー: %ERROR%",
 		"CREATE_SELF_SIGNED": "Create self-signed",
-		"VALID_UNTIL": "Valid until"
+		"VALID_UNTIL": "Valid until",
+		"PRIVATE_KEY": "Private key"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "OpenPGPキーをインポート",
@@ -303,6 +304,7 @@
 	},
 	"SMIME": {
 		"POPUP_IMPORT_TITLE": "Import S\/MIME certificate",
+		"CERTIFICATE": "Certificate",
 		"CERTIFICATES": "S\/MIME Certificates",
 		"SIGNED_MESSAGE": "S\/MIME署名済みメッセージ",
 		"ENCRYPTED_MESSAGE": "S\/MIME暗号化メッセージ",

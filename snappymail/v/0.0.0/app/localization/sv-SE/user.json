@@ -282,7 +282,8 @@
 		"GOOD_SIGNATURE": "Godkänd signatur för %USER%",
 		"ERROR": "%TYPE%-fel: %ERROR%",
 		"CREATE_SELF_SIGNED": "Create self-signed",
-		"VALID_UNTIL": "Valid until"
+		"VALID_UNTIL": "Valid until",
+		"PRIVATE_KEY": "Private key"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Import av OpenPGP-nyckel",
@@ -303,6 +304,7 @@
 	},
 	"SMIME": {
 		"POPUP_IMPORT_TITLE": "Import S\/MIME certificate",
+		"CERTIFICATE": "Certificate",
 		"CERTIFICATES": "S\/MIME Certificates",
 		"SIGNED_MESSAGE": "S\/MIME-signerat meddelande",
 		"ENCRYPTED_MESSAGE": "S\/MIME-krypterat meddelande",

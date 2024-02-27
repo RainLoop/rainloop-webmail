@@ -282,7 +282,8 @@
 		"GOOD_SIGNATURE": "來自「%USER%」的良好簽署",
 		"ERROR": "%TYPE% 錯誤: %ERROR%",
 		"CREATE_SELF_SIGNED": "Create self-signed",
-		"VALID_UNTIL": "Valid until"
+		"VALID_UNTIL": "Valid until",
+		"PRIVATE_KEY": "Private key"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "匯入 OpenPGP 金鑰",
@@ -303,6 +304,7 @@
 	},
 	"SMIME": {
 		"POPUP_IMPORT_TITLE": "Import S\/MIME certificate",
+		"CERTIFICATE": "Certificate",
 		"CERTIFICATES": "S\/MIME Certificates",
 		"SIGNED_MESSAGE": "已透過 S\/MIME 簽署郵件",
 		"ENCRYPTED_MESSAGE": "已透過 S\/MIME 加密郵件",

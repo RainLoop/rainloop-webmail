@@ -282,7 +282,8 @@
 		"GOOD_SIGNATURE": "Oikea allekirjoitus %USER% lle",
 		"ERROR": "%TYPE% virhe: %ERROR%",
 		"CREATE_SELF_SIGNED": "Create self-signed",
-		"VALID_UNTIL": "Valid until"
+		"VALID_UNTIL": "Valid until",
+		"PRIVATE_KEY": "Private key"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Tuo OpenPGP avain",
@@ -303,6 +304,7 @@
 	},
 	"SMIME": {
 		"POPUP_IMPORT_TITLE": "Import S\/MIME certificate",
+		"CERTIFICATE": "Certificate",
 		"CERTIFICATES": "S\/MIME Certificates",
 		"SIGNED_MESSAGE": "S\/MIME allekirjoitettu viesti",
 		"ENCRYPTED_MESSAGE": "S\/MIME salattu visti",

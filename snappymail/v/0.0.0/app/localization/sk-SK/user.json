@@ -282,7 +282,8 @@
 		"GOOD_SIGNATURE": "Good signature from %USER%",
 		"ERROR": "%TYPE% error: %ERROR%",
 		"CREATE_SELF_SIGNED": "Create self-signed",
-		"VALID_UNTIL": "Valid until"
+		"VALID_UNTIL": "Valid until",
+		"PRIVATE_KEY": "Private key"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importovať kľúč OpenPGP",
@@ -303,6 +304,7 @@
 	},
 	"SMIME": {
 		"POPUP_IMPORT_TITLE": "Import S\/MIME certificate",
+		"CERTIFICATE": "Certificate",
 		"CERTIFICATES": "S\/MIME Certificates",
 		"SIGNED_MESSAGE": "Správa podpísaná s S\/MIME",
 		"ENCRYPTED_MESSAGE": "Správa šifrovaná s S\/MIME",

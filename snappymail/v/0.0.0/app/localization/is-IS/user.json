@@ -282,7 +282,8 @@
 		"GOOD_SIGNATURE": "Gild undirritun frá %USER%",
 		"ERROR": "%TYPE% villa: %ERROR%",
 		"CREATE_SELF_SIGNED": "Create self-signed",
-		"VALID_UNTIL": "Valid until"
+		"VALID_UNTIL": "Valid until",
+		"PRIVATE_KEY": "Private key"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Flytja inn OpenPGP-lykil",
@@ -303,6 +304,7 @@
 	},
 	"SMIME": {
 		"POPUP_IMPORT_TITLE": "Import S\/MIME certificate",
+		"CERTIFICATE": "Certificate",
 		"CERTIFICATES": "S\/MIME Certificates",
 		"SIGNED_MESSAGE": "Skeyti undirritað með S\/MIME",
 		"ENCRYPTED_MESSAGE": "Skeyti dulritað með S\/MIME",
