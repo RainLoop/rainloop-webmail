@@ -69,7 +69,8 @@ class LdapIdentities implements IIdentities
 				$this->config->user_base,
 				$this->config->user_objectclass,
 				$this->config->user_field_name,
-				$this->config->user_field_mail
+				$this->config->user_field_mail,
+				$this->config->mail_prefix
 			);
 		} catch (LdapException $e) {
 			return []; // exceptions are only thrown from the handleerror function that does logging already
@@ -104,7 +105,8 @@ class LdapIdentities implements IIdentities
 				$this->config->group_base,
 				$this->config->group_objectclass,
 				$this->config->group_field_name,
-				$this->config->group_field_mail
+				$this->config->group_field_mail,
+				$this->config->mail_prefix
 			);
 		} catch (LdapException $e) {
 			return []; // exceptions are only thrown from the handleerror function that does logging already
@@ -241,7 +243,7 @@ class LdapIdentities implements IIdentities
 	 * @return LdapResult[]
 	 * @throws LdapException
 	 */
-	private function FindLdapResults(string $searchField, string $searchValue, string $searchBase, string $objectClass, string $nameField, string $mailField): array
+	private function FindLdapResults(string $searchField, string $searchValue, string $searchBase, string $objectClass, string $nameField, string $mailField, string $mailPrefix): array
 	{
 		$this->EnsureBound();
 
@@ -261,6 +263,8 @@ class LdapIdentities implements IIdentities
 			return [];
 		}
 
+		$entries = $this->CleanupMailAddresses($entries, $mailField, $mailPrefix);
+
 		$results = [];
 		for ($i = 0; $i < $entries["count"]; $i++) {
 			$entry = $entries[$i];
@@ -274,6 +278,49 @@ class LdapIdentities implements IIdentities
 		}
 
 		return $results;
+	}
+
+	// Function CleanupMailAddresses(): If a prefix is given this function removes addresses without / with the wrong prefix and then the prefix itself from all remaining values.
+	// This is usefull for example for importing Active Directory LDAP entry "proxyAddresses" which can hold different address types with prefixes like "X400:", "smtp:" "sip:" and others.
+
+	/**
+	@param array $entries
+	@param string $mailField
+	@paraam string $mailPrefix
+	@return array
+	*/
+	private function CleanupMailAddresses(array $entries, string $mailField, string $mailPrefix)
+	{
+		if (!empty($mailPrefix)) {
+			for ($i = 0; $i < $entries["count"]; $i++) {
+				// Remove addresses without the given prefix
+				$entries[$i]["$mailField"] = array_filter($entries[$i]["$mailField"],
+												function($prefixMail)
+												{
+													// $mailPrefix can't be used here, because it's nailed to the CleanupMailAddresses function and can't be passed to the array_filter function afaik.
+													// Ideas to avoid this are welcome.
+													if (stripos($prefixMail, $this->config->mail_prefix) === 0) {
+														return TRUE;
+													}
+													return FALSE;
+												}
+											);
+				// Set "count" to new value
+				$newcount = count($entries[$i]["$mailField"]);
+				if (array_key_exists("count", $entries[$i]["$mailField"])) {
+					$newcount = $newcount - 1;
+				}
+				$entries[$i]["$mailField"]["count"] = $newcount;
+
+				// Remove the prefix
+				for ($j = 0; $j < $entries[$i]["$mailField"]["count"]; $j++) {
+					$mailPrefixLen = mb_strlen($mailPrefix);
+					$entries[$i]["$mailField"][$j] = substr($entries[$i]["$mailField"][$j], $mailPrefixLen);
+				}
+			}
+		}
+
+		return $entries;
 	}
 
 	/**

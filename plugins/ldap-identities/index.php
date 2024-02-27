@@ -8,10 +8,10 @@ class LdapIdentitiesPlugin extends AbstractPlugin
 {
 	const
 		NAME     = 'LDAP Identities',
-		VERSION  = '2.2',
+		VERSION  = '2.3',
 		AUTHOR   = 'FWest98',
 		URL      = 'https://github.com/FWest98',
-		RELEASE  = '2024-02-22',
+		RELEASE  = '2024-02-27',
 		REQUIRED = '2.20.0',
 		CATEGORY = 'Accounts',
 		DESCRIPTION = 'Adds functionality to import account identities from LDAP.';
@@ -57,12 +57,18 @@ class LdapIdentitiesPlugin extends AbstractPlugin
 				->SetLabel("LDAP Protocol Version")
 				->SetType(PluginPropertyType::SELECTION)
 				->SetDefaultValue([2, 3]),
-				
+
 			Property::NewInstance(LdapConfig::CONFIG_STARTTLS)
 				->SetLabel("Use StartTLS")
 				->SetType(PluginPropertyType::BOOL)
 				->SetDescription("Whether or not to use TLS encrypted connection")
 				->SetDefaultValue(true),
+
+			Property::NewInstance(LdapConfig::CONFIG_MAIL_PREFIX)
+				->SetLabel("Email prefix")
+				->SetType(PluginPropertyType::STRING)
+				->SetDescription("Only addresses with this prefix will be used as identity. The prefix is removed from the identity list.\nThis is useful for example to import identities from Exchange, which stores mail addresses in the ProxyAddresses attribut of Active Directory with \"smtp:\" as prefix. (e.g. \"smtp:john.doe@topsecret.info\")\n-> To use addresses set by Exchange use \"smtp:\" as prefix.")
+				->SetDefaultValue(""),
 
 			Property::NewInstance(LdapConfig::CONFIG_BIND_USER)
 				->SetLabel("Bind User DN")
