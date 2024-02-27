@@ -72,7 +72,7 @@ class InstallStep implements IRepairStep
 		if ('12345' == $sPassword || !$sPassword) {
 			$output->info('Generate admin password');
 			$sPassword = \substr(\base64_encode(\random_bytes(16)), 0, 12);
-			$oConfig->SetPassword($sPassword);
+			$oConfig->SetPassword(new \SnappyMail\SensitiveString($sPassword));
 			\RainLoop\Utils::saveFile(APP_PRIVATE_DATA . 'admin_password.txt', $sPassword . "\n");
 			$bSave = true;
 		}
