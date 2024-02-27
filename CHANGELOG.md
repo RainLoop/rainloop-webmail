@@ -1,3 +1,22 @@
+## 2.35.2 – 2024-02-26
+
+### Added
+- GnuPG error handling
+- Missing strings for localization inside identity popup (Cryptography > S/MIME)
+  [#1458](https://github.com/the-djmaze/snappymail/issues/1458)
+
+### Changed
+- Update Portuguese by @ner00
+
+### Fixed
+- Verify S/MIME signatures got broken allong the way while implementing this
+- Drop support for gnupg PECL extension as it fails with "no passphrase" issues
+- Error 352 when getting Filters
+  [#1455](https://github.com/the-djmaze/snappymail/issues/1455)
+- Nextcloud SetPassword(): Argument #1 must be of type SensitiveString, string given
+  [#1456](https://github.com/the-djmaze/snappymail/issues/1456)
+
+
 ## 2.35.1 – 2024-02-26
 
 ### Added
