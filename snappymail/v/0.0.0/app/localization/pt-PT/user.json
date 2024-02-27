@@ -154,8 +154,8 @@
 		"HAS_VIRUS_WARNING": "AVISO: vírus detetado",
 		"TAGS": "Etiquetas",
 		"NEW_TAG": "Nova etiqueta",
-		"ENABLE_TRACKING_LINKS": "Enable tracking links",
-		"TRACKING_ENABLED": "Links are now tracked when clicked!"
+		"ENABLE_TRACKING_LINKS": "Ativar ligações de rastreamento",
+		"TRACKING_ENABLED": "As ligações irão ser rastreadas quando clicadas!"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Importante",
@@ -255,7 +255,7 @@
 	"POPUPS_IDENTITY": {
 		"TITLE_ADD_IDENTITY": "Adicionar identidade?",
 		"TITLE_UPDATE_IDENTITY": "Atualizar identidade?",
-		"LABEL": "Label",
+		"LABEL": "Rótulo",
 		"BUTTON_ADD_IDENTITY": "Adicionar",
 		"BUTTON_UPDATE_IDENTITY": "Atualizar",
 		"SIGNATURE": "Assinatura",
@@ -281,8 +281,8 @@
 		"VERIFY": "Validar",
 		"GOOD_SIGNATURE": "Boa assinatura de %USER%",
 		"ERROR": "Erro %TYPE%: %ERROR%",
-		"CREATE_SELF_SIGNED": "Create self-signed",
-		"VALID_UNTIL": "Valid until"
+		"CREATE_SELF_SIGNED": "Criar auto-assinado",
+		"VALID_UNTIL": "Válido até"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importar chave OpenPGP",
@@ -295,18 +295,18 @@
 		"SIGNED_MESSAGE": "Mensagem assinada com OpenPGP",
 		"ENCRYPTED_MESSAGE": "Mensagem encriptada com OpenPGP",
 		"STORE_IN_GNUPG": "Guardar no servidor em GnuPG",
-		"STORE_PUBLIC_KEY_IN_GNUPG": "Store public key on server in GnuPG",
-		"STORE_PRIVATE_KEY_IN_GNUPG": "Store private key on server in GnuPG",
+		"STORE_PUBLIC_KEY_IN_GNUPG": "Guardar a chave pública no servidor em GnuPG",
+		"STORE_PRIVATE_KEY_IN_GNUPG": "Guardar a chave privada no servidor em GnuPG",
 		"BACKUP_ON_SERVER": "Guardar (encriptado) no servidor",
-		"BACKUP_PUBLIC_KEY_ON_SERVER": "Backup public key on server",
-		"BACKUP_PRIVATE_KEY_ON_SERVER": "Backup private key on server"
+		"BACKUP_PUBLIC_KEY_ON_SERVER": "Fazer cópia de segurança da chave pública no servidor",
+		"BACKUP_PRIVATE_KEY_ON_SERVER": "Fazer cópia de segurança da chave privada no servidor"
 	},
 	"SMIME": {
-		"POPUP_IMPORT_TITLE": "Import S\/MIME certificate",
-		"CERTIFICATES": "S\/MIME Certificates",
+		"POPUP_IMPORT_TITLE": "Importar certificado S\/MIME",
+		"CERTIFICATES": "Certificados S\/MIME",
 		"SIGNED_MESSAGE": "Mensagem assinada com S\/MIME",
 		"ENCRYPTED_MESSAGE": "Mensagem encriptada com S\/MIME",
-		"PRIVATE_KEY_OF": "S\/MIME private key of %EMAIL%"
+		"PRIVATE_KEY_OF": "Chave privada S\/MIME de %EMAIL%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Criar um filtro?",
@@ -405,7 +405,7 @@
 		"IMAGEUPLOAD": "Escolher imagem",
 		"UNDO": "Desfazer",
 		"REDO": "Refazer",
-		"REMOVESTYLE": "Remove style"
+		"REMOVESTYLE": "Remover estilo"
 	},
 	"SETTINGS_LABELS": {
 		"GENERAL": "Geral",
@@ -530,7 +530,7 @@
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importar chave",
 		"BUTTON_GENERATE_KEY_PAIR": "Gerar chaves",
-		"IMPORT_FROM_SERVER": "Import from server",
+		"IMPORT_FROM_SERVER": "Importar de servidor",
 		"TITLE_PRIVATE": "Privada",
 		"TITLE_PUBLIC": "Pública",
 		"GET_MAILVELOPE": "Obter extensão Mailvelope para o navegador."
