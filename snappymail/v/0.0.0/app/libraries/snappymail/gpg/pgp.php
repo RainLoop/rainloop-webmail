@@ -95,7 +95,7 @@ class PGP extends Base
 		$fclose = $this->setOutput($output);
 
 		if ($this->decryptKeys) {
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->decryptKeys);
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode(\array_map('strval', $this->decryptKeys));
 		}
 
 		$result = $this->exec(['--decrypt','--skip-verify']);
@@ -241,7 +241,7 @@ class PGP extends Base
 			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $keyId);
 		}
 		if ($private && $this->passphrases) {
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->passphrases);
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode(\array_map('strval', $this->passphrases));
 		}
 		$result = $this->exec([
 			$private ? '--export-secret-keys' : '--export',
@@ -362,7 +362,7 @@ class PGP extends Base
 		$arguments = ['--import'];
 
 		if ($this->passphrases) {
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->passphrases);
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode(\array_map('strval', $this->passphrases));
 		} else {
 			$arguments[] = '--batch';
 		}
@@ -629,7 +629,7 @@ class PGP extends Base
 			foreach ($this->signKeys as $fingerprint => $pass) {
 				$arguments[] = '--local-user ' . \escapeshellarg($fingerprint);
 			}
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->signKeys);
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode(\array_map('strval', $this->signKeys));
 		}
 
 		$result = $this->exec($arguments);

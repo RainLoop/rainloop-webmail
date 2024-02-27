@@ -132,8 +132,7 @@ class OpenSSL
 	}
 
 	public function setPrivateKey(/*OpenSSLAsymmetricKey|string*/$privateKey,
-		#[\SensitiveParameter]
-		?string $passphrase = null
+		?\SnappyMail\SensitiveString $passphrase = null
 	) : void
 	{
 		$this->privateKey = \openssl_pkey_get_private($privateKey, $passphrase);

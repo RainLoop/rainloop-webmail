@@ -22,10 +22,7 @@ trait UserAuth
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function resolveLoginCredentials(string &$sEmail,
-		#[\SensitiveParameter]
-		string &$sPassword,
-		string &$sLogin): void
+	public function resolveLoginCredentials(string &$sEmail, \SnappyMail\SensitiveString $oPassword, string &$sLogin): void
 	{
 		$sEmail = \MailSo\Base\Utils::Trim($sEmail);
 		if ($this->Config()->Get('login', 'login_lowercase', true)) {
@@ -101,43 +98,40 @@ trait UserAuth
 			}
 		}
 
+		$sPassword = (string) $oPassword;
 		$this->Plugins()->RunHook('login.credentials.step-2', array(&$sEmail, &$sPassword));
+		$this->logMask($sPassword);
 
 		$sLogin = $sEmail;
 		if ($this->Config()->Get('login', 'login_lowercase', true)) {
 			$sLogin = \mb_strtolower($sLogin);
 		}
 
-		$this->logMask($sPassword);
 		$this->Plugins()->RunHook('login.credentials', array(&$sEmail, &$sLogin, &$sPassword));
 		$this->logMask($sPassword);
+
+		$oPassword->setValue($sPassword);
 	}
 
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function LoginProcess(string &$sEmail,
-		#[\SensitiveParameter]
-		string &$sPassword,
-		bool $bMainAccount = true
-	): Account
+	public function LoginProcess(string &$sEmail, \SnappyMail\SensitiveString $oPassword, bool $bMainAccount = true): Account
 	{
 		$sInputEmail = $sEmail;
 
-		$this->logMask($sPassword);
-
 		$sLogin = '';
-		$this->resolveLoginCredentials($sEmail, $sPassword, $sLogin);
+		$this->resolveLoginCredentials($sEmail, $oPassword, $sLogin);
 
-		if (!\str_contains($sEmail, '@') || !\strlen($sPassword)) {
+		if (!\str_contains($sEmail, '@') || !\strlen($oPassword)) {
 			throw new ClientException(Notifications::InvalidInputArgument);
 		}
 
 		$oAccount = null;
 		try {
 			$oAccount = $bMainAccount
-				? MainAccount::NewInstanceFromCredentials($this, $sEmail, $sLogin, $sPassword, true)
-				: AdditionalAccount::NewInstanceFromCredentials($this, $sEmail, $sLogin, $sPassword, true);
+				? MainAccount::NewInstanceFromCredentials($this, $sEmail, $sLogin, $oPassword, true)
+				: AdditionalAccount::NewInstanceFromCredentials($this, $sEmail, $sLogin, $oPassword, true);
 			if (!$oAccount) {
 				throw new ClientException(Notifications::AuthError);
 			}

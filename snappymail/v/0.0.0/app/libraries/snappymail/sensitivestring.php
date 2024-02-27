@@ -2,7 +2,7 @@
 
 namespace SnappyMail;
 
-class SensitiveString /* extends SensitiveParameterValue | SensitiveParameter */ implements \Stringable
+class SensitiveString /* extends SensitiveParameterValue | SensitiveParameter */ implements \Stringable, \JsonSerializable
 {
 	private string $value, $nonce;
 	private static ?string $key = null;
@@ -28,6 +28,7 @@ class SensitiveString /* extends SensitiveParameterValue | SensitiveParameter */
 		string $value
 	) : void
 	{
+		\strlen($value) && \RainLoop\Api::Actions()->logMask($value);
 		if (\is_callable('sodium_crypto_secretbox')) {
 			$this->nonce = \random_bytes(\SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
 			if (!static::$key) {
@@ -58,6 +59,12 @@ class SensitiveString /* extends SensitiveParameterValue | SensitiveParameter */
 	public function __toString(): string
 	{
 		return $this->getValue();
+	}
+
+	#[\ReturnTypeWillChange]
+	public function jsonSerialize()
+	{
+		throw new \Exception("JSON serialization of 'SnappyMail\\SensitiveString' is not allowed");
 	}
 
 	public function __debugInfo(): array

@@ -111,17 +111,15 @@ class ActionsAdmin extends Actions
 	public function DoAdminLogin() : array
 	{
 		$sLogin = trim($this->GetActionParam('Login', ''));
-		$sPassword = $this->GetActionParam('Password', '');
-
-		$this->logMask($sPassword);
+		$oPassword = new \SnappyMail\SensitiveString($this->GetActionParam('Password', ''));
 
 		$totp = $this->Config()->Get('security', 'admin_totp', '');
 
 		// \explode(':',`getent shadow root`)[1];
-		if (!\strlen($sLogin) || !\strlen($sPassword) ||
+		if (!\strlen($sLogin) || !\strlen($oPassword) ||
 			!$this->Config()->Get('security', 'allow_admin_panel', true) ||
 			$sLogin !== $this->Config()->Get('security', 'admin_login', '') ||
-			!$this->Config()->ValidatePassword($sPassword)
+			!$this->Config()->ValidatePassword($oPassword)
 			|| ($totp && !\SnappyMail\TOTP::Verify($totp, $this->GetActionParam('TOTP', ''))))
 		{
 			$this->LoggerAuthHelper(null, $this->getAdditionalLogParamsByUserLogin($sLogin, true), true);
@@ -183,17 +181,13 @@ class ActionsAdmin extends Actions
 		$bResult = false;
 		$oConfig = $this->Config();
 
-		$sPassword = $this->GetActionParam('Password', '');
-		$this->logMask($sPassword);
+		$oPassword = new \SnappyMail\SensitiveString($this->GetActionParam('Password', ''));
 
-		$sNewPassword = $this->GetActionParam('newPassword', '');
-		if (\strlen($sNewPassword)) {
-			$this->logMask($sNewPassword);
-		}
+		$oNewPassword = new \SnappyMail\SensitiveString($this->GetActionParam('newPassword', ''));
 
 		$passfile = APP_PRIVATE_DATA.'admin_password.txt';
 
-		if ($oConfig->ValidatePassword($sPassword)) {
+		if ($oConfig->ValidatePassword($oPassword)) {
 			$sLogin = \trim($this->GetActionParam('Login', ''));
 			if (\strlen($sLogin)) {
 				$oConfig->Set('security', 'admin_login', $sLogin);
@@ -201,9 +195,9 @@ class ActionsAdmin extends Actions
 
 			$oConfig->Set('security', 'admin_totp', $this->GetActionParam('TOTP', ''));
 
-			if (\strlen($sNewPassword)) {
-				$oConfig->SetPassword($sNewPassword);
-				if (\is_file($passfile) && \trim(\file_get_contents($passfile)) !== $sNewPassword) {
+			if (\strlen($oNewPassword)) {
+				$oConfig->SetPassword($oNewPassword);
+				if (\is_file($passfile) && \trim(\file_get_contents($passfile)) !== (string) $oNewPassword) {
 					\unlink($passfile);
 				}
 			}

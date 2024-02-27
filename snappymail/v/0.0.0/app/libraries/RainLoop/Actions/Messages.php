@@ -1065,8 +1065,7 @@ trait Messages
 			}
 		}
 
-		$sPassphrase = $this->GetActionParam('signPassphrase', '');
-		$this->logMask($sPassphrase);
+		$oPassphrase = new \SnappyMail\SensitiveString($this->GetActionParam('signPassphrase', ''));
 
 		$sFingerprint = $this->GetActionParam('signFingerprint', '');
 		if ($sFingerprint) {
@@ -1084,7 +1083,7 @@ trait Messages
 			$oMessage->SubParts->Clear();
 			$oMessage->Attachments()->Clear();
 
-			$GPG->addSignKey($sFingerprint, $sPassphrase);
+			$GPG->addSignKey($sFingerprint, $oPassphrase);
 			$GPG->setsignmode(GNUPG_SIG_MODE_DETACH);
 			$sSignature = $GPG->signStream($fp);
 			if (!$sSignature) {
@@ -1127,7 +1126,7 @@ trait Messages
 
 				$SMIME = $this->SMIME();
 				$SMIME->setCertificate($sCertificate);
-				$SMIME->setPrivateKey($sPrivateKey, $sPassphrase);
+				$SMIME->setPrivateKey($sPrivateKey, $oPassphrase);
 				$sSignature = $SMIME->sign($tmp, $detached);
 
 				if (!$sSignature) {

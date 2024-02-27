@@ -113,10 +113,9 @@ trait Pgp
 			return $this->FalseResponse();
 		}
 
-		$sPassphrase = $this->GetActionParam('passphrase', '');
-		$this->logMask($sPassphrase);
+		$oPassphrase = new \SnappyMail\SensitiveString($this->GetActionParam('passphrase', ''));
 
-		$GPG->addDecryptKey($this->GetActionParam('keyId', ''), $sPassphrase);
+		$GPG->addDecryptKey($this->GetActionParam('keyId', ''), $oPassphrase);
 
 		$sData = $this->GetActionParam('data', '');
 		$oPart = null;
@@ -160,12 +159,13 @@ trait Pgp
 
 	public function DoGnupgExportKey() : array
 	{
-		$sPassphrase = $this->GetActionParam('passphrase', '');
-		$this->logMask($sPassphrase);
+		$oPassphrase = $this->GetActionParam('isPrivate', '')
+			? new \SnappyMail\SensitiveString($this->GetActionParam('passphrase', ''))
+			: null;
 		$GPG = $this->GnuPG();
 		return $this->DefaultResponse($GPG ? $GPG->export(
 			$this->GetActionParam('keyId', ''),
-			$sPassphrase
+			$oPassphrase
 		) : false);
 	}
 
@@ -176,11 +176,10 @@ trait Pgp
 		if ($GPG) {
 			$sName = $this->GetActionParam('name', '');
 			$sEmail = $this->GetActionParam('email', '');
-			$sPassphrase = $this->GetActionParam('passphrase', '');
-			$this->logMask($sPassphrase);
+			$oPassphrase = new \SnappyMail\SensitiveString($this->GetActionParam('passphrase', ''));
 			$fingerprint = $GPG->generateKey(
 				$sName ? "{$sName} <{$sEmail}>" : $sEmail,
-				$sPassphrase
+				$oPassphrase
 			);
 		}
 		return $this->DefaultResponse($fingerprint);

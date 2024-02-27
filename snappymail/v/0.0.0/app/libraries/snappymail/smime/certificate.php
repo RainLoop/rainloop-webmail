@@ -112,11 +112,7 @@ class Certificate
 		return \openssl_get_cipher_methods($aliases);
 	}
 
-	public function createSelfSigned(
-		#[\SensitiveParameter]
-		string $passphrase = '',
-		?string $privateKey = null
-	) : array
+	public function createSelfSigned(\SnappyMail\SensitiveString $passphrase, ?string $privateKey = null) : array
 	{
 		$options = array(
 			'config'             => __DIR__ . '/openssl.cnf',

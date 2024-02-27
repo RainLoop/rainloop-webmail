@@ -53,19 +53,18 @@ trait SMime
 	}
 
 	/**
-	 * Can be use by Identity
+	 * Can be used by Identity
 	 */
 	public function DoSMimeCreateCertificate() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		$sPassphrase = $this->GetActionParam('passphrase', '');
-		$this->logMask($sPassphrase);
+		$oPassphrase = new \SnappyMail\SensitiveString($this->GetActionParam('passphrase', ''));
 
 		$cert = new Certificate();
 		$cert->distinguishedName['commonName'] = $this->GetActionParam('name', '') ?: $oAccount->Name();
 		$cert->distinguishedName['emailAddress'] = $this->GetActionParam('email', '') ?: $oAccount->Email();
-		$result = $cert->createSelfSigned($sPassphrase, $this->GetActionParam('privateKey', ''));
+		$result = $cert->createSelfSigned($oPassphrase, $this->GetActionParam('privateKey', ''));
 		return $this->DefaultResponse($result ?: false);
 	}
 
@@ -76,8 +75,7 @@ trait SMime
 		$sPartId = $this->GetActionParam('partId', '');
 		$sCertificate = $this->GetActionParam('certificate', '');
 		$sPrivateKey = $this->GetActionParam('privateKey', '');
-		$sPassphrase = $this->GetActionParam('passphrase', '');
-		$this->logMask($sPassphrase);
+		$oPassphrase = new \SnappyMail\SensitiveString($this->GetActionParam('passphrase', ''));
 
 		$this->initMailClientConnection();
 		$oImapClient = $this->ImapClient();
@@ -104,7 +102,7 @@ trait SMime
 
 		$SMIME = $this->SMIME();
 		$SMIME->setCertificate($sCertificate);
-		$SMIME->setPrivateKey($sPrivateKey, $sPassphrase);
+		$SMIME->setPrivateKey($sPrivateKey, $oPassphrase);
 		$result = $SMIME->decrypt($sBody);
 
 		return $this->DefaultResponse($result ?: false);

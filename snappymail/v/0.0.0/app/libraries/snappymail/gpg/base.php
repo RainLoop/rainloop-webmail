@@ -284,10 +284,7 @@ abstract class Base
 	/**
 	 * Add a key for decryption
 	 */
-	public function addDecryptKey(string $fingerprint,
-		#[\SensitiveParameter]
-		string $passphrase
-	) : bool
+	public function addDecryptKey(string $fingerprint, \SnappyMail\SensitiveString $passphrase) : bool
 	{
 		$this->decryptKeys[$fingerprint] = $passphrase;
 //		$this->decryptKeys[\substr($fingerprint, -16)] = $passphrase;
@@ -306,10 +303,7 @@ abstract class Base
 	/**
 	 * Add a key for signing
 	 */
-	public function addSignKey(string $fingerprint,
-		#[\SensitiveParameter]
-		string $passphrase
-	) : bool
+	public function addSignKey(string $fingerprint, \SnappyMail\SensitiveString $passphrase) : bool
 	{
 		$this->signKeys[$fingerprint] = $passphrase;
 //		$this->signKeys[\substr($fingerprint, -16)] = $passphrase;
@@ -356,10 +350,7 @@ abstract class Base
 		];
 	}
 
-	public function addPassphrase($keyId,
-		#[\SensitiveParameter]
-		$passphrase
-	)
+	public function addPassphrase($keyId, \SnappyMail\SensitiveString $passphrase)
 	{
 		$this->passphrases[$keyId] = $passphrase;
 		return $this;

@@ -91,7 +91,6 @@ class SnappyMailHelper
 */
 				if ($doLogin && $aCredentials[1] && $aCredentials[2]) {
 					try {
-						$oActions->Logger()->AddSecret($aCredentials[2]);
 						$oAccount = $oActions->LoginProcess($aCredentials[1], $aCredentials[2]);
 						if ($oAccount) {
 							// Must be here due to bug #1241
@@ -202,9 +201,10 @@ class SnappyMailHelper
 		return \SnappyMail\Crypt::EncryptUrlSafe($sPassword, $sSalt);
 	}
 
-	public static function decodePassword(string $sPassword, string $sSalt)/* : mixed */
+	public static function decodePassword(string $sPassword, string $sSalt) : ?\SnappyMail\SensitiveString
 	{
 		static::loadApp();
-		return \SnappyMail\Crypt::DecryptUrlSafe($sPassword, $sSalt);
+		$result = \SnappyMail\Crypt::DecryptUrlSafe($sPassword, $sSalt);
+		return $result ? new \SnappyMail\SensitiveString($result) : $result;
 	}
 }

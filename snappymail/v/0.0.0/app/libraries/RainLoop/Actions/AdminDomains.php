@@ -60,9 +60,9 @@ trait AdminDomains
 	public function DoAdminDomainMatch() : array
 	{
 		$sEmail = $this->GetActionParam('username');
-		$sPassword = '********';
+		$oPassword = new \SnappyMail\SensitiveString('********');
 		$sLogin = '';
-		$this->resolveLoginCredentials($sEmail, $sPassword, $sLogin);
+		$this->resolveLoginCredentials($sEmail, $oPassword, $sLogin);
 		$oDomain = \str_contains($sEmail, '@')
 			? $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true)
 			: null;
