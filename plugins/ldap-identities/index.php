@@ -67,7 +67,7 @@ class LdapIdentitiesPlugin extends AbstractPlugin
 			Property::NewInstance(LdapConfig::CONFIG_MAIL_PREFIX)
 				->SetLabel("Email prefix")
 				->SetType(PluginPropertyType::STRING)
-				->SetDescription("Only addresses with this prefix will be used as identity. The prefix is removed from the identity list.\nThis is useful for example to import identities from Exchange, which stores mail addresses in the ProxyAddresses attribut of Active Directory with \"smtp:\" as prefix. \(e.g. \"smtp:john.doe@topsecret.info\"\)\n-> To use addresses set by Exchange use \"smtp:\" as prefix.")
+				->SetDescription("Only addresses with this prefix will be used as identity. The prefix is removed from the identity list.\nThis is useful for example to import identities from Exchange, which stores mail addresses in the ProxyAddresses attribut of Active Directory with \"smtp:\" as prefix. (e.g. \"smtp:john.doe@topsecret.info\")\n-> To use addresses set by Exchange use \"smtp:\" as prefix.")
 				->SetDefaultValue(""),
 
 			Property::NewInstance(LdapConfig::CONFIG_BIND_USER)
