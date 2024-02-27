@@ -9,7 +9,6 @@
 - Update Portuguese by @ner00
 
 ### Fixed
-- Verify S/MIME signatures got broken allong the way while implementing this
 - Drop support for gnupg PECL extension as it fails with "no passphrase" issues
 - Error 352 when getting Filters
   [#1455](https://github.com/the-djmaze/snappymail/issues/1455)
