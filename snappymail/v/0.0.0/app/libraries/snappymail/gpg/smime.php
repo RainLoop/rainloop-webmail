@@ -11,6 +11,8 @@
 
 namespace SnappyMail\GPG;
 
+use SnappyMail\SensitiveString;
+
 class SMIME extends Base
 {
 	private
@@ -235,9 +237,9 @@ class SMIME extends Base
 		return false;
 	}
 
-	protected function _exportKey($keyId, $private = false)
+	protected function _exportKey($keyId, bool $private = false)
 	{
-		$keys = $this->keyInfo($keyId, $private ? 1 : 0);
+		$keys = $this->keyInfo($keyId, $private);
 		if (!$keys) {
 			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $keyId);
 		}
@@ -253,19 +255,16 @@ class SMIME extends Base
 	}
 
 	/**
-	 * Exports a public key
+	 * Exports a public or private key
 	 */
-	public function export(string $fingerprint) /*: string|false*/
+	public function export(string $fingerprint, ?SensitiveString $passphrase = null) /*: string|false*/
 	{
+		if ($passphrase) {
+			return $this
+				->addPassphrase($fingerprint, $passphrase)
+				->_exportKey($fingerprint, true);
+		}
 		return $this->_exportKey($fingerprint);
-	}
-
-	/**
-	 * Exports a private key
-	 */
-	public function exportPrivateKey(string $fingerprint) /*: string|false*/
-	{
-		return $this->_exportKey($fingerprint, true);
 	}
 
 	protected function _importKey($input) /*: array|false*/
@@ -334,7 +333,7 @@ class SMIME extends Base
 
 	public function deleteKey(string $keyId, bool $private)
 	{
-		$key = $this->keyInfo($keyId, $private ? 1 : 0);
+		$key = $this->keyInfo($keyId, $private);
 		if (!$key) {
 			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $keyId);
 		}
@@ -359,7 +358,7 @@ class SMIME extends Base
 	/**
 	 * Returns an array with information about all keys that matches the given pattern
 	 */
-	public function keyInfo(string $pattern, int $private = 0) : array
+	public function keyInfo(string $pattern, bool $private = false) : array
 	{
 		// According to The file 'doc/DETAILS' in the GnuPG distribution, using
 		// double '--with-fingerprint' also prints the fingerprint for subkeys.

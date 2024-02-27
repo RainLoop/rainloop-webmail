@@ -24,7 +24,7 @@ trait Pgp
 
 		$GPG = $this->GnuPG();
 		if ($GPG) {
-			$keys = $GPG->keyInfo('');
+			$keys = $GPG->allKeysInfo('');
 			foreach ($keys['public'] as $key) {
 				$key = $GPG->export($key['subkeys'][0]['fingerprint'] ?: $key['subkeys'][0]['keyid']);
 				if ($key) {
@@ -47,7 +47,7 @@ trait Pgp
 	/**
 	 * @throws \MailSo\RuntimeException
 	 */
-	public function GnuPG() : ?GnuPG
+	public function GnuPG() : ?\SnappyMail\PGP\PGPInterface
 	{
 		$oAccount = $this->getMainAccountFromToken();
 		if (!$oAccount) {
@@ -96,10 +96,6 @@ trait Pgp
 				if (\is_dir($tmpdir) || \is_link($tmpdir) || \symlink($homedir, $tmpdir) || \mkdir($tmpdir, 0700, true)) {
 					$homedir = $tmpdir;
 				}
-			}
-
-			if (104 <= \strlen($homedir . '/S.gpg-agent.extra')) {
-				throw new \Exception("socket name for '{$homedir}/S.gpg-agent.extra' is too long");
 			}
 		}
 
@@ -160,7 +156,7 @@ trait Pgp
 	public function DoGnupgGetKeys() : array
 	{
 		$GPG = $this->GnuPG();
-		return $this->DefaultResponse($GPG ? $GPG->keyInfo('') : false);
+		return $this->DefaultResponse($GPG ? $GPG->allKeysInfo('') : false);
 	}
 
 	public function DoGnupgExportKey() : array

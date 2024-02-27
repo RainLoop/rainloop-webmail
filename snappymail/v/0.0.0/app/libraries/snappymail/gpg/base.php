@@ -5,6 +5,8 @@
 
 namespace SnappyMail\GPG;
 
+use SnappyMail\SensitiveString;
+
 abstract class Base
 {
 	const
@@ -64,7 +66,13 @@ abstract class Base
 
 	function __construct(string $homedir)
 	{
-		$this->options['homedir'] = \rtrim($homedir, '/\\');
+		$homedir = \rtrim($homedir, '/\\');
+		// BSD 4.4 max length
+		if (104 <= \strlen($homedir . '/S.gpg-agent.extra')) {
+			throw new \Exception('Socket name for S.gpg-agent.extra is too long');
+		}
+		$this->options['homedir'] = $homedir;
+//		\putenv("GNUPGHOME={$homedir}");
 	}
 
 	function __destruct()
@@ -169,21 +177,12 @@ abstract class Base
 	}
 
 	/**
-	 * Exports a public key
+	 * Exports a public or private key
 	 */
-	public function export(string $fingerprint) /*: string|false*/
+	public function export(string $fingerprint, ?SensitiveString $passphrase = null) /*: string|false*/
 	{
 		return false;
 	}
-
-	/**
-	 * Exports a private key
-	 */
-	public function exportPrivateKey(string $fingerprint) /*: string|false*/
-	{
-		return false;
-	}
-
 
 	/**
 	 * Imports a key
@@ -209,11 +208,10 @@ abstract class Base
 	/**
 	 * Returns an array with information about all keys that matches the given pattern
 	 */
-	public function keyInfo(string $pattern, int $private = 0) : array
+	public function keyInfo(string $pattern, bool $private = false) : array
 	{
 		return [];
 	}
-
 
 	/**
 	 * Sets the mode for error_reporting
@@ -284,7 +282,7 @@ abstract class Base
 	/**
 	 * Add a key for decryption
 	 */
-	public function addDecryptKey(string $fingerprint, \SnappyMail\SensitiveString $passphrase) : bool
+	public function addDecryptKey(string $fingerprint, SensitiveString $passphrase) : bool
 	{
 		$this->decryptKeys[$fingerprint] = $passphrase;
 //		$this->decryptKeys[\substr($fingerprint, -16)] = $passphrase;
@@ -303,7 +301,7 @@ abstract class Base
 	/**
 	 * Add a key for signing
 	 */
-	public function addSignKey(string $fingerprint, \SnappyMail\SensitiveString $passphrase) : bool
+	public function addSignKey(string $fingerprint, SensitiveString $passphrase) : bool
 	{
 		$this->signKeys[$fingerprint] = $passphrase;
 //		$this->signKeys[\substr($fingerprint, -16)] = $passphrase;
@@ -350,7 +348,7 @@ abstract class Base
 		];
 	}
 
-	public function addPassphrase($keyId, \SnappyMail\SensitiveString $passphrase)
+	public function addPassphrase($keyId, SensitiveString $passphrase)
 	{
 		$this->passphrases[$keyId] = $passphrase;
 		return $this;
@@ -358,10 +356,11 @@ abstract class Base
 
 	/**
 	 * Toggle the armored output
+	 * When true the output is ASCII
 	 */
-	public function setArmor(int $armor = 1) : bool
+	public function setArmor(bool $armor = true) : bool
 	{
-		$this->armor = !!$armor;
+		$this->armor = $armor;
 		return true;
 	}
 

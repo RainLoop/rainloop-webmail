@@ -7,7 +7,9 @@
 
 namespace SnappyMail\GPG;
 
-class PGP extends Base
+use SnappyMail\SensitiveString;
+
+class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 {
 	private
 		$_message,
@@ -137,6 +139,7 @@ class PGP extends Base
 		if (!$fp || !\is_resource($fp)) {
 			throw new \Exception('Invalid stream resource');
 		}
+//		\rewind($fp);
 		return $this->_decrypt($fp, $output);
 	}
 
@@ -215,6 +218,7 @@ class PGP extends Base
 		if (!$fp || !\is_resource($fp)) {
 			throw new \Exception('Invalid stream resource');
 		}
+		\rewind($fp);
 		return $this->_encrypt($fp, $output);
 	}
 
@@ -234,9 +238,9 @@ class PGP extends Base
 		return false;
 	}
 
-	protected function _exportKey($keyId, $private = false)
+	protected function _exportKey($keyId, bool $private = false)
 	{
-		$keys = $this->keyInfo($keyId, $private ? 1 : 0);
+		$keys = $this->keyInfo($keyId, $private);
 		if (!$keys) {
 			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $keyId);
 		}
@@ -252,19 +256,17 @@ class PGP extends Base
 	}
 
 	/**
-	 * Exports a public key
+	 * Exports a public or private key
 	 */
-	public function export(string $fingerprint) /*: string|false*/
+	public function export(string $fingerprint, ?SensitiveString $passphrase = null) /*: string|false*/
 	{
+//		\SnappyMail\Log::debug('GnuPG', "export({$fingerprint}, {$passphrase})");
+		if (null !== $passphrase) {
+			return $this
+				->addPassphrase($fingerprint, $passphrase)
+				->_exportKey($fingerprint, true);
+		}
 		return $this->_exportKey($fingerprint);
-	}
-
-	/**
-	 * Exports a private key
-	 */
-	public function exportPrivateKey(string $fingerprint) /*: string|false*/
-	{
-		return $this->_exportKey($fingerprint, true);
 	}
 
 	/**
@@ -296,8 +298,13 @@ class PGP extends Base
 	 * Also saves revocation certificate in {homedir}/openpgp-revocs.d/
 	 * https://www.gnupg.org/documentation/manuals/gnupg/OpenPGP-Key-Management.html
 	 */
-	public function generateKey(PGPKeySettings $settings) /*: string|false*/
+	public function generateKey(string $uid, SensitiveString $passphrase) /*: string|false*/
 	{
+		$settings = new PGPKeySettings;
+		$settings->name = $uid;
+		$settings->email = $uid;
+		$settings->passphrase = $passphrase;
+
 		$arguments = [
 			'--batch',
 			'--yes',
@@ -421,13 +428,13 @@ class PGP extends Base
 		}
 	}
 
-	public function deleteKey(string $keyId, bool $private)
+	public function deleteKey(string $keyId, bool $private) : bool
 	{
-		$key = $this->keyInfo($keyId, $private ? 1 : 0);
+		$key = $this->keyInfo($keyId, $private);
 		if (!$key) {
 			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $keyId);
 		}
-//		if (!$private && $this->keyInfo($keyId, 1)) {
+//		if (!$private && $this->keyInfo($keyId, true)) {
 //			throw new \Exception('Delete private key first: ' . $keyId);
 //		}
 
@@ -448,7 +455,7 @@ class PGP extends Base
 	/**
 	 * Returns an array with information about all keys that matches the given pattern
 	 */
-	public function keyInfo(string $pattern, int $private = 0) : array
+	public function keyInfo(string $pattern, bool $private = false) : array
 	{
 		// According to The file 'doc/DETAILS' in the GnuPG distribution, using
 		// double '--with-fingerprint' also prints the fingerprint for subkeys.
@@ -573,6 +580,30 @@ class PGP extends Base
 	}
 
 	/**
+	 * Returns an array with information about all keys that matches the given pattern
+	 */
+	public function allKeysInfo(string $pattern) : array
+	{
+		$keys = [
+			'public' => [],
+			'private' => []
+		];
+		// Public
+		foreach (($this->keyinfo($pattern) ?: []) as $key) {
+			$key['can_verify'] = $key['can_sign'];
+			unset($key['can_sign']);
+			$keys['public'][] = $key;
+		}
+		// Private, read https://github.com/php-gnupg/php-gnupg/issues/5
+		foreach (($this->keyinfo($pattern, 1) ?: []) as $key) {
+			$key['can_decrypt'] = $key['can_encrypt'];
+			unset($key['can_encrypt']);
+			$keys['private'][] = $key;
+		}
+		return $keys;
+	}
+
+	/**
 	 * Sets the mode for error_reporting
 	 * GNUPG_ERROR_WARNING, GNUPG_ERROR_EXCEPTION and GNUPG_ERROR_SILENT.
 	 * By default GNUPG_ERROR_SILENT is used.
@@ -671,6 +702,7 @@ class PGP extends Base
 		if (!$fp || !\is_resource($fp)) {
 			throw new \Exception('Invalid stream resource');
 		}
+		\rewind($fp);
 		return $this->_sign($fp, $output);
 	}
 
@@ -768,6 +800,7 @@ class PGP extends Base
 		if (!$fp || !\is_resource($fp)) {
 			throw new \Exception('Invalid stream resource');
 		}
+//		\rewind($fp);
 		return $this->_verify($fp, $signature);
 	}
 
