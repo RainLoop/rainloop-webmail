@@ -329,7 +329,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 				);
 			}
 /*
-			if ('storage' === $sName || 'storage-local' === $sName) {
+			if ($this->Config()->Get('plugin', 'storage', false) && ('storage' === $sName || 'storage-local' === $sName)) {
 				require_once __DIR__ . '/storage.php';
 				$oDriver = new \NextcloudStorage(APP_PRIVATE_DATA.'storage', $sName === 'storage-local');
 			}
@@ -346,6 +346,11 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 			\RainLoop\Plugins\Property::NewInstance('ignoreSystemAddressbook')->SetLabel('Ignore system addressbook')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(true),
+/*
+			\RainLoop\Plugins\Property::NewInstance('storage')->SetLabel('Use Nextcloud user ID in config storage path')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDefaultValue(false)
+*/
 			\RainLoop\Plugins\Property::NewInstance('calendar')->SetLabel('Enable "Put ICS in calendar"')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(false)
