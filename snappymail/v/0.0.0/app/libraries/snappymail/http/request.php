@@ -7,10 +7,11 @@ abstract class Request
 	const
 		/**
 		 * Authentication
+		 * These are bitwise options
 		 */
 		AUTH_BASIC = 1,
 		AUTH_DIGEST = 2,
-		AUTH_BEARER = 3;
+		AUTH_BEARER = 4;
 
 	public
 		$timeout = 5, // timeout in seconds.
