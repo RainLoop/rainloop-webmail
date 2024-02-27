@@ -154,8 +154,8 @@
 		"HAS_VIRUS_WARNING": "Uwaga: wykryto wirusa!",
 		"TAGS": "Tagi",
 		"NEW_TAG": "Nowy tag",
-		"ENABLE_TRACKING_LINKS": "Enable tracking links",
-		"TRACKING_ENABLED": "Links are now tracked when clicked!"
+		"ENABLE_TRACKING_LINKS": "Włącz linki śledzące",
+		"TRACKING_ENABLED": "Linki są teraz śledzone!"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Ważne",
