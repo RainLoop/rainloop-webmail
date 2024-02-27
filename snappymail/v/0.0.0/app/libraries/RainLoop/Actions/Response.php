@@ -45,9 +45,10 @@ trait Response
 
 	public function ExceptionResponse(\Throwable $oException) : array
 	{
-		$iErrorCode = 0;
-		$sErrorMessage = '';
+		$iErrorCode = Notifications::UnknownError;
+		$sErrorMessage = $oException->getMessage();
 		$sErrorMessageAdditional = '';
+		$iExceptionCode = 0;
 
 		if ($oException instanceof \RainLoop\Exceptions\ClientException) {
 			$iErrorCode = $oException->getCode();
@@ -56,8 +57,7 @@ trait Response
 			}
 			$sErrorMessageAdditional = $oException->getAdditionalMessage();
 		} else {
-			$iErrorCode = Notifications::UnknownError;
-			$sErrorMessage = $oException->getCode().' - '.$oException->getMessage();
+			$iExceptionCode = $oException->getCode();
 		}
 
 		$this->logException($oException->getPrevious() ?: $oException);
@@ -65,7 +65,8 @@ trait Response
 		return $this->DefaultResponse(false, [
 			'ErrorCode' => $iErrorCode,
 			'ErrorMessage' => $sErrorMessage,
-			'ErrorMessageAdditional' => $sErrorMessageAdditional
+			'ErrorMessageAdditional' => $sErrorMessageAdditional,
+			'ExceptionCode' => $iExceptionCode
 		]);
 	}
 

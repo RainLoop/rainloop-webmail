@@ -587,10 +587,13 @@ export class MailMessageView extends AbstractViewRight {
 				}
 			} else {
 				// TODO: translate
-				alert('Decryption failed, canceled or not possible');
+				throw 'Decryption failed, canceled or not possible';
 			}
 		})
-		.catch(e => console.error(e));
+		.catch(e => {
+			console.error(e)
+			alert(e.message);
+		});
 	}
 
 	pgpVerify(/*self, event*/) {

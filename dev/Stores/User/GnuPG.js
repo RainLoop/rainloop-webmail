@@ -69,10 +69,10 @@ export const GnuPGUserStore = new class {
 							}
 						};
 						if (isPrivate) {
-							key.password = async (btnTxt = 'SIGN') => {
+							key.password = async (btnTxt = 'CRYPTO/SIGN') => {
 								const pass = await Passphrases.ask(key,
 									'GnuPG key<br>' + key.id + ' ' + key.emails[0],
-									'OPENPGP/'+btnTxt
+									btnTxt
 								);
 								pass && pass.remember && Passphrases.set(key, pass.password);
 								return pass?.password;
@@ -82,7 +82,7 @@ export const GnuPGUserStore = new class {
 							if (key.armor) {
 								callback && callback();
 							} else {
-								let pass = isPrivate ? await key.password('POPUP_VIEW_TITLE') : '';
+								let pass = isPrivate ? await key.password('OPENPGP/POPUP_VIEW_TITLE') : '';
 								if (null != pass) try {
 									const result = await Remote.post('GnupgExportKey', null, {
 											keyId: key.id,
@@ -184,15 +184,20 @@ export const GnuPGUserStore = new class {
 					uid: message.uid,
 					partId: pgpInfo.partId,
 					keyId: key.id,
-					passphrase: await key.password('DECRYPT'),
+					passphrase: await key.password('CRYPTO/DECRYPT'),
 					data: '' // message.plain() optional
 				}
-				if (null !== params.passphrase) {
-					const result = await Remote.post('GnupgDecrypt', null, params);
-					if (result?.Result?.data) {
-						return result.Result;
+				if (null != params.passphrase) {
+					try {
+						const response = await Remote.post('GnupgDecrypt', null, params);
+						if (response?.Result?.data) {
+							return response.Result;
+						}
+						throw response;
+					} catch (e) {
+						Passphrases.delete(key);
+						throw e;
 					}
-					Passphrases.delete(key);
 				}
 			}
 		}

@@ -36,6 +36,7 @@ class GnuPG
 			]);
 			// Output is ASCII
 			$this->GnuPG->setarmor(1);
+			\SnappyMail\Log::info('GnuPG', 'Using PECL');
 		} else {
 			$this->getGPG();
 		}
@@ -50,6 +51,12 @@ class GnuPG
 			\file_put_contents($conf, "batch\nno-comments");
 		}
 */
+	}
+
+	function __destruct()
+	{
+		$this->clearDecryptKeys();
+		$this->clearSignKeys();
 	}
 
 	public static function isSupported() : bool
@@ -71,11 +78,20 @@ class GnuPG
 		return $this->GnuPG ?: $this->GPG;
 	}
 
+	public function gnupgError()
+	{
+		$error = $this->GnuPG ? $this->GnuPG->geterrorinfo() : null;
+		if ($error) {
+			throw new \Exception("{$error['gpgme_source']} {$error['generic_message']}. {$error['gpgme_message']}", $error['gpgme_code']);
+		}
+	}
+
 	public function getGPG(bool $throw = true) : ?GPG
 	{
 		if (!$this->GPG) {
 			if (GPG::isSupported()) {
 				$this->GPG = new GPG($this->homedir);
+				\SnappyMail\Log::info('GnuPG', 'Using ' . GPG::class);
 			} else if ($throw) {
 				throw new \Exception('GnuPG not supported');
 			}
@@ -88,7 +104,9 @@ class GnuPG
 	 */
 	public function addDecryptKey(string $fingerprint, \SnappyMail\SensitiveString $passphrase) : bool
 	{
-		return $this->handler()->adddecryptkey($fingerprint, $passphrase);
+		return $this->GnuPG
+			? $this->GnuPG->adddecryptkey($fingerprint, \strval($passphrase)) || $this->gnupgError()
+			: $this->GPG->addDecryptKey($fingerprint, $passphrase);
 	}
 
 	/**
@@ -104,7 +122,9 @@ class GnuPG
 	 */
 	public function addSignKey(string $fingerprint, \SnappyMail\SensitiveString $passphrase) : bool
 	{
-		return $this->handler()->addsignkey($fingerprint, $passphrase);
+		return $this->GnuPG
+			? $this->GnuPG->addsignkey($fingerprint, \strval($passphrase)) || $this->gnupgError()
+			: $this->GPG->addSignKey($fingerprint, $passphrase);
 	}
 
 	/**
@@ -136,9 +156,12 @@ class GnuPG
 	 */
 	public function decrypt(string $text) /*: string|false */
 	{
-		return $this->GnuPG
-			? $this->GnuPG->decrypt($text)
-			: $this->GPG->decrypt($text);
+		if ($this->GnuPG) {
+			$result = $this->GnuPG->decrypt($text);
+			(false === $result) && $this->gnupgError();
+			return $result;
+		}
+		return $this->GPG->decrypt($text);
 	}
 
 	/**
@@ -146,9 +169,12 @@ class GnuPG
 	 */
 	public function decryptFile(string $filename) /*: string|false */
 	{
-		return $this->GnuPG
-			? $this->GnuPG->decrypt(\file_get_contents($filename))
-			: $this->GPG->decryptFile($filename);
+		if ($this->GnuPG) {
+			$result = $this->GnuPG->decrypt(\file_get_contents($filename));
+			(false === $result) && $this->gnupgError();
+			return $result;
+		}
+		return $this->GPG->decryptFile($filename);
 	}
 
 	/**
@@ -159,9 +185,12 @@ class GnuPG
 		if (!$fp || !\is_resource($fp)) {
 			throw new \Exception('Invalid stream resource');
 		}
-		return $this->GnuPG
-			? $this->GnuPG->decrypt(\stream_get_contents($fp))
-			: $this->GPG->decryptStream($fp, $output);
+		if ($this->GnuPG) {
+			$result = $this->GnuPG->decrypt(\stream_get_contents($fp));
+			(false === $result) && $this->gnupgError();
+			return $result;
+		}
+		return $this->GPG->decryptStream($fp, $output);
 	}
 
 	/**
@@ -169,9 +198,12 @@ class GnuPG
 	 */
 	public function decryptVerify(string $text, string &$plaintext) /*: array|false*/
 	{
-		return $this->GnuPG
-			? $this->GnuPG->decryptverify($text, $plaintext)
-			: $this->GPG->decryptverify($text, $plaintext);
+		if ($this->GnuPG) {
+			$result = $this->GnuPG->decryptverify($text, $plaintext);
+			(false === $result) && $this->gnupgError();
+			return $result;
+		}
+		return $this->GPG->decryptverify($text, $plaintext);
 	}
 
 	/**
@@ -179,9 +211,12 @@ class GnuPG
 	 */
 	public function decryptVerifyFile(string $filename, string &$plaintext) /*: array|false*/
 	{
-		return $this->GnuPG
-			? $this->GnuPG->decryptverify(\file_get_contents($filename), $plaintext)
-			: $this->GPG->decryptverifyFile($filename, $plaintext);
+		if ($this->GnuPG) {
+			$result = $this->GnuPG->decryptverify(\file_get_contents($filename), $plaintext);
+			(false === $result) && $this->gnupgError();
+			return $result;
+		}
+		return $this->GPG->decryptverifyFile($filename, $plaintext);
 	}
 
 	public function deleteKey(string $keyId, bool $private) : bool
@@ -195,7 +230,7 @@ class GnuPG
 	public function encrypt(string $plaintext) /*: string|false*/
 	{
 		return $this->GnuPG
-			? $this->GnuPG->encrypt($plaintext)
+			? $this->GnuPG->encrypt($plaintext) ?: $this->gnupgError()
 			: $this->GPG->encrypt($plaintext);
 	}
 
@@ -205,7 +240,7 @@ class GnuPG
 	public function encryptFile(string $filename) /*: string|false*/
 	{
 		return $this->GnuPG
-			? $this->GnuPG->encrypt(\file_get_contents($filename))
+			? $this->GnuPG->encrypt(\file_get_contents($filename)) ?: $this->gnupgError()
 			: $this->GPG->encryptFile($filename);
 	}
 
@@ -213,7 +248,7 @@ class GnuPG
 	{
 		\rewind($fp);
 		return $this->GnuPG
-			? $this->GnuPG->encrypt(\stream_get_contents($fp))
+			? $this->GnuPG->encrypt(\stream_get_contents($fp)) ?: $this->gnupgError()
 			: $this->GPG->encryptStream($fp);
 	}
 
@@ -228,7 +263,7 @@ class GnuPG
 				->exportPrivateKey($fingerprint);
 		}
 		return $this->GnuPG
-			? $this->GnuPG->export($fingerprint)
+			? $this->GnuPG->export($fingerprint) ?: $this->gnupgError()
 			: $this->GPG->export($fingerprint);
 	}
 
@@ -287,7 +322,7 @@ class GnuPG
 	public function importFile(string $filename) /*: array|false*/
 	{
 		return $this->GnuPG
-			? $this->GnuPG->import(\file_get_contents($filename))
+			? $this->GnuPG->import(\file_get_contents($filename)) ?: $this->gnupgError()
 			: $this->GPG->importFile($filename);
 	}
 
@@ -350,7 +385,7 @@ class GnuPG
 	public function sign(string $plaintext) /*: string|false*/
 	{
 		return $this->GnuPG
-			? $this->GnuPG->sign($plaintext)
+			? $this->GnuPG->sign($plaintext) ?: $this->gnupgError()
 			: $this->GPG->sign($plaintext);
 	}
 
@@ -360,18 +395,18 @@ class GnuPG
 	public function signFile(string $filename) /*: string|false*/
 	{
 		return $this->GnuPG
-			? $this->GnuPG->sign(\file_get_contents($filename))
+			? $this->GnuPG->sign(\file_get_contents($filename)) ?: $this->gnupgError()
 			: $this->GPG->signFile($filename);
 	}
 
 	/**
 	 * Signs a given file
 	 */
-	public function signStream($fp, /*string|resource*/ $output = null) /*: array|false*/
+	public function signStream($fp, /*string|resource*/ $output = null) /*: string|false*/
 	{
 		\rewind($fp);
 		return $this->GnuPG
-			? $this->GnuPG->sign(\stream_get_contents($fp))
+			? $this->GnuPG->sign(\stream_get_contents($fp)) ?: $this->gnupgError()
 			: $this->GPG->signStream($fp);
 	}
 
@@ -381,7 +416,7 @@ class GnuPG
 	public function verify(string $signed_text, string $signature, string &$plaintext = null) /*: array|false*/
 	{
 		$result = $this->GnuPG
-			? $this->GnuPG->verify($signed_text, $signature ?: false, $plaintext)
+			? $this->GnuPG->verify($signed_text, $signature ?: false, $plaintext) ?: $this->gnupgError()
 			: $this->GPG->verify($signed_text, $signature, $plaintext);
 		if (!$result) {
 			if ($this->GnuPG) {
@@ -400,18 +435,21 @@ class GnuPG
 	public function verifyFile(string $filename, string $signature, string &$plaintext = null) /*: array|false*/
 	{
 		return $this->GnuPG
-			? $this->GnuPG->verify(\file_get_contents($filename), $signature, $plaintext)
+			? $this->GnuPG->verify(\file_get_contents($filename), $signature, $plaintext) ?: $this->gnupgError()
 			: $this->GPG->verifyFile($filename, $signature, $plaintext);
 	}
 
 	/**
 	 * Verifies a given resource
 	 */
-	public function verifyStream(/*resource*/ $fp, string $signature, string &$plaintext = null) /*: string|false */
+	public function verifyStream(/*resource*/ $fp, string $signature, string &$plaintext = null) /*: array|false */
 	{
 		if (!$fp || !\is_resource($fp)) {
 			throw new \Exception('Invalid stream resource');
 		}
+//		return $this->GnuPG
+//			? $this->GnuPG->verify(\stream_get_contents($fp), $signature, $plaintext) ?: $this->gnupgError()
+//			: $this->GPG->verifyStream($fp, $signature, $plaintext);
 		return $this->getGPG()->verifyStream($fp, $signature, $plaintext);
 	}
 

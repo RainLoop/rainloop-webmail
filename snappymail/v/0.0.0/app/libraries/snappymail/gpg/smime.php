@@ -540,7 +540,7 @@ class SMIME extends Base
 	/**
 	 * Signs a given file
 	 */
-	public function signStream($fp, /*string|resource*/ $output = null) /*: array|false*/
+	public function signStream($fp, /*string|resource*/ $output = null) /*: string|false*/
 	{
 		if (!$fp || !\is_resource($fp)) {
 			throw new \Exception('Invalid stream resource');
@@ -548,7 +548,7 @@ class SMIME extends Base
 		return $this->_sign($fp, $output);
 	}
 
-	protected function _verify($input, string $signature)
+	protected function _verify($input, string $signature) /*: array|false*/
 	{
 		$arguments = ['--verify'];
 		if ($signature) {

@@ -120,7 +120,7 @@ trait Pgp
 		$sData = $this->GetActionParam('data', '');
 		$oPart = null;
 		$result = [
-			'data' => '',
+			'data' => null,
 			'signatures' => []
 		];
 		if ($sData) {
@@ -130,11 +130,13 @@ trait Pgp
 			$this->initMailClientConnection();
 			$this->MailClient()->MessageMimeStream(
 				function ($rResource) use ($GPG, &$result, &$oPart) {
-					if (\is_resource($rResource)) {
+					if (\is_resource($rResource)) try {
 						$result['data'] = $GPG->decryptStream($rResource);
 //						$oPart = \MailSo\Mime\Part::FromString($result);
 //						$GPG->decryptStream($rResource, $rStreamHandle);
 //						$oPart = \MailSo\Mime\Part::FromStream($rStreamHandle);
+					} catch (\Throwable $e) {
+						$result = $e;
 					}
 				},
 				$this->GetActionParam('folder', ''),
@@ -146,6 +148,10 @@ trait Pgp
 		if ($oPart && $oPart->isPgpSigned()) {
 //			$GPG->verifyStream($oPart->SubParts[0]->Body, \stream_get_contents($oPart->SubParts[1]->Body));
 //			$result['signatures'] = $oPart->SubParts[0];
+		}
+
+		if ($result instanceof \Throwable) {
+			throw $result;
 		}
 
 		return $this->DefaultResponse($result);
