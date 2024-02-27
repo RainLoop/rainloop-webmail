@@ -72,7 +72,7 @@ export const GnuPGUserStore = new class {
 							key.password = async (btnTxt = 'SIGN') => {
 								const pass = await Passphrases.ask(key,
 									'GnuPG key<br>' + key.id + ' ' + key.emails[0],
-									'CRYPTO/'+btnTxt
+									'OPENPGP/'+btnTxt
 								);
 								pass && pass.remember && Passphrases.set(key, pass.password);
 								return pass?.password;
@@ -83,7 +83,7 @@ export const GnuPGUserStore = new class {
 								callback && callback();
 							} else {
 								let pass = isPrivate ? await key.password('POPUP_VIEW_TITLE') : '';
-								if (null != pass) {
+								if (null != pass) try {
 									const result = await Remote.post('GnupgExportKey', null, {
 											keyId: key.id,
 											isPrivate: isPrivate,
@@ -95,6 +95,8 @@ export const GnuPGUserStore = new class {
 									} else {
 										Passphrases.delete(key);
 									}
+								} catch (e) {
+									Passphrases.delete(key);
 								}
 							}
 							return key.armor;
