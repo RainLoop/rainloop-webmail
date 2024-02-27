@@ -112,15 +112,16 @@ class ServiceActions
 
 			$this->oActions->logWrite('Action: '.$sMethodName, \LOG_INFO, 'JSON');
 
-			$aPost = $_POST ?? null;
-			if ($aPost) {
-				$this->oActions->SetActionParams($aPost, $sMethodName);
-				foreach ($aPost as $key => $value) {
-					if (false !== \stripos($key, 'Password')) {
-						$aPost[$key] = '*******';
+			if ($_POST) {
+				$this->oActions->SetActionParams($_POST, $sMethodName);
+				foreach ($_POST as $key => $value) {
+					// password & passphrase
+					if (false !== \stripos($key, 'pass')) {
+//						$_POST[$key] = '*******';
+						$this->oActions->logMask($value);
 					}
 				}
-				$this->oActions->logWrite(Utils::jsonEncode($aPost), \LOG_INFO, 'POST');
+				$this->oActions->logWrite(Utils::jsonEncode($_POST), \LOG_INFO, 'POST');
 			} else if (3 < \count($this->aPaths) && $this->oHttp->IsGet()) {
 				$this->oActions->SetActionParams(array(
 					'RawKey' => empty($this->aPaths[3]) ? '' : $this->aPaths[3]
