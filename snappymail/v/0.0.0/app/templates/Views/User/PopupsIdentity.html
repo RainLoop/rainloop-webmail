@@ -96,7 +96,7 @@
 					<label>Certificate</label>
 					<textarea name="smimeCertificate" class="input-xxlarge" rows="14" autofocus="" autocomplete="off" data-bind="value: smimeCertificate"></textarea>
 				</div>
-				<div class="control-group" data-bind="hidden:smimeKey">
+				<div class="control-group" data-bind="hidden:smimeCertificate">
 					<label></label>
 					<button type="button" data-bind="click: $root.createSelfSigned" data-i18n="CRYPTO/CREATE_SELF_SIGNED"></button>
 				</div>

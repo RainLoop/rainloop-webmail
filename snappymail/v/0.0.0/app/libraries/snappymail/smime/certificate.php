@@ -112,7 +112,11 @@ class Certificate
 		return \openssl_get_cipher_methods($aliases);
 	}
 
-	public function createSelfSigned(string $passphrase = '') : array
+	public function createSelfSigned(
+		#[\SensitiveParameter]
+		string $passphrase = '',
+		?string $privateKey = null
+	) : array
 	{
 		$options = array(
 			'config'             => __DIR__ . '/openssl.cnf',
@@ -134,7 +138,13 @@ class Certificate
 		}
 
 		$pkey = null; // openssl_pkey_new($options);
-		$csr  = \openssl_csr_new($dn, $pkey, $options);
+		if ($privateKey) {
+			$pkey = \openssl_pkey_get_private($privateKey, $passphrase);
+			if (!$pkey) {
+				throw new \RuntimeException('OpenSSL pkey: ' . \openssl_error_string());
+			}
+		}
+		$csr = \openssl_csr_new($dn, $pkey, $options);
 		if ($csr) {
 			$this->x509 = \openssl_csr_sign(
 				$csr,
@@ -145,13 +155,11 @@ class Certificate
 			);
 			if ($this->x509/* && $this->canSign() && $this->canEncrypt()*/) {
 				$this->pkey = $pkey;
-				$privatekey = '';
+				$privateKey || \openssl_pkey_export($pkey, $privateKey, $passphrase);
 				$certificate = '';
-				$csrStr = '';
-				\openssl_pkey_export($pkey, $privatekey, $passphrase);
 				\openssl_x509_export($this->x509, $certificate);
 				return array(
-					'pkey' => $privatekey,
+					'pkey' => $privateKey,
 					'x509' => $certificate,
 //					'pkcs12' => $this->asPKCS12($pkey, $passphrase/*, array $args = array()*/)
 //					'canSign' => $this->canSign(),
@@ -167,7 +175,11 @@ class Certificate
 	}
 
 	// returns binary data
-	public function asPKCS12(string $pass = '', array $args = array()) : string
+	public function asPKCS12(
+		#[\SensitiveParameter]
+		string $pass = '',
+		array $args = array()
+	) : string
 	{
 		$out = '';
     	\openssl_pkcs12_export($this->x509, $out, $this->pkey, $pass, $args);

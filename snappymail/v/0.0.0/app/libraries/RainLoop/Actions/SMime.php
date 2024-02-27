@@ -59,15 +59,13 @@ trait SMime
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		$sName = $this->GetActionParam('name', '') ?: $oAccount->Name();
-		$sEmail = $this->GetActionParam('email', '') ?: $oAccount->Email();
 		$sPassphrase = $this->GetActionParam('passphrase', '');
 		$this->logMask($sPassphrase);
 
 		$cert = new Certificate();
-		$cert->distinguishedName['commonName'] = $sName;
-		$cert->distinguishedName['emailAddress'] = $sEmail;
-		$result = $cert->createSelfSigned($sPassphrase);
+		$cert->distinguishedName['commonName'] = $this->GetActionParam('name', '') ?: $oAccount->Name();
+		$cert->distinguishedName['emailAddress'] = $this->GetActionParam('email', '') ?: $oAccount->Email();
+		$result = $cert->createSelfSigned($sPassphrase, $this->GetActionParam('privateKey', ''));
 		return $this->DefaultResponse($result ?: false);
 	}
 

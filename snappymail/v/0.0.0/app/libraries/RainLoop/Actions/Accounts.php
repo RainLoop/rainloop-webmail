@@ -261,7 +261,11 @@ trait Accounts
 		if (!$oIdentity->FromJSON($this->GetActionParams(), true)) {
 			throw new ClientException(Notifications::InvalidInputArgument);
 		}
-
+/*		// TODO: verify private key for certificate?
+		if ($oIdentity->smimeCertificate && $oIdentity->smimeKey) {
+			new \SnappyMail\SMime\Certificate($oIdentity->smimeCertificate, $oIdentity->smimeKey);
+		}
+*/
 		$this->IdentitiesProvider()->UpdateIdentity($oAccount, $oIdentity);
 		return $this->TrueResponse();
 	}
