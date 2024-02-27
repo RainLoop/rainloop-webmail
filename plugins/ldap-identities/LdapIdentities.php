@@ -289,12 +289,14 @@ class LdapIdentities implements IIdentities
 		@paraam string $mailPrefix
 		@return array
 		*/
-		private function CleanupMailAddresses(array $entries, string $mailField, string $mailPrefix) {
+		private function CleanupMailAddresses(array $entries, string $mailField, string $mailPrefix)
+		{
 			if (!empty($mailPrefix)) {
 				for ($i = 0; $i < $entries["count"]; $i++) {
 					// Remove addresses without the given prefix
 					$entries[$i]["$mailField"] = array_filter($entries[$i]["$mailField"],
-													function($prefixMail) {
+													function($prefixMail)
+													{
 														// $mailPrefix can't be used here, because it's nailed to the CleanupMailAddresses function and can't be passed to the array_filter function afaik.
 														// Ideas to avoid this are welcome.
 														if (stripos($prefixMail, $this->config->mail_prefix) === 0) {
@@ -320,7 +322,6 @@ class LdapIdentities implements IIdentities
 
 			return $entries;
 		}
-
 
 	/**
 	 * @param array $entry
