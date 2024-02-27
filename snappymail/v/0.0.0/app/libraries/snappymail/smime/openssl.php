@@ -40,12 +40,12 @@ class OpenSSL
 		$key = \str_replace(':', '', $data['extensions']['subjectKeyIdentifier'] ?? $data['hash']);
 		$filename = "{$this->homedir}/{$key}.crt";
 		if (\file_exists($filename)) {
-			\SnappyMail\Log::debug('OpenSSL', 'certificate already imported');
+			\SnappyMail\Log::debug('OpenSSL', "certificate {$key} already imported");
 		} else {
-			\SnappyMail\Log::debug('OpenSSL', 'certificate imported');
 			\file_put_contents("{$this->homedir}/{$key}.crt", $certificate);
 //			\unlink("{$this->homedir}/certificates.json");
 			$this->certificates(true);
+			\SnappyMail\Log::debug('OpenSSL', "certificate {$key} imported");
 		}
 		return true;
 	}
@@ -53,7 +53,7 @@ class OpenSSL
 	public function certificates(bool $force = false) : array
 	{
 		$cacheFile = "{$this->homedir}/certificates.json";
-		$result = \file_exists($cacheFile)
+		$result = (!$force && \file_exists($cacheFile))
 			? \json_decode(\file_get_contents($cacheFile), true)
 			: null;
 		if (!\is_array($result)) {
