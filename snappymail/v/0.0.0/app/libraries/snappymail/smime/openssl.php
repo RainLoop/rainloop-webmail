@@ -34,12 +34,15 @@ class OpenSSL
 	{
 		$data = \openssl_x509_parse(\openssl_x509_read($certificate));
 		if (!$data) {
-			\error_log("OpenSSL parse: " . \openssl_error_string());
+			\SnappyMail\Log::error('OpenSSL', "parse: " . \openssl_error_string());
 			return false;
 		}
 		$key = \str_replace(':', '', $data['extensions']['subjectKeyIdentifier'] ?? $data['hash']);
 		$filename = "{$this->homedir}/{$key}.crt";
-		if (!\file_exists($filename)) {
+		if (\file_exists($filename)) {
+			\SnappyMail\Log::debug('OpenSSL', 'certificate already imported');
+		} else {
+			\SnappyMail\Log::debug('OpenSSL', 'certificate imported');
 			\file_put_contents("{$this->homedir}/{$key}.crt", $certificate);
 //			\unlink("{$this->homedir}/certificates.json");
 			$this->certificates(true);
@@ -98,7 +101,7 @@ class OpenSSL
 					}
 					$result[] = $short;
 				} else {
-					\error_log("OpenSSL parse({$file}): " . \openssl_error_string());
+					\SnappyMail\Log::error('OpenSSL', "parse({$file}): " . \openssl_error_string());
 				}
 			}
 			\file_put_contents($cacheFile, \json_encode($result));

@@ -142,7 +142,7 @@ trait SMime
 			\openssl_pkcs7_read(
 				"-----BEGIN PKCS7-----\n\n{$sBody}\n-----END PKCS7-----",
 				$certificates
-			) || \error_log("OpenSSL openssl_pkcs7_read: " . \openssl_error_string());
+			) || $this->logWrite("openssl_pkcs7_read: " . \openssl_error_string(), \LOG_ERR, 'OpenSSL');
 			foreach ($certificates as $certificate) {
 				$this->SMIME()->storeCertificate($certificate);
 			}

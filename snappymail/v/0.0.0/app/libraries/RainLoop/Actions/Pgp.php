@@ -81,7 +81,7 @@ trait Pgp
 				if (\is_link($link) || \symlink($homedir, $link)) {
 					$homedir = $link;
 				} else {
-					\error_log("symlink('{$homedir}', '{$link}') failed");
+					$this->logWrite("symlink('{$homedir}', '{$link}') failed", \LOG_WARNING, 'GnuPG');
 				}
 			}
 			// Else try ~/.gnupg/ + hash(email address)
