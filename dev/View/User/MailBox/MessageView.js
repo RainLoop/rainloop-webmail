@@ -587,7 +587,7 @@ export class MailMessageView extends AbstractViewRight {
 				}
 			} else {
 				// TODO: translate
-				throw 'Decryption failed, canceled or not possible';
+				throw Error('Decryption failed, canceled or not possible');
 			}
 		})
 		.catch(e => {
