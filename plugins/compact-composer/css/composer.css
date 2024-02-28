@@ -1,0 +1,87 @@
+.squire-toolbar {
+    padding-top: 4px;
+    padding-bottom: 0;
+    overflow: visible;
+    z-index: 200;
+    white-space: normal;
+    min-height: auto;
+}
+
+.squire-toolbar > .btn-group {
+    margin-bottom: 4px;
+}
+
+.squire-toolbar > .btn-group > a.btn,
+.squire-toolbar button.btn,
+.squire-toolbar select.btn {
+    line-height: 20px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    min-height: 24px;
+}
+
+.squire-toolbar-menu-item {
+    display: flex;
+    align-items: center;
+    gap: .25em;
+    margin: .1em !important;
+    cursor: pointer;
+    padding: .25em;
+}
+
+.squire-toolbar-menu-item.active {
+    background-color: rgba(128, 128, 128, .1);
+}
+
+.squire-toolbar-menu-item:hover {
+    background-color: rgba(128, 128, 128, .2);
+}
+
+.squire-toolbar-svg-icon {
+    display: block;
+}
+
+.squire2-mode-wysiwyg .squire-plain,
+.squire2-mode-source .squire-wysiwyg,
+.squire2-mode-plain .squire-wysiwyg {
+    display: none;
+}
+
+.squire2-mode-source .squire-plain,
+.squire2-mode-plain .squire-plain {
+    display: block;
+}
+
+.squire-toolbar > .squire-toolbar-menu-wrap:last-child {
+    float: right;
+}
+
+.squire-toolbar.mode-plain .squire-html-mode-item {
+    display: none;
+}
+
+#V-PopupsCompose .attachmentAreaParent.compact {
+    height: auto;
+    min-height: auto;
+    padding: 0;
+    overflow: auto;
+    flex: 1 0 auto;
+    max-height: 12em;
+    margin: 0;
+}
+
+#V-PopupsCompose .compact > .b-attachment-place {
+    position: static;
+    display: none;
+    margin: .375em;
+    line-height: 4em;
+}
+
+#V-PopupsCompose .compact > .b-attachment-place.dragAndDropOver {
+    display: block;
+}
+
+#V-PopupsCompose .compact .attachmentList {
+    margin: 0;
+    padding: 0;
+}
