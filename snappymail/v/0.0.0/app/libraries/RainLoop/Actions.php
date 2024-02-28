@@ -3,6 +3,7 @@
 namespace RainLoop;
 
 use RainLoop\Enumerations\Capa;
+use RainLoop\Enumerations\SignMeType;
 
 class Actions
 {
@@ -834,7 +835,11 @@ class Actions
 					$aResult['DevPassword'] = '';
 				}
 
-				$aResult['signMe'] = (string) $oConfig->Get('login', 'sign_me_auto', Enumerations\SignMeType::DEFAULT_OFF);
+				$aResult['signMe'] = [
+					SignMeType::DefaultOff => 0,
+					SignMeType::DefaultOn => 1,
+					SignMeType::Unused => 2
+				][(string) $oConfig->Get('login', 'sign_me_auto', SignMeType::DefaultOff)];
 			}
 		}
 

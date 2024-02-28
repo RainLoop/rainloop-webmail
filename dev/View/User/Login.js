@@ -138,25 +138,20 @@ export class LoginUserView extends AbstractViewLogin {
 	onBuild(dom) {
 		super.onBuild(dom);
 
-		const signMe = (SettingsGet('signMe') || '').toLowerCase();
-
+		let signMe = (SettingsGet('signMe') || '').toLowerCase();
 		switch (signMe) {
-			case 'defaultoff':
-			case 'defaulton':
-				this.signMeType(
-					'defaulton' === signMe ? SignMeOn : SignMeOff
-				);
-
+			case SignMeOff:
+			case SignMeOn:
 				switch (Local.get(ClientSideKeyNameLastSignMe)) {
 					case '-1-':
-						this.signMeType(SignMeOn);
+						signMe = SignMeOn;
 						break;
 					case '-0-':
-						this.signMeType(SignMeOff);
+						signMe = SignMeOff;
 						break;
 					// no default
 				}
-
+				this.signMeType(signMe);
 				break;
 			default:
 				this.signMeType(SignMeUnused);

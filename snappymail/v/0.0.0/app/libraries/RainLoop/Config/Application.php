@@ -272,7 +272,7 @@ When this value is gethostname, the gethostname() value is used.
 
 				'login_lowercase' => array(true),
 
-				'sign_me_auto' => array(\RainLoop\Enumerations\SignMeType::DEFAULT_OFF,
+				'sign_me_auto' => array(\RainLoop\Enumerations\SignMeType::DefaultOff,
 					'This option allows webmail to remember the logged in user
 once they closed the browser window.
 
