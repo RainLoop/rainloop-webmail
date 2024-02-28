@@ -283,7 +283,7 @@
 		"ERROR": "Erro %TYPE%: %ERROR%",
 		"CREATE_SELF_SIGNED": "Criar auto-assinado",
 		"VALID_UNTIL": "Válido até",
-		"PRIVATE_KEY": "Private key"
+		"PRIVATE_KEY": "Chave privada"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importar chave OpenPGP",
@@ -304,7 +304,7 @@
 	},
 	"SMIME": {
 		"POPUP_IMPORT_TITLE": "Importar certificado S\/MIME",
-		"CERTIFICATE": "Certificate",
+		"CERTIFICATE": "Certificado",
 		"CERTIFICATES": "Certificados S\/MIME",
 		"SIGNED_MESSAGE": "Mensagem assinada com S\/MIME",
 		"ENCRYPTED_MESSAGE": "Mensagem encriptada com S\/MIME",
