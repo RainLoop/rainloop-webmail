@@ -27,7 +27,7 @@ export class AbstractModel {
 	constructor() {
 /*
 		if (new.target === AbstractModel) {
-			throw new Error("Can't instantiate AbstractModel!");
+			throw Error("Can't instantiate AbstractModel!");
 		}
 */
 		Object.defineProperty(this, 'disposables', {value: []});

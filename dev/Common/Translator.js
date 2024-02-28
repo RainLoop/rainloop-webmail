@@ -211,7 +211,7 @@ export const
 				script.remove();
 				resolve();
 			};
-			script.onerror = () => reject(new Error('Language '+language+' failed'));
+			script.onerror = () => reject(Error('Language '+language+' failed'));
 			script.src = langLink(language, admin);
 	//		script.async = true;
 			doc.head.append(script);

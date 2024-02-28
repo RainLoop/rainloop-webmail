@@ -107,7 +107,7 @@ Object.assign(ko.bindingHandlers, {
 			const command = fValueAccessor();
 
 			if (!command || !command.canExecute) {
-				throw new Error('Value should be a command');
+				throw Error('Value should be a command');
 			}
 
 			ko.bindingHandlers['FORM'==element.nodeName ? 'submit' : 'click'].init(
