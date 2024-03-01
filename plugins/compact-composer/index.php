@@ -6,7 +6,7 @@ class CompactComposerPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME = 'Compact Composer',
 		AUTHOR = 'Sergey Mosin',
 		URL = 'https://github.com/the-djmaze/snappymail/pull/1466',
-		VERSION = '1.0.0',
+		VERSION = '1.0.1',
 		RELEASE = '2024-02-23',
 		REQUIRED = '2.34.0',
 		LICENSE = 'AGPL v3',
@@ -14,7 +14,7 @@ class CompactComposerPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	public function Init(): void
 	{
-		$this->addTemplate('templates/PopupsCompose.html');
+		$this->addTemplate('templates/PopupsCompactCompose.html');
 		$this->addCss('css/composer.css');
 		$this->addJs('js/squire-raw.js');
 		$this->addJs('js/parsel.js');
