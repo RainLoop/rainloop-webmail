@@ -120,7 +120,7 @@ export class LoginUserView extends AbstractViewLogin {
 							iError = Notifications.AuthError;
 						}
 						this.submitError(getNotification(iError, oData?.ErrorMessage,
-							Notifications.UnknownNotification));
+							Notifications.UnknownError));
 						this.submitErrorAdditional(oData?.ErrorMessageAdditional);
 					} else {
 						rl.setData(oData.Result);

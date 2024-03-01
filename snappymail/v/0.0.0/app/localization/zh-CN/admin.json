@@ -168,17 +168,17 @@
 		"UNKNOWN_ERROR": "未知错误"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "请求失败",
-		"REQUEST_ABORTED": "请求中止",
-		"REQUEST_TIMEOUT": "请求超时",
-		"INVALID_TOKEN": "无效标记",
-		"AUTH_ERROR": "认证失败",
-		"DOMAIN_ALREADY_EXISTS": "域名已经存在",
-		"CANT_SAVE_PLUGIN_SETTINGS": "无法保存设置",
-		"CANT_INSTALL_PACKAGE": "安装插件包失败",
-		"CANT_DELETE_PACKAGE": "移除插件包失败",
-		"INVALID_PLUGIN_PACKAGE": "无效插件包",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "不支持的插件包",
-		"UNKNOWN_ERROR": "未知错误"
+		"RequestError": "请求失败",
+		"RequestAborted": "请求中止",
+		"RequestTimeout": "请求超时",
+		"InvalidToken": "无效标记",
+		"AuthError": "认证失败",
+		"DomainAlreadyExists": "域名已经存在",
+		"CantSavePluginSettings": "无法保存设置",
+		"CantInstallPackage": "安装插件包失败",
+		"CantDeletePackage": "移除插件包失败",
+		"InvalidPluginPackage": "无效插件包",
+		"UnsupportedPluginPackage": "不支持的插件包",
+		"UnknownError": "未知错误"
 	}
 }

@@ -218,7 +218,7 @@ class ServiceActions
 			} else if (empty($_FILES)) {
 				$iError = UPLOAD_ERR_INI_SIZE;
 			} else {
-				$iError = Enumerations\UploadError::EMPTY_FILES_DATA;
+				$iError = Enumerations\UploadError::EMPTY_FILE;
 			}
 
 			if (\method_exists($this->oActions, $sAction) && \is_callable(array($this->oActions, $sAction))) {

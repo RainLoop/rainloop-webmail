@@ -168,17 +168,17 @@
 		"UNKNOWN_ERROR": "Ismeretlen hiba"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
-		"INVALID_TOKEN": "Érvénytelen token",
-		"AUTH_ERROR": "Sikertelen hitelesítés",
-		"DOMAIN_ALREADY_EXISTS": "A domain már létezik",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Nem lehet menteni a beállításokat",
-		"CANT_INSTALL_PACKAGE": "Nem sikerült telepíteni a bővítményt",
-		"CANT_DELETE_PACKAGE": "Nem sikerült eltávolítani a bővítményt",
-		"INVALID_PLUGIN_PACKAGE": "Érvénytelen kiterjesztési csomag",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Nem támogatott bővítménycsomag",
-		"UNKNOWN_ERROR": "Ismeretlen hiba"
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "Érvénytelen token",
+		"AuthError": "Sikertelen hitelesítés",
+		"DomainAlreadyExists": "A domain már létezik",
+		"CantSavePluginSettings": "Nem lehet menteni a beállításokat",
+		"CantInstallPackage": "Nem sikerült telepíteni a bővítményt",
+		"CantDeletePackage": "Nem sikerült eltávolítani a bővítményt",
+		"InvalidPluginPackage": "Érvénytelen kiterjesztési csomag",
+		"UnsupportedPluginPackage": "Nem támogatott bővítménycsomag",
+		"UnknownError": "Ismeretlen hiba"
 	}
 }

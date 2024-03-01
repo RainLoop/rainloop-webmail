@@ -168,17 +168,17 @@
 		"UNKNOWN_ERROR": "Неизвестная ошибка"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Запрос не выполнен",
-		"REQUEST_ABORTED": "Запрос прерван",
-		"REQUEST_TIMEOUT": "Истекло время запроса",
-		"INVALID_TOKEN": "Неверный токен запроса",
-		"AUTH_ERROR": "Не удалось авторизоваться",
-		"DOMAIN_ALREADY_EXISTS": "Домен уже существует",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Не могу сохранить настройки",
-		"CANT_INSTALL_PACKAGE": "Ошибка установки плагина",
-		"CANT_DELETE_PACKAGE": "Ошибка удаления плагина",
-		"INVALID_PLUGIN_PACKAGE": "Ошибка пакета плагина",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Для работы плагина необходима полная поддержка сервера",
-		"UNKNOWN_ERROR": "Неизвестная ошибка"
+		"RequestError": "Запрос не выполнен",
+		"RequestAborted": "Запрос прерван",
+		"RequestTimeout": "Истекло время запроса",
+		"InvalidToken": "Неверный токен запроса",
+		"AuthError": "Не удалось авторизоваться",
+		"DomainAlreadyExists": "Домен уже существует",
+		"CantSavePluginSettings": "Не могу сохранить настройки",
+		"CantInstallPackage": "Ошибка установки плагина",
+		"CantDeletePackage": "Ошибка удаления плагина",
+		"InvalidPluginPackage": "Ошибка пакета плагина",
+		"UnsupportedPluginPackage": "Для работы плагина необходима полная поддержка сервера",
+		"UnknownError": "Неизвестная ошибка"
 	}
 }

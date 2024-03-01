@@ -95,7 +95,6 @@ Notifications = {
 	JsonParse: 952,
 //	JsonTimeout: 953,
 
-	UnknownNotification: 998,
 	UnknownError: 999,
 
 	// Admin

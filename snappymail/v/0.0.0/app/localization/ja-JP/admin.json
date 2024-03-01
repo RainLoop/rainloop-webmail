@@ -168,17 +168,17 @@
 		"UNKNOWN_ERROR": "不明なエラー"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "要求は失敗しました",
-		"REQUEST_ABORTED": "要求は中断されました",
-		"REQUEST_TIMEOUT": "要求はタイムアウトしました",
-		"INVALID_TOKEN": "無効なトークン",
-		"AUTH_ERROR": "認証に失敗しました",
-		"DOMAIN_ALREADY_EXISTS": "ドメインが既に存在しています",
-		"CANT_SAVE_PLUGIN_SETTINGS": "設定が保存できません",
-		"CANT_INSTALL_PACKAGE": "パッケージのインストールに失敗しました",
-		"CANT_DELETE_PACKAGE": "パッケージの削除に失敗しました",
-		"INVALID_PLUGIN_PACKAGE": "無効なプラグインパッケージ",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "サポートされていないプラグインパッケージ",
-		"UNKNOWN_ERROR": "不明なエラー"
+		"RequestError": "要求は失敗しました",
+		"RequestAborted": "要求は中断されました",
+		"RequestTimeout": "要求はタイムアウトしました",
+		"InvalidToken": "無効なトークン",
+		"AuthError": "認証に失敗しました",
+		"DomainAlreadyExists": "ドメインが既に存在しています",
+		"CantSavePluginSettings": "設定が保存できません",
+		"CantInstallPackage": "パッケージのインストールに失敗しました",
+		"CantDeletePackage": "パッケージの削除に失敗しました",
+		"InvalidPluginPackage": "無効なプラグインパッケージ",
+		"UnsupportedPluginPackage": "サポートされていないプラグインパッケージ",
+		"UnknownError": "不明なエラー"
 	}
 }

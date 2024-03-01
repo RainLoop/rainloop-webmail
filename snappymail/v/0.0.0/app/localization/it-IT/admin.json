@@ -168,17 +168,17 @@
 		"UNKNOWN_ERROR": "Errore sconosciuto"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Richiesta fallita",
-		"REQUEST_ABORTED": "Richiesta annullata",
-		"REQUEST_TIMEOUT": "Richiesta scaduta",
-		"INVALID_TOKEN": "Token non valido",
-		"AUTH_ERROR": "Autenticazione fallita",
-		"DOMAIN_ALREADY_EXISTS": "Il dominio esiste già",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Impossibile salvare le impostazioni",
-		"CANT_INSTALL_PACKAGE": "Installazione estensione fallita",
-		"CANT_DELETE_PACKAGE": "Rimozione estensione fallita",
-		"INVALID_PLUGIN_PACKAGE": "Pacchetto estensione non valido",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Pacchetto estensione non supportato",
-		"UNKNOWN_ERROR": "Errore sconosciuto"
+		"RequestError": "Richiesta fallita",
+		"RequestAborted": "Richiesta annullata",
+		"RequestTimeout": "Richiesta scaduta",
+		"InvalidToken": "Token non valido",
+		"AuthError": "Autenticazione fallita",
+		"DomainAlreadyExists": "Il dominio esiste già",
+		"CantSavePluginSettings": "Impossibile salvare le impostazioni",
+		"CantInstallPackage": "Installazione estensione fallita",
+		"CantDeletePackage": "Rimozione estensione fallita",
+		"InvalidPluginPackage": "Pacchetto estensione non valido",
+		"UnsupportedPluginPackage": "Pacchetto estensione non supportato",
+		"UnknownError": "Errore sconosciuto"
 	}
 }

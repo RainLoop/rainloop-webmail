@@ -168,17 +168,17 @@
 		"UNKNOWN_ERROR": "Kesalahan tidak diketahui"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
-		"INVALID_TOKEN": "Token invalid",
-		"AUTH_ERROR": "Otentikasi gagal",
-		"DOMAIN_ALREADY_EXISTS": "Domain sudah ada",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Tidak bisa menyimpan pengaturan",
-		"CANT_INSTALL_PACKAGE": "Gagal memasang paket",
-		"CANT_DELETE_PACKAGE": "Gagal menghapus paket",
-		"INVALID_PLUGIN_PACKAGE": "Paket plugin tidak sah",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Paket plugin tidak didukung",
-		"UNKNOWN_ERROR": "Kesalahan tidak diketahui"
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "Token invalid",
+		"AuthError": "Otentikasi gagal",
+		"DomainAlreadyExists": "Domain sudah ada",
+		"CantSavePluginSettings": "Tidak bisa menyimpan pengaturan",
+		"CantInstallPackage": "Gagal memasang paket",
+		"CantDeletePackage": "Gagal menghapus paket",
+		"InvalidPluginPackage": "Paket plugin tidak sah",
+		"UnsupportedPluginPackage": "Paket plugin tidak didukung",
+		"UnknownError": "Kesalahan tidak diketahui"
 	}
 }

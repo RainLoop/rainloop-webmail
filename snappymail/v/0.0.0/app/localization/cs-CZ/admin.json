@@ -168,17 +168,17 @@
 		"UNKNOWN_ERROR": "Neznámá chyba"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
-		"INVALID_TOKEN": "Neplatný token",
-		"AUTH_ERROR": "Chyba autorizace",
-		"DOMAIN_ALREADY_EXISTS": "Tato doména již existuje",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Nastavení se nepodařilo uložit",
-		"CANT_INSTALL_PACKAGE": "Instalace balíčku se nezdařila",
-		"CANT_DELETE_PACKAGE": "Odstranění balíčku se nezdařilo",
-		"INVALID_PLUGIN_PACKAGE": "Nevalidní balíček",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Nepodporovaný balíček rozšíření",
-		"UNKNOWN_ERROR": "Neznámá chyba"
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "Neplatný token",
+		"AuthError": "Chyba autorizace",
+		"DomainAlreadyExists": "Tato doména již existuje",
+		"CantSavePluginSettings": "Nastavení se nepodařilo uložit",
+		"CantInstallPackage": "Instalace balíčku se nezdařila",
+		"CantDeletePackage": "Odstranění balíčku se nezdařilo",
+		"InvalidPluginPackage": "Nevalidní balíček",
+		"UnsupportedPluginPackage": "Nepodporovaný balíček rozšíření",
+		"UnknownError": "Neznámá chyba"
 	}
 }

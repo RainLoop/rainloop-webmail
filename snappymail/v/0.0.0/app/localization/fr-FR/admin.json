@@ -168,17 +168,17 @@
 		"UNKNOWN_ERROR": "Erreur inconnue"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "La requête a échouée",
-		"REQUEST_ABORTED": "La requête a été annulée",
-		"REQUEST_TIMEOUT": "La requête a expirée",
-		"INVALID_TOKEN": "Jeton invalide",
-		"AUTH_ERROR": "L'authentification a échoué",
-		"DOMAIN_ALREADY_EXISTS": "Le domaine existe déjà",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Vous ne pouvez pas enregistrer les paramètres",
-		"CANT_INSTALL_PACKAGE": "Impossible d'installer le extension",
-		"CANT_DELETE_PACKAGE": "Impossible de supprimer le extension",
-		"INVALID_PLUGIN_PACKAGE": "Package d'extension non valide",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Package d'extension non pris en charge",
-		"UNKNOWN_ERROR": "Erreur inconnue"
+		"RequestError": "La requête a échouée",
+		"RequestAborted": "La requête a été annulée",
+		"RequestTimeout": "La requête a expirée",
+		"InvalidToken": "Jeton invalide",
+		"AuthError": "L'authentification a échoué",
+		"DomainAlreadyExists": "Le domaine existe déjà",
+		"CantSavePluginSettings": "Vous ne pouvez pas enregistrer les paramètres",
+		"CantInstallPackage": "Impossible d'installer le extension",
+		"CantDeletePackage": "Impossible de supprimer le extension",
+		"InvalidPluginPackage": "Package d'extension non valide",
+		"UnsupportedPluginPackage": "Package d'extension non pris en charge",
+		"UnknownError": "Erreur inconnue"
 	}
 }

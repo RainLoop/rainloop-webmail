@@ -168,17 +168,17 @@
 		"UNKNOWN_ERROR": "Errore ezezaguna"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Eskaerak huts egin du",
-		"REQUEST_ABORTED": "Eskaera bertan behera utzi da",
-		"REQUEST_TIMEOUT": "Eskaeraren denbora-muga gainditu da",
-		"INVALID_TOKEN": "Ez-baliozko tokena",
-		"AUTH_ERROR": "Autentikazioak huts egin du",
-		"DOMAIN_ALREADY_EXISTS": "Domeinua jadanik existitzen da",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Ezin dira ezarpenak gorde",
-		"CANT_INSTALL_PACKAGE": "Akatsa gehigarria instalatzean",
-		"CANT_DELETE_PACKAGE": "Akatsa gehigarria kentzean",
-		"INVALID_PLUGIN_PACKAGE": "Ez-baliozko gehigarri paketea",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Gehigarri paketea ez da onartzen",
-		"UNKNOWN_ERROR": "Errore ezezaguna"
+		"RequestError": "Eskaerak huts egin du",
+		"RequestAborted": "Eskaera bertan behera utzi da",
+		"RequestTimeout": "Eskaeraren denbora-muga gainditu da",
+		"InvalidToken": "Ez-baliozko tokena",
+		"AuthError": "Autentikazioak huts egin du",
+		"DomainAlreadyExists": "Domeinua jadanik existitzen da",
+		"CantSavePluginSettings": "Ezin dira ezarpenak gorde",
+		"CantInstallPackage": "Akatsa gehigarria instalatzean",
+		"CantDeletePackage": "Akatsa gehigarria kentzean",
+		"InvalidPluginPackage": "Ez-baliozko gehigarri paketea",
+		"UnsupportedPluginPackage": "Gehigarri paketea ez da onartzen",
+		"UnknownError": "Errore ezezaguna"
 	}
 }

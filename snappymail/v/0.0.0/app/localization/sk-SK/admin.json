@@ -168,17 +168,17 @@
 		"UNKNOWN_ERROR": "Neznáma chyba"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
-		"INVALID_TOKEN": "Neplatný token",
-		"AUTH_ERROR": "Overenie zlyhalo",
-		"DOMAIN_ALREADY_EXISTS": "Táto Doména už existuje",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Nastavenia sa nepodarilo uložiť",
-		"CANT_INSTALL_PACKAGE": "Inštalácia balíčka zlyhala",
-		"CANT_DELETE_PACKAGE": "Odstránenie balíčka zlyhalo",
-		"INVALID_PLUGIN_PACKAGE": "Invalid plugin package",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Unsupported plugin package",
-		"UNKNOWN_ERROR": "Neznáma chyba"
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "Neplatný token",
+		"AuthError": "Overenie zlyhalo",
+		"DomainAlreadyExists": "Táto Doména už existuje",
+		"CantSavePluginSettings": "Nastavenia sa nepodarilo uložiť",
+		"CantInstallPackage": "Inštalácia balíčka zlyhala",
+		"CantDeletePackage": "Odstránenie balíčka zlyhalo",
+		"InvalidPluginPackage": "Invalid plugin package",
+		"UnsupportedPluginPackage": "Unsupported plugin package",
+		"UnknownError": "Neznáma chyba"
 	}
 }

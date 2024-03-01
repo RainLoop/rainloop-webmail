@@ -168,17 +168,17 @@
 		"UNKNOWN_ERROR": "Error desconocido"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
-		"INVALID_TOKEN": "Token inválido",
-		"AUTH_ERROR": "Autenticación fallida",
-		"DOMAIN_ALREADY_EXISTS": "El Dominio ya existe",
-		"CANT_SAVE_PLUGIN_SETTINGS": "No se pudieron guardar las configuraciones",
-		"CANT_INSTALL_PACKAGE": "No se ha podido instalar el extensión",
-		"CANT_DELETE_PACKAGE": "No se ha podido eliminar el extensión",
-		"INVALID_PLUGIN_PACKAGE": "El paquete de extensión no válido",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "El paquete del extensión es incompatible",
-		"UNKNOWN_ERROR": "Error desconocido"
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "Token inválido",
+		"AuthError": "Autenticación fallida",
+		"DomainAlreadyExists": "El Dominio ya existe",
+		"CantSavePluginSettings": "No se pudieron guardar las configuraciones",
+		"CantInstallPackage": "No se ha podido instalar el extensión",
+		"CantDeletePackage": "No se ha podido eliminar el extensión",
+		"InvalidPluginPackage": "El paquete de extensión no válido",
+		"UnsupportedPluginPackage": "El paquete del extensión es incompatible",
+		"UnknownError": "Error desconocido"
 	}
 }

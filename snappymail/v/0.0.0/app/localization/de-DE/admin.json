@@ -168,17 +168,17 @@
 		"UNKNOWN_ERROR": "Unbekannter Fehler"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Anfrage fehlgeschlagen",
-		"REQUEST_ABORTED": "Anfrage abgebrochen",
-		"REQUEST_TIMEOUT": "Antrag auf Auslieferung",
-		"INVALID_TOKEN": "Ungültiger Token",
-		"AUTH_ERROR": "Authentifizierung fehlgeschlagen",
-		"DOMAIN_ALREADY_EXISTS": "Diese Domain existiert bereits",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Einstellungen können nicht gespeichert werden",
-		"CANT_INSTALL_PACKAGE": "Fehler beim Installieren der Erweiterung",
-		"CANT_DELETE_PACKAGE": "Fehler beim entfernen der Erweiterung",
-		"INVALID_PLUGIN_PACKAGE": "Erweiterungspaket ist ungültig",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Erweiterungspaket wird nicht unterstützt",
-		"UNKNOWN_ERROR": "Unbekannter Fehler"
+		"RequestError": "Anfrage fehlgeschlagen",
+		"RequestAborted": "Anfrage abgebrochen",
+		"RequestTimeout": "Antrag auf Auslieferung",
+		"InvalidToken": "Ungültiger Token",
+		"AuthError": "Authentifizierung fehlgeschlagen",
+		"DomainAlreadyExists": "Diese Domain existiert bereits",
+		"CantSavePluginSettings": "Einstellungen können nicht gespeichert werden",
+		"CantInstallPackage": "Fehler beim Installieren der Erweiterung",
+		"CantDeletePackage": "Fehler beim entfernen der Erweiterung",
+		"InvalidPluginPackage": "Erweiterungspaket ist ungültig",
+		"UnsupportedPluginPackage": "Erweiterungspaket wird nicht unterstützt",
+		"UnknownError": "Unbekannter Fehler"
 	}
 }

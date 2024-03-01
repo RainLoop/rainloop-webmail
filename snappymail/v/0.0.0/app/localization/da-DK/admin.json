@@ -168,17 +168,17 @@
 		"UNKNOWN_ERROR": "Ukendt fejl"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
-		"INVALID_TOKEN": "Ugyldigt tegn",
-		"AUTH_ERROR": "Godkendelse fejlede",
-		"DOMAIN_ALREADY_EXISTS": "Domæne eksisterer allerede",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Kan ikke gemme instillinger",
-		"CANT_INSTALL_PACKAGE": "Installation af pakke mislykkedes",
-		"CANT_DELETE_PACKAGE": "Fjernelse af pakke mislykkedes",
-		"INVALID_PLUGIN_PACKAGE": "Ugyldig tilføjelsespakke",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Tilføjelsespakke ikke understøttet",
-		"UNKNOWN_ERROR": "Ukendt fejl"
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "Ugyldigt tegn",
+		"AuthError": "Godkendelse fejlede",
+		"DomainAlreadyExists": "Domæne eksisterer allerede",
+		"CantSavePluginSettings": "Kan ikke gemme instillinger",
+		"CantInstallPackage": "Installation af pakke mislykkedes",
+		"CantDeletePackage": "Fjernelse af pakke mislykkedes",
+		"InvalidPluginPackage": "Ugyldig tilføjelsespakke",
+		"UnsupportedPluginPackage": "Tilføjelsespakke ikke understøttet",
+		"UnknownError": "Ukendt fejl"
 	}
 }

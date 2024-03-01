@@ -168,17 +168,17 @@
 		"UNKNOWN_ERROR": "Lỗi chưa xác định"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
-		"INVALID_TOKEN": "Token không hợp lệ",
-		"AUTH_ERROR": "Xác minh thất bại",
-		"DOMAIN_ALREADY_EXISTS": "Tên miền đã tồn tại",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Không thể lưu cài đặt",
-		"CANT_INSTALL_PACKAGE": "Không thể cài đặt tiện ích mở rộng",
-		"CANT_DELETE_PACKAGE": "Không thể xóa bỏ tiện ích mở rộng",
-		"INVALID_PLUGIN_PACKAGE": "Gói tiện ích mở rộng không đúng",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Gói tiện ích mở rộng chưa được hỗ trợ",
-		"UNKNOWN_ERROR": "Lỗi chưa xác định"
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "Token không hợp lệ",
+		"AuthError": "Xác minh thất bại",
+		"DomainAlreadyExists": "Tên miền đã tồn tại",
+		"CantSavePluginSettings": "Không thể lưu cài đặt",
+		"CantInstallPackage": "Không thể cài đặt tiện ích mở rộng",
+		"CantDeletePackage": "Không thể xóa bỏ tiện ích mở rộng",
+		"InvalidPluginPackage": "Gói tiện ích mở rộng không đúng",
+		"UnsupportedPluginPackage": "Gói tiện ích mở rộng chưa được hỗ trợ",
+		"UnknownError": "Lỗi chưa xác định"
 	}
 }

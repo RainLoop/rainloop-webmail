@@ -168,17 +168,17 @@
 		"UNKNOWN_ERROR": "Onbekende fout"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Aanvraag mislukt",
-		"REQUEST_ABORTED": "Aanvraag is afgebroken",
-		"REQUEST_TIMEOUT": "Aanvraag verlopen",
-		"INVALID_TOKEN": "Onjuiste token",
-		"AUTH_ERROR": "Authenticatie mislukt",
-		"DOMAIN_ALREADY_EXISTS": "Domein bestaat al",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Kan instellingen niet opslaan",
-		"CANT_INSTALL_PACKAGE": "Extensie installeren mislukt",
-		"CANT_DELETE_PACKAGE": "Extensie verwijderen mislukt",
-		"INVALID_PLUGIN_PACKAGE": "Onjuist extensie pakket",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Niet ondersteund extensie pakket",
-		"UNKNOWN_ERROR": "Onbekende fout"
+		"RequestError": "Aanvraag mislukt",
+		"RequestAborted": "Aanvraag is afgebroken",
+		"RequestTimeout": "Aanvraag verlopen",
+		"InvalidToken": "Onjuiste token",
+		"AuthError": "Authenticatie mislukt",
+		"DomainAlreadyExists": "Domein bestaat al",
+		"CantSavePluginSettings": "Kan instellingen niet opslaan",
+		"CantInstallPackage": "Extensie installeren mislukt",
+		"CantDeletePackage": "Extensie verwijderen mislukt",
+		"InvalidPluginPackage": "Onjuist extensie pakket",
+		"UnsupportedPluginPackage": "Niet ondersteund extensie pakket",
+		"UnknownError": "Onbekende fout"
 	}
 }

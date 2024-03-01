@@ -168,17 +168,17 @@
 		"UNKNOWN_ERROR": "Ukjent feil"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Forespørsel feilet",
-		"REQUEST_ABORTED": "Forespørselen er avbrutt",
-		"REQUEST_TIMEOUT": "Forespørselen ble tidsavbrutt",
-		"INVALID_TOKEN": "Ugyldig symbol",
-		"AUTH_ERROR": "Autentisering mislyktes",
-		"DOMAIN_ALREADY_EXISTS": "Domenet finnes allerede",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Klarte ikke å lagre innstillinger",
-		"CANT_INSTALL_PACKAGE": "Klarte ikke å installere pakke",
-		"CANT_DELETE_PACKAGE": "Klarte ikke å fjerne pakke",
-		"INVALID_PLUGIN_PACKAGE": "Ugyldig tilleggspakke",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Tilleggspakke støttes ikke",
-		"UNKNOWN_ERROR": "Ukjent feil"
+		"RequestError": "Forespørsel feilet",
+		"RequestAborted": "Forespørselen er avbrutt",
+		"RequestTimeout": "Forespørselen ble tidsavbrutt",
+		"InvalidToken": "Ugyldig symbol",
+		"AuthError": "Autentisering mislyktes",
+		"DomainAlreadyExists": "Domenet finnes allerede",
+		"CantSavePluginSettings": "Klarte ikke å lagre innstillinger",
+		"CantInstallPackage": "Klarte ikke å installere pakke",
+		"CantDeletePackage": "Klarte ikke å fjerne pakke",
+		"InvalidPluginPackage": "Ugyldig tilleggspakke",
+		"UnsupportedPluginPackage": "Tilleggspakke støttes ikke",
+		"UnknownError": "Ukjent feil"
 	}
 }

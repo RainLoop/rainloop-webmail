@@ -168,17 +168,17 @@
 		"UNKNOWN_ERROR": "Erro desconhecido"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
-		"INVALID_TOKEN": "Senha inválida",
-		"AUTH_ERROR": "Falha na autenticação",
-		"DOMAIN_ALREADY_EXISTS": "O domínio já existe",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Não foi possível salvar as configurações",
-		"CANT_INSTALL_PACKAGE": "Erro ao instalar pacote de plugin",
-		"CANT_DELETE_PACKAGE": "Erro ao remover pacote de plugin",
-		"INVALID_PLUGIN_PACKAGE": "Pacote de plugins inválido",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Pacote de plugins insuportados",
-		"UNKNOWN_ERROR": "Erro desconhecido"
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "Senha inválida",
+		"AuthError": "Falha na autenticação",
+		"DomainAlreadyExists": "O domínio já existe",
+		"CantSavePluginSettings": "Não foi possível salvar as configurações",
+		"CantInstallPackage": "Erro ao instalar pacote de plugin",
+		"CantDeletePackage": "Erro ao remover pacote de plugin",
+		"InvalidPluginPackage": "Pacote de plugins inválido",
+		"UnsupportedPluginPackage": "Pacote de plugins insuportados",
+		"UnknownError": "Erro desconhecido"
 	}
 }

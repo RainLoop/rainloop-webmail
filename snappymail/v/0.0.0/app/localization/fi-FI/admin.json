@@ -168,17 +168,17 @@
 		"UNKNOWN_ERROR": "Tuntematon virhe"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
-		"INVALID_TOKEN": "Väärä token",
-		"AUTH_ERROR": "Tunnistautuminen epäonnistui",
-		"DOMAIN_ALREADY_EXISTS": "Verkkotunnus on jo olemassa",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Asetuksia ei voida tallentaa",
-		"CANT_INSTALL_PACKAGE": "Paketin asennus epäonnistui",
-		"CANT_DELETE_PACKAGE": "Paketin poisto epäonnistui",
-		"INVALID_PLUGIN_PACKAGE": "Virheellinen lisäosa-paketti",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Ei tuettu lisäosa-paketti",
-		"UNKNOWN_ERROR": "Tuntematon virhe"
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "Väärä token",
+		"AuthError": "Tunnistautuminen epäonnistui",
+		"DomainAlreadyExists": "Verkkotunnus on jo olemassa",
+		"CantSavePluginSettings": "Asetuksia ei voida tallentaa",
+		"CantInstallPackage": "Paketin asennus epäonnistui",
+		"CantDeletePackage": "Paketin poisto epäonnistui",
+		"InvalidPluginPackage": "Virheellinen lisäosa-paketti",
+		"UnsupportedPluginPackage": "Ei tuettu lisäosa-paketti",
+		"UnknownError": "Tuntematon virhe"
 	}
 }

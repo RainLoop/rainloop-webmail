@@ -22,7 +22,7 @@ const
 
 	getNotificationMessage = code => {
 		let key = getKeyByValue(Notifications, code);
-		return key ? I18N_DATA.NOTIFICATIONS[i18nKey(key).replace('_NOTIFICATION', '_ERROR')] : '';
+		return key ? I18N_DATA.NOTIFICATIONS[key] : '';
 	},
 
 	fromNow = date => relativeTime(Math.round((date.getTime() - Date.now()) / 1000));

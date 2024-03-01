@@ -168,17 +168,17 @@
 		"UNKNOWN_ERROR": "خطای نامشخص"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
-		"INVALID_TOKEN": "توکن نامعتبر",
-		"AUTH_ERROR": "احراز هویت انجام نشد",
-		"DOMAIN_ALREADY_EXISTS": "دامنه در حال حاضر موجود است",
-		"CANT_SAVE_PLUGIN_SETTINGS": "امکان ذخیره تنظیمات نیست",
-		"CANT_INSTALL_PACKAGE": "نصب بسته با خطا همراه بود",
-		"CANT_DELETE_PACKAGE": "حذف بسته با خطا همراه بو",
-		"INVALID_PLUGIN_PACKAGE": "بسته افزونه نامعتبر است",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "بسته افزونه پشتیبانی نمی‌شود",
-		"UNKNOWN_ERROR": "خطای نامشخص"
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "توکن نامعتبر",
+		"AuthError": "احراز هویت انجام نشد",
+		"DomainAlreadyExists": "دامنه در حال حاضر موجود است",
+		"CantSavePluginSettings": "امکان ذخیره تنظیمات نیست",
+		"CantInstallPackage": "نصب بسته با خطا همراه بود",
+		"CantDeletePackage": "حذف بسته با خطا همراه بو",
+		"InvalidPluginPackage": "بسته افزونه نامعتبر است",
+		"UnsupportedPluginPackage": "بسته افزونه پشتیبانی نمی‌شود",
+		"UnknownError": "خطای نامشخص"
 	}
 }
