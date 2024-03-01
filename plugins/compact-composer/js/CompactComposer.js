@@ -663,13 +663,13 @@
 						return indicators;
 					case 'menu':
 					case 'menu_more':
-						const menuWrap = document.createElement('div');
+						const menuWrap = createElement('div');
 						menuWrap.className = 'btn-group dropdown squire-toolbar-menu-wrap';
 						menuWrap.title = item.label;
 						if (!item.showInPlainMode) {
 							menuWrap.className += ' squire-html-mode-item';
 						}
-						const menuBtn = document.createElement('a');
+						const menuBtn = createElement('button');
 						menuBtn.className = 'btn dropdown-toggle';
 						if (item.icon !== '') {
 							menuBtn.innerHTML = item.icon;
@@ -680,7 +680,7 @@
 						}
 						menuWrap.appendChild(menuBtn);
 
-						const menu = document.createElement('ul');
+						const menu = createElement('ul');
 						menu.className = 'dropdown-menu squire-toolbar-menu';
 						if (item.rightEdge) {
 							menu.className += ' right-edge';

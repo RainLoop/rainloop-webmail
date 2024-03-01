@@ -145,10 +145,10 @@
 				</a>
 			</div>
 			<div class="btn-group">
-				<a class="btn fontastic" style="padding-left: 10px; padding-right: 10px;" id="composeUploadButton"
-					 data-bind="visible: addAttachmentEnabled()" data-i18n="[title]COMPOSE/ATTACH_FILES">
+				<button class="btn fontastic" id="composeUploadButton"
+								data-bind="visible: addAttachmentEnabled()" data-i18n="[title]COMPOSE/ATTACH_FILES">
 					⁺📎
-				</a>
+				</button>
 			</div>
 		</div>
 	</div>
@@ -167,41 +167,6 @@
 		<div class="tab-content" role="tabpanel" aria-hidden="false" style="grid-column-end:3">
 			<div class="textAreaParent" data-bind="initDom: editorArea, attr:{spellcheck:allowSpellcheck()?'true':'false'}"></div>
 		</div>
-
-		<!--		<input type="radio" name="tabs" value="attachments" id="tab-attachments" data-bind="checked: viewArea">-->
-		<!--		<label for="tab-attachments"-->
-		<!--			role="tab"-->
-		<!--			aria-selected="false"-->
-		<!--			aria-controls="panel2"-->
-		<!--			tabindex="0"-->
-		<!--			data-bind="-->
-		<!--				css: { 'btn-danger': attachmentsInErrorCount() },-->
-		<!--				tooltipErrorTip: attachmentsErrorTooltip">-->
-		<!--			<b data-bind="visible: attachmentsCount, text: attachmentsCount"></b>-->
-		<!--			<i data-bind="css: { 'icon-attachment': !attachmentsInProcessCount(), 'icon-spinner': attachmentsInProcessCount()}"></i>-->
-		<!--			<span data-i18n="GLOBAL/ATTACHMENTS"></span>-->
-		<!--		</label>-->
-		<!--		<div class="tab-content attachmentAreaParent" role="tabpanel" aria-hidden="true" style="grid-column-end:4">-->
-		<!--			<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropVisible(), css: {dragAndDropOver: dragAndDropOver}"-->
-		<!--				data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></div>-->
-		<!--			<ul class="attachmentList" data-bind="foreach: attachments">-->
-		<!--				<li class="attachmentItem" data-bind="attr: { title: title }, css: { waiting: waiting, error: '' !== error() }">-->
-		<!--					<div class="attachmentIcon">-->
-		<!--						<i class="iconMain" data-bind="css: iconClass, visible: !uploading() || 0 === progress()"></i>-->
-		<!--						<div class="iconProgress" data-bind="attr: { style: progressStyle }, visible: uploading"></div>-->
-		<!--						<div class="iconBG" data-bind="text: progressText, visible: uploading"></div>-->
-		<!--					</div>-->
-		<!--					<div class="attachmentNameParent">-->
-		<!--						<a href="#" class="close pull-right" style="margin-top:-4px;" data-bind="click: cancel">×</a>-->
-		<!--						<div class="attachmentName" data-bind="text: fileName"></div>-->
-		<!--						<span class="attachmentSize" data-bind="text: friendlySize"></span>-->
-		<!--					</div>-->
-		<!--				</li>-->
-		<!--			</ul>-->
-		<!--			<div class="no-attachments-desc" data-bind="visible: 0 === attachments().length"-->
-		<!--				data-i18n="COMPOSE/NO_ATTACHMENTS_HERE_DESC"></div>-->
-		<!--		</div>-->
-
 		<input type="radio" name="tabs" value="mailvelope" id="tab-mailvelope" data-bind="checked: viewArea">
 		<label for="tab-mailvelope"
 					 role="tab"
@@ -219,8 +184,6 @@
 <div class="attachmentAreaParent compact">
 	<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled(), css: {dragAndDropOver: dragAndDropVisible}"
 			 data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></div>
-	<!--	<div class="b-attachment-place dragAndDropOver"-->
-	<!--			 data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></div>-->
 	<ul class="attachmentList" data-bind="foreach: attachments">
 		<li class="attachmentItem" data-bind="attr: { title: title }, css: { waiting: waiting, error: '' !== error() }">
 			<div class="attachmentIcon">
