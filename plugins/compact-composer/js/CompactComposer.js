@@ -114,9 +114,6 @@
 
 			this.container = container;
 
-			toolbar.className = 'squire-toolbar btn-toolbar';
-			const actions = this.#makeActions(squire, toolbar);
-
 			plain.className = 'squire-plain';
 			wysiwyg.className = 'squire-wysiwyg';
 			wysiwyg.dir = 'auto';
@@ -125,6 +122,9 @@
 			this.plain = plain;
 			this.wysiwyg = wysiwyg;
 			this.toolbar = toolbar;
+
+			toolbar.className = 'squire-toolbar btn-toolbar';
+			const actions = this.#makeActions(squire, toolbar);
 
 			this.squire.addEventListener('willPaste', pasteSanitizer);
 			this.squire.addEventListener('pasteImage', (e) => {
