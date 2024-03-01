@@ -669,7 +669,7 @@ class Actions
 					$sPassword = \substr(\base64_encode(\random_bytes(16)), 0, 12);
 					Utils::saveFile($passfile, $sPassword . "\n");
 //					\chmod($passfile, 0600);
-					$oConfig->SetPassword($sPassword);
+					$oConfig->SetPassword(new \SnappyMail\SensitiveString($sPassword));
 					$oConfig->Save();
 				}
 			}
