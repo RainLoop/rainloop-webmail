@@ -88,11 +88,11 @@
 -->
 			<details>
 				<summary><strong>S/MIME</strong></summary>
-				<div class="control-group">
+				<div class="control-group" data-bind="css: {'error': smimeKey() && !smimeKeyValid()}">
 					<label data-i18n="CRYPTO/PRIVATE_KEY"></label>
 					<textarea name="smimeKey" class="input-xxlarge" rows="14" autofocus="" autocomplete="off" data-bind="value: smimeKey"></textarea>
 				</div>
-				<div class="control-group">
+				<div class="control-group" data-bind="css: {'error': smimeCertificate() && !smimeCertificateValid()}">
 					<label data-i18n="SMIME/CERTIFICATE"></label>
 					<textarea name="smimeCertificate" class="input-xxlarge" rows="14" autofocus="" autocomplete="off" data-bind="value: smimeCertificate"></textarea>
 				</div>

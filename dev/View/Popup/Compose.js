@@ -1377,7 +1377,7 @@ export class ComposePopupView extends AbstractViewPopup {
 		key && options.push(['OpenPGP', key]);
 		key = GnuPGUserStore.getPrivateKeyFor(email, 1);
 		key && options.push(['GnuPG', key]);
-		identity.smimeKey() && identity.smimeCertificate() && identity.email() === email
+		identity.smimeKeyValid() && identity.smimeCertificateValid() && identity.email() === email
 			&& options.push(['S/MIME']);
 		console.dir({signOptions: options});
 		this.signOptions(options);
