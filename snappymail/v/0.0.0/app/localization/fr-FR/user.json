@@ -212,7 +212,7 @@
 		"ADD_MENU_TAGS": "Étiquettes",
 		"BUTTON_SHARE_ALL": "Tout le monde",
 		"BUTTON_SYNC": "Synchronisation (CardDAV)",
-		"SEND_TO_ALL_CONTACT_EMAILS": "Send to all contact emails"
+		"SEND_TO_ALL_CONTACT_EMAILS": "Envoyer à tous les e-mails contact"
 	},
 	"COMPOSE": {
 		"LINK_SHOW_INPUTS": "Voir tous les champs",
@@ -282,8 +282,8 @@
 		"GOOD_SIGNATURE": "Signature valide pour %USER%",
 		"ERROR": "Erreur %TYPE%: %ERROR%",
 		"CREATE_SELF_SIGNED": "Create self-signed",
-		"VALID_UNTIL": "Valid until",
-		"PRIVATE_KEY": "Private key"
+		"VALID_UNTIL": "Valable jusque",
+		"PRIVATE_KEY": "Clé privée"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importer la clef OpenPGP",
@@ -296,19 +296,19 @@
 		"SIGNED_MESSAGE": "Message signé par OpenPGP",
 		"ENCRYPTED_MESSAGE": "Message chiffré par OpenPGP",
 		"STORE_IN_GNUPG": "Stocker sur le serveur dans GnuPG",
-		"STORE_PUBLIC_KEY_IN_GNUPG": "Store public key on server in GnuPG",
-		"STORE_PRIVATE_KEY_IN_GNUPG": "Store private key on server in GnuPG",
+		"STORE_PUBLIC_KEY_IN_GNUPG": "Stocker la clé publique sur le serveur dans GnuPG",
+		"STORE_PRIVATE_KEY_IN_GNUPG": "Stocker la clé privée sur le serveur dans GnuPG",
 		"BACKUP_ON_SERVER": "Stocker (chiffré) sur le serveur",
-		"BACKUP_PUBLIC_KEY_ON_SERVER": "Backup public key on server",
-		"BACKUP_PRIVATE_KEY_ON_SERVER": "Backup private key on server"
+		"BACKUP_PUBLIC_KEY_ON_SERVER": "Clé publique de sauvegarde sur le serveur",
+		"BACKUP_PRIVATE_KEY_ON_SERVER": "Clé privée de sauvegarde sur le serveur"
 	},
 	"SMIME": {
-		"POPUP_IMPORT_TITLE": "Import S\/MIME certificate",
-		"CERTIFICATE": "Certificate",
-		"CERTIFICATES": "S\/MIME Certificates",
+		"POPUP_IMPORT_TITLE": "Importer le certificat S\/MIME",
+		"CERTIFICATE": "Certificat",
+		"CERTIFICATES": "Certificats S\/MIME",
 		"SIGNED_MESSAGE": "Message signé par S\/MIME",
 		"ENCRYPTED_MESSAGE": "Message chiffré par S\/MIME",
-		"PRIVATE_KEY_OF": "S\/MIME private key of %EMAIL%"
+		"PRIVATE_KEY_OF": "Clé privée S\/MIME de %EMAIL%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Créer un filtre ?",
@@ -532,7 +532,7 @@
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importer la clé",
 		"BUTTON_GENERATE_KEY_PAIR": "Générer les clés",
-		"IMPORT_FROM_SERVER": "Import from server",
+		"IMPORT_FROM_SERVER": "Importer depuis le serveur",
 		"TITLE_PRIVATE": "Privée",
 		"TITLE_PUBLIC": "Publique",
 		"GET_MAILVELOPE": "Obtenez le module complémentaire de navigateur Mailvelope"
