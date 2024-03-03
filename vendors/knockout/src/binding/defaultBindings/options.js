@@ -62,15 +62,6 @@ ko.bindingHandlers['options'] = {
 
             // Filter out any entries marked as destroyed
             filteredArray = unwrappedArray.filter(item => item || item == null);
-
-            // If caption is included, add it to the array
-            if (allBindings['has']('optionsCaption')) {
-                captionValue = ko.utils.unwrapObservable(allBindings.get('optionsCaption'));
-                // If caption value is null or undefined, don't show a caption
-                if (captionValue != null) {
-                    filteredArray.unshift(captionPlaceholder);
-                }
-            }
         } else {
             // If a falsy value is provided (e.g. null), we'll simply empty the select element
         }
@@ -87,7 +78,7 @@ ko.bindingHandlers['options'] = {
             }
             var option = element.ownerDocument.createElement("option");
             if (arrayEntry === captionPlaceholder) {
-                ko.utils.setTextContent(option, allBindings.get('optionsCaption'));
+                ko.utils.setTextContent(option);
                 ko.selectExtensions.writeValue(option, undefined);
             } else {
                 // Apply a value to the option element
