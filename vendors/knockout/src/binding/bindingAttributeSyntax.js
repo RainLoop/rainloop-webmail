@@ -42,7 +42,6 @@ ko.bindingContext = class {
                     self[contextAncestorBindingInfo] = parentContext[contextAncestorBindingInfo];
                 }
             } else {
-                self['$parents'] = [];
                 self['$root'] = dataItem;
 
                 // Export 'ko' in the binding context so it will be available in bindings and templates
@@ -107,10 +106,7 @@ ko.bindingContext = class {
    'createChildContext'(dataItemOrAccessor, options) {
         return new ko.bindingContext(dataItemOrAccessor, this, (self, parentContext) => {
             // Extend the context hierarchy by setting the appropriate pointers
-            self['$parentContext'] = parentContext;
             self['$parent'] = parentContext['$data'];
-            self['$parents'] = (parentContext['$parents'] || []).slice(0);
-            self['$parents'].unshift(self['$parent']);
             options['extend']?.(self);
         }, options);
     }
