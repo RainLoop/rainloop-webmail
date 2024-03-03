@@ -55,7 +55,6 @@ ko.bindingContext = class {
             if (shouldInheritData) {
                 dataItem = self['$data'];
             } else {
-                self['$rawData'] = dataItemOrObservable;
                 self['$data'] = dataItem;
             }
 
