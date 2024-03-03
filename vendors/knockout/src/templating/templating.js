@@ -165,7 +165,7 @@
             ko.bindingEvent.notify(targetNode, ko.bindingEvent.childrenComplete);
         };
 
-        if (!options['beforeRemove'] && ko['isObservableArray'](arrayOrObservableArray)) {
+        if (ko['isObservableArray'](arrayOrObservableArray)) {
             setDomNodeChildrenFromArrayMapping(arrayOrObservableArray.peek());
 
             var subscription = arrayOrObservableArray['subscribe'](changeList => {

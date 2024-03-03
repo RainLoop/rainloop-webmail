@@ -32,8 +32,14 @@
             // of which nodes would be deleted if valueToMap was itself later removed
             mappedNodes.length = 0;
             mappedNodes.push(...newMappedNodes);
-        }, { disposeWhenNodeIsRemoved: containerNode, disposeWhen: ()=>!!mappedNodes.find(ko.utils.domNodeIsAttachedToDocument) });
-        return { mappedNodes : mappedNodes, dependentObservable : (dependentObservable.isActive() ? dependentObservable : undefined) };
+        }, {
+            disposeWhenNodeIsRemoved: containerNode,
+            disposeWhen: ()=>!!mappedNodes.find(ko.utils.domNodeIsAttachedToDocument)
+        });
+        return {
+            mappedNodes : mappedNodes,
+            dependentObservable : (dependentObservable.isActive() ? dependentObservable : undefined)
+        };
     }
 
     var lastMappingResultDomDataKey = ko.utils.domData.nextKey(),
@@ -70,12 +76,6 @@
                 mapData.indexObservable(currentArrayIndex++);
                 ko.utils.fixUpContinuousNodeArray(mapData.mappedNodes, domNode);
                 newMappingResult.push(mapData);
-            },
-
-            callCallback = (callback, items) => {
-                if (callback) {
-                    items.forEach(item => item?.mappedNodes.forEach(node => callback(node, i, item.arrayEntry)));
-                }
             };
 
         if (isFirstExecution) {
@@ -112,15 +112,6 @@
 
                             // Queue these nodes for later removal
                             if (ko.utils.fixUpContinuousNodeArray(mapData.mappedNodes, domNode).length) {
-                                if (options['beforeRemove']) {
-                                    newMappingResult.push(mapData);
-                                    countWaitingForRemove++;
-                                    if (mapData.arrayEntry === deletedItemDummyValue) {
-                                        mapData = null;
-                                    } else {
-                                        itemsForBeforeRemoveCallbacks[mapData.indexObservable.peek()] = mapData;
-                                    }
-                                }
                                 if (mapData) {
                                     nodesToDelete.push.apply(nodesToDelete, mapData.mappedNodes);
                                 }
@@ -155,8 +146,8 @@
         // Store a copy of the array items we just considered so we can difference it next time
         ko.utils.domData.set(domNode, lastMappingResultDomDataKey, newMappingResult);
 
-        // Next remove nodes for deleted items (or just clean if there's a beforeRemove callback)
-        nodesToDelete.forEach(options['beforeRemove'] ? ko.cleanNode : ko.removeNode);
+        // Next remove nodes for deleted items
+        nodesToDelete.forEach(ko.removeNode);
 
         var i, lastNode, mappedNodes, activeElement,
             insertNode = nodeToInsert => {
@@ -183,7 +174,7 @@
             }
         }
 
-        // Next add/reorder the remaining items (will include deleted items if there's a beforeRemove callback)
+        // Next add/reorder the remaining items
         newMappingResult.forEach(mapData => {
             // Get nodes for newly added items
             mapData.mappedNodes
@@ -205,15 +196,8 @@
             activeElement?.focus();
         }
 
-        // If there's a beforeRemove callback, call it after reordering.
-        // Note that we assume that the beforeRemove callback will usually be used to remove the nodes using
-        // some sort of animation, which is why we first reorder the nodes that will be removed. If the
-        // callback instead removes the nodes right away, it would be more efficient to skip reordering them.
-        // Perhaps we'll make that change in the future if this scenario becomes more common.
-        callCallback(options['beforeRemove'], itemsForBeforeRemoveCallbacks);
-
         // Replace the stored values of deleted items with a dummy value. This provides two benefits: it marks this item
-        // as already "removed" so we won't call beforeRemove for it again, and it ensures that the item won't match up
+        // as already "removed", and it ensures that the item won't match up
         // with an actual item in the array and appear as "retained" or "moved".
         itemsForBeforeRemoveCallbacks.forEach(callback => callback && (callback.arrayEntry = deletedItemDummyValue));
     }

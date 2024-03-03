@@ -17,8 +17,7 @@ ko.bindingHandlers['foreach'] = {
             ko.utils.unwrapObservable(modelValue);
             return {
                 'foreach': unwrappedValue['data'],
-                'as': unwrappedValue['as'],
-                'beforeRemove': unwrappedValue['beforeRemove']
+                'as': unwrappedValue['as']
             };
     },
     'init': (element, valueAccessor) =>

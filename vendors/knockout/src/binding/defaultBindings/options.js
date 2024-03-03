@@ -107,10 +107,6 @@ ko.bindingHandlers['options'] = {
             return [option];
         };
 
-        // By using a beforeRemove callback, we delay the removal until after new items are added. This fixes a selection
-        // problem in IE<=8 and Firefox. See https://github.com/knockout/knockout/issues/1208
-        arrayToDomNodeChildrenOptions['beforeRemove'] = option => element.removeChild(option);
-
         var callback = setSelectionCallback;
         if (allBindings['has']('optionsAfterRender') && typeof allBindings.get('optionsAfterRender') == "function") {
             callback = (arrayEntry, newOptions) => {
