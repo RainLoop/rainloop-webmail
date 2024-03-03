@@ -115,7 +115,7 @@
                     // Ensure we've got a proper binding context to work with
                     var bindingContext = (dataOrBindingContext instanceof ko.bindingContext)
                         ? dataOrBindingContext
-                        : new ko.bindingContext(dataOrBindingContext, null, null, null, { "exportDependencies": true });
+                        : new ko.bindingContext(dataOrBindingContext, null, null, { "exportDependencies": true });
 
                     var templateName = resolveTemplateName(template, bindingContext['$data'], bindingContext);
                     executeTemplate(targetNodeOrNodeArray, renderMode, templateName, bindingContext, options);
@@ -130,19 +130,13 @@
     ko.renderTemplateForEach = (template, arrayOrObservableArray, options, targetNode, parentBindingContext) => {
         // Since setDomNodeChildrenFromArrayMapping always calls executeTemplateForArrayItem and then
         // activateBindingsCallback for added items, we can store the binding context in the former to use in the latter.
-        var arrayItemContext, asName = options['as'];
+        var arrayItemContext;
 
         // This will be called by setDomNodeChildrenFromArrayMapping to get the nodes to add to targetNode
         var executeTemplateForArrayItem = (arrayValue, index) => {
             // Support selecting template as a function of the data being rendered
             arrayItemContext = parentBindingContext['createChildContext'](arrayValue, {
-                'as': asName,
-                'extend': context => {
-                    context['$index'] = index;
-                    if (asName) {
-                        context[asName + "Index"] = index;
-                    }
-                }
+                'extend': context => context['$index'] = index
             });
 
             var templateName = resolveTemplateName(template, arrayValue, arrayItemContext);
@@ -267,7 +261,6 @@
                 var innerBindingContext = bindingContext;
                 if ('data' in options) {
                     innerBindingContext = bindingContext['createChildContext'](options['data'], {
-                        'as': options['as'],
                         'exportDependencies': true
                     });
                 }

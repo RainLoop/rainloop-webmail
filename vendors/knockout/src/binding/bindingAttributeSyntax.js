@@ -13,7 +13,7 @@ ko.bindingHandlers = {};
 // The ko.bindingContext constructor is only called directly to create the root context. For child
 // contexts, use bindingContext.createChildContext or bindingContext.extend.
 ko.bindingContext = class {
-    constructor(dataItemOrAccessor, parentContext, dataItemAlias, extendCallback, options)
+    constructor(dataItemOrAccessor, parentContext, extendCallback, options)
     {
         var self = this,
             shouldInheritData = dataItemOrAccessor === inheritParentVm,
@@ -60,9 +60,6 @@ ko.bindingContext = class {
                 self['$data'] = dataItem;
             }
 
-            if (dataItemAlias)
-                self[dataItemAlias] = dataItem;
-
             // The extendCallback function is provided when creating a child context or extending a context.
             // It handles the specific actions needed to finish setting up the binding context. Actions in this
             // function could also add dependencies to this binding context.
@@ -107,21 +104,14 @@ ko.bindingContext = class {
     // But this does not mean that the $data value of the child context will also get updated. If the child
     // view model also depends on the parent view model, you must provide a function that returns the correct
     // view model on each update.
-   'createChildContext'(dataItemOrAccessor, dataItemAlias, extendCallback, options) {
-        if (!options && dataItemAlias && typeof dataItemAlias == "object") {
-            options = dataItemAlias;
-            dataItemAlias = options['as'];
-            extendCallback = options['extend'];
-        }
-
-        return new ko.bindingContext(dataItemOrAccessor, this, dataItemAlias, (self, parentContext) => {
+   'createChildContext'(dataItemOrAccessor, options) {
+        return new ko.bindingContext(dataItemOrAccessor, this, (self, parentContext) => {
             // Extend the context hierarchy by setting the appropriate pointers
             self['$parentContext'] = parentContext;
             self['$parent'] = parentContext['$data'];
             self['$parents'] = (parentContext['$parents'] || []).slice(0);
             self['$parents'].unshift(self['$parent']);
-            if (extendCallback)
-                extendCallback(self);
+            options['extend']?.(self);
         }, options);
     }
 
@@ -129,7 +119,7 @@ ko.bindingContext = class {
     // Similarly to "child" contexts, provide a function here to make sure that the correct values are set
     // when an observable view model is updated.
     'extend'(properties, options) {
-        return new ko.bindingContext(inheritParentVm, this, null, self =>
+        return new ko.bindingContext(inheritParentVm, this, self =>
             ko.utils.extend(self, typeof(properties) == "function" ? properties(self) : properties)
         , options);
     }
@@ -432,7 +422,7 @@ ko.storedBindingContextForNode = node => {
 function getBindingContext(viewModelOrBindingContext, extendContextCallback) {
     return viewModelOrBindingContext && (viewModelOrBindingContext instanceof ko.bindingContext)
         ? viewModelOrBindingContext
-        : new ko.bindingContext(viewModelOrBindingContext, undefined, undefined, extendContextCallback);
+        : new ko.bindingContext(viewModelOrBindingContext, null, extendContextCallback);
 }
 
 ko['applyBindingAccessorsToNode'] = (node, bindings, viewModelOrBindingContext) =>

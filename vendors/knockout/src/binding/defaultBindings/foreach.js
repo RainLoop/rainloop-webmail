@@ -16,8 +16,7 @@ ko.bindingHandlers['foreach'] = {
             // If unwrappedValue.data is the array, preserve all relevant options and unwrap again value so we get updates
             ko.utils.unwrapObservable(modelValue);
             return {
-                'foreach': unwrappedValue['data'],
-                'as': unwrappedValue['as']
+                'foreach': unwrappedValue['data']
             };
     },
     'init': (element, valueAccessor) =>
