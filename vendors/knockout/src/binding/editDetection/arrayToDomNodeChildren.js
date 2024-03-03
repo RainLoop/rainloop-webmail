@@ -47,7 +47,7 @@
 
     ko.utils.setDomNodeChildrenFromArrayMapping = (domNode, array, mapping, options, callbackAfterAddingNodes, editScript) => {
         array = array || [];
-        if (typeof array.length == "undefined") // Coerce single value into array
+        if (!Array.isArray(array)) // Coerce single value into array
             array = [array];
 
         options = options || {};
