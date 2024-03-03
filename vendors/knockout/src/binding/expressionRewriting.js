@@ -119,10 +119,6 @@ ko.expressionRewriting = (() => {
                 keyValueArray = parseObjectLiteral(bindingsStringOrKeyValueArray),
 
                 processKeyValue = (key, val) => {
-                    var /*writableVal,*/ obj = ko.bindingHandlers[key];
-                    if (obj?.['preprocess'] && !obj['preprocess'](val, key, processKeyValue))
-                        return;
-
                     // Values are wrapped in a function so that each value can be accessed independently
                     val = 'function(){return ' + val + ' }';
                     resultStrings.push("'" + key + "':" + val);
