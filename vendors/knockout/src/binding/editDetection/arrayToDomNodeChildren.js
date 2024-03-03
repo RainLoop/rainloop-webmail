@@ -87,7 +87,6 @@
                     Array.prototype.map.call(lastMappingResult, x => x.arrayEntry),
                     array,
                     {
-                        'dontLimitMoves': options['dontLimitMoves'],
                         'sparse': true
                     });
             }
