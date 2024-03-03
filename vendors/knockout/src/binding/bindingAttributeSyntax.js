@@ -216,12 +216,6 @@ ko.bindingEvent = {
     }
 };
 
-function validateThatBindingIsAllowedForVirtualElements(bindingName) {
-    var validator = ko.virtualElements.allowedBindings[bindingName];
-    if (!validator)
-        throw new Error("The binding '" + bindingName + "' cannot be used with virtual elements")
-}
-
 function applyBindingsToDescendantsInternal(bindingContext, elementOrVirtualElement) {
     var currentChild, nextInQueue = ko.virtualElements.firstChild(elementOrVirtualElement);
 
@@ -374,8 +368,9 @@ function applyBindingsToNodeInternal(node, sourceBindings, bindingContext) {
                 handlerUpdateFn = bindingKeyAndHandler.handler["update"],
                 bindingKey = bindingKeyAndHandler.key;
 
-            if (node.nodeType === 8) {
-                validateThatBindingIsAllowedForVirtualElements(bindingKey);
+            // COMMENT_NODE
+            if (node.nodeType === 8 && !ko.virtualElements.allowedBindings[bindingKey]) {
+                throw new Error("The binding '" + bindingKey + "' cannot be used with comment nodes");
             }
 
             try {
