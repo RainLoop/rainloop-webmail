@@ -36,4 +36,3 @@ ko.bindingHandlers['hasfocus'] = {
         }
     }
 };
-//ko.expressionRewriting.twoWayBindings.add('hasfocus');

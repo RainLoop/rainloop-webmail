@@ -113,7 +113,6 @@ ko.bindingHandlers['checked'] = {
         }
     }
 };
-//ko.expressionRewriting.twoWayBindings['checked'] = true;
 
 ko.bindingHandlers['checkedValue'] = {
     'update'(element, valueAccessor) {
