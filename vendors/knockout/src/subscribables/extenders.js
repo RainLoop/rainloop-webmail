@@ -11,7 +11,7 @@ ko['extenders'] = {
 };
 
 function valuesArePrimitiveAndEqual(a, b) {
-    return a !== Object(a) && a === b;
+    return a === b && a !== Object(a);
 }
 
 function throttle(callback, timeout) {

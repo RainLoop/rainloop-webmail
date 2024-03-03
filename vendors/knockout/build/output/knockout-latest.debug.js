@@ -24,7 +24,6 @@ ko.exportSymbol = (koPath, object) => {
         target = target[tokens[i]];
     target[tokens[l]] = object;
 };
-ko['version'] = "3.5.1-sm";
 ko.utils = {
     extend: (target, source) => source ? Object.assign(target, source) : target,
 
@@ -246,9 +245,8 @@ ko['extenders'] = {
     }
 };
 
-var primitiveTypes = { 'undefined':1, 'boolean':1, 'number':1, 'string':1 };
 function valuesArePrimitiveAndEqual(a, b) {
-    return (a === null || primitiveTypes[typeof(a)]) ? (a === b) : false;
+    return a === b && a !== Object(a);
 }
 
 function throttle(callback, timeout) {
@@ -586,7 +584,7 @@ ko.exportSymbol('observable.fn', observableFn);
 ko['observableArray'] = initialValues => {
     initialValues = initialValues || [];
 
-    if (typeof initialValues != 'object' || !('length' in initialValues))
+    if (!Array.isArray(initialValues))
         throw new Error("The argument passed when initializing an observable array must be an array, or null, or undefined.");
 
     return Object.setPrototypeOf(ko.observable(initialValues), ko['observableArray']['fn']).extend({'trackArrayChanges':true});
@@ -690,29 +688,28 @@ ko['extenders']['trackArrayChanges'] = (target, options) => {
         }
     };
 
-    function trackChanges() {
+    function notifyChanges() {
+        if (pendingChanges) {
+            // Make a copy of the current contents and ensure it's an array
+            var currentContents = [].concat(target.peek() || []), changes;
 
-        function notifyChanges() {
-            if (pendingChanges) {
-                // Make a copy of the current contents and ensure it's an array
-                var currentContents = [].concat(target.peek() || []), changes;
+            // Compute the diff and issue notifications, but only if someone is listening
+            if (target.hasSubscriptionsForEvent(arrayChangeEventName)) {
+                changes = getChanges(previousContents, currentContents);
+            }
 
-                // Compute the diff and issue notifications, but only if someone is listening
-                if (target.hasSubscriptionsForEvent(arrayChangeEventName)) {
-                    changes = getChanges(previousContents, currentContents);
-                }
+            // Eliminate references to the old, removed items, so they can be GCed
+            previousContents = currentContents;
+            cachedDiff = null;
+            pendingChanges = 0;
 
-                // Eliminate references to the old, removed items, so they can be GCed
-                previousContents = currentContents;
-                cachedDiff = null;
-                pendingChanges = 0;
-
-                if (changes?.length) {
-                    target.notifySubscribers(changes, arrayChangeEventName);
-                }
+            if (changes?.length) {
+                target.notifySubscribers(changes, arrayChangeEventName);
             }
         }
+    }
 
+    function trackChanges() {
         if (trackingChanges) {
             // Whenever there's a new subscription and there are pending notifications, make sure all previous
             // subscriptions are notified of the change so that all subscriptions are in sync.
@@ -753,16 +750,15 @@ ko['extenders']['trackArrayChanges'] = (target, options) => {
         var diff = [],
             arrayLength = rawArray.length,
             argsLength = args.length,
-            offset = 0;
+            offset = 0,
+            pushDiff = (status, value, index) =>
+                diff[diff.length] = { 'status': status, 'value': value, 'index': index };
 
-        function pushDiff(status, value, index) {
-            return diff[diff.length] = { 'status': status, 'value': value, 'index': index };
-        }
         switch (operationName) {
             case 'push':
                 offset = arrayLength;
             case 'unshift':
-                for (let index = 0; index < argsLength; index++) {
+                for (let index = 0; index < argsLength; ++index) {
                     pushDiff('added', args[index], offset + index);
                 }
                 break;
@@ -2316,7 +2312,8 @@ ko.bindingHandlers['checked'] = {
                 // Treat "value" like "checkedValue" when it is included with "checked" binding
                 if (allBindings['has']('checkedValue')) {
                     return ko.utils.unwrapObservable(allBindings.get('checkedValue'));
-                } else if (useElementValue) {
+                }
+                if (useElementValue) {
                     return allBindings['has']('value')
                         ? ko.utils.unwrapObservable(allBindings.get('value'))
                         : element.value;
@@ -2493,31 +2490,31 @@ ko.bindingHandlers['event'] = {
     }
 };
 // "foreach: someExpression" is equivalent to "template: { foreach: someExpression }"
-// "foreach: { data: someExpression, afterAdd: myfn }" is equivalent to "template: { foreach: someExpression, afterAdd: myfn }"
+// "foreach: { data: someExpression }" is equivalent to "template: { foreach: someExpression }"
+const makeTemplateValueAccessor = valueAccessor =>
+    () => {
+        var modelValue = valueAccessor(),
+            // Unwrap without setting a dependency here
+            unwrappedValue = ko.isObservable(modelValue) ? modelValue.peek() : modelValue;
+
+        // If unwrappedValue is the array, pass in the wrapped value on its own
+        // The value will be unwrapped and tracked within the template binding
+        // (See https://github.com/SteveSanderson/knockout/issues/523)
+        if ((!unwrappedValue) || Array.isArray(unwrappedValue))
+            return { 'foreach': modelValue };
+
+        // If unwrappedValue.data is the array, preserve all relevant options and unwrap again value so we get updates
+        ko.utils.unwrapObservable(modelValue);
+        return {
+            'foreach': unwrappedValue['data']
+        };
+    };
 ko.bindingHandlers['foreach'] = {
-    makeTemplateValueAccessor: valueAccessor =>
-        () => {
-            var modelValue = valueAccessor(),
-                // Unwrap without setting a dependency here
-                unwrappedValue = ko.isObservable(modelValue) ? modelValue.peek() : modelValue;
-
-            // If unwrappedValue is the array, pass in the wrapped value on its own
-            // The value will be unwrapped and tracked within the template binding
-            // (See https://github.com/SteveSanderson/knockout/issues/523)
-            if ((!unwrappedValue) || typeof unwrappedValue.length == "number")
-                return { 'foreach': modelValue };
-
-            // If unwrappedValue.data is the array, preserve all relevant options and unwrap again value so we get updates
-            ko.utils.unwrapObservable(modelValue);
-            return {
-                'foreach': unwrappedValue['data']
-            };
-    },
     'init': (element, valueAccessor) =>
-        ko.bindingHandlers['template']['init'](element, ko.bindingHandlers['foreach'].makeTemplateValueAccessor(valueAccessor))
+        ko.bindingHandlers['template']['init'](element, makeTemplateValueAccessor(valueAccessor))
     ,
     'update': (element, valueAccessor, allBindings, viewModel, bindingContext) =>
-        ko.bindingHandlers['template']['update'](element, ko.bindingHandlers['foreach'].makeTemplateValueAccessor(valueAccessor), allBindings, viewModel, bindingContext)
+        ko.bindingHandlers['template']['update'](element, makeTemplateValueAccessor(valueAccessor), allBindings, viewModel, bindingContext)
 };
 ko.virtualElements.allowedBindings['foreach'] = true;
 const hasfocusUpdatingProperty = '__ko_hasfocusUpdating',
@@ -3137,7 +3134,7 @@ makeEventHandlerShortcut('click');
             var renderedNodesArray = renderTemplateSource(makeTemplateSource(template, templateDocument));
 
             // Loosely check result is an array of DOM nodes
-            if ((typeof renderedNodesArray.length != "number") || (renderedNodesArray.length > 0 && typeof renderedNodesArray[0].nodeType != "number"))
+            if (!Array.isArray(renderedNodesArray) || (renderedNodesArray.length > 0 && typeof renderedNodesArray[0].nodeType != "number"))
                 throw new Error("Template engine must return an array of DOM nodes");
 
             if (replaceChildren) {
@@ -3241,9 +3238,7 @@ makeEventHandlerShortcut('click');
             var oldComputed = ko.utils.domData.get(element, templateComputedDomDataKey);
             oldComputed?.['dispose']?.();
             ko.utils.domData.set(element, templateComputedDomDataKey, (newComputed && (!newComputed.isActive || newComputed.isActive())) ? newComputed : undefined);
-        },
-
-        cleanContainerDomDataKey = ko.utils.domData.nextKey();
+        };
 
     ko.bindingHandlers['template'] = {
         'init': (element, valueAccessor) => {
@@ -3252,25 +3247,6 @@ makeEventHandlerShortcut('click');
             if (typeof bindingValue == "string" || 'name' in bindingValue) {
                 // It's a named template - clear the element
                 ko.virtualElements.emptyNode(element);
-            } else if ('nodes' in bindingValue) {
-                // We've been given an array of DOM nodes. Save them as the template source.
-                // There is no known use case for the node array being an observable array (if the output
-                // varies, put that behavior *into* your template - that's what templates are for), and
-                // the implementation would be a mess, so assert that it's not observable.
-                var nodes = bindingValue['nodes'] || [];
-                if (ko.isObservable(nodes)) {
-                    throw new Error('The "nodes" option must be a plain, non-observable array.');
-                }
-
-                // If the nodes are already attached to a KO-generated container, we reuse that container without moving the
-                // elements to a new one (we check only the first node, as the nodes are always moved together)
-                let container = nodes[0]?.parentNode;
-                if (!container || !ko.utils.domData.get(container, cleanContainerDomDataKey)) {
-                    container = ko.utils.moveCleanedNodesToContainerElement(nodes);
-                    ko.utils.domData.set(container, cleanContainerDomDataKey, true);
-                }
-
-                new ko.templateSources.anonymousTemplate(element).nodes(container);
             } else {
                 // It's an anonymous template - store the element contents, then clear the element
                 var templateNodes = ko.virtualElements.childNodes(element);
@@ -3295,18 +3271,10 @@ makeEventHandlerShortcut('click');
                 options = {};
             } else {
                 template = 'name' in options ? options['name'] : element;
-
-                // Support "if"/"ifnot" conditions
-                if ('if' in options)
-                    shouldDisplay = ko.utils.unwrapObservable(options['if']);
-                if (shouldDisplay && 'ifnot' in options)
-                    shouldDisplay = !ko.utils.unwrapObservable(options['ifnot']);
-
-                // Don't show anything if an empty name is given (see #2446)
-                if (shouldDisplay && !template) {
-                    shouldDisplay = false;
-                }
             }
+
+            // Don't show anything if an empty name is given (see #2446)
+            shouldDisplay = !!template;
 
             if ('foreach' in options) {
                 // Render once for each data point (treating data set as empty if shouldDisplay==false)
