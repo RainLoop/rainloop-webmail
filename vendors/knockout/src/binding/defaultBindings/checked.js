@@ -78,10 +78,6 @@ ko.bindingHandlers['checked'] = {
                 useElementValue = isRadio || valueIsArray,
                 oldElemValue = valueIsArray ? checkedValue() : undefined;
 
-            // IE 6 won't allow radio buttons to be selected unless they have a name
-            if (isRadio && !element.name)
-                ko.bindingHandlers['uniqueName']['init'](element, function() { return true });
-
             // Set up two computeds to update the binding:
 
             // The first responds to changes in the checkedValue value and to element clicks
