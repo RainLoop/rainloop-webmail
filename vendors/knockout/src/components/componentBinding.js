@@ -18,8 +18,7 @@
                     currentViewModel = null;
                     // Any in-flight loading operation is no longer relevant, so make sure we ignore its completion
                     currentLoadingOperationId = null;
-                },
-                originalChildNodes = [...ko.virtualElements.childNodes(element)];
+                };
 
             ko.virtualElements.emptyNode(element);
             ko.utils.domNodeDisposal['addDisposeCallback'](element, disposeAssociatedComponentViewModel);
@@ -58,15 +57,9 @@
                         ko.virtualElements.setDomNodeChildren(element, ko.utils.cloneNodes(template));
 
                         currentViewModel = componentDefinition['createViewModel'](componentParams, {
-                            'element': element,
-                            'templateNodes': originalChildNodes
+                            'element': element
                         });
-                        ko.applyBindingsToDescendants(asyncContext.createChildContext(currentViewModel, {
-                                'extend': ctx => {
-                                    ctx['$component'] = currentViewModel;
-                                    ctx['$componentTemplateNodes'] = originalChildNodes;
-                                }
-                            }), element);
+                        ko.applyBindingsToDescendants(asyncContext.createChildContext(currentViewModel, {}), element);
                     }
                 });
             }, { disposeWhenNodeIsRemoved: element });
