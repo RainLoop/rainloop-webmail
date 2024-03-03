@@ -205,14 +205,8 @@ var computedFn = {
         return target['subscribe'](this.evaluatePossiblyAsync, this);
     },
     evaluatePossiblyAsync() {
-        var computedObservable = this,
-            throttleEvaluationTimeout = computedObservable['throttleEvaluation'];
-        if (throttleEvaluationTimeout >= 0) {
-            clearTimeout(this[computedState].evaluationTimeoutInstance);
-            this[computedState].evaluationTimeoutInstance = setTimeout(() =>
-                computedObservable.evaluateImmediate(true /*notifyChange*/)
-            , throttleEvaluationTimeout);
-        } else if (computedObservable._evalDelayed) {
+        var computedObservable = this;
+        if (computedObservable._evalDelayed) {
             computedObservable._evalDelayed(true /*isChange*/);
         } else {
             computedObservable.evaluateImmediate(true /*notifyChange*/);
