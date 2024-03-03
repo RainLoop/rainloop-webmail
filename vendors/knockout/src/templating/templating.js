@@ -112,68 +112,69 @@
             } else {
                 console.log('no targetNodeOrNodeArray');
             }
-        };
+        },
 
-    ko.renderTemplateForEach = (template, arrayOrObservableArray, options, targetNode, parentBindingContext) => {
-        // Since setDomNodeChildrenFromArrayMapping always calls executeTemplateForArrayItem and then
-        // activateBindingsCallback for added items, we can store the binding context in the former to use in the latter.
-        var arrayItemContext;
+        renderTemplateForEach = (template, arrayOrObservableArray, options, targetNode, parentBindingContext) => {
+            // Since setDomNodeChildrenFromArrayMapping always calls executeTemplateForArrayItem and then
+            // activateBindingsCallback for added items, we can store the binding context in the former to use in the latter.
+            var arrayItemContext;
 
-        // This will be called by setDomNodeChildrenFromArrayMapping to get the nodes to add to targetNode
-        var executeTemplateForArrayItem = (arrayValue, index) => {
-            // Support selecting template as a function of the data being rendered
-            arrayItemContext = parentBindingContext['createChildContext'](arrayValue, {
-                'extend': context => context['$index'] = index
-            });
+            // This will be called by setDomNodeChildrenFromArrayMapping to get the nodes to add to targetNode
+            var executeTemplateForArrayItem = (arrayValue, index) => {
+                // Support selecting template as a function of the data being rendered
+                arrayItemContext = parentBindingContext['createChildContext'](arrayValue, {
+                    'extend': context => context['$index'] = index
+                });
 
-            var templateName = resolveTemplateName(template, arrayValue, arrayItemContext);
-            return executeTemplate(targetNode, false, templateName, arrayItemContext, options);
-        };
+                var templateName = resolveTemplateName(template, arrayValue, arrayItemContext);
+                return executeTemplate(targetNode, false, templateName, arrayItemContext, options);
+            };
 
-        // This will be called whenever setDomNodeChildrenFromArrayMapping has added nodes to targetNode
-        var activateBindingsCallback = (arrayValue, addedNodesArray) => {
-            activateBindingsOnContinuousNodeArray(addedNodesArray, arrayItemContext);
+            // This will be called whenever setDomNodeChildrenFromArrayMapping has added nodes to targetNode
+            var activateBindingsCallback = (arrayValue, addedNodesArray) => {
+                activateBindingsOnContinuousNodeArray(addedNodesArray, arrayItemContext);
 
-            // release the "cache" variable, so that it can be collected by
-            // the GC when its value isn't used from within the bindings anymore.
-            arrayItemContext = null;
-        };
+                // release the "cache" variable, so that it can be collected by
+                // the GC when its value isn't used from within the bindings anymore.
+                arrayItemContext = null;
+            };
 
-        var setDomNodeChildrenFromArrayMapping = function (newArray, changeList) {
-            // Call setDomNodeChildrenFromArrayMapping, ignoring any observables unwrapped within (most likely from a callback function).
-            // If the array items are observables, though, they will be unwrapped in executeTemplateForArrayItem and managed within setDomNodeChildrenFromArrayMapping.
-            ko.dependencyDetection.ignore(ko.utils.setDomNodeChildrenFromArrayMapping, null, [targetNode, newArray, executeTemplateForArrayItem, options, activateBindingsCallback, changeList]);
-            ko.bindingEvent.notify(targetNode, ko.bindingEvent.childrenComplete);
-        };
+            var setDomNodeChildrenFromArrayMapping = (newArray, changeList) => {
+                // Call setDomNodeChildrenFromArrayMapping, ignoring any observables unwrapped within (most likely from a callback function).
+                // If the array items are observables, though, they will be unwrapped in executeTemplateForArrayItem and managed within setDomNodeChildrenFromArrayMapping.
+                ko.dependencyDetection.ignore(ko.utils.setDomNodeChildrenFromArrayMapping, null, [targetNode, newArray, executeTemplateForArrayItem, options, activateBindingsCallback, changeList]);
+                ko.bindingEvent.notify(targetNode, ko.bindingEvent.childrenComplete);
+            };
 
-        if (ko['isObservableArray'](arrayOrObservableArray)) {
-            setDomNodeChildrenFromArrayMapping(arrayOrObservableArray.peek());
+            if (ko['isObservableArray'](arrayOrObservableArray)) {
+                setDomNodeChildrenFromArrayMapping(arrayOrObservableArray.peek());
 
-            var subscription = arrayOrObservableArray['subscribe'](changeList => {
-                setDomNodeChildrenFromArrayMapping(arrayOrObservableArray(), changeList);
-            }, null, "arrayChange");
-            subscription.disposeWhenNodeIsRemoved(targetNode);
+                var subscription = arrayOrObservableArray['subscribe'](changeList => {
+                    setDomNodeChildrenFromArrayMapping(arrayOrObservableArray(), changeList);
+                }, null, "arrayChange");
+                subscription.disposeWhenNodeIsRemoved(targetNode);
 
-            return subscription;
-        }
-        return ko.computed(() => {
-            var unwrappedArray = ko.utils.unwrapObservable(arrayOrObservableArray) || [];
-            if (typeof unwrappedArray.length == "undefined") // Coerce single value into array
-                unwrappedArray = [unwrappedArray];
+                return subscription;
+            }
+            return ko.computed(() => {
+                var unwrappedArray = ko.utils.unwrapObservable(arrayOrObservableArray) || [];
+                if (!Array.isArray(unwrappedArray)) // Coerce single value into array
+                    unwrappedArray = [unwrappedArray];
 
-            setDomNodeChildrenFromArrayMapping(unwrappedArray);
+                setDomNodeChildrenFromArrayMapping(unwrappedArray);
 
-        }, { disposeWhenNodeIsRemoved: targetNode });
-    };
+            }, { disposeWhenNodeIsRemoved: targetNode });
+        },
 
-    var templateComputedDomDataKey = ko.utils.domData.nextKey();
-    function disposeOldComputedAndStoreNewOne(element, newComputed) {
-        var oldComputed = ko.utils.domData.get(element, templateComputedDomDataKey);
-        oldComputed?.['dispose']?.();
-        ko.utils.domData.set(element, templateComputedDomDataKey, (newComputed && (!newComputed.isActive || newComputed.isActive())) ? newComputed : undefined);
-    }
+        templateComputedDomDataKey = ko.utils.domData.nextKey(),
+        disposeOldComputedAndStoreNewOne = (element, newComputed) => {
+            var oldComputed = ko.utils.domData.get(element, templateComputedDomDataKey);
+            oldComputed?.['dispose']?.();
+            ko.utils.domData.set(element, templateComputedDomDataKey, (newComputed && (!newComputed.isActive || newComputed.isActive())) ? newComputed : undefined);
+        },
 
-    var cleanContainerDomDataKey = ko.utils.domData.nextKey();
+        cleanContainerDomDataKey = ko.utils.domData.nextKey();
+
     ko.bindingHandlers['template'] = {
         'init': (element, valueAccessor) => {
             // Support anonymous templates
@@ -239,8 +240,7 @@
 
             if ('foreach' in options) {
                 // Render once for each data point (treating data set as empty if shouldDisplay==false)
-                var dataArray = (shouldDisplay && options['foreach']) || [];
-                templateComputed = ko.renderTemplateForEach(template, dataArray, options, element, bindingContext);
+                templateComputed = renderTemplateForEach(template, (shouldDisplay && options['foreach']) || [], options, element, bindingContext);
             } else if (!shouldDisplay) {
                 ko.virtualElements.emptyNode(element);
             } else {
