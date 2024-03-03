@@ -236,7 +236,7 @@ function applyBindingsToNodeAndDescendantsInternal(bindingContext, nodeVerified)
     // (1) We need to store the binding info for the node (all element nodes)
     // (2) It might have bindings (e.g., it has a data-bind attribute, or it's a marker for a containerless template)
     if (isElement || ko.bindingProvider.nodeHasBindings(nodeVerified))
-        bindingContextForDescendants = applyBindingsToNodeInternal(nodeVerified, null, bindingContext)['bindingContextForDescendants'];
+        bindingContextForDescendants = applyBindingsToNodeInternal(nodeVerified, null, bindingContext);
 
     // Don't want bindings that operate on text nodes to mutate <script> and <textarea> contents,
     // because it's unexpected and a potential XSS issue.
@@ -402,11 +402,7 @@ function applyBindingsToNodeInternal(node, sourceBindings, bindingContext) {
         });
     }
 
-    var shouldBindDescendants = bindingHandlerThatControlsDescendantBindings === undefined;
-    return {
-        'shouldBindDescendants': shouldBindDescendants,
-        'bindingContextForDescendants': shouldBindDescendants && contextToExtend
-    };
+    return bindingHandlerThatControlsDescendantBindings === undefined && contextToExtend;
 }
 
 ko.storedBindingContextForNode = node => {
