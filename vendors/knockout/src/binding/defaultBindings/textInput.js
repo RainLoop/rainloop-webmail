@@ -51,9 +51,3 @@ ko.bindingHandlers['textInput'] = {
         ko.computed(updateView, { disposeWhenNodeIsRemoved: element });
     }
 };
-
-// textinput is an alias for textInput
-ko.bindingHandlers['textinput'] = {
-    // preprocess is the only way to set up a full alias
-    'preprocess': (value, name, addBinding) => addBinding('textInput', value)
-};
