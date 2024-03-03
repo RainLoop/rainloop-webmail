@@ -7,7 +7,7 @@ function makeWithIfBinding(bindingKey, isWith, isNot) {
             var savedNodes, contextOptions = {}, needAsyncContext;
 
             if (isWith) {
-                contextOptions = { 'exportDependencies': true };
+                contextOptions = { exportDependencies: true };
             }
 
             needAsyncContext = allBindings['has'](ko.bindingEvent.descendantsComplete);

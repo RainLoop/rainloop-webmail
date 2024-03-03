@@ -102,7 +102,7 @@
                         // Ensure we've got a proper binding context to work with
                         var bindingContext = (dataOrBindingContext instanceof ko.bindingContext)
                             ? dataOrBindingContext
-                            : new ko.bindingContext(dataOrBindingContext, null, null, { "exportDependencies": true });
+                            : new ko.bindingContext(dataOrBindingContext, null, null, { exportDependencies: true });
 
                         var templateName = resolveTemplateName(template, bindingContext['$data'], bindingContext);
                         executeTemplate(targetNodeOrNodeArray, true, templateName, bindingContext, options);
@@ -248,7 +248,7 @@
                 var innerBindingContext = bindingContext;
                 if ('data' in options) {
                     innerBindingContext = bindingContext.createChildContext(options['data'], {
-                        'exportDependencies': true
+                        exportDependencies: true
                     });
                 }
                 templateComputed = renderTemplate(template, innerBindingContext, options, element);

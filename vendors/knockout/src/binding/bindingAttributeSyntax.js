@@ -78,7 +78,7 @@ ko.bindingContext = class {
             return self['$data'];
         };
 
-        if (options?.['exportDependencies']) {
+        if (options?.exportDependencies) {
             // The "exportDependencies" option means that the calling code will track any dependencies and re-create
             // the binding context when they change.
             updateContext();
