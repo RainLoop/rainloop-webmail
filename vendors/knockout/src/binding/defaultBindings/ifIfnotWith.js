@@ -26,7 +26,7 @@ function makeWithIfBinding(bindingKey, isWith, isNot) {
                     contextOptions['dataDependency'] = ko.dependencyDetection.computed();
 
                     childContext = isWith
-                        ? bindingContext['createChildContext'](typeof value == "function" ? value : valueAccessor, contextOptions)
+                        ? bindingContext.createChildContext(typeof value == "function" ? value : valueAccessor, contextOptions)
                         : (ko.dependencyDetection.getDependenciesCount()
                             ? bindingContext['extend'](null, contextOptions)
                             : bindingContext

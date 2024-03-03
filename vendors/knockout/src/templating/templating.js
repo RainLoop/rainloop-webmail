@@ -122,7 +122,7 @@
             // This will be called by setDomNodeChildrenFromArrayMapping to get the nodes to add to targetNode
             var executeTemplateForArrayItem = (arrayValue, index) => {
                 // Support selecting template as a function of the data being rendered
-                arrayItemContext = parentBindingContext['createChildContext'](arrayValue, {
+                arrayItemContext = parentBindingContext.createChildContext(arrayValue, {
                     'extend': context => context['$index'] = index
                 });
 
@@ -247,7 +247,7 @@
                 // Render once for this single data point (or use the viewModel if no data was provided)
                 var innerBindingContext = bindingContext;
                 if ('data' in options) {
-                    innerBindingContext = bindingContext['createChildContext'](options['data'], {
+                    innerBindingContext = bindingContext.createChildContext(options['data'], {
                         'exportDependencies': true
                     });
                 }

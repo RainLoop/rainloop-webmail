@@ -104,7 +104,7 @@ ko.bindingContext = class {
     // But this does not mean that the $data value of the child context will also get updated. If the child
     // view model also depends on the parent view model, you must provide a function that returns the correct
     // view model on each update.
-   'createChildContext'(dataItemOrAccessor, options) {
+   createChildContext(dataItemOrAccessor, options) {
         return new ko.bindingContext(dataItemOrAccessor, this, (self, parentContext) => {
             // Extend the context hierarchy by setting the appropriate pointers
             self['$parentContext'] = parentContext;

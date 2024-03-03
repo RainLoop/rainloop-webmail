@@ -61,7 +61,7 @@
                             'element': element,
                             'templateNodes': originalChildNodes
                         });
-                        ko.applyBindingsToDescendants(asyncContext['createChildContext'](currentViewModel, {
+                        ko.applyBindingsToDescendants(asyncContext.createChildContext(currentViewModel, {
                                 'extend': ctx => {
                                     ctx['$component'] = currentViewModel;
                                     ctx['$componentTemplateNodes'] = originalChildNodes;
