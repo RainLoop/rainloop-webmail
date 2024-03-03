@@ -380,7 +380,7 @@ function applyBindingsToNodeInternal(node, sourceBindings, bindingContext) {
                         var initResult = handlerInitFn(node, getValueAccessor(bindingKey), allBindings, contextToExtend['$data'], contextToExtend);
 
                         // If this binding handler claims to control descendant bindings, make a note of this
-                        if (initResult && initResult['controlsDescendantBindings']) {
+                        if (initResult && initResult.controlsDescendantBindings) {
                             if (bindingHandlerThatControlsDescendantBindings !== undefined)
                                 throw new Error("Multiple bindings (" + bindingHandlerThatControlsDescendantBindings + " and " + bindingKey + ") are trying to control descendant bindings of the same element. You cannot use these bindings together on the same element.");
                             bindingHandlerThatControlsDescendantBindings = bindingKey;

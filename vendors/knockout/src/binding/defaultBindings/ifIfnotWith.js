@@ -50,7 +50,7 @@ function makeWithIfBinding(bindingKey, isWith, isNot) {
 
             }, { disposeWhenNodeIsRemoved: element });
 
-            return { 'controlsDescendantBindings': true };
+            return { controlsDescendantBindings: true };
         }
     };
     ko.virtualElements.allowedBindings[bindingKey] = true;

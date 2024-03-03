@@ -71,7 +71,7 @@
                 });
             }, { disposeWhenNodeIsRemoved: element });
 
-            return { 'controlsDescendantBindings': true };
+            return { controlsDescendantBindings: true };
         }
     };
 
