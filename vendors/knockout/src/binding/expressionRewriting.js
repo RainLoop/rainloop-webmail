@@ -148,8 +148,6 @@ ko.expressionRewriting = (() => {
         };
 
     return {
-        bindingRewriteValidators: [],
-
 //        twoWayBindings: twoWayBindings,
 
         parseObjectLiteral: parseObjectLiteral,

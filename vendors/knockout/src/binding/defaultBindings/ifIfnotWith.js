@@ -53,7 +53,6 @@ function makeWithIfBinding(bindingKey, isWith, isNot) {
             return { 'controlsDescendantBindings': true };
         }
     };
-    ko.expressionRewriting.bindingRewriteValidators[bindingKey] = false; // Can't rewrite control flow bindings
     ko.virtualElements.allowedBindings[bindingKey] = true;
 }
 

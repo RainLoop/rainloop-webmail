@@ -25,5 +25,4 @@ ko.bindingHandlers['foreach'] = {
     'update': (element, valueAccessor, allBindings, viewModel, bindingContext) =>
         ko.bindingHandlers['template']['update'](element, ko.bindingHandlers['foreach'].makeTemplateValueAccessor(valueAccessor), allBindings, viewModel, bindingContext)
 };
-ko.expressionRewriting.bindingRewriteValidators['foreach'] = false; // Can't rewrite control flow bindings
 ko.virtualElements.allowedBindings['foreach'] = true;
