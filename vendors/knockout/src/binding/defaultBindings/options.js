@@ -11,7 +11,7 @@ ko.bindingHandlers['options'] = {
         }
 
         // Ensures that the binding processor doesn't try to bind the options
-        return { controlsDescendantBindings: true };
+        return { 'controlsDescendantBindings': true };
     },
     'update': (element, valueAccessor, allBindings) => {
 

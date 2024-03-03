@@ -7,7 +7,7 @@ function makeWithIfBinding(bindingKey, isWith, isNot) {
             var savedNodes, contextOptions = {}, needAsyncContext;
 
             if (isWith) {
-                contextOptions = { exportDependencies: true };
+                contextOptions = { 'exportDependencies': true };
             }
 
             needAsyncContext = allBindings['has'](ko.bindingEvent.descendantsComplete);
@@ -26,7 +26,7 @@ function makeWithIfBinding(bindingKey, isWith, isNot) {
                     contextOptions['dataDependency'] = ko.dependencyDetection.computed();
 
                     childContext = isWith
-                        ? bindingContext.createChildContext(typeof value == "function" ? value : valueAccessor, contextOptions)
+                        ? bindingContext['createChildContext'](typeof value == "function" ? value : valueAccessor, contextOptions)
                         : (ko.dependencyDetection.getDependenciesCount()
                             ? bindingContext['extend'](null, contextOptions)
                             : bindingContext
@@ -50,7 +50,7 @@ function makeWithIfBinding(bindingKey, isWith, isNot) {
 
             }, { disposeWhenNodeIsRemoved: element });
 
-            return { controlsDescendantBindings: true };
+            return { 'controlsDescendantBindings': true };
         }
     };
     ko.virtualElements.allowedBindings[bindingKey] = true;

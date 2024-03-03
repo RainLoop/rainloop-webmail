@@ -59,12 +59,12 @@
                         currentViewModel = componentDefinition['createViewModel'](componentParams, {
                             'element': element
                         });
-                        ko.applyBindingsToDescendants(asyncContext.createChildContext(currentViewModel, {}), element);
+                        ko.applyBindingsToDescendants(asyncContext['createChildContext'](currentViewModel, {}), element);
                     }
                 });
             }, { disposeWhenNodeIsRemoved: element });
 
-            return { controlsDescendantBindings: true };
+            return { 'controlsDescendantBindings': true };
         }
     };
 

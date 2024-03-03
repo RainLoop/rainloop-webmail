@@ -78,7 +78,7 @@ ko.bindingContext = class {
             return self['$data'];
         };
 
-        if (options?.exportDependencies) {
+        if (options?.['exportDependencies']) {
             // The "exportDependencies" option means that the calling code will track any dependencies and re-create
             // the binding context when they change.
             updateContext();
@@ -104,7 +104,7 @@ ko.bindingContext = class {
     // But this does not mean that the $data value of the child context will also get updated. If the child
     // view model also depends on the parent view model, you must provide a function that returns the correct
     // view model on each update.
-   createChildContext(dataItemOrAccessor, options) {
+   'createChildContext'(dataItemOrAccessor, options) {
         return new ko.bindingContext(dataItemOrAccessor, this, (self, parentContext) => {
             // Extend the context hierarchy by setting the appropriate pointers
             self['$parentContext'] = parentContext;
@@ -380,7 +380,7 @@ function applyBindingsToNodeInternal(node, sourceBindings, bindingContext) {
                         var initResult = handlerInitFn(node, getValueAccessor(bindingKey), allBindings, contextToExtend['$data'], contextToExtend);
 
                         // If this binding handler claims to control descendant bindings, make a note of this
-                        if (initResult && initResult.controlsDescendantBindings) {
+                        if (initResult && initResult['controlsDescendantBindings']) {
                             if (bindingHandlerThatControlsDescendantBindings !== undefined)
                                 throw new Error("Multiple bindings (" + bindingHandlerThatControlsDescendantBindings + " and " + bindingKey + ") are trying to control descendant bindings of the same element. You cannot use these bindings together on the same element.");
                             bindingHandlerThatControlsDescendantBindings = bindingKey;

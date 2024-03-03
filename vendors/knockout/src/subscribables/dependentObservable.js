@@ -25,7 +25,7 @@ ko.computed = (evaluatorFunctionOrOptions, options) => {
         pure: false,
         isSleeping: false,
         readFunction: options["read"],
-        disposeWhenNodeIsRemoved: options.disposeWhenNodeIsRemoved,
+        disposeWhenNodeIsRemoved: options.disposeWhenNodeIsRemoved || null,
         disposeWhen: options.disposeWhen,
         domNodeDisposalCallback: null,
         dependencyTracking: {},
