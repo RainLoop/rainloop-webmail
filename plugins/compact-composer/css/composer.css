@@ -39,6 +39,7 @@
 
 .squire-toolbar-svg-icon {
     display: block;
+    fill: var(--dialog-clr, #333);
 }
 
 .squire2-mode-wysiwyg .squire-plain,

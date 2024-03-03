@@ -1,16 +1,47 @@
 /* eslint max-len: 0 */
 (win => {
 
-	addEventListener('rl-view-model.create', e => {
-		if (e.detail.viewModelTemplateID === 'PopupsCompose') {
-			// There is a better way to do this probably,
-			// but we need this for drag and drop to work
-			e.detail.attachmentsArea = e.detail.bodyArea;
-		}
+	const rl = win.rl;
+
+	if (!rl) {
+		return;
+	}
+
+	rl.registerWYSIWYG('CompactComposer', (owner, container, onReady) => {
+		const editor = new CompactComposer(container);
+		onReady(editor);
 	});
 
 	const doc = win.document;
-	const rl = win.rl;
+
+	// If a user (or admin) selected the CompactComposer we need to
+	// replace PopupsCompose template with PopupsCompactCompose template.
+	// --
+	// This might break some plugins if they query/change PopupsCompose template
+	// before this code is called. They should instead listen for
+	// 'rl-view-model.create' to work properly.
+	if (rl.settings.get('editorWysiwyg') === 'CompactComposer') {
+		const compactTemplate = doc.getElementById('PopupsCompactCompose');
+		if (!compactTemplate) {
+			console.error('CompactComposer: PopupsCompactCompose template not found');
+			return;
+		}
+		const originalTemplate = doc.getElementById('PopupsCompose');
+		if (originalTemplate) {
+			originalTemplate.id = 'PopupsCompose_replaced';
+		} else {
+			console.warn('CompactComposer: PopupsCompose template not found');
+		}
+		compactTemplate.id = 'PopupsCompose';
+
+		addEventListener('rl-view-model.create', e => {
+			if (e.detail.viewModelTemplateID === 'PopupsCompose') {
+				// There is a better way to do this probably,
+				// but we need this for drag and drop to work
+				e.detail.attachmentsArea = e.detail.bodyArea;
+			}
+		});
+	}
 
 	const
 		removeElements = 'HEAD,LINK,META,NOSCRIPT,SCRIPT,TEMPLATE,TITLE',
@@ -114,9 +145,6 @@
 
 			this.container = container;
 
-			toolbar.className = 'squire-toolbar btn-toolbar';
-			const actions = this.#makeActions(squire, toolbar);
-
 			plain.className = 'squire-plain';
 			wysiwyg.className = 'squire-wysiwyg';
 			wysiwyg.dir = 'auto';
@@ -125,6 +153,9 @@
 			this.plain = plain;
 			this.wysiwyg = wysiwyg;
 			this.toolbar = toolbar;
+
+			toolbar.className = 'squire-toolbar btn-toolbar';
+			const actions = this.#makeActions(squire, toolbar);
 
 			this.squire.addEventListener('willPaste', pasteSanitizer);
 			this.squire.addEventListener('pasteImage', (e) => {
@@ -663,13 +694,13 @@
 						return indicators;
 					case 'menu':
 					case 'menu_more':
-						const menuWrap = document.createElement('div');
+						const menuWrap = createElement('div');
 						menuWrap.className = 'btn-group dropdown squire-toolbar-menu-wrap';
 						menuWrap.title = item.label;
 						if (!item.showInPlainMode) {
 							menuWrap.className += ' squire-html-mode-item';
 						}
-						const menuBtn = document.createElement('a');
+						const menuBtn = createElement('button');
 						menuBtn.className = 'btn dropdown-toggle';
 						if (item.icon !== '') {
 							menuBtn.innerHTML = item.icon;
@@ -680,7 +711,7 @@
 						}
 						menuWrap.appendChild(menuBtn);
 
-						const menu = document.createElement('ul');
+						const menu = createElement('ul');
 						menu.className = 'dropdown-menu squire-toolbar-menu';
 						if (item.rightEdge) {
 							menu.className += ' right-edge';
@@ -956,12 +987,4 @@
 			}
 		}
 	}
-
-	if (rl) {
-		rl.registerWYSIWYG('CompactComposer', (owner, container, onReady) => {
-			const editor = new CompactComposer(container);
-			onReady(editor);
-		});
-	}
-
 })(window);
