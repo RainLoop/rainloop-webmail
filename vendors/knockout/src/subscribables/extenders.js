@@ -10,9 +10,8 @@ ko['extenders'] = {
     }
 };
 
-var primitiveTypes = { 'undefined':1, 'boolean':1, 'number':1, 'string':1 };
 function valuesArePrimitiveAndEqual(a, b) {
-    return (a === null || primitiveTypes[typeof(a)]) ? (a === b) : false;
+    return a !== Object(a) && a === b;
 }
 
 function throttle(callback, timeout) {
