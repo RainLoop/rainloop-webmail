@@ -1,5 +1,5 @@
 (() => {
-    var renderTemplateSource = templateSource => {
+    const renderTemplateSource = templateSource => {
             var templateNodes = templateSource.nodes ? templateSource.nodes() : null;
             return templateNodes
                 ? [...templateNodes.cloneNode(true).childNodes]
@@ -60,7 +60,7 @@
                                             : null;
         },
 
-        executeTemplate = (targetNodeOrNodeArray, renderMode, template, bindingContext) => {
+        executeTemplate = (targetNodeOrNodeArray, replaceChildren, template, bindingContext) => {
             var firstTargetNode = targetNodeOrNodeArray && getFirstNodeFromPossibleArray(targetNodeOrNodeArray);
             var templateDocument = (firstTargetNode || template || {}).ownerDocument;
 
@@ -70,22 +70,10 @@
             if ((typeof renderedNodesArray.length != "number") || (renderedNodesArray.length > 0 && typeof renderedNodesArray[0].nodeType != "number"))
                 throw new Error("Template engine must return an array of DOM nodes");
 
-            var haveAddedNodesToParent = false;
-            switch (renderMode) {
-                case "replaceChildren":
-                    ko.virtualElements.setDomNodeChildren(targetNodeOrNodeArray, renderedNodesArray);
-                    haveAddedNodesToParent = true;
-                    break;
-                case "ignoreTargetNode": break;
-                default:
-                    throw new Error("Unknown renderMode: " + renderMode);
-            }
-
-            if (haveAddedNodesToParent) {
+            if (replaceChildren) {
+                ko.virtualElements.setDomNodeChildren(targetNodeOrNodeArray, renderedNodesArray);
                 activateBindingsOnContinuousNodeArray(renderedNodesArray, bindingContext);
-                if (renderMode == "replaceChildren") {
-                    ko.bindingEvent.notify(targetNodeOrNodeArray, ko.bindingEvent.childrenComplete);
-                }
+                ko.bindingEvent.notify(targetNodeOrNodeArray, ko.bindingEvent.childrenComplete);
             }
 
             return renderedNodesArray;
@@ -99,33 +87,32 @@
             }
             // 2. A function of (data, context) returning a string ELSE 3. A string
             return (typeof template === 'function') ? template(data, context) : template;
+        },
+
+        renderTemplate = (template, dataOrBindingContext, options, targetNodeOrNodeArray) => {
+            options = options || {};
+
+            if (targetNodeOrNodeArray) {
+                var firstTargetNode = getFirstNodeFromPossibleArray(targetNodeOrNodeArray);
+
+                var whenToDispose = () => (!firstTargetNode) || !ko.utils.domNodeIsAttachedToDocument(firstTargetNode); // Passive disposal (on next evaluation)
+
+                return ko.computed( // So the DOM is automatically updated when any dependency changes
+                    () => {
+                        // Ensure we've got a proper binding context to work with
+                        var bindingContext = (dataOrBindingContext instanceof ko.bindingContext)
+                            ? dataOrBindingContext
+                            : new ko.bindingContext(dataOrBindingContext, null, null, { "exportDependencies": true });
+
+                        var templateName = resolveTemplateName(template, bindingContext['$data'], bindingContext);
+                        executeTemplate(targetNodeOrNodeArray, true, templateName, bindingContext, options);
+                    },
+                    { disposeWhen: whenToDispose, disposeWhenNodeIsRemoved: firstTargetNode }
+                );
+            } else {
+                console.log('no targetNodeOrNodeArray');
+            }
         };
-
-    ko.renderTemplate = function (template, dataOrBindingContext, options, targetNodeOrNodeArray, renderMode) {
-        options = options || {};
-        renderMode = renderMode || "replaceChildren";
-
-        if (targetNodeOrNodeArray) {
-            var firstTargetNode = getFirstNodeFromPossibleArray(targetNodeOrNodeArray);
-
-            var whenToDispose = () => (!firstTargetNode) || !ko.utils.domNodeIsAttachedToDocument(firstTargetNode); // Passive disposal (on next evaluation)
-
-            return ko.computed( // So the DOM is automatically updated when any dependency changes
-                () => {
-                    // Ensure we've got a proper binding context to work with
-                    var bindingContext = (dataOrBindingContext instanceof ko.bindingContext)
-                        ? dataOrBindingContext
-                        : new ko.bindingContext(dataOrBindingContext, null, null, { "exportDependencies": true });
-
-                    var templateName = resolveTemplateName(template, bindingContext['$data'], bindingContext);
-                    executeTemplate(targetNodeOrNodeArray, renderMode, templateName, bindingContext, options);
-                },
-                { disposeWhen: whenToDispose, disposeWhenNodeIsRemoved: firstTargetNode }
-            );
-        } else {
-            console.log('no targetNodeOrNodeArray');
-        }
-    };
 
     ko.renderTemplateForEach = (template, arrayOrObservableArray, options, targetNode, parentBindingContext) => {
         // Since setDomNodeChildrenFromArrayMapping always calls executeTemplateForArrayItem and then
@@ -140,7 +127,7 @@
             });
 
             var templateName = resolveTemplateName(template, arrayValue, arrayItemContext);
-            return executeTemplate(targetNode, "ignoreTargetNode", templateName, arrayItemContext, options);
+            return executeTemplate(targetNode, false, templateName, arrayItemContext, options);
         };
 
         // This will be called whenever setDomNodeChildrenFromArrayMapping has added nodes to targetNode
@@ -264,7 +251,7 @@
                         'exportDependencies': true
                     });
                 }
-                templateComputed = ko.renderTemplate(template, innerBindingContext, options, element);
+                templateComputed = renderTemplate(template, innerBindingContext, options, element);
             }
 
             // It only makes sense to have a single template computed per element (otherwise which one should have its output displayed?)
