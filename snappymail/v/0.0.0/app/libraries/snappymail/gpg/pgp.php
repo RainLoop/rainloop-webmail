@@ -333,9 +333,6 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 			}
 		}
 		if (!$fingerprint) {
-			if (!empty($result['errors'])) {
-				\SnappyMail\Log::error('GPG', \implode("\n\t", $result['errors']));
-			}
 			return false;
 		}
 
@@ -392,10 +389,6 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 					'fingerprint' => ''
 				];
 			}
-		}
-
-		if (!empty($result['errors'][0])) {
-			\SnappyMail\Log::warning('GPG', $result['errors'][0]);
 		}
 
 		return false;
@@ -809,12 +802,11 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 		$this->_debug('BEGIN DETECT MESSAGE KEY IDs');
 		$this->setInput($data);
 //		$_ENV['PINENTRY_USER_DATA'] = null;
-		$result = $this->exec(['--decrypt','--skip-verify']);
+		$result = $this->exec(['--decrypt','--skip-verify'], false);
 		$info = [
 			'ENC_TO' => [],
 //			'KEY_CONSIDERED' => [],
 //			'NO_SECKEY' => [],
-//			'errors' => $result['errors']
 		];
 		foreach ($result['status'] as $line) {
 			$tokens = \explode(' ', $line);
@@ -826,7 +818,7 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 		return $info['ENC_TO'];
 	}
 
-	private function exec(array $arguments) /*: array|false*/
+	private function exec(array $arguments, bool $throw = true) /*: array|false*/
 	{
 		if (\version_compare($this->version, '2.2.5', '<')) {
 			\SnappyMail\Log::error('GPG', "{$this->version} too old");
@@ -948,12 +940,7 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 			// Timeout after 5 seconds
 			if (5 < \microtime(1) - $start) {
 				$errors[] = 'timeout';
-				return [
-					'output' => '',
-					'status' => $status,
-					'errors' => $errors
-				];
-				exit;
+				throw new \RuntimeException(\implode("\n", $errors));
 			}
 
 			$inputStreams     = [];
@@ -1076,7 +1063,6 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 			// to use too much memory
 			if (\in_array($this->_input, $inputStreams, true) && \strlen($inputBuffer) < self::CHUNK_SIZE) {
 				$this->_debug('input stream is ready for reading');
-				$this->_debug('=> about to read ' . self::CHUNK_SIZE . ' bytes from input stream');
 				$chunk        = \fread($this->_input, self::CHUNK_SIZE);
 				$length       = \strlen($chunk);
 				$inputBuffer .= $chunk;
@@ -1099,7 +1085,6 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 			// read message (from PHP stream)
 			if (\in_array($this->_message, $inputStreams, true)) {
 				$this->_debug('message stream is ready for reading');
-				$this->_debug('=> about to read ' . self::CHUNK_SIZE . ' bytes from message stream');
 				$chunk          = \fread($this->_message, self::CHUNK_SIZE);
 				$length         = \strlen($chunk);
 				$messageBuffer .= $chunk;
@@ -1109,7 +1094,6 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 			// read output (from GPG)
 			if (\in_array($fdOutput, $inputStreams, true)) {
 				$this->_debug('output stream ready for reading');
-				$this->_debug('=> about to read ' . self::CHUNK_SIZE . ' bytes from output');
 				$chunk         = \fread($fdOutput, self::CHUNK_SIZE);
 				$length        = \strlen($chunk);
 				$outputBuffer .= $chunk;
@@ -1136,7 +1120,6 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 			// read error (from GPG)
 			if (\in_array($fdError, $inputStreams, true)) {
 				$this->_debug('error stream ready for reading');
-				$this->_debug('=> about to read ' . self::CHUNK_SIZE . ' bytes from error');
 				foreach ($this->_openPipes->readPipeLines(self::FD_ERROR) as $line) {
 					$errors[] = $line;
 					$this->_debug("\t{$line}");
@@ -1146,7 +1129,6 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 			// read status (from GPG)
 			if (\in_array($fdStatus, $inputStreams, true)) {
 				$this->_debug('status stream ready for reading');
-				$this->_debug('=> about to read ' . self::CHUNK_SIZE . ' bytes from status');
 				// pass lines to status handlers
 				foreach ($this->_openPipes->readPipeLines(self::FD_STATUS) as $line) {
 					// only pass lines beginning with magic prefix
@@ -1199,11 +1181,15 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 
 		$this->_debug('END PROCESSING');
 
-		$this->proc_close();
+		$exitCode = $this->proc_close();
 
 		$this->_message = null;
 		$this->_input   = null;
 		$this->_output  = null;
+
+		if ($throw && $exitCode && $errors) {
+			throw new \RuntimeException(\implode("\n", $errors), $exitCode);
+		}
 
 		return [
 			'output' => $outputBuffer,

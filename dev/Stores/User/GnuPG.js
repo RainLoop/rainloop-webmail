@@ -204,7 +204,7 @@ export const GnuPGUserStore = new class {
 	}
 
 	async verify(message) {
-		let data = message.pgpSigned(); // { bodyPartId: "1", sigPartId: "2", micAlg: "pgp-sha256" }
+		let data = message.pgpSigned(); // { partId: "1", sigPartId: "2", micAlg: "pgp-sha256" }
 		if (data) {
 			data = { ...data }; // clone
 //			const sender = message.from[0].email;

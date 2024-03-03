@@ -105,7 +105,7 @@ trait SMime
 		$SMIME->setPrivateKey($sPrivateKey, $oPassphrase);
 		$result = $SMIME->decrypt($sBody);
 
-		return $this->DefaultResponse($result ?: false);
+		return $this->DefaultResponse($result ? ['data' => $result] : false);
 	}
 
 	public function DoSMimeVerifyMessage() : array

@@ -66,8 +66,7 @@ Object.assign(ko.bindingHandlers, {
 		},
 		update: (element, fValueAccessor) => {
 			let value = ko.unwrap(fValueAccessor());
-			value = isFunction(value) ? value() : value;
-			errorTip(element, value);
+			errorTip(element, isFunction(value) ? value() : value);
 		}
 	},
 

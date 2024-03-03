@@ -108,19 +108,14 @@ export const
 		}
 
 		async verify(message) {
-			const signed = message.pgpSigned();
+			const signed = message.pgpSigned(),
+				sender = message.from[0].email;
 			if (signed) {
-				const sender = message.from[0].email,
-					gnupg = GnuPGUserStore.hasPublicKeyForEmails([sender]),
-					openpgp = OpenPGPUserStore.hasPublicKeyForEmails([sender]);
-				// Detached signature use GnuPG first, else we must download whole message
-				if (gnupg && signed.sigPartId) {
-					return GnuPGUserStore.verify(message);
-				}
-				if (openpgp) {
+				// OpenPGP only when inline, else we must download the whole message
+				if (!signed.sigPartId && OpenPGPUserStore.hasPublicKeyForEmails([sender])) {
 					return OpenPGPUserStore.verify(message);
 				}
-				if (gnupg) {
+				if (GnuPGUserStore.hasPublicKeyForEmails([sender])) {
 					return GnuPGUserStore.verify(message);
 				}
 				// Mailvelope can't

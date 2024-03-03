@@ -229,7 +229,7 @@ export const OpenPGPUserStore = new class {
 	 * https://docs.openpgpjs.org/#sign-and-verify-cleartext-messages
 	 */
 	async verify(message) {
-		const data = message.pgpSigned(), // { bodyPartId: "1", sigPartId: "2", micAlg: "pgp-sha256" }
+		const data = message.pgpSigned(), // { partId: "1", sigPartId: "2", micAlg: "pgp-sha256" }
 			publicKey = this.publicKeys().find(key => key.emails.includes(message.from[0].email));
 		if (data && publicKey) {
 			data.folder = message.folder;
