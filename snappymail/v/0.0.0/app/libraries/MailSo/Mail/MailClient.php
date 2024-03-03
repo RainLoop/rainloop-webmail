@@ -171,15 +171,22 @@ class MailClient
 		$aFetchResponse = $this->oImapClient->Fetch($aFetchItems, $iIndex, $bIndexIsUid);
 		if (\count($aFetchResponse)) {
 			$oMessage = Message::fromFetchResponse($sFolderName, $aFetchResponse[0], $oBodyStructure);
-			// S/MIME opaque signed. Verify it, so we have the raw mime body to show
-			if ($oMessage->smimeSigned && !$oMessage->smimeSigned['detached']) {
+			// S/MIME signed. Verify it, so we have the raw mime body to show
+			if ($oMessage->smimeSigned) try {
+				$bOpaque = !$oMessage->smimeSigned['detached'];
 				$sBody = $this->oImapClient->FetchMessagePart(
 					$oMessage->Uid,
 					$oMessage->smimeSigned['partId']
 				);
-				$result = (new \SnappyMail\SMime\OpenSSL(''))->verify($sBody, null, true);
-				$oMessage->smimeSigned['body'] = $result['body'];
-				$oMessage->smimeSigned['verified'] = true;
+				$result = (new \SnappyMail\SMime\OpenSSL(''))->verify($sBody, null, $bOpaque);
+				if ($result) {
+					if ($bOpaque) {
+						$oMessage->smimeSigned['body'] = $result['body'];
+					}
+					$oMessage->smimeSigned['verified'] = $result['success'];
+				}
+			} catch (\Throwable $e) {
+				$this->logException($e);
 			}
 		}
 

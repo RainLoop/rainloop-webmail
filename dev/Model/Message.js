@@ -201,7 +201,7 @@ export class MessageModel extends AbstractModel {
 
 		this.smimeSigned.subscribe(value => {
 			value?.body && MimeToMessage(value.body, this);
-			value?.body && this.smimeVerified(value.verified);
+			'verified' in value && this.smimeVerified(value.verified);
 		});
 	}
 
