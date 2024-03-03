@@ -171,9 +171,7 @@
             var oldComputed = ko.utils.domData.get(element, templateComputedDomDataKey);
             oldComputed?.['dispose']?.();
             ko.utils.domData.set(element, templateComputedDomDataKey, (newComputed && (!newComputed.isActive || newComputed.isActive())) ? newComputed : undefined);
-        },
-
-        cleanContainerDomDataKey = ko.utils.domData.nextKey();
+        };
 
     ko.bindingHandlers['template'] = {
         'init': (element, valueAccessor) => {
@@ -182,25 +180,6 @@
             if (typeof bindingValue == "string" || 'name' in bindingValue) {
                 // It's a named template - clear the element
                 ko.virtualElements.emptyNode(element);
-            } else if ('nodes' in bindingValue) {
-                // We've been given an array of DOM nodes. Save them as the template source.
-                // There is no known use case for the node array being an observable array (if the output
-                // varies, put that behavior *into* your template - that's what templates are for), and
-                // the implementation would be a mess, so assert that it's not observable.
-                var nodes = bindingValue['nodes'] || [];
-                if (ko.isObservable(nodes)) {
-                    throw new Error('The "nodes" option must be a plain, non-observable array.');
-                }
-
-                // If the nodes are already attached to a KO-generated container, we reuse that container without moving the
-                // elements to a new one (we check only the first node, as the nodes are always moved together)
-                let container = nodes[0]?.parentNode;
-                if (!container || !ko.utils.domData.get(container, cleanContainerDomDataKey)) {
-                    container = ko.utils.moveCleanedNodesToContainerElement(nodes);
-                    ko.utils.domData.set(container, cleanContainerDomDataKey, true);
-                }
-
-                new ko.templateSources.anonymousTemplate(element).nodes(container);
             } else {
                 // It's an anonymous template - store the element contents, then clear the element
                 var templateNodes = ko.virtualElements.childNodes(element);
@@ -225,18 +204,10 @@
                 options = {};
             } else {
                 template = 'name' in options ? options['name'] : element;
-
-                // Support "if"/"ifnot" conditions
-                if ('if' in options)
-                    shouldDisplay = ko.utils.unwrapObservable(options['if']);
-                if (shouldDisplay && 'ifnot' in options)
-                    shouldDisplay = !ko.utils.unwrapObservable(options['ifnot']);
-
-                // Don't show anything if an empty name is given (see #2446)
-                if (shouldDisplay && !template) {
-                    shouldDisplay = false;
-                }
             }
+
+            // Don't show anything if an empty name is given (see #2446)
+            shouldDisplay = !!template;
 
             if ('foreach' in options) {
                 // Render once for each data point (treating data set as empty if shouldDisplay==false)
