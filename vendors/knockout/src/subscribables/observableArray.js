@@ -1,7 +1,7 @@
 ko['observableArray'] = initialValues => {
     initialValues = initialValues || [];
 
-    if (typeof initialValues != 'object' || !('length' in initialValues))
+    if (!Array.isArray(initialValues))
         throw new Error("The argument passed when initializing an observable array must be an array, or null, or undefined.");
 
     return Object.setPrototypeOf(ko.observable(initialValues), ko['observableArray']['fn']).extend({'trackArrayChanges':true});
