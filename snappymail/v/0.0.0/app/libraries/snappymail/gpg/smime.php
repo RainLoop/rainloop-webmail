@@ -237,14 +237,18 @@ class SMIME extends Base
 		return false;
 	}
 
-	protected function _exportKey($keyId, bool $private = false)
+	/**
+	 * Exports a public or private key
+	 */
+	public function export(string $fingerprint, ?SensitiveString $passphrase = null) /*: string|false*/
 	{
-		$keys = $this->keyInfo($keyId, $private);
+		$private = null !== $passphrase;
+		$keys = $this->keyInfo($fingerprint, $private);
 		if (!$keys) {
-			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $keyId);
+			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $fingerprint);
 		}
-		if ($private && $this->pinentries) {
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->pinentries);
+		if ($private) {
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode([$fingerprint => \strval($passphrase)]);
 		}
 		$result = $this->exec([
 			$private ? '--export-secret-key-p12' : '--export',
@@ -252,19 +256,6 @@ class SMIME extends Base
 			\escapeshellarg($keys[0]['subkeys'][0]['fingerprint']),
 		]);
 		return $result['output'];
-	}
-
-	/**
-	 * Exports a public or private key
-	 */
-	public function export(string $fingerprint, ?SensitiveString $passphrase = null) /*: string|false*/
-	{
-		if ($passphrase) {
-			return $this
-				->addPinentry($fingerprint, $passphrase)
-				->_exportKey($fingerprint, true);
-		}
-		return $this->_exportKey($fingerprint);
 	}
 
 	protected function _importKey($input) /*: array|false*/
@@ -666,7 +657,7 @@ class SMIME extends Base
 		return $info['ENC_TO'];
 	}
 
-	private function exec(array $arguments) /*: array|false*/
+	private function exec(array $arguments, bool $throw = true) /*: array|false*/
 	{
 		if (\version_compare($this->version, '2.2.5', '<')) {
 			\SnappyMail\Log::error('GPG', "{$this->version} too old");

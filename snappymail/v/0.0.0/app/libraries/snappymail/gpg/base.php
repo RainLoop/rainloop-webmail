@@ -362,9 +362,10 @@ abstract class Base
 		$result = $this->exec([
 			'--dry-run',
 			'--passwd',
-			$fingerprint
+			$passphrase
 		]);
-		*/
+		 */
+//		$this->export($keyId, $passphrase);
 		$this->pinentries[$keyId] = $passphrase;
 //		$this->pinentries[\substr($keyId, -16)] = $passphrase;
 		return $this;

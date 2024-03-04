@@ -238,14 +238,19 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 		return false;
 	}
 
-	protected function _exportKey($keyId, bool $private = false)
+	/**
+	 * Exports a public or private key
+	 */
+	public function export(string $fingerprint, ?SensitiveString $passphrase = null) /*: string|false*/
 	{
-		$keys = $this->keyInfo($keyId, $private);
+//		\SnappyMail\Log::debug('GnuPG', "export({$fingerprint}, {$passphrase})");
+		$private = null !== $passphrase;
+		$keys = $this->keyInfo($fingerprint, $private);
 		if (!$keys) {
-			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $keyId);
+			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $fingerprint);
 		}
-		if ($private && $this->pinentries) {
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode(\array_map('strval', $this->pinentries));
+		if ($private) {
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode([$fingerprint => \strval($passphrase)]);
 		}
 		$result = $this->exec([
 			$private ? '--export-secret-keys' : '--export',
@@ -253,20 +258,6 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 			\escapeshellarg($keys[0]['subkeys'][0]['fingerprint']),
 		]);
 		return $result['output'];
-	}
-
-	/**
-	 * Exports a public or private key
-	 */
-	public function export(string $fingerprint, ?SensitiveString $passphrase = null) /*: string|false*/
-	{
-//		\SnappyMail\Log::debug('GnuPG', "export({$fingerprint}, {$passphrase})");
-		if (null !== $passphrase) {
-			return $this
-				->addPinentry($fingerprint, $passphrase)
-				->_exportKey($fingerprint, true);
-		}
-		return $this->_exportKey($fingerprint);
 	}
 
 	/**
@@ -1121,8 +1112,11 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 			if (\in_array($fdError, $inputStreams, true)) {
 				$this->_debug('error stream ready for reading');
 				foreach ($this->_openPipes->readPipeLines(self::FD_ERROR) as $line) {
-					$errors[] = $line;
 					$this->_debug("\t{$line}");
+					$errors[] = \preg_replace('/^gpg: /', '', $line);
+				}
+				if ($throw && $errors) {
+					break;
 				}
 			}
 
@@ -1188,7 +1182,7 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 		$this->_output  = null;
 
 		if ($throw && $exitCode && $errors) {
-			throw new \RuntimeException(\implode("\n", $errors), $exitCode);
+			throw new \RuntimeException(\implode(".\n", $errors), $exitCode);
 		}
 
 		return [
