@@ -3,7 +3,7 @@
 const
 	qUri = path => doc.location.pathname.replace(/\/+$/,'') + '/?/' + path,
 	eId = id => doc.getElementById('rl-'+id),
-	admin = '1' == eId('app')?.dataset?.admin,
+	admin = '1' == eId('app').dataset.admin,
 
 	toggle = div => {
 		eId('loading').hidden = true;
@@ -69,7 +69,7 @@ window.rl = {
 			headers: {}
 		}, init);
 		let asJSON = 1,
-			XToken = RL_APP_DATA.System?.token,
+			XToken = (RL_APP_DATA.System || {}).token,
 			object = {};
 		if (postData) {
 			init.method = 'POST';
