@@ -101,7 +101,6 @@ abstract class Integrity
 			'mbstring' => extension_loaded('mbstring'),
 			'Zlib'     => extension_loaded('zlib'),
 			// enabled by default:
-			'ctype'    => extension_loaded('ctype'),
 			'json'     => function_exists('json_decode'),
 			'libxml'   => function_exists('libxml_use_internal_errors'),
 			'dom'      => class_exists('DOMDocument'),
