@@ -104,8 +104,16 @@ trait SMime
 		$SMIME->setCertificate($sCertificate);
 		$SMIME->setPrivateKey($sPrivateKey, $oPassphrase);
 		$result = $SMIME->decrypt($sBody);
+		if ($result) {
+			$result = ['data' => $result];
+			if (\str_contains($result['data'], 'multipart/signed')) {
+				$result['signed'] = [
+					'success' => !empty($SMIME->verify($result['data'], null, true)['success'])
+				];
+			}
+		}
 
-		return $this->DefaultResponse($result ? ['data' => $result] : false);
+		return $this->DefaultResponse($result ?: false);
 	}
 
 	public function DoSMimeVerifyMessage() : array
