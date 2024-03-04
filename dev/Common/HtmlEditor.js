@@ -26,10 +26,8 @@ export class HtmlEditor {
 		if (element) {
 			onReady = onReady ? [onReady] : [];
 			this.onReady = fn => onReady.push(fn);
-			// TODO: make 'which' user configurable
 			const which = SettingsUserStore.editorWysiwyg(),
 				wysiwyg = WYSIWYGS.find(item => which == item.name) || WYSIWYGS.find(item => 'Squire' == item.name);
-//			const wysiwyg = WYSIWYGS.find(item => 'Squire' == item.name);
 			wysiwyg.construct(this, element, editor => setTimeout(()=>{
 				this.editor = editor;
 				editor.on('blur', () => this.blurTrigger());
