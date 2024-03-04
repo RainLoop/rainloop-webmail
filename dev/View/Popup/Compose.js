@@ -1561,12 +1561,13 @@ export class ComposePopupView extends AbstractViewPopup {
 				}
 				if ('S/MIME' == signOptions[i][0]) {
 					// TODO: sign in PHP fails
-					params.signCertificate = identity.smimeCertificate();
-					params.signPrivateKey = identity.smimeKey();
+					params.sign = 'S/MIME';
+//					params.signCertificate = identity.smimeCertificate();
+//					params.signPrivateKey = identity.smimeKey();
 					if (identity.smimeKeyEncrypted()) {
 						const pass = await Passphrases.ask(identity,
 							i18n('SMIME/PRIVATE_KEY_OF', {EMAIL: identity.email()}),
-							'CRYPTO/DECRYPT'
+							'CRYPTO/SIGN'
 						);
 						if (null != pass) {
 							params.signPassphrase = pass.password;

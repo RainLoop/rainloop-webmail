@@ -69,7 +69,7 @@ export const GnuPGUserStore = new class {
 							}
 						};
 						if (isPrivate) {
-							key.password = async (btnTxt = 'CRYPTO/SIGN') => {
+							key.password = async btnTxt => {
 								const pass = await Passphrases.ask(key,
 									'GnuPG key<br>' + key.id + ' ' + key.emails[0],
 									btnTxt
@@ -228,7 +228,7 @@ export const GnuPGUserStore = new class {
 	}
 
 	async sign(privateKey) {
-		return await privateKey.password();
+		return await privateKey.password('CRYPTO/SIGN');
 	}
 
 };

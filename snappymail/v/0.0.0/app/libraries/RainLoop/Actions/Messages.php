@@ -930,14 +930,15 @@ trait Messages
 			$oMessage->DoesNotAddDefaultXMailer();
 		}
 
-		$sFrom = $this->GetActionParam('from', '');
-		$oMessage->SetFrom(\MailSo\Mime\Email::Parse($sFrom));
+		$oMessage->SetFrom(\MailSo\Mime\Email::Parse($this->GetActionParam('from', '')));
+		$oFrom = $oMessage->GetFrom();
+
 /*
-		$oFromIdentity = $this->GetIdentityByID($oAccount, $this->GetActionParam('identityID', ''));
-		if ($oFromIdentity)
+		$oIdentity = $this->GetIdentityByID($oAccount, $this->GetActionParam('identityID', ''));
+		if ($oIdentity)
 		{
 			$oMessage->SetFrom(new \MailSo\Mime\Email(
-				$oFromIdentity->Email(), $oFromIdentity->Name()));
+				$oIdentity->Email(), $oIdentity->Name()));
 			if ($oAccount->Domain()->OutSetSender()) {
 				$oMessage->SetSender(\MailSo\Mime\Email::Parse($oAccount->Email()));
 			}
@@ -947,14 +948,13 @@ trait Messages
 			$oMessage->SetFrom(\MailSo\Mime\Email::Parse($oAccount->Email()));
 		}
 */
-		$oFrom = $oMessage->GetFrom();
 		$oMessage->RegenerateMessageId($oFrom ? $oFrom->GetDomain() : '');
 
 		$oMessage->SetReplyTo(new \MailSo\Mime\EmailCollection($this->GetActionParam('replyTo', '')));
 
 		if (!empty($this->GetActionParam('readReceiptRequest', 0))) {
 			// Read Receipts Reference Main Account Email, Not Identities #147
-//			$oMessage->SetReadReceipt(($oFromIdentity ?: $oAccount)->Email());
+//			$oMessage->SetReadReceipt(($oIdentity ?: $oAccount)->Email());
 			$oMessage->SetReadReceipt($oFrom->GetEmail());
 		}
 
@@ -1169,6 +1169,18 @@ trait Messages
 		} else {
 			$sCertificate = $this->GetActionParam('signCertificate', '');
 			$sPrivateKey = $this->GetActionParam('signPrivateKey', '');
+			if ('S/MIME' === $this->GetActionParam('sign', '')) {
+				$sID = $this->GetActionParam('identityID', '');
+				foreach ($this->GetIdentities($oAccount) as $oIdentity) {
+					if ($oIdentity && $oIdentity->smimeCertificate && $oIdentity->smimeKey
+					 && ($oIdentity->Id() === $sID || $oIdentity->Email() === $oFrom->GetEmail())
+					) {
+						$sCertificate = $oIdentity->smimeCertificate;
+						$sPrivateKey = $oIdentity->smimeKey;
+						break;
+					}
+				}
+			}
 			if ($sCertificate && $sPrivateKey) {
 				$oBody = $oMessage->GetRootPart();
 
