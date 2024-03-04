@@ -63,11 +63,7 @@ export class UserSettingsSecurity extends AbstractViewSettings {
 
 	importToOpenPGP() {
 		OpenPGPUserStore.isSupported() && Remote.request('GetPGPKeys',
-			(iError, oData) => {
-				if (!iError && oData.Result) {
-					oData.Result.forEach(key => OpenPGPUserStore.importKey(key));
-				}
-			}
+			(iError, oData) => !iError && oData.Result && OpenPGPUserStore.importKeys(oData.Result)
 		);
 	}
 

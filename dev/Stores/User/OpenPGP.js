@@ -77,21 +77,26 @@ const
 class OpenPgpKeyModel {
 	constructor(armor, key) {
 		this.key = key;
-		const aEmails = [];
-		if (key.users) {
-			key.users.forEach(user => user.userID.email && aEmails.push(user.userID.email));
-		}
 		this.id = key.getKeyID().toHex().toUpperCase();
 		this.fingerprint = key.getFingerprint();
 		this.can_encrypt = !!key.getEncryptionKey();
 		this.can_sign = !!key.getSigningKey();
-		this.emails = aEmails;
+		this.emails = key.users.map(user => user.userID.email).filter(email => email);
 		this.armor = armor;
 		this.askDelete = ko.observable(false);
 		this.openForDeletion = ko.observable(null).askDeleteHelper();
 //		key.getUserIDs()
 //		key.getPrimaryUser()
 	}
+
+/*
+	get id() { return this.key.getKeyID().toHex().toUpperCase(); }
+	get fingerprint() { return this.key.getFingerprint(); }
+	get can_encrypt() { return !!this.key.getEncryptionKey(); }
+	get can_sign() { return !!this.key.getSigningKey(); }
+	get emails() { return this.key.users.map(user => user.userID.email).filter(email => email); }
+	get armor() { return this.key.armor(); }
+*/
 
 	view() {
 		showScreenPopup(OpenPgpKeyPopupView, [this]);
@@ -142,18 +147,29 @@ export const OpenPGPUserStore = new class {
 	}
 
 	importKey(armoredKey) {
-		window.openpgp && openpgp.readKey({armoredKey:armoredKey}).then(key => {
-			if (!key.err) {
-				key = new OpenPgpKeyModel(armoredKey, key);
-				const isPrivate = key.key.isPrivate(),
-					keys = isPrivate ? this.privateKeys : this.publicKeys;
-				if (!keys.find(entry => entry.fingerprint == key.fingerprint)) {
-					keys.push(key);
-					keys(sort(keys));
-					storeOpenPgpKeys(keys, isPrivate ? privateKeysItem : publicKeysItem);
+		this.importKeys([armoredKey]);
+	}
+
+	async importKeys(keys) {
+		if (window.openpgp) {
+			const privateKeys = this.privateKeys(),
+				publicKeys = this.publicKeys();
+			for (const armoredKey of keys) try {
+				let key = await openpgp.readKey({armoredKey:armoredKey});
+				if (!key.err) {
+					key = new OpenPgpKeyModel(armoredKey, key);
+					const keys = key.key.isPrivate() ? privateKeys : publicKeys;
+					keys.find(entry => entry.fingerprint == key.fingerprint)
+					|| keys.push(key);
 				}
+			} catch (e) {
+				console.error(e, armoredKey);
 			}
-		});
+			this.privateKeys(sort(privateKeys));
+			this.publicKeys(sort(publicKeys));
+			storeOpenPgpKeys(privateKeys, privateKeysItem);
+			storeOpenPgpKeys(publicKeys, publicKeysItem);
+		}
 	}
 
 	/**
