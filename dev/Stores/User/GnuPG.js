@@ -97,6 +97,7 @@ export const GnuPGUserStore = new class {
 									}
 								} catch (e) {
 									Passphrases.delete(key);
+									alert(e.message);
 								}
 							}
 							return key.armor;

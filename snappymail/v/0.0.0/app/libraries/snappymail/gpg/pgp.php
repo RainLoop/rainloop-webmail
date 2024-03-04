@@ -1114,9 +1114,9 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 				foreach ($this->_openPipes->readPipeLines(self::FD_ERROR) as $line) {
 					$this->_debug("\t{$line}");
 					$errors[] = \preg_replace('/^gpg: /', '', $line);
-				}
-				if ($throw && $errors) {
-					break;
+					if ($throw && (\str_contains($line, 'error') || \str_contains($line, 'failed'))) {
+						break 2;
+					}
 				}
 			}
 
