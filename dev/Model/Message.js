@@ -120,12 +120,10 @@ export class MessageModel extends AbstractModel {
 			encrypted: false,
 
 			pgpSigned: null,
-			pgpVerified: null,
 			pgpEncrypted: null,
 			pgpDecrypted: false,
 
 			smimeSigned: null,
-			smimeVerified: null,
 			smimeEncrypted: null,
 			smimeDecrypted: false,
 
@@ -199,10 +197,9 @@ export class MessageModel extends AbstractModel {
 			}
 		});
 
-		this.smimeSigned.subscribe(value => {
-			value?.body && MimeToMessage(value.body, this);
-			'verified' in value && this.smimeVerified(value.verified);
-		});
+		this.smimeSigned.subscribe(value =>
+			value?.body && MimeToMessage(value.body, this)
+		);
 	}
 
 	get requestHash() {

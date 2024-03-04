@@ -329,7 +329,7 @@ trait Pgp
 					'text' => \preg_replace('/\\r?\\n/su', "\r\n",
 						$sBodyMime . $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sPartId.']')
 					),
-					'signature' => preg_replace('/[^\x00-\x7F]/', '',
+					'signature' => \preg_replace('/[^\x00-\x7F]/', '',
 						$oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sSigPartId.']')
 					)
 				];

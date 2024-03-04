@@ -300,10 +300,10 @@
 							</div>
 						</div>
 						<div data-bind="visible: message().pgpSigned()">
-							<div class="crypto-control signed" data-bind="css: {success: message().pgpVerified()?.success, error: message().pgpVerified() && !message().pgpVerified().success}">
+							<div class="crypto-control signed" data-bind="css: {success: true === message().pgpSigned()?.success, error: false === message().pgpSigned()?.success}">
 								<span data-icon="✍" data-i18n="OPENPGP/SIGNED_MESSAGE"></span>
 								<button class="btn" data-bind="visible: pgpSupported, click: pgpVerify" data-i18n="CRYPTO/VERIFY"></button>
-								<div data-icon="⚠" data-bind="visible: message().pgpVerified()?.error, text: message().pgpVerified()?.error"></div>
+								<div data-icon="⚠" data-bind="visible: message().pgpSigned()?.error, text: message().pgpSigned()?.error"></div>
 							</div>
 						</div>
 
@@ -315,7 +315,7 @@
 							</div>
 						</div>
 						<div data-bind="visible: message().smimeSigned()">
-							<div class="crypto-control signed" data-bind="css: {success: true === message().smimeVerified(), error: false === message().smimeVerified()}">
+							<div class="crypto-control signed" data-bind="css: {success: true === message().smimeSigned()?.success, error: false === message().smimeSigned()?.success}">
 								<span data-icon="✍" data-i18n="SMIME/SIGNED_MESSAGE"></span>
 								<button class="btn" data-bind="click: smimeVerify" data-i18n="CRYPTO/VERIFY"></button>
 							</div>

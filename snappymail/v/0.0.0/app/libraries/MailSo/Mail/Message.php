@@ -66,7 +66,7 @@ class Message implements \JsonSerializable
 
 	private ?array $DraftInfo = null;
 
-	private ?array $pgpSigned = null;
+	public ?array $pgpSigned = null;
 	private ?array $pgpEncrypted = null;
 
 	public ?array $smimeSigned = null;

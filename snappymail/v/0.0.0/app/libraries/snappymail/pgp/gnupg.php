@@ -15,7 +15,7 @@ abstract class GnuPG
 		return GPG::isSupported();
 	}
 
-	private static $instance;
+	private static $instance = null;
 	public static function getInstance(string $homedir) : ?PGPInterface
 	{
 		if (!static::$instance) {

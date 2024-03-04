@@ -583,8 +583,7 @@ export class MailMessageView extends AbstractViewRight {
 				MimeToMessage(result.data, oMessage);
 				oMessage.html() ? oMessage.viewHtml() : oMessage.viewPlain();
 				if (result.signatures?.length) {
-					oMessage.pgpSigned(true);
-					oMessage.pgpVerified({
+					oMessage.pgpSigned({
 						signatures: result.signatures,
 						success: !!result.signatures.length
 					});
@@ -603,7 +602,7 @@ export class MailMessageView extends AbstractViewRight {
 		const oMessage = currentMessage()/*, ctrl = event.target.closest('.openpgp-control')*/;
 		PgpUserStore.verify(oMessage).then(result => {
 			if (result) {
-				oMessage.pgpVerified(result);
+				oMessage.pgpSigned(result);
 			} else {
 				alert('Verification failed or no valid public key found');
 			}
@@ -668,22 +667,22 @@ export class MailMessageView extends AbstractViewRight {
 	}
 
 	smimeVerify(/*self, event*/) {
-		const message = currentMessage();
-		let data = message.smimeSigned(); // { partId: "1", micAlg: "pgp-sha256" }
+		const message = currentMessage(),
+			data = message.smimeSigned(); // { partId: "1", micAlg: "pgp-sha256" }
 		if (data) {
-			data = { ...data }; // clone
-			data.folder = message.folder;
-			data.uid = message.uid;
-			data.bodyPart = data.bodyPart?.raw;
-			data.sigPart = data.sigPart?.bodyRaw;
-			Remote.post('SMimeVerifyMessage', null, data).then(response => {
+			const params = { ...data }; // clone
+			params.folder = message.folder;
+			params.uid = message.uid;
+			params.bodyPart = data.bodyPart?.raw;
+			params.sigPart = data.sigPart?.bodyRaw;
+			Remote.post('SMimeVerifyMessage', null, params).then(response => {
 				if (response?.Result) {
 					if (response.Result.body) {
 						MimeToMessage(response.Result.body, message);
 						message.html() ? message.viewHtml() : message.viewPlain();
-						response.Result.body = null;
 					}
-					message.smimeVerified(response.Result.success);
+					data.success = response.Result.success;
+					message.smimeSigned(data);
 				}
 			});
 		}

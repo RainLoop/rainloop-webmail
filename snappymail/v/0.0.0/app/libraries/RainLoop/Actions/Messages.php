@@ -7,6 +7,7 @@ use RainLoop\Exceptions\ClientException;
 use RainLoop\Model\Account;
 use RainLoop\Notifications;
 use MailSo\Imap\SequenceSet;
+use MailSo\Imap\Enumerations\FetchType;
 use MailSo\Imap\Enumerations\MessageFlag;
 use MailSo\Mime\Part as MimePart;
 use MailSo\Mime\Enumerations\Header as MimeEnumHeader;
@@ -455,6 +456,63 @@ trait Messages
 		try
 		{
 			$oMessage = $this->MailClient()->Message($sFolder, $iUid, true, $this->Cacher($oAccount));
+
+			// S/MIME signed. Verify it, so we have the raw mime body to show
+			if ($oMessage->smimeSigned) try {
+				$bOpaque = !$oMessage->smimeSigned['detached'];
+				$sBody = $this->ImapClient()->FetchMessagePart(
+					$oMessage->Uid,
+					$oMessage->smimeSigned['partId']
+				);
+				$result = (new \SnappyMail\SMime\OpenSSL(''))->verify($sBody, null, $bOpaque);
+				if ($result) {
+					if ($bOpaque) {
+						$oMessage->smimeSigned['body'] = $result['body'];
+					}
+					$oMessage->smimeSigned['success'] = $result['success'];
+				}
+			} catch (\Throwable $e) {
+				$this->logException($e);
+			}
+
+			if ($oMessage->pgpSigned) try {
+				$GPG = $this->GnuPG();
+				if ($GPG) {
+					if ($oMessage->pgpSigned['sigPartId']) {
+						$sPartId = $oMessage->pgpSigned['partId'];
+						$sSigPartId = $oMessage->pgpSigned['sigPartId'];
+						$aParts = [
+							FetchType::BODY_PEEK.'['.$sPartId.']',
+							// An empty section specification refers to the entire message, including the header.
+							// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
+							FetchType::BODY_PEEK.'['.$sPartId.'.MIME]',
+							FetchType::BODY_PEEK.'['.$sSigPartId.']'
+						];
+						$oFetchResponse = $this->ImapClient()->Fetch($aParts, $oMessage->Uid, true)[0];
+						$sBodyMime = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sPartId.'.MIME]');
+						$info = $this->GnuPG()->verify(
+							\preg_replace('/\\r?\\n/su', "\r\n",
+								$sBodyMime . $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sPartId.']')
+							),
+							\preg_replace('/[^\x00-\x7F]/', '',
+								$oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sSigPartId.']')
+							)
+						);
+					} else {
+						// clearsigned text
+						$info = $this->GnuPG()->verify($oMessage->sPlain, '');
+					}
+					if (!empty($info[0]) && 0 == $info[0]['status']) {
+						$info = $info[0];
+						$oMessage->pgpSigned = [
+							'fingerprint' => $info['fingerprint'],
+							'success' => true
+						];
+					}
+				}
+			} catch (\Throwable $e) {
+				$this->logException($e);
+			}
 		}
 		catch (\Throwable $oException)
 		{
