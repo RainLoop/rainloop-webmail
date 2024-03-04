@@ -36,7 +36,7 @@ ko.computed = (evaluatorFunctionOrOptions, options) => {
     function computedObservable() {
         if (arguments.length > 0) {
             if (typeof writeFunction !== "function") {
-                throw new Error("Cannot write a value to a ko.computed unless you specify a 'write' option. If you wish to read the current value, don't pass any parameters.");
+                throw Error("Cannot write a value to a ko.computed unless you specify a 'write' option. If you wish to read the current value, don't pass any parameters.");
             }
             // Writing a value
             writeFunction(...arguments);

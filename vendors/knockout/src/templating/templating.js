@@ -12,14 +12,14 @@
                 templateDocument = templateDocument || document;
                 var elem = templateDocument.getElementById(template);
                 if (!elem)
-                    throw new Error("Cannot find template with ID " + template);
+                    throw Error("Cannot find template with ID " + template);
                 return new ko.templateSources.domElement(elem);
             }
             if ([1,8].includes(template.nodeType)) {
                 // Anonymous template
                 return new ko.templateSources.anonymousTemplate(template);
             }
-            throw new Error("Unknown template type: " + template);
+            throw Error("Unknown template type: " + template);
         },
 
         invokeForEachNodeInContinuousRange = (firstNode, lastNode, action) => {
@@ -68,7 +68,7 @@
 
             // Loosely check result is an array of DOM nodes
             if (!Array.isArray(renderedNodesArray) || (renderedNodesArray.length > 0 && typeof renderedNodesArray[0].nodeType != "number"))
-                throw new Error("Template engine must return an array of DOM nodes");
+                throw Error("Template engine must return an array of DOM nodes");
 
             if (replaceChildren) {
                 ko.virtualElements.setDomNodeChildren(targetNodeOrNodeArray, renderedNodesArray);
@@ -187,7 +187,7 @@
                     let container = ko.utils.moveCleanedNodesToContainerElement(templateNodes); // This also removes the nodes from their current parent
                     new ko.templateSources.anonymousTemplate(element).nodes(container);
                 } else {
-                    throw new Error("Anonymous template defined, but no template content was provided");
+                    throw Error("Anonymous template defined, but no template content was provided");
                 }
             }
             return { 'controlsDescendantBindings': true };

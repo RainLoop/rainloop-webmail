@@ -33,7 +33,7 @@
                 }
 
                 if (!componentName) {
-                    throw new Error('No component name specified');
+                    throw Error('No component name specified');
                 }
 
                 var asyncContext = ko.bindingEvent.startPossiblyAsyncContentBinding(element, bindingContext);
@@ -47,12 +47,12 @@
 
                         // Instantiate and bind new component. Implicitly this cleans any old DOM nodes.
                         if (!componentDefinition) {
-                            throw new Error('Unknown component \'' + componentName + '\'');
+                            throw Error('Unknown component \'' + componentName + '\'');
                         }
                         // cloneTemplateIntoElement
                         var template = componentDefinition['template'];
                         if (!template) {
-                            throw new Error('Component \'' + componentName + '\' has no template');
+                            throw Error('Component \'' + componentName + '\' has no template');
                         }
                         ko.virtualElements.setDomNodeChildren(element, ko.utils.cloneNodes(template));
 

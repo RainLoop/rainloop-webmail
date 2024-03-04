@@ -187,7 +187,7 @@ ko.bindingEvent = {
                 } else if (bindingInfo.asyncContext === undefined && bindingInfo.eventSubscribable?.hasSubscriptionsForEvent(ko.bindingEvent.descendantsComplete)) {
                     // It's currently an error to register a descendantsComplete handler for a node that was never registered as completing asynchronously.
                     // That's because without the asyncContext, we don't have a way to know that all descendants have completed.
-                    throw new Error("descendantsComplete event not supported for bindings on this node");
+                    throw Error("descendantsComplete event not supported for bindings on this node");
                 }
             }
         }
@@ -365,7 +365,7 @@ function applyBindingsToNodeInternal(node, sourceBindings, bindingContext) {
 
             // COMMENT_NODE
             if (node.nodeType === 8 && !ko.virtualElements.allowedBindings[bindingKey]) {
-                throw new Error("The binding '" + bindingKey + "' cannot be used with comment nodes");
+                throw Error("The binding '" + bindingKey + "' cannot be used with comment nodes");
             }
 
             try {
@@ -377,7 +377,7 @@ function applyBindingsToNodeInternal(node, sourceBindings, bindingContext) {
                         // If this binding handler claims to control descendant bindings, make a note of this
                         if (initResult && initResult['controlsDescendantBindings']) {
                             if (bindingHandlerThatControlsDescendantBindings !== undefined)
-                                throw new Error("Multiple bindings (" + bindingHandlerThatControlsDescendantBindings + " and " + bindingKey + ") are trying to control descendant bindings of the same element. You cannot use these bindings together on the same element.");
+                                throw Error("Multiple bindings (" + bindingHandlerThatControlsDescendantBindings + " and " + bindingKey + ") are trying to control descendant bindings of the same element. You cannot use these bindings together on the same element.");
                             bindingHandlerThatControlsDescendantBindings = bindingKey;
                         }
                     });

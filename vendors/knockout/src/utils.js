@@ -84,7 +84,7 @@ ko.utils = {
 
     triggerEvent: (element, eventType) => {
         if (!element?.nodeType)
-            throw new Error("element must be a DOM node when calling triggerEvent");
+            throw Error("element must be a DOM node when calling triggerEvent");
 
         element.dispatchEvent(new Event(eventType));
     },

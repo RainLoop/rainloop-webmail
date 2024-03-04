@@ -19,7 +19,7 @@ ko.dependencyDetection = {
     registerDependency: subscribable => {
         if (currentFrame) {
             if (!ko.isSubscribable(subscribable))
-                throw new Error("Only subscribable things can act as dependencies");
+                throw Error("Only subscribable things can act as dependencies");
             currentFrame.callback.call(currentFrame.callbackTarget, subscribable,
                 subscribable._id || (subscribable._id = ++lastId));
         }

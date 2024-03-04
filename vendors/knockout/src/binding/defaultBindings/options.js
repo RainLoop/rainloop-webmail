@@ -2,7 +2,7 @@ var captionPlaceholder = {};
 ko.bindingHandlers['options'] = {
     'init': element => {
         if (!element.matches("SELECT"))
-            throw new Error("options binding applies only to SELECT elements");
+            throw Error("options binding applies only to SELECT elements");
 
         // Remove all existing <option>s.
         let l = element.length;

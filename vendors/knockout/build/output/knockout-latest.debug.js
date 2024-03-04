@@ -110,7 +110,7 @@ ko.utils = {
 
     triggerEvent: (element, eventType) => {
         if (!element?.nodeType)
-            throw new Error("element must be a DOM node when calling triggerEvent");
+            throw Error("element must be a DOM node when calling triggerEvent");
 
         element.dispatchEvent(new Event(eventType));
     },
@@ -197,7 +197,7 @@ ko.utils.domNodeDisposal = (() => {
     return {
         'addDisposeCallback' : (node, callback) => {
             if (typeof callback != "function")
-                throw new Error("Callback must be a function");
+                throw Error("Callback must be a function");
             getDisposeCallbacksCollection(node, 1).add(callback);
         },
 
@@ -482,7 +482,7 @@ ko.dependencyDetection = {
     registerDependency: subscribable => {
         if (currentFrame) {
             if (!ko.isSubscribable(subscribable))
-                throw new Error("Only subscribable things can act as dependencies");
+                throw Error("Only subscribable things can act as dependencies");
             currentFrame.callback.call(currentFrame.callbackTarget, subscribable,
                 subscribable._id || (subscribable._id = ++lastId));
         }
@@ -585,7 +585,7 @@ ko['observableArray'] = initialValues => {
     initialValues = initialValues || [];
 
     if (!Array.isArray(initialValues))
-        throw new Error("The argument passed when initializing an observable array must be an array, or null, or undefined.");
+        throw Error("The argument passed when initializing an observable array must be an array, or null, or undefined.");
 
     return Object.setPrototypeOf(ko.observable(initialValues), ko['observableArray']['fn']).extend({'trackArrayChanges':true});
 };
@@ -831,7 +831,7 @@ ko.computed = (evaluatorFunctionOrOptions, options) => {
     function computedObservable() {
         if (arguments.length > 0) {
             if (typeof writeFunction !== "function") {
-                throw new Error("Cannot write a value to a ko.computed unless you specify a 'write' option. If you wish to read the current value, don't pass any parameters.");
+                throw Error("Cannot write a value to a ko.computed unless you specify a 'write' option. If you wish to read the current value, don't pass any parameters.");
             }
             // Writing a value
             writeFunction(...arguments);
@@ -1520,7 +1520,7 @@ ko.expressionRewriting = (() => {
                 ++depth;
         }
         if (!allowUnbalanced)
-            throw new Error("Cannot find closing comment tag to match: " + startComment.nodeValue);
+            throw Error("Cannot find closing comment tag to match: " + startComment.nodeValue);
         return null;
     }
 
@@ -1575,7 +1575,7 @@ ko.expressionRewriting = (() => {
             }
             let first = node.firstChild;
             if (first && isEndComment(first)) {
-                throw new Error("Found invalid end comment, as the first child of " + node);
+                throw Error("Found invalid end comment, as the first child of " + node);
             }
             return first;
         },
@@ -1843,7 +1843,7 @@ ko.bindingEvent = {
                 } else if (bindingInfo.asyncContext === undefined && bindingInfo.eventSubscribable?.hasSubscriptionsForEvent(ko.bindingEvent.descendantsComplete)) {
                     // It's currently an error to register a descendantsComplete handler for a node that was never registered as completing asynchronously.
                     // That's because without the asyncContext, we don't have a way to know that all descendants have completed.
-                    throw new Error("descendantsComplete event not supported for bindings on this node");
+                    throw Error("descendantsComplete event not supported for bindings on this node");
                 }
             }
         }
@@ -2021,7 +2021,7 @@ function applyBindingsToNodeInternal(node, sourceBindings, bindingContext) {
 
             // COMMENT_NODE
             if (node.nodeType === 8 && !ko.virtualElements.allowedBindings[bindingKey]) {
-                throw new Error("The binding '" + bindingKey + "' cannot be used with comment nodes");
+                throw Error("The binding '" + bindingKey + "' cannot be used with comment nodes");
             }
 
             try {
@@ -2033,7 +2033,7 @@ function applyBindingsToNodeInternal(node, sourceBindings, bindingContext) {
                         // If this binding handler claims to control descendant bindings, make a note of this
                         if (initResult && initResult['controlsDescendantBindings']) {
                             if (bindingHandlerThatControlsDescendantBindings !== undefined)
-                                throw new Error("Multiple bindings (" + bindingHandlerThatControlsDescendantBindings + " and " + bindingKey + ") are trying to control descendant bindings of the same element. You cannot use these bindings together on the same element.");
+                                throw Error("Multiple bindings (" + bindingHandlerThatControlsDescendantBindings + " and " + bindingKey + ") are trying to control descendant bindings of the same element. You cannot use these bindings together on the same element.");
                             bindingHandlerThatControlsDescendantBindings = bindingKey;
                         }
                     });
@@ -2133,11 +2133,11 @@ ko.exportSymbol('applyBindings', ko.applyBindings);
 
         'register': (componentName, config) => {
             if (!config) {
-                throw new Error('Invalid configuration for ' + componentName);
+                throw Error('Invalid configuration for ' + componentName);
             }
 
             if (defaultConfigRegistry[componentName]) {
-                throw new Error('Component ' + componentName + ' is already registered');
+                throw Error('Component ' + componentName + ' is already registered');
             }
 
             defaultConfigRegistry[componentName] = config;
@@ -2156,7 +2156,7 @@ ko.exportSymbol('applyBindings', ko.applyBindings);
 
     var defaultConfigRegistry = Object.create(null),
         createViewModelKey = 'createViewModel',
-        throwError = (componentName, message) => { throw new Error(`Component '${componentName}': ${message}`) },
+        throwError = (componentName, message) => { throw Error(`Component '${componentName}': ${message}`) },
 
         // Takes a config object of the form { template: ..., viewModel: ... }, and asynchronously convert it
         // into the standard component definition format:
@@ -2237,7 +2237,7 @@ ko.exportSymbol('applyBindings', ko.applyBindings);
                 }
 
                 if (!componentName) {
-                    throw new Error('No component name specified');
+                    throw Error('No component name specified');
                 }
 
                 var asyncContext = ko.bindingEvent.startPossiblyAsyncContentBinding(element, bindingContext);
@@ -2251,12 +2251,12 @@ ko.exportSymbol('applyBindings', ko.applyBindings);
 
                         // Instantiate and bind new component. Implicitly this cleans any old DOM nodes.
                         if (!componentDefinition) {
-                            throw new Error('Unknown component \'' + componentName + '\'');
+                            throw Error('Unknown component \'' + componentName + '\'');
                         }
                         // cloneTemplateIntoElement
                         var template = componentDefinition['template'];
                         if (!template) {
-                            throw new Error('Component \'' + componentName + '\' has no template');
+                            throw Error('Component \'' + componentName + '\' has no template');
                         }
                         ko.virtualElements.setDomNodeChildren(element, ko.utils.cloneNodes(template));
 
@@ -2642,7 +2642,7 @@ var captionPlaceholder = {};
 ko.bindingHandlers['options'] = {
     'init': element => {
         if (!element.matches("SELECT"))
-            throw new Error("options binding applies only to SELECT elements");
+            throw Error("options binding applies only to SELECT elements");
 
         // Remove all existing <option>s.
         let l = element.length;
@@ -2799,7 +2799,7 @@ ko.bindingHandlers['style'] = {
 ko.bindingHandlers['submit'] = {
     'init': (element, valueAccessor, allBindings, viewModel, bindingContext) => {
         if (typeof valueAccessor() != "function")
-            throw new Error("The value for a submit binding must be a function");
+            throw Error("The value for a submit binding must be a function");
         element.addEventListener("submit", event => {
             var handlerReturnValue;
             var value = valueAccessor();
@@ -3079,14 +3079,14 @@ makeEventHandlerShortcut('click');
                 templateDocument = templateDocument || document;
                 var elem = templateDocument.getElementById(template);
                 if (!elem)
-                    throw new Error("Cannot find template with ID " + template);
+                    throw Error("Cannot find template with ID " + template);
                 return new ko.templateSources.domElement(elem);
             }
             if ([1,8].includes(template.nodeType)) {
                 // Anonymous template
                 return new ko.templateSources.anonymousTemplate(template);
             }
-            throw new Error("Unknown template type: " + template);
+            throw Error("Unknown template type: " + template);
         },
 
         invokeForEachNodeInContinuousRange = (firstNode, lastNode, action) => {
@@ -3135,7 +3135,7 @@ makeEventHandlerShortcut('click');
 
             // Loosely check result is an array of DOM nodes
             if (!Array.isArray(renderedNodesArray) || (renderedNodesArray.length > 0 && typeof renderedNodesArray[0].nodeType != "number"))
-                throw new Error("Template engine must return an array of DOM nodes");
+                throw Error("Template engine must return an array of DOM nodes");
 
             if (replaceChildren) {
                 ko.virtualElements.setDomNodeChildren(targetNodeOrNodeArray, renderedNodesArray);
@@ -3254,7 +3254,7 @@ makeEventHandlerShortcut('click');
                     let container = ko.utils.moveCleanedNodesToContainerElement(templateNodes); // This also removes the nodes from their current parent
                     new ko.templateSources.anonymousTemplate(element).nodes(container);
                 } else {
-                    throw new Error("Anonymous template defined, but no template content was provided");
+                    throw Error("Anonymous template defined, but no template content was provided");
                 }
             }
             return { 'controlsDescendantBindings': true };

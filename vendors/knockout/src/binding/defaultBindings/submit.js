@@ -1,7 +1,7 @@
 ko.bindingHandlers['submit'] = {
     'init': (element, valueAccessor, allBindings, viewModel, bindingContext) => {
         if (typeof valueAccessor() != "function")
-            throw new Error("The value for a submit binding must be a function");
+            throw Error("The value for a submit binding must be a function");
         element.addEventListener("submit", event => {
             var handlerReturnValue;
             var value = valueAccessor();
