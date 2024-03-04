@@ -7,7 +7,8 @@
 		"UPDATE": "Aktualizovat",
 		"USERNAME": "Uživatelské jméno",
 		"PASSWORD": "Heslo",
-		"CANCEL": "Zrušit"
+		"CANCEL": "Zrušit",
+		"SEARCH": "Nebyly nalezeny žádné kontakty"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
@@ -84,7 +85,8 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Zabezpečení",
 		"LABEL_USE_IMAGE_PROXY": "Použít lokální proxy pro externí obrázky",
-		"LABEL_ALLOW_OPEN_PGP": "Povolit OpenPGP",
+		"LABEL_ALLOW_OPENPGP": "Povolit OpenPGP.js",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "Zobrazit PHP informace (php_info)",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Přístupové údaje administrace",
 		"LABEL_CURRENT_PASSWORD": "Současné heslo",
@@ -167,17 +169,17 @@
 		"UNKNOWN_ERROR": "Neznámá chyba"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
-		"INVALID_TOKEN": "Neplatný token",
-		"AUTH_ERROR": "Chyba autorizace",
-		"DOMAIN_ALREADY_EXISTS": "Tato doména již existuje",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Nastavení se nepodařilo uložit",
-		"CANT_INSTALL_PACKAGE": "Instalace balíčku se nezdařila",
-		"CANT_DELETE_PACKAGE": "Odstranění balíčku se nezdařilo",
-		"INVALID_PLUGIN_PACKAGE": "Nevalidní balíček",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Nepodporovaný balíček rozšíření",
-		"UNKNOWN_ERROR": "Neznámá chyba"
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "Neplatný token",
+		"AuthError": "Chyba autorizace",
+		"DomainAlreadyExists": "Tato doména již existuje",
+		"CantSavePluginSettings": "Nastavení se nepodařilo uložit",
+		"CantInstallPackage": "Instalace balíčku se nezdařila",
+		"CantDeletePackage": "Odstranění balíčku se nezdařilo",
+		"InvalidPluginPackage": "Nevalidní balíček",
+		"UnsupportedPluginPackage": "Nepodporovaný balíček rozšíření",
+		"UnknownError": "Neznámá chyba"
 	}
 }

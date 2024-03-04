@@ -78,16 +78,13 @@ ko.utils.compareArrays = (() => {
 
         // Set a limit on the number of consecutive non-matching comparisons; having it a multiple of
         // smlIndexMax keeps the time complexity of this algorithm linear.
-        ko.utils.findMovesInArrayComparison(notInBig, notInSml, !options['dontLimitMoves'] && smlIndexMax * 10);
+        ko.utils.findMovesInArrayComparison(notInBig, notInSml, smlIndexMax * 10);
 
         return editScript.reverse();
     };
 
     // Simple calculation based on Levenshtein distance.
     return (oldArray, newArray, options) => {
-        // For backward compatibility, if the third arg is actually a bool, interpret
-        // it as the old parameter 'dontLimitMoves'. Newer code should use { dontLimitMoves: true }.
-        options = (typeof options === 'boolean') ? { 'dontLimitMoves': options } : (options || {});
         oldArray = oldArray || [];
         newArray = newArray || [];
 

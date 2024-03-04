@@ -34,11 +34,11 @@
 
         'register': (componentName, config) => {
             if (!config) {
-                throw new Error('Invalid configuration for ' + componentName);
+                throw Error('Invalid configuration for ' + componentName);
             }
 
             if (defaultConfigRegistry[componentName]) {
-                throw new Error('Component ' + componentName + ' is already registered');
+                throw Error('Component ' + componentName + ' is already registered');
             }
 
             defaultConfigRegistry[componentName] = config;
@@ -57,7 +57,7 @@
 
     var defaultConfigRegistry = Object.create(null),
         createViewModelKey = 'createViewModel',
-        throwError = (componentName, message) => { throw new Error(`Component '${componentName}': ${message}`) },
+        throwError = (componentName, message) => { throw Error(`Component '${componentName}': ${message}`) },
 
         // Takes a config object of the form { template: ..., viewModel: ... }, and asynchronously convert it
         // into the standard component definition format:

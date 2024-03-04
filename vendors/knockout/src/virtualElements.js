@@ -41,7 +41,7 @@
                 ++depth;
         }
         if (!allowUnbalanced)
-            throw new Error("Cannot find closing comment tag to match: " + startComment.nodeValue);
+            throw Error("Cannot find closing comment tag to match: " + startComment.nodeValue);
         return null;
     }
 
@@ -96,7 +96,7 @@
             }
             let first = node.firstChild;
             if (first && isEndComment(first)) {
-                throw new Error("Found invalid end comment, as the first child of " + node);
+                throw Error("Found invalid end comment, as the first child of " + node);
             }
             return first;
         },

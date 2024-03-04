@@ -38,7 +38,7 @@ services:
 
   # snappymail will be available at: https://snappymail.example.com
   snappymail:
-    image: leojonathanoh/snappymail:pr-1
+    image: djmaze/snappymail:latest
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-network"

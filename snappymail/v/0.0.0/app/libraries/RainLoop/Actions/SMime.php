@@ -53,21 +53,18 @@ trait SMime
 	}
 
 	/**
-	 * Can be use by Identity
+	 * Can be used by Identity
 	 */
 	public function DoSMimeCreateCertificate() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		$sName = $this->GetActionParam('name', '') ?: $oAccount->Name();
-		$sEmail = $this->GetActionParam('email', '') ?: $oAccount->Email();
-		$sPassphrase = $this->GetActionParam('passphrase', '');
-		$this->logMask($sPassphrase);
+		$oPassphrase = new \SnappyMail\SensitiveString($this->GetActionParam('passphrase', ''));
 
 		$cert = new Certificate();
-		$cert->distinguishedName['commonName'] = $sName;
-		$cert->distinguishedName['emailAddress'] = $sEmail;
-		$result = $cert->createSelfSigned($sPassphrase);
+		$cert->distinguishedName['commonName'] = $this->GetActionParam('name', '') ?: $oAccount->Name();
+		$cert->distinguishedName['emailAddress'] = $this->GetActionParam('email', '') ?: $oAccount->Email();
+		$result = $cert->createSelfSigned($oPassphrase, $this->GetActionParam('privateKey', ''));
 		return $this->DefaultResponse($result ?: false);
 	}
 
@@ -78,8 +75,7 @@ trait SMime
 		$sPartId = $this->GetActionParam('partId', '');
 		$sCertificate = $this->GetActionParam('certificate', '');
 		$sPrivateKey = $this->GetActionParam('privateKey', '');
-		$sPassphrase = $this->GetActionParam('passphrase', '');
-		$this->logMask($sPassphrase);
+		$oPassphrase = new \SnappyMail\SensitiveString($this->GetActionParam('passphrase', ''));
 
 		$this->initMailClientConnection();
 		$oImapClient = $this->ImapClient();
@@ -106,8 +102,16 @@ trait SMime
 
 		$SMIME = $this->SMIME();
 		$SMIME->setCertificate($sCertificate);
-		$SMIME->setPrivateKey($sPrivateKey, $sPassphrase);
+		$SMIME->setPrivateKey($sPrivateKey, $oPassphrase);
 		$result = $SMIME->decrypt($sBody);
+		if ($result) {
+			$result = ['data' => $result];
+			if (\str_contains($result['data'], 'multipart/signed')) {
+				$result['signed'] = [
+					'success' => !empty($SMIME->verify($result['data'], null, true)['success'])
+				];
+			}
+		}
 
 		return $this->DefaultResponse($result ?: false);
 	}
@@ -118,32 +122,12 @@ trait SMime
 		$sPartId = $this->GetActionParam('partId', '');
 		$bDetached = !empty($this->GetActionParam('detached', 0));
 		if (!$sBody && $sPartId) {
-			$sFolderName = $this->GetActionParam('folder', '');
 			$iUid = (int) $this->GetActionParam('uid', 0);
-			$sMicAlg = $this->GetActionParam('micAlg', '');
-
+//			$sMicAlg = $this->GetActionParam('micAlg', '');
 			$this->initMailClientConnection();
 			$oImapClient = $this->ImapClient();
-			$oImapClient->FolderExamine($sFolderName);
-
-			if ('TEXT' === $sPartId) {
-				$oFetchResponse = $oImapClient->Fetch([
-					FetchType::BODY_PEEK.'['.$sPartId.']',
-					// An empty section specification refers to the entire message, including the header.
-					// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
-					FetchType::BODY_HEADER_PEEK
-				], $iUid, true)[0];
-				$sBody = $oFetchResponse->GetFetchValue(FetchType::BODY_HEADER);
-			} else {
-				$oFetchResponse = $oImapClient->Fetch([
-					FetchType::BODY_PEEK.'['.$sPartId.']',
-					// An empty section specification refers to the entire message, including the header.
-					// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
-					FetchType::BODY_PEEK.'['.$sPartId.'.MIME]'
-				], $iUid, true)[0];
-				$sBody = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sPartId.'.MIME]');
-			}
-			$sBody .= $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sPartId.']');
+			$oImapClient->FolderExamine($this->GetActionParam('folder', ''));
+			$sBody = $oImapClient->FetchMessagePart($iUid, $sPartId);
 		}
 
 		$result = $this->SMIME()->verify($sBody, null, !$bDetached);
@@ -151,7 +135,7 @@ trait SMime
 		// Import the certificates automatically
 		$sBody = $this->GetActionParam('sigPart', '');
 		$sPartId = $this->GetActionParam('sigPartId', '') ?: $sPartId;
-		if (!$sBody && $sPartId) {
+		if (!$sBody && $sPartId && $oImapClient) {
 			$sBody = $oImapClient->Fetch(
 				[FetchType::BODY_PEEK.'['.$sPartId.']'],
 				$iUid,
@@ -162,15 +146,24 @@ trait SMime
 			$sBody = \trim($sBody);
 			$certificates = [];
 			\openssl_pkcs7_read(
-				"-----BEGIN CERTIFICATE-----\n\n{$sBody}\n-----END CERTIFICATE-----",
+				"-----BEGIN PKCS7-----\n\n{$sBody}\n-----END PKCS7-----",
 				$certificates
-			) || \error_log("OpenSSL openssl_pkcs7_read: " . \openssl_error_string());
+			) || $this->logWrite("openssl_pkcs7_read: " . \openssl_error_string(), \LOG_ERR, 'OpenSSL');
 			foreach ($certificates as $certificate) {
 				$this->SMIME()->storeCertificate($certificate);
 			}
 		}
 
 		return $this->DefaultResponse($result);
+	}
+
+	public function DoSMimeImportCertificate() : array
+	{
+		return $this->DefaultResponse(
+			$this->SMIME()->storeCertificate(
+				$this->GetActionParam('pem', '')
+			)
+		);
 	}
 
 	public function DoSMimeImportCertificatesFromMessage() : array
@@ -190,7 +183,7 @@ trait SMime
 		$sBody = \trim($sBody);
 		$certificates = [];
 		\openssl_pkcs7_read(
-			"-----BEGIN CERTIFICATE-----\n\n{$sBody}\n-----END CERTIFICATE-----",
+			"-----BEGIN PKCS7-----\n\n{$sBody}\n-----END PKCS7-----",
 			$certificates
 		);
 

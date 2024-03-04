@@ -7,7 +7,8 @@
 		"UPDATE": "Update",
 		"USERNAME": "Username",
 		"PASSWORD": "Password",
-		"CANCEL": "Cancel"
+		"CANCEL": "Cancel",
+		"SEARCH": "Search"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
@@ -84,7 +85,8 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Security",
 		"LABEL_USE_IMAGE_PROXY": "Use local proxy for external images",
-		"LABEL_ALLOW_OPEN_PGP": "Allow OpenPGP",
+		"LABEL_ALLOW_OPENPGP": "Allow OpenPGP.js",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "Show PHP information",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Admin Panel Access Credentials",
 		"LABEL_CURRENT_PASSWORD": "Current password",
@@ -106,7 +108,7 @@
 		"LABEL_ALL_RIGHTS_RESERVED": "All Rights Reserved.",
 		"HINT_READ_CHANGE_LOG": "Please read the change log before updating.",
 		"HINT_IS_UP_TO_DATE": "SnappyMail is up to date.",
-		"HTML_NEW_VERSION": "New <b>%VERSION%</b> version is available.",
+		"HTML_NEW_VERSION": "New <b>%VERSION%<\/b> version is available.",
 		"LABEL_UPDATING": "Updating",
 		"LABEL_CHECKING": "Checking for updates",
 		"BUTTON_RELEASES": "Releases"
@@ -167,17 +169,17 @@
 		"UNKNOWN_ERROR": "Unknown error"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
-		"INVALID_TOKEN": "Invalid token",
-		"AUTH_ERROR": "Authentication failed",
-		"DOMAIN_ALREADY_EXISTS": "Domain already exists",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Can't save settings",
-		"CANT_INSTALL_PACKAGE": "Failed to install extension",
-		"CANT_DELETE_PACKAGE": "Failed to remove extension",
-		"INVALID_PLUGIN_PACKAGE": "Invalid extension package",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Unsupported extension package",
-		"UNKNOWN_ERROR": "Unknown error"
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "Invalid token",
+		"AuthError": "Authentication failed",
+		"DomainAlreadyExists": "Domain already exists",
+		"CantSavePluginSettings": "Can't save settings",
+		"CantInstallPackage": "Failed to install extension",
+		"CantDeletePackage": "Failed to remove extension",
+		"InvalidPluginPackage": "Invalid extension package",
+		"UnsupportedPluginPackage": "Unsupported extension package",
+		"UnknownError": "Unknown error"
 	}
 }

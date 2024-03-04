@@ -5,6 +5,8 @@
 
 namespace SnappyMail\GPG;
 
+use SnappyMail\SensitiveString;
+
 abstract class Base
 {
 	const
@@ -41,10 +43,8 @@ abstract class Base
 	protected
 		$binary,
 		$version = '2.0',
-		$passphrases = [],
-		$signKeys = [],
+		$pinentries = [],
 		$encryptKeys = [],
-		$decryptKeys = [],
 		// Create PEM encoded output
 		$armor = true,
 
@@ -64,7 +64,13 @@ abstract class Base
 
 	function __construct(string $homedir)
 	{
-		$this->options['homedir'] = \rtrim($homedir, '/\\');
+		$homedir = \rtrim($homedir, '/\\');
+		// BSD 4.4 max length
+		if (104 <= \strlen($homedir . '/S.gpg-agent.extra')) {
+			throw new \Exception('Socket name for S.gpg-agent.extra is too long');
+		}
+		$this->options['homedir'] = $homedir;
+//		\putenv("GNUPGHOME={$homedir}");
 	}
 
 	function __destruct()
@@ -169,21 +175,12 @@ abstract class Base
 	}
 
 	/**
-	 * Exports a public key
+	 * Exports a public or private key
 	 */
-	public function export(string $fingerprint) /*: string|false*/
+	public function export(string $fingerprint, ?SensitiveString $passphrase = null) /*: string|false*/
 	{
 		return false;
 	}
-
-	/**
-	 * Exports a private key
-	 */
-	public function exportPrivateKey(string $fingerprint) /*: string|false*/
-	{
-		return false;
-	}
-
 
 	/**
 	 * Imports a key
@@ -209,11 +206,10 @@ abstract class Base
 	/**
 	 * Returns an array with information about all keys that matches the given pattern
 	 */
-	public function keyInfo(string $pattern, int $private = 0) : array
+	public function keyInfo(string $pattern, bool $private = false) : array
 	{
 		return [];
 	}
-
 
 	/**
 	 * Sets the mode for error_reporting
@@ -243,7 +239,7 @@ abstract class Base
 	/**
 	 * Signs a given file
 	 */
-	public function signStream($fp, /*string|resource*/ $output = null) /*: array|false*/
+	public function signStream($fp, /*string|resource*/ $output = null) /*: string|false*/
 	{
 		return false;
 	}
@@ -284,13 +280,9 @@ abstract class Base
 	/**
 	 * Add a key for decryption
 	 */
-	public function addDecryptKey(string $fingerprint,
-		#[\SensitiveParameter]
-		string $passphrase
-	) : bool
+	public function addDecryptKey(string $fingerprint, SensitiveString $passphrase) : bool
 	{
-		$this->decryptKeys[$fingerprint] = $passphrase;
-//		$this->decryptKeys[\substr($fingerprint, -16)] = $passphrase;
+		$this->addPinentry($fingerprint, $passphrase);
 		return true;
 	}
 
@@ -306,14 +298,17 @@ abstract class Base
 	/**
 	 * Add a key for signing
 	 */
-	public function addSignKey(string $fingerprint,
-		#[\SensitiveParameter]
-		string $passphrase
-	) : bool
+	public function addSignKey(string $fingerprint, SensitiveString $passphrase) : bool
 	{
-		$this->signKeys[$fingerprint] = $passphrase;
-//		$this->signKeys[\substr($fingerprint, -16)] = $passphrase;
-		return false;
+		$this->addPinentry($fingerprint, $passphrase);
+		return true;
+	}
+
+	public function clear() : bool
+	{
+		$this->clearPinentries();
+		$this->clearEncryptKeys();
+		return true;
 	}
 
 	/**
@@ -321,8 +316,7 @@ abstract class Base
 	 */
 	public function clearDecryptKeys() : bool
 	{
-		$this->decryptKeys = [];
-		return true;
+		return $this->clearPinentries();
 	}
 
 	/**
@@ -339,8 +333,7 @@ abstract class Base
 	 */
 	public function clearSignKeys() : bool
 	{
-		$this->signKeys = [];
-		return true;
+		return $this->clearPinentries();
 	}
 
 	/**
@@ -356,21 +349,44 @@ abstract class Base
 		];
 	}
 
-	public function addPassphrase($keyId,
-		#[\SensitiveParameter]
-		$passphrase
-	)
+	/**
+	 * Add private key passphrase for decrypt, sign or export
+	 * $keyId or fingerprint
+	 */
+	public function addPinentry(string $keyId, SensitiveString $passphrase)
 	{
-		$this->passphrases[$keyId] = $passphrase;
+		/**
+		 * Test first?
+		 * gpg --dry-run --passwd <your-user-id>
+		$_ENV['PINENTRY_USER_DATA'] = \json_encode(\array_map('strval', [$keyId => $passphrase]));
+		$result = $this->exec([
+			'--dry-run',
+			'--passwd',
+			$passphrase
+		]);
+		 */
+//		$this->export($keyId, $passphrase);
+		$this->pinentries[$keyId] = $passphrase;
+//		$this->pinentries[\substr($keyId, -16)] = $passphrase;
 		return $this;
 	}
 
 	/**
-	 * Toggle the armored output
+	 * Removes all keys which were set for decryption, signing and export
 	 */
-	public function setArmor(int $armor = 1) : bool
+	public function clearPinentries() : bool
 	{
-		$this->armor = !!$armor;
+		$this->pinentries = [];
+		return true;
+	}
+
+	/**
+	 * Toggle the armored output
+	 * When true the output is ASCII
+	 */
+	public function setArmor(bool $armor = true) : bool
+	{
+		$this->armor = $armor;
 		return true;
 	}
 

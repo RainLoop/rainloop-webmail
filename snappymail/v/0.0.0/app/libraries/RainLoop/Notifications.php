@@ -58,7 +58,6 @@ class Notifications
 	const MailServerError = 901;
 	const ClientViewError = 902;
 	const InvalidInputArgument = 903;
-//	const UnknownNotification = 998;
 	const UnknownError = 999;
 
 	// Admin

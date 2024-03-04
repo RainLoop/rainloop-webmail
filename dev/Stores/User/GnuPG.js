@@ -35,7 +35,8 @@ export const GnuPGUserStore = new class {
 		this.keyring = null;
 		this.publicKeys([]);
 		this.privateKeys([]);
-		Remote.request('GnupgGetKeys',
+		SettingsCapa('GnuPG')
+		&& Remote.request('GnupgGetKeys',
 			(iError, oData) => {
 				if (oData?.Result) {
 					this.keyring = oData.Result;
@@ -68,11 +69,10 @@ export const GnuPGUserStore = new class {
 							}
 						};
 						if (isPrivate) {
-							key.password = async (btnTxt = 'SIGN') => {
-								const pass = await Passphrases.ask(
-									key,
+							key.password = async btnTxt => {
+								const pass = await Passphrases.ask(key,
 									'GnuPG key<br>' + key.id + ' ' + key.emails[0],
-									'CRYPTO/'+btnTxt
+									btnTxt
 								);
 								pass && pass.remember && Passphrases.set(key, pass.password);
 								return pass?.password;
@@ -82,8 +82,8 @@ export const GnuPGUserStore = new class {
 							if (key.armor) {
 								callback && callback();
 							} else {
-								let pass = isPrivate ? await key.password('POPUP_VIEW_TITLE') : '';
-								if (null != pass) {
+								let pass = isPrivate ? await key.password('OPENPGP/POPUP_VIEW_TITLE') : '';
+								if (null != pass) try {
 									const result = await Remote.post('GnupgExportKey', null, {
 											keyId: key.id,
 											isPrivate: isPrivate,
@@ -95,15 +95,22 @@ export const GnuPGUserStore = new class {
 									} else {
 										Passphrases.delete(key);
 									}
+								} catch (e) {
+									Passphrases.delete(key);
+									alert(e.message);
 								}
 							}
 							return key.armor;
 						};
 						key.view = () => key.fetch(() => showScreenPopup(OpenPgpKeyPopupView, [key]));
 						return key;
-					};
-					this.publicKeys(oData.Result.public.map(key => initKey(key, 0)));
-					this.privateKeys(oData.Result.private.map(key => initKey(key, 1)));
+					},
+					collator = new Intl.Collator(undefined, {sensitivity: 'base'}),
+					sort = keys => keys.sort(
+						(a, b) => collator.compare(a.emails[0], b.emails[0]) || collator.compare(a.id, b.id)
+					);
+					this.publicKeys(sort(oData.Result.public.map(key => initKey(key, 0))));
+					this.privateKeys(sort(oData.Result.private.map(key => initKey(key, 1))));
 					console.log('gnupg ready');
 				}
 			}
@@ -178,22 +185,27 @@ export const GnuPGUserStore = new class {
 					uid: message.uid,
 					partId: pgpInfo.partId,
 					keyId: key.id,
-					passphrase: await key.password('DECRYPT'),
+					passphrase: await key.password('CRYPTO/DECRYPT'),
 					data: '' // message.plain() optional
 				}
-				if (null !== params.passphrase) {
-					const result = await Remote.post('GnupgDecrypt', null, params);
-					if (result?.Result && false !== result.Result.data) {
-						return result.Result;
+				if (null != params.passphrase) {
+					try {
+						const response = await Remote.post('GnupgDecrypt', null, params);
+						if (response?.Result?.data) {
+							return response.Result;
+						}
+						throw response;
+					} catch (e) {
+						Passphrases.delete(key);
+						throw e;
 					}
-					Passphrases.delete(key);
 				}
 			}
 		}
 	}
 
 	async verify(message) {
-		let data = message.pgpSigned(); // { bodyPartId: "1", sigPartId: "2", micAlg: "pgp-sha256" }
+		let data = message.pgpSigned(); // { partId: "1", sigPartId: "2", micAlg: "pgp-sha256" }
 		if (data) {
 			data = { ...data }; // clone
 //			const sender = message.from[0].email;
@@ -208,14 +220,15 @@ export const GnuPGUserStore = new class {
 			if (response?.Result) {
 				return {
 					fingerprint: response.Result.fingerprint,
-					success: 0 == response.Result.status // GOODSIG
+					success: 0 == response.Result.status, // GOODSIG
+					error: response.Result.message
 				};
 			}
 		}
 	}
 
 	async sign(privateKey) {
-		return await privateKey.password();
+		return await privateKey.password('CRYPTO/SIGN');
 	}
 
 };

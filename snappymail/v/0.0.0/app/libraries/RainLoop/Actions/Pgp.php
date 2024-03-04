@@ -24,7 +24,7 @@ trait Pgp
 
 		$GPG = $this->GnuPG();
 		if ($GPG) {
-			$keys = $GPG->keyInfo('');
+			$keys = $GPG->allKeysInfo('');
 			foreach ($keys['public'] as $key) {
 				$key = $GPG->export($key['subkeys'][0]['fingerprint'] ?: $key['subkeys'][0]['keyid']);
 				if ($key) {
@@ -47,7 +47,7 @@ trait Pgp
 	/**
 	 * @throws \MailSo\RuntimeException
 	 */
-	public function GnuPG() : ?GnuPG
+	public function GnuPG() : ?\SnappyMail\PGP\PGPInterface
 	{
 		$oAccount = $this->getMainAccountFromToken();
 		if (!$oAccount) {
@@ -81,7 +81,7 @@ trait Pgp
 				if (\is_link($link) || \symlink($homedir, $link)) {
 					$homedir = $link;
 				} else {
-					\error_log("symlink('{$homedir}', '{$link}') failed");
+					$this->logWrite("symlink('{$homedir}', '{$link}') failed", \LOG_WARNING, 'GnuPG');
 				}
 			}
 			// Else try ~/.gnupg/ + hash(email address)
@@ -97,10 +97,6 @@ trait Pgp
 					$homedir = $tmpdir;
 				}
 			}
-
-			if (104 <= \strlen($homedir . '/S.gpg-agent.extra')) {
-				throw new \Exception("socket name for '{$homedir}/S.gpg-agent.extra' is too long");
-			}
 		}
 
 		return GnuPG::getInstance($homedir);
@@ -113,15 +109,14 @@ trait Pgp
 			return $this->FalseResponse();
 		}
 
-		$sPassphrase = $this->GetActionParam('passphrase', '');
-		$this->logMask($sPassphrase);
+		$oPassphrase = new \SnappyMail\SensitiveString($this->GetActionParam('passphrase', ''));
 
-		$GPG->addDecryptKey($this->GetActionParam('keyId', ''), $sPassphrase);
+		$GPG->addDecryptKey($this->GetActionParam('keyId', ''), $oPassphrase);
 
 		$sData = $this->GetActionParam('data', '');
 		$oPart = null;
 		$result = [
-			'data' => '',
+			'data' => null,
 			'signatures' => []
 		];
 		if ($sData) {
@@ -131,11 +126,13 @@ trait Pgp
 			$this->initMailClientConnection();
 			$this->MailClient()->MessageMimeStream(
 				function ($rResource) use ($GPG, &$result, &$oPart) {
-					if (\is_resource($rResource)) {
+					if (\is_resource($rResource)) try {
 						$result['data'] = $GPG->decryptStream($rResource);
 //						$oPart = \MailSo\Mime\Part::FromString($result);
 //						$GPG->decryptStream($rResource, $rStreamHandle);
 //						$oPart = \MailSo\Mime\Part::FromStream($rStreamHandle);
+					} catch (\Throwable $e) {
+						$result = $e;
 					}
 				},
 				$this->GetActionParam('folder', ''),
@@ -149,23 +146,28 @@ trait Pgp
 //			$result['signatures'] = $oPart->SubParts[0];
 		}
 
+		if ($result instanceof \Throwable) {
+			throw $result;
+		}
+
 		return $this->DefaultResponse($result);
 	}
 
 	public function DoGnupgGetKeys() : array
 	{
 		$GPG = $this->GnuPG();
-		return $this->DefaultResponse($GPG ? $GPG->keyInfo('') : false);
+		return $this->DefaultResponse($GPG ? $GPG->allKeysInfo('') : false);
 	}
 
 	public function DoGnupgExportKey() : array
 	{
-		$sPassphrase = $this->GetActionParam('passphrase', '');
-		$this->logMask($sPassphrase);
+		$oPassphrase = $this->GetActionParam('isPrivate', '')
+			? new \SnappyMail\SensitiveString($this->GetActionParam('passphrase', ''))
+			: null;
 		$GPG = $this->GnuPG();
 		return $this->DefaultResponse($GPG ? $GPG->export(
 			$this->GetActionParam('keyId', ''),
-			$sPassphrase
+			$oPassphrase
 		) : false);
 	}
 
@@ -176,11 +178,10 @@ trait Pgp
 		if ($GPG) {
 			$sName = $this->GetActionParam('name', '');
 			$sEmail = $this->GetActionParam('email', '');
-			$sPassphrase = $this->GetActionParam('passphrase', '');
-			$this->logMask($sPassphrase);
+			$oPassphrase = new \SnappyMail\SensitiveString($this->GetActionParam('passphrase', ''));
 			$fingerprint = $GPG->generateKey(
 				$sName ? "{$sName} <{$sEmail}>" : $sEmail,
-				$sPassphrase
+				$oPassphrase
 			);
 		}
 		return $this->DefaultResponse($fingerprint);
@@ -221,15 +222,11 @@ trait Pgp
 			}
 		}
 
-		$result = false;
+		$result = [];
 		if ($sKey) {
 			$sKey = \trim($sKey);
-			if ($this->GetActionParam('backup', '')) {
-				$result = $result || Backup::PGPKey($sKey);
-			}
-			if ($this->GetActionParam('gnuPG', '') && ($GPG = $this->GnuPG())) {
-				$result = $result || $GPG->import($sKey);
-			}
+			$result['backup'] = $this->GetActionParam('backup', '') && Backup::PGPKey($sKey);
+			$result['gnuPG'] = $this->GetActionParam('gnuPG', '') && ($GPG = $this->GnuPG()) && $GPG->import($sKey);
 		}
 
 		return $this->DefaultResponse($result);
@@ -306,7 +303,7 @@ trait Pgp
 		} else {
 			$sFolderName = $this->GetActionParam('folder', '');
 			$iUid = (int) $this->GetActionParam('uid', 0);
-			$sBodyPartId = $this->GetActionParam('bodyPartId', '');
+			$sPartId = $this->GetActionParam('partId', '');
 			$sSigPartId = $this->GetActionParam('sigPartId', '');
 //			$sMicAlg = $this->GetActionParam('micAlg', '');
 
@@ -315,10 +312,10 @@ trait Pgp
 			$oImapClient->FolderExamine($sFolderName);
 
 			$aParts = [
-				FetchType::BODY_PEEK.'['.$sBodyPartId.']',
+				FetchType::BODY_PEEK.'['.$sPartId.']',
 				// An empty section specification refers to the entire message, including the header.
 				// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
-				FetchType::BODY_PEEK.'['.$sBodyPartId.'.MIME]'
+				FetchType::BODY_PEEK.'['.$sPartId.'.MIME]'
 			];
 			if ($sSigPartId) {
 				$aParts[] = FetchType::BODY_PEEK.'['.$sSigPartId.']';
@@ -326,20 +323,20 @@ trait Pgp
 
 			$oFetchResponse = $oImapClient->Fetch($aParts, $iUid, true)[0];
 
-			$sBodyMime = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.'.MIME]');
+			$sBodyMime = $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sPartId.'.MIME]');
 			if ($sSigPartId) {
 				$result = [
 					'text' => \preg_replace('/\\r?\\n/su', "\r\n",
-						$sBodyMime . $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']')
+						$sBodyMime . $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sPartId.']')
 					),
-					'signature' => preg_replace('/[^\x00-\x7F]/', '',
+					'signature' => \preg_replace('/[^\x00-\x7F]/', '',
 						$oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sSigPartId.']')
 					)
 				];
 			} else {
 				// clearsigned text
 				$result = [
-					'text' => $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sBodyPartId.']'),
+					'text' => $oFetchResponse->GetFetchValue(FetchType::BODY.'['.$sPartId.']'),
 					'signature' => ''
 				];
 				$decode = (new \MailSo\Mime\HeaderCollection($sBodyMime))->ValueByName(MimeEnumHeader::CONTENT_TRANSFER_ENCODING);

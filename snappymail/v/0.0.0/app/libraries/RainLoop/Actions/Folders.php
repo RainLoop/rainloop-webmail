@@ -86,14 +86,11 @@ trait Folders
 		}
 
 		if ($oFolderCollection) {
-			$aQuota = null;
-			if ($this->GetCapa(Capa::QUOTA)) {
-				try {
-//					$aQuota = $this->ImapClient()->Quota();
-					$aQuota = $this->ImapClient()->QuotaRoot();
-				} catch (\Throwable $oException) {
-					// ignore
-				}
+			try {
+//				$aQuota = $this->ImapClient()->Quota();
+				$aQuota = $this->ImapClient()->QuotaRoot();
+			} catch (\Throwable $oException) {
+				// ignore
 			}
 
 			$aCapabilities = \array_values(\array_filter($this->ImapClient()->Capability() ?: [], function ($item) {
@@ -192,7 +189,7 @@ trait Folders
 
 		$oSettingsLocal->SetConf('CheckableFolder', \json_encode(\array_unique($aCheckableFolder)));
 
-		return $this->DefaultResponse($this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
+		return $this->DefaultResponse($oSettingsLocal->save());
 	}
 
 	/**
@@ -320,7 +317,7 @@ trait Folders
 		$oSettingsLocal->SetConf('TrashFolder', $this->GetActionParam('trash', ''));
 		$oSettingsLocal->SetConf('ArchiveFolder', $this->GetActionParam('archive', ''));
 
-		return $this->DefaultResponse($this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
+		return $this->DefaultResponse($oSettingsLocal->save());
 	}
 
 	public function DoFolderACL() : array

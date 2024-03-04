@@ -2,25 +2,26 @@
 
 namespace RainLoop\Providers\Settings;
 
+use RainLoop\Model\Account;
+use RainLoop\Providers\Storage;
+use RainLoop\Providers\Storage\Enumerations\StorageType;
+
 class DefaultSettings implements ISettings
 {
 	const FILE_NAME = 'settings';
 	const FILE_NAME_LOCAL = 'settings_local';
 
-	/**
-	 * @var \RainLoop\Providers\Storage
-	 */
-	private $oStorageProvider;
+	private Storage $oStorageProvider;
 
-	public function __construct(\RainLoop\Providers\Storage $oStorageProvider)
+	public function __construct(Storage $oStorageProvider)
 	{
 		$this->oStorageProvider = $oStorageProvider;
 	}
 
-	public function Load(\RainLoop\Model\Account $oAccount) : array
+	public function Load(Account $oAccount) : array
 	{
 		$sValue = $this->oStorageProvider->Get($oAccount,
-			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+			StorageType::CONFIG,
 			$this->oStorageProvider->IsLocal() ?
 				self::FILE_NAME_LOCAL :
 				self::FILE_NAME
@@ -36,20 +37,20 @@ class DefaultSettings implements ISettings
 		return array();
 	}
 
-	public function Save(\RainLoop\Model\Account $oAccount, \RainLoop\Settings $oSettings) : bool
+	public function Save(Account $oAccount, \RainLoop\Settings $oSettings) : bool
 	{
 		return $this->oStorageProvider->Put($oAccount,
-			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+			StorageType::CONFIG,
 			$this->oStorageProvider->IsLocal() ?
 				self::FILE_NAME_LOCAL :
 				self::FILE_NAME,
 			\json_encode($oSettings));
 	}
 
-	public function Delete(\RainLoop\Model\Account $oAccount) : bool
+	public function Delete(Account $oAccount) : bool
 	{
 		return $this->oStorageProvider->Clear($oAccount,
-			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+			StorageType::CONFIG,
 			$this->oStorageProvider->IsLocal() ?
 				self::FILE_NAME_LOCAL :
 				self::FILE_NAME);

@@ -120,25 +120,14 @@ class Application extends \RainLoop\Config\AbstractConfig
 		parent::Set($sSectionKey, $sParamKey, $mParamValue);
 	}
 
-	public function SetPassword(
-		#[\SensitiveParameter]
-		string $sPassword
-	) : void
+	public function SetPassword(\SnappyMail\SensitiveString $oPassword) : void
 	{
-		$this->Set('security', 'admin_password', \password_hash($sPassword, PASSWORD_DEFAULT));
+		$this->Set('security', 'admin_password', \password_hash($oPassword, PASSWORD_DEFAULT));
 	}
 
-	public function ValidatePassword(
-		#[\SensitiveParameter]
-		string $sPassword
-	) : bool
+	public function ValidatePassword(\SnappyMail\SensitiveString $oPassword) : bool
 	{
-		$sConfigPassword = (string) $this->Get('security', 'admin_password', '');
-		if (32 == \strlen($sPassword) && \md5(APP_SALT.$sPassword.APP_SALT) === $sConfigPassword) {
-			$this->SetPassword($sPassword);
-			return true;
-		}
-		return \strlen($sPassword) && \password_verify($sPassword, $sConfigPassword);
+		return \strlen($oPassword) && \password_verify($oPassword, $this->Get('security', 'admin_password', ''));
 	}
 
 	public function Save() : bool
@@ -214,6 +203,7 @@ Warning: only enable when server does not do this, else double compression error
 				'x_xss_protection_header' => array('1; mode=block'),
 
 				'openpgp'                 => array(true),
+				'auto_verify_signatures'  => array(false),
 
 				'allow_admin_panel'       => array(true, 'Access settings'),
 				'admin_login'             => array('admin', 'Login and password for web admin panel'),
@@ -262,7 +252,6 @@ Default is "site=same-origin;site=none"')
 			),
 
 			'capa' => array(
-				'quota' => array(true),
 				'dangerous_actions' => array(true, 'Allow clear folder and delete messages without moving to trash'),
 				'attachments_actions' => array(true, 'Allow download attachments as Zip (and optionally others)')
 			),
@@ -284,7 +273,7 @@ When this value is gethostname, the gethostname() value is used.
 
 				'login_lowercase' => array(true),
 
-				'sign_me_auto' => array(\RainLoop\Enumerations\SignMeType::DEFAULT_OFF,
+				'sign_me_auto' => array(\RainLoop\Enumerations\SignMeType::DefaultOff,
 					'This option allows webmail to remember the logged in user
 once they closed the browser window.
 
@@ -419,7 +408,7 @@ Enables caching in the system'),
 
 			'labs' => array(
 				'date_from_headers' => array(true, 'Display message RFC 2822 date and time header, instead of the arrival internal date.'),
-				'allow_message_append' => array(false),
+				'allow_message_append' => array(false, 'Allow drag & drop .eml files from system into messages list'),
 				'login_fault_delay' => array(5, 'When login fails, wait N seconds before responding'),
 				'log_ajax_response_write_limit' => array(300),
 				'smtp_show_server_errors' => array(false),

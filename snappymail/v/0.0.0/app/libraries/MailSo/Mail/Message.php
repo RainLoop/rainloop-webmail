@@ -66,10 +66,10 @@ class Message implements \JsonSerializable
 
 	private ?array $DraftInfo = null;
 
-	private ?array $pgpSigned = null;
+	public ?array $pgpSigned = null;
 	private ?array $pgpEncrypted = null;
 
-	private ?array $smimeSigned = null;
+	public ?array $smimeSigned = null;
 	private ?array $smimeEncrypted = null;
 
 	private ?\MailSo\Mime\EmailCollection
@@ -341,7 +341,7 @@ class Message implements \JsonSerializable
 					$oMessage->pgpSigned = [
 						// /?/Raw/&q[]=/0/Download/&q[]=/...
 						// /?/Raw/&q[]=/0/View/&q[]=/...
-						'bodyPartId' => $oPart->SubParts()[0]->PartID(),
+						'partId' => $oPart->SubParts()[0]->PartID(),
 						'sigPartId' => $oPart->SubParts()[1]->PartID(),
 						'micAlg' => $oHeaders ? (string) $oHeaders->ParameterValue(MimeHeader::CONTENT_TYPE, 'micalg') : ''
 					];
@@ -357,9 +357,9 @@ class Message implements \JsonSerializable
 				// An empty section specification refers to the entire message, including the header.
 				// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
 				$sPgpText = \trim(
-					\trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oMessage->pgpSigned['bodyPartId'].'.MIME]'))
+					\trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oMessage->pgpSigned['partId'].'.MIME]'))
 					. "\r\n\r\n"
-					. \trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oMessage->pgpSigned['bodyPartId'].']'))
+					. \trim($oFetchResponse->GetFetchValue(FetchType::BODY.'['.$oMessage->pgpSigned['partId'].']'))
 				);
 				if ($sPgpText) {
 					$oMessage->pgpSigned['body'] = $sPgpText;
@@ -398,7 +398,7 @@ class Message implements \JsonSerializable
 						// Cleartext Signature
 						if (!$oMessage->pgpSigned && \str_contains($sText, '-----BEGIN PGP SIGNED MESSAGE-----')) {
 							$oMessage->pgpSigned = [
-								'bodyPartId' => $oPart->PartID()
+								'partId' => $oPart->PartID()
 							];
 						}
 
@@ -543,7 +543,7 @@ class Message implements \JsonSerializable
 			$result['html'] = $this->sHtml;
 			$result['plain'] = $this->sPlain;
 		}
-//		$this->GetCapa(Capa::OPEN_PGP) || $this->GetCapa(Capa::GNUPG)
+//		$this->GetCapa(Capa::OPENPGP) || $this->GetCapa(Capa::GNUPG)
 		if ($this->pgpSigned) {
 			$result['pgpSigned'] = $this->pgpSigned;
 		}

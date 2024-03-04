@@ -37,6 +37,16 @@ class Identity implements \JsonSerializable
 		$this->sEmail = $sEmail;
 	}
 
+	function __get(string $name)
+	{
+		if (!\property_exists($this, $name)) {
+			$name = \substr($name, 1);
+		}
+		if (\property_exists($this, $name)) {
+			return $this->$name;
+		}
+	}
+
 	function toMime() : \MailSo\Mime\Email
 	{
 		return new \MailSo\Mime\Email($this->sEmail, $this->sName);

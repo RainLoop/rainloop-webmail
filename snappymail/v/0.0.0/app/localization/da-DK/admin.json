@@ -7,7 +7,8 @@
 		"UPDATE": "Opdater",
 		"USERNAME": "Brugernavn",
 		"PASSWORD": "Adgangskode",
-		"CANCEL": "Annuller"
+		"CANCEL": "Annuller",
+		"SEARCH": "Ingen kontakter fundet"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Log ind",
@@ -84,7 +85,8 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Sikkerhed",
 		"LABEL_USE_IMAGE_PROXY": "Brug lokal proxy til eksterne billeder",
-		"LABEL_ALLOW_OPEN_PGP": "Tillad OpenPGP",
+		"LABEL_ALLOW_OPENPGP": "Tillad OpenPGP.js",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "Vis PHP informationer",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Admin Panel Adgangsoplysninger",
 		"LABEL_CURRENT_PASSWORD": "Nuværende adgangskode",
@@ -167,17 +169,17 @@
 		"UNKNOWN_ERROR": "Ukendt fejl"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
-		"INVALID_TOKEN": "Ugyldigt tegn",
-		"AUTH_ERROR": "Godkendelse fejlede",
-		"DOMAIN_ALREADY_EXISTS": "Domæne eksisterer allerede",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Kan ikke gemme instillinger",
-		"CANT_INSTALL_PACKAGE": "Installation af pakke mislykkedes",
-		"CANT_DELETE_PACKAGE": "Fjernelse af pakke mislykkedes",
-		"INVALID_PLUGIN_PACKAGE": "Ugyldig tilføjelsespakke",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Tilføjelsespakke ikke understøttet",
-		"UNKNOWN_ERROR": "Ukendt fejl"
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "Ugyldigt tegn",
+		"AuthError": "Godkendelse fejlede",
+		"DomainAlreadyExists": "Domæne eksisterer allerede",
+		"CantSavePluginSettings": "Kan ikke gemme instillinger",
+		"CantInstallPackage": "Installation af pakke mislykkedes",
+		"CantDeletePackage": "Fjernelse af pakke mislykkedes",
+		"InvalidPluginPackage": "Ugyldig tilføjelsespakke",
+		"UnsupportedPluginPackage": "Tilføjelsespakke ikke understøttet",
+		"UnknownError": "Ukendt fejl"
 	}
 }

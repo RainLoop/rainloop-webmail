@@ -25,8 +25,8 @@ ko.computed = (evaluatorFunctionOrOptions, options) => {
         pure: false,
         isSleeping: false,
         readFunction: options["read"],
-        disposeWhenNodeIsRemoved: options["disposeWhenNodeIsRemoved"] || options.disposeWhenNodeIsRemoved || null,
-        disposeWhen: options["disposeWhen"] || options.disposeWhen,
+        disposeWhenNodeIsRemoved: options.disposeWhenNodeIsRemoved || null,
+        disposeWhen: options.disposeWhen,
         domNodeDisposalCallback: null,
         dependencyTracking: {},
         dependenciesCount: 0,
@@ -36,7 +36,7 @@ ko.computed = (evaluatorFunctionOrOptions, options) => {
     function computedObservable() {
         if (arguments.length > 0) {
             if (typeof writeFunction !== "function") {
-                throw new Error("Cannot write a value to a ko.computed unless you specify a 'write' option. If you wish to read the current value, don't pass any parameters.");
+                throw Error("Cannot write a value to a ko.computed unless you specify a 'write' option. If you wish to read the current value, don't pass any parameters.");
             }
             // Writing a value
             writeFunction(...arguments);
@@ -205,14 +205,8 @@ var computedFn = {
         return target['subscribe'](this.evaluatePossiblyAsync, this);
     },
     evaluatePossiblyAsync() {
-        var computedObservable = this,
-            throttleEvaluationTimeout = computedObservable['throttleEvaluation'];
-        if (throttleEvaluationTimeout >= 0) {
-            clearTimeout(this[computedState].evaluationTimeoutInstance);
-            this[computedState].evaluationTimeoutInstance = setTimeout(() =>
-                computedObservable.evaluateImmediate(true /*notifyChange*/)
-            , throttleEvaluationTimeout);
-        } else if (computedObservable._evalDelayed) {
+        var computedObservable = this;
+        if (computedObservable._evalDelayed) {
             computedObservable._evalDelayed(true /*isChange*/);
         } else {
             computedObservable.evaluateImmediate(true /*notifyChange*/);

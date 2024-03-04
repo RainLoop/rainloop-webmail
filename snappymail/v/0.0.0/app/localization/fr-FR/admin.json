@@ -7,7 +7,8 @@
 		"UPDATE": "Mettre à jour",
 		"USERNAME": "Nom d'utilisateur",
 		"PASSWORD": "Mot de passe",
-		"CANCEL": "Annuler"
+		"CANCEL": "Annuler",
+		"SEARCH": "Rechercher"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Identifiant",
@@ -68,7 +69,7 @@
 		"LABEL_STORAGE_DSN": "Dsn",
 		"LABEL_STORAGE_USER": "Utilisateur",
 		"LABEL_STORAGE_PASSWORD": "Mot de passe",
-		"SQLITE_GLOBAL": "Use a global DB instead of per account",
+		"SQLITE_GLOBAL": "Utilisez une DB globale au lieu de par compte",
 		"ALERT_NOTICE": "Note !",
 		"SUGGESTIONS_LIMIT": "Limite de suggestions",
 		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "N'utilisez pas ce type de base de données avec un grand nombre d'utilisateurs actifs.",
@@ -84,7 +85,8 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Sécurité",
 		"LABEL_USE_IMAGE_PROXY": "Utiliser un proxy local pour les images externes",
-		"LABEL_ALLOW_OPEN_PGP": "Autoriser OpenPGP",
+		"LABEL_ALLOW_OPENPGP": "Autoriser OpenPGP.js",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "Voir les informations PHP",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Codes d'accès au panneau d'administration",
 		"LABEL_CURRENT_PASSWORD": "Mot de passe actuel",
@@ -167,17 +169,17 @@
 		"UNKNOWN_ERROR": "Erreur inconnue"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "La requête a échouée",
-		"REQUEST_ABORTED": "La requête a été annulée",
-		"REQUEST_TIMEOUT": "La requête a expirée",
-		"INVALID_TOKEN": "Jeton invalide",
-		"AUTH_ERROR": "L'authentification a échoué",
-		"DOMAIN_ALREADY_EXISTS": "Le domaine existe déjà",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Vous ne pouvez pas enregistrer les paramètres",
-		"CANT_INSTALL_PACKAGE": "Impossible d'installer le extension",
-		"CANT_DELETE_PACKAGE": "Impossible de supprimer le extension",
-		"INVALID_PLUGIN_PACKAGE": "Package d'extension non valide",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Package d'extension non pris en charge",
-		"UNKNOWN_ERROR": "Erreur inconnue"
+		"RequestError": "La requête a échouée",
+		"RequestAborted": "La requête a été annulée",
+		"RequestTimeout": "La requête a expirée",
+		"InvalidToken": "Jeton invalide",
+		"AuthError": "L'authentification a échoué",
+		"DomainAlreadyExists": "Le domaine existe déjà",
+		"CantSavePluginSettings": "Vous ne pouvez pas enregistrer les paramètres",
+		"CantInstallPackage": "Impossible d'installer le extension",
+		"CantDeletePackage": "Impossible de supprimer le extension",
+		"InvalidPluginPackage": "Package d'extension non valide",
+		"UnsupportedPluginPackage": "Package d'extension non pris en charge",
+		"UnknownError": "Erreur inconnue"
 	}
 }

@@ -7,7 +7,9 @@
 
 namespace SnappyMail\GPG;
 
-class PGP extends Base
+use SnappyMail\SensitiveString;
+
+class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 {
 	private
 		$_message,
@@ -94,8 +96,8 @@ class PGP extends Base
 
 		$fclose = $this->setOutput($output);
 
-		if ($this->decryptKeys) {
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->decryptKeys);
+		if ($this->pinentries) {
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode(\array_map('strval', $this->pinentries));
 		}
 
 		$result = $this->exec(['--decrypt','--skip-verify']);
@@ -137,6 +139,7 @@ class PGP extends Base
 		if (!$fp || !\is_resource($fp)) {
 			throw new \Exception('Invalid stream resource');
 		}
+//		\rewind($fp);
 		return $this->_decrypt($fp, $output);
 	}
 
@@ -215,6 +218,7 @@ class PGP extends Base
 		if (!$fp || !\is_resource($fp)) {
 			throw new \Exception('Invalid stream resource');
 		}
+		\rewind($fp);
 		return $this->_encrypt($fp, $output);
 	}
 
@@ -234,14 +238,19 @@ class PGP extends Base
 		return false;
 	}
 
-	protected function _exportKey($keyId, $private = false)
+	/**
+	 * Exports a public or private key
+	 */
+	public function export(string $fingerprint, ?SensitiveString $passphrase = null) /*: string|false*/
 	{
-		$keys = $this->keyInfo($keyId, $private ? 1 : 0);
+//		\SnappyMail\Log::debug('GnuPG', "export({$fingerprint}, {$passphrase})");
+		$private = null !== $passphrase;
+		$keys = $this->keyInfo($fingerprint, $private);
 		if (!$keys) {
-			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $keyId);
+			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $fingerprint);
 		}
-		if ($private && $this->passphrases) {
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->passphrases);
+		if ($private) {
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode([$fingerprint => \strval($passphrase)]);
 		}
 		$result = $this->exec([
 			$private ? '--export-secret-keys' : '--export',
@@ -249,22 +258,6 @@ class PGP extends Base
 			\escapeshellarg($keys[0]['subkeys'][0]['fingerprint']),
 		]);
 		return $result['output'];
-	}
-
-	/**
-	 * Exports a public key
-	 */
-	public function export(string $fingerprint) /*: string|false*/
-	{
-		return $this->_exportKey($fingerprint);
-	}
-
-	/**
-	 * Exports a private key
-	 */
-	public function exportPrivateKey(string $fingerprint) /*: string|false*/
-	{
-		return $this->_exportKey($fingerprint, true);
 	}
 
 	/**
@@ -296,8 +289,13 @@ class PGP extends Base
 	 * Also saves revocation certificate in {homedir}/openpgp-revocs.d/
 	 * https://www.gnupg.org/documentation/manuals/gnupg/OpenPGP-Key-Management.html
 	 */
-	public function generateKey(PGPKeySettings $settings) /*: string|false*/
+	public function generateKey(string $uid, SensitiveString $passphrase) /*: string|false*/
 	{
+		$settings = new PGPKeySettings;
+		$settings->name = $uid;
+		$settings->email = $uid;
+		$settings->passphrase = $passphrase;
+
 		$arguments = [
 			'--batch',
 			'--yes',
@@ -326,9 +324,6 @@ class PGP extends Base
 			}
 		}
 		if (!$fingerprint) {
-			if (!empty($result['errors'])) {
-				\SnappyMail\Log::error('GPG', \implode("\n\t", $result['errors']));
-			}
 			return false;
 		}
 
@@ -361,8 +356,8 @@ class PGP extends Base
 	{
 		$arguments = ['--import'];
 
-		if ($this->passphrases) {
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->passphrases);
+		if ($this->pinentries) {
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode(\array_map('strval', $this->pinentries));
 		} else {
 			$arguments[] = '--batch';
 		}
@@ -385,10 +380,6 @@ class PGP extends Base
 					'fingerprint' => ''
 				];
 			}
-		}
-
-		if (!empty($result['errors'][0])) {
-			\SnappyMail\Log::warning('GPG', $result['errors'][0]);
 		}
 
 		return false;
@@ -421,13 +412,13 @@ class PGP extends Base
 		}
 	}
 
-	public function deleteKey(string $keyId, bool $private)
+	public function deleteKey(string $keyId, bool $private) : bool
 	{
-		$key = $this->keyInfo($keyId, $private ? 1 : 0);
+		$key = $this->keyInfo($keyId, $private);
 		if (!$key) {
 			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $keyId);
 		}
-//		if (!$private && $this->keyInfo($keyId, 1)) {
+//		if (!$private && $this->keyInfo($keyId, true)) {
 //			throw new \Exception('Delete private key first: ' . $keyId);
 //		}
 
@@ -448,7 +439,7 @@ class PGP extends Base
 	/**
 	 * Returns an array with information about all keys that matches the given pattern
 	 */
-	public function keyInfo(string $pattern, int $private = 0) : array
+	public function keyInfo(string $pattern, bool $private = false) : array
 	{
 		// According to The file 'doc/DETAILS' in the GnuPG distribution, using
 		// double '--with-fingerprint' also prints the fingerprint for subkeys.
@@ -573,6 +564,30 @@ class PGP extends Base
 	}
 
 	/**
+	 * Returns an array with information about all keys that matches the given pattern
+	 */
+	public function allKeysInfo(string $pattern) : array
+	{
+		$keys = [
+			'public' => [],
+			'private' => []
+		];
+		// Public
+		foreach (($this->keyinfo($pattern) ?: []) as $key) {
+			$key['can_verify'] = $key['can_sign'];
+			unset($key['can_sign']);
+			$keys['public'][] = $key;
+		}
+		// Private, read https://github.com/php-gnupg/php-gnupg/issues/5
+		foreach (($this->keyinfo($pattern, 1) ?: []) as $key) {
+			$key['can_decrypt'] = $key['can_encrypt'];
+			unset($key['can_encrypt']);
+			$keys['private'][] = $key;
+		}
+		return $keys;
+	}
+
+	/**
 	 * Sets the mode for error_reporting
 	 * GNUPG_ERROR_WARNING, GNUPG_ERROR_EXCEPTION and GNUPG_ERROR_SILENT.
 	 * By default GNUPG_ERROR_SILENT is used.
@@ -594,7 +609,7 @@ class PGP extends Base
 
 	protected function _sign(/*string|resource*/ $input, /*string|resource*/ $output = null, bool $textmode = true) /*: string|false*/
 	{
-		if (empty($this->signKeys)) {
+		if (empty($this->pinentries)) {
 			throw new \Exception('No signing keys specified.');
 		}
 
@@ -625,11 +640,11 @@ class PGP extends Base
 			$arguments[] = '--textmode';
 		}
 
-		if ($this->signKeys) {
-			foreach ($this->signKeys as $fingerprint => $pass) {
+		if ($this->pinentries) {
+			foreach ($this->pinentries as $fingerprint => $pass) {
 				$arguments[] = '--local-user ' . \escapeshellarg($fingerprint);
 			}
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->signKeys);
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode(\array_map('strval', $this->pinentries));
 		}
 
 		$result = $this->exec($arguments);
@@ -666,15 +681,16 @@ class PGP extends Base
 	/**
 	 * Signs a given file
 	 */
-	public function signStream($fp, /*string|resource*/ $output = null) /*: array|false*/
+	public function signStream($fp, /*string|resource*/ $output = null) /*: string|false*/
 	{
 		if (!$fp || !\is_resource($fp)) {
 			throw new \Exception('Invalid stream resource');
 		}
+		\rewind($fp);
 		return $this->_sign($fp, $output);
 	}
 
-	protected function _verify($input, string $signature)
+	protected function _verify($input, string $signature) /*: array|false*/
 	{
 		$arguments = ['--verify'];
 		if ($signature) {
@@ -768,6 +784,7 @@ class PGP extends Base
 		if (!$fp || !\is_resource($fp)) {
 			throw new \Exception('Invalid stream resource');
 		}
+//		\rewind($fp);
 		return $this->_verify($fp, $signature);
 	}
 
@@ -776,12 +793,11 @@ class PGP extends Base
 		$this->_debug('BEGIN DETECT MESSAGE KEY IDs');
 		$this->setInput($data);
 //		$_ENV['PINENTRY_USER_DATA'] = null;
-		$result = $this->exec(['--decrypt','--skip-verify']);
+		$result = $this->exec(['--decrypt','--skip-verify'], false);
 		$info = [
 			'ENC_TO' => [],
 //			'KEY_CONSIDERED' => [],
 //			'NO_SECKEY' => [],
-//			'errors' => $result['errors']
 		];
 		foreach ($result['status'] as $line) {
 			$tokens = \explode(' ', $line);
@@ -793,7 +809,7 @@ class PGP extends Base
 		return $info['ENC_TO'];
 	}
 
-	private function exec(array $arguments) /*: array|false*/
+	private function exec(array $arguments, bool $throw = true) /*: array|false*/
 	{
 		if (\version_compare($this->version, '2.2.5', '<')) {
 			\SnappyMail\Log::error('GPG', "{$this->version} too old");
@@ -915,12 +931,7 @@ class PGP extends Base
 			// Timeout after 5 seconds
 			if (5 < \microtime(1) - $start) {
 				$errors[] = 'timeout';
-				return [
-					'output' => '',
-					'status' => $status,
-					'errors' => $errors
-				];
-				exit;
+				throw new \RuntimeException(\implode("\n", $errors));
 			}
 
 			$inputStreams     = [];
@@ -1043,7 +1054,6 @@ class PGP extends Base
 			// to use too much memory
 			if (\in_array($this->_input, $inputStreams, true) && \strlen($inputBuffer) < self::CHUNK_SIZE) {
 				$this->_debug('input stream is ready for reading');
-				$this->_debug('=> about to read ' . self::CHUNK_SIZE . ' bytes from input stream');
 				$chunk        = \fread($this->_input, self::CHUNK_SIZE);
 				$length       = \strlen($chunk);
 				$inputBuffer .= $chunk;
@@ -1066,7 +1076,6 @@ class PGP extends Base
 			// read message (from PHP stream)
 			if (\in_array($this->_message, $inputStreams, true)) {
 				$this->_debug('message stream is ready for reading');
-				$this->_debug('=> about to read ' . self::CHUNK_SIZE . ' bytes from message stream');
 				$chunk          = \fread($this->_message, self::CHUNK_SIZE);
 				$length         = \strlen($chunk);
 				$messageBuffer .= $chunk;
@@ -1076,7 +1085,6 @@ class PGP extends Base
 			// read output (from GPG)
 			if (\in_array($fdOutput, $inputStreams, true)) {
 				$this->_debug('output stream ready for reading');
-				$this->_debug('=> about to read ' . self::CHUNK_SIZE . ' bytes from output');
 				$chunk         = \fread($fdOutput, self::CHUNK_SIZE);
 				$length        = \strlen($chunk);
 				$outputBuffer .= $chunk;
@@ -1103,17 +1111,18 @@ class PGP extends Base
 			// read error (from GPG)
 			if (\in_array($fdError, $inputStreams, true)) {
 				$this->_debug('error stream ready for reading');
-				$this->_debug('=> about to read ' . self::CHUNK_SIZE . ' bytes from error');
 				foreach ($this->_openPipes->readPipeLines(self::FD_ERROR) as $line) {
-					$errors[] = $line;
 					$this->_debug("\t{$line}");
+					$errors[] = \preg_replace('/^gpg: /', '', $line);
+					if ($throw && (\str_contains($line, 'error') || \str_contains($line, 'failed'))) {
+						break 2;
+					}
 				}
 			}
 
 			// read status (from GPG)
 			if (\in_array($fdStatus, $inputStreams, true)) {
 				$this->_debug('status stream ready for reading');
-				$this->_debug('=> about to read ' . self::CHUNK_SIZE . ' bytes from status');
 				// pass lines to status handlers
 				foreach ($this->_openPipes->readPipeLines(self::FD_STATUS) as $line) {
 					// only pass lines beginning with magic prefix
@@ -1166,11 +1175,15 @@ class PGP extends Base
 
 		$this->_debug('END PROCESSING');
 
-		$this->proc_close();
+		$exitCode = $this->proc_close();
 
 		$this->_message = null;
 		$this->_input   = null;
 		$this->_output  = null;
+
+		if ($throw && $exitCode && $errors) {
+			throw new \RuntimeException(\implode(".\n", $errors), $exitCode);
+		}
 
 		return [
 			'output' => $outputBuffer,

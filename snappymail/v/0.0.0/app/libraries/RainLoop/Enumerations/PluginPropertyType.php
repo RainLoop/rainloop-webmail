@@ -2,7 +2,7 @@
 
 namespace RainLoop\Enumerations;
 
-class PluginPropertyType
+abstract class PluginPropertyType
 {
 	const
 		GROUP = 7,

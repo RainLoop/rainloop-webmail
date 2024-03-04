@@ -112,9 +112,6 @@ ko.expressionRewriting = (() => {
             return result;
         },
 
-    // Two-way bindings include a write function that allow the handler to update the value even if it's not an observable.
-//        twoWayBindings = new Set,
-
         preProcessBindings = (bindingsStringOrKeyValueArray) => {
 
             var resultStrings = [],
@@ -122,16 +119,6 @@ ko.expressionRewriting = (() => {
                 keyValueArray = parseObjectLiteral(bindingsStringOrKeyValueArray),
 
                 processKeyValue = (key, val) => {
-                    var /*writableVal,*/ obj = ko.bindingHandlers[key];
-                    if (obj?.['preprocess'] && !obj['preprocess'](val, key, processKeyValue))
-                        return;
-/*
-                    if (twoWayBindings.has(key) && (writableVal = getWriteableValue(val))) {
-                        // For two-way bindings, provide a write method in case the value
-                        // isn't a writable observable.
-                        propertyAccessorResultStrings.push("'" + key + "':function(_z){" + writableVal + "=_z}");
-                    }
-*/
                     // Values are wrapped in a function so that each value can be accessed independently
                     val = 'function(){return ' + val + ' }';
                     resultStrings.push("'" + key + "':" + val);
@@ -148,10 +135,6 @@ ko.expressionRewriting = (() => {
         };
 
     return {
-        bindingRewriteValidators: [],
-
-//        twoWayBindings: twoWayBindings,
-
         parseObjectLiteral: parseObjectLiteral,
 
         preProcessBindings: preProcessBindings,

@@ -36,10 +36,10 @@ trait User
 	public function DoLogin() : array
 	{
 		$sEmail = \MailSo\Base\Utils::Trim($this->GetActionParam('Email', ''));
-		$sPassword = $this->GetActionParam('Password', '');
+		$oPassword = new \SnappyMail\SensitiveString($this->GetActionParam('Password', ''));
 
 		try {
-			$oAccount = $this->LoginProcess($sEmail, $sPassword);
+			$oAccount = $this->LoginProcess($sEmail, $oPassword);
 		} catch (\Throwable $oException) {
 			$this->loginErrorDelay();
 			throw $oException;
@@ -61,7 +61,7 @@ trait User
 
 				if ($sCurrentLanguage !== $sLanguage) {
 					$oSettings->SetConf('language', $sLanguage);
-					$this->SettingsProvider()->Save($oAccount, $oSettings);
+					$oSettings->save();
 				}
 			}
 		}
@@ -219,28 +219,20 @@ trait User
 		$this->setSettingsFromParams($oSettingsLocal, 'ShowUnreadCount', 'bool');
 		$this->setSettingsFromParams($oSettingsLocal, 'CheckMailInterval', 'int');
 
-		return $this->DefaultResponse($this->SettingsProvider()->Save($oAccount, $oSettings) &&
-			$this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
+		return $this->DefaultResponse($oSettings->save() && $oSettingsLocal->save());
 	}
 
 	public function DoQuota() : array
 	{
 		$oAccount = $this->initMailClientConnection();
-
-		if (!$this->GetCapa(Capa::QUOTA)) {
-			return $this->DefaultResponse(array(0, 0, 0, 0));
-		}
-
 		try
 		{
-			$aQuota = $this->ImapClient()->QuotaRoot();
+			return $this->DefaultResponse($this->ImapClient()->QuotaRoot() ?: [0, 0, 0, 0]);
 		}
 		catch (\Throwable $oException)
 		{
 			throw new ClientException(Notifications::MailServerError, $oException);
 		}
-
-		return $this->DefaultResponse($aQuota);
 	}
 
 	public function DoSuggestions() : array
@@ -263,12 +255,11 @@ trait User
 
 	public function DoClearUserBackground() : array
 	{
-		$oAccount = $this->getAccountFromToken();
-
 		if (!$this->GetCapa(Capa::USER_BACKGROUND)) {
 			return $this->FalseResponse();
 		}
 
+		$oAccount = $this->getAccountFromToken();
 		$oSettings = $this->SettingsProvider()->Load($oAccount);
 		if ($oAccount && $oSettings) {
 			$this->StorageProvider()->Clear($oAccount,
@@ -280,8 +271,7 @@ trait User
 			$oSettings->SetConf('UserBackgroundHash', '');
 		}
 
-		return $this->DefaultResponse($oAccount && $oSettings ?
-			$this->SettingsProvider()->Save($oAccount, $oSettings) : false);
+		return $this->DefaultResponse($oAccount && $oSettings ? $oSettings->save() : false);
 	}
 
 	private function setSettingsFromParams(\RainLoop\Settings $oSettings, string $sConfigName, string $sType = 'string', ?callable $cCallback = null) : void

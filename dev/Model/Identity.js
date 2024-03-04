@@ -32,9 +32,9 @@ export class IdentityModel extends AbstractModel {
 		});
 
 		addComputablesTo(this, {
-			smimeKeyEncrypted: () => this.smimeKey().includes('-----BEGIN ENCRYPTED PRIVATE KEY-----')
-//			smimeKeyValid: () => this.smimeKeyEncrypted() | this.smimeKey().includes('-----BEGIN PRIVATE KEY-----')
-//			smimeCertificateValid: () => this.smimeKey().includes('-----BEGIN CERTIFICATE-----')
+			smimeKeyEncrypted: () => this.smimeKey().includes('-----BEGIN ENCRYPTED PRIVATE KEY-----'),
+			smimeKeyValid: () => /^-----BEGIN (ENCRYPTED )?PRIVATE KEY-----/.test(this.smimeKey()),
+			smimeCertificateValid: () => /^-----BEGIN CERTIFICATE-----/.test(this.smimeCertificate())
 		});
 	}
 

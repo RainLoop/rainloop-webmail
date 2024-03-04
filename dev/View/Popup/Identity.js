@@ -52,10 +52,13 @@ export class IdentityPopupView extends AbstractViewPopup {
 				if (oData.Result.x509) {
 					identity.smimeKey(oData.Result.pkey);
 					identity.smimeCertificate(oData.Result.x509);
+				} else {
+					this.submitError(oData.ErrorMessage);
 				}
 			}, {
 				name: identity.name(),
 				email: identity.email(),
+				privateKey: identity.smimeKey(),
 				passphrase: pass.password
 			});
 		}

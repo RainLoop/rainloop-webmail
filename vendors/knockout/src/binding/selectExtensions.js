@@ -20,7 +20,7 @@ ko.selectExtensions = {
         }
     },
 
-    writeValue: (element, value, allowUnset) => {
+    writeValue: (element, value) => {
         switch (element.nodeName) {
             case 'OPTION':
                 if (typeof value === "string") {
@@ -49,7 +49,7 @@ ko.selectExtensions = {
                         break;
                     }
                 }
-                if (allowUnset || selection >= 0 || (noValue && element.size > 1)) {
+                if (selection >= 0 || (noValue && element.size > 1)) {
                     element.selectedIndex = selection;
                 }
                 break;

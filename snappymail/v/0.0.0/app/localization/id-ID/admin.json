@@ -7,7 +7,8 @@
 		"UPDATE": "Pembaruan",
 		"USERNAME": "Nama belakang",
 		"PASSWORD": "Sandi",
-		"CANCEL": "Batal"
+		"CANCEL": "Batal",
+		"SEARCH": "Tidak ditemukan kontak"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
@@ -84,7 +85,8 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Keamanan",
 		"LABEL_USE_IMAGE_PROXY": "Gunakan proxy lokal untuk gambar dari luar",
-		"LABEL_ALLOW_OPEN_PGP": "Izinkan OpenPGP",
+		"LABEL_ALLOW_OPENPGP": "Izinkan OpenPGP.js",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "Tampilkan informasi PHP",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Hak Akses Panel Admin",
 		"LABEL_CURRENT_PASSWORD": "Password saat ini",
@@ -167,17 +169,17 @@
 		"UNKNOWN_ERROR": "Kesalahan tidak diketahui"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
-		"INVALID_TOKEN": "Token invalid",
-		"AUTH_ERROR": "Otentikasi gagal",
-		"DOMAIN_ALREADY_EXISTS": "Domain sudah ada",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Tidak bisa menyimpan pengaturan",
-		"CANT_INSTALL_PACKAGE": "Gagal memasang paket",
-		"CANT_DELETE_PACKAGE": "Gagal menghapus paket",
-		"INVALID_PLUGIN_PACKAGE": "Paket plugin tidak sah",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Paket plugin tidak didukung",
-		"UNKNOWN_ERROR": "Kesalahan tidak diketahui"
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "Token invalid",
+		"AuthError": "Otentikasi gagal",
+		"DomainAlreadyExists": "Domain sudah ada",
+		"CantSavePluginSettings": "Tidak bisa menyimpan pengaturan",
+		"CantInstallPackage": "Gagal memasang paket",
+		"CantDeletePackage": "Gagal menghapus paket",
+		"InvalidPluginPackage": "Paket plugin tidak sah",
+		"UnsupportedPluginPackage": "Paket plugin tidak didukung",
+		"UnknownError": "Kesalahan tidak diketahui"
 	}
 }

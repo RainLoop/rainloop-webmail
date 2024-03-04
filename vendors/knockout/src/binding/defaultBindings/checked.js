@@ -12,7 +12,8 @@ ko.bindingHandlers['checked'] = {
                 // Treat "value" like "checkedValue" when it is included with "checked" binding
                 if (allBindings['has']('checkedValue')) {
                     return ko.utils.unwrapObservable(allBindings.get('checkedValue'));
-                } else if (useElementValue) {
+                }
+                if (useElementValue) {
                     return allBindings['has']('value')
                         ? ko.utils.unwrapObservable(allBindings.get('value'))
                         : element.value;
@@ -78,10 +79,6 @@ ko.bindingHandlers['checked'] = {
                 useElementValue = isRadio || valueIsArray,
                 oldElemValue = valueIsArray ? checkedValue() : undefined;
 
-            // IE 6 won't allow radio buttons to be selected unless they have a name
-            if (isRadio && !element.name)
-                ko.bindingHandlers['uniqueName']['init'](element, function() { return true });
-
             // Set up two computeds to update the binding:
 
             // The first responds to changes in the checkedValue value and to element clicks
@@ -113,7 +110,6 @@ ko.bindingHandlers['checked'] = {
         }
     }
 };
-//ko.expressionRewriting.twoWayBindings['checked'] = true;
 
 ko.bindingHandlers['checkedValue'] = {
     'update'(element, valueAccessor) {

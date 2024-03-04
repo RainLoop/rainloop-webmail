@@ -7,7 +7,8 @@
 		"UPDATE": "Atnaujinti",
 		"USERNAME": "Vartotojo vardas",
 		"PASSWORD": "Slaptažodis",
-		"CANCEL": "Atšaukti"
+		"CANCEL": "Atšaukti",
+		"SEARCH": "Kontaktų nerasta"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prisijungimo vardas",
@@ -84,7 +85,8 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Sauga",
 		"LABEL_USE_IMAGE_PROXY": "naudoti vietinį šliuzą (proxy) išoriniams paveikslėliams",
-		"LABEL_ALLOW_OPEN_PGP": "Leisti OpenPGP",
+		"LABEL_ALLOW_OPENPGP": "Leisti OpenPGP.js",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "Rodyti PHP informaciją",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Valdymo skydo prieigos rekvizitai",
 		"LABEL_CURRENT_PASSWORD": "Dabartinis slaptažodis",
@@ -167,17 +169,17 @@
 		"UNKNOWN_ERROR": "Nežinoma klaida"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
-		"INVALID_TOKEN": "Neteisingas raktas",
-		"AUTH_ERROR": "Autorizacija nepavyko",
-		"DOMAIN_ALREADY_EXISTS": "Toks domenas jau yra",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Nepavyksta išsaugoti nustatymų",
-		"CANT_INSTALL_PACKAGE": "Nepavyksta įdiegti paketo",
-		"CANT_DELETE_PACKAGE": "Nepavyksta pašalinti paketo",
-		"INVALID_PLUGIN_PACKAGE": "Netinkamas įskiepio paketas",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Nepalaikomas įskiepio paketas",
-		"UNKNOWN_ERROR": "Nežinoma klaida"
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "Neteisingas raktas",
+		"AuthError": "Autorizacija nepavyko",
+		"DomainAlreadyExists": "Toks domenas jau yra",
+		"CantSavePluginSettings": "Nepavyksta išsaugoti nustatymų",
+		"CantInstallPackage": "Nepavyksta įdiegti paketo",
+		"CantDeletePackage": "Nepavyksta pašalinti paketo",
+		"InvalidPluginPackage": "Netinkamas įskiepio paketas",
+		"UnsupportedPluginPackage": "Nepalaikomas įskiepio paketas",
+		"UnknownError": "Nežinoma klaida"
 	}
 }

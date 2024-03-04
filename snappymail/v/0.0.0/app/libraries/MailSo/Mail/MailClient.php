@@ -126,7 +126,6 @@ class MailClient
 		$this->oImapClient->FolderExamine($sFolderName);
 
 		$oBodyStructure = null;
-		$oMessage = null;
 
 		$aFetchItems = array(
 			FetchType::UID,
@@ -169,11 +168,10 @@ class MailClient
 		}
 
 		$aFetchResponse = $this->oImapClient->Fetch($aFetchItems, $iIndex, $bIndexIsUid);
-		if (\count($aFetchResponse)) {
-			$oMessage = Message::fromFetchResponse($sFolderName, $aFetchResponse[0], $oBodyStructure);
-		}
 
-		return $oMessage;
+		return \count($aFetchResponse)
+			? Message::fromFetchResponse($sFolderName, $aFetchResponse[0], $oBodyStructure)
+			: null;
 	}
 
 	/**

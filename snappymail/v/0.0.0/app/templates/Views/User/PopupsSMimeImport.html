@@ -1,0 +1,13 @@
+<header>
+	<a href="#" class="close" data-bind="click: close">×</a>
+	<h3 data-i18n="SMIME/POPUP_IMPORT_TITLE"></h3>
+</header>
+<form id="smime-import" class="modal-body" autocomplete="off" data-bind="submit: submitForm">
+	<div class="alert"  data-bind="visible: pemError() && pemErrorMessage(), text: pemErrorMessage"></div>
+	<div class="control-group" data-bind="css: {'error': pemError}">
+		<textarea class="input-xxlarge" rows="14" autofocus="" autocomplete="off" data-bind="value: pem" required=""></textarea>
+	</div>
+</form>
+<footer>
+	<button class="btn" form="smime-import" data-icon="✚" data-i18n="OPENPGP/POPUP_IMPORT_BUTTON"></button>
+</footer>

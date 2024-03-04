@@ -213,7 +213,7 @@ class BodyStructure implements \JsonSerializable
 		if (!$aParts) {
 			$gEncryptedParts = $this->SearchByContentType('multipart/encrypted');
 			foreach ($gEncryptedParts as $oPart) {
-				if ($oPart->isPgpEncrypted() && $oPart->SubParts()[1]->isInline()) {
+				if ($oPart->isPgpEncrypted()) {
 					return array($oPart->SubParts()[1]);
 				}
 			}

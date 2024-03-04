@@ -1,0 +1,201 @@
+<header class="g-ui-user-select-none" data-bind="css: {loading: saving() || sending()}">
+	<a class="btn" data-bind="command: sendCommand, tooltipErrorTip: sendErrorDesc, css: {'btn-success': sendButtonSuccess, 'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
+		<i data-bind="css: {'icon-paper-plane': !sending(), 'icon-spinner': sending()}"></i>
+		<span class="hide-mobile" data-i18n="COMPOSE/BUTTON_SEND"></span>
+	</a>
+	<a class="btn button-save" data-bind="command: saveCommand, tooltipErrorTip: savedErrorDesc, css: {'btn-danger': savedError }">
+		<i class="fontastic" data-bind="css: {'icon-spinner': saving()}">💾</i>
+		<span class="hide-mobile" data-i18n="GLOBAL/SAVE"></span>
+	</a>
+
+	<a class="btn btn-danger button-delete fontastic" data-bind="command: deleteCommand">🗑</a>
+	<span class="saved-text hide-mobile" data-bind="text: savedTimeText"></span>
+
+	<div class="pull-right">
+		<a class="btn hide-mobile" data-i18n="GLOBAL/BCC" data-bind="visible: !showBcc(), toggle: showBcc"></a>
+		<a class="btn hide-mobile" data-i18n="GLOBAL/CC" data-bind="visible: !showCc(), toggle: showCc"></a>
+		<a class="btn fontastic" data-bind="visible: allowContacts, command: contactsCommand" data-i18n="[title]GLOBAL/CONTACTS">📇</a>
+		<div class="btn-group dropdown" data-bind="registerBootstrapDropdown: true" style="display:inline-block;vertical-align:top">
+			<a class="btn dropdown-toggle fontastic">☰</a>
+			<menu class="dropdown-menu right-edge" role="menu">
+				<li data-bind="toggle: showBcc">
+					<a>
+						<i class="fontastic" data-bind="text: showBcc() ? '☑' : '☐'"></i>
+						<span data-i18n="GLOBAL/BCC"></span>
+					</a>
+				</li>
+				<li data-bind="toggle: showCc">
+					<a>
+						<i class="fontastic" data-bind="text: showCc() ? '☑' : '☐'"></i>
+						<span data-i18n="GLOBAL/CC"></span>
+					</a>
+				</li>
+				<li data-bind="toggle: showReplyTo">
+					<a>
+						<i class="fontastic" data-bind="text: showReplyTo() ? '☑' : '☐'"></i>
+						<span data-i18n="GLOBAL/REPLY_TO"></span>
+					</a>
+				</li>
+				<li data-bind="toggle: requestReadReceipt">
+					<a>
+						<i class="fontastic" data-bind="text: requestReadReceipt() ? '☑' : '☐'"></i>
+						<span data-i18n="COMPOSE/BUTTON_REQUEST_READ_RECEIPT"></span>
+					</a>
+				</li>
+				<li data-bind="toggle: requestDsn">
+					<a>
+						<i class="fontastic" data-bind="text: requestDsn() ? '☑' : '☐'"></i>
+						<span data-i18n="COMPOSE/BUTTON_REQUEST_DSN"></span>
+					</a>
+				</li>
+				<li data-bind="toggle: requireTLS">
+					<a>
+						<i class="fontastic" data-bind="text: requireTLS() ? '☑' : '☐'"></i>
+						<span data-i18n="COMPOSE/BUTTON_REQUIRE_TLS"></span>
+					</a>
+				</li>
+				<li data-bind="toggle: markAsImportant">
+					<a>
+						<i class="fontastic" data-bind="text: markAsImportant() ? '☑' : '☐'"></i>
+						<span data-i18n="COMPOSE/BUTTON_MARK_AS_IMPORTANT"></span>
+					</a>
+				</li>
+				<li data-bind="toggle: doSign, visible: canSign">
+					<a>
+						<i class="fontastic" data-bind="text: doSign() ? '☑' : '☐'"></i>
+						<span data-icon="✍" data-i18n="CRYPTO/SIGN"></span>
+					</a>
+				</li>
+				<li data-bind="toggle: doEncrypt, visible: canEncrypt">
+					<a>
+						<i class="fontastic" data-bind="text: doEncrypt() || 'mailvelope' == viewArea() ? '☑' : '☐'"></i>
+						<span data-icon="🔒" data-i18n="CRYPTO/ENCRYPT"></span>
+					</a>
+				</li>
+			</menu>
+		</div>
+		<a class="minimize-custom" data-bind="click: skipCommand" data-i18n="[title]COMPOSE/BUTTON_MINIMIZE"></a>
+		<a class="close" data-bind="click: tryToClose" data-i18n="[title]GLOBAL/CANCEL">×</a>
+	</div>
+</header>
+<div class="modal-body">
+	<div class="b-header g-ui-user-select-none">
+		<table>
+			<tr>
+				<td data-i18n="GLOBAL/FROM"></td>
+				<td>
+					<!-- ko if: allowIdentities -->
+					<input type="text" data-bind="textInput: from" style="width:calc(100% - 20px)">
+					<!-- /ko -->
+					<span class="e-identity" data-bind="hidden: allowIdentities, text: from"></span>
+					<!-- ko if: 1 < identitiesOptions().length -->
+					<div class="dropdown" style="display:inline-block" data-bind="registerBootstrapDropdown: true, initDom: identitiesMenu">
+						<a class="dropdown-toggle" href="#" tabindex="-1" id="identity-toggle" role="button"></a>
+						<menu class="dropdown-menu right-edge" role="menu" aria-labelledby="identity-toggle" data-bind="foreach: identitiesOptions">
+							<li role="presentation">
+								<a tabindex="-1" href="#" data-bind="click: function (oIdentity) { $root.selectIdentity(oIdentity); return true; }, text: optText"></a>
+							</li>
+						</menu>
+					</div>
+					<!-- /ko -->
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label data-bind="css: {'error-to': emptyToError}, tooltipErrorTip: emptyToErrorTooltip"
+								 data-i18n="GLOBAL/TO"></label>
+				</td>
+				<td>
+					<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: to, autoCompleteSource: emailsSource">
+				</td>
+			</tr>
+			<tr class="cc-row" data-bind="visible: showCc">
+				<td data-i18n="GLOBAL/CC"></td>
+				<td>
+					<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: cc, autoCompleteSource: emailsSource">
+				</td>
+			</tr>
+			<tr class="bcc-row" data-bind="visible: showBcc">
+				<td data-i18n="GLOBAL/BCC"></td>
+				<td>
+					<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: bcc, autoCompleteSource: emailsSource">
+				</td>
+			</tr>
+			<tr class="reply-to-row" data-bind="visible: showReplyTo">
+				<td data-i18n="GLOBAL/REPLY_TO"></td>
+				<td>
+					<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: replyTo">
+				</td>
+			</tr>
+			<tr>
+				<td data-i18n="GLOBAL/SUBJECT"></td>
+				<td>
+					<input type="text" name="subject" autocomplete="off" data-bind="textInput: subject, attr:{spellcheck:allowSpellcheck()?'true':'false'}">
+				</td>
+			</tr>
+		</table>
+		<div style="display:flex">
+			<div class="btn-group" style="flex-grow:1"></div>
+			<div class="btn-group">
+				<a class="btn fontastic" data-bind="toggle: doSign, visible: canSign, css: {'btn-success': doSign()}" data-i18n="[title]CRYPTO/SIGN">
+					✍
+				</a>
+				<a class="btn fontastic" data-bind="toggle: doEncrypt, visible: canEncrypt, css: {'btn-success': doEncrypt() || 'mailvelope' == viewArea()}" data-i18n="[title]CRYPTO/ENCRYPT">
+					🔒
+				</a>
+			</div>
+			<div class="btn-group">
+				<button class="btn fontastic" id="composeUploadButton"
+								data-bind="visible: addAttachmentEnabled()" data-i18n="[title]COMPOSE/ATTACH_FILES">
+					⁺📎
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="tabs">
+		<input type="radio" name="tabs" value="body" id="tab-body" data-bind="checked: viewArea">
+		<label for="tab-body"
+					 role="tab"
+					 aria-selected="true"
+					 aria-controls="panel1"
+					 data-bind="visible: canMailvelope"
+					 tabindex="0">
+			<i class="icon-file-text"></i>
+			<span data-i18n="GLOBAL/TEXT"></span>
+		</label>
+		<div class="tab-content" role="tabpanel" aria-hidden="false" style="grid-column-end:3">
+			<div class="textAreaParent" data-bind="initDom: editorArea, attr:{spellcheck:allowSpellcheck()?'true':'false'}"></div>
+		</div>
+		<input type="radio" name="tabs" value="mailvelope" id="tab-mailvelope" data-bind="checked: viewArea">
+		<label for="tab-mailvelope"
+					 role="tab"
+					 aria-selected="false"
+					 aria-controls="panel3"
+					 tabindex="0"
+					 data-bind="visible: canMailvelope">
+			<i class="mailvelope-icon"></i>
+			<span>Mailvelope</span>
+		</label>
+		<div class="tab-content textAreaParent" id="mailvelope-editor" role="tabpanel" aria-hidden="true" style="grid-column-end:3" data-bind="visible: canMailvelope"></div>
+	</div>
+</div>
+
+<div class="attachmentAreaParent compact">
+	<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled(), css: {dragAndDropOver: dragAndDropVisible}"
+			 data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></div>
+	<ul class="attachmentList" data-bind="foreach: attachments">
+		<li class="attachmentItem" data-bind="attr: { title: title }, css: { waiting: waiting, error: '' !== error() }">
+			<div class="attachmentIcon">
+				<i class="iconMain" data-bind="css: iconClass, visible: !uploading() || 0 === progress()"></i>
+				<div class="iconProgress" data-bind="attr: { style: progressStyle }, visible: uploading"></div>
+				<div class="iconBG" data-bind="text: progressText, visible: uploading"></div>
+			</div>
+			<div class="attachmentNameParent">
+				<a href="#" class="close pull-right" style="margin-top:-4px;" data-bind="click: cancel">×</a>
+				<div class="attachmentName" data-bind="text: fileName"></div>
+				<span class="attachmentSize" data-bind="text: friendlySize"></span>
+			</div>
+		</li>
+	</ul>
+</div>

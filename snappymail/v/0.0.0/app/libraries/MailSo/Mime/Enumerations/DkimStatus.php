@@ -16,6 +16,8 @@ namespace MailSo\Mime\Enumerations;
  * @package Mime
  * @subpackage Enumerations
  */
+//enum DkimStatus:string
+//final class DkimStatus extends \BackedEnumString
 abstract class DkimStatus
 {
 	const NONE = 'none';

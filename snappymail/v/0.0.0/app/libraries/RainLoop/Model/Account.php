@@ -15,7 +15,7 @@ abstract class Account implements \JsonSerializable
 
 	private string $sLogin = '';
 
-	private ?SensitiveString $sPassword = null;
+	private ?SensitiveString $oPassword = null;
 
 	private string $sSmtpLogin = '';
 
@@ -46,7 +46,7 @@ abstract class Account implements \JsonSerializable
 
 	public function IncPassword() : string
 	{
-		return $this->sPassword ? $this->sPassword->getValue() : '';
+		return $this->oPassword ? $this->oPassword->getValue() : '';
 	}
 
 	public function OutLogin() : string
@@ -66,16 +66,13 @@ abstract class Account implements \JsonSerializable
 			$this->sEmail,
 			$this->sLogin,
 //			\json_encode($this->Domain()),
-//			$this->sPassword
+//			$this->oPassword
 		]));
 	}
 
-	public function SetPassword(
-		#[\SensitiveParameter]
-		string $sPassword
-	) : void
+	public function SetPassword(SensitiveString $oPassword) : void
 	{
-		$this->sPassword = new SensitiveString($sPassword);
+		$this->oPassword = $oPassword;
 	}
 
 	public function SetSmtpPassword(
@@ -125,12 +122,11 @@ abstract class Account implements \JsonSerializable
 
 	public static function NewInstanceFromCredentials(\RainLoop\Actions $oActions,
 		string $sEmail, string $sLogin,
-		#[\SensitiveParameter]
-		string $sPassword,
+		SensitiveString $oPassword,
 		bool $bThrowException = false): ?self
 	{
 		$oAccount = null;
-		if ($sEmail && $sLogin && $sPassword) {
+		if ($sEmail && $sLogin && \strlen($oPassword)) {
 			$oDomain = $oActions->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true);
 			if ($oDomain) {
 				if ($oDomain->ValidateWhiteList($sEmail, $sLogin)) {
@@ -138,7 +134,7 @@ abstract class Account implements \JsonSerializable
 
 					$oAccount->sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
 					$oAccount->sLogin = \MailSo\Base\Utils::IdnToAscii($sLogin);
-					$oAccount->SetPassword($sPassword);
+					$oAccount->SetPassword($oPassword);
 					$oAccount->oDomain = $oDomain;
 
 					$oActions->Plugins()->RunHook('filter.account', array($oAccount));
@@ -194,25 +190,22 @@ abstract class Account implements \JsonSerializable
 				$oActions,
 				$aAccountHash['email'],
 				$aAccountHash['login'],
-				$aAccountHash['pass'],
+				new SensitiveString($aAccountHash['pass']),
 				$bThrowExceptionOnFalse
 			);
 			if ($oAccount) {
 				if (isset($aAccountHash['name'])) {
 					$oAccount->sName = $aAccountHash['name'];
 				}
-				$oActions->logMask($oAccount->IncPassword());
 				// init smtp user/password
 				if (isset($aAccountHash['smtp'])) {
 					$oAccount->sSmtpLogin = $aAccountHash['smtp']['user'];
 					$oAccount->SetSmtpPassword($aAccountHash['smtp']['pass']);
-					$oActions->logMask($oAccount->sSmtpPassword);
 				}
 				// init proxy user/password
 				if (isset($aAccountHash['proxy'])) {
 					$oAccount->sProxyAuthUser = $aAccountHash['proxy']['user'];
 					$oAccount->SetProxyAuthPassword($aAccountHash['proxy']['pass']);
-					$oActions->logMask($oAccount->sProxyAuthPassword);
 				}
 			}
 		}
@@ -240,7 +233,7 @@ abstract class Account implements \JsonSerializable
 		$oImapClient->Connect($oSettings);
 		$oPlugins->RunHook('imap.after-connect', array($this, $oImapClient, $oSettings));
 
-		$oSettings->Password = $this->sPassword;
+		$oSettings->Password = $this->oPassword;
 		return $this->netClientLogin($oImapClient, $oPlugins);
 	}
 
@@ -264,7 +257,7 @@ abstract class Account implements \JsonSerializable
 			throw new RequireCredentialsException
 		}
 */
-		$oSettings->Password = $this->sSmtpPassword ?: $this->sPassword;
+		$oSettings->Password = $this->sSmtpPassword ?: $this->oPassword;
 		return $this->netClientLogin($oSmtpClient, $oPlugins);
 	}
 
@@ -279,7 +272,7 @@ abstract class Account implements \JsonSerializable
 		$oSieveClient->Connect($oSettings);
 		$oPlugins->RunHook('sieve.after-connect', array($this, $oSieveClient, $oSettings));
 
-		$oSettings->Password = $this->sPassword;
+		$oSettings->Password = $this->oPassword;
 		return $this->netClientLogin($oSieveClient, $oPlugins);
 	}
 
@@ -306,4 +299,11 @@ abstract class Account implements \JsonSerializable
 		return $bResult;
 	}
 
+/*
+	// Stores settings in AdditionalAccount else MainAccount
+	public function settingsLocal() : \RainLoop\Settings
+	{
+		return \RainLoop\Api::Actions()->SettingsProvider(true)->Load($this);
+	}
+*/
 }

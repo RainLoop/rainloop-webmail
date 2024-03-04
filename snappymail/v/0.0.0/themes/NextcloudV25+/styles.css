@@ -1322,6 +1322,7 @@ html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
 #rl-app .b-folders .b-content {
 	top: 60px;
 	bottom: 162px;
+	color: unset;
 }
 
 #rl-app .b-folders .b-content.show-on-panel-disabled {

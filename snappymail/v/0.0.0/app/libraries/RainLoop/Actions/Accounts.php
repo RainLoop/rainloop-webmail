@@ -81,7 +81,7 @@ trait Accounts
 		$aAccounts = $this->GetAccounts($oMainAccount);
 
 		$sEmail = \trim($this->GetActionParam('email', ''));
-		$sPassword = $this->GetActionParam('password', '');
+		$oPassword = new \SnappyMail\SensitiveString($this->GetActionParam('password', ''));
 		$sName = \trim($this->GetActionParam('name', ''));
 		$bNew = !empty($this->GetActionParam('new', 1));
 
@@ -92,8 +92,8 @@ trait Accounts
 			throw new ClientException(Notifications::AccountDoesNotExist);
 		}
 
-		if ($bNew || $sPassword) {
-			$oNewAccount = $this->LoginProcess($sEmail, $sPassword, false);
+		if ($bNew || \strlen($oPassword)) {
+			$oNewAccount = $this->LoginProcess($sEmail, $oPassword, false);
 			$aAccounts[$sEmail] = $oNewAccount->asTokenArray($oMainAccount);
 		} else {
 			$aAccounts[$sEmail] = \RainLoop\Model\AdditionalAccount::convertArray($aAccounts[$sEmail]);
@@ -261,7 +261,11 @@ trait Accounts
 		if (!$oIdentity->FromJSON($this->GetActionParams(), true)) {
 			throw new ClientException(Notifications::InvalidInputArgument);
 		}
-
+/*		// TODO: verify private key for certificate?
+		if ($oIdentity->smimeCertificate && $oIdentity->smimeKey) {
+			new \SnappyMail\SMime\Certificate($oIdentity->smimeCertificate, $oIdentity->smimeKey);
+		}
+*/
 		$this->IdentitiesProvider()->UpdateIdentity($oAccount, $oIdentity);
 		return $this->TrueResponse();
 	}

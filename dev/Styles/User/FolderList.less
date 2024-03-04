@@ -65,6 +65,7 @@
 		overflow: hidden;
 		overflow-y: auto;
 		min-width: 100px;
+		color: var(--folders-color, #333);
 	}
 
 	hr {
@@ -77,22 +78,18 @@
 		white-space: nowrap;
 
 		a {
-			display: block;
-			position: relative;
-			z-index: 1;
-			line-height: 34px;
 			background-color: transparent;
-			vertical-align: middle;
-			color: var(--folders-disabled-color, #666);
 			border-left: 3px solid transparent;
-
+			color: var(--folders-color, #333);
+			display: block;
+			line-height: 34px;
 			padding: 0 2em 0 @folderItemPadding;
-
+			position: relative;
 			text-decoration: none;
+			vertical-align: middle;
+			z-index: 1;
 
 			&.selectable {
-
-				color: var(--folders-color, #333);
 				cursor: pointer;
 
 				&:hover {
@@ -115,6 +112,7 @@
 				}
 			}
 			&:not(.selectable) {
+				color: var(--folders-disabled-color, #666);
 				cursor: default;
 				font-style: italic;
 			}

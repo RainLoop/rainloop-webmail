@@ -13,7 +13,7 @@ ko.bindingHandlers = {};
 // The ko.bindingContext constructor is only called directly to create the root context. For child
 // contexts, use bindingContext.createChildContext or bindingContext.extend.
 ko.bindingContext = class {
-    constructor(dataItemOrAccessor, parentContext, dataItemAlias, extendCallback, options)
+    constructor(dataItemOrAccessor, parentContext, extendCallback, options)
     {
         var self = this,
             shouldInheritData = dataItemOrAccessor === inheritParentVm,
@@ -42,7 +42,6 @@ ko.bindingContext = class {
                     self[contextAncestorBindingInfo] = parentContext[contextAncestorBindingInfo];
                 }
             } else {
-                self['$parents'] = [];
                 self['$root'] = dataItem;
 
                 // Export 'ko' in the binding context so it will be available in bindings and templates
@@ -56,12 +55,8 @@ ko.bindingContext = class {
             if (shouldInheritData) {
                 dataItem = self['$data'];
             } else {
-                self['$rawData'] = dataItemOrObservable;
                 self['$data'] = dataItem;
             }
-
-            if (dataItemAlias)
-                self[dataItemAlias] = dataItem;
 
             // The extendCallback function is provided when creating a child context or extending a context.
             // It handles the specific actions needed to finish setting up the binding context. Actions in this
@@ -107,21 +102,11 @@ ko.bindingContext = class {
     // But this does not mean that the $data value of the child context will also get updated. If the child
     // view model also depends on the parent view model, you must provide a function that returns the correct
     // view model on each update.
-   'createChildContext'(dataItemOrAccessor, dataItemAlias, extendCallback, options) {
-        if (!options && dataItemAlias && typeof dataItemAlias == "object") {
-            options = dataItemAlias;
-            dataItemAlias = options['as'];
-            extendCallback = options['extend'];
-        }
-
-        return new ko.bindingContext(dataItemOrAccessor, this, dataItemAlias, (self, parentContext) => {
+   'createChildContext'(dataItemOrAccessor, options) {
+        return new ko.bindingContext(dataItemOrAccessor, this, (self, parentContext) => {
             // Extend the context hierarchy by setting the appropriate pointers
-            self['$parentContext'] = parentContext;
             self['$parent'] = parentContext['$data'];
-            self['$parents'] = (parentContext['$parents'] || []).slice(0);
-            self['$parents'].unshift(self['$parent']);
-            if (extendCallback)
-                extendCallback(self);
+            options['extend']?.(self);
         }, options);
     }
 
@@ -129,7 +114,7 @@ ko.bindingContext = class {
     // Similarly to "child" contexts, provide a function here to make sure that the correct values are set
     // when an observable view model is updated.
     'extend'(properties, options) {
-        return new ko.bindingContext(inheritParentVm, this, null, self =>
+        return new ko.bindingContext(inheritParentVm, this, self =>
             ko.utils.extend(self, typeof(properties) == "function" ? properties(self) : properties)
         , options);
     }
@@ -202,7 +187,7 @@ ko.bindingEvent = {
                 } else if (bindingInfo.asyncContext === undefined && bindingInfo.eventSubscribable?.hasSubscriptionsForEvent(ko.bindingEvent.descendantsComplete)) {
                     // It's currently an error to register a descendantsComplete handler for a node that was never registered as completing asynchronously.
                     // That's because without the asyncContext, we don't have a way to know that all descendants have completed.
-                    throw new Error("descendantsComplete event not supported for bindings on this node");
+                    throw Error("descendantsComplete event not supported for bindings on this node");
                 }
             }
         }
@@ -226,12 +211,6 @@ ko.bindingEvent = {
     }
 };
 
-function validateThatBindingIsAllowedForVirtualElements(bindingName) {
-    var validator = ko.virtualElements.allowedBindings[bindingName];
-    if (!validator)
-        throw new Error("The binding '" + bindingName + "' cannot be used with virtual elements")
-}
-
 function applyBindingsToDescendantsInternal(bindingContext, elementOrVirtualElement) {
     var currentChild, nextInQueue = ko.virtualElements.firstChild(elementOrVirtualElement);
 
@@ -252,7 +231,7 @@ function applyBindingsToNodeAndDescendantsInternal(bindingContext, nodeVerified)
     // (1) We need to store the binding info for the node (all element nodes)
     // (2) It might have bindings (e.g., it has a data-bind attribute, or it's a marker for a containerless template)
     if (isElement || ko.bindingProvider.nodeHasBindings(nodeVerified))
-        bindingContextForDescendants = applyBindingsToNodeInternal(nodeVerified, null, bindingContext)['bindingContextForDescendants'];
+        bindingContextForDescendants = applyBindingsToNodeInternal(nodeVerified, null, bindingContext);
 
     // Don't want bindings that operate on text nodes to mutate <script> and <textarea> contents,
     // because it's unexpected and a potential XSS issue.
@@ -384,8 +363,9 @@ function applyBindingsToNodeInternal(node, sourceBindings, bindingContext) {
                 handlerUpdateFn = bindingKeyAndHandler.handler["update"],
                 bindingKey = bindingKeyAndHandler.key;
 
-            if (node.nodeType === 8) {
-                validateThatBindingIsAllowedForVirtualElements(bindingKey);
+            // COMMENT_NODE
+            if (node.nodeType === 8 && !ko.virtualElements.allowedBindings[bindingKey]) {
+                throw Error("The binding '" + bindingKey + "' cannot be used with comment nodes");
             }
 
             try {
@@ -397,7 +377,7 @@ function applyBindingsToNodeInternal(node, sourceBindings, bindingContext) {
                         // If this binding handler claims to control descendant bindings, make a note of this
                         if (initResult && initResult['controlsDescendantBindings']) {
                             if (bindingHandlerThatControlsDescendantBindings !== undefined)
-                                throw new Error("Multiple bindings (" + bindingHandlerThatControlsDescendantBindings + " and " + bindingKey + ") are trying to control descendant bindings of the same element. You cannot use these bindings together on the same element.");
+                                throw Error("Multiple bindings (" + bindingHandlerThatControlsDescendantBindings + " and " + bindingKey + ") are trying to control descendant bindings of the same element. You cannot use these bindings together on the same element.");
                             bindingHandlerThatControlsDescendantBindings = bindingKey;
                         }
                     });
@@ -417,11 +397,7 @@ function applyBindingsToNodeInternal(node, sourceBindings, bindingContext) {
         });
     }
 
-    var shouldBindDescendants = bindingHandlerThatControlsDescendantBindings === undefined;
-    return {
-        'shouldBindDescendants': shouldBindDescendants,
-        'bindingContextForDescendants': shouldBindDescendants && contextToExtend
-    };
+    return bindingHandlerThatControlsDescendantBindings === undefined && contextToExtend;
 }
 
 ko.storedBindingContextForNode = node => {
@@ -432,7 +408,7 @@ ko.storedBindingContextForNode = node => {
 function getBindingContext(viewModelOrBindingContext, extendContextCallback) {
     return viewModelOrBindingContext && (viewModelOrBindingContext instanceof ko.bindingContext)
         ? viewModelOrBindingContext
-        : new ko.bindingContext(viewModelOrBindingContext, undefined, undefined, extendContextCallback);
+        : new ko.bindingContext(viewModelOrBindingContext, null, extendContextCallback);
 }
 
 ko['applyBindingAccessorsToNode'] = (node, bindings, viewModelOrBindingContext) =>

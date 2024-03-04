@@ -34,15 +34,18 @@ class OpenSSL
 	{
 		$data = \openssl_x509_parse(\openssl_x509_read($certificate));
 		if (!$data) {
-			\error_log("OpenSSL parse: " . \openssl_error_string());
+			\SnappyMail\Log::error('OpenSSL', "parse: " . \openssl_error_string());
 			return false;
 		}
 		$key = \str_replace(':', '', $data['extensions']['subjectKeyIdentifier'] ?? $data['hash']);
 		$filename = "{$this->homedir}/{$key}.crt";
-		if (!\file_exists($filename)) {
+		if (\file_exists($filename)) {
+			\SnappyMail\Log::debug('OpenSSL', "certificate {$key} already imported");
+		} else {
 			\file_put_contents("{$this->homedir}/{$key}.crt", $certificate);
 //			\unlink("{$this->homedir}/certificates.json");
 			$this->certificates(true);
+			\SnappyMail\Log::debug('OpenSSL', "certificate {$key} imported");
 		}
 		return true;
 	}
@@ -50,7 +53,7 @@ class OpenSSL
 	public function certificates(bool $force = false) : array
 	{
 		$cacheFile = "{$this->homedir}/certificates.json";
-		$result = \file_exists($cacheFile)
+		$result = (!$force && \file_exists($cacheFile))
 			? \json_decode(\file_get_contents($cacheFile), true)
 			: null;
 		if (!\is_array($result)) {
@@ -98,7 +101,7 @@ class OpenSSL
 					}
 					$result[] = $short;
 				} else {
-					\error_log("OpenSSL parse({$file}): " . \openssl_error_string());
+					\SnappyMail\Log::error('OpenSSL', "parse({$file}): " . \openssl_error_string());
 				}
 			}
 			\file_put_contents($cacheFile, \json_encode($result));
@@ -129,8 +132,7 @@ class OpenSSL
 	}
 
 	public function setPrivateKey(/*OpenSSLAsymmetricKey|string*/$privateKey,
-		#[\SensitiveParameter]
-		?string $passphrase = null
+		?\SnappyMail\SensitiveString $passphrase = null
 	) : void
 	{
 		$this->privateKey = \openssl_pkey_get_private($privateKey, $passphrase);
@@ -142,6 +144,19 @@ class OpenSSL
 		}
 	}
 
+/*
+	public function asn1parse(/*string|Temporary* / $input) : ?string
+	{
+		if (\is_string($input)) {
+			$tmp = new Temporary('smimein-');
+			if (!$tmp->putContents($input)) {
+				return null;
+			}
+			$input = $tmp;
+		}
+		`openssl asn1parse -in $input->filename()`
+	}
+*/
 	public function decrypt(/*string|Temporary*/ $input) : ?string
 	{
 		if (\is_string($input)) {

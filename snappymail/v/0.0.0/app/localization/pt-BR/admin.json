@@ -7,7 +7,8 @@
 		"UPDATE": "Atualizar",
 		"USERNAME": "Nome de usuário",
 		"PASSWORD": "Senha",
-		"CANCEL": "Cancelar"
+		"CANCEL": "Cancelar",
+		"SEARCH": "Nenhum contato encontrado"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Usuário",
@@ -84,7 +85,8 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Segurança",
 		"LABEL_USE_IMAGE_PROXY": "Usar proxy local para imagens externas",
-		"LABEL_ALLOW_OPEN_PGP": "Permitir OpenPGP",
+		"LABEL_ALLOW_OPENPGP": "Permitir OpenPGP.js",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "Mostar informações PHP",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Credenciais de acesso ao Painel Administrativo",
 		"LABEL_CURRENT_PASSWORD": "Senha atual",
@@ -167,17 +169,17 @@
 		"UNKNOWN_ERROR": "Erro desconhecido"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
-		"INVALID_TOKEN": "Senha inválida",
-		"AUTH_ERROR": "Falha na autenticação",
-		"DOMAIN_ALREADY_EXISTS": "O domínio já existe",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Não foi possível salvar as configurações",
-		"CANT_INSTALL_PACKAGE": "Erro ao instalar pacote de plugin",
-		"CANT_DELETE_PACKAGE": "Erro ao remover pacote de plugin",
-		"INVALID_PLUGIN_PACKAGE": "Pacote de plugins inválido",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Pacote de plugins insuportados",
-		"UNKNOWN_ERROR": "Erro desconhecido"
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "Senha inválida",
+		"AuthError": "Falha na autenticação",
+		"DomainAlreadyExists": "O domínio já existe",
+		"CantSavePluginSettings": "Não foi possível salvar as configurações",
+		"CantInstallPackage": "Erro ao instalar pacote de plugin",
+		"CantDeletePackage": "Erro ao remover pacote de plugin",
+		"InvalidPluginPackage": "Pacote de plugins inválido",
+		"UnsupportedPluginPackage": "Pacote de plugins insuportados",
+		"UnknownError": "Erro desconhecido"
 	}
 }

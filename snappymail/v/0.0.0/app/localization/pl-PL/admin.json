@@ -7,7 +7,8 @@
 		"UPDATE": "Zaktualizuj",
 		"USERNAME": "Nazwa użytkownika",
 		"PASSWORD": "Hasło",
-		"CANCEL": "Anuluj"
+		"CANCEL": "Anuluj",
+		"SEARCH": "Szukaj"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
@@ -84,7 +85,8 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Bezpieczeństwo",
 		"LABEL_USE_IMAGE_PROXY": "Użyj lokalnego serwera proxy dla zewnętrznych obrazów",
-		"LABEL_ALLOW_OPEN_PGP": "Zezwól na używanie OpenPGP",
+		"LABEL_ALLOW_OPENPGP": "Zezwól na używanie OpenPGP.js",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "Pokaż informacje o wersji PHP",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Poświadczenia dostępu do panelu administracyjnego",
 		"LABEL_CURRENT_PASSWORD": "Bieżące hasło",
@@ -167,17 +169,17 @@
 		"UNKNOWN_ERROR": "Nieznany błąd"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Zapytanie zakończone niepowodzeniem",
-		"REQUEST_ABORTED": "Zapytanie przerwane",
-		"REQUEST_TIMEOUT": "Upłynął limit czasu",
-		"INVALID_TOKEN": "Nieprawidłowy token",
-		"AUTH_ERROR": "Uwierzytelnienie zakończone niepowodzeniem",
-		"DOMAIN_ALREADY_EXISTS": "Ta domena już istnieje",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Nie można zapisać ustawień wtyczki",
-		"CANT_INSTALL_PACKAGE": "Instalacja wtyczki zakończona niepowodzeniem",
-		"CANT_DELETE_PACKAGE": "Usunięcie wtyczki zakończone niepowodzeniem",
-		"INVALID_PLUGIN_PACKAGE": "Nieprawidłowa wtyczka",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Nieobsługiwana wtyczka",
-		"UNKNOWN_ERROR": "Nieznany błąd"
+		"RequestError": "Zapytanie zakończone niepowodzeniem",
+		"RequestAborted": "Zapytanie przerwane",
+		"RequestTimeout": "Upłynął limit czasu",
+		"InvalidToken": "Nieprawidłowy token",
+		"AuthError": "Uwierzytelnienie zakończone niepowodzeniem",
+		"DomainAlreadyExists": "Ta domena już istnieje",
+		"CantSavePluginSettings": "Nie można zapisać ustawień wtyczki",
+		"CantInstallPackage": "Instalacja wtyczki zakończona niepowodzeniem",
+		"CantDeletePackage": "Usunięcie wtyczki zakończone niepowodzeniem",
+		"InvalidPluginPackage": "Nieprawidłowa wtyczka",
+		"UnsupportedPluginPackage": "Nieobsługiwana wtyczka",
+		"UnknownError": "Nieznany błąd"
 	}
 }

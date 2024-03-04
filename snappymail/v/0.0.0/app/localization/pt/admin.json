@@ -7,7 +7,8 @@
 		"UPDATE": "Atualizar",
 		"USERNAME": "Nome de utilizador",
 		"PASSWORD": "Palavra-passe",
-		"CANCEL": "Cancelar"
+		"CANCEL": "Cancelar",
+		"SEARCH": "Pesquisar"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Utilizador",
@@ -84,7 +85,8 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Segurança",
 		"LABEL_USE_IMAGE_PROXY": "Usar proxy local para imagens externas",
-		"LABEL_ALLOW_OPEN_PGP": "Permitir OpenPGP",
+		"LABEL_ALLOW_OPENPGP": "Permitir OpenPGP.js",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "Mostrar informação do PHP",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Credenciais de acesso ao Painel de Admin",
 		"LABEL_CURRENT_PASSWORD": "Palavra-passe atual",
@@ -167,17 +169,17 @@
 		"UNKNOWN_ERROR": "Erro desconhecido"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "A solicitação falhou",
-		"REQUEST_ABORTED": "A solicitação foi abortada",
-		"REQUEST_TIMEOUT": "A solicitação expirou",
-		"INVALID_TOKEN": "Token inválido",
-		"AUTH_ERROR": "A autenticação falhou",
-		"DOMAIN_ALREADY_EXISTS": "O domínio já existe",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Não é possível guardar as definições",
-		"CANT_INSTALL_PACKAGE": "Não foi possível instalar a extensão",
-		"CANT_DELETE_PACKAGE": "Não foi possível remover a extensão",
-		"INVALID_PLUGIN_PACKAGE": "Pacote de extensão inválido",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Pacote de extensão não suportado",
-		"UNKNOWN_ERROR": "Erro desconhecido"
+		"RequestError": "A solicitação falhou",
+		"RequestAborted": "A solicitação foi abortada",
+		"RequestTimeout": "A solicitação expirou",
+		"InvalidToken": "Token inválido",
+		"AuthError": "A autenticação falhou",
+		"DomainAlreadyExists": "O domínio já existe",
+		"CantSavePluginSettings": "Não é possível guardar as definições",
+		"CantInstallPackage": "Não foi possível instalar a extensão",
+		"CantDeletePackage": "Não foi possível remover a extensão",
+		"InvalidPluginPackage": "Pacote de extensão inválido",
+		"UnsupportedPluginPackage": "Pacote de extensão não suportado",
+		"UnknownError": "Erro desconhecido"
 	}
 }

@@ -42,6 +42,10 @@ class Response
 		if (\function_exists('gzinflate') && isset($this->headers['content-encoding'])
 		 && (false !== \stripos($this->headers['content-encoding'], 'gzip'))) {
 			$this->body = \gzinflate(\substr($body, 10, -4));
+			if (false === $this->body) {
+				$err = \error_get_last() ?: ['message' => 'gzinflate failed'];
+				throw new \RuntimeException("{$err['message']} for {$request_uri}");
+			}
 		} else {
 			$this->body = $body;
 		}

@@ -5,7 +5,7 @@ export class AbstractCollectionModel extends Array
 	constructor() {
 /*
 		if (new.target === AbstractCollectionModel) {
-			throw new Error("Can't instantiate AbstractCollectionModel!");
+			throw Error("Can't instantiate AbstractCollectionModel!");
 		}
 */
 		super();

@@ -419,7 +419,7 @@ class Manager
 				$aData[$sPluginName] = $aPluginSettings;
 				$oSettings->SetConf('Plugins',$aData);
 
-				return $this->oActions->SettingsProvider()->Save($oAccount, $oSettings);
+				return $oSettings->save();
 			}
 		}
 

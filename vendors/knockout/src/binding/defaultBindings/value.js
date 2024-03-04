@@ -79,9 +79,8 @@ ko.bindingHandlers['value'] = {
 
                 if (valueHasChanged || elementValue === undefined) {
                     if (isSelectElement) {
-                        var allowUnset = allBindings.get('valueAllowUnset');
-                        ko.selectExtensions.writeValue(element, newValue, allowUnset);
-                        if (!allowUnset && newValue !== ko.selectExtensions.readValue(element)) {
+                        ko.selectExtensions.writeValue(element, newValue);
+                        if (newValue !== ko.selectExtensions.readValue(element)) {
                             // If you try to set a model value that can't be represented in an already-populated dropdown, reject that change,
                             // because you're not allowed to have a model value that disagrees with a visible UI selection.
                             ko.dependencyDetection.ignore(valueUpdateHandler);
@@ -112,4 +111,3 @@ ko.bindingHandlers['value'] = {
     },
     'update': () => {} // Keep for backwards compatibility with code that may have wrapped value binding
 };
-//ko.expressionRewriting.twoWayBindings.add('value');

@@ -5,15 +5,22 @@
 			<div data-bind="component: {
 				name: 'Checkbox',
 				params: {
-					value: useLocalProxyForExternalImages,
-					label: 'TAB_SECURITY/LABEL_USE_IMAGE_PROXY'
+					label: 'TAB_SECURITY/LABEL_USE_IMAGE_PROXY',
+					value: useLocalProxyForExternalImages
 				}
 			}"></div>
 			<div data-bind="component: {
 				name: 'Checkbox',
 				params: {
-					value: capaOpenPGP,
-					label: 'TAB_SECURITY/LABEL_ALLOW_OPEN_PGP'
+					label: 'TAB_SECURITY/LABEL_ALLOW_OPENPGP',
+					value: capaOpenPGP
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'TAB_SECURITY/LABEL_AUTO_VERIFY',
+					value: autoVerifySignatures
 				}
 			}"></div>
 		</div>

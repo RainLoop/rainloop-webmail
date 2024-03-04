@@ -7,7 +7,8 @@
 		"UPDATE": "更新",
 		"USERNAME": "ユーザー名",
 		"PASSWORD": "パスワード",
-		"CANCEL": "キャンセル"
+		"CANCEL": "キャンセル",
+		"SEARCH": "検索"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ログイン",
@@ -84,7 +85,8 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "セキュリティ",
 		"LABEL_USE_IMAGE_PROXY": "外部イメージにローカルProxyを使う",
-		"LABEL_ALLOW_OPEN_PGP": "OpenPGPを使う",
+		"LABEL_ALLOW_OPENPGP": "OpenPGP.jsを使う",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "PHP情報を表示",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "管理画面アクセス情報",
 		"LABEL_CURRENT_PASSWORD": "現在のパスワード",
@@ -167,17 +169,17 @@
 		"UNKNOWN_ERROR": "不明なエラー"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "要求は失敗しました",
-		"REQUEST_ABORTED": "要求は中断されました",
-		"REQUEST_TIMEOUT": "要求はタイムアウトしました",
-		"INVALID_TOKEN": "無効なトークン",
-		"AUTH_ERROR": "認証に失敗しました",
-		"DOMAIN_ALREADY_EXISTS": "ドメインが既に存在しています",
-		"CANT_SAVE_PLUGIN_SETTINGS": "設定が保存できません",
-		"CANT_INSTALL_PACKAGE": "パッケージのインストールに失敗しました",
-		"CANT_DELETE_PACKAGE": "パッケージの削除に失敗しました",
-		"INVALID_PLUGIN_PACKAGE": "無効なプラグインパッケージ",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "サポートされていないプラグインパッケージ",
-		"UNKNOWN_ERROR": "不明なエラー"
+		"RequestError": "要求は失敗しました",
+		"RequestAborted": "要求は中断されました",
+		"RequestTimeout": "要求はタイムアウトしました",
+		"InvalidToken": "無効なトークン",
+		"AuthError": "認証に失敗しました",
+		"DomainAlreadyExists": "ドメインが既に存在しています",
+		"CantSavePluginSettings": "設定が保存できません",
+		"CantInstallPackage": "パッケージのインストールに失敗しました",
+		"CantDeletePackage": "パッケージの削除に失敗しました",
+		"InvalidPluginPackage": "無効なプラグインパッケージ",
+		"UnsupportedPluginPackage": "サポートされていないプラグインパッケージ",
+		"UnknownError": "不明なエラー"
 	}
 }

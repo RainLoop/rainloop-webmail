@@ -88,15 +88,15 @@ abstract class AbstractConfig implements \ArrayAccess, \JsonSerializable
 			if (!\is_scalar($mParamValue)) {
 				$mParamValue = null;
 			}
-			switch (\gettype($this->aData[$sSectionKey][$sParamKey][0]))
+			switch (\get_debug_type($this->aData[$sSectionKey][$sParamKey][0]))
 			{
-				case 'boolean':
+				case 'bool':
 					$this->aData[$sSectionKey][$sParamKey][0] = (bool) $mParamValue;
 					break;
-				case 'double':
+				case 'float':
 					$this->aData[$sSectionKey][$sParamKey][0] = (float) $mParamValue;
 					break;
-				case 'integer':
+				case 'int':
 					$this->aData[$sSectionKey][$sParamKey][0] = (int) $mParamValue;
 					break;
 				case 'string':
@@ -289,13 +289,13 @@ abstract class AbstractConfig implements \ArrayAccess, \JsonSerializable
 						$bFirst = false;
 
 						$sValue = '""';
-						switch (\gettype($mParamValue[0]))
+						switch (\get_debug_type($mParamValue[0]))
 						{
-							case 'boolean':
+							case 'bool':
 								$sValue = $mParamValue[0] ? 'On' : 'Off';
 								break;
-							case 'double':
-							case 'integer':
+							case 'float':
+							case 'int':
 								$sValue = $mParamValue[0];
 								break;
 							case 'string':

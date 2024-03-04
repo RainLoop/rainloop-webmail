@@ -24,8 +24,7 @@ const
 			return privateKey.key;
 		}
 		const key = privateKey.id,
-			pass = await Passphrases.ask(
-				key,
+			pass = await Passphrases.ask(privateKey,
 				'OpenPGP.js key<br>' + key + ' ' + privateKey.emails[0],
 				'CRYPTO/'+btnTxt
 			);
@@ -35,10 +34,19 @@ const
 					privateKey: privateKey.key,
 					passphrase
 				});
-			result && pass.remember && Passphrases.set(key, passphrase);
+			result && pass.remember && Passphrases.set(privateKey, passphrase);
 			return result;
 		}
 	},
+
+	collator = new Intl.Collator(undefined, {sensitivity: 'base'}),
+	sort = keys => keys.sort(
+//		(a, b) => collator.compare(a.emails[0], b.emails[0]) || collator.compare(a.fingerprint, b.fingerprint)
+		(a, b) => collator.compare(a.emails[0], b.emails[0]) || collator.compare(a.id, b.id)
+	),
+	dedup = keys => sort((keys || [])
+		.filter((v, i, a) => a.findIndex(entry => entry.fingerprint == v.fingerprint) === i)
+	),
 
 	/**
 	 * OpenPGP.js v5 removed the localStorage (keyring)
@@ -69,21 +77,26 @@ const
 class OpenPgpKeyModel {
 	constructor(armor, key) {
 		this.key = key;
-		const aEmails = [];
-		if (key.users) {
-			key.users.forEach(user => user.userID.email && aEmails.push(user.userID.email));
-		}
 		this.id = key.getKeyID().toHex().toUpperCase();
 		this.fingerprint = key.getFingerprint();
 		this.can_encrypt = !!key.getEncryptionKey();
 		this.can_sign = !!key.getSigningKey();
-		this.emails = aEmails;
+		this.emails = key.users.map(user => user.userID.email).filter(email => email);
 		this.armor = armor;
 		this.askDelete = ko.observable(false);
 		this.openForDeletion = ko.observable(null).askDeleteHelper();
 //		key.getUserIDs()
 //		key.getPrimaryUser()
 	}
+
+/*
+	get id() { return this.key.getKeyID().toHex().toUpperCase(); }
+	get fingerprint() { return this.key.getFingerprint(); }
+	get can_encrypt() { return !!this.key.getEncryptionKey(); }
+	get can_sign() { return !!this.key.getSigningKey(); }
+	get emails() { return this.key.users.map(user => user.userID.email).filter(email => email); }
+	get armor() { return this.key.armor(); }
+*/
 
 	view() {
 		showScreenPopup(OpenPgpKeyPopupView, [this]);
@@ -115,10 +128,6 @@ export const OpenPGPUserStore = new class {
 
 	loadKeyrings() {
 		if (window.openpgp) {
-			const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'}),
-				dedup = keys => (keys || [])
-					.filter((v, i, a) => a.findIndex(entry => entry.fingerprint == v.fingerprint) === i)
-					.sort((a, b) => collator.compare(a.emails[0], b.emails[0]));
 			loadOpenPgpKeys(publicKeysItem).then(keys => {
 				this.publicKeys(dedup(keys));
 				console.log('openpgp.js public keys loaded');
@@ -138,22 +147,29 @@ export const OpenPGPUserStore = new class {
 	}
 
 	importKey(armoredKey) {
-		window.openpgp && openpgp.readKey({armoredKey:armoredKey}).then(key => {
-			if (!key.err) {
-				key = new OpenPgpKeyModel(armoredKey, key);
-				if (key.key.isPrivate()) {
-					if (!this.privateKeys.find(entry => entry.fingerprint == key.fingerprint)) {
-						this.privateKeys.push(key);
-						storeOpenPgpKeys(this.privateKeys, privateKeysItem);
-					}
-				} else {
-					if (!this.publicKeys.find(entry => entry.fingerprint == key.fingerprint)) {
-						this.publicKeys.push(key);
-						storeOpenPgpKeys(this.publicKeys, publicKeysItem);
-					}
+		this.importKeys([armoredKey]);
+	}
+
+	async importKeys(keys) {
+		if (window.openpgp) {
+			const privateKeys = this.privateKeys(),
+				publicKeys = this.publicKeys();
+			for (const armoredKey of keys) try {
+				let key = await openpgp.readKey({armoredKey:armoredKey});
+				if (!key.err) {
+					key = new OpenPgpKeyModel(armoredKey, key);
+					const keys = key.key.isPrivate() ? privateKeys : publicKeys;
+					keys.find(entry => entry.fingerprint == key.fingerprint)
+					|| keys.push(key);
 				}
+			} catch (e) {
+				console.error(e, armoredKey);
 			}
-		});
+			this.privateKeys(sort(privateKeys));
+			this.publicKeys(sort(publicKeys));
+			storeOpenPgpKeys(privateKeys, privateKeysItem);
+			storeOpenPgpKeys(publicKeys, publicKeysItem);
+		}
 	}
 
 	/**
@@ -229,7 +245,7 @@ export const OpenPGPUserStore = new class {
 	 * https://docs.openpgpjs.org/#sign-and-verify-cleartext-messages
 	 */
 	async verify(message) {
-		const data = message.pgpSigned(), // { bodyPartId: "1", sigPartId: "2", micAlg: "pgp-sha256" }
+		const data = message.pgpSigned(), // { partId: "1", sigPartId: "2", micAlg: "pgp-sha256" }
 			publicKey = this.publicKeys().find(key => key.emails.includes(message.from[0].email));
 		if (data && publicKey) {
 			data.folder = message.folder;

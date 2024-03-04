@@ -184,7 +184,12 @@ class SieveClient extends \MailSo\Net\NetClient
 	public function Logout() : void
 	{
 		if ($this->bIsLoggined) {
-			$this->sendRequestWithCheck('LOGOUT');
+			try {
+				$this->sendRequestWithCheck('LOGOUT');
+			} catch (\Throwable $e) {
+				// https://github.com/the-djmaze/snappymail/issues/1455
+				$this->writeLogException($e, \LOG_WARNING, false);
+			}
 			$this->bIsLoggined = false;
 		}
 	}
@@ -408,6 +413,7 @@ class SieveClient extends \MailSo\Net\NetClient
 			if (null === $sResponseBuffer) {
 				break;
 			}
+			// \MailSo\Imap\Enumerations\ResponseStatus
 			$bEnd = \in_array(\substr($sResponseBuffer, 0, 2), array('OK', 'NO'));
 			// convertEndOfLine
 			$sLine = \trim($sResponseBuffer);

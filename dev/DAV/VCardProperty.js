@@ -55,7 +55,7 @@ export class VCardProperty {
 		}
 		// invalid property
 		else {
-			throw new Error('invalid Property constructor');
+			throw Error('invalid Property constructor');
 		}
 	}
 

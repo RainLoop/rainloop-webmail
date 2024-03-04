@@ -7,7 +7,8 @@
 		"UPDATE": "Uppdatera",
 		"USERNAME": "Användarnamn",
 		"PASSWORD": "Lösenord",
-		"CANCEL": "Avbryt"
+		"CANCEL": "Avbryt",
+		"SEARCH": "Inga kontakter funna"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logga in",
@@ -84,7 +85,8 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Säkerhet",
 		"LABEL_USE_IMAGE_PROXY": "Använd lokal proxy för externa bilder",
-		"LABEL_ALLOW_OPEN_PGP": "Tillåt OpenPGP",
+		"LABEL_ALLOW_OPENPGP": "Tillåt OpenPGP.js",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "Visa PHP-information",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Administrativsuppgifter",
 		"LABEL_CURRENT_PASSWORD": "Nuvarande lösenord",
@@ -167,17 +169,17 @@
 		"UNKNOWN_ERROR": "Okänt fel"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Request failed",
-		"REQUEST_ABORTED": "Request is aborted",
-		"REQUEST_TIMEOUT": "Request timed out",
-		"INVALID_TOKEN": "ogiltiga symboler",
-		"AUTH_ERROR": "Autentisering misslyckades",
-		"DOMAIN_ALREADY_EXISTS": "Domänen finns redan",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Kan inte spara inställningarna",
-		"CANT_INSTALL_PACKAGE": "Det gick inte att installera tillägget",
-		"CANT_DELETE_PACKAGE": "Det gick inte att ta bort tillägget",
-		"INVALID_PLUGIN_PACKAGE": "Ogiltigt tilläggspaket",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Tillägg som inte stöds",
-		"UNKNOWN_ERROR": "Okänt fel"
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "ogiltiga symboler",
+		"AuthError": "Autentisering misslyckades",
+		"DomainAlreadyExists": "Domänen finns redan",
+		"CantSavePluginSettings": "Kan inte spara inställningarna",
+		"CantInstallPackage": "Det gick inte att installera tillägget",
+		"CantDeletePackage": "Det gick inte att ta bort tillägget",
+		"InvalidPluginPackage": "Ogiltigt tilläggspaket",
+		"UnsupportedPluginPackage": "Tillägg som inte stöds",
+		"UnknownError": "Okänt fel"
 	}
 }

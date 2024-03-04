@@ -570,34 +570,39 @@ export class MailMessageView extends AbstractViewRight {
 	}
 
 	pgpDecrypt() {
-		const oMessage = currentMessage();
+		const oMessage = currentMessage(),
+			data = oMessage.pgpEncrypted();
+		delete data.error;
 		PgpUserStore.decrypt(oMessage).then(result => {
-			if (result) {
-				oMessage.pgpDecrypted(true);
-				if (result.data) {
-					MimeToMessage(result.data, oMessage);
-					oMessage.html() ? oMessage.viewHtml() : oMessage.viewPlain();
-					if (result.signatures?.length) {
-						oMessage.pgpSigned(true);
-						oMessage.pgpVerified({
-							signatures: result.signatures,
-							success: !!result.signatures.length
-						});
-					}
-				}
-			} else {
+			if (!result) {
 				// TODO: translate
-				alert('Decryption failed, canceled or not possible');
+				throw Error('Decryption failed, canceled or not possible');
+			}
+			oMessage.pgpDecrypted(true);
+			if (result.data) {
+				MimeToMessage(result.data, oMessage);
+				oMessage.html() ? oMessage.viewHtml() : oMessage.viewPlain();
+				if (result.signatures?.length) {
+					oMessage.pgpSigned({
+						signatures: result.signatures,
+						success: !!result.signatures.length
+					});
+				}
 			}
 		})
-		.catch(e => console.error(e));
+		.catch(e => {
+			data.error = e.message;
+		})
+		.finally(() => {
+			oMessage.pgpEncrypted(data);
+		});
 	}
 
 	pgpVerify(/*self, event*/) {
 		const oMessage = currentMessage()/*, ctrl = event.target.closest('.openpgp-control')*/;
 		PgpUserStore.verify(oMessage).then(result => {
 			if (result) {
-				oMessage.pgpVerified(result);
+				oMessage.pgpSigned(result);
 			} else {
 				alert('Verification failed or no valid public key found');
 			}
@@ -624,16 +629,17 @@ export class MailMessageView extends AbstractViewRight {
 
 	async smimeDecrypt() {
 		const message = currentMessage();
-		let pass, data = message.smimeEncrypted(); // { partId: "1" }
 		const addresses = message.from.concat(message.to, message.cc, message.bcc).map(item => item.email),
-			identity = IdentityUserStore.find(item => addresses.includes(item.email()));
+			identity = IdentityUserStore.find(item => addresses.includes(item.email())),
+			data = message.smimeEncrypted(); // { partId: "1" }
 		if (data && identity) {
-			data = { ...data }; // clone
-			data.folder = message.folder;
-			data.uid = message.uid;
-//			data.bodyPart = data.bodyPart?.raw;
-			data.certificate = identity.smimeCertificate();
-			data.privateKey = identity.smimeKey();
+			delete data.error;
+			let pass, params = { ...data }; // clone
+			params.folder = message.folder;
+			params.uid = message.uid;
+//			params.bodyPart = params.bodyPart?.raw;
+			params.certificate = identity.smimeCertificate();
+			params.privateKey = identity.smimeKey();
 			if (identity.smimeKeyEncrypted()) {
 				pass = await Passphrases.ask(identity,
 					i18n('SMIME/PRIVATE_KEY_OF', {EMAIL: identity.email()}),
@@ -642,36 +648,44 @@ export class MailMessageView extends AbstractViewRight {
 				if (!pass) {
 					return;
 				}
-				data.passphrase = pass?.password;
+				params.passphrase = pass?.password;
 			}
-			Remote.post('SMimeDecryptMessage', null, data).then(response => {
-				if (response?.Result) {
+			Remote.post('SMimeDecryptMessage', null, params).then(response => {
+				if (response?.Result?.data) {
 					message.smimeDecrypted(true);
-					MimeToMessage(response.Result, message);
+					MimeToMessage(response.Result.data, message);
 					message.html() ? message.viewHtml() : message.viewPlain();
 					pass && pass.remember && Passphrases.set(identity, pass.password);
+					if ('signed' in response.Result) {
+						message.smimeSigned(response.Result.signed);
+					}
 				}
+			}).catch(e => {
+				data.error = e.message
+			})
+			.finally(() => {
+				message.smimeEncrypted(data);
 			});
 		}
 	}
 
 	smimeVerify(/*self, event*/) {
-		const message = currentMessage();
-		let data = message.smimeSigned(); // { partId: "1", micAlg: "pgp-sha256" }
+		const message = currentMessage(),
+			data = message.smimeSigned(); // { partId: "1", micAlg: "pgp-sha256" }
 		if (data) {
-			data = { ...data }; // clone
-			data.folder = message.folder;
-			data.uid = message.uid;
-			data.bodyPart = data.bodyPart?.raw;
-			data.sigPart = data.sigPart?.bodyRaw;
-			Remote.post('SMimeVerifyMessage', null, data).then(response => {
+			const params = { ...data }; // clone
+			params.folder = message.folder;
+			params.uid = message.uid;
+			params.bodyPart = data.bodyPart?.raw;
+			params.sigPart = data.sigPart?.bodyRaw;
+			Remote.post('SMimeVerifyMessage', null, params).then(response => {
 				if (response?.Result) {
 					if (response.Result.body) {
 						MimeToMessage(response.Result.body, message);
 						message.html() ? message.viewHtml() : message.viewPlain();
-						response.Result.body = null;
 					}
-					message.smimeVerified(response.Result);
+					data.success = response.Result.success;
+					message.smimeSigned(data);
 				}
 			});
 		}

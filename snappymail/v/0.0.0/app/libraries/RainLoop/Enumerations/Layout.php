@@ -2,7 +2,7 @@
 
 namespace RainLoop\Enumerations;
 
-class Layout
+abstract class Layout
 {
 	const NO_PREVIEW = 0;
 	const SIDE_PREVIEW = 1;

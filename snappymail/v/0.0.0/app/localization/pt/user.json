@@ -154,8 +154,8 @@
 		"HAS_VIRUS_WARNING": "AVISO: vírus detetado",
 		"TAGS": "Etiquetas",
 		"NEW_TAG": "Nova etiqueta",
-		"ENABLE_TRACKING_LINKS": "Enable tracking links",
-		"TRACKING_ENABLED": "Links are now tracked when clicked!"
+		"ENABLE_TRACKING_LINKS": "Ativar ligações de rastreamento",
+		"TRACKING_ENABLED": "As ligações irão ser rastreadas quando clicadas!"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Importante",
@@ -255,7 +255,7 @@
 	"POPUPS_IDENTITY": {
 		"TITLE_ADD_IDENTITY": "Adicionar identidade?",
 		"TITLE_UPDATE_IDENTITY": "Atualizar identidade?",
-		"LABEL": "Label",
+		"LABEL": "Rótulo",
 		"BUTTON_ADD_IDENTITY": "Adicionar",
 		"BUTTON_UPDATE_IDENTITY": "Atualizar",
 		"SIGNATURE": "Assinatura",
@@ -281,8 +281,9 @@
 		"VERIFY": "Validar",
 		"GOOD_SIGNATURE": "Boa assinatura de %USER%",
 		"ERROR": "Erro %TYPE%: %ERROR%",
-		"CREATE_SELF_SIGNED": "Create self-signed",
-		"VALID_UNTIL": "Valid until"
+		"CREATE_SELF_SIGNED": "Criar auto-assinado",
+		"VALID_UNTIL": "Válido até",
+		"PRIVATE_KEY": "Chave privada"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importar chave OpenPGP",
@@ -295,17 +296,19 @@
 		"SIGNED_MESSAGE": "Mensagem assinada com OpenPGP",
 		"ENCRYPTED_MESSAGE": "Mensagem encriptada com OpenPGP",
 		"STORE_IN_GNUPG": "Guardar no servidor em GnuPG",
-		"STORE_PUBLIC_KEY_IN_GNUPG": "Store public key on server in GnuPG",
-		"STORE_PRIVATE_KEY_IN_GNUPG": "Store private key on server in GnuPG",
+		"STORE_PUBLIC_KEY_IN_GNUPG": "Guardar a chave pública no servidor em GnuPG",
+		"STORE_PRIVATE_KEY_IN_GNUPG": "Guardar a chave privada no servidor em GnuPG",
 		"BACKUP_ON_SERVER": "Guardar (encriptado) no servidor",
-		"BACKUP_PUBLIC_KEY_ON_SERVER": "Backup public key on server",
-		"BACKUP_PRIVATE_KEY_ON_SERVER": "Backup private key on server"
+		"BACKUP_PUBLIC_KEY_ON_SERVER": "Fazer cópia de segurança da chave pública no servidor",
+		"BACKUP_PRIVATE_KEY_ON_SERVER": "Fazer cópia de segurança da chave privada no servidor"
 	},
 	"SMIME": {
-		"CERTIFICATES": "S\/MIME Certificates",
+		"POPUP_IMPORT_TITLE": "Importar certificado S\/MIME",
+		"CERTIFICATE": "Certificado",
+		"CERTIFICATES": "Certificados S\/MIME",
 		"SIGNED_MESSAGE": "Mensagem assinada com S\/MIME",
 		"ENCRYPTED_MESSAGE": "Mensagem encriptada com S\/MIME",
-		"PRIVATE_KEY_OF": "S\/MIME private key of %EMAIL%"
+		"PRIVATE_KEY_OF": "Chave privada S\/MIME de %EMAIL%"
 	},
 	"POPUPS_FILTER": {
 		"TITLE_CREATE_FILTER": "Criar um filtro?",
@@ -404,7 +407,7 @@
 		"IMAGEUPLOAD": "Escolher imagem",
 		"UNDO": "Desfazer",
 		"REDO": "Refazer",
-		"REMOVESTYLE": "Remove style"
+		"REMOVESTYLE": "Remover estilo"
 	},
 	"SETTINGS_LABELS": {
 		"GENERAL": "Geral",
@@ -529,7 +532,7 @@
 	"SETTINGS_OPENPGP": {
 		"BUTTON_IMPORT_KEY": "Importar chave",
 		"BUTTON_GENERATE_KEY_PAIR": "Gerar chaves",
-		"IMPORT_FROM_SERVER": "Import from server",
+		"IMPORT_FROM_SERVER": "Importar de servidor",
 		"TITLE_PRIVATE": "Privada",
 		"TITLE_PUBLIC": "Pública",
 		"GET_MAILVELOPE": "Obter extensão Mailvelope para o navegador."
@@ -572,42 +575,42 @@
 		"LABEL_CLOSE_COMPOSE": "Fechar janela de composição"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "A solicitação falhou",
-		"REQUEST_ABORTED": "A solicitação foi abortada",
-		"REQUEST_TIMEOUT": "A solicitação expirou",
-		"INVALID_TOKEN": "Token inválido",
-		"AUTH_ERROR": "A autenticação falhou",
-		"CONNECTION_ERROR": "Não foi possível ligar ao servidor",
-		"DOMAIN_ALREADY_EXISTS": "O domínio já existe",
-		"DOMAIN_NOT_ALLOWED": "Este domínio não é permitido",
-		"ACCOUNT_NOT_ALLOWED": "Esta conta não é permitida",
-		"CONTACTS_SYNC_ERROR": "Erro na sincronização de contactos",
-		"CANT_GET_MESSAGE_LIST": "Não é possível obter a lista de mensagens",
-		"CANT_GET_MESSAGE": "Não é possível obter a mensagem",
-		"CANT_DELETE_MESSAGE": "Não é possível eliminar a mensagem",
-		"CANT_COPY_MESSAGE": "Não é possível copiar a mensagem",
-		"CANT_MOVE_MESSAGE": "Não é possível mover a mensagem",
-		"CANT_SAVE_MESSAGE": "Não é possível guardar a mensagem",
-		"CANT_SEND_MESSAGE": "Não é possível enviar a mensagem",
-		"INVALID_RECIPIENTS": "Destinatários inválidos",
-		"CANT_SAVE_FILTERS": "Não é possível guardar os filtros",
-		"CANT_GET_FILTERS": "Não é possível obter os filtros",
-		"CANT_ACTIVATE_FILTERS_SCRIPT": "Não é possível ativar o script de filtração",
-		"CANT_DELETE_FILTERS_SCRIPT": "Não é possível apagar o script de filtração",
-		"FILTERS_ARE_NOT_CORRECT": "Os filtros não estão corretos",
-		"CANT_CREATE_FOLDER": "Não é possível criar a pasta",
-		"CANT_RENAME_FOLDER": "Não é possível renomear a pasta",
-		"CANT_DELETE_FOLDER": "Não é possível eliminar a pasta",
-		"CANT_DELETE_NON_EMPTY_FOLDER": "Não é possível eliminar pastas com conteúdos",
-		"CANT_SUBSCRIBE_FOLDER": "Não é possível subscrever a esta pasta",
-		"CANT_UNSUBSCRIBE_FOLDER": "Não é possível anular a subsrição desta pasta",
-		"DEMO_SEND_MESSAGE_ERROR": "Por motivos de segurança, esta conta de demonstração não tem permissão para enviar mensagens para endereços de e-mail externos!",
-		"DEMO_ACCOUNT_ERROR": "Por motivos de segurança, esta conta não tem permissão de executar esta ação!",
-		"ACCOUNT_ALREADY_EXISTS": "Esta conta já existe",
-		"ACCOUNT_DOES_NOT_EXIST": "Esta conta não existe",
-		"ACCOUNT_SWITCH_FAILED": "A mudança para a conta \"%EMAIL%\" falhou",
-		"MAIL_SERVER_ERROR": "Ocorreu um erro ao aceder ao servidor de correio",
-		"INVALID_INPUT_ARGUMENT": "Parâmetro de entrada inválido",
-		"UNKNOWN_ERROR": "Erro desconhecido"
+		"RequestError": "A solicitação falhou",
+		"RequestAborted": "A solicitação foi abortada",
+		"RequestTimeout": "A solicitação expirou",
+		"InvalidToken": "Token inválido",
+		"AuthError": "A autenticação falhou",
+		"ConnectionError": "Não foi possível ligar ao servidor",
+		"DomainAlreadyExists": "O domínio já existe",
+		"DomainNotAllowed": "Este domínio não é permitido",
+		"AccountNotAllowed": "Esta conta não é permitida",
+		"ContactsSyncError": "Erro na sincronização de contactos",
+		"CantGetMessageList": "Não é possível obter a lista de mensagens",
+		"CantGetMessage": "Não é possível obter a mensagem",
+		"CantDeleteMessage": "Não é possível eliminar a mensagem",
+		"CantCopyMessage": "Não é possível copiar a mensagem",
+		"CantMoveMessage": "Não é possível mover a mensagem",
+		"CantSaveMessage": "Não é possível guardar a mensagem",
+		"CantSendMessage": "Não é possível enviar a mensagem",
+		"InvalidRecipients": "Destinatários inválidos",
+		"CantSaveFilters": "Não é possível guardar os filtros",
+		"CantGetFilters": "Não é possível obter os filtros",
+		"CantActivateFiltersScript": "Não é possível ativar o script de filtração",
+		"CantDeleteFiltersScript": "Não é possível apagar o script de filtração",
+		"FiltersAreNotCorrect": "Os filtros não estão corretos",
+		"CantCreateFolder": "Não é possível criar a pasta",
+		"CantRenameFolder": "Não é possível renomear a pasta",
+		"CantDeleteFolder": "Não é possível eliminar a pasta",
+		"CantDeleteNonEmptyFolder": "Não é possível eliminar pastas com conteúdos",
+		"CantSubscribeFolder": "Não é possível subscrever a esta pasta",
+		"CantUnsubscribeFolder": "Não é possível anular a subsrição desta pasta",
+		"DemoSendMessageError": "Por motivos de segurança, esta conta de demonstração não tem permissão para enviar mensagens para endereços de e-mail externos!",
+		"DemoAccountError": "Por motivos de segurança, esta conta não tem permissão de executar esta ação!",
+		"AccountAlreadyExists": "Esta conta já existe",
+		"AccountDoesNotExist": "Esta conta não existe",
+		"AccountSwitchFailed": "A mudança para a conta \"%EMAIL%\" falhou",
+		"MailServerError": "Ocorreu um erro ao aceder ao servidor de correio",
+		"InvalidInputArgument": "Parâmetro de entrada inválido",
+		"UnknownError": "Erro desconhecido"
 	}
 }

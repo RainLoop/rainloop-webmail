@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers\AddressBook\Enumerations;
 
-class PropertyType
+abstract class PropertyType
 {
 	const UNKNOWN = 0;
 

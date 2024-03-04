@@ -11,6 +11,8 @@
 
 namespace SnappyMail\GPG;
 
+use SnappyMail\SensitiveString;
+
 class SMIME extends Base
 {
 	private
@@ -95,8 +97,8 @@ class SMIME extends Base
 
 		$fclose = $this->setOutput($output);
 
-		if ($this->decryptKeys) {
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->decryptKeys);
+		if ($this->pinentries) {
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->pinentries);
 		}
 
 		$result = $this->exec(['--decrypt','--skip-verify']);
@@ -235,14 +237,18 @@ class SMIME extends Base
 		return false;
 	}
 
-	protected function _exportKey($keyId, $private = false)
+	/**
+	 * Exports a public or private key
+	 */
+	public function export(string $fingerprint, ?SensitiveString $passphrase = null) /*: string|false*/
 	{
-		$keys = $this->keyInfo($keyId, $private ? 1 : 0);
+		$private = null !== $passphrase;
+		$keys = $this->keyInfo($fingerprint, $private);
 		if (!$keys) {
-			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $keyId);
+			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $fingerprint);
 		}
-		if ($private && $this->passphrases) {
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->passphrases);
+		if ($private) {
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode([$fingerprint => \strval($passphrase)]);
 		}
 		$result = $this->exec([
 			$private ? '--export-secret-key-p12' : '--export',
@@ -252,28 +258,12 @@ class SMIME extends Base
 		return $result['output'];
 	}
 
-	/**
-	 * Exports a public key
-	 */
-	public function export(string $fingerprint) /*: string|false*/
-	{
-		return $this->_exportKey($fingerprint);
-	}
-
-	/**
-	 * Exports a private key
-	 */
-	public function exportPrivateKey(string $fingerprint) /*: string|false*/
-	{
-		return $this->_exportKey($fingerprint, true);
-	}
-
 	protected function _importKey($input) /*: array|false*/
 	{
 		$arguments = ['--import'];
 
-		if ($this->passphrases) {
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->passphrases);
+		if ($this->pinentries) {
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->pinentries);
 		} else {
 			$arguments[] = '--batch';
 		}
@@ -334,7 +324,7 @@ class SMIME extends Base
 
 	public function deleteKey(string $keyId, bool $private)
 	{
-		$key = $this->keyInfo($keyId, $private ? 1 : 0);
+		$key = $this->keyInfo($keyId, $private);
 		if (!$key) {
 			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $keyId);
 		}
@@ -359,7 +349,7 @@ class SMIME extends Base
 	/**
 	 * Returns an array with information about all keys that matches the given pattern
 	 */
-	public function keyInfo(string $pattern, int $private = 0) : array
+	public function keyInfo(string $pattern, bool $private = false) : array
 	{
 		// According to The file 'doc/DETAILS' in the GnuPG distribution, using
 		// double '--with-fingerprint' also prints the fingerprint for subkeys.
@@ -483,7 +473,7 @@ class SMIME extends Base
 
 	protected function _sign(/*string|resource*/ $input, /*string|resource*/ $output = null) /*: string|false*/
 	{
-		if (empty($this->signKeys)) {
+		if (empty($this->pinentries)) {
 			throw new \Exception('No signing keys specified.');
 		}
 
@@ -499,11 +489,11 @@ class SMIME extends Base
 			$arguments[] = '--armor';
 		}
 
-		if ($this->signKeys) {
-			foreach ($this->signKeys as $fingerprint => $pass) {
+		if ($this->pinentries) {
+			foreach ($this->pinentries as $fingerprint => $pass) {
 				$arguments[] = '--local-user ' . \escapeshellarg($fingerprint);
 			}
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->signKeys);
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->pinentries);
 		}
 
 		$result = $this->exec($arguments);
@@ -540,7 +530,7 @@ class SMIME extends Base
 	/**
 	 * Signs a given file
 	 */
-	public function signStream($fp, /*string|resource*/ $output = null) /*: array|false*/
+	public function signStream($fp, /*string|resource*/ $output = null) /*: string|false*/
 	{
 		if (!$fp || !\is_resource($fp)) {
 			throw new \Exception('Invalid stream resource');
@@ -548,7 +538,7 @@ class SMIME extends Base
 		return $this->_sign($fp, $output);
 	}
 
-	protected function _verify($input, string $signature)
+	protected function _verify($input, string $signature) /*: array|false*/
 	{
 		$arguments = ['--verify'];
 		if ($signature) {
@@ -667,7 +657,7 @@ class SMIME extends Base
 		return $info['ENC_TO'];
 	}
 
-	private function exec(array $arguments) /*: array|false*/
+	private function exec(array $arguments, bool $throw = true) /*: array|false*/
 	{
 		if (\version_compare($this->version, '2.2.5', '<')) {
 			\SnappyMail\Log::error('GPG', "{$this->version} too old");

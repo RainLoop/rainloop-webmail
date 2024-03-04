@@ -24,6 +24,8 @@ import { LanguageStore } from 'Stores/Language';
 
 import Remote from 'Remote/User/Fetch';
 
+import { MimeToMessage } from 'Mime/Utils';
+
 const
 	msgHtml = msg => cleanHtml(msg.html(), msg.attachments(), '#rl-msg-' + msg.hash),
 
@@ -118,12 +120,10 @@ export class MessageModel extends AbstractModel {
 			encrypted: false,
 
 			pgpSigned: null,
-			pgpVerified: null,
 			pgpEncrypted: null,
 			pgpDecrypted: false,
 
 			smimeSigned: null,
-			smimeVerified: null,
 			smimeEncrypted: null,
 			smimeDecrypted: false,
 
@@ -196,6 +196,10 @@ export class MessageModel extends AbstractModel {
 				return options;
 			}
 		});
+
+		this.smimeSigned.subscribe(value =>
+			value?.body && MimeToMessage(value.body, this)
+		);
 	}
 
 	get requestHash() {

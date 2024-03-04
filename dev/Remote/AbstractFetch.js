@@ -19,7 +19,6 @@ checkResponseError = data => {
 			Notifications.DomainNotAllowed,
 			Notifications.AccountNotAllowed,
 			Notifications.MailServerError,
-			Notifications.UnknownNotification,
 			Notifications.UnknownError
 		].includes(err)
 	) {

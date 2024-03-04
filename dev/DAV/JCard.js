@@ -15,7 +15,7 @@ export class JCard {
 		if (input) {
 			// read from jCard
 			if (typeof input !== 'object') {
-				throw new Error('error reading vcard')
+				throw Error('error reading vcard')
 			}
 			this.parseFromJCard(input)
 		}
@@ -87,7 +87,7 @@ export class JCard {
 			arg = new VCardProperty(String(arg), value, params, type);
 		}
 		if (!(arg instanceof VCardProperty)) {
-			throw new Error('invalid argument of VCard.set(), expects string arguments or a VCardProperty');
+			throw Error('invalid argument of VCard.set(), expects string arguments or a VCardProperty');
 		}
 		let field = arg.getField();
 		this.props.set(field, [arg]);
@@ -101,7 +101,7 @@ export class JCard {
 			arg = new VCardProperty(String(arg), value, params, type);
 		}
 		if (!(arg instanceof VCardProperty)) {
-			throw new Error('invalid argument of VCard.add(), expects string arguments or a VCardProperty');
+			throw Error('invalid argument of VCard.add(), expects string arguments or a VCardProperty');
 		}
 		// VCardProperty arguments
 		let field = arg.getField();
@@ -125,14 +125,14 @@ export class JCard {
 		else if (arg instanceof VCardProperty) {
 			let propArray = this.props.get(arg.getField());
 			if (!(propArray === null || propArray === void 0 ? void 0 : propArray.includes(arg)))
-				throw new Error("Attempted to remove VCardProperty VCard does not have: ".concat(arg));
+				throw Error("Attempted to remove VCardProperty VCard does not have: ".concat(arg));
 			propArray.splice(propArray.indexOf(arg), 1);
 			if (propArray.length === 0)
 				this.props.delete(arg.getField());
 		}
 		// incorrect arguments
 		else
-			throw new Error('invalid argument of VCard.remove(), expects ' +
+			throw Error('invalid argument of VCard.remove(), expects ' +
 				'string and optional param filter or a VCardProperty');
 	}
 
@@ -202,7 +202,7 @@ export class JCard {
 	parseFullName(options) {
 		let n = this.getOne('n');
 		if (n === undefined) {
-			throw new Error('\'fn\' VCardProperty not present in card, cannot parse full name');
+			throw Error('\'fn\' VCardProperty not present in card, cannot parse full name');
 		}
 		let fnString = '';
 		// Position in n -> position in fn

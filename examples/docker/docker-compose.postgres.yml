@@ -1,7 +1,7 @@
 version: '2'
 services:
   snappymail:
-    image: leojonathanoh/snappymail:pr-1
+    image: djmaze/snappymail:latest
     ports:
       - 8888:8888
     environment:

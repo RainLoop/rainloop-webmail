@@ -1,3 +1,50 @@
+## 2.35.2 – 2024-02-26
+
+### Added
+- GnuPG error handling
+- Missing strings for localization inside identity popup (Cryptography > S/MIME)
+  [#1458](https://github.com/the-djmaze/snappymail/issues/1458)
+
+### Changed
+- Update Portuguese by @ner00
+
+### Fixed
+- Drop support for gnupg PECL extension as it fails with "no passphrase" issues
+- Error 352 when getting Filters
+  [#1455](https://github.com/the-djmaze/snappymail/issues/1455)
+- Nextcloud SetPassword(): Argument #1 must be of type SensitiveString, string given
+  [#1456](https://github.com/the-djmaze/snappymail/issues/1456)
+
+
+## 2.35.1 – 2024-02-26
+
+### Added
+- Search functionality in Admin -> Config
+- Cache S/MIME passphrases when "remember" is checked
+- Import S/MIME certificate popup
+- pre-verify S/MIME opaque signed messages so we have a body to view
+- Sort PGP keys and S/MIME certificates on email address
+- Optionally use existing private key to generate S/MIME certificate
+
+### Changed
+- Better handling to detect which PGP or S/MIME sign/encrypt to use
+- Improved StorageType handling
+- Cleanup and improved Capa handling
+- OPEN_PGP should be OPENPGP as it is one word
+- Use get_debug_type() instead of gettype()
+- Require OpenSSL due to S/MIME
+- AbstractProvider::IsActive() is now an abstract method and must be defined in child class
+- Make better use of SnappyMail\SensitiveString
+- Update Polish translation by @tinola
+
+### Fixed
+- Verify S/MIME signatures got broken allong the way while implementing this
+- Generate S/MIME self-signed certificate failed to keep existing private key
+- MIME parser RegExp didn't escape boundary which caused issues
+- TypeError: b64Encode(...).match(...) is null on saving compose draft
+- Fix timestampToString() for future dates
+
+
 ## 2.35.0 – 2024-02-20
 
 ### Added

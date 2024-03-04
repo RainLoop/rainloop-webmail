@@ -7,7 +7,8 @@
 		"UPDATE": "Aktualisieren",
 		"USERNAME": "Nutzername",
 		"PASSWORD": "Passwort",
-		"CANCEL": "Abbrechen"
+		"CANCEL": "Abbrechen",
+		"SEARCH": "Suchen"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Benutzer",
@@ -84,7 +85,8 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Sicherheit",
 		"LABEL_USE_IMAGE_PROXY": "Lokalen Proxy für externe Bilder verwenden",
-		"LABEL_ALLOW_OPEN_PGP": "OpenPGP erlauben",
+		"LABEL_ALLOW_OPENPGP": "OpenPGP.js erlauben",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "PHP-Informationen anzeigen",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Adminpanel-Zugangsdaten",
 		"LABEL_CURRENT_PASSWORD": "Aktuelles Passwort",
@@ -167,17 +169,17 @@
 		"UNKNOWN_ERROR": "Unbekannter Fehler"
 	},
 	"NOTIFICATIONS": {
-		"REQUEST_ERROR": "Anfrage fehlgeschlagen",
-		"REQUEST_ABORTED": "Anfrage abgebrochen",
-		"REQUEST_TIMEOUT": "Antrag auf Auslieferung",
-		"INVALID_TOKEN": "Ungültiger Token",
-		"AUTH_ERROR": "Authentifizierung fehlgeschlagen",
-		"DOMAIN_ALREADY_EXISTS": "Diese Domain existiert bereits",
-		"CANT_SAVE_PLUGIN_SETTINGS": "Einstellungen können nicht gespeichert werden",
-		"CANT_INSTALL_PACKAGE": "Fehler beim Installieren der Erweiterung",
-		"CANT_DELETE_PACKAGE": "Fehler beim entfernen der Erweiterung",
-		"INVALID_PLUGIN_PACKAGE": "Erweiterungspaket ist ungültig",
-		"UNSUPPORTED_PLUGIN_PACKAGE": "Erweiterungspaket wird nicht unterstützt",
-		"UNKNOWN_ERROR": "Unbekannter Fehler"
+		"RequestError": "Anfrage fehlgeschlagen",
+		"RequestAborted": "Anfrage abgebrochen",
+		"RequestTimeout": "Antrag auf Auslieferung",
+		"InvalidToken": "Ungültiger Token",
+		"AuthError": "Authentifizierung fehlgeschlagen",
+		"DomainAlreadyExists": "Diese Domain existiert bereits",
+		"CantSavePluginSettings": "Einstellungen können nicht gespeichert werden",
+		"CantInstallPackage": "Fehler beim Installieren der Erweiterung",
+		"CantDeletePackage": "Fehler beim entfernen der Erweiterung",
+		"InvalidPluginPackage": "Erweiterungspaket ist ungültig",
+		"UnsupportedPluginPackage": "Erweiterungspaket wird nicht unterstützt",
+		"UnknownError": "Unbekannter Fehler"
 	}
 }
