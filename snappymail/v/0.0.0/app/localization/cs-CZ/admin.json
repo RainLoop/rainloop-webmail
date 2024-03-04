@@ -85,7 +85,8 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Zabezpečení",
 		"LABEL_USE_IMAGE_PROXY": "Použít lokální proxy pro externí obrázky",
-		"LABEL_ALLOW_OPENPGP": "Povolit OpenPGP",
+		"LABEL_ALLOW_OPENPGP": "Povolit OpenPGP.js",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "Zobrazit PHP informace (php_info)",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Přístupové údaje administrace",
 		"LABEL_CURRENT_PASSWORD": "Současné heslo",

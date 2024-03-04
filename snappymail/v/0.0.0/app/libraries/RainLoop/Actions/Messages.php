@@ -457,8 +457,10 @@ trait Messages
 		{
 			$oMessage = $this->MailClient()->Message($sFolder, $iUid, true, $this->Cacher($oAccount));
 
+			$bAutoVerify = $this->Config()->Get('security', 'auto_verify_signatures', false);
+
 			// S/MIME signed. Verify it, so we have the raw mime body to show
-			if ($oMessage->smimeSigned) try {
+			if ($oMessage->smimeSigned && ($bAutoVerify || !$oMessage->smimeSigned['detached'])) try {
 				$bOpaque = !$oMessage->smimeSigned['detached'];
 				$sBody = $this->ImapClient()->FetchMessagePart(
 					$oMessage->Uid,
@@ -475,7 +477,7 @@ trait Messages
 				$this->logException($e);
 			}
 
-			if ($oMessage->pgpSigned) try {
+			if ($bAutoVerify && $oMessage->pgpSigned) try {
 				$GPG = $this->GnuPG();
 				if ($GPG) {
 					if ($oMessage->pgpSigned['sigPartId']) {

@@ -845,6 +845,7 @@ class Actions
 
 		if ($aResult['Auth']) {
 			$aResult['useLocalProxyForExternalImages'] = (bool)$oConfig->Get('labs', 'use_local_proxy_for_external_images', false);
+			$aResult['autoVerifySignatures'] = (bool)$oConfig->Get('security', 'auto_verify_signatures', false);
 			$aResult['allowLanguagesOnSettings'] = (bool) $oConfig->Get('webmail', 'allow_languages_on_settings', true);
 			$aResult['Capa'] = $this->Capa($bAdmin, $oAccount);
 			$value = \ini_get('upload_max_filesize');

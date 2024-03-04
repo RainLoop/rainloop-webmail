@@ -85,7 +85,8 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Beveiliging",
 		"LABEL_USE_IMAGE_PROXY": "Gebruik de server als proxy voor externe afbeeldingen",
-		"LABEL_ALLOW_OPENPGP": "OpenPGP toestaan",
+		"LABEL_ALLOW_OPENPGP": "OpenPGP.js toestaan",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "PHP informatie tonen",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Toegangsgegevens beheer paneel",
 		"LABEL_CURRENT_PASSWORD": "Huidig wachtwoord",

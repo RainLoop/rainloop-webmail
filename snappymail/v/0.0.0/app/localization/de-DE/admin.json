@@ -85,7 +85,8 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Sicherheit",
 		"LABEL_USE_IMAGE_PROXY": "Lokalen Proxy für externe Bilder verwenden",
-		"LABEL_ALLOW_OPENPGP": "OpenPGP erlauben",
+		"LABEL_ALLOW_OPENPGP": "OpenPGP.js erlauben",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "PHP-Informationen anzeigen",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Adminpanel-Zugangsdaten",
 		"LABEL_CURRENT_PASSWORD": "Aktuelles Passwort",

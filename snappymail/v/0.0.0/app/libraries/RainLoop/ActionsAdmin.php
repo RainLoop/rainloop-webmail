@@ -65,6 +65,7 @@ class ActionsAdmin extends Actions
 		});
 
 		$this->setConfigFromParams($oConfig, 'useLocalProxyForExternalImages', 'labs', 'use_local_proxy_for_external_images', 'bool');
+		$this->setConfigFromParams($oConfig, 'autoVerifySignatures', 'security', 'auto_verify_signatures', 'bool');
 
 		$this->setConfigFromParams($oConfig, 'allowLanguagesOnSettings', 'webmail', 'allow_languages_on_settings', 'bool');
 		$this->setConfigFromParams($oConfig, 'allowLanguagesOnLogin', 'login', 'allow_languages_on_login', 'bool');

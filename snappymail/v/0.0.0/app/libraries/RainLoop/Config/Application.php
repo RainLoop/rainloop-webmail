@@ -203,6 +203,7 @@ Warning: only enable when server does not do this, else double compression error
 				'x_xss_protection_header' => array('1; mode=block'),
 
 				'openpgp'                 => array(true),
+				'auto_verify_signatures'  => array(false),
 
 				'allow_admin_panel'       => array(true, 'Access settings'),
 				'admin_login'             => array('admin', 'Login and password for web admin panel'),
