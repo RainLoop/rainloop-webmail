@@ -40,9 +40,9 @@
 			<br />
 <!-- DISABLED https://github.com/the-djmaze/snappymail/issues/1420#issuecomment-1933045917
 			<p>
-				<input id="snappymail-autologin-oidc" name="snappymail-autologin-oidc" type="checkbox" class="checkbox" <?php if ($_['snappymail-autologin-oidc']) echo 'checked="checked"'; ?>>
+				<input id="snappymail-autologin-oidc" name="snappymail-autologin-oidc" type="checkbox" class="checkbox" <php if ($_['snappymail-autologin-oidc']) echo 'checked="checked"'; ?>>
 				<label for="snappymail-autologin-oidc">
-					<?php echo($l->t('Attempt to automatically login with OIDC when active')); ?>
+					<php echo($l->t('Attempt to automatically login with OIDC when active')); ?>
 				</label>
 			</p>
 			<br />
