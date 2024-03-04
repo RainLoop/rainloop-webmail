@@ -7,6 +7,7 @@ use SnappyMail\SensitiveString;
 interface PGPInterface
 {
 	public static function isSupported() : bool;
+//	public function addPinentry(string $keyId, SensitiveString $passphrase) : bool;
 	public function addDecryptKey(string $fingerprint, SensitiveString $passphrase) : bool;
 	public function addEncryptKey(string $fingerprint) : bool;
 	public function addSignKey(string $fingerprint, SensitiveString $passphrase) : bool;

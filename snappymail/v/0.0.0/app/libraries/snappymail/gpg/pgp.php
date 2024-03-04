@@ -96,8 +96,8 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 
 		$fclose = $this->setOutput($output);
 
-		if ($this->decryptKeys) {
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode(\array_map('strval', $this->decryptKeys));
+		if ($this->pinentries) {
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode(\array_map('strval', $this->pinentries));
 		}
 
 		$result = $this->exec(['--decrypt','--skip-verify']);
@@ -244,8 +244,8 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 		if (!$keys) {
 			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $keyId);
 		}
-		if ($private && $this->passphrases) {
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode(\array_map('strval', $this->passphrases));
+		if ($private && $this->pinentries) {
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode(\array_map('strval', $this->pinentries));
 		}
 		$result = $this->exec([
 			$private ? '--export-secret-keys' : '--export',
@@ -263,7 +263,7 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 //		\SnappyMail\Log::debug('GnuPG', "export({$fingerprint}, {$passphrase})");
 		if (null !== $passphrase) {
 			return $this
-				->addPassphrase($fingerprint, $passphrase)
+				->addPinentry($fingerprint, $passphrase)
 				->_exportKey($fingerprint, true);
 		}
 		return $this->_exportKey($fingerprint);
@@ -365,8 +365,8 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 	{
 		$arguments = ['--import'];
 
-		if ($this->passphrases) {
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode(\array_map('strval', $this->passphrases));
+		if ($this->pinentries) {
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode(\array_map('strval', $this->pinentries));
 		} else {
 			$arguments[] = '--batch';
 		}
@@ -618,7 +618,7 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 
 	protected function _sign(/*string|resource*/ $input, /*string|resource*/ $output = null, bool $textmode = true) /*: string|false*/
 	{
-		if (empty($this->signKeys)) {
+		if (empty($this->pinentries)) {
 			throw new \Exception('No signing keys specified.');
 		}
 
@@ -649,11 +649,11 @@ class PGP extends Base implements \SnappyMail\PGP\PGPInterface
 			$arguments[] = '--textmode';
 		}
 
-		if ($this->signKeys) {
-			foreach ($this->signKeys as $fingerprint => $pass) {
+		if ($this->pinentries) {
+			foreach ($this->pinentries as $fingerprint => $pass) {
 				$arguments[] = '--local-user ' . \escapeshellarg($fingerprint);
 			}
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode(\array_map('strval', $this->signKeys));
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode(\array_map('strval', $this->pinentries));
 		}
 
 		$result = $this->exec($arguments);

@@ -97,8 +97,8 @@ class SMIME extends Base
 
 		$fclose = $this->setOutput($output);
 
-		if ($this->decryptKeys) {
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->decryptKeys);
+		if ($this->pinentries) {
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->pinentries);
 		}
 
 		$result = $this->exec(['--decrypt','--skip-verify']);
@@ -243,8 +243,8 @@ class SMIME extends Base
 		if (!$keys) {
 			throw new \Exception(($private ? 'Private' : 'Public') . ' key not found: ' . $keyId);
 		}
-		if ($private && $this->passphrases) {
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->passphrases);
+		if ($private && $this->pinentries) {
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->pinentries);
 		}
 		$result = $this->exec([
 			$private ? '--export-secret-key-p12' : '--export',
@@ -261,7 +261,7 @@ class SMIME extends Base
 	{
 		if ($passphrase) {
 			return $this
-				->addPassphrase($fingerprint, $passphrase)
+				->addPinentry($fingerprint, $passphrase)
 				->_exportKey($fingerprint, true);
 		}
 		return $this->_exportKey($fingerprint);
@@ -271,8 +271,8 @@ class SMIME extends Base
 	{
 		$arguments = ['--import'];
 
-		if ($this->passphrases) {
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->passphrases);
+		if ($this->pinentries) {
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->pinentries);
 		} else {
 			$arguments[] = '--batch';
 		}
@@ -482,7 +482,7 @@ class SMIME extends Base
 
 	protected function _sign(/*string|resource*/ $input, /*string|resource*/ $output = null) /*: string|false*/
 	{
-		if (empty($this->signKeys)) {
+		if (empty($this->pinentries)) {
 			throw new \Exception('No signing keys specified.');
 		}
 
@@ -498,11 +498,11 @@ class SMIME extends Base
 			$arguments[] = '--armor';
 		}
 
-		if ($this->signKeys) {
-			foreach ($this->signKeys as $fingerprint => $pass) {
+		if ($this->pinentries) {
+			foreach ($this->pinentries as $fingerprint => $pass) {
 				$arguments[] = '--local-user ' . \escapeshellarg($fingerprint);
 			}
-			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->signKeys);
+			$_ENV['PINENTRY_USER_DATA'] = \json_encode($this->pinentries);
 		}
 
 		$result = $this->exec($arguments);

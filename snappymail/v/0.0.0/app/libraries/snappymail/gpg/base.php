@@ -43,10 +43,8 @@ abstract class Base
 	protected
 		$binary,
 		$version = '2.0',
-		$passphrases = [],
-		$signKeys = [],
+		$pinentries = [],
 		$encryptKeys = [],
-		$decryptKeys = [],
 		// Create PEM encoded output
 		$armor = true,
 
@@ -284,8 +282,7 @@ abstract class Base
 	 */
 	public function addDecryptKey(string $fingerprint, SensitiveString $passphrase) : bool
 	{
-		$this->decryptKeys[$fingerprint] = $passphrase;
-//		$this->decryptKeys[\substr($fingerprint, -16)] = $passphrase;
+		$this->addPinentry($fingerprint, $passphrase);
 		return true;
 	}
 
@@ -303,9 +300,15 @@ abstract class Base
 	 */
 	public function addSignKey(string $fingerprint, SensitiveString $passphrase) : bool
 	{
-		$this->signKeys[$fingerprint] = $passphrase;
-//		$this->signKeys[\substr($fingerprint, -16)] = $passphrase;
-		return false;
+		$this->addPinentry($fingerprint, $passphrase);
+		return true;
+	}
+
+	public function clear() : bool
+	{
+		$this->clearPinentries();
+		$this->clearEncryptKeys();
+		return true;
 	}
 
 	/**
@@ -313,8 +316,7 @@ abstract class Base
 	 */
 	public function clearDecryptKeys() : bool
 	{
-		$this->decryptKeys = [];
-		return true;
+		return $this->clearPinentries();
 	}
 
 	/**
@@ -331,8 +333,7 @@ abstract class Base
 	 */
 	public function clearSignKeys() : bool
 	{
-		$this->signKeys = [];
-		return true;
+		return $this->clearPinentries();
 	}
 
 	/**
@@ -348,10 +349,34 @@ abstract class Base
 		];
 	}
 
-	public function addPassphrase($keyId, SensitiveString $passphrase)
+	/**
+	 * Add private key passphrase for decrypt, sign or export
+	 * $keyId or fingerprint
+	 */
+	public function addPinentry(string $keyId, SensitiveString $passphrase)
 	{
-		$this->passphrases[$keyId] = $passphrase;
+		/**
+		 * Test first?
+		 * gpg --dry-run --passwd <your-user-id>
+		$_ENV['PINENTRY_USER_DATA'] = \json_encode(\array_map('strval', [$keyId => $passphrase]));
+		$result = $this->exec([
+			'--dry-run',
+			'--passwd',
+			$fingerprint
+		]);
+		*/
+		$this->pinentries[$keyId] = $passphrase;
+//		$this->pinentries[\substr($keyId, -16)] = $passphrase;
 		return $this;
+	}
+
+	/**
+	 * Removes all keys which were set for decryption, signing and export
+	 */
+	public function clearPinentries() : bool
+	{
+		$this->pinentries = [];
+		return true;
 	}
 
 	/**
