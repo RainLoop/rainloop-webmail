@@ -148,18 +148,6 @@ class MailClient
 					}
 					$aFetchItems[] = $sLine;
 				}
-/*
-				$gSignatureParts = $oBodyStructure->SearchByContentType('multipart/signed');
-				foreach ($gSignatureParts as $oPart) {
-					if ($oPart->isPgpSigned()) {
-						// An empty section specification refers to the entire message, including the header.
-						// But Dovecot does not return it with BODY.PEEK[1], so we also use BODY.PEEK[1.MIME].
-						$aFetchItems[] = FetchType::BODY_PEEK.'['.$oPart->SubParts()[0]->PartID().'.MIME]';
-						$aFetchItems[] = FetchType::BODY_PEEK.'['.$oPart->SubParts()[0]->PartID().']';
-						$aFetchItems[] = FetchType::BODY_PEEK.'['.$oPart->SubParts()[1]->PartID().']';
-					}
-				}
-*/
 			}
 		}
 
@@ -500,11 +488,11 @@ class MailClient
 			$aFetchIterator = $this->oImapClient->FetchIterate($aFetchItems, (string) $oRange, $oRange->UID);
 			// FETCH does not respond in the id order of the SequenceSet, so we prefill $aCollection for the right sort order.
 			$aCollection = \array_fill_keys($oRange->getArrayCopy(), null);
-			foreach ($aFetchIterator as $oFetchResponseItem) {
+			foreach ($aFetchIterator as $oFetchResponse) {
 				$id = $oRange->UID
-					? $oFetchResponseItem->GetFetchValue(FetchType::UID)
-					: $oFetchResponseItem->oImapResponse->ResponseList[1];
-				$oMessage = Message::fromFetchResponse($oMessageCollection->FolderName, $oFetchResponseItem);
+					? $oFetchResponse->GetFetchValue(FetchType::UID)
+					: $oFetchResponse->oImapResponse->ResponseList[1];
+				$oMessage = Message::fromFetchResponse($oMessageCollection->FolderName, $oFetchResponse);
 				if ($oMessage) {
 					if ($aAllThreads) {
 						$iUid = $oMessage->Uid;

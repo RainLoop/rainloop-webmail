@@ -209,6 +209,7 @@ class BodyStructure implements \JsonSerializable
 		/**
 		 * No text found, is it encrypted?
 		 * If so, just return that.
+		 * Only when \RainLoop\Api::Config()->Get('security', 'openpgp', true)
 		 */
 		if (!$aParts) {
 			$gEncryptedParts = $this->SearchByContentType('multipart/encrypted');

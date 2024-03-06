@@ -112,6 +112,16 @@ class Message implements \JsonSerializable
 		return $this->Attachments;
 	}
 
+	public function setPlain(string $value) : void
+	{
+		$this->sPlain = $value;
+	}
+
+	public function setHtml(string $value) : void
+	{
+		$this->sHtml = $value;
+	}
+
 	private function setSpamScore($value) : void
 	{
 		$this->SpamScore = \intval(\max(0, \min(100, $value)));

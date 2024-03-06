@@ -515,6 +515,29 @@ trait Messages
 			} catch (\Throwable $e) {
 				$this->logException($e);
 			}
+/*
+			if (!$oMessage->sPlain && !$oMessage->sHtml && !$oMessage->pgpEncrypted && !$oMessage->smimeEncrypted) {
+				$aAttachments = $oMessage->Attachments ?: [];
+				foreach ($aAttachments as $oAttachment) {
+//					\in_array($oAttachment->ContentType(), ['application/vnd.ms-tnef', 'application/ms-tnef'])
+					if ('winmail.dat' === \strtolower($oAttachment->FileName())) {
+						$sData = $this->ImapClient()->FetchMessagePart(
+							$oMessage->Uid,
+							$oAttachment->PartID()
+						);
+						$oTNEF = new \TNEFDecoder\TNEFAttachment;
+						$oTNEF->decodeTnef($sData);
+						foreach ($oTNEF->getFiles() as $oFile) {
+							if (\in_array($oFile->type, ['application/rtf', 'text/rtf'])) {
+								$rtf = new \SnappyMail\Rtf\Document($oFile->content);
+								$oMessage->setHtml($rtf->toHTML());
+							}
+						}
+						break;
+					}
+				}
+			}
+*/
 		}
 		catch (\Throwable $oException)
 		{
