@@ -85,7 +85,6 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "セキュリティ",
 		"LABEL_USE_IMAGE_PROXY": "外部イメージにローカルProxyを使う",
-		"LABEL_ALLOW_OPENPGP": "OpenPGP.jsを使う",
 		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "PHP情報を表示",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "管理画面アクセス情報",
@@ -93,6 +92,7 @@
 		"LABEL_NEW_PASSWORD": "新しいパスワード",
 		"LABEL_REPEAT_PASSWORD": "再入力",
 		"LABEL_REQUIRE_VERIFICATION": "のSSL証明書の検証を有効にする",
+		"CRYPTO": "Crypto",
 		"LABEL_ALLOW_SELF_SIGNED": "自己署名証明書を使う"
 	},
 	"TAB_PACKAGES": {

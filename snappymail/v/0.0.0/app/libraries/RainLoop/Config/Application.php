@@ -202,6 +202,7 @@ Warning: only enable when server does not do this, else double compression error
 				'custom_server_signature' => array('SnappyMail'),
 				'x_xss_protection_header' => array('1; mode=block'),
 
+				'gnupg'                   => array(true),
 				'openpgp'                 => array(true),
 				'auto_verify_signatures'  => array(false),
 

@@ -85,7 +85,6 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Zabezpečení",
 		"LABEL_USE_IMAGE_PROXY": "Použít lokální proxy pro externí obrázky",
-		"LABEL_ALLOW_OPENPGP": "Povolit OpenPGP.js",
 		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "Zobrazit PHP informace (php_info)",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Přístupové údaje administrace",
@@ -93,6 +92,7 @@
 		"LABEL_NEW_PASSWORD": "Nové heslo",
 		"LABEL_REPEAT_PASSWORD": "Znovu",
 		"LABEL_REQUIRE_VERIFICATION": "Vyžadovat ověření SSL certifikátu",
+		"CRYPTO": "Crypto",
 		"LABEL_ALLOW_SELF_SIGNED": "Povolit self-signed certifikáty"
 	},
 	"TAB_PACKAGES": {

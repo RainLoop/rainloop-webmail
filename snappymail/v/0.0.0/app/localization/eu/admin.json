@@ -85,7 +85,6 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Segurtasuna",
 		"LABEL_USE_IMAGE_PROXY": "Erabili proxy lokala kanpoko irudientzat",
-		"LABEL_ALLOW_OPENPGP": "Baimendu OpenPGP.js",
 		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "Erakutsi PHP informazioa",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Admin Panelerako Sarbide Kredentzialak",
@@ -93,6 +92,7 @@
 		"LABEL_NEW_PASSWORD": "Pasahitz berria",
 		"LABEL_REPEAT_PASSWORD": "Errepikatu",
 		"LABEL_REQUIRE_VERIFICATION": "SSL ziurtagiriaren baliozkotzea eskatu",
+		"CRYPTO": "Crypto",
 		"LABEL_ALLOW_SELF_SIGNED": "Onartu norberak sinatutako ziurtagiriak"
 	},
 	"TAB_PACKAGES": {

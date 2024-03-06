@@ -85,7 +85,6 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "امنیت",
 		"LABEL_USE_IMAGE_PROXY": "از پروکسی محلی برای عکسهای خارج از سرور استفاده شود",
-		"LABEL_ALLOW_OPENPGP": "فعال‌سازی OpenPGP.js",
 		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "نمایش اطلاعات PHP",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "اعتبار مجوز دسترسی به صفحه مدیریت",
@@ -93,6 +92,7 @@
 		"LABEL_NEW_PASSWORD": "گذرواژه جدید",
 		"LABEL_REPEAT_PASSWORD": "تکرار",
 		"LABEL_REQUIRE_VERIFICATION": "به بررسی گواهینامه SSL نیاز داشته باشد",
+		"CRYPTO": "Crypto",
 		"LABEL_ALLOW_SELF_SIGNED": "به گواهی‌نامه‌هایی که توسط خودشان امضاء شده‌اند اجازه بده"
 	},
 	"TAB_PACKAGES": {

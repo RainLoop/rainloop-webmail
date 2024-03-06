@@ -279,7 +279,7 @@
 		"ENCRYPT": "Versleutelen",
 		"DECRYPT": "Ontsleutelen",
 		"VERIFY": "Verifiëren",
-		"GOOD_SIGNATURE": "Juiste handtekening van %USER%",
+		"GOOD_SIGNATURE": "Juiste ondertekening van %USER%",
 		"ERROR": "%TYPE% foutmelding: %ERROR%",
 		"CREATE_SELF_SIGNED": "Zelfondertekend certificaat aanmaken",
 		"VALID_UNTIL": "Geldig tot",

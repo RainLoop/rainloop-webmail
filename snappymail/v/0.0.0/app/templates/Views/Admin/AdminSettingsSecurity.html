@@ -1,18 +1,30 @@
 <div class="legend" data-i18n="TAB_SECURITY/LEGEND_SECURITY"></div>
 <div class="form-horizontal">
 	<div class="control-group">
+		<div data-bind="component: {
+			name: 'Checkbox',
+			params: {
+				label: 'TAB_SECURITY/LABEL_USE_IMAGE_PROXY',
+				value: useLocalProxyForExternalImages
+			}
+		}"></div>
+	</div>
+</div>
+<div class="legend" data-i18n="TAB_SECURITY/CRYPTO"></div>
+<div class="form-horizontal">
+	<div class="control-group">
 		<div>
 			<div data-bind="component: {
 				name: 'Checkbox',
 				params: {
-					label: 'TAB_SECURITY/LABEL_USE_IMAGE_PROXY',
-					value: useLocalProxyForExternalImages
+					label: 'GnuPG',
+					value: capaGnuPG
 				}
 			}"></div>
 			<div data-bind="component: {
 				name: 'Checkbox',
 				params: {
-					label: 'TAB_SECURITY/LABEL_ALLOW_OPENPGP',
+					label: 'OpenPGP.js',
 					value: capaOpenPGP
 				}
 			}"></div>

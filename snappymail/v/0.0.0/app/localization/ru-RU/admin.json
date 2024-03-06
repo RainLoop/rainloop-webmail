@@ -85,7 +85,6 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Безопасность",
 		"LABEL_USE_IMAGE_PROXY": "Использовать локальный прокси для внешних изображений",
-		"LABEL_ALLOW_OPENPGP": "Разрешить OpenPGP.js",
 		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "Показать PHP информацию",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Учетные данные для доступа к панели администратора",
@@ -93,6 +92,7 @@
 		"LABEL_NEW_PASSWORD": "Новый пароль",
 		"LABEL_REPEAT_PASSWORD": "Повторить пароль",
 		"LABEL_REQUIRE_VERIFICATION": "Требовать проверку SSL сертификата для",
+		"CRYPTO": "Шифрование",
 		"LABEL_ALLOW_SELF_SIGNED": "Разрешить самоподписанные сертификаты"
 	},
 	"TAB_PACKAGES": {

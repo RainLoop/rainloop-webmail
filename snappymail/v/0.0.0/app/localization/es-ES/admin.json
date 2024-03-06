@@ -85,7 +85,6 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Seguridad",
 		"LABEL_USE_IMAGE_PROXY": "Utilizar un proxy local para mostrar imágenes externas",
-		"LABEL_ALLOW_OPENPGP": "Permitir OpenPGP.js",
 		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "Mostrar información de PHP",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Credenciales de Acceso al panel de control",
@@ -93,6 +92,7 @@
 		"LABEL_NEW_PASSWORD": "Nueva contraseña",
 		"LABEL_REPEAT_PASSWORD": "Re-ingresar",
 		"LABEL_REQUIRE_VERIFICATION": "Requerir verificación del certificado SSL",
+		"CRYPTO": "Crypto",
 		"LABEL_ALLOW_SELF_SIGNED": "Permitir certificados auto-firmados"
 	},
 	"TAB_PACKAGES": {

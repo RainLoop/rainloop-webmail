@@ -85,7 +85,6 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Sauga",
 		"LABEL_USE_IMAGE_PROXY": "naudoti vietinį šliuzą (proxy) išoriniams paveikslėliams",
-		"LABEL_ALLOW_OPENPGP": "Leisti OpenPGP.js",
 		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "Rodyti PHP informaciją",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Valdymo skydo prieigos rekvizitai",
@@ -93,6 +92,7 @@
 		"LABEL_NEW_PASSWORD": "Naujas slaptažodis",
 		"LABEL_REPEAT_PASSWORD": "Pakartokite",
 		"LABEL_REQUIRE_VERIFICATION": "Reikalauti SSL sertifikato",
+		"CRYPTO": "Crypto",
 		"LABEL_ALLOW_SELF_SIGNED": "Leisti pačių sukurtus sertifikatus"
 	},
 	"TAB_PACKAGES": {

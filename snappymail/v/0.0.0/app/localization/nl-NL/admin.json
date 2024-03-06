@@ -85,14 +85,14 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Beveiliging",
 		"LABEL_USE_IMAGE_PROXY": "Gebruik de server als proxy voor externe afbeeldingen",
-		"LABEL_ALLOW_OPENPGP": "OpenPGP.js toestaan",
-		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
+		"LABEL_AUTO_VERIFY": "Ondertekening automatisch verifiëren",
 		"LABEL_SHOW_PHP_INFO": "PHP informatie tonen",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Toegangsgegevens beheer paneel",
 		"LABEL_CURRENT_PASSWORD": "Huidig wachtwoord",
 		"LABEL_NEW_PASSWORD": "Nieuw wachtwoord",
 		"LABEL_REPEAT_PASSWORD": "Herhaal nieuw wachtwoord",
 		"LABEL_REQUIRE_VERIFICATION": "Verificatie van SSL certificaten",
+		"CRYPTO": "Crypto",
 		"LABEL_ALLOW_SELF_SIGNED": "Sta zelf ondertekende certificaten toe"
 	},
 	"TAB_PACKAGES": {

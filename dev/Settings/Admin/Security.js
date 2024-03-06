@@ -28,6 +28,7 @@ export class AdminSettingsSecurity extends AbstractViewSettings {
 
 			viewQRCode: '',
 
+			capaGnuPG: SettingsCapa('GnuPG'),
 			capaOpenPGP: SettingsCapa('OpenPGP')
 		});
 
@@ -65,7 +66,8 @@ export class AdminSettingsSecurity extends AbstractViewSettings {
 
 			adminPasswordNew2: reset,
 
-			capaOpenPGP: value => Remote.saveSetting('CapaOpenPGP', value)
+			capaGnuPG: value => Remote.saveSetting('capaGnuPG', value),
+			capaOpenPGP: value => Remote.saveSetting('capaOpenPGP', value)
 		});
 
 		this.adminTOTP(SettingsGet('adminTOTP'));

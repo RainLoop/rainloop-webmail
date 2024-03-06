@@ -85,7 +85,6 @@
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Keamanan",
 		"LABEL_USE_IMAGE_PROXY": "Gunakan proxy lokal untuk gambar dari luar",
-		"LABEL_ALLOW_OPENPGP": "Izinkan OpenPGP.js",
 		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "Tampilkan informasi PHP",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Hak Akses Panel Admin",
@@ -93,6 +92,7 @@
 		"LABEL_NEW_PASSWORD": "Password baru",
 		"LABEL_REPEAT_PASSWORD": "Ulangi",
 		"LABEL_REQUIRE_VERIFICATION": "Diperlukan verifikasi sertifikat SSL dengan",
+		"CRYPTO": "Crypto",
 		"LABEL_ALLOW_SELF_SIGNED": "Izinkan sertifikat yang dibuat sendiri"
 	},
 	"TAB_PACKAGES": {

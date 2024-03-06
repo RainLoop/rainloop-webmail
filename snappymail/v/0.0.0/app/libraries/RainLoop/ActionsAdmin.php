@@ -92,7 +92,8 @@ class ActionsAdmin extends Actions
 		$this->setConfigFromParams($oConfig, 'CapaAttachmentThumbnails', 'interface', 'show_attachment_thumbnail', 'bool');
 		$this->setConfigFromParams($oConfig, 'CapaThemes', 'webmail', 'allow_themes', 'bool');
 		$this->setConfigFromParams($oConfig, 'CapaUserBackground', 'webmail', 'allow_user_background', 'bool');
-		$this->setConfigFromParams($oConfig, 'CapaOpenPGP', 'security', 'openpgp', 'bool');
+		$this->setConfigFromParams($oConfig, 'capaGnuPG', 'security', 'gnupg', 'bool');
+		$this->setConfigFromParams($oConfig, 'capaOpenPGP', 'security', 'openpgp', 'bool');
 
 		$this->setConfigFromParams($oConfig, 'determineUserLanguage', 'login', 'determine_user_language', 'bool');
 		$this->setConfigFromParams($oConfig, 'determineUserDomain', 'login', 'determine_user_domain', 'bool');
