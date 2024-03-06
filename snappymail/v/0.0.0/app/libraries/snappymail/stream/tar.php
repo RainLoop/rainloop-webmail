@@ -53,7 +53,7 @@ class TAR
 			$name .= '.tgz';
 			$name = \preg_match('#^[\x01-\x7F]*$#D', $name) ? $name : '=?UTF-8?B?'.\base64_encode($name).'?=';
 			\header("Content-Disposition: attachment; filename={$name}");
-			\header("Content-Type: application/x-gzip; name={$name}");
+			\header("Content-Type: application/gzip; name={$name}");
 		} else {
 			$name .= '.tar';
 			$name = \preg_match('#^[\x01-\x7F]*$#D', $name) ? $name : '=?UTF-8?B?'.\base64_encode($name).'?=';

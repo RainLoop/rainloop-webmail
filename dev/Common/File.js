@@ -138,7 +138,7 @@ export const FileInfo = {
 	getContentType: fileName => {
 		fileName = lowerCase(fileName);
 		if ('winmail.dat' === fileName) {
-			return app + 'ms-tnef';
+			return app + 'vnd.ms-tnef';
 		}
 		let ext = fileName.split('.').pop();
 		if (/^(txt|text|def|list|in|ini|log|sql|cfg|conf)$/.test(ext))
