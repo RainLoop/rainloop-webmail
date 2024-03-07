@@ -15,6 +15,7 @@ export const
 
 	Settings = rl.settings,
 	SettingsGet = Settings.get,
+	SettingsAdmin = name => (SettingsGet('Admin') || {})[name],
 	SettingsCapa = name => name && !!(SettingsGet('Capa') || {})[name],
 
 	dropdowns = [],

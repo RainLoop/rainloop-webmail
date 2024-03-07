@@ -1,13 +1,13 @@
 import { pInt } from 'Common/Utils';
-import { doc, Settings } from 'Common/Globals';
+import { doc, Settings, SettingsAdmin } from 'Common/Globals';
 
 const
 	BASE = doc.location.pathname.replace(/\/+$/,'') + '/',
 	HASH_PREFIX = '#/',
 
-	adminPath = () => rl.adminArea() && !Settings.app('adminHost'),
+	adminPath = () => rl.adminArea() && !SettingsAdmin('host'),
 
-	prefix = () => BASE + '?' + (adminPath() ? Settings.app('adminPath') : '');
+	prefix = () => BASE + '?' + (adminPath() ? SettingsAdmin('path') : '');
 
 export const
 	SUB_QUERY_PREFIX = '&q[]=',

@@ -1,6 +1,6 @@
 import 'External/ko';
 
-import { Settings, SettingsGet } from 'Common/Globals';
+import { SettingsGet, SettingsAdmin } from 'Common/Globals';
 import { initThemes } from 'Stores/Theme';
 
 import Remote from 'Remote/Admin/Fetch';
@@ -23,7 +23,8 @@ export class AdminApp extends AbstractApp {
 	}
 
 	start() {
-		if (!Settings.app('adminAllowed')) {
+//		if (!Settings.app('adminAllowed')) {
+		if (!SettingsAdmin('allowed')) {
 			rl.route.root();
 			setTimeout(() => location.href = '/', 1);
 		} else if (SettingsGet('Auth')) {

@@ -610,69 +610,18 @@ class Actions
 			'title' => $oConfig->Get('webmail', 'title', 'SnappyMail Webmail'),
 			'loadingDescription' => $oConfig->Get('webmail', 'loading_description', 'SnappyMail'),
 			'Plugins' => array(),
-			'System' => \array_merge(
-				array(
-					'version' => APP_VERSION,
-					'token' => Utils::GetCsrfToken(),
-					'languages' => \SnappyMail\L10n::getLanguages(false),
-					'webPath' => \RainLoop\Utils::WebPath(),
-					'webVersionPath' => \RainLoop\Utils::WebVersionPath()
-				), $bAdmin ? array(
-					'adminHost' => '' !== $oConfig->Get('security', 'admin_panel_host', ''),
-					'adminPath' => $oConfig->Get('security', 'admin_panel_key', '') ?: 'admin',
-					'adminAllowed' => (bool)$oConfig->Get('security', 'allow_admin_panel', true)
-				) : array()
+			'System' => array(
+				'version' => APP_VERSION,
+				'token' => Utils::GetCsrfToken(),
+				'languages' => \SnappyMail\L10n::getLanguages(false),
+				'webPath' => \RainLoop\Utils::WebPath(),
+				'webVersionPath' => \RainLoop\Utils::WebVersionPath()
 			),
 			'allowLanguagesOnLogin' => (bool) $oConfig->Get('login', 'allow_languages_on_login', true)
 		);
 
-		$UserLanguageRaw = $this->detectUserLanguage($bAdmin);
-
 		if ($bAdmin) {
-//			$this->AdminAppData($aResult);
-			$aResult['Auth'] = $this->IsAdminLoggined(false);
-			if ($aResult['Auth']) {
-				$aResult['adminLogin'] = (string)$oConfig->Get('security', 'admin_login', '');
-				$aResult['adminTOTP'] = (string)$oConfig->Get('security', 'admin_totp', '');
-				$aResult['pluginsEnable'] = (bool)$oConfig->Get('plugins', 'enable', false);
-
-				$aResult['loginDefaultDomain'] = $oConfig->Get('login', 'default_domain', '');
-				$aResult['determineUserLanguage'] = (bool)$oConfig->Get('login', 'determine_user_language', true);
-				$aResult['determineUserDomain'] = (bool)$oConfig->Get('login', 'determine_user_domain', false);
-
-				$aResult['supportedPdoDrivers'] = \RainLoop\Pdo\Base::getAvailableDrivers();
-
-				$aResult['contactsEnable'] = (bool)$oConfig->Get('contacts', 'enable', false);
-				$aResult['contactsSync'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
-				$aResult['contactsPdoType'] = Providers\AddressBook\PdoAddressBook::validPdoType($oConfig->Get('contacts', 'type', 'sqlite'));
-				$aResult['contactsPdoDsn'] = (string)$oConfig->Get('contacts', 'pdo_dsn', '');
-				$aResult['contactsPdoType'] = (string)$oConfig->Get('contacts', 'type', '');
-				$aResult['contactsPdoUser'] = (string)$oConfig->Get('contacts', 'pdo_user', '');
-				$aResult['contactsPdoPassword'] = static::APP_DUMMY;
-				$aResult['contactsMySQLSSLCA'] = (string) $oConfig->Get('contacts', 'mysql_ssl_ca', '');
-				$aResult['contactsMySQLSSLVerify'] = !!$oConfig->Get('contacts', 'mysql_ssl_verify', true);
-				$aResult['contactsMySQLSSLCiphers'] = (string) $oConfig->Get('contacts', 'mysql_ssl_ciphers', '');
-				$aResult['contactsSQLiteGlobal'] = !!$oConfig->Get('contacts', 'sqlite_global', \is_file(APP_PRIVATE_DATA . '/AddressBook.sqlite'));
-				$aResult['contactsSuggestionsLimit'] = (int)$oConfig->Get('contacts', 'suggestions_limit', 20);
-
-				$aResult['faviconUrl'] = $oConfig->Get('webmail', 'favicon_url', '');
-
-				$aResult['weakPassword'] = \is_file(APP_PRIVATE_DATA.'admin_password.txt');
-
-				$aResult['System']['languagesAdmin'] = \SnappyMail\L10n::getLanguages(true);
-				$aResult['languageAdmin'] = $this->ValidateLanguage($oConfig->Get('webmail', 'language_admin', 'en'), '', true);
-				$aResult['languageUsers'] = $this->ValidateLanguage($UserLanguageRaw, '', true, true);
-			} else {
-				$passfile = APP_PRIVATE_DATA.'admin_password.txt';
-				$sPassword = $oConfig->Get('security', 'admin_password', '');
-				if (!$sPassword) {
-					$sPassword = \substr(\base64_encode(\random_bytes(16)), 0, 12);
-					Utils::saveFile($passfile, $sPassword . "\n");
-//					\chmod($passfile, 0600);
-					$oConfig->SetPassword(new \SnappyMail\SensitiveString($sPassword));
-					$oConfig->Save();
-				}
-			}
+			ActionsAdmin::AdminAppData($this, $aResult);
 		} else {
 			$oAccount = $this->getAccountFromToken(false);
 			if ($oAccount) {
@@ -866,7 +815,7 @@ class Actions
 		$aResult['Theme'] = $this->GetTheme($bAdmin);
 
 		$aResult['language'] = $this->GetLanguage();
-		$aResult['userLanguage'] = $this->ValidateLanguage($UserLanguageRaw, '', false, true);
+		$aResult['clientLanguage'] = $this->ValidateLanguage($this->detectClientLanguage($bAdmin), '', false, true);
 
 		$aResult['PluginsLink'] = $this->oPlugins->HaveJs($bAdmin)
 			? 'Plugins/0/' . ($bAdmin ? 'Admin' : 'User') . '/' . $this->etag($this->oPlugins->Hash()) . '/'

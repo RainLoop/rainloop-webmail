@@ -12,7 +12,7 @@ export const LanguageStore = {
 		const aLanguages = Settings.app('languages');
 		this.languages(isArray(aLanguages) ? aLanguages : []);
 		this.language(SettingsGet('language'));
-		this.userLanguage(SettingsGet('userLanguage'));
+		this.userLanguage(SettingsGet('clientLanguage'));
 		this.hourCycle(SettingsGet('hourCycle'));
 	}
 }
