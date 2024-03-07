@@ -1,9 +1,5 @@
 import ko from 'ko';
 
-import {
-	isArray
-} from 'Common/Utils';
-
 import { addObservablesTo, addSubscribablesTo, addComputablesTo } from 'External/ko';
 
 import { SaveSettingStatus } from 'Common/Enums';
@@ -111,10 +107,9 @@ export class AdminSettingsGeneral extends AbstractViewSettings {
 	}
 
 	selectLanguageAdmin() {
-		const aLanguagesAdmin = SettingsAdmin('languages');
 		showScreenPopup(LanguagesPopupView, [
 			this.languageAdmin,
-			isArray(aLanguagesAdmin) ? aLanguagesAdmin : [],
+			SettingsAdmin('languages'),
 			SettingsAdmin('clientLanguage')
 		]);
 	}

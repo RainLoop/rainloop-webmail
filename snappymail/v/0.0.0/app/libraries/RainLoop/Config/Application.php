@@ -95,6 +95,18 @@ class Application extends \RainLoop\Config\AbstractConfig
 	public function Set(string $sSectionKey, string $sParamKey, $mParamValue) : void
 	{
 		// Workarounds for the changed application structure
+		if ('webmail' === $sSectionKey) {
+			if ('language_admin' === $sSectionKey) {
+				$sSectionKey = 'admin_panel';
+				$sParamKey = 'language';
+			}
+		}
+		if ('security' === $sSectionKey) {
+			if (\str_starts_with($sParamKey, 'admin_panel_')) {
+				$sSectionKey = 'admin_panel';
+				$sParamKey = \str_replace('admin_panel_', '', $sParamKey);
+			}
+		}
 		if ('labs' === $sSectionKey) {
 			if (\str_starts_with($sParamKey, 'imap_')) {
 				$sSectionKey = 'imap';
@@ -163,7 +175,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'allow_user_background'       => array(false),
 
 				'language'                    => array('en', 'Language used by default'),
-				'language_admin'              => array('en', 'Admin Panel interface language'),
 				'allow_languages_on_settings' => array(true, 'Allow language selection on settings screen'),
 
 				'allow_additional_accounts'   => array(true),
@@ -210,8 +221,6 @@ Warning: only enable when server does not do this, else double compression error
 				'admin_login'             => array('admin', 'Login and password for web admin panel'),
 				'admin_password'          => array(''),
 				'admin_totp'              => array(''),
-				'admin_panel_host'        => array(''),
-				'admin_panel_key'         => array('admin'),
 
 				'force_https'             => array(false),
 				'hide_x_mailer_header'    => array(true),
@@ -236,10 +245,11 @@ Default is "site=same-origin;site=none"')
 				'login'    => array('admin', 'Login and password for web admin panel'),
 				'password' => array(''),
 				'totp'     => array(''),
+*/
 				'host'     => array(''),
 				'key'      => array('admin'),
-*/
-				'allow_update' => array(false)
+				'allow_update' => array(false),
+				'language'     => array('en', 'Admin Panel interface language'),
 			),
 
 			'ssl' => array(

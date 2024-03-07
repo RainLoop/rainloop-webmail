@@ -2,6 +2,9 @@ import ko from 'ko';
 
 import Remote from 'Remote/Admin/Fetch';
 import { forEachObjectEntry } from 'Common/Utils';
+import { SettingsAdmin } from 'Common/Globals';
+import { LanguageStore } from 'Stores/Language';
+import { ThemeStore } from 'Stores/Theme';
 
 export class AdminSettingsConfig /*extends AbstractViewSettings*/ {
 
@@ -53,6 +56,11 @@ export class AdminSettingsConfig /*extends AbstractViewSettings*/ {
 						items: []
 					};
 					forEachObjectEntry(items, (skey, item) => {
+						if ('language' === skey) {
+							item[2] = ('webmail' === key) ? LanguageStore.languages : SettingsAdmin('languages');
+						} else if ('theme' === skey) {
+							item[2] = ThemeStore.themes;
+						}
 						'admin_password' === skey ||
 						section.items.push({
 							key: `config[${key}][${skey}]`,

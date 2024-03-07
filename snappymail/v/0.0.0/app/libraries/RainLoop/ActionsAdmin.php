@@ -56,7 +56,7 @@ class ActionsAdmin extends Actions
 			return $self->ValidateLanguage($sLanguage, '', false);
 		});
 
-		$this->setConfigFromParams($oConfig, 'languageAdmin', 'webmail', 'language_admin', 'string', function ($sLanguage) use ($self) {
+		$this->setConfigFromParams($oConfig, 'languageAdmin', 'admin_panel', 'language', 'string', function ($sLanguage) use ($self) {
 			return $self->ValidateLanguage($sLanguage, '', true);
 		});
 
@@ -419,8 +419,8 @@ class ActionsAdmin extends Actions
 	{
 		$oConfig = $oActions->Config();
 		$aResult['Admin'] = [
-			'host' => '' !== $oConfig->Get('security', 'admin_panel_host', ''),
-			'path' => $oConfig->Get('security', 'admin_panel_key', '') ?: 'admin',
+			'host' => '' !== $oConfig->Get('admin_panel', 'host', ''),
+			'path' => $oConfig->Get('admin_panel', 'key', '') ?: 'admin',
 			'allowed' => (bool)$oConfig->Get('security', 'allow_admin_panel', true)
 		];
 
@@ -453,7 +453,7 @@ class ActionsAdmin extends Actions
 
 			$aResult['weakPassword'] = \is_file(APP_PRIVATE_DATA.'admin_password.txt');
 
-			$aResult['Admin']['language'] = $oActions->ValidateLanguage($oConfig->Get('webmail', 'language_admin', 'en'), '', true);
+			$aResult['Admin']['language'] = $oActions->ValidateLanguage($oConfig->Get('admin_panel', 'language', 'en'), '', true);
 			$aResult['Admin']['languages'] = \SnappyMail\L10n::getLanguages(true);
 			$aResult['Admin']['clientLanguage'] = $oActions->ValidateLanguage($oActions->detectClientLanguage(true), '', true, true);
 		} else {

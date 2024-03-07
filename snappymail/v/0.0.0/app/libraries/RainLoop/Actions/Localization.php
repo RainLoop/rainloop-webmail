@@ -8,7 +8,7 @@ trait Localization
 	{
 		$oConfig = $this->Config();
 		if ($bAdmin) {
-			$sLanguage = $oConfig->Get('webmail', 'language_admin', 'en');
+			$sLanguage = $oConfig->Get('admin_panel', 'language', 'en');
 		} else {
 			$sLanguage = $oConfig->Get('webmail', 'language', 'en');
 			if ($oAccount = $this->getAccountFromToken(false)) {
@@ -77,7 +77,7 @@ trait Localization
 			return '';
 		}
 
-		$sResult = $this->Config()->Get('webmail', $bAdmin ? 'language_admin' : 'language', 'en');
+		$sResult = $this->Config()->Get($bAdmin ? 'admin_panel' : 'webmail', 'language', 'en');
 		return \in_array($sResult, $aLang) ? $sResult : 'en';
 	}
 

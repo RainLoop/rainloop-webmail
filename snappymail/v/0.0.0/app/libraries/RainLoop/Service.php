@@ -84,9 +84,9 @@ abstract class Service
 
 		$aPaths = \explode('/', $sQuery);
 
-		$sAdminPanelHost = \trim($oConfig->Get('security', 'admin_panel_host', ''));
+		$sAdminPanelHost = \trim($oConfig->Get('admin_panel', 'host', ''));
 		if (empty($sAdminPanelHost)) {
-			$bAdmin = !empty($aPaths[0]) && ($oConfig->Get('security', 'admin_panel_key', '') ?: 'admin') === $aPaths[0];
+			$bAdmin = !empty($aPaths[0]) && ($oConfig->Get('admin_panel', 'key', '') ?: 'admin') === $aPaths[0];
 			$bAdmin && \array_shift($aPaths);
 		} else {
 			$bAdmin = \mb_strtolower($sAdminPanelHost) === \mb_strtolower($oHttp->GetHost());
