@@ -102,11 +102,6 @@ class Actions
 	protected $oLocalSettingsProvider = null;
 
 	/**
-	 * @var \RainLoop\Providers\AddressBook
-	 */
-	protected $oAddressBookProvider = null;
-
-	/**
 	 * @var \RainLoop\Config\Application
 	 */
 	protected $oConfig = null;
@@ -466,31 +461,6 @@ class Actions
 		}
 
 		return $this->oDomainProvider;
-	}
-
-	public function AddressBookProvider(?Model\Account $oAccount = null): Providers\AddressBook
-	{
-		if (null === $this->oAddressBookProvider) {
-			$oDriver = null;
-			try {
-//				if ($this->oConfig->Get('contacts', 'enable', false)) {
-				if ($this->GetCapa(Capa::CONTACTS)) {
-					$oDriver = $this->fabrica('address-book', $oAccount);
-				}
-				if ($oAccount && $oDriver) {
-					$oDriver->SetEmail($this->GetMainEmail($oAccount));
-					$oDriver->setDAVClientConfig($this->getContactsSyncData($oAccount));
-				}
-			} catch (\Throwable $e) {
-				\SnappyMail\LOG::error('AddressBook', $e->getMessage()."\n".$e->getTraceAsString());
-				$oDriver = null;
-//				$oDriver = new Providers\AddressBook\PdoAddressBook();
-			}
-			$this->oAddressBookProvider = new Providers\AddressBook($oDriver);
-			$this->oAddressBookProvider->SetLogger($this->oLogger);
-		}
-
-		return $this->oAddressBookProvider;
 	}
 
 	public function Cacher(?Model\Account $oAccount = null, bool $bForceFile = false): \MailSo\Cache\CacheClient
