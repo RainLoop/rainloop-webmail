@@ -9,13 +9,13 @@ trait Contacts
 	 */
 	protected $oAddressBookProvider = null;
 
-	public function AddressBookProvider(?Model\Account $oAccount = null): Providers\AddressBook
+	public function AddressBookProvider(?\RainLoop\Model\Account $oAccount = null): \RainLoop\Providers\AddressBook
 	{
 		if (null === $this->oAddressBookProvider) {
 			$oDriver = null;
 			try {
 //				if ($this->oConfig->Get('contacts', 'enable', false)) {
-				if ($this->GetCapa(Capa::CONTACTS)) {
+				if ($this->GetCapa(\RainLoop\Capa::CONTACTS)) {
 					$oDriver = $this->fabrica('address-book', $oAccount);
 				}
 				if ($oAccount && $oDriver) {
@@ -25,9 +25,9 @@ trait Contacts
 			} catch (\Throwable $e) {
 				\SnappyMail\LOG::error('AddressBook', $e->getMessage()."\n".$e->getTraceAsString());
 				$oDriver = null;
-//				$oDriver = new Providers\AddressBook\PdoAddressBook();
+//				$oDriver = new \RainLoop\Providers\AddressBook\PdoAddressBook();
 			}
-			$this->oAddressBookProvider = new Providers\AddressBook($oDriver);
+			$this->oAddressBookProvider = new \RainLoop\Providers\AddressBook($oDriver);
 			$this->oAddressBookProvider->SetLogger($this->oLogger);
 		}
 
