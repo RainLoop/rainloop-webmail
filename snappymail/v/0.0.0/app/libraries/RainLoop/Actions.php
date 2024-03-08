@@ -532,8 +532,22 @@ class Actions
 		return $this->oPlugins;
 	}
 
-	protected function LoggerAuthHelper(?Model\Account $oAccount = null, array $aAdditionalParams = array(), bool $admin = false): void
+	protected function LoggerAuthHelper(?Model\Account $oAccount = null, string $sLogin, bool $admin = false): void
 	{
+		if ($sLogin) {
+			$sHost = $admin ? $this->Http()->GetHost(true, true) : \MailSo\Base\Utils::GetDomainFromEmail($sLogin);
+			$aAdditionalParams = array(
+				'{imap:login}' => $sLogin,
+				'{imap:host}' => $sHost,
+				'{smtp:login}' => $sLogin,
+				'{smtp:host}' => $sHost,
+				'{user:email}' => $sLogin,
+				'{user:login}' => $admin ? $sLogin : \MailSo\Base\Utils::GetAccountNameFromEmail($sLogin),
+				'{user:domain}' => $sHost,
+			);
+		} else {
+			$aAdditionalParams = array();
+		}
 		$sLine = $this->oConfig->Get('logs', 'auth_logging_format', '');
 		if (!empty($sLine)) {
 			if (!$this->oLoggerAuth) {
@@ -806,20 +820,6 @@ class Actions
 				\usleep(\intval($seconds * 1000000));
 			}
 		}
-	}
-
-	protected function getAdditionalLogParamsByUserLogin(string $sLogin, bool $bAdmin = false): array
-	{
-		$sHost = $bAdmin ? $this->Http()->GetHost(true, true) : \MailSo\Base\Utils::GetDomainFromEmail($sLogin);
-		return array(
-			'{imap:login}' => $sLogin,
-			'{imap:host}' => $sHost,
-			'{smtp:login}' => $sLogin,
-			'{smtp:host}' => $sHost,
-			'{user:email}' => $sLogin,
-			'{user:login}' => $bAdmin ? $sLogin : \MailSo\Base\Utils::GetAccountNameFromEmail($sLogin),
-			'{user:domain}' => $sHost,
-		);
 	}
 
 	public function DoPing(): array

@@ -124,7 +124,7 @@ class ActionsAdmin extends Actions
 			!$this->Config()->ValidatePassword($oPassword)
 			|| ($totp && !\SnappyMail\TOTP::Verify($totp, $this->GetActionParam('TOTP', ''))))
 		{
-			$this->LoggerAuthHelper(null, $this->getAdditionalLogParamsByUserLogin($sLogin, true), true);
+			$this->LoggerAuthHelper(null, $sLogin, true);
 			$this->loginErrorDelay();
 			throw new ClientException(Notifications::AuthError);
 		}

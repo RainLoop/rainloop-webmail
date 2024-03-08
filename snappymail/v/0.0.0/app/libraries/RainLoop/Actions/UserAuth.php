@@ -136,7 +136,7 @@ trait UserAuth
 				throw new ClientException(Notifications::AuthError);
 			}
 		} catch (\Throwable $oException) {
-			$this->LoggerAuthHelper($oAccount, $this->getAdditionalLogParamsByUserLogin($sInputEmail));
+			$this->LoggerAuthHelper($oAccount, $sInputEmail);
 			throw $oException;
 		}
 
