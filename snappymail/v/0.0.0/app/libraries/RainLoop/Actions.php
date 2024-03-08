@@ -532,33 +532,28 @@ class Actions
 		return $this->oPlugins;
 	}
 
-	public function LoggerAuth(): \MailSo\Log\Logger
-	{
-		if (!$this->oLoggerAuth) {
-			$this->oLoggerAuth = new \MailSo\Log\Logger(false);
-			if ($this->oConfig->Get('logs', 'auth_logging', false)) {
-//				$this->oLoggerAuth->SetLevel(\LOG_WARNING);
-
-				$sAuthLogFileFullPath = (\trim($this->oConfig->Get('logs', 'path', '') ?: \APP_PRIVATE_DATA . 'logs'))
-					. '/' . $this->compileLogFileName($this->oConfig->Get('logs', 'auth_logging_filename', ''));
-				$sLogFileDir = \dirname($sAuthLogFileFullPath);
-				\is_dir($sLogFileDir) || \mkdir($sLogFileDir, 0755, true);
-				$this->oLoggerAuth->append(
-					(new \MailSo\Log\Drivers\File($sAuthLogFileFullPath))
-						->DisableTimePrefix()
-						->DisableGuidPrefix()
-						->DisableTypedPrefix()
-				);
-			}
-		}
-		return $this->oLoggerAuth;
-	}
-
 	protected function LoggerAuthHelper(?Model\Account $oAccount = null, array $aAdditionalParams = array(), bool $admin = false): void
 	{
 		$sLine = $this->oConfig->Get('logs', 'auth_logging_format', '');
 		if (!empty($sLine)) {
-			$this->LoggerAuth()->Write($this->compileLogParams($sLine, $oAccount, $aAdditionalParams), \LOG_WARNING);
+			if (!$this->oLoggerAuth) {
+				$this->oLoggerAuth = new \MailSo\Log\Logger(false);
+				if ($this->oConfig->Get('logs', 'auth_logging', false)) {
+//					$this->oLoggerAuth->SetLevel(\LOG_WARNING);
+
+					$sAuthLogFileFullPath = (\trim($this->oConfig->Get('logs', 'path', '') ?: \APP_PRIVATE_DATA . 'logs'))
+						. '/' . $this->compileLogFileName($this->oConfig->Get('logs', 'auth_logging_filename', ''));
+					$sLogFileDir = \dirname($sAuthLogFileFullPath);
+					\is_dir($sLogFileDir) || \mkdir($sLogFileDir, 0755, true);
+					$this->oLoggerAuth->append(
+						(new \MailSo\Log\Drivers\File($sAuthLogFileFullPath))
+							->DisableTimePrefix()
+							->DisableGuidPrefix()
+							->DisableTypedPrefix()
+					);
+				}
+			}
+			$this->oLoggerAuth->Write($this->compileLogParams($sLine, $oAccount, $aAdditionalParams), \LOG_WARNING);
 		}
 		if (($this->oConfig->Get('logs', 'auth_logging', false) || $this->oConfig->Get('logs', 'auth_syslog', false))
 		 && \openlog('snappymail', 0, \LOG_AUTHPRIV)) {
