@@ -695,7 +695,6 @@ trait Messages
 											?: \SnappyMail\File\MimeType::fromFilename($sFileName)
 											?: 'application/octet-stream'; // 'text/plain'
 
-//										$sFileName = $self->MainClearFileName($sFileName, $sContentType, $sMimeIndex);
 										$sTempName .= \SnappyMail\File\MimeType::toExtension($sContentType);
 
 										if ($self->FilesProvider()->PutFile($oAccount, $sTempName, $rResource)) {
@@ -714,7 +713,7 @@ trait Messages
 								?: \SnappyMail\File\MimeType::fromFilename($sTempName)
 								?: 'application/octet-stream'; // 'text/plain'
 							$aAttachments[$mIndex] = [
-//								'name' => $sFileName,
+//								'name' => '',
 								'tempName' => $sTempName,
 								'mimeType' => $sContentType
 //								'size' => $oFilesProvider->FileSize($oAccount, $sTempName)

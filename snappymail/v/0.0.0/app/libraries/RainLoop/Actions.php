@@ -832,19 +832,6 @@ class Actions
 		return $this->DefaultResponse(APP_VERSION === (string)$this->GetActionParam('version', ''));
 	}
 
-	public function MainClearFileName(string $sFileName, string $sContentType, string $sMimeIndex, int $iMaxLength = 250): string
-	{
-		$sFileName = !\strlen($sFileName) ? \preg_replace('/[^a-zA-Z0-9]/', '.', (empty($sMimeIndex) ? '' : $sMimeIndex . '.') . $sContentType) : $sFileName;
-		$sClearedFileName = \MailSo\Base\Utils::StripSpaces(\preg_replace('/[\.]+/', '.', $sFileName));
-		$sExt = \MailSo\Base\Utils::GetFileExtension($sClearedFileName);
-
-		if (10 < $iMaxLength && $iMaxLength < \strlen($sClearedFileName) - \strlen($sExt)) {
-			$sClearedFileName = \substr($sClearedFileName, 0, $iMaxLength) . (empty($sExt) ? '' : '.' . $sExt);
-		}
-
-		return \MailSo\Base\Utils::SecureFileName(\MailSo\Base\Utils::Utf8Clear($sClearedFileName));
-	}
-
 	public function Upload(?array $aFile, int $iError): array
 	{
 		$oAccount = $this->getAccountFromToken();
