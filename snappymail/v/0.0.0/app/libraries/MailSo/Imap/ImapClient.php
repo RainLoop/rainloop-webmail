@@ -127,9 +127,6 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 
 		$type = '';
-		if ($this->Encrypted()) {
-			\array_unshift($oSettings->SASLMechanisms, 'PLAIN', 'LOGIN');
-		}
 		foreach ($oSettings->SASLMechanisms as $sasl_type) {
 			if ($this->hasCapability("AUTH={$sasl_type}") && \SnappyMail\SASL::isSupported($sasl_type)) {
 				$type = $sasl_type;
