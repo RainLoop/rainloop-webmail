@@ -194,7 +194,6 @@ define ("EMAIL_DISPLAY",       1);
 define ("EMAIL_TRANSPORT",     2);
 define ("EMAIL_EMAIL",         3);
 define ("EMAIL_EMAIL2",        4);
-
 define ("ADDRESS_STREET",      "Street");
 define ("ADDRESS_ZIP",         "Zip");
 define ("ADDRESS_CITY",        "City");

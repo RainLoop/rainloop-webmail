@@ -531,6 +531,10 @@ trait Messages
 							if (\in_array($oFile->type, ['application/rtf', 'text/rtf'])) {
 								$rtf = new \SnappyMail\Rtf\Document($oFile->content);
 								$oMessage->setHtml($rtf->toHTML());
+							} else {
+								// List as attachment?
+								$oMapiAttachment = new \MailSo\Mail\Attachment($sFolder, $iUid, BodyStructure);
+								$oMessage->Attachments->append($oMapiAttachment);
 							}
 						}
 						break;

@@ -14,31 +14,24 @@
   *
   */
 
-class TNEFDate
+class TNEFDate extends \DateTime
 {
-
-	private ?int $year;
-	private ?int $month;
-	private ?int $day;
-	private ?int $hour;
-	private ?int $minute;
-	private ?int $second;
+	public function __construct(string $datetime = "now", ?\DateTimeZone $timezone = null)
+	{
+		parent::__construct($datetime, new \DateTimeZone('UTC'));
+	}
 
 	public function setTnefBuffer(TNEFBuffer $buffer)
 	{
-		$this->year = tnef_geti16($buffer);
-		$this->month = tnef_geti16($buffer);
-		$this->day = tnef_geti16($buffer);
-		$this->hour = tnef_geti16($buffer);
-		$this->minute = tnef_geti16($buffer);
-		$this->second = tnef_geti16($buffer);
+		$this->setDate(
+			$buffer->geti16(), // year
+			$buffer->geti16(), // month
+			$buffer->geti16()  // day
+		);
+		$this->setTime(
+			$buffer->geti16(), // hour
+			$buffer->geti16(), // minute
+			$buffer->geti16()  // second
+		);
 	}
-
-	public function __toString(): string
-	{
-		return \sprintf("%04d-%02d-%02d %02d:%02d:%02d",
-			$this->year, $this->month, $this->day,
-			$this->hour, $this->minute, $this->second);
-	}
-
 }

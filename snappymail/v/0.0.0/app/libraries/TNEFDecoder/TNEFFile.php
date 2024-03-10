@@ -1,4 +1,6 @@
-<?php namespace TNEFDecoder;
+<?php
+
+namespace TNEFDecoder;
 
 /**
   * SquirrelMail TNEF Decoder Plugin
@@ -17,14 +19,14 @@
 class TNEFFile extends TNEFFileBase
 {
 
-	var $metafile;
+	public string $metafile;
 
-	function getMetafile()
+	public function getMetafile()
 	{
 		return $this->metafile;
 	}
 
-	function receiveTnefAttribute($attribute, $value, $length)
+	public function receiveTnefAttribute(int $attribute, string $value, int $length): void
 	{
 		switch ($attribute)
 		{
@@ -34,18 +36,18 @@ class TNEFFile extends TNEFFileBase
 			case TNEF_AFILENAME:
 				// strip path
 				//
-				if (($pos = strrpos($value, '/')) !== FALSE)
-					$this->name = substr($value, $pos + 1);
+				if (($pos = \strrpos($value, '/')) !== FALSE)
+					$this->name = \substr($value, $pos + 1);
 				else
 					$this->name = $value;
 
 				// Strip trailing null bytes if present
-				$this->name = trim($this->name);
+				$this->name = \trim($this->name);
 				break;
 			// code page
 			//
 			case TNEF_AOEMCODEPAGE:
-				$this->code_page = tnef_geti16(new TNEFBuffer($value));
+				$this->code_page = (new TNEFBuffer($value))->geti16();
 				break;
 
 			// the attachment itself
@@ -71,7 +73,7 @@ class TNEFFile extends TNEFFileBase
 		}
 	}
 
-	function receiveMapiAttribute($attr_type, $attr_name, $value, $length, $is_unicode=FALSE)
+	public function receiveMapiAttribute(int $attr_type, int $attr_name, string $value, int $length): void
 	{
 		switch ($attr_name)
 		{
@@ -81,26 +83,26 @@ class TNEFFile extends TNEFFileBase
 			case TNEF_MAPI_ATTACH_LONG_FILENAME:
 				// strip path
 				//
-				if (($pos = strrpos($value, '/')) !== FALSE)
-					$this->name = substr($value, $pos + 1);
+				if (($pos = \strrpos($value, '/')) !== FALSE)
+					$this->name = \substr($value, $pos + 1);
 				else
 					$this->name = $value;
 
-				if ($is_unicode) $this->name_is_unicode = TRUE;
+				$this->name_is_unicode = TNEF_MAPI_UNICODE_STRING === $attr_type;
 				break;
 
 			// Is this ever set, and what is format?
 			//
 			case TNEF_MAPI_ATTACH_MIME_TAG:
 				$type0 = $type1 = '';
-				$mime_type = explode('/', $value, 2);
+				$mime_type = \explode('/', $value, 2);
 				if (!empty($mime_type[0]))
 					$type0 = $mime_type[0];
 				if (!empty($mime_type[1]))
 					$type1 = $mime_type[1];
-				$this->type = "$type0/$type1";
-				if ($is_unicode) {
-					$this->type = substr(mb_convert_encoding($this->type, "UTF-8" , "UTF-16LE"), 0, -1);
+				$this->type = "{$type0}/{$type1}";
+				if (TNEF_MAPI_UNICODE_STRING === $attr_type) {
+					$this->type = \substr(\mb_convert_encoding($this->type, "UTF-8" , "UTF-16LE"), 0, -1);
 				}
 				break;
 

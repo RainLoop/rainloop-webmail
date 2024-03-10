@@ -17,91 +17,89 @@
 class TNEFMailinfo
 {
 
-	var $subject;
-	var $topic;
-	var $topic_is_unicode = FALSE;
-	var $from;
-	var $from_is_unicode = FALSE;
-	var $from_name;
-	var $from_name_is_unicode = FALSE;
-	var $date_sent;
-	var $code_page = '';
+	public string
+		$subject = '',
+		$topic = '',
+		$from = '',
+		$from_name = '',
+		$code_page = '';
+	public ?TNEFDate $date_sent = null;
+	public bool
+		$topic_is_unicode = FALSE,
+		$from_is_unicode = FALSE,
+		$from_name_is_unicode = FALSE;
 
-
-	function getTopic()
+	public function getTopic(): string
 	{
 		return $this->topic;
 	}
 
-	function getSubject()
+	public function getSubject(): string
 	{
 		return $this->subject;
 	}
 
-	function getFrom()
+	public function getFrom(): string
 	{
 		return $this->from;
 	}
 
-	function getCodePage()
+	public function getCodePage(): string
 	{
 		return $this->code_page;
 	}
 
-	function getFromName()
+	public function getFromName(): string
 	{
 		return $this->from_name;
 	}
 
-	function getDateSent()
+	public function getDateSent(): TNEFDate
 	{
 		return $this->date_sent;
 	}
 
-	function receiveTnefAttribute($attribute, $value, $length)
+	public function receiveTnefAttribute(int $attribute, string $value, int $length): void
 	{
 		$value = new TNEFBuffer($value);
 
-		switch($attribute)
+		switch ($attribute)
 		{
 			case TNEF_AOEMCODEPAGE:
-				$this->code_page = tnef_geti16($value);
+				$this->code_page = $value->geti16();
 				break;
 
 			case TNEF_ASUBJECT:
-				$this->subject = tnef_getx($length - 1, $value);
+				$this->subject = $value->getBytes($length - 1);
 				break;
 
 			case TNEF_ADATERECEIVED:
-				if (!$this->date_sent)
-				{
-					$this->date_sent = new TNEFDate();
-					$this->date_sent->setTnefBuffer($value);
+				if ($this->date_sent) {
+					break;
 				}
-				break;
 			case TNEF_ADATESENT:
 				$this->date_sent = new TNEFDate();
 				$this->date_sent->setTnefBuffer($value);
 		}
 	}
 
-	function receiveMapiAttribute($attr_type, $attr_name, $value, $length, $is_unicode=FALSE)
+	public function receiveMapiAttribute(int $attr_type, int $attr_name, string $value, int $length): void
 	{
-		switch($attr_name)
+		switch ($attr_name)
 		{
 			case TNEF_MAPI_CONVERSATION_TOPIC:
 				$this->topic = $value;
-				if ($is_unicode) $this->topic_is_unicode = TRUE;
+				$this->topic_is_unicode = TNEF_MAPI_UNICODE_STRING === $attr_type;
 				break;
 
 			case TNEF_MAPI_SENT_REP_EMAIL_ADDR:
 				$this->from = $value;
-				if ($is_unicode) $this->from_is_unicode = TRUE;
+				$this->from_is_unicode = TNEF_MAPI_UNICODE_STRING === $attr_type;
 				break;
 
 			case TNEF_MAPI_SENT_REP_NAME:
 				$this->from_name = $value;
-				if ($is_unicode) $this->from_name_is_unicode = TRUE;
+				$this->from_name_is_unicode = TNEF_MAPI_UNICODE_STRING === $attr_type;
 				break;
 		}
 	}
