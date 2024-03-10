@@ -78,11 +78,15 @@ class SnappyMailHelper
 //				$oDomain = \RainLoop\Model\Domain::fromIniArray('owncloud', []);
 				$oDomain = new \RainLoop\Model\Domain('owncloud');
 				$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::NONE;
-				$oDomain->SetConfig(
-					'localhost', 143, $iSecurityType, true,
-					true, 'localhost', 4190, $iSecurityType,
-					'localhost', 25, $iSecurityType, true, true, false, false,
-					'');
+				$oDomain->ImapSettings()->host = 'localhost';
+				$oDomain->ImapSettings()->type = $iSecurityType;
+				$oDomain->ImapSettings()->shortLogin = true;
+				$oDomain->SieveSettings()->enabled = true;
+				$oDomain->SieveSettings()->host = 'localhost';
+				$oDomain->SieveSettings()->type = $iSecurityType;
+				$oDomain->SmtpSettings()->host = 'localhost';
+				$oDomain->SmtpSettings()->type = $iSecurityType;
+				$oDomain->SmtpSettings()->shortLogin = true;
 				$oProvider->Save($oDomain);
 				if (!$oConfig->Get('login', 'default_domain', '')) {
 					$oConfig->Set('login', 'default_domain', 'owncloud');
