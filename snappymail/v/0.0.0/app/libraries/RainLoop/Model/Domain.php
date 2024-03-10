@@ -30,30 +30,12 @@ class Domain implements \JsonSerializable
 		$this->Sieve = new \MailSo\Sieve\Settings;
 	}
 
-	public function Normalize()
+	private function Normalize()
 	{
 		$this->IMAP->host = \trim($this->IMAP->host);
 		$this->Sieve->host = \trim($this->Sieve->host);
 		$this->SMTP->host = \trim($this->SMTP->host);
 		$this->whiteList = \trim($this->whiteList);
-	}
-
-	/**
-	 * Use by old fromIniArray()
-	 */
-	public static function StrConnectionSecurityTypeToCons(string $sType) : int
-	{
-		$iSecurityType = ConnectionSecurityType::NONE;
-		switch (\strtoupper($sType))
-		{
-			case 'SSL':
-				$iSecurityType = ConnectionSecurityType::SSL;
-				break;
-			case 'TLS':
-				$iSecurityType = ConnectionSecurityType::STARTTLS;
-				break;
-		}
-		return $iSecurityType;
 	}
 
 	public function Name() : string
@@ -228,6 +210,24 @@ class Domain implements \JsonSerializable
 			$oDomain->Normalize();
 		}
 		return $oDomain;
+	}
+
+	/**
+	 * Use by old RainLoop fromIniArray()
+	 */
+	public static function StrConnectionSecurityTypeToCons(string $sType) : int
+	{
+		$iSecurityType = ConnectionSecurityType::NONE;
+		switch (\strtoupper($sType))
+		{
+			case 'SSL':
+				$iSecurityType = ConnectionSecurityType::SSL;
+				break;
+			case 'TLS':
+				$iSecurityType = ConnectionSecurityType::STARTTLS;
+				break;
+		}
+		return $iSecurityType;
 	}
 
 	#[\ReturnTypeWillChange]
