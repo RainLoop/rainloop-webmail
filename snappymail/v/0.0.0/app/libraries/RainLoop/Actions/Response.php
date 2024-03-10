@@ -2,7 +2,6 @@
 
 namespace RainLoop\Actions;
 
-use RainLoop\Enumerations\Capa;
 use RainLoop\Notifications;
 use RainLoop\Utils;
 

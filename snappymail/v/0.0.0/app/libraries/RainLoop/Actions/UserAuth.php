@@ -2,6 +2,7 @@
 
 namespace RainLoop\Actions;
 
+use RainLoop\Enumerations\Capa;
 use RainLoop\Notifications;
 use RainLoop\Utils;
 use RainLoop\Model\Account;
@@ -164,7 +165,7 @@ trait UserAuth
 	{
 		$this->Http()->ServerNoCache();
 		$oMainAccount = $this->getMainAccountFromToken(false);
-		if ($sEmail && $oMainAccount && $this->GetCapa(\RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS)) {
+		if ($sEmail && $oMainAccount && $this->GetCapa(Capa::ADDITIONAL_ACCOUNTS)) {
 			$oAccount = null;
 			if ($oMainAccount->Email() === $sEmail) {
 				$this->SetAdditionalAuthToken($oAccount);

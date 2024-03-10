@@ -2,6 +2,8 @@
 
 namespace RainLoop\Actions;
 
+use RainLoop\Enumerations\Capa;
+
 trait Contacts
 {
 	/**
@@ -15,7 +17,7 @@ trait Contacts
 			$oDriver = null;
 			try {
 //				if ($this->oConfig->Get('contacts', 'enable', false)) {
-				if ($this->GetCapa(\RainLoop\Capa::CONTACTS)) {
+				if ($this->GetCapa(Capa::CONTACTS)) {
 					$oDriver = $this->fabrica('address-book', $oAccount);
 				}
 				if ($oAccount && $oDriver) {

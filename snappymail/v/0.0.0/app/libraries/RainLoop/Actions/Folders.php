@@ -2,7 +2,6 @@
 
 namespace RainLoop\Actions;
 
-use RainLoop\Enumerations\Capa;
 use RainLoop\Exceptions\ClientException;
 use RainLoop\Notifications;
 use MailSo\Imap\Enumerations\FolderType;

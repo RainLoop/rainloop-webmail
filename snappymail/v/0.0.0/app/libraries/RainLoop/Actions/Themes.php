@@ -2,6 +2,8 @@
 
 namespace RainLoop\Actions;
 
+use RainLoop\Enumerations\Capa;
+
 trait Themes
 {
 	public function GetTheme(bool $bAdmin): string
@@ -11,7 +13,7 @@ trait Themes
 			$sTheme = $this->Config()->Get('webmail', 'theme', 'Default');
 			if (!$bAdmin
 			 && ($oAccount = $this->getAccountFromToken(false))
-			 && $this->GetCapa(\RainLoop\Enumerations\Capa::THEMES)
+			 && $this->GetCapa(Capa::THEMES)
 			 && ($oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount))) {
 				$sTheme = (string) $oSettingsLocal->GetConf('Theme', $sTheme);
 			}
@@ -146,7 +148,7 @@ trait Themes
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(\RainLoop\Enumerations\Capa::USER_BACKGROUND)) {
+		if (!$this->GetCapa(Capa::USER_BACKGROUND)) {
 			return $this->FalseResponse();
 		}
 
