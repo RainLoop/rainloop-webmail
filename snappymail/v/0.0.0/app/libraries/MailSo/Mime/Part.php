@@ -60,7 +60,7 @@ class Part
 			Enumerations\Header::CONTENT_TYPE,
 			Enumerations\Parameter::FORMAT)));
 
-		if ($bResult && \in_array($this->MailEncodingName(), array('base64', 'quoted-printable'))) {
+		if ($bResult && \in_array($this->ContentTransferEncoding(), array('base64', 'quoted-printable'))) {
 			$bResult = false;
 		}
 

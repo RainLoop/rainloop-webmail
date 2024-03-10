@@ -397,7 +397,7 @@ class Message implements \JsonSerializable
 					}
 
 					if (\is_string($sText) && \strlen($sText)) {
-						$sText = Utils::DecodeEncodingValue($sText, $oPart->MailEncodingName());
+						$sText = Utils::DecodeEncodingValue($sText, $oPart->ContentTransferEncoding());
 						$sText = Utils::ConvertEncoding($sText,
 							Utils::NormalizeCharset($oPart->Charset() ?: $sCharset, true),
 							\MailSo\Base\Enumerations\Charset::UTF_8

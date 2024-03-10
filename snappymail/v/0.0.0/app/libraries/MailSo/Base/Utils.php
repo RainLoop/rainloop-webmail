@@ -196,10 +196,10 @@ abstract class Utils
 		return \round($iSize, $iRound).$aSizes[$iIndex];
 	}
 
-	public static function DecodeEncodingValue(string $sEncodedValue, string $sEncodeingType) : string
+	public static function DecodeEncodingValue(string $sEncodedValue, string $sEncodingType) : string
 	{
 		$sResult = $sEncodedValue;
-		switch (\strtolower($sEncodeingType))
+		switch (\strtolower($sEncodingType))
 		{
 			case 'q':
 			case 'quoted_printable':

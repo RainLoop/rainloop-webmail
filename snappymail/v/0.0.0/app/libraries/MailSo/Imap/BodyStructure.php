@@ -19,38 +19,40 @@ use MailSo\Mime\Enumerations\ContentType;
  */
 class BodyStructure implements \JsonSerializable
 {
-	private string $sContentType;
-
 	private array $aContentTypeParams;
 
-	private string $sCharset;
+	private string
+		$sCharset = '',
+		$sContentID = '',
+		$sContentTransferEncoding = '',
+		$sContentType = '',
+		$sDescription = '',
+		$sDisposition = '',
+		$sFileName = '',
+		$sLanguage = '',
+		$sLocation = '',
+		$sPartID = '';
 
-	private string $sContentID;
-
-	private string $sDescription;
-
-	private string $sMailEncodingName;
-
-	private string $sDisposition;
-
-	private string $sFileName;
-
-	private string $sLanguage = '';
-
-	private string $sLocation = '';
-
-	private int $iSize;
-
-	private string $sPartID;
+	private int $iSize = 0;
 
 	/**
 	 * \MailSo\Imap\BodyStructure[]
 	 */
 	private array $aSubParts;
 
-	public function MailEncodingName() : string
+	public function Charset() : string
 	{
-		return $this->sMailEncodingName;
+		return $this->sCharset;
+	}
+
+	public function ContentTransferEncoding() : string
+	{
+		return $this->sContentTransferEncoding;
+	}
+
+	public function ContentType() : string
+	{
+		return $this->sContentType;
 	}
 
 	public function PartID() : string
@@ -88,15 +90,10 @@ class BodyStructure implements \JsonSerializable
 		return ($this->isInline() ? 'inline' : 'part' ) . $sIdx;
 	}
 
-	public function ContentType() : string
-	{
-		return $this->sContentType;
-	}
-
 	public function EstimatedSize() : int
 	{
 		$fCoefficient = 1;
-		switch ($this->sMailEncodingName)
+		switch ($this->sContentTransferEncoding)
 		{
 			case 'base64':
 				$fCoefficient = 0.75;
@@ -107,11 +104,6 @@ class BodyStructure implements \JsonSerializable
 		}
 
 		return (int) ($this->iSize * $fCoefficient);
-	}
-
-	public function Charset() : string
-	{
-		return $this->sCharset;
 	}
 
 	public function SubParts() : array
@@ -192,7 +184,7 @@ class BodyStructure implements \JsonSerializable
 	{
 		return !empty($this->aContentTypeParams['format'])
 			&& 'flowed' === \strtolower(\trim($this->aContentTypeParams['format']))
-			&& !\in_array($this->sMailEncodingName, array('base64', 'quoted-printable'));
+			&& !\in_array($this->sContentTransferEncoding, array('base64', 'quoted-printable'));
 	}
 
 	public function GetHtmlAndPlainParts() : array
@@ -367,7 +359,7 @@ class BodyStructure implements \JsonSerializable
 		$sCharset = ''; // \MailSo\Base\Enumerations\Charset::UTF_8 ?
 		$sContentID = '';
 		$sDescription = '';
-		$sMailEncodingName = '';
+		$sContentTransferEncoding = '';
 		$iSize = 0;
 		$iExtraItemPos = 0;  // list index of items which have no well-established position (such as 0, 1, 5, etc).
 
@@ -463,10 +455,10 @@ class BodyStructure implements \JsonSerializable
 				if (!\is_string($aBodyStructure[5])) {
 					return null;
 				}
-				$sMailEncodingName = $aBodyStructure[5];
+				$sContentTransferEncoding = $aBodyStructure[5];
 			}
 
-			$iSize = \is_numeric($aBodyStructure[6]) ? (int) $aBodyStructure[6] : -1;
+			$iSize = \is_numeric($aBodyStructure[6]) ? (int) $aBodyStructure[6] : 0;
 
 			if (!\strlen($sPartID) || '.' === $sPartID[\strlen($sPartID) - 1]) {
 				// This is the only sub-part of the message (otherwise, it would be
@@ -519,7 +511,7 @@ class BodyStructure implements \JsonSerializable
 		$oStructure->sCharset = $sCharset;
 		$oStructure->sContentID = \trim($sContentID);
 		$oStructure->sDescription = $sDescription;
-		$oStructure->sMailEncodingName = \strtolower($sMailEncodingName);
+		$oStructure->sContentTransferEncoding = \strtolower($sContentTransferEncoding);
 		$oStructure->sDisposition = \strtolower($sDisposition);
 		$oStructure->sFileName = \MailSo\Base\Utils::Utf8Clear($sFileName);
 		$oStructure->iSize = $iSize;
