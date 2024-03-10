@@ -11,8 +11,8 @@ class LoginAutoconfigPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Login Autoconfig',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.0',
-		RELEASE  = '2024-02-05',
+		VERSION  = '1.1',
+		RELEASE  = '2024-03-10',
 		REQUIRED = '2.34.0',
 		CATEGORY = 'Login',
 		LICENSE  = 'MIT',
@@ -69,7 +69,7 @@ class LoginAutoconfigPlugin extends \RainLoop\Plugins\AbstractPlugin
 						'whiteList' => ''
 					]);
 					$oProvider->Save($oDomain);
-					\SnappyMail\Log::notice("Domain setup for '{$sDomain}' is created and active");
+					\SnappyMail\Log::notice('Autoconfig', "Domain setup for '{$sDomain}' is created and active");
 				}
 			}
 		}
