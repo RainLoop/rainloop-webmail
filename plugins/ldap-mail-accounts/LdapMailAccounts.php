@@ -70,7 +70,7 @@ class LdapMailAccounts
 		$username = $sEmail;
 		$oActions = \RainLoop\Api::Actions();
 		$oDomain = $oActions->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true);
-		if ($oDomain->IncShortLogin()){
+		if ($oDomain->ImapSettings()->shortLogin){
 			$username = @ldap_escape($this->RemoveEventualDomainPart($sEmail), "", LDAP_ESCAPE_FILTER);
 		}
 
@@ -101,7 +101,7 @@ class LdapMailAccounts
 		if (count($mailAddressResults) < 1) {
 			$this->logger->Write("Could not find user $username in LDAP! Overwriting of main mail address not possible.", \LOG_NOTICE, self::LOG_KEY);
 			return false;
-		}		
+		}
 
 		foreach($mailAddressResults as $mailAddressResult)
 		{

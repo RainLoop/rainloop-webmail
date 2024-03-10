@@ -964,7 +964,7 @@ trait Messages
 		{
 			$oMessage->SetFrom(new \MailSo\Mime\Email(
 				$oIdentity->Email(), $oIdentity->Name()));
-			if ($oAccount->Domain()->OutSetSender()) {
+			if ($oAccount->Domain()->SmtpSettings()->setSender) {
 				$oMessage->SetSender(\MailSo\Mime\Email::Parse($oAccount->Email()));
 			}
 		}

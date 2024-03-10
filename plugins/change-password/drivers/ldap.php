@@ -66,8 +66,8 @@ class ChangePasswordDriverLDAP
 			'{email:domain}' => $sDomain,
 			'{login}' => $oAccount->IncLogin(),
 			'{imap:login}' => $oAccount->IncLogin(),
-			'{imap:host}' => $oAccount->Domain()->IncHost(),
-			'{imap:port}' => $oAccount->Domain()->IncPort(),
+			'{imap:host}' => $oAccount->Domain()->ImapSettings()->host,
+			'{imap:port}' => $oAccount->Domain()->ImapSettings()->port,
 			'{gecos}' => \function_exists('posix_getpwnam') ? \posix_getpwnam($oAccount->IncLogin()) : ''
 		));
 

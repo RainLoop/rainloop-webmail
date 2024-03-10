@@ -137,7 +137,7 @@ trait AdminDomains
 				$sImapErrorDesc = $oException->getMessage();
 			}
 
-			if ($oDomain->OutUsePhpMail()) {
+			if ($oDomain->SmtpSettings()->usePhpMail) {
 				$mSmtpResult = \MailSo\Base\Utils::FunctionCallable('mail');
 				if (!$mSmtpResult) {
 					$sSmtpErrorDesc = 'PHP: mail() function is undefined';
@@ -179,7 +179,7 @@ trait AdminDomains
 				}
 			}
 
-			if ($oDomain->UseSieve()) {
+			if ($oDomain->SieveSettings()->enabled) {
 				try
 				{
 					$oSieveClient = new \MailSo\Sieve\SieveClient();

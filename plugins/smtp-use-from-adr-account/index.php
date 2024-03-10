@@ -7,8 +7,8 @@ class SmtpUseFromAdrAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME = 'Use From-Address-Account for smtp',
 		AUTHOR   = 'attike',
 		URL      = 'https://github.com/attike',
-		VERSION = '1.0',
-		RELEASE = '2023-12-06',
+		VERSION = '1.1',
+		RELEASE = '2024-03-10',
 		REQUIRED = '2.23.0',
 		CATEGORY = 'Filters',
 		DESCRIPTION = 'Set smpt-config and -credentials based on selected from-address-account';
@@ -34,8 +34,8 @@ class SmtpUseFromAdrAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 		if (\strlen($sWhiteList) && \RainLoop\Plugins\Helper::ValidateWildcardValues($sFrom, $sWhiteList, $sFoundValue) && $sFrom != $oAccount->Email()) {
 			\SnappyMail\LOG::info(get_class($this) ,'From address different from account recognized: '. $oAccount->Email().' -> '.$sFrom . '(~ '.$sFoundValue.')');
 			$oMainAccount;
-                        $oFromAccount;
-			if ( $oAccount instanceof \RainLoop\Model\MainAccount ) {
+			$oFromAccount;
+			if ($oAccount instanceof \RainLoop\Model\MainAccount ) {
 				$oMainAccount=$oAccount;
 			} else {
 				$oMainAccount=$this->Manager()->Actions()->getMainAccountFromToken();
@@ -44,21 +44,21 @@ class SmtpUseFromAdrAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 					return;
 				}
 			}
-			$aAccounts=$this->Manager()->Actions()->getAccounts($oMainAccount);
-                        foreach ($aAccounts as &$value) {
-                                $oValue=\RainLoop\Model\AdditionalAccount::NewInstanceFromTokenArray($this->Manager()->Actions(), $value);
-                                if ($oValue->Email()==$sFrom) {
-                                        $oFromAccount = $oValue;
-                                        break;
-                                }
-                        }
-                        if (is_null($oFromAccount)){
+			$aAccounts = $this->Manager()->Actions()->getAccounts($oMainAccount);
+			foreach ($aAccounts as &$value) {
+					$oValue=\RainLoop\Model\AdditionalAccount::NewInstanceFromTokenArray($this->Manager()->Actions(), $value);
+					if ($oValue->Email()==$sFrom) {
+							$oFromAccount = $oValue;
+							break;
+					}
+			}
+			if (is_null($oFromAccount)){
 				\SnappyMail\LOG::info(get_class($this),'No Account found for '. $sFrom);
 				if ($this->Config()->Get('plugin', 'throw_notfound_exception', true)) {
 					throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountDoesNotExist);
 				}
-                                return;
-                        }
+				return;
+			}
 			$this->aFromAccount[$oAccount->Email()]=$oFromAccount;
 		}
 	}
@@ -71,10 +71,10 @@ class SmtpUseFromAdrAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		if ( isset($this->aFromAccount[$oAccount->Email()]) ) {
 			$oFromAccount = $this->aFromAccount[$oAccount->Email()];
-			$oSettings->host = $oFromAccount->Domain()->OutHost();
-			$oSettings->port = (int) $oFromAccount->Domain()->OutPort();
-			$oSettings->type =  $oFromAccount->Domain()-> SmtpSettings()->type;
-			\SnappyMail\LOG::info(get_class($this),'Smtp config rewrite: '. $oFromAccount->Domain()->OutHost());
+			$oSettings->host = $oFromAccount->Domain()->SmtpSettings()->host;
+			$oSettings->port = (int) $oFromAccount->Domain()->SmtpSettings()->port;
+			$oSettings->type = $oFromAccount->Domain()->SmtpSettings()->type;
+			\SnappyMail\LOG::info(get_class($this),'Smtp config rewrite: '. $oSettings->host);
 		}
 	}
 
@@ -88,9 +88,9 @@ class SmtpUseFromAdrAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 		if ( isset($this->aFromAccount[$oAccount->Email()]) ) {
 			$oFromAccount = $this->aFromAccount[$oAccount->Email()];
 			unset($this->aFromAccount[$oAccount->Email()]);
-            		$oSettings->Login =  $oFromAccount-> OutLogin();
-            		$oSettings->useAuth =  $oFromAccount->Domain()-> SmtpSettings()->useAuth;
-            		$oSettings->Password =  $oFromAccount->IncPassword();
+			$oSettings->Login = $oFromAccount->OutLogin();
+			$oSettings->useAuth = $oFromAccount->Domain()->SmtpSettings()->useAuth;
+			$oSettings->Password = $oFromAccount->IncPassword();
 			\SnappyMail\LOG::info(get_class($this),'user/pwd rewrite: '. $oFromAccount->Email());
 		}
 	}
@@ -106,10 +106,9 @@ class SmtpUseFromAdrAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetDescription('space as delimiter, wildcard supported.')
 				->SetDefaultValue('user@example.com *@example2.com'),
 			\RainLoop\Plugins\Property::NewInstance('throw_notfound_exception')->SetLabel('Throw Exception, if from-adr is not found as account')
-                                ->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
-                                ->SetDescription('it is not possible to send eMails in this case, regardless of whether the smtp-server would do it')
-                                ->SetDefaultValue(true),
-
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDescription('it is not possible to send eMails in this case, regardless of whether the smtp-server would do it')
+				->SetDefaultValue(true)
 		);
 	}
 

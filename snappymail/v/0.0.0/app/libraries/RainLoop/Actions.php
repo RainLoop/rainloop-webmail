@@ -269,13 +269,14 @@ class Actions
 			}
 
 			if ($oAccount) {
+				$oDomain = $oAccount->Domain();
 				$sLine = \str_replace('{imap:login}', $oAccount->IncLogin(), $sLine);
-				$sLine = \str_replace('{imap:host}', $oAccount->Domain()->IncHost(), $sLine);
-				$sLine = \str_replace('{imap:port}', $oAccount->Domain()->IncPort(), $sLine);
+				$sLine = \str_replace('{imap:host}', $oDomain->ImapSettings()->host, $sLine);
+				$sLine = \str_replace('{imap:port}', $oDomain->ImapSettings()->port, $sLine);
 
 				$sLine = \str_replace('{smtp:login}', $oAccount->OutLogin(), $sLine);
-				$sLine = \str_replace('{smtp:host}', $oAccount->Domain()->OutHost(), $sLine);
-				$sLine = \str_replace('{smtp:port}', $oAccount->Domain()->OutPort(), $sLine);
+				$sLine = \str_replace('{smtp:host}', $oDomain->SmtpSettings()->host, $sLine);
+				$sLine = \str_replace('{smtp:port}', $oDomain->SmtpSettings()->port, $sLine);
 			}
 
 			$aClear['/\{imap:([^}]*)\}/i'] = 'imap';
@@ -899,7 +900,7 @@ class Actions
 				'Kolab'                   => false, // See Kolab plugin
 			);
 		}
-		$aResult[Capa::SIEVE] = $bAdmin || ($oAccount && $oAccount->Domain()->UseSieve());
+		$aResult[Capa::SIEVE] = $bAdmin || ($oAccount && $oAccount->Domain()->SieveSettings()->enabled);
 		return $aResult;
 	}
 

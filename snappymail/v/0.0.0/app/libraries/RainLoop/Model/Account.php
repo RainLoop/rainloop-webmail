@@ -39,7 +39,7 @@ abstract class Account implements \JsonSerializable
 
 	public function IncLogin() : string
 	{
-		return $this->oDomain->IncShortLogin()
+		return $this->oDomain->ImapSettings()->shortLogin
 			? \MailSo\Base\Utils::GetAccountNameFromEmail($this->sLogin)
 			: $this->sLogin;
 	}
@@ -52,7 +52,9 @@ abstract class Account implements \JsonSerializable
 	public function OutLogin() : string
 	{
 		$sSmtpLogin = $this->sSmtpLogin ?: $this->sLogin;
-		return $this->oDomain->OutShortLogin() ? \MailSo\Base\Utils::GetAccountNameFromEmail($sSmtpLogin) : $sSmtpLogin;
+		return $this->oDomain->SmtpSettings()->shortLogin
+			? \MailSo\Base\Utils::GetAccountNameFromEmail($sSmtpLogin)
+			: $sSmtpLogin;
 	}
 
 	public function Domain() : Domain

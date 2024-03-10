@@ -12,10 +12,10 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 {
 	const
 		NAME     = 'LDAP Mail Accounts',
-		VERSION  = '2.0.0',
+		VERSION  = '2.1.0',
 		AUTHOR   = 'cm-schl',
 		URL      = 'https://github.com/cm-sch',
-		RELEASE  = '2023-03-14',
+		RELEASE  = '2024-03-10',
 		REQUIRED = '2.25.4',
 		CATEGORY = 'Accounts',
 		DESCRIPTION = 'Add additional mail accounts the SnappyMail user has access to by a LDAP query. Basing on the work of FWest98 (https://github.com/FWest98).';
@@ -44,10 +44,10 @@ class LdapMailAccountsPlugin extends AbstractPlugin
 	 */
 	public function overwriteMainAccountEmail(&$sEmail, &$sLogin)
 	{
-$this->Manager()->Actions()->Logger()->Write("Login DATA: login: $sLogin email: $sEmail", \LOG_WARNING, "LDAP MAIL ACCOUNTS PLUGIN");
+		$this->Manager()->Actions()->Logger()->Write("Login DATA: login: $sLogin email: $sEmail", \LOG_WARNING, "LDAP MAIL ACCOUNTS PLUGIN");
 
-	// Set up config
-	$config = LdapMailAccountsConfig::MakeConfig($this->Config());
+		// Set up config
+		$config = LdapMailAccountsConfig::MakeConfig($this->Config());
 
 		if ($config->bool_overwrite_mail_address_main_account)
 		{
@@ -55,7 +55,7 @@ $this->Manager()->Actions()->Logger()->Write("Login DATA: login: $sLogin email: 
 			$oldapMailAccounts->overwriteEmail($sEmail, $sLogin);
 		}
 
-$this->Manager()->Actions()->Logger()->Write("Login DATA: login: $sLogin email: $sEmail", \LOG_WARNING, "LDAP MAIL ACCOUNTS PLUGIN");
+		$this->Manager()->Actions()->Logger()->Write("Login DATA: login: $sLogin email: $sEmail", \LOG_WARNING, "LDAP MAIL ACCOUNTS PLUGIN");
 	}
 
 	// Function gets called by RainLoop/Actions/User.php
@@ -90,7 +90,7 @@ $this->Manager()->Actions()->Logger()->Write("Login DATA: login: $sLogin email: 
 					\nThe value found inside ldap will overwrite the mail address of the SnappyMail main account (the account the user logged in at SnappyMail)
 					\nThe mail address used at login will still be used to login to the servers.")
 				->SetDefaultValue("mail"),
-		]);	
+		]);
 
 		return [
 			\RainLoop\Plugins\Property::NewInstance(LdapMailAccountsConfig::CONFIG_SERVER)
@@ -172,7 +172,7 @@ $this->Manager()->Actions()->Logger()->Write("Login DATA: login: $sLogin email: 
 				->SetDefaultValue("displayName"),
 
 			$groupOverwriteMainAccount
-					
+
 		];
 	}
 }
