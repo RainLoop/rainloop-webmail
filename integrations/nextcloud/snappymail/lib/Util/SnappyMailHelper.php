@@ -4,15 +4,15 @@ namespace OCA\SnappyMail\Util;
 
 class SnappyMailResponse extends \OCP\AppFramework\Http\Response
 {
-    public function render(): string
-    {
+	public function render(): string
+	{
 		$data = '';
 		$i = \ob_get_level();
 		while ($i--) {
 			$data .= \ob_get_clean();
 		}
 		return $data;
-    }
+	}
 }
 
 class SnappyMailHelper
@@ -205,6 +205,6 @@ class SnappyMailHelper
 	{
 		static::loadApp();
 		$result = \SnappyMail\Crypt::DecryptUrlSafe($sPassword, $sSalt);
-		return $result ? new \SnappyMail\SensitiveString($result) : $result;
+		return $result ? new \SnappyMail\SensitiveString($result) : null;
 	}
 }
