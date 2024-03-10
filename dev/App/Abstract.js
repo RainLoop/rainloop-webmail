@@ -3,6 +3,8 @@ import ko from 'ko';
 import { logoutLink } from 'Common/Links';
 import { i18nToNodes, initOnStartOrLangChange } from 'Common/Translator';
 
+import { arePopupsVisible } from 'Knoin/Knoin';
+
 import { LanguageStore } from 'Stores/Language';
 import { initThemes } from 'Stores/Theme';
 
@@ -18,6 +20,7 @@ export class AbstractApp {
 	}
 
 	logoutReload(url) {
+		arePopupsVisible(false);
 		url = url || logoutLink();
 		if (location.href !== url) {
 			setTimeout(() => location.href = url, 100);
