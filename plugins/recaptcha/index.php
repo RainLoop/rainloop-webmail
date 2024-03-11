@@ -6,8 +6,8 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'reCaptcha',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '2.15',
-		RELEASE  = '2023-02-22',
+		VERSION  = '2.16',
+		RELEASE  = '2024-03-11',
 		REQUIRED = '2.26.4',
 		CATEGORY = 'General',
 		LICENSE  = 'MIT',
@@ -64,7 +64,7 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$oCacher = $this->Manager()->Actions()->Cacher();
 			$sLimit = $oCacher && $oCacher->IsInited() ? $oCacher->Get($this->getCaptchaCacherKey()) : '0';
 
-			if (\strlen($sLimit) && \is_numeric($sLimit)) {
+			if (\is_numeric($sLimit)) {
 				$iConfigLimit -= (int) $sLimit;
 			}
 		}
@@ -123,7 +123,7 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 				if (false === $aResponse['Result']) {
 					$iLimit = 0;
 					$sLimut = $oCacher->Get($sKey);
-					if (\strlen($sLimut) && \is_numeric($sLimut)) {
+					if (\is_numeric($sLimut)) {
 						$iLimit = (int) $sLimut;
 					}
 
