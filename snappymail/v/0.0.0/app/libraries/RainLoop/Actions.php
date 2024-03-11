@@ -533,7 +533,7 @@ class Actions
 		return $this->oPlugins;
 	}
 
-	protected function LoggerAuthHelper(?Model\Account $oAccount = null, string $sLogin, bool $admin = false): void
+	protected function LoggerAuthHelper(?Model\Account $oAccount, string $sLogin, bool $admin = false): void
 	{
 		if ($sLogin) {
 			$sHost = $admin ? $this->Http()->GetHost(true, true) : \MailSo\Base\Utils::GetDomainFromEmail($sLogin);
