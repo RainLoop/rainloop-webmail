@@ -19,7 +19,9 @@ interface DriverInterface
 {
 	public function Set(string $sKey, string $sValue) : bool;
 
-	public function Get(string $sKey) : string;
+	public function Exists(string $sKey) : bool;
+
+	public function Get(string $sKey) : ?string;
 
 	public function Delete(string $sKey) : void;
 

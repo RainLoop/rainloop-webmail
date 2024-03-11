@@ -15,7 +15,7 @@ trait Admin
 	{
 		if ($this->Config()->Get('security', 'allow_admin_panel', true)) {
 			$sAdminKey = $this->getAdminAuthKey();
-			if ($sAdminKey && '' !== $this->Cacher(null, true)->Get(KeyPathHelper::SessionAdminKey($sAdminKey), '')) {
+			if ($sAdminKey && $this->Cacher(null, true)->Get(KeyPathHelper::SessionAdminKey($sAdminKey))) {
 				return true;
 			}
 		}

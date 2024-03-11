@@ -32,10 +32,15 @@ class APCU implements \MailSo\Cache\DriverInterface
 		return \apcu_store($this->generateCachedKey($sKey), (string) $sValue);
 	}
 
-	public function Get(string $sKey) : string
+	public function Exists(string $sKey) : bool
+	{
+		return \apcu_exists($this->generateCachedKey($sKey));
+	}
+
+	public function Get(string $sKey) : ?string
 	{
 		$sValue = \apcu_fetch($this->generateCachedKey($sKey));
-		return \is_string($sValue) ? $sValue : '';
+		return \is_string($sValue) ? $sValue : null;
 	}
 
 	public function Delete(string $sKey) : void

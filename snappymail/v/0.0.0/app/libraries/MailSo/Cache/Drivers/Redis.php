@@ -68,10 +68,15 @@ class Redis implements \MailSo\Cache\DriverInterface
 		return $sValue === true || $sValue == 'OK';
 	}
 
-	public function Get(string $sKey) : string
+	public function Exists(string $sKey) : bool
+	{
+		return $this->oRedis && $this->oRedis->exists($this->generateCachedKey($sKey));
+	}
+
+	public function Get(string $sKey) : ?string
 	{
 		$sValue = $this->oRedis ? $this->oRedis->get($this->generateCachedKey($sKey)) : '';
-		return \is_string($sValue) ? $sValue : '';
+		return \is_string($sValue) ? $sValue : null;
 	}
 
 	public function Delete(string $sKey) : void

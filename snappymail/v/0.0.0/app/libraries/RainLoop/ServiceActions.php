@@ -389,7 +389,7 @@ class ServiceActions
 				$sResult = $this->Cacher()->Get($sCacheFileName);
 			}
 
-			if (!\strlen($sResult)) {
+			if (!$sResult) {
 				$sResult = $this->oActions->compileLanguage($sLanguage, $bAdmin);
 				if ($sCacheFileName) {
 					$this->Cacher()->Set($sCacheFileName, $sResult);

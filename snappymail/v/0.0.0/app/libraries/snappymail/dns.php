@@ -14,7 +14,7 @@ abstract class DNS
 		$selector = \trim($selector) ?: 'default';
 		$oCache = \RainLoop\Api::Actions()->Cacher();
 		$sCacheKey = "dns-bimi-{$domain}-{$selector}";
-		$BIMI = $oCache->Get($sCacheKey) ?: null;
+		$BIMI = $oCache->Get($sCacheKey);
 		if ($BIMI) {
 			$BIMI = \json_decode($BIMI);
 			if ($BIMI[1] < \time()) {

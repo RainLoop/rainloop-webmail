@@ -67,40 +67,27 @@ abstract class Repository
 		$bReal = false;
 		$aRep = null;
 
-		$sRep = '';
 		$sRepoFile = 'packages.json';
-		$iRepTime = 0;
 
 		$oCache = \RainLoop\Api::Actions()->Cacher();
 
 		$sCacheKey = '/RepositoryCache/Repo/' . static::BASE_URL . '/File/' . $sRepoFile;
 		$sRep = $oCache->Get($sCacheKey);
-		if ('' !== $sRep)
-		{
-			$iRepTime = $oCache->GetTimer($sCacheKey);
-		}
+		$iRepTime = $sRep ? $oCache->GetTimer($sCacheKey) : 0;
 
-		if ('' === $sRep || 0 === $iRepTime || \time() - 3600 > $iRepTime)
-		{
+		if (!$sRep || !$iRepTime || \time() - 3600 > $iRepTime) {
 			$sRep = static::get($sRepoFile);
-			if ($sRep)
-			{
+			if ($sRep) {
 				$aRep = \json_decode($sRep);
 				$bReal = \is_array($aRep) && \count($aRep);
-
-				if ($bReal)
-				{
+				if ($bReal) {
 					$oCache->Set($sCacheKey, $sRep);
 					$oCache->SetTimer($sCacheKey);
 				}
-			}
-			else
-			{
+			} else {
 				throw new \Exception('Cannot read remote repository file: '.$sRepoFile);
 			}
-		}
-		else if ('' !== $sRep)
-		{
+		} else if ($sRep) {
 			$aRep = \json_decode($sRep, false, 10);
 			$bReal = \is_array($aRep) && \count($aRep);
 		}

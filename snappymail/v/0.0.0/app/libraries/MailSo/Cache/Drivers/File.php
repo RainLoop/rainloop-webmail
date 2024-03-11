@@ -46,14 +46,20 @@ class File implements \MailSo\Cache\DriverInterface
 		return '' === $sPath ? false : false !== \file_put_contents($sPath, $sValue);
 	}
 
-	public function Get(string $sKey) : string
+	public function Exists(string $sKey) : bool
 	{
-		$sValue = '';
+		$sPath = $this->generateCachedFileName($sKey);
+		return '' !== $sPath && \file_exists($sPath);
+	}
+
+	public function Get(string $sKey) : ?string
+	{
+		$sValue = null;
 		$sPath = $this->generateCachedFileName($sKey);
 		if ('' !== $sPath && \file_exists($sPath)) {
 			$sValue = \file_get_contents($sPath);
 		}
-		return \is_string($sValue) ? $sValue : '';
+		return \is_string($sValue) ? $sValue : null;
 	}
 
 	public function Delete(string $sKey) : void

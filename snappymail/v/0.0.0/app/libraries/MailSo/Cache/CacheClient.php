@@ -49,18 +49,20 @@ class CacheClient
 		return '1' === $this->Get($sKey.'/LOCK');
 	}
 
-	public function Get(string $sKey, bool $bClearAfterGet = false)
+	public function Exists(string $sKey) : bool
 	{
-		$sValue = '';
+		return $this->oDriver && $this->oDriver->Exists($sKey.$this->sCacheIndex);
+	}
 
+	public function Get(string $sKey, bool $bClearAfterGet = false) : ?string
+	{
+		$sValue = null;
 		if ($this->oDriver) {
 			$sValue = $this->oDriver->Get($sKey.$this->sCacheIndex);
+			if ($bClearAfterGet) {
+				$this->Delete($sKey);
+			}
 		}
-
-		if ($bClearAfterGet) {
-			$this->Delete($sKey);
-		}
-
 		return $sValue;
 	}
 
