@@ -4,9 +4,6 @@ namespace RainLoop\Model;
 
 use MailSo\Net\Enumerations\ConnectionSecurityType;
 
-//	\SnappyMail\IDN::toAscii(
-//	\SnappyMail\IDN::toUtf8(
-
 class Domain implements \JsonSerializable
 {
 	private string $Name;
@@ -187,17 +184,17 @@ class Domain implements \JsonSerializable
 		if (\strlen($sName) && \strlen($aDomain['imap_host'])) {
 			$oDomain = new self($sName);
 
-			$oDomain->IMAP->host = \SnappyMail\IDN::toUtf8($aDomain['imap_host']);
+			$oDomain->IMAP->host = \idn_to_utf8($aDomain['imap_host']);
 			$oDomain->IMAP->port = (int) $aDomain['imap_port'];
 			$oDomain->IMAP->type = self::StrConnectionSecurityTypeToCons($aDomain['imap_secure'] ?? '');
 			$oDomain->IMAP->shortLogin = !empty($aDomain['imap_short_login']);
 
 			$oDomain->Sieve->enabled = !empty($aDomain['sieve_use']);
-			$oDomain->Sieve->host = \SnappyMail\IDN::toUtf8($aDomain['sieve_host']);
+			$oDomain->Sieve->host = \idn_to_utf8($aDomain['sieve_host']);
 			$oDomain->Sieve->port = (int) ($aDomain['sieve_port'] ?? 4190);;
 			$oDomain->Sieve->type = self::StrConnectionSecurityTypeToCons($aDomain['sieve_secure'] ?? '');
 
-			$oDomain->SMTP->host = \SnappyMail\IDN::toUtf8($aDomain['smtp_host']);
+			$oDomain->SMTP->host = \idn_to_utf8($aDomain['smtp_host']);
 			$oDomain->SMTP->port = (int) ($aDomain['smtp_port'] ?? 25);
 			$oDomain->SMTP->type = self::StrConnectionSecurityTypeToCons($aDomain['smtp_secure'] ?? '');
 			$oDomain->SMTP->shortLogin = !empty($aDomain['smtp_short_login']);

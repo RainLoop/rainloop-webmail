@@ -107,7 +107,7 @@ if (defined('APP_VERSION')) {
 			}
 		}
 
-		$sName = \SnappyMail\IDN::toAscii(mb_strtolower(gethostname()));
+		$sName = idn_to_ascii(mb_strtolower(gethostname()));
 		$sFile = APP_PRIVATE_DATA.'domains/'.$sName.'.json';
 		if (!file_exists($sFile) && !file_exists(APP_PRIVATE_DATA.'domains/'.$sName.'.ini')) {
 			$config = json_decode(file_get_contents(__DIR__ . '/app/domains/default.json'), true);

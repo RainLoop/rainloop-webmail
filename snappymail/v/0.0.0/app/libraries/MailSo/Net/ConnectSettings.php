@@ -74,7 +74,7 @@ class ConnectSettings implements \JsonSerializable
 
 	public static function Host() : string
 	{
-		return \SnappyMail\IDN::toAscii($this->host);
+		return \idn_to_ascii($this->host);
 	}
 
 	public static function fromArray(array $aSettings) : self

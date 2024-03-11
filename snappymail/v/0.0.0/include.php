@@ -12,6 +12,10 @@ if (!extension_loaded('ctype')) {
 	require __DIR__ . '/app/libraries/polyfill/ctype.php';
 }
 
+if (!extension_loaded('intl')) {
+	require __DIR__ . '/app/libraries/polyfill/intl.php';
+}
+
 if (!defined('APP_VERSION')) {
 	define('APP_VERSION', basename(__DIR__));
 }

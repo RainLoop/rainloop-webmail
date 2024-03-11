@@ -1,23 +1,12 @@
 <?php
+/**
+ * Internationalized domain names
+ */
 
 namespace SnappyMail;
 
 abstract class IDN
 {
-	public static function toAscii(string $domain) : string
-	{
-		return \function_exists('idn_to_ascii')
-			? \idn_to_ascii($domain)
-			: Intl\Idn::toAscii($domain);
-	}
-
-	public static function toUtf8(string $domain) : string
-	{
-		return \function_exists('idn_to_utf8')
-			? \idn_to_utf8($domain)
-			: Intl\Idn::toUtf8($domain);
-	}
-
 	public static function anyToAscii(string $string) : string
 	{
 		if (\preg_match('#[:/]#', $string)) {
@@ -26,7 +15,7 @@ abstract class IDN
 		if (\strpos($string, '@')) {
 			return static::emailAddress($string, true);
 		}
-		return static::toAscii($string);
+		return \idn_to_ascii($string);
 	}
 
 	public static function anyToUtf8(string $string) : string
@@ -37,7 +26,7 @@ abstract class IDN
 		if (\strpos($string, '@')) {
 			return static::emailAddress($string, false);
 		}
-		return static::toUtf8($string);
+		return \idn_to_utf8($string);
 	}
 
 	public static function emailToAscii(string $address) : string
@@ -68,12 +57,12 @@ abstract class IDN
 			$local = \implode('@', $local);
 			$arr = \explode('.', $domain);
 			foreach ($arr as $k => $v) {
-				$conv = $toAscii ? static::toAscii($v) : static::toUtf8($v);
+				$conv = $toAscii ? \idn_to_ascii($v) : \idn_to_utf8($v);
 				if ($conv) $arr[$k] = $conv;
 			}
 			return $local . '@' . \implode('.', $arr);
 		}
-		return $toAscii ? static::toAscii($address) : static::toUtf8($address);
+		return $toAscii ? \idn_to_ascii($address) : \idn_to_utf8($address);
 	}
 
 	private static function uri(string $address, bool $toAscii) : string
@@ -83,7 +72,7 @@ abstract class IDN
 			if (isset($parsed['host'])) {
 				$arr = \explode('.', $parsed['host']);
 				foreach ($arr as $k => $v) {
-					$conv = $toAscii ? static::toAscii($v) : static::toUtf8($v);
+					$conv = $toAscii ? \idn_to_ascii($v) : \idn_to_utf8($v);
 					if ($conv) $arr[$k] = $conv;
 				}
 				$parsed['host'] = \implode('.', $arr);
@@ -110,12 +99,12 @@ abstract class IDN
 			// parse_url seems to have failed, try without it
 			$arr = \explode('.', $address);
 			foreach ($arr as $k => $v) {
-				$conv = $toAscii ? static::toAscii($v) : static::toUtf8($v);
+				$conv = $toAscii ? \idn_to_ascii($v) : \idn_to_utf8($v);
 				if ($conv) $arr[$k] = $conv;
 			}
 			return \implode('.', $arr);
 		}
-		return $toAscii ? static::toAscii($address) : static::toUtf8($address);
+		return $toAscii ? \idn_to_ascii($address) : \idn_to_utf8($address);
 	}
 
 }
