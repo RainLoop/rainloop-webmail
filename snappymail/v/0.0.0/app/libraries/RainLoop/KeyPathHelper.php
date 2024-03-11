@@ -9,11 +9,6 @@ class KeyPathHelper
 		return '/Sso/Data/'.$sSsoHash.'/Login/';
 	}
 
-	static public function RepositoryCacheFile(string $sRepo, string $sRepoFile) : string
-	{
-		return '/RepositoryCache/Repo/'.$sRepo.'/File/'.$sRepoFile;
-	}
-
 	static public function ReadReceiptCache(string $sEmail, string $sFolderFullName, int $iUid) : string
 	{
 		return '/ReadReceipt/'.$sEmail.'/'.$sFolderFullName.'/'.$iUid;
@@ -27,11 +22,6 @@ class KeyPathHelper
 	static public function PluginsJsCache(string $sPluginsHash) : string
 	{
 		return '/PluginsJsCache/'.$sPluginsHash.'/'.APP_VERSION.'/';
-	}
-
-	static public function CssCache(string $sTheme, string $sHash) : string
-	{
-		return '/CssCache/'.$sHash.'/'.$sTheme.'/'.APP_VERSION.'/';
 	}
 
 	static public function SessionAdminKey(string $sRand) : string

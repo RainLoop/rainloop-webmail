@@ -73,7 +73,7 @@ abstract class Repository
 
 		$oCache = \RainLoop\Api::Actions()->Cacher();
 
-		$sCacheKey = \RainLoop\KeyPathHelper::RepositoryCacheFile(static::BASE_URL, $sRepoFile);
+		$sCacheKey = '/RepositoryCache/Repo/' . static::BASE_URL . '/File/' . $sRepoFile;
 		$sRep = $oCache->Get($sCacheKey);
 		if ('' !== $sRep)
 		{

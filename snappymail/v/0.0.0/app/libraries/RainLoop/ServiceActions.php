@@ -458,7 +458,7 @@ class ServiceActions
 			$bCacheEnabled = !$bAppDebug && $this->Config()->Get('cache', 'system_data', true);
 			$sCacheFileName = '';
 			if ($bCacheEnabled) {
-				$sCacheFileName = KeyPathHelper::CssCache($sTheme, $this->oActions->Plugins()->Hash()) . $sMinify;
+				$sCacheFileName = '/CssCache/'.$this->oActions->Plugins()->Hash().'/'.$sTheme.'/'.APP_VERSION.'/' . $sMinify;
 				$this->oActions->verifyCacheByKey(\md5($sCacheFileName . ($bJson ? 1 : 0)));
 				$sResult = $this->Cacher()->Get($sCacheFileName);
 			}
