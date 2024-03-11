@@ -102,21 +102,26 @@ class Domain implements \JsonSerializable
 		$this->aliasName = \strtolower(\idn_to_ascii($sAliasName));
 	}
 
-	public function ValidateWhiteList(string $sEmail, string $sLogin = '') : bool
+	public function ValidateWhiteList(string $sEmail, string $sLogin) : bool
 	{
 		$sW = \trim($this->whiteList);
-		if (\strlen($sW))
-		{
-			$sEmail = \MailSo\Base\Utils::IdnToUtf8($sEmail, true);
-			$sLogin = \MailSo\Base\Utils::IdnToUtf8($sLogin, true);
-
-			$sW = \preg_replace('/([^\s]+)@[^\s]*/', '$1', $sW);
-			$sW = ' '.\trim(\preg_replace('/[\s;,\r\n\t]+/', ' ', $sW)).' ';
-
-			$sUserPart = \MailSo\Base\Utils::GetAccountNameFromEmail(\strlen($sLogin) ? $sLogin : $sEmail);
-			return false !== \stripos($sW, ' '.$sUserPart.' ');
+		if ($sW) {
+			$sEmail = \mb_strtolower($sEmail);
+			$sLogin = \mb_strtolower($sLogin);
+			$sUserPart = \MailSo\Base\Utils::GetAccountNameFromEmail($sLogin ?: $sEmail);
+			$sItem = \strtok($sW, " ;,\n");
+			while (false !== $sItem) {
+				$sItem = \mb_strtolower(\idn_to_ascii(\trim($sItem)));
+				if ($sItem && (
+					$sLogin === $sItem || $sEmail === $sItem
+					|| $sUserPart === $sItem || \str_starts_with($sItem, "{$sUserPart}@")
+				)) {
+					return true;
+				}
+				$sItem = \strtok(" ;,\n");
+			}
+			return false;
 		}
-
 		return true;
 	}
 

@@ -165,16 +165,6 @@ abstract class Utils
 			|| !\preg_match('/[^\x09\x10\x13\x0A\x0D\x20-\x7E]/', $sValue);
 	}
 
-	private static function StrMailDomainToLower(string $sValue) : string
-	{
-		$aParts = \explode('@', $sValue);
-		if ($iLast) {
-			$iLast = \count($aParts) - 1;
-			$aParts[$iLast] = \mb_strtolower($aParts[$iLast]);
-		}
-		return \implode('@', $aParts);
-	}
-
 	public static function StripSpaces(string $sValue) : string
 	{
 		return static::Trim(
@@ -421,19 +411,14 @@ abstract class Utils
 
 	public static function GetAccountNameFromEmail(string $sEmail) : string
 	{
-		$sResult = '';
-		if (\strlen($sEmail)) {
-			$iPos = \strrpos($sEmail, '@');
-			$sResult = (false === $iPos) ? $sEmail : \substr($sEmail, 0, $iPos);
-		}
-
-		return $sResult;
+		$iPos = \strrpos($sEmail, '@');
+		return (false === $iPos) ? $sEmail : \substr($sEmail, 0, $iPos);
 	}
 
 	public static function GetDomainFromEmail(string $sEmail) : string
 	{
-		$aParts = \explode('@', $sEmail);
-		return isset($aParts[1]) ? \array_pop($aParts) : '';
+		$iPos = \strrpos($sEmail, '@');
+		return (false === $iPos) ? '' : \substr($sEmail, $iPos + 1);
 	}
 
 	public static function GetClearDomainName(string $sDomain) : string
@@ -693,17 +678,16 @@ abstract class Utils
 	/**
 	 * Converts xn--du8h.snappymail.eu to 📧.snappymail.eu
 	 */
-	public static function IdnToUtf8(string $sStr, bool $bLowerCase = false) : string
+	public static function IdnToUtf8(string $sStr) : string
 	{
-		if (\strlen($sStr) && \preg_match('/(^|\.|@)xn--/i', $sStr)) {
+		if (\preg_match('/(^|\.|@)xn--/i', $sStr)) {
 			try
 			{
 				$sStr = \SnappyMail\IDN::anyToUtf8($sStr);
 			}
 			catch (\Throwable $oException) {}
 		}
-
-		return $bLowerCase ? static::StrMailDomainToLower($sStr) : $sStr;
+		return $sStr;
 	}
 
 	/**
