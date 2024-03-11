@@ -165,14 +165,13 @@ abstract class Utils
 			|| !\preg_match('/[^\x09\x10\x13\x0A\x0D\x20-\x7E]/', $sValue);
 	}
 
-	public static function StrMailDomainToLower(string $sValue) : string
+	private static function StrMailDomainToLower(string $sValue) : string
 	{
 		$aParts = \explode('@', $sValue);
-		$iLast = \count($aParts) - 1;
 		if ($iLast) {
+			$iLast = \count($aParts) - 1;
 			$aParts[$iLast] = \mb_strtolower($aParts[$iLast]);
 		}
-
 		return \implode('@', $aParts);
 	}
 
@@ -704,7 +703,10 @@ abstract class Utils
 		return !empty($sIp) && $sIp === \filter_var($sIp, FILTER_VALIDATE_IP);
 	}
 
-	public static function IdnToUtf8(string $sStr, bool $bLowerIfAscii = false) : string
+	/**
+	 * Converts xn--du8h.snappymail.eu to 📧.snappymail.eu
+	 */
+	public static function IdnToUtf8(string $sStr, bool $bLowerCase = false) : string
 	{
 		if (\strlen($sStr) && \preg_match('/(^|\.|@)xn--/i', $sStr)) {
 			try
@@ -714,20 +716,19 @@ abstract class Utils
 			catch (\Throwable $oException) {}
 		}
 
-		return $bLowerIfAscii ? static::StrMailDomainToLower($sStr) : $sStr;
+		return $bLowerCase ? static::StrMailDomainToLower($sStr) : $sStr;
 	}
 
-	public static function IdnToAscii(string $sStr, bool $bLowerIfAscii = false) : string
+	/**
+	 * Converts 📧.snappymail.eu to xn--du8h.snappymail.eu
+	 */
+	public static function IdnToAscii(string $sStr, bool $bLowerCase = false) : string
 	{
-		$sStr = $bLowerIfAscii ? static::StrMailDomainToLower($sStr) : $sStr;
-
-		$sUser = '';
-		$sDomain = $sStr;
-		if (false !== \strpos($sStr, '@')) {
-			$sUser = static::GetAccountNameFromEmail($sStr);
-			$sDomain = static::GetDomainFromEmail($sStr);
+		$aParts = \explode('@', $sStr);
+		$sDomain = \array_pop($aParts);
+		if ($bLowerCase) {
+			$sDomain = \mb_strtolower($sDomain);
 		}
-
 		if (\strlen($sDomain) && \preg_match('/[^\x20-\x7E]/', $sDomain)) {
 			try
 			{
@@ -735,7 +736,7 @@ abstract class Utils
 			}
 			catch (\Throwable $oException) {}
 		}
-
-		return ('' === $sUser ? '' : $sUser.'@').$sDomain;
+		$aParts[] = $sDomain;
+		return \implode('@', $aParts);
 	}
 }
