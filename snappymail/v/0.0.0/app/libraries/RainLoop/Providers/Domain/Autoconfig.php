@@ -10,6 +10,7 @@ abstract class Autoconfig
 	public static function discover(string $emailaddress) : ?array
 	{
 		$domain = \MailSo\Base\Utils::GetDomainFromEmail($emailaddress);
+//		$domain = \strtolower(\idn_to_ascii($domain));
 		// First try
 		$autoconfig = static::resolve($domain, $emailaddress);
 		if ($autoconfig) {
@@ -89,7 +90,7 @@ abstract class Autoconfig
 	private static function publicsuffixes() : array
 	{
 		$oCache = \RainLoop\Api::Actions()->Cacher();
-		$list = $oCache->Get('public_suffix_list') ?: null;
+		$list = $oCache->Get('public_suffix_list');
 		if ($list) {
 			$list = \json_decode($list, true);
 			if ($list[1] < \time()) {

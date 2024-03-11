@@ -1,4 +1,8 @@
 <?php
+/**
+ * Domain name is handled in lowercase punycode.
+ * Because internationalized domain names can have uppercase or titlecase characters.
+ */
 
 namespace RainLoop\Model;
 
@@ -20,8 +24,7 @@ class Domain implements \JsonSerializable
 
 	function __construct(string $sName)
 	{
-		$this->Name = $sName;
-
+		$this->Name = \strtolower(\idn_to_ascii($sName));
 		$this->IMAP = new \MailSo\Imap\Settings;
 		$this->SMTP = new \MailSo\Smtp\Settings;
 		$this->Sieve = new \MailSo\Sieve\Settings;
@@ -96,7 +99,7 @@ class Domain implements \JsonSerializable
 
 	public function SetAliasName(string $sAliasName) : void
 	{
-		$this->aliasName = $sAliasName;
+		$this->aliasName = \strtolower(\idn_to_ascii($sAliasName));
 	}
 
 	public function ValidateWhiteList(string $sEmail, string $sLogin = '') : bool
@@ -232,14 +235,14 @@ class Domain implements \JsonSerializable
 	{
 		$aResult = array(
 //			'@Object' => 'Object/Domain',
-			'name' => $this->Name,
+			'name' => \idn_to_utf8($this->Name),
 			'IMAP' => $this->IMAP,
 			'SMTP' => $this->SMTP,
 			'Sieve' => $this->Sieve,
 			'whiteList' => $this->whiteList
 		);
 		if ($this->aliasName) {
-			$aResult['aliasName'] = $this->aliasName;
+			$aResult['aliasName'] = \idn_to_utf8($this->aliasName);
 		}
 		return $aResult;
 	}

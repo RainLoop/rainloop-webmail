@@ -1,4 +1,8 @@
 <?php
+/**
+ * Domain names are handled in lowercase punycode.
+ * Because internationalized domain names can have uppercase or titlecase characters.
+ */
 
 namespace RainLoop\Providers\Domain;
 
@@ -6,7 +10,7 @@ use MailSo\Cache\CacheClient;
 
 class DefaultDomain implements DomainInterface
 {
-	const CACHE_KEY = '/WildCard/DomainCache/';
+	const CACHE_KEY = '/WildCardDomainsCache/';
 
 	protected string $sDomainPath;
 
@@ -20,30 +24,26 @@ class DefaultDomain implements DomainInterface
 
 	private static function decodeFileName(string $sName) : string
 	{
-		return ('default' === $sName)
-			? '*'
-			: \str_replace('_wildcard_', '*', \MailSo\Base\Utils::IdnToUtf8($sName, true));
+		return ('default' === $sName) ? '*' : \str_replace('_wildcard_', '*', $sName);
 	}
 
 	private static function encodeFileName(string $sName) : string
 	{
-		return ('*' === $sName)
-			? 'default'
-			: \str_replace('*', '_wildcard_', \MailSo\Base\Utils::IdnToAscii($sName, true));
+		return ('*' === $sName) ? 'default' : \str_replace('*', '_wildcard_', \strtolower(\idn_to_ascii($sName)));
 	}
 
 	private function getWildcardDomainsLine() : string
 	{
 		if ($this->oCacher) {
 			$sResult = $this->oCacher->Get(static::CACHE_KEY);
-			if (\strlen($sResult)) {
+			if (\is_string($sResult)) {
 				return $sResult;
 			}
 		}
 
 		$aNames = array();
 
-//		$aList = \glob($this->sDomainPath.'/*.{ini,json}', GLOB_BRACE);
+//		$aList = \glob($this->sDomainPath.'/*.{ini,json,alias}', GLOB_BRACE);
 		$aList = \glob($this->sDomainPath.'/*.json');
 		foreach ($aList as $sFile) {
 			$sName = \substr(\basename($sFile), 0, -5);
@@ -72,16 +72,14 @@ class DefaultDomain implements DomainInterface
 			$sResult = \implode(' ', \array_unique($aNames));
 		}
 
-		if ($this->oCacher) {
-			$this->oCacher->Set(static::CACHE_KEY, $sResult);
-		}
+		$this->oCacher && $this->oCacher->Set(static::CACHE_KEY, $sResult);
 
 		return $sResult;
 	}
 
 	public function Load(string $sName, bool $bFindWithWildCard = false, bool $bCheckDisabled = true, bool $bCheckAliases = true) : ?\RainLoop\Model\Domain
 	{
-		$sName = \MailSo\Base\Utils::IdnToUtf8($sName, true);
+		$sName = \strtolower(\idn_to_ascii($sName));
 		if ($bCheckDisabled && \in_array($sName, $this->getDisabled())) {
 			return null;
 		}
@@ -130,7 +128,7 @@ class DefaultDomain implements DomainInterface
 
 	public function SaveAlias(string $sName, string $sAlias) : bool
 	{
-		$sAlias = \MailSo\Base\Utils::IdnToUtf8($sAlias, true);
+		$sAlias = \strtolower(\idn_to_ascii($sAlias));
 		$sRealFileName = static::encodeFileName($sName);
 		\RainLoop\Utils::saveFile($this->sDomainPath.'/'.$sRealFileName.'.alias', $sAlias);
 		$this->oCacher && $this->oCacher->Delete(static::CACHE_KEY);
@@ -147,7 +145,7 @@ class DefaultDomain implements DomainInterface
 		// RainLoop use comma, we use newline
 		$sItem = \strtok($sFile, ",\n");
 		while (false !== $sItem) {
-			$aDisabled[] = \MailSo\Base\Utils::IdnToUtf8($sItem, true);
+			$aDisabled[] = \strtolower(\idn_to_ascii($sItem));
 			$sItem = \strtok(",\n");
 		}
 		return $aDisabled;
@@ -156,7 +154,7 @@ class DefaultDomain implements DomainInterface
 
 	public function Disable(string $sName, bool $bDisable) : bool
 	{
-		$sName = \MailSo\Base\Utils::IdnToUtf8($sName, true);
+		$sName = \strtolower(\idn_to_ascii($sName));
 		if ($sName) {
 			$aResult = $this->getDisabled();
 			if ($bDisable) {
@@ -209,20 +207,23 @@ class DefaultDomain implements DomainInterface
 				if ($bAlias) {
 					if ($bIncludeAliases) {
 						$aAliases[$sName] = array(
-							'name' => $sName,
+							'name' => \idn_to_utf8($sName),
+							'punycode' => $sName,
 							'disabled' => \in_array($sName, $aDisabledNames),
 							'alias' => true
 						);
 					}
 				} else if (false !== \strpos($sName, '*')) {
 					$aWildCards[$sName] = array(
-						'name' => $sName,
+						'name' => \idn_to_utf8($sName),
+						'punycode' => $sName,
 						'disabled' => \in_array($sName, $aDisabledNames),
 						'alias' => false
 					);
 				} else {
 					$aResult[$sName] = array(
-						'name' => $sName,
+						'name' => \idn_to_utf8($sName),
+						'punycode' => $sName,
 						'disabled' => \in_array($sName, $aDisabledNames),
 						'alias' => false
 					);
