@@ -90,15 +90,16 @@ class DefaultDomain implements DomainInterface
 			$aDomain = \json_decode(\file_get_contents($sRealFileBase.'.json'), true) ?: array();
 			return \RainLoop\Model\Domain::fromArray($sName, $aDomain);
 		}
+
 		if (\file_exists($sRealFileBase.'.ini')) {
 			$aDomain = \parse_ini_file($sRealFileBase.'.ini') ?: array();
 			return \RainLoop\Model\Domain::fromIniArray($sName, $aDomain);
 		}
 
 		if ($bCheckAliases && \file_exists($sRealFileBase.'.alias')) {
-			$sAlias = \trim(\file_get_contents($sRealFileBase.'.alias'));
-			if (!empty($sAlias)) {
-				$oDomain = $this->Load($sAlias, false, false, false);
+			$sTarget = \trim(\file_get_contents($sRealFileBase.'.alias'));
+			if (!empty($sTarget)) {
+				$oDomain = $this->Load($sTarget, false, false, false);
 				$oDomain && $oDomain->SetAliasName($sName);
 				return $oDomain;
 			}
@@ -120,17 +121,19 @@ class DefaultDomain implements DomainInterface
 
 	public function Save(\RainLoop\Model\Domain $oDomain) : bool
 	{
+		$this->Delete($oDomain->Name());
 		$sRealFileName = static::encodeFileName($oDomain->Name());
 		\RainLoop\Utils::saveFile($this->sDomainPath.'/'.$sRealFileName.'.json', \json_encode($oDomain, \JSON_PRETTY_PRINT));
 		$this->oCacher && $this->oCacher->Delete(static::CACHE_KEY);
 		return true;
 	}
 
-	public function SaveAlias(string $sName, string $sAlias) : bool
+	public function SaveAlias(string $sName, string $sTarget) : bool
 	{
-		$sAlias = \strtolower(\idn_to_ascii($sAlias));
+//		$this->Delete($sName);
+		$sTarget = \strtolower(\idn_to_ascii($sTarget));
 		$sRealFileName = static::encodeFileName($sName);
-		\RainLoop\Utils::saveFile($this->sDomainPath.'/'.$sRealFileName.'.alias', $sAlias);
+		\RainLoop\Utils::saveFile($this->sDomainPath.'/'.$sRealFileName.'.alias', $sTarget);
 		$this->oCacher && $this->oCacher->Delete(static::CACHE_KEY);
 		return true;
 	}
@@ -169,21 +172,14 @@ class DefaultDomain implements DomainInterface
 
 	public function Delete(string $sName) : bool
 	{
-		$bResult = 0 < \strlen($sName);
-		if ($bResult) {
-			$sRealFileName = static::encodeFileName($sName);
-			if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.json')) {
-				$bResult = \unlink($this->sDomainPath.'/'.$sRealFileName.'.json');
-			}
-			if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.ini')) {
-				$bResult = \unlink($this->sDomainPath.'/'.$sRealFileName.'.ini');
-			}
-			if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.alias')) {
-				$bResult = \unlink($this->sDomainPath.'/'.$sRealFileName.'.alias');
-			}
-			if ($bResult) {
-				$this->Disable($sName, false);
-			}
+		$bResult = true;
+		if (\strlen($sName)) {
+			$sRealFileName = $this->sDomainPath . '/' . static::encodeFileName($sName);
+			$bResult =
+				(!\file_exists($sRealFileName.'.json') || \unlink($sRealFileName.'.json'))
+				&& (!\file_exists($sRealFileName.'.ini') || \unlink($sRealFileName.'.ini'))
+				&& (!\file_exists($sRealFileName.'.alias') || \unlink($sRealFileName.'.alias'));
+			$this->Disable($sName, !$bResult);
 			if ($this->oCacher) {
 				$this->oCacher->Delete(static::CACHE_KEY);
 			}
