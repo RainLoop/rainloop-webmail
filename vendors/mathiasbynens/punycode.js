@@ -62,7 +62,7 @@ const
 	mapDomain = (domain, callback) => {
 		// In email addresses, only the domain name should be punycoded.
 		// Leave the local part (i.e. everything up to `@`) intact.
-		const parts = domain.split('@');
+		const parts = (domain || '').split('@');
 		parts.push(
 			parts.pop()
 			.split(regexSeparators)
@@ -389,7 +389,7 @@ const
 		 */
 		toASCII: input => mapDomain(
 			input,
-			string => regexNonASCII.test(string) ? 'xn--' + encode(string) : string
+			string => (regexNonASCII.test(string) ? 'xn--' + encode(string) : string).toLowerCase()
 		)
 	};
 })();
