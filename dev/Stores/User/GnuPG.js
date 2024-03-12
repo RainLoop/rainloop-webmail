@@ -17,7 +17,7 @@ const
 		keys.find(key =>
 //			key[sign ? 'can_sign' : 'can_decrypt']
 			(key.can_sign || key.can_decrypt)
-			&& (key.emails.includes(query) || key.subkeys.find(key => query == key.keyid || query == key.fingerprint))
+			&& (key.for(query) || key.subkeys.find(key => query == key.keyid || query == key.fingerprint))
 		);
 
 export const GnuPGUserStore = new class {
@@ -46,6 +46,7 @@ export const GnuPGUserStore = new class {
 						key.fingerprint = key.subkeys[0].fingerprint;
 						key.uids.forEach(uid => uid.email && aEmails.push(uid.email));
 						key.emails = aEmails;
+						key.for = email => aEmails.includes(IDN.toASCII(email));
 						key.askDelete = ko.observable(false);
 						key.openForDeletion = ko.observable(null).askDeleteHelper();
 						key.remove = () => {
@@ -149,7 +150,7 @@ export const GnuPGUserStore = new class {
 		const count = recipients.length,
 			length = count ? recipients.filter(email =>
 //				(key.can_verify || key.can_encrypt) &&
-				this.publicKeys.find(key => key.emails.includes(email))
+				this.publicKeys.find(key => key.for(email))
 			).length : 0;
 		return length && length === count;
 	}
@@ -157,7 +158,7 @@ export const GnuPGUserStore = new class {
 	getPublicKeyFingerprints(recipients) {
 		const fingerprints = [];
 		recipients.forEach(email => {
-			fingerprints.push(this.publicKeys.find(key => key.emails.includes(email)).fingerprint);
+			fingerprints.push(this.publicKeys.find(key => key.for(email)).fingerprint);
 		});
 		return fingerprints;
 	}

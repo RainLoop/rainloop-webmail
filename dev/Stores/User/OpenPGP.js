@@ -16,7 +16,7 @@ import { Passphrases } from 'Storage/Passphrases';
 const
 	findOpenPGPKey = (keys, query/*, sign*/) =>
 		keys.find(key =>
-			key.emails.includes(query) || query == key.id || query == key.fingerprint
+			key.for(query) || query == key.id || query == key.fingerprint
 		),
 
 	decryptKey = async (privateKey, btnTxt = 'SIGN') => {
@@ -81,7 +81,7 @@ class OpenPgpKeyModel {
 		this.fingerprint = key.getFingerprint();
 		this.can_encrypt = !!key.getEncryptionKey();
 		this.can_sign = !!key.getSigningKey();
-		this.emails = key.users.map(user => user.userID.email).filter(email => email);
+		this.emails = key.users.map(user => IDN.toASCII(user.userID.email)).filter(email => email);
 		this.armor = armor;
 		this.askDelete = ko.observable(false);
 		this.openForDeletion = ko.observable(null).askDeleteHelper();
@@ -94,9 +94,12 @@ class OpenPgpKeyModel {
 	get fingerprint() { return this.key.getFingerprint(); }
 	get can_encrypt() { return !!this.key.getEncryptionKey(); }
 	get can_sign() { return !!this.key.getSigningKey(); }
-	get emails() { return this.key.users.map(user => user.userID.email).filter(email => email); }
+	get emails() { return this.key.users.map(user => IDN.toASCII(user.userID.email)).filter(email => email); }
 	get armor() { return this.key.armor(); }
 */
+	for(email) {
+		return this.emails.includes(IDN.toASCII(email));
+	}
 
 	view() {
 		showScreenPopup(OpenPgpKeyPopupView, [this]);
@@ -196,7 +199,7 @@ export const OpenPGPUserStore = new class {
 	hasPublicKeyForEmails(recipients) {
 		const count = recipients.length,
 			length = count ? recipients.filter(email =>
-				this.publicKeys().find(key => key.emails.includes(email))
+				this.publicKeys().find(key => key.for(email))
 			).length : 0;
 		return length && length === count;
 	}
@@ -246,7 +249,7 @@ export const OpenPGPUserStore = new class {
 	 */
 	async verify(message) {
 		const data = message.pgpSigned(), // { partId: "1", sigPartId: "2", micAlg: "pgp-sha256" }
-			publicKey = this.publicKeys().find(key => key.emails.includes(message.from[0].email));
+			publicKey = this.publicKeys().find(key => key.for(message.from[0].email));
 		if (data && publicKey) {
 			data.folder = message.folder;
 			data.uid = message.uid;
@@ -305,7 +308,7 @@ export const OpenPGPUserStore = new class {
 	 */
 	async encrypt(text, recipients, signPrivateKey) {
 		const count = recipients.length;
-		recipients = recipients.map(email => this.publicKeys().find(key => key.emails.includes(email))).filter(key => key);
+		recipients = recipients.map(email => this.publicKeys().find(key => key.for(email))).filter(key => key);
 		if (count === recipients.length) {
 			if (signPrivateKey) {
 				signPrivateKey = await decryptKey(signPrivateKey);

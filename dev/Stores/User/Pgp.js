@@ -128,12 +128,12 @@ export const
 				let result = {};
 				recipients.forEach(email => {
 					OpenPGPUserStore.publicKeys().forEach(key => {
-						if (key.emails.includes(email)) {
+						if (key.for(email)) {
 							result[email] = key.armor;
 						}
 					});
 					GnuPGUserStore.publicKeys.map(async key => {
-						if (!result[email] && key.emails.includes(email)) {
+						if (!result[email] && key.for(email)) {
 							result[email] = await key.fetch();
 						}
 					});
