@@ -179,8 +179,6 @@ function getImapClient(int $host)
 	}
 	$ImapSettings->Login = $options["user{$host}"]; // convert to punycode?
 	$ImapSettings->Password = $options["password{$host}"];
-//	$ImapSettings1->ProxyAuthUser = '';
-//	$ImapSettings1->ProxyAuthPassword = '';
 	$ImapSettings->useAuth = true;
 
 	$oImapClient = new \MailSo\Imap\ImapClient;

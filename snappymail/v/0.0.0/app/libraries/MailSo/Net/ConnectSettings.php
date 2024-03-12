@@ -50,8 +50,6 @@ class ConnectSettings implements \JsonSerializable
 	];
 	public string $Login = '';
 	private ?SensitiveString $Password = null;
-	public string $ProxyAuthUser = '';
-	public ?SensitiveString $ProxyAuthPassword = null;
 
 	public function __construct()
 	{

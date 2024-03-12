@@ -35,9 +35,6 @@ class AdditionalAccount extends Account
 		if (!empty($aData['smtp']['pass'])) {
 			$aData['smtp']['pass'] = \SnappyMail\Crypt::EncryptUrlSafe($aData['smtp']['pass'], $sHash);
 		}
-		if (!empty($aData['proxy']['pass'])) {
-			$aData['proxy']['pass'] = \SnappyMail\Crypt::EncryptUrlSafe($aData['proxy']['pass'], $sHash); // sProxyAuthPassword
-		}
 		$aData['hmac'] = \hash_hmac('sha1', $aData['pass'], $sHash);
 		return $aData;
 	}
@@ -58,16 +55,10 @@ class AdditionalAccount extends Account
 					if (!empty($aData['smtp']['pass'])) {
 						$aAccountHash['smtp']['pass'] = \SnappyMail\Crypt::DecryptUrlSafe($aAccountHash['smtp']['pass'], $sHash);
 					}
-					if (!empty($aData['proxy']['pass'])) {
-						$aAccountHash['proxy']['pass'] = \SnappyMail\Crypt::DecryptUrlSafe($aAccountHash['proxy']['pass'], $sHash);
-					}
 				} else {
 					$aAccountHash['pass'] = '';
 					if (!empty($aData['smtp']['pass'])) {
 						$aAccountHash['smtp']['pass'] = '';
-					}
-					if (!empty($aData['proxy']['pass'])) {
-						$aAccountHash['proxy']['pass'] = '';
 					}
 				}
 			}

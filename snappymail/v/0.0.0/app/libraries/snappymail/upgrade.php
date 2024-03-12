@@ -93,12 +93,6 @@ abstract class Upgrade
 						'pass' => $aAccountHash[3],
 						'hmac' => \hash_hmac('sha1', $aAccountHash[3], $sHash)
 					];
-					if ($aAccountHash[8] && $aAccountHash[9]) {
-						$aNewAccounts[$sEmail]['proxy'] = [
-							'user' => $aAccount[5],
-							'pass' => $aAccount[6]
-						];
-					}
 				} catch (\Throwable $e) {
 					\SnappyMail\Log::warning('UPGRADE', "ConvertInsecureAccount {$sEmail} failed");
 				}

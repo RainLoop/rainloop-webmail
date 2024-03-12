@@ -21,10 +21,6 @@ abstract class Account implements \JsonSerializable
 
 	private ?SensitiveString $sSmtpPassword = null;
 
-	private string $sProxyAuthUser = '';
-
-	private ?SensitiveString $sProxyAuthPassword = null;
-
 	private Domain $oDomain;
 
 	public function Email() : string
@@ -85,19 +81,6 @@ abstract class Account implements \JsonSerializable
 		$this->sSmtpPassword = new SensitiveString($sPassword);
 	}
 
-	public function SetProxyAuthUser(string $sProxyAuthUser) : void
-	{
-		$this->sProxyAuthUser = $sProxyAuthUser;
-	}
-
-	public function SetProxyAuthPassword(
-		#[\SensitiveParameter]
-		string $sProxyAuthPassword
-	) : void
-	{
-		$this->sProxyAuthPassword = new SensitiveString($sProxyAuthPassword);
-	}
-
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
@@ -111,12 +94,6 @@ abstract class Account implements \JsonSerializable
 			$result['smtp'] = [
 				'user' => $this->sSmtpLogin,
 				'pass' => $this->sSmtpPassword->getValue()
-			];
-		}
-		if ($this->sProxyAuthUser && $this->sProxyAuthPassword) {
-			$result['proxy'] = [
-				'user' => $this->sProxyAuthUser,
-				'pass' => $this->sProxyAuthPassword->getValue()
 			];
 		}
 		return $result;
@@ -204,11 +181,6 @@ abstract class Account implements \JsonSerializable
 					$oAccount->sSmtpLogin = $aAccountHash['smtp']['user'];
 					$oAccount->SetSmtpPassword($aAccountHash['smtp']['pass']);
 				}
-				// init proxy user/password
-				if (isset($aAccountHash['proxy'])) {
-					$oAccount->sProxyAuthUser = $aAccountHash['proxy']['user'];
-					$oAccount->SetProxyAuthPassword($aAccountHash['proxy']['pass']);
-				}
 			}
 		}
 		return $oAccount;
@@ -290,8 +262,6 @@ abstract class Account implements \JsonSerializable
 		)
 */
 		$oSettings = $oClient->Settings;
-		$oSettings->ProxyAuthUser = $this->sProxyAuthUser;
-		$oSettings->ProxyAuthPassword = $this->sProxyAuthPassword;
 
 		$client_name = \strtolower($oClient->getLogName());
 

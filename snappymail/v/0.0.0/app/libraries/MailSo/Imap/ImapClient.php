@@ -110,17 +110,8 @@ class ImapClient extends \MailSo\Net\NetClient
 			return $this;
 		}
 
-		if (!empty($oSettings->ProxyAuthUser) && $oSettings->ProxyAuthPassword) {
-			$sLogin = $oSettings->ProxyAuthUser;
-			$sPassword = $oSettings->ProxyAuthPassword->getValue();
-			$sProxyAuthUser = $oSettings->Login;
-		} else {
-			$sLogin = $oSettings->Login;
-			$sPassword = $oSettings->Password;
-			$sProxyAuthUser = '';
-		}
-
-		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sLogin));
+		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($oSettings->Login));
+		$sPassword = $oSettings->Password;
 
 		if (!\strlen($sLogin) || !\strlen($sPassword)) {
 			$this->writeLogException(new \UnexpectedValueException, \LOG_ERR);
@@ -221,9 +212,6 @@ class ImapClient extends \MailSo\Net\NetClient
 
 			$this->setCapabilities($oResponse);
 
-			if (\strlen($sProxyAuthUser)) {
-				$this->SendRequestGetResponse('PROXYAUTH', array($this->EscapeString($sProxyAuthUser)));
-			}
 /*
 			// TODO: RFC 9051
 			if ($this->hasCapability('IMAP4rev2')) {
