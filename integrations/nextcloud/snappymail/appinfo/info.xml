@@ -3,10 +3,10 @@
 	<id>snappymail</id>
 	<name>SnappyMail</name>
 	<summary>SnappyMail Webmail</summary>
-	<version>2.35.2</version>
+	<version>2.35.3</version>
 	<licence>agpl</licence>
 	<author>SnappyMail, RainLoop Team, Nextgen-Networks, Tab Fitts, Nathan Kinkade, Pierre-Alain Bandinelli</author>
-	<description><![CDATA[**Simple, modern, lightweight & fast web-based email client.**
+	<description><![CDATA[**Lightweight & fast email client.**
 
 - **Dark mode**
 - **Responsive design**
@@ -16,6 +16,7 @@
 - **Integration with other Nextcloud apps** (Contacts, Files and Calendar)
 - **Multiple mail accounts and identities**
 - **Send & receive OpenPGP encrypted/signed emails** (With full HTML support, ECC keys, or plain text with Mailvelope)
+- **Send & receive S/MIME encrypted/signed emails**
 - **Many security features** (Sodium encrypted passwords, Sec-Fetch, TOTP 2FA, DKIM, prevent tracking, etc.)
 - **Kolab integrations**
 
@@ -63,7 +64,7 @@ There, click on the link to go to the SnappyMail admin panel.
 		<lib>xxtea</lib>
 		<lib>zip</lib>
 -->
-		<nextcloud min-version="20" max-version="28" />
+		<nextcloud min-version="20" max-version="29" />
 	</dependencies>
 	<settings>
 		<admin>OCA\SnappyMail\Settings\AdminSettings</admin>

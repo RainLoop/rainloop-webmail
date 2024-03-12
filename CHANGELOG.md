@@ -1,4 +1,54 @@
-## 2.35.2 – 2024-02-26
+## 2.35.3 – 2024-03-12
+
+### Added
+- GnuPG can be disabled
+- Missing strings for localization inside identity popup (Cryptography > S/MIME)
+  [#1458](https://github.com/the-djmaze/snappymail/issues/1458)
+- Automatically verify PGP and S/MIME signed messages
+- TNEFDecoder for
+  [#1012](https://github.com/the-djmaze/snappymail/discussions/1012)
+- RTF to HTML converter for
+  [#1012](https://github.com/the-djmaze/snappymail/discussions/1012)
+- Polyfill for PHP ctype
+  [#1250](https://github.com/the-djmaze/snappymail/issues/1250)
+
+### Changed
+- `new Error()` to `Error()`
+- Reduce KnockoutJS footprint by removing unused code
+- CSS reposition rainloopErrorTip location
+- Improved error handling on PGP and S/MIME decrypt
+- Improved OpenPGP.js import keys
+- Use Identity S/MIME key and certificate from server instead of POST
+- application.ini `webmail/language_admin` to `admin_panel/language`
+- application.ini `security/admin_panel_host` to `admin_panel/host`
+- application.ini `security/admin_panel_key` to `admin_panel/key`
+- Drop deprecated Domain::SetConfig()
+- Internationalized domain names are now handled as punycode
+- Cacher->Get() can now return NULL
+- Update French by @hguilbert
+- Update Polish by @tinola
+- Update Portuguese by @ner00
+
+### Fixed
+- Handling of Internationalized Domain Names in several areas
+- Decrypt error message
+- Stalwart ManageSieve Error 352 when getting Filters
+  [#1455](https://github.com/the-djmaze/snappymail/issues/1455)
+- Nextcloud V25+ theme slightly broken
+  [#1463](https://github.com/the-djmaze/snappymail/issues/1463)
+- PGP decryption fails with "Not armored text"
+  [#1462](https://github.com/the-djmaze/snappymail/issues/1462)
+- AUTH_BASIC falling through as AUTH_BEARER; change AUTH_BEARER to a different value
+  [#1461](https://github.com/the-djmaze/snappymail/issues/1461)
+- SetPassword expects \SnappyMail\SensitiveString
+- Crash on importing corrupt OpenPGP keys
+- Crash on old browsers instead of showing error
+- Ignore popups on logoutReload()
+- Custom SASLMechanisms fail in IMAP when the connection is secure
+  [#1484](https://github.com/the-djmaze/snappymail/pull/1484)
+
+
+## 2.35.2 – 2024-02-27
 
 ### Added
 - GnuPG error handling
