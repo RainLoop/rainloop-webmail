@@ -136,6 +136,7 @@
 		"SECURE_OPTION_NONE": "なし",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "SIEVEスクリプトを使用する",
 		"LABEL_USE_SHORT_LOGIN": "短いログイン名を使う",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
 		"LABEL_USE_AUTH": "認証を使用する",
 		"LABEL_SET_SENDER": "ログイン名を送信者として使う",
 		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",

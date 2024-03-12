@@ -136,6 +136,7 @@
 		"SECURE_OPTION_NONE": "Aucun",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Autoriser les scripts sieve",
 		"LABEL_USE_SHORT_LOGIN": "Utiliser l'identifiant court",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
 		"LABEL_USE_AUTH": "Utiliser l'authentification",
 		"LABEL_SET_SENDER": "Utiliser la connexion en tant qu'expéditeur",
 		"LABEL_AUTH_PLAIN_LINE": "Forcer l'authentification AUTH PLAIN",

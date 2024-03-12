@@ -136,6 +136,7 @@
 		"SECURE_OPTION_NONE": "Nėra",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Leisti sieve programavimą",
 		"LABEL_USE_SHORT_LOGIN": "Naudoti trumpą prisijungimo vardą",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
 		"LABEL_USE_AUTH": "Naudoti autentifikavimą ",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",

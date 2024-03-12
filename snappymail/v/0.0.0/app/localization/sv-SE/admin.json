@@ -136,6 +136,7 @@
 		"SECURE_OPTION_NONE": "Ingen",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Tillåta sikt skript",
 		"LABEL_USE_SHORT_LOGIN": "Använda korta inloggning",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
 		"LABEL_USE_AUTH": "Använd autentisering",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",

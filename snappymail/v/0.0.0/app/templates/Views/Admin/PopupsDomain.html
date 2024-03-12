@@ -60,7 +60,17 @@
 						value: imapShortLogin
 					}
 				}"></div>
-				<span style="opacity:0.7"> (user@domain.com → user)</span>
+				<span style="opacity:0.7"> (user@example.com → user)</span>
+				<span style="opacity:0.7"> (user@example.com → user)</span>
+				<br>
+				<div style="display: inline-block;" data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'POPUPS_DOMAIN/LABEL_LOWERCASE_LOGIN',
+						value: imapLowerLogin
+					}
+				}"></div>
+				<span style="opacity:0.7"> (USER@example.com → user@example.com)</span>
 
 				<h4>SSL/TLS</h4>
 				<div data-bind="component: {
@@ -157,7 +167,16 @@
 							value: smtpShortLogin
 						}
 					}"></div>
-					<span style="opacity:0.7"> (user@domain.com → user)</span>
+					<span style="opacity:0.7"> (user@example.com → user)</span>
+					<br>
+					<div style="display: inline-block;" data-bind="component: {
+						name: 'Checkbox',
+						params: {
+							label: 'POPUPS_DOMAIN/LABEL_LOWERCASE_LOGIN',
+							value: smtpLowerLogin
+						}
+					}"></div>
+					<span style="opacity:0.7"> (USER@example.com → user@example.com)</span>
 					<div data-bind="component: {
 						name: 'Checkbox',
 						params: {

@@ -136,6 +136,7 @@
 		"SECURE_OPTION_NONE": "Nobeno",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Dovoljene sieve skripte",
 		"LABEL_USE_SHORT_LOGIN": "Uporaba uporabniškega imena brez domene",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
 		"LABEL_USE_AUTH": "Uporaba overjanja",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",

@@ -136,6 +136,7 @@
 		"SECURE_OPTION_NONE": "هیچ‌کدام",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "اجازه به اجرا‌شونده‌های sieve",
 		"LABEL_USE_SHORT_LOGIN": "استفاده از ورود کوتاه بدون دامنه",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
 		"LABEL_USE_AUTH": "استفاده از احراز هویت",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",

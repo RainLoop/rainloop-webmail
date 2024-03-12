@@ -136,6 +136,7 @@
 		"SECURE_OPTION_NONE": "Нет",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Разрешить Sieve сценарии",
 		"LABEL_USE_SHORT_LOGIN": "Использовать короткий логин",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
 		"LABEL_USE_AUTH": "Использовать аутентификацию",
 		"LABEL_SET_SENDER": "Использовать логин в качестве отправителя",
 		"LABEL_AUTH_PLAIN_LINE": "Принудительный вход командой AUTH PLAIN",

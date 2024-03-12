@@ -136,6 +136,7 @@
 		"SECURE_OPTION_NONE": "Không có",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Cho phép script của sieve",
 		"LABEL_USE_SHORT_LOGIN": "Dùng đăng nhập ngắn",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
 		"LABEL_USE_AUTH": "Dùng xác minh",
 		"LABEL_SET_SENDER": "Dùng tên đăng nhập là email người dùng",
 		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",

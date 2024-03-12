@@ -35,9 +35,11 @@ class ConnectSettings implements \JsonSerializable
 	public SSLContext $ssl;
 //	public bool $tls_weak = false;
 
-	// Authentication settings use by all child classes
+	// Authentication settings used by all child classes
 	public bool $useAuth = true;
 	public bool $shortLogin = false;
+	public bool $lowerLogin = true;
+	public string $stripLogin = '';
 	public array $SASLMechanisms = [
 		// https://github.com/the-djmaze/snappymail/issues/182
 		'SCRAM-SHA3-512',
@@ -77,9 +79,35 @@ class ConnectSettings implements \JsonSerializable
 			$this->passphrase = \is_string($value) ? new SensitiveString($value) : $value;
 		}
 		if ('username' === $name || 'login' === $name) {
-			$this->username = \SnappyMail\IDN::emailToAscii($value);
-//			$this->username = \SnappyMail\IDN::emailToAscii(\MailSo\Base\Utils::Trim($value));
+			$this->username = $this->fixUsername($value);
 		}
+	}
+
+	public function fixUsername(string $value, bool $allowShorten = true) : string
+	{
+		$value = \SnappyMail\IDN::emailToAscii($value);
+//		$value = \SnappyMail\IDN::emailToAscii(\MailSo\Base\Utils::Trim($value));
+		// Strip the domain part
+		if ($this->shortLogin && $allowShorten) {
+			$value = \MailSo\Base\Utils::getEmailAddressLocalPart($value);
+		}
+		// Convert to lowercase
+		if ($this->lowerLogin) {
+			$value = \mb_strtolower($value);
+		}
+		// Strip certain characters
+		if ($this->stripLogin) {
+			$value = \explode('@', $value);
+			if (isset($value[1])) {
+				$domain = \array_pop($value);
+			}
+			$value = \str_replace(\str_split($this->stripLogin), '', $value);
+			if (isset($value[1])) {
+				$value[] = $domain;
+			}
+			$value = \implode('@', $value);
+		}
+		return $value;
 	}
 
 	public static function fromArray(array $aSettings) : self
@@ -92,6 +120,12 @@ class ConnectSettings implements \JsonSerializable
 			$object->timeout = $aSettings['timeout'];
 		}
 		$object->shortLogin = !empty($aSettings['shortLogin']);
+		if (isset($aSettings['lowerLogin'])) {
+			$object->lowerLogin = !empty($aSettings['lowerLogin']);
+		}
+		if (isset($aSettings['stripLogin'])) {
+			$object->stripLogin = $aSettings['stripLogin'];
+		}
 		$object->ssl = SSLContext::fromArray($aSettings['ssl'] ?? []);
 		if (!empty($aSettings['sasl']) && \is_array($aSettings['sasl'])) {
 			$object->SASLMechanisms = $aSettings['sasl'];
@@ -110,6 +144,8 @@ class ConnectSettings implements \JsonSerializable
 			'type' => $this->type,
 			'timeout' => $this->timeout,
 			'shortLogin' => $this->shortLogin,
+			'lowerLogin' => $this->lowerLogin,
+			'stripLogin' => $this->stripLogin,
 			'sasl' => $this->SASLMechanisms,
 			'ssl' => $this->ssl
 //			'tls_weak' => $this->tls_weak

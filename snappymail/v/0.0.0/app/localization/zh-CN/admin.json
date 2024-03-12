@@ -136,6 +136,7 @@
 		"SECURE_OPTION_NONE": "无",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "可使用筛选脚本",
 		"LABEL_USE_SHORT_LOGIN": "使用短用户名登录",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
 		"LABEL_USE_AUTH": "使用认证",
 		"LABEL_SET_SENDER": "使用登录名作为发件人",
 		"LABEL_AUTH_PLAIN_LINE": "强制单一 AUTH PLAIN 命令登录",

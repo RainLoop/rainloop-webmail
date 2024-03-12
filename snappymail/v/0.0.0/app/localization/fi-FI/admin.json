@@ -136,6 +136,7 @@
 		"SECURE_OPTION_NONE": "Ei mitään",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Salli sieve skriptit",
 		"LABEL_USE_SHORT_LOGIN": "Käytä lyhyttä kirjautumista",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
 		"LABEL_USE_AUTH": "Käytä tunnistautumista",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",

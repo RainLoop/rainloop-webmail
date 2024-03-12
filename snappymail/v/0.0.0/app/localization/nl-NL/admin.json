@@ -136,6 +136,7 @@
 		"SECURE_OPTION_NONE": "Geen",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Sta Sieve scripts toe",
 		"LABEL_USE_SHORT_LOGIN": "Gebruik verkorte login",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
 		"LABEL_USE_AUTH": "Gebruik authenticatie",
 		"LABEL_SET_SENDER": "Gebruik login als verzender",
 		"LABEL_AUTH_PLAIN_LINE": "Forceer een enkele opdracht AUTH PLAIN-aanmelding",

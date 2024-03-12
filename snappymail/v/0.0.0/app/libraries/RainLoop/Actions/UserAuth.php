@@ -26,15 +26,13 @@ trait UserAuth
 	public function resolveLoginCredentials(string &$sEmail, \SnappyMail\SensitiveString $oPassword, string &$sLogin): void
 	{
 		$sEmail = \SnappyMail\IDN::emailToAscii(\MailSo\Base\Utils::Trim($sEmail));
-		if ($this->Config()->Get('login', 'login_lowercase', true)) {
-			$sEmail = \mb_strtolower($sEmail);
-		}
 
 		$this->Plugins()->RunHook('login.credentials.step-1', array(&$sEmail));
 
+		$oDomain = null;
+		$oDomainProvider = $this->DomainProvider();
 		if (!\str_contains($sEmail, '@')) {
 			$this->logWrite("The email address '{$sEmail}' is incomplete", \LOG_INFO, 'LOGIN');
-			$oDomain = null;
 			if ($this->Config()->Get('login', 'determine_user_domain', false)) {
 //				$sUserHost = \SnappyMail\IDN::toAscii($this->Http()->GetHost(false, true));
 				$sUserHost = \strtolower(\idn_to_ascii($this->Http()->GetHost(false, true)));
@@ -42,7 +40,6 @@ trait UserAuth
 
 				$aDomainParts = \explode('.', $sUserHost);
 				$iLimit = \min(\count($aDomainParts), 14);
-				$oDomainProvider = $this->DomainProvider();
 				while (0 < $iLimit--) {
 					$sLine = \implode('.', $aDomainParts);
 					$oDomain = $oDomainProvider->Load($sLine, false);
@@ -92,8 +89,11 @@ trait UserAuth
 		$this->logMask($sPassword);
 
 		$sLogin = $sEmail;
-		if ($this->Config()->Get('login', 'login_lowercase', true)) {
-			$sLogin = \mb_strtolower($sLogin);
+		if (\str_contains($sEmail, '@')
+		 && ($oDomain || ($oDomain = $oDomainProvider->Load(\MailSo\Base\Utils::getEmailAddressDomain($sEmail))))
+		) {
+			$sEmail = $oDomain->ImapSettings()->fixUsername($sEmail, false);
+			$sLogin = $oDomain->ImapSettings()->fixUsername($sLogin);
 		}
 
 		$this->Plugins()->RunHook('login.credentials', array(&$sEmail, &$sLogin, &$sPassword));

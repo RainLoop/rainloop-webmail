@@ -136,6 +136,7 @@
 		"SECURE_OPTION_NONE": "Ingen",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Tillad sieve skripts",
 		"LABEL_USE_SHORT_LOGIN": "Brug kort log ind",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
 		"LABEL_USE_AUTH": "Brug godkendelse",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",

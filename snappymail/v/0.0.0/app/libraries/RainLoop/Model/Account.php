@@ -35,9 +35,7 @@ abstract class Account implements \JsonSerializable
 
 	public function IncLogin() : string
 	{
-		return $this->oDomain->ImapSettings()->shortLogin
-			? \MailSo\Base\Utils::getEmailAddressLocalPart($this->sLogin)
-			: $this->sLogin;
+		return $this->sLogin;
 	}
 
 	public function IncPassword() : string
@@ -47,10 +45,7 @@ abstract class Account implements \JsonSerializable
 
 	public function OutLogin() : string
 	{
-		$sSmtpLogin = $this->sSmtpLogin ?: $this->sLogin;
-		return $this->oDomain->SmtpSettings()->shortLogin
-			? \MailSo\Base\Utils::getEmailAddressLocalPart($sSmtpLogin)
-			: $sSmtpLogin;
+		return $this->sSmtpLogin ?: $this->sLogin;
 	}
 
 	public function Domain() : Domain

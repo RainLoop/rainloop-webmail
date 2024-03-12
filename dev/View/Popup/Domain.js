@@ -26,6 +26,7 @@ const
 		imapType: 0,
 		imapTimeout: 300,
 		imapShortLogin: false,
+		imapLowerLogin: false,
 		// SSL
 		imapSslVerify_peer: false,
 		imapSslAllow_self_signed: false,
@@ -50,6 +51,7 @@ const
 		smtpType: 0,
 		smtpTimeout: 60,
 		smtpShortLogin: false,
+		smtpLowerLogin: false,
 		smtpUseAuth: true,
 		smtpSetSender: false,
 		smtpAuthPlainLine: false,
@@ -69,6 +71,7 @@ const
 			secure: pInt(oDomain.imapType()),
 			timeout: oDomain.imapTimeout,
 			shortLogin: !!oDomain.imapShortLogin(),
+			lowerLogin: !!oDomain.imapLowerLogin(),
 			ssl: {
 				verify_peer: !!oDomain.imapSslVerify_peer(),
 				verify_peer_name: !!oDomain.imapSslVerify_peer(),
@@ -92,6 +95,7 @@ const
 			secure: pInt(oDomain.smtpType()),
 			timeout: oDomain.smtpTimeout,
 			shortLogin: !!oDomain.smtpShortLogin(),
+			lowerLogin: !!oDomain.smtpLowerLogin(),
 			ssl: {
 				verify_peer: !!oDomain.smtpSslVerify_peer(),
 				verify_peer_name: !!oDomain.smtpSslVerify_peer(),
@@ -109,6 +113,7 @@ const
 			secure: pInt(oDomain.sieveType()),
 			timeout: oDomain.sieveTimeout,
 			shortLogin: !!oDomain.imapShortLogin(),
+			lowerLogin: !!oDomain.imapLowerLogin(),
 			ssl: {
 				verify_peer: !!oDomain.imapSslVerify_peer(),
 				verify_peer_name: !!oDomain.imapSslVerify_peer(),

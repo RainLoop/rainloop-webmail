@@ -136,6 +136,7 @@
 		"SECURE_OPTION_NONE": "Ninguno",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Permitir scripts de filtro",
 		"LABEL_USE_SHORT_LOGIN": "Inicio de Sesión corto",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
 		"LABEL_USE_AUTH": "Usar autenticación",
 		"LABEL_SET_SENDER": "Usar inicio de sesión como remitente",
 		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",

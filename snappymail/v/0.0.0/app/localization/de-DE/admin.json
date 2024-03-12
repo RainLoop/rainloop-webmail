@@ -136,6 +136,7 @@
 		"SECURE_OPTION_NONE": "Ohne",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Sieve-Skripte erlauben",
 		"LABEL_USE_SHORT_LOGIN": "Kurze Benutzernamen verwenden",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
 		"LABEL_USE_AUTH": "Authentifizierung verwenden",
 		"LABEL_SET_SENDER": "Verwenden Sie die Anmeldung als Absender",
 		"LABEL_AUTH_PLAIN_LINE": "Erzwinge einzelnen AUTH PLAIN Befehl bei der Anmeldung",

@@ -108,12 +108,12 @@ class Domain implements \JsonSerializable
 	{
 		$sW = \trim($this->whiteList);
 		if ($sW) {
-			$sEmail = \mb_strtolower($sEmail);
-			$sLogin = \mb_strtolower($sLogin);
+			$sEmail = $this->IMAP->fixUsername($sEmail);
+			$sLogin = $this->IMAP->fixUsername($sLogin);
 			$sUserPart = \MailSo\Base\Utils::getEmailAddressLocalPart($sLogin ?: $sEmail);
 			$sItem = \strtok($sW, " ;,\n");
 			while (false !== $sItem) {
-				$sItem = \mb_strtolower(\idn_to_ascii(\trim($sItem)));
+				$sItem = $this->IMAP->fixUsername(\trim($sItem));
 				if ($sItem && (
 					$sLogin === $sItem || $sEmail === $sItem
 					|| $sUserPart === $sItem || \str_starts_with($sItem, "{$sUserPart}@")

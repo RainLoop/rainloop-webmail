@@ -136,6 +136,7 @@
 		"SECURE_OPTION_NONE": "Semmi",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "SIEVE szkriptek engedélyezése",
 		"LABEL_USE_SHORT_LOGIN": "Rövid felhasználónév használata",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
 		"LABEL_USE_AUTH": "Hitelesítés használata",
 		"LABEL_SET_SENDER": "Use login as sender",
 		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",

@@ -136,6 +136,7 @@
 		"SECURE_OPTION_NONE": "Bat ere ez",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Onartu sieve scriptak",
 		"LABEL_USE_SHORT_LOGIN": "Erabili login motza",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
 		"LABEL_USE_AUTH": "Erabili autentikazioa",
 		"LABEL_SET_SENDER": "Erabili logina bidaltzaile bezala",
 		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
