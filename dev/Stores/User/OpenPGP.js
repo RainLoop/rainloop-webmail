@@ -59,9 +59,11 @@ const
 		let keys = [], key,
 			armoredKeys = JSON.parse(storage.getItem(itemname)),
 			i = arrayLength(armoredKeys);
-		while (i--) {
+		while (i--) try {
 			key = await openpgp.readKey({armoredKey:armoredKeys[i]});
 			key.err || keys.push(new OpenPgpKeyModel(armoredKeys[i], key));
+		} catch (e) {
+			console.error(e);
 		}
 		return keys;
 	},
