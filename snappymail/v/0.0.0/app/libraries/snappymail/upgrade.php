@@ -70,14 +70,10 @@ abstract class Upgrade
 				}
 				try {
 					$aNewAccounts[$sEmail] = [
-						'account',
-						$sEmail,
-						$sEmail, // sLogin
-						'',      // sPassword
-						'',      // sClientCert
-						'',      // sProxyAuthUser
-						'',      // sProxyAuthPassword
-						\hash_hmac('sha1', '', $sHash)
+						'email' => $sEmail,
+						'login' => $sEmail,
+						'pass' => '',
+						'hmac' => \hash_hmac('sha1', '', $sHash)
 					];
 					if (!$sToken) {
 						\SnappyMail\Log::warning('UPGRADE', "ConvertInsecureAccount {$sEmail} no token");
@@ -92,16 +88,17 @@ abstract class Upgrade
 					}
 					$aAccountHash[3] = Crypt::EncryptUrlSafe($aAccountHash[3], $sHash);
 					$aNewAccounts[$sEmail] = [
-						'account',
-						$aAccountHash[1],
-						$aAccountHash[2],
-						$aAccountHash[3],
-						$aAccountHash[11],
-						$aAccountHash[8],
-						$aAccountHash[9],
-						$oMainAccount->Email(),
-						\hash_hmac('sha1', $aAccountHash[3], $sHash)
+						'email' => $aAccountHash[1],
+						'login' => $aAccountHash[2],
+						'pass' => $aAccountHash[3],
+						'hmac' => \hash_hmac('sha1', $aAccountHash[3], $sHash)
 					];
+					if ($aAccountHash[8] && $aAccountHash[9]) {
+						$aNewAccounts[$sEmail]['proxy'] = [
+							'user' => $aAccount[5],
+							'pass' => $aAccount[6]
+						];
+					}
 				} catch (\Throwable $e) {
 					\SnappyMail\Log::warning('UPGRADE', "ConvertInsecureAccount {$sEmail} failed");
 				}
