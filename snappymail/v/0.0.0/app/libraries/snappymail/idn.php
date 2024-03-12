@@ -8,6 +8,19 @@ namespace SnappyMail;
 abstract class IDN
 {
 	/**
+	 * Converts domain name to lowercased punycode
+	 * When the '@' is in, only the part after is changed
+	 * Like: '📧.SnappyMail.EU' to 'xn--du8h.snappymail.eu'
+	 */
+	public static function toAscii(string $value) : string
+	{
+		$local = \explode('@', $value);
+		$domain = static::domain(\array_pop($local), true);
+		$local[] = $domain;
+		return \implode('@', $local);
+	}
+
+	/**
 	 * Converts IDN domain part to lowercased punycode
 	 * Like: 'Smile😀@📧.SnappyMail.eu' to 'Smile😀@xn--du8h.snappymail.eu'
 	 * When the '@' is missing, it does nothing

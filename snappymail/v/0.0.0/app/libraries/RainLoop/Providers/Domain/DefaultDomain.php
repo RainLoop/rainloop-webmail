@@ -29,6 +29,7 @@ class DefaultDomain implements DomainInterface
 
 	private static function encodeFileName(string $sName) : string
 	{
+//		return ('*' === $sName) ? 'default' : \str_replace('*', '_wildcard_', \SnappyMail\IDN::toAscii($sName));
 		return ('*' === $sName) ? 'default' : \str_replace('*', '_wildcard_', \strtolower(\idn_to_ascii($sName)));
 	}
 
@@ -79,6 +80,7 @@ class DefaultDomain implements DomainInterface
 
 	public function Load(string $sName, bool $bFindWithWildCard = false, bool $bCheckDisabled = true, bool $bCheckAliases = true) : ?\RainLoop\Model\Domain
 	{
+//		$sName = \SnappyMail\IDN::toAscii($sName);
 		$sName = \strtolower(\idn_to_ascii($sName));
 		if ($bCheckDisabled && \in_array($sName, $this->getDisabled())) {
 			return null;
@@ -131,6 +133,7 @@ class DefaultDomain implements DomainInterface
 	public function SaveAlias(string $sName, string $sTarget) : bool
 	{
 //		$this->Delete($sName);
+//		$sTarget = \SnappyMail\IDN::toAscii($sTarget);
 		$sTarget = \strtolower(\idn_to_ascii($sTarget));
 		$sRealFileName = static::encodeFileName($sName);
 		\RainLoop\Utils::saveFile($this->sDomainPath.'/'.$sRealFileName.'.alias', $sTarget);
@@ -148,6 +151,7 @@ class DefaultDomain implements DomainInterface
 		// RainLoop use comma, we use newline
 		$sItem = \strtok($sFile, ",\n");
 		while (false !== $sItem) {
+//			$aDisabled[] = \SnappyMail\IDN::toAscii($sItem);
 			$aDisabled[] = \strtolower(\idn_to_ascii($sItem));
 			$sItem = \strtok(",\n");
 		}
@@ -157,6 +161,7 @@ class DefaultDomain implements DomainInterface
 
 	public function Disable(string $sName, bool $bDisable) : bool
 	{
+//		$sName = \SnappyMail\IDN::toAscii($sName);
 		$sName = \strtolower(\idn_to_ascii($sName));
 		if ($sName) {
 			$aResult = $this->getDisabled();

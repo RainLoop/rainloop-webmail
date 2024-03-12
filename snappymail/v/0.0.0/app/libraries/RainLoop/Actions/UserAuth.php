@@ -25,7 +25,7 @@ trait UserAuth
 	 */
 	public function resolveLoginCredentials(string &$sEmail, \SnappyMail\SensitiveString $oPassword, string &$sLogin): void
 	{
-		$sEmail = \MailSo\Base\Utils::Trim($sEmail);
+		$sEmail = \SnappyMail\IDN::emailToAscii(\MailSo\Base\Utils::Trim($sEmail));
 		if ($this->Config()->Get('login', 'login_lowercase', true)) {
 			$sEmail = \mb_strtolower($sEmail);
 		}
@@ -36,6 +36,7 @@ trait UserAuth
 			$this->logWrite("The email address '{$sEmail}' is incomplete", \LOG_INFO, 'LOGIN');
 			$oDomain = null;
 			if ($this->Config()->Get('login', 'determine_user_domain', false)) {
+//				$sUserHost = \SnappyMail\IDN::toAscii($this->Http()->GetHost(false, true));
 				$sUserHost = \strtolower(\idn_to_ascii($this->Http()->GetHost(false, true)));
 				$this->logWrite("Determined user domain: {$sUserHost}", \LOG_INFO, 'LOGIN');
 

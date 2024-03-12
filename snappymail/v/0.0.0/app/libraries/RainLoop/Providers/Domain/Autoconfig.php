@@ -11,6 +11,7 @@ abstract class Autoconfig
 	{
 //		$emailaddress = \SnappyMail\IDN::emailToAscii($emailaddress);
 		$domain = \MailSo\Base\Utils::getEmailAddressDomain($emailaddress);
+//		$domain = \SnappyMail\IDN::toAscii($domain);
 		$domain = \strtolower(\idn_to_ascii($domain));
 		// First try
 		$autoconfig = static::resolve($domain, $emailaddress);
