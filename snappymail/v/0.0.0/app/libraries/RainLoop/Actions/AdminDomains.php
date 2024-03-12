@@ -64,7 +64,7 @@ trait AdminDomains
 		$sLogin = '';
 		$this->resolveLoginCredentials($sEmail, $oPassword, $sLogin);
 		$oDomain = \str_contains($sEmail, '@')
-			? $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true)
+			? $this->DomainProvider()->Load(\MailSo\Base\Utils::getEmailAddressDomain($sEmail), true)
 			: null;
 		return $this->DefaultResponse(array(
 			'email' => $sEmail,
@@ -111,8 +111,8 @@ trait AdminDomains
 					'connectCapa' => \array_values(\array_diff($oImapClient->Capabilities(), ['STARTTLS']))
 				];
 				if (!empty($aAuth['user'])) {
-					$oSettings->Login = $aAuth['user'];
-					$oSettings->Password = $aAuth['pass'];
+					$oSettings->username = $aAuth['user'];
+					$oSettings->passphrase = $aAuth['pass'];
 					$oImapClient->Login($oSettings);
 					$mImapResult['authCapa'] = \array_values(\array_unique(\array_map(function($n){
 							return \str_starts_with($n, 'THREAD=') ? 'THREAD' : $n;
@@ -156,8 +156,8 @@ trait AdminDomains
 					];
 
 					if (!empty($aAuth['user'])) {
-						$oSettings->Login = $aAuth['user'];
-						$oSettings->Password = $aAuth['pass'];
+						$oSettings->username = $aAuth['user'];
+						$oSettings->passphrase = $aAuth['pass'];
 						$oSmtpClient->Login($oSettings);
 						$mSmtpResult['authCapa'] = $oSmtpClient->Capability();
 					}
@@ -192,8 +192,8 @@ trait AdminDomains
 					];
 
 					if (!empty($aAuth['user'])) {
-						$oSettings->Login = $aAuth['user'];
-						$oSettings->Password = $aAuth['pass'];
+						$oSettings->username = $aAuth['user'];
+						$oSettings->passphrase = $aAuth['pass'];
 						$oSieveClient->Login($oSettings);
 						$mSieveResult['authCapa'] = $oSieveClient->Capability();
 					}

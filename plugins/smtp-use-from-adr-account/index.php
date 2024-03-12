@@ -7,9 +7,9 @@ class SmtpUseFromAdrAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME = 'Use From-Address-Account for smtp',
 		AUTHOR   = 'attike',
 		URL      = 'https://github.com/attike',
-		VERSION = '1.1',
-		RELEASE = '2024-03-10',
-		REQUIRED = '2.23.0',
+		VERSION  = '1.1',
+		RELEASE  = '2024-03-12',
+		REQUIRED = '2.35.3',
 		CATEGORY = 'Filters',
 		DESCRIPTION = 'Set smpt-config and -credentials based on selected from-address-account';
 
@@ -88,9 +88,9 @@ class SmtpUseFromAdrAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 		if ( isset($this->aFromAccount[$oAccount->Email()]) ) {
 			$oFromAccount = $this->aFromAccount[$oAccount->Email()];
 			unset($this->aFromAccount[$oAccount->Email()]);
-			$oSettings->Login = $oFromAccount->OutLogin();
 			$oSettings->useAuth = $oFromAccount->Domain()->SmtpSettings()->useAuth;
-			$oSettings->Password = $oFromAccount->IncPassword();
+			$oSettings->username = $oFromAccount->OutLogin();
+			$oSettings->passphrase = $oFromAccount->IncPassword();
 			\SnappyMail\LOG::info(get_class($this),'user/pwd rewrite: '. $oFromAccount->Email());
 		}
 	}

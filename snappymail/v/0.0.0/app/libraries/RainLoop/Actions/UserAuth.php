@@ -154,26 +154,23 @@ trait UserAuth
 		$oMainAccount = $this->getMainAccountFromToken(false);
 		if ($sEmail && $oMainAccount && $this->GetCapa(Capa::ADDITIONAL_ACCOUNTS)) {
 			$oAccount = null;
-			if ($oMainAccount->Email() === $sEmail) {
-				$this->SetAdditionalAuthToken($oAccount);
-				return true;
-			}
-			$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail);
-			$aAccounts = $this->GetAccounts($oMainAccount);
-			if (!isset($aAccounts[$sEmail])) {
-				throw new ClientException(Notifications::AccountDoesNotExist);
-			}
-			$oAccount = AdditionalAccount::NewInstanceFromTokenArray(
-				$this, $aAccounts[$sEmail]
-			);
-			if (!$oAccount) {
-				throw new ClientException(Notifications::AccountSwitchFailed);
-			}
+			if ($oMainAccount->Email() !== $sEmail) {
+				$sEmail = \SnappyMail\IDN::emailToAscii($sEmail);
+				$aAccounts = $this->GetAccounts($oMainAccount);
+				if (!isset($aAccounts[$sEmail])) {
+					throw new ClientException(Notifications::AccountDoesNotExist);
+				}
+				$oAccount = AdditionalAccount::NewInstanceFromTokenArray(
+					$this, $aAccounts[$sEmail]
+				);
+				if (!$oAccount) {
+					throw new ClientException(Notifications::AccountSwitchFailed);
+				}
 
-			// Test the login
-			$oImapClient = new \MailSo\Imap\ImapClient;
-			$this->imapConnect($oAccount, false, $oImapClient);
-
+				// Test the login
+				$oImapClient = new \MailSo\Imap\ImapClient;
+				$this->imapConnect($oAccount, false, $oImapClient);
+			}
 			$this->SetAdditionalAuthToken($oAccount);
 			return true;
 		}

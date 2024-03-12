@@ -108,7 +108,7 @@ class Domain implements \JsonSerializable
 		if ($sW) {
 			$sEmail = \mb_strtolower($sEmail);
 			$sLogin = \mb_strtolower($sLogin);
-			$sUserPart = \MailSo\Base\Utils::GetAccountNameFromEmail($sLogin ?: $sEmail);
+			$sUserPart = \MailSo\Base\Utils::getEmailAddressLocalPart($sLogin ?: $sEmail);
 			$sItem = \strtok($sW, " ;,\n");
 			while (false !== $sItem) {
 				$sItem = \mb_strtolower(\idn_to_ascii(\trim($sItem)));
@@ -192,17 +192,17 @@ class Domain implements \JsonSerializable
 		if (\strlen($sName) && \strlen($aDomain['imap_host'])) {
 			$oDomain = new self($sName);
 
-			$oDomain->IMAP->host = \idn_to_utf8($aDomain['imap_host']);
+			$oDomain->IMAP->host = $aDomain['imap_host'];
 			$oDomain->IMAP->port = (int) $aDomain['imap_port'];
 			$oDomain->IMAP->type = self::StrConnectionSecurityTypeToCons($aDomain['imap_secure'] ?? '');
 			$oDomain->IMAP->shortLogin = !empty($aDomain['imap_short_login']);
 
 			$oDomain->Sieve->enabled = !empty($aDomain['sieve_use']);
-			$oDomain->Sieve->host = \idn_to_utf8($aDomain['sieve_host']);
+			$oDomain->Sieve->host = $aDomain['sieve_host'];
 			$oDomain->Sieve->port = (int) ($aDomain['sieve_port'] ?? 4190);;
 			$oDomain->Sieve->type = self::StrConnectionSecurityTypeToCons($aDomain['sieve_secure'] ?? '');
 
-			$oDomain->SMTP->host = \idn_to_utf8($aDomain['smtp_host']);
+			$oDomain->SMTP->host = $aDomain['smtp_host'];
 			$oDomain->SMTP->port = (int) ($aDomain['smtp_port'] ?? 25);
 			$oDomain->SMTP->type = self::StrConnectionSecurityTypeToCons($aDomain['smtp_secure'] ?? '');
 			$oDomain->SMTP->shortLogin = !empty($aDomain['smtp_short_login']);

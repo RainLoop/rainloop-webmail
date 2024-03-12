@@ -8,10 +8,10 @@ class LDAPLoginMappingPlugin extends AbstractPlugin
 {
 	const
 		NAME     = 'LDAP login mapping',
-		VERSION  = '2.1',
+		VERSION  = '2.2',
 		AUTHOR   = 'RainLoop Team, Ludovic Pouzenc<ludovic@pouzenc.fr>, ZephOne<zephone@protonmail.com>',
-		RELEASE  = '2023-01-19',
-		REQUIRED = '2.19.2',
+		RELEASE  = '2024-03-12',
+		REQUIRED = '2.35.3',
 		CATEGORY = 'Login',
 		DESCRIPTION = 'Enable custom mapping using ldap field';
 	/**
@@ -175,7 +175,7 @@ class LDAPLoginMappingPlugin extends AbstractPlugin
 				'LDAP');
 			return FALSE;
 		}
-		$sLogin = \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail);
+		$sLogin = \MailSo\Base\Utils::getEmailAddressLocalPart($sEmail);
 
 		$this->oLogger->Write('ldap_connect: trying...', \LOG_INFO, 'LDAP');
 

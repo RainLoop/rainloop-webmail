@@ -52,7 +52,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	public function Hash() : string
 	{
 		return \md5('ImapClientHash/'.
-			$this->Settings->Login . '@' .
+			$this->Settings->username . '@' .
 			$this->Settings->host . ':' .
 			$this->Settings->port
 		);
@@ -110,8 +110,8 @@ class ImapClient extends \MailSo\Net\NetClient
 			return $this;
 		}
 
-		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($oSettings->Login));
-		$sPassword = $oSettings->Password;
+		$sLogin = $oSettings->username;
+		$sPassword = $oSettings->passphrase;
 
 		if (!\strlen($sLogin) || !\strlen($sPassword)) {
 			$this->writeLogException(new \UnexpectedValueException, \LOG_ERR);

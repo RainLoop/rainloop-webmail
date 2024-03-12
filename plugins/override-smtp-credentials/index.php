@@ -4,9 +4,9 @@ class OverrideSmtpCredentialsPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Override SMTP Credentials',
-		VERSION = '2.4',
-		RELEASE = '2023-01-19',
-		REQUIRED = '2.23.0',
+		VERSION = '2.5',
+		RELEASE = '2024-03-12',
+		REQUIRED = '2.35.3',
 		CATEGORY = 'Filters',
 		DESCRIPTION = 'Override SMTP credentials for specific users.';
 
@@ -67,8 +67,8 @@ class OverrideSmtpCredentialsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$sFoundValue = '';
 		if (\strlen($sWhiteList) && \RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $sWhiteList, $sFoundValue)) {
 			$oSettings->useAuth = (bool) $this->Config()->Get('plugin', 'smtp_auth', true);
-			$oSettings->Login = \trim($this->Config()->Get('plugin', 'smtp_user', ''));
-			$oSettings->Password = (string) $this->Config()->Get('plugin', 'smtp_password', '');
+			$oSettings->username = \trim($this->Config()->Get('plugin', 'smtp_user', ''));
+			$oSettings->passphrase = (string) $this->Config()->Get('plugin', 'smtp_password', '');
 		}
 	}
 

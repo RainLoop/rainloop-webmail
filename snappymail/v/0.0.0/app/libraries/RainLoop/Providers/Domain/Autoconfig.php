@@ -9,8 +9,9 @@ abstract class Autoconfig
 {
 	public static function discover(string $emailaddress) : ?array
 	{
-		$domain = \MailSo\Base\Utils::GetDomainFromEmail($emailaddress);
-//		$domain = \strtolower(\idn_to_ascii($domain));
+//		$emailaddress = \SnappyMail\IDN::emailToAscii($emailaddress);
+		$domain = \MailSo\Base\Utils::getEmailAddressDomain($emailaddress);
+		$domain = \strtolower(\idn_to_ascii($domain));
 		// First try
 		$autoconfig = static::resolve($domain, $emailaddress);
 		if ($autoconfig) {

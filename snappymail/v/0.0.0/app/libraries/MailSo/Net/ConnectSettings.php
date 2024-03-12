@@ -48,8 +48,9 @@ class ConnectSettings implements \JsonSerializable
 		'PLAIN',
 		'LOGIN'
 	];
-	public string $Login = '';
-	private ?SensitiveString $Password = null;
+
+	private string $username = '';
+	private ?SensitiveString $passphrase = null;
 
 	public function __construct()
 	{
@@ -58,21 +59,27 @@ class ConnectSettings implements \JsonSerializable
 
 	public function __get(string $name)
 	{
-		if ('Password' === $name) {
-			return $this->Password ? $this->Password->getValue() : '';
+		$name = \strtolower($name);
+		if ('passphrase' === $name || 'password' === $name) {
+			return $this->passphrase ? $this->passphrase->getValue() : '';
+		}
+		if ('username' === $name || 'login' === $name) {
+			return $this->username;
 		}
 	}
 
-	public function __set(string $name, $value)
-	{
-		if ('Password' === $name) {
-			$this->Password = \is_string($value) ? new SensitiveString($value) : $value;
+	public function __set(string $name,
+		#[\SensitiveParameter]
+		$value
+	) {
+		$name = \strtolower($name);
+		if ('passphrase' === $name || 'password' === $name) {
+			$this->passphrase = \is_string($value) ? new SensitiveString($value) : $value;
 		}
-	}
-
-	public static function Host() : string
-	{
-		return \idn_to_ascii($this->host);
+		if ('username' === $name || 'login' === $name) {
+			$this->username = \SnappyMail\IDN::emailToAscii($value);
+//			$this->username = \SnappyMail\IDN::emailToAscii(\MailSo\Base\Utils::Trim($value));
+		}
 	}
 
 	public static function fromArray(array $aSettings) : self

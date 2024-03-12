@@ -57,12 +57,12 @@ class ChangePasswordDriverLDAP
 
 	public function ChangePassword(\RainLoop\Model\Account $oAccount, string $sPrevPassword, string $sNewPassword) : bool
 	{
-		$sDomain = \MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email());
+		$sDomain = \MailSo\Base\Utils::getEmailAddressDomain($oAccount->Email());
 		$sUserDn = \strtr($this->sUserDnFormat, array(
 			'{domain}' => $sDomain,
 			'{domain:dc}' => 'dc='.\strtr($sDomain, array('.' => ',dc=')),
 			'{email}' => $oAccount->Email(),
-			'{email:user}' => \MailSo\Base\Utils::GetAccountNameFromEmail($oAccount->Email()),
+			'{email:user}' => \MailSo\Base\Utils::getEmailAddressLocalPart($oAccount->Email()),
 			'{email:domain}' => $sDomain,
 			'{login}' => $oAccount->IncLogin(),
 			'{imap:login}' => $oAccount->IncLogin(),

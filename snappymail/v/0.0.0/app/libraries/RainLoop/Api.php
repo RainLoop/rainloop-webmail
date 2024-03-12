@@ -104,7 +104,7 @@ abstract class Api
 	public static function ClearUserData(string $sEmail) : bool
 	{
 		if (\strlen($sEmail)) {
-			$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail);
+			$sEmail = \SnappyMail\IDN::emailToAscii($sEmail);
 
 			$oStorageProvider = static::Actions()->StorageProvider();
 			if ($oStorageProvider && $oStorageProvider->IsActive()) {

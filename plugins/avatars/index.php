@@ -10,8 +10,8 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Avatars',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.15',
-		RELEASE  = '2024-01-22',
+		VERSION  = '1.16',
+		RELEASE  = '2024-03-12',
 		REQUIRED = '2.25.0',
 		CATEGORY = 'Contacts',
 		LICENSE  = 'MIT',
@@ -208,7 +208,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 			return null;
 		}
 
-		$sAsciiEmail = \mb_strtolower(\MailSo\Base\Utils::IdnToAscii($sEmail, true));
+		$sAsciiEmail = \mb_strtolower(\SnappyMail\IDN::emailToAscii($sEmail));
 		$sEmailId = \sha1($sAsciiEmail);
 
 		\MailSo\Base\Http::setETag($sEmailId);
@@ -310,7 +310,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	private static function cacheImage(string $sEmail, array $aResult) : void
 	{
-		$sEmailId = \sha1(\mb_strtolower(\MailSo\Base\Utils::IdnToAscii($sEmail, true)));
+		$sEmailId = \sha1(\mb_strtolower(\SnappyMail\IDN::emailToAscii($sEmail)));
 		if (!\is_dir(\APP_PRIVATE_DATA . 'avatars')) {
 			\mkdir(\APP_PRIVATE_DATA . 'avatars', 0700);
 		}
@@ -323,7 +323,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	private static function getCachedImage(string $sEmail) : ?array
 	{
-		$sEmail = \mb_strtolower(\MailSo\Base\Utils::IdnToAscii($sEmail, true));
+		$sEmail = \mb_strtolower(\SnappyMail\IDN::emailToAscii($sEmail));
 		$aFiles = \glob(\APP_PRIVATE_DATA . "avatars/{$sEmail}.*");
 		if ($aFiles) {
 			\MailSo\Base\Http::setLastModified(\filemtime($aFiles[0]));

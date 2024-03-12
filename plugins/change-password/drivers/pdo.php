@@ -87,8 +87,8 @@ class ChangePasswordDriverPDO
 				':email' => $sEmail,
 				':oldpass' => $encrypt_prefix . \ChangePasswordPlugin::encrypt($encrypt, $sPrevPassword),
 				':newpass' => $encrypt_prefix . \ChangePasswordPlugin::encrypt($encrypt, $sNewPassword),
-				':domain' => \MailSo\Base\Utils::GetDomainFromEmail($sEmail),
-				':username' => \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail),
+				':domain' => \MailSo\Base\Utils::getEmailAddressDomain($sEmail),
+				':username' => \MailSo\Base\Utils::getEmailAddressLocalPart($sEmail),
 				':login_name' => $oAccount->IncLogin()
 			);
 

@@ -15,6 +15,7 @@
 namespace MailSo\Smtp;
 
 use MailSo\Net\Enumerations\ConnectionSecurityType;
+use SnappyMail\IDN;
 
 /**
  * @category MailSo
@@ -127,8 +128,8 @@ class SmtpClient extends \MailSo\Net\NetClient
 			return $this;
 		}
 
-		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($oSettings->Login));
-		$sPassword = $oSettings->Password;
+		$sLogin = $oSettings->username;
+		$sPassword = $oSettings->passphrase;
 
 		$type = '';
 		foreach ($oSettings->SASLMechanisms as $sasl_type) {
@@ -227,9 +228,13 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	public function MailFrom(string $sFrom, int $iSizeIfSupported = 0, bool $bDsn = false, bool $bRequireTLS = false) : self
 	{
-		$sFrom = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sFrom), true);
-
+//		$sFrom = IDN::emailToAscii($sFrom);
 		$sCmd = "FROM:<{$sFrom}>";
+		// RFC 6531
+		if ($this->hasCapability('SMTPUTF8')) {
+//			$sFrom = IDN::emailToUtf8($sFrom);
+//			$sCmd = "FROM:<{$sFrom}> SMTPUTF8";
+		}
 
 		if (0 < $iSizeIfSupported && $this->hasCapability('SIZE')) {
 			$sCmd .= ' SIZE='.$iSizeIfSupported;
@@ -243,18 +248,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 		// RFC 6152
 		if ($this->hasCapability('8BITMIME')) {
 //			$sCmd .= ' BODY=8BITMIME';
-			// RFC 6531
-			if ($this->hasCapability('SMTPUTF8')) {
-//				$sCmd .= ' SMTPUTF8';
-			}
 		}
 		// RFC 3030
 		else if ($this->hasCapability('BINARYMIME')) {
 //			$sCmd .= ' BODY=BINARYMIME';
-			// RFC 6531
-			if ($this->hasCapability('SMTPUTF8')) {
-//				$sCmd .= ' SMTPUTF8';
-			}
 		}
 
 		// RFC 8689
@@ -281,7 +278,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			$this->writeLogException(new \MailSo\RuntimeException('No sender reverse path has been supplied'), \LOG_ERR);
 		}
 
-		$sTo = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sTo), true);
+//		$sTo = IDN::emailToAscii($sTo);
 
 		$sCmd = 'TO:<'.$sTo.'>';
 
@@ -413,18 +410,16 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	public function Vrfy(string $sUser) : self
 	{
+		$sUser = \MailSo\Base\Utils::Trim($sUser);
 /*
 		// RFC 6531
 		if ($this->hasCapability('SMTPUTF8')) {
-			$this->sendRequestWithCheck('VRFY '
-					. \MailSo\Base\Utils::IdnToUtf8(\MailSo\Base\Utils::Trim($sUser))
-					. ' SMTPUTF8',
+			$this->sendRequestWithCheck('VRFY ' . IDN::emailToUtf8($sUser) . ' SMTPUTF8',
 				array(250, 251, 252),
 			);
 		} else {
 */
-		$this->sendRequestWithCheck(
-			'VRFY ' . \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sUser)),
+		$this->sendRequestWithCheck('VRFY ' . IDN::emailToAscii($sUser),
 			array(250, 251, 252)
 		);
 		return $this;
@@ -442,16 +437,14 @@ class SmtpClient extends \MailSo\Net\NetClient
 /*
 	public function Expn(string $sUser) : self
 	{
+		$sUser = \MailSo\Base\Utils::Trim($sUser);
 		// RFC 6531
 		if ($this->hasCapability('SMTPUTF8')) {
-			$this->sendRequestWithCheck('EXPN '
-					. \MailSo\Base\Utils::IdnToUtf8(\MailSo\Base\Utils::Trim($sUser))
-					. ' SMTPUTF8',
+			$this->sendRequestWithCheck('EXPN ' . IDN::emailToUtf8($sUser) . ' SMTPUTF8',
 				array(250, 251, 252)
 			);
 		} else {
-		$this->sendRequestWithCheck('EXPN '
-				. \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sUser)),
+			$this->sendRequestWithCheck('EXPN ' .  IDN::emailToAscii($sUser),
 			array(250, 251, 252),
 		);
 		return $this;

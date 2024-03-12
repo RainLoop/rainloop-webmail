@@ -2,7 +2,6 @@
 
 namespace RainLoop\Model;
 
-use MailSo\Base\Utils;
 use SnappyMail\SensitiveString;
 
 class Identity implements \JsonSerializable
@@ -102,7 +101,7 @@ class Identity implements \JsonSerializable
 		if (!empty($aData['Email'])) {
 			$this->sId = !empty($aData['Id']) ? $aData['Id'] : '';
 			$this->sLabel = isset($aData['Label']) ? $aData['Label'] : '';
-			$this->sEmail = $bJson ? Utils::IdnToAscii($aData['Email'], true) : $aData['Email'];
+			$this->sEmail = $bJson ? \SnappyMail\IDN::emailToAscii($aData['Email']) : $aData['Email'];
 			$this->sName = isset($aData['Name']) ? $aData['Name'] : '';
 			$this->sReplyTo = !empty($aData['ReplyTo']) ? $aData['ReplyTo'] : '';
 			$this->sBcc = !empty($aData['Bcc']) ? $aData['Bcc'] : '';
@@ -146,7 +145,7 @@ class Identity implements \JsonSerializable
 			'@Object' => 'Object/Identity',
 			'id' => $this->sId,
 			'label' => $this->sLabel,
-			'email' => Utils::IdnToUtf8($this->sEmail),
+			'email' => \SnappyMail\IDN::emailToUtf8($this->sEmail),
 			'name' => $this->sName,
 			'replyTo' => $this->sReplyTo,
 			'bcc' => $this->sBcc,

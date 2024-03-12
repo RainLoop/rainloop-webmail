@@ -57,7 +57,7 @@ class ChangePasswordHMailServerDriver
 				$this->oConfig->Get('plugin', 'hmailserver_password', '')
 			)) {
 				$sEmail = $oAccount->Email();
-				$sDomain = \MailSo\Base\Utils::GetDomainFromEmail($sEmail);
+				$sDomain = \MailSo\Base\Utils::getEmailAddressDomain($sEmail);
 				$oHmailDomain = $oHmailApp->Domains->ItemByName($sDomain);
 				if ($oHmailDomain) {
 					$oHmailAccount = $oHmailDomain->Accounts->ItemByAddress($sEmail);

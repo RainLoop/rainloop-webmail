@@ -12,8 +12,8 @@ class LoginAutoconfigPlugin extends \RainLoop\Plugins\AbstractPlugin
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
 		VERSION  = '1.1',
-		RELEASE  = '2024-03-10',
-		REQUIRED = '2.34.0',
+		RELEASE  = '2024-03-12',
+		REQUIRED = '2.35.3',
 		CATEGORY = 'Login',
 		LICENSE  = 'MIT',
 		DESCRIPTION = 'Tries to login using the domain autoconfig';
@@ -27,7 +27,7 @@ class LoginAutoconfigPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		if (\str_contains($sEmail, '@')) {
 			$oProvider = $this->Manager()->Actions()->DomainProvider();
-			$sDomain = \MailSo\Base\Utils::GetDomainFromEmail($sEmail);
+			$sDomain = \MailSo\Base\Utils::getEmailAddressDomain($sEmail);
 			$oDomain = $oProvider->Load($sDomain, false);
 			if (!$oDomain) {
 				$result = \RainLoop\Providers\Domain\Autoconfig::discover($sEmail);

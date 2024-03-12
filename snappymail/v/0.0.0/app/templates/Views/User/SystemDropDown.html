@@ -18,7 +18,7 @@
 
 			<!-- ko foreach: accounts -->
 			<li role="presentation">
-				<a class="email-title" href="#" data-bind="click: $root.accountClick, text: name || email,
+				<a class="email-title" href="#" data-bind="click: $root.accountClick, text: label(),
 					attr: {title: email, 'data-unread': unreadEmails, 'data-icon': $root.accountEmail() === email ? '✔' : '👤'}"></a>
 			</li>
 			<!-- /ko -->

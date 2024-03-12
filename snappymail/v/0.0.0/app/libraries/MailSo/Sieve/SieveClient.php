@@ -87,8 +87,8 @@ class SieveClient extends \MailSo\Net\NetClient
 			return $this;
 		}
 
-		$sLogin = $oSettings->Login;
-		$sPassword = $oSettings->Password;
+		$sLogin = $oSettings->username;
+		$sPassword = $oSettings->passphrase;
 		$sLoginAuthKey = '';
 		if (!\strlen($sLogin) || !\strlen($sPassword)) {
 			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);

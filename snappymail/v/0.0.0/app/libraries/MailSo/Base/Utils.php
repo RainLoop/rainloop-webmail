@@ -409,13 +409,27 @@ abstract class Utils
 		return \trim($sValue);
 	}
 
+	/**
+	 * @deprecated use getEmailAddressLocalPart
+	 */
 	public static function GetAccountNameFromEmail(string $sEmail) : string
+	{
+		return static::getEmailAddressLocalPart($sEmail);
+	}
+	public static function getEmailAddressLocalPart(string $sEmail) : string
 	{
 		$iPos = \strrpos($sEmail, '@');
 		return (false === $iPos) ? $sEmail : \substr($sEmail, 0, $iPos);
 	}
 
+	/**
+	 * @deprecated use getEmailAddressDomain
+	 */
 	public static function GetDomainFromEmail(string $sEmail) : string
+	{
+		return static::getEmailAddressDomain($sEmail);
+	}
+	public static function getEmailAddressDomain(string $sEmail) : string
 	{
 		$iPos = \strrpos($sEmail, '@');
 		return (false === $iPos) ? '' : \substr($sEmail, $iPos + 1);
@@ -676,10 +690,12 @@ abstract class Utils
 	}
 
 	/**
-	 * Converts xn--du8h.snappymail.eu to 📧.snappymail.eu
+	 * @deprecated
 	 */
 	public static function IdnToUtf8(string $sStr) : string
 	{
+		$trace = \debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
+		\trigger_error("Deprecated function IdnToAscii called at {$trace['file']}#{$trace['line']}", \E_USER_DEPRECATED);
 		if (\preg_match('/(^|\.|@)xn--/i', $sStr)) {
 			try
 			{
@@ -691,10 +707,12 @@ abstract class Utils
 	}
 
 	/**
-	 * Converts 📧.snappymail.eu to xn--du8h.snappymail.eu
+	 * @deprecated
 	 */
 	public static function IdnToAscii(string $sStr, bool $bLowerCase = false) : string
 	{
+		$trace = \debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
+		\trigger_error("Deprecated function IdnToAscii called at {$trace['file']}#{$trace['line']}", \E_USER_DEPRECATED);
 		$aParts = \explode('@', $sStr);
 		$sDomain = \array_pop($aParts);
 		if (\strlen($sDomain) && \preg_match('/[^\x20-\x7E]/', $sDomain)) {

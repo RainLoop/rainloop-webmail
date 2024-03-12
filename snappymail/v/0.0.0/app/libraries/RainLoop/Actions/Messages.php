@@ -762,8 +762,7 @@ trait Messages
 			$this->Plugins()->RunHook('filter.smtp-from', array($oAccount, $oMessage, &$sFrom));
 
 			$aHiddenRcpt = array();
-			if ($bAddHiddenRcpt)
-			{
+			if ($bAddHiddenRcpt) {
 				$this->Plugins()->RunHook('filter.smtp-hidden-rcpt', array($oAccount, $oMessage, &$aHiddenRcpt));
 			}
 

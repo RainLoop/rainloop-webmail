@@ -1161,7 +1161,7 @@ class PdoAddressBook
 	{
 		static $aCache = array();
 
-		$sEmail = \MailSo\Base\Utils::IdnToAscii(\trim($sEmail), true);
+		$sEmail = \SnappyMail\IDN::emailToAscii(\trim($sEmail));
 		if (empty($sEmail)) {
 			throw new \ValueError('Empty Email argument');
 		}

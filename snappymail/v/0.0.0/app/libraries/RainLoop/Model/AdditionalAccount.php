@@ -9,7 +9,7 @@ class AdditionalAccount extends Account
 {
 	public function ParentEmail() : string
 	{
-		return \trim(\MailSo\Base\Utils::IdnToAscii(\RainLoop\Api::Actions()->getMainAccountFromToken()->Email(), true));
+		return \SnappyMail\IDN::emailToAscii(\RainLoop\Api::Actions()->getMainAccountFromToken()->Email());
 	}
 
 	public function Hash() : string

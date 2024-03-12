@@ -4,11 +4,11 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Nextcloud',
-		VERSION = '2.31',
-		RELEASE  = '2024-02-18',
+		VERSION = '2.32',
+		RELEASE  = '2024-03-12',
 		CATEGORY = 'Integrations',
 		DESCRIPTION = 'Integrate with Nextcloud v20+',
-		REQUIRED = '2.34.0';
+		REQUIRED = '2.35.3';
 
 	public function Init() : void
 	{
@@ -80,7 +80,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 		) {
 			$sAccessToken = \OC::$server->getSession()->get('oidc_access_token');
 			if ($sAccessToken) {
-				$oSettings->Password = $sAccessToken;
+				$oSettings->passphrase = $sAccessToken;
 				\array_unshift($oSettings->SASLMechanisms, 'OAUTHBEARER');
 			}
 		}

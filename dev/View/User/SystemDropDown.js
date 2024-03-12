@@ -87,9 +87,8 @@ export class SystemDropDownUserView extends AbstractViewRight {
 	}
 
 	accountName() {
-		let email = AccountUserStore.email(),
-			account = AccountUserStore.find(account => account.email == email);
-		return account?.name || email;
+		const email = AccountUserStore.email();
+		return AccountUserStore.find(account => account.email == email)?.label() || IDN.toUnicode(email);
 	}
 
 	settingsClick() {

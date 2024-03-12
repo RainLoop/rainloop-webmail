@@ -326,10 +326,10 @@ class Actions
 					$sEmail = $oAccount->Email();
 
 					$sLine = \str_replace('{user:email}', $sEmail, $sLine);
-					$sLine = \str_replace('{user:login}', \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail), $sLine);
-					$sLine = \str_replace('{user:domain}', \MailSo\Base\Utils::GetDomainFromEmail($sEmail), $sLine);
+					$sLine = \str_replace('{user:login}', \MailSo\Base\Utils::getEmailAddressLocalPart($sEmail), $sLine);
+					$sLine = \str_replace('{user:domain}', \MailSo\Base\Utils::getEmailAddressDomain($sEmail), $sLine);
 					$sLine = \str_replace('{user:domain-clear}',
-						\MailSo\Base\Utils::GetClearDomainName(\MailSo\Base\Utils::GetDomainFromEmail($sEmail)),
+						\MailSo\Base\Utils::GetClearDomainName(\MailSo\Base\Utils::getEmailAddressDomain($sEmail)),
 						$sLine);
 				}
 			}
@@ -533,17 +533,17 @@ class Actions
 		return $this->oPlugins;
 	}
 
-	protected function LoggerAuthHelper(?Model\Account $oAccount, string $sLogin, bool $admin = false): void
+	protected function LoggerAuthHelper(?Model\Account $oAccount, string $sLogin = '', bool $admin = false): void
 	{
 		if ($sLogin) {
-			$sHost = $admin ? $this->Http()->GetHost(true, true) : \MailSo\Base\Utils::GetDomainFromEmail($sLogin);
+			$sHost = $admin ? $this->Http()->GetHost(true, true) : \MailSo\Base\Utils::getEmailAddressDomain($sLogin);
 			$aAdditionalParams = array(
 				'{imap:login}' => $sLogin,
 				'{imap:host}' => $sHost,
 				'{smtp:login}' => $sLogin,
 				'{smtp:host}' => $sHost,
 				'{user:email}' => $sLogin,
-				'{user:login}' => $admin ? $sLogin : \MailSo\Base\Utils::GetAccountNameFromEmail($sLogin),
+				'{user:login}' => $admin ? $sLogin : \MailSo\Base\Utils::getEmailAddressLocalPart($sLogin),
 				'{user:domain}' => $sHost,
 			);
 		} else {
@@ -605,43 +605,43 @@ class Actions
 		} else {
 			$oAccount = $this->getAccountFromToken(false);
 			if ($oAccount) {
-				$aResult = \array_merge($aResult, [
-					'Auth' => true,
-					'Email' => \MailSo\Base\Utils::IdnToUtf8($oAccount->Email()),
-					'accountHash' => $oAccount->Hash(),
-					'accountSignMe' => isset($_COOKIE[self::AUTH_SIGN_ME_TOKEN_KEY]),
-
-					'contactsAllowed' => $this->AddressBookProvider($oAccount)->IsActive(),
-
-                    'allowSpellcheck' => $oConfig->Get('defaults', 'allow_spellcheck', false),
-					'ViewHTML' => (bool) $oConfig->Get('defaults', 'view_html', true),
-					'ViewImages' => $oConfig->Get('defaults', 'view_images', 'ask'),
-					'ViewImagesWhitelist' => '',
-					'RemoveColors' => (bool) $oConfig->Get('defaults', 'remove_colors', false),
-					'AllowStyles' => false,
-					'ListInlineAttachments' => false,
-					'CollapseBlockquotes' => $oConfig->Get('defaults', 'collapse_blockquotes', true),
-					'MaxBlockquotesLevel' => 0,
-					'simpleAttachmentsList' => false,
-					'listGrouped' => $oConfig->Get('defaults', 'mail_list_grouped', false),
-					'MessagesPerPage' => (int) $oConfig->Get('webmail', 'messages_per_page', 25),
-					'messageNewWindow' => false,
-					'messageReadAuto' => true, // (bool) $oConfig->Get('webmail', 'message_read_auto', true),
-					'MessageReadDelay' => (int) $oConfig->Get('webmail', 'message_read_delay', 5),
-					'MsgDefaultAction' => (int) $oConfig->Get('defaults', 'msg_default_action', 1),
-					'SoundNotification' => true,
-					'NotificationSound' => 'new-mail',
-					'DesktopNotifications' => true,
-					'Layout' => (int) $oConfig->Get('defaults', 'view_layout', Enumerations\Layout::SIDE_PREVIEW),
-					'EditorDefaultType' => \str_replace('Forced', '', $oConfig->Get('defaults', 'view_editor_type', '')),
-					'editorWysiwyg' => 'Squire',
-					'UseCheckboxesInList' => (bool) $oConfig->Get('defaults', 'view_use_checkboxes', true),
-					'showNextMessage' => (bool) $oConfig->Get('defaults', 'view_show_next_message', false),
-					'AutoLogout' => (int) $oConfig->Get('defaults', 'autologout', 30),
-					'AllowDraftAutosave' => (bool) $oConfig->Get('defaults', 'allow_draft_autosave', true),
-					'ContactsAutosave' => (bool) $oConfig->Get('defaults', 'contacts_autosave', true),
-					'sieveAllowFileintoInbox' => (bool)$oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false)
-				]);
+				$aResult = \array_merge(
+					$aResult,
+					[
+						'Auth' => true,
+						'accountSignMe' => isset($_COOKIE[self::AUTH_SIGN_ME_TOKEN_KEY]),
+						'allowSpellcheck' => $oConfig->Get('defaults', 'allow_spellcheck', false),
+						'ViewHTML' => (bool) $oConfig->Get('defaults', 'view_html', true),
+						'ViewImages' => $oConfig->Get('defaults', 'view_images', 'ask'),
+						'ViewImagesWhitelist' => '',
+						'RemoveColors' => (bool) $oConfig->Get('defaults', 'remove_colors', false),
+						'AllowStyles' => false,
+						'ListInlineAttachments' => false,
+						'CollapseBlockquotes' => $oConfig->Get('defaults', 'collapse_blockquotes', true),
+						'MaxBlockquotesLevel' => 0,
+						'simpleAttachmentsList' => false,
+						'listGrouped' => $oConfig->Get('defaults', 'mail_list_grouped', false),
+						'MessagesPerPage' => (int) $oConfig->Get('webmail', 'messages_per_page', 25),
+						'messageNewWindow' => false,
+						'messageReadAuto' => true, // (bool) $oConfig->Get('webmail', 'message_read_auto', true),
+						'MessageReadDelay' => (int) $oConfig->Get('webmail', 'message_read_delay', 5),
+						'MsgDefaultAction' => (int) $oConfig->Get('defaults', 'msg_default_action', 1),
+						'SoundNotification' => true,
+						'NotificationSound' => 'new-mail',
+						'DesktopNotifications' => true,
+						'Layout' => (int) $oConfig->Get('defaults', 'view_layout', Enumerations\Layout::SIDE_PREVIEW),
+						'EditorDefaultType' => \str_replace('Forced', '', $oConfig->Get('defaults', 'view_editor_type', '')),
+						'editorWysiwyg' => 'Squire',
+						'UseCheckboxesInList' => (bool) $oConfig->Get('defaults', 'view_use_checkboxes', true),
+						'showNextMessage' => (bool) $oConfig->Get('defaults', 'view_show_next_message', false),
+						'AutoLogout' => (int) $oConfig->Get('defaults', 'autologout', 30),
+						'AllowDraftAutosave' => (bool) $oConfig->Get('defaults', 'allow_draft_autosave', true),
+						'ContactsAutosave' => (bool) $oConfig->Get('defaults', 'contacts_autosave', true),
+						'sieveAllowFileintoInbox' => (bool)$oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false)
+					],
+					// MainAccount or AdditionalAccount
+					$this->getAccountData($oAccount)
+				);
 
 				$aAttachmentsActions = array();
 				if ($this->GetCapa(Capa::ATTACHMENTS_ACTIONS)) {
@@ -677,12 +677,9 @@ class Actions
 
 					$mMailToData = Utils::DecodeKeyValuesQ($sToken);
 					if (!empty($mMailToData['MailTo']) && 'MailTo' === $mMailToData['MailTo'] && !empty($mMailToData['To'])) {
-						$aResult['mailToEmail'] = \MailSo\Base\Utils::IdnToUtf8($mMailToData['To']);
+						$aResult['mailToEmail'] = \SnappyMail\IDN::emailToUtf8($mMailToData['To']);
 					}
 				}
-
-				// MainAccount or AdditionalAccount
-				$aResult = \array_merge($aResult, $this->getAccountData($oAccount));
 
 				// MainAccount
 				$oSettings = $this->SettingsProvider()->Load($oAccount);

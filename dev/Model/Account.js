@@ -28,6 +28,10 @@ export class AccountModel extends AbstractModel {
 		&& setTimeout(()=>this.fetchUnread(), (Math.ceil(Math.random() * 10)) * 3000);
 	}
 
+	label() {
+		return this.name || IDN.toUnicode(this.email);
+	}
+
 	/**
 	 * Get INBOX unread messages
 	 */

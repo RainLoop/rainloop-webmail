@@ -13,7 +13,7 @@ abstract class IDN
 			return static::uri($string, true);
 		}
 		if (\str_contains($string, '@')) {
-			return static::emailAddress($string, true);
+			return static::emailToAscii($string);
 		}
 		return \idn_to_ascii($string);
 	}
@@ -24,21 +24,35 @@ abstract class IDN
 			return static::uri($string, false);
 		}
 		if (\str_contains($string, '@')) {
-			return static::emailAddress($string, false);
+			return static::emailToUtf8($string);
 		}
 		return \idn_to_utf8($string);
 	}
 
 	/**
 	 * Converts IDN domain part to lowercased punycode
+	 * Like: 'Smile😀@📧.SnappyMail.eu' to 'Smile😀@xn--du8h.snappymail.eu'
+	 * When the '@' is missing, it does nothing
 	 */
 	public static function emailToAscii(string $address) : string
 	{
 		return static::emailAddress($address, true);
 	}
 
+	/**
+	 * Converts IDN domain part to unicode
+	 * Like: 'Smile😀@xn--du8h.SnappyMail.eu' to 'Smile😀@📧.SnappyMail.eu'
+	 * When the '@' is missing, it does nothing
+	 */
+	public static function emailToUtf8(string $address) : string
+	{
+		return static::emailAddress($address, false);
+	}
+
 	private static function domain(string $domain, bool $toAscii) : string
 	{
+//		if ($toAscii && \preg_match('/[^\x20-\x7E]/', $domain)) {
+//		if (!$toAscii && \preg_match('/(^|\\.)xn--/i', $domain)) {
 		return $toAscii ? \strtolower(\idn_to_ascii($domain)) : \idn_to_utf8($domain);
 /*
 		$domain = \explode('.', $domain);
@@ -53,7 +67,8 @@ abstract class IDN
 	private static function emailAddress(string $address, bool $toAscii) : string
 	{
 		if (!\str_contains($address, '@')) {
-			throw new \RuntimeException("Invalid email address: {$address}");
+//			throw new \RuntimeException("Invalid email address: {$address}");
+			return $address;
 		}
 		$local = \explode('@', $address);
 		$domain = static::domain(\array_pop($local), $toAscii);

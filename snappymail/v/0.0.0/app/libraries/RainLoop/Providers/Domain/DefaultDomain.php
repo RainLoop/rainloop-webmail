@@ -207,23 +207,20 @@ class DefaultDomain implements DomainInterface
 				if ($bAlias) {
 					if ($bIncludeAliases) {
 						$aAliases[$sName] = array(
-							'name' => \idn_to_utf8($sName),
-							'punycode' => $sName,
+							'name' => $sName,
 							'disabled' => \in_array($sName, $aDisabledNames),
 							'alias' => true
 						);
 					}
 				} else if (false !== \strpos($sName, '*')) {
 					$aWildCards[$sName] = array(
-						'name' => \idn_to_utf8($sName),
-						'punycode' => $sName,
+						'name' => $sName,
 						'disabled' => \in_array($sName, $aDisabledNames),
 						'alias' => false
 					);
 				} else {
 					$aResult[$sName] = array(
-						'name' => \idn_to_utf8($sName),
-						'punycode' => $sName,
+						'name' => $sName,
 						'disabled' => \in_array($sName, $aDisabledNames),
 						'alias' => false
 					);

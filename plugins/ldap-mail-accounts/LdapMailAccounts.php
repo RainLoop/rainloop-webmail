@@ -69,7 +69,7 @@ class LdapMailAccounts
 		// and removes the domainname if this was configured inside the domain config.
 		$username = $sEmail;
 		$oActions = \RainLoop\Api::Actions();
-		$oDomain = $oActions->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true);
+		$oDomain = $oActions->DomainProvider()->Load(\MailSo\Base\Utils::getEmailAddressDomain($sEmail), true);
 		if ($oDomain->ImapSettings()->shortLogin){
 			$username = @ldap_escape($this->RemoveEventualDomainPart($sEmail), "", LDAP_ESCAPE_FILTER);
 		}
@@ -415,8 +415,8 @@ class LdapMailAccounts
 	 */
 	public static function RemoveEventualDomainPart(string $sInput) : string
 	{
-		// Copy of \MailSo\Base\Utils::GetAccountNameFromEmail to make sure that also after eventual future
-		// updates the input string gets returned when no '@' is found (GetDomainFromEmail already doesn't do this)
+		// Copy of \MailSo\Base\Utils::getEmailAddressLocalPart to make sure that also after eventual future
+		// updates the input string gets returned when no '@' is found (getEmailAddressDomain already doesn't do this)
 		$sResult = '';
 		if (\strlen($sInput))
 		{

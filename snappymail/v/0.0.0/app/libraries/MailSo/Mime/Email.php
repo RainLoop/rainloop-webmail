@@ -17,8 +17,14 @@ namespace MailSo\Mime;
  */
 class Email implements \JsonSerializable
 {
+	/**
+	 * display-name https://datatracker.ietf.org/doc/html/rfc2822#section-3.4
+	 */
 	private string $sDisplayName;
 
+	/**
+	 * addr-spec https://datatracker.ietf.org/doc/html/rfc2822#section-3.4.1
+	 */
 	private string $sEmail;
 
 	private string $sDkimStatus = Enumerations\DkimStatus::NONE;
@@ -32,8 +38,7 @@ class Email implements \JsonSerializable
 			throw new \ValueError;
 		}
 
-		$this->sEmail = \MailSo\Base\Utils::IdnToAscii(
-			\MailSo\Base\Utils::Trim($sEmail), true);
+		$this->sEmail = \SnappyMail\IDN::emailToAscii(\MailSo\Base\Utils::Trim($sEmail));
 
 		$this->sDisplayName = \MailSo\Base\Utils::Trim($sDisplayName);
 	}
@@ -156,7 +161,7 @@ class Email implements \JsonSerializable
 
 	public function GetEmail(bool $bIdn = false) : string
 	{
-		return $bIdn ? \MailSo\Base\Utils::IdnToUtf8($this->sEmail) : $this->sEmail;
+		return $bIdn ? \SnappyMail\IDN::emailToUtf8($this->sEmail) : $this->sEmail;
 	}
 
 	public function GetDisplayName() : string
@@ -164,14 +169,14 @@ class Email implements \JsonSerializable
 		return $this->sDisplayName;
 	}
 
-	public function GetAccountName() : string
+	public function getLocalPart() : string
 	{
-		return \MailSo\Base\Utils::GetAccountNameFromEmail($this->GetEmail(false));
+		return \MailSo\Base\Utils::getEmailAddressLocalPart($this->sEmail);
 	}
 
 	public function GetDomain(bool $bIdn = false) : string
 	{
-		return \MailSo\Base\Utils::GetDomainFromEmail($this->GetEmail($bIdn));
+		return \MailSo\Base\Utils::getEmailAddressDomain($this->GetEmail($bIdn));
 	}
 
 	public function SetDkimStatus(string $sDkimStatus)

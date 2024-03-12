@@ -35,7 +35,9 @@ module.exports = {
 		// vendors/bootstrap/bootstrap.native.js
 		'BSN': "readonly",
 		// Mailvelope
-		'mailvelope': "readonly"
+		'mailvelope': "readonly",
+		// Punycode
+		'IDN': "readonly"
 	},
 	// http://eslint.org/docs/rules/
 	rules: {

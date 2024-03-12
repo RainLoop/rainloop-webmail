@@ -12,6 +12,7 @@ use RainLoop\Notifications;
 use RainLoop\Providers\Identities;
 use RainLoop\Providers\Storage\Enumerations\StorageType;
 use RainLoop\Utils;
+use SnappyMail\IDN;
 
 trait Accounts
 {
@@ -85,7 +86,7 @@ trait Accounts
 		$sName = \trim($this->GetActionParam('name', ''));
 		$bNew = !empty($this->GetActionParam('new', 1));
 
-		$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
+		$sEmail = IDN::emailToAscii($sEmail);
 		if ($bNew && ($oMainAccount->Email() === $sEmail || isset($aAccounts[$sEmail]))) {
 			throw new ClientException(Notifications::AccountAlreadyExists);
 		} else if (!$bNew && !isset($aAccounts[$sEmail])) {
@@ -109,7 +110,7 @@ trait Accounts
 
 	protected function loadAdditionalAccountImapClient(string $sEmail): \MailSo\Imap\ImapClient
 	{
-		$sEmail = \MailSo\Base\Utils::IdnToAscii(\trim($sEmail), true);
+		$sEmail = IDN::emailToAscii($sEmail);
 		if (!\strlen($sEmail)) {
 			throw new ClientException(Notifications::AccountDoesNotExist);
 		}
@@ -173,7 +174,7 @@ trait Accounts
 		}
 
 		$sEmailToDelete = \trim($this->GetActionParam('emailToDelete', ''));
-		$sEmailToDelete = \MailSo\Base\Utils::IdnToAscii($sEmailToDelete, true);
+		$sEmailToDelete = IDN::emailToAscii($sEmailToDelete);
 
 		$aAccounts = $this->GetAccounts($oMainAccount);
 
@@ -198,6 +199,7 @@ trait Accounts
 	{
 		$oConfig = $this->Config();
 		$aResult = [
+//			'Email' => IDN::emailToUtf8($oAccount->Email()),
 			'Email' => $oAccount->Email(),
 			'accountHash' => $oAccount->Hash(),
 			'mainEmail' => \RainLoop\Api::Actions()->getMainAccountFromToken()->Email(),
@@ -330,7 +332,7 @@ trait Accounts
 		return $this->DefaultResponse(array(
 			'Accounts' => \array_values(\array_map(function($value){
 					return [
-						'email' => \MailSo\Base\Utils::IdnToUtf8($value['email'] ?? $value[1]),
+						'email' => IDN::emailToUtf8($value['email'] ?? $value[1]),
 						'name' => $value['name'] ?? ''
 					];
 				},
