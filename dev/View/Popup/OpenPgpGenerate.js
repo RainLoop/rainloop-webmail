@@ -43,7 +43,7 @@ export class OpenPgpGeneratePopupView extends AbstractViewPopup {
 		const type = this.keyType().toLowerCase(),
 			userId = {
 				name: this.name(),
-				email: this.email()
+				email: IDN.toASCII(this.email())
 			},
 			cfg = {
 				type: type,
