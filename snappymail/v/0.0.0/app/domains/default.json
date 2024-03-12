@@ -1,5 +1,4 @@
 {
-    "name": "*",
     "IMAP": {
         "host": "localhost",
         "port": 143,

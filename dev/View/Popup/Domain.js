@@ -365,6 +365,8 @@ export class DomainPopupView extends AbstractViewPopup {
 					this[key]?.(value);
 				}
 			});
+			this.name(IDN.toUnicode(this.name()));
+			this.aliasName(IDN.toUnicode(this.aliasName()));
 			this.imapCapabilities(this.imapCapabilities.concat(this.imapDisabled_capabilities()).unique());
 			this.enableSmartPorts(true);
 		}

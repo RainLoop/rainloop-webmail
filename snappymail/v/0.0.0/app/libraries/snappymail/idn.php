@@ -7,28 +7,6 @@ namespace SnappyMail;
 
 abstract class IDN
 {
-	public static function anyToAscii(string $string) : string
-	{
-		if (\strspn($string, ':/')) {
-			return static::uri($string, true);
-		}
-		if (\str_contains($string, '@')) {
-			return static::emailToAscii($string);
-		}
-		return \idn_to_ascii($string);
-	}
-
-	public static function anyToUtf8(string $string) : string
-	{
-		if (\strspn($string, ':/')) {
-			return static::uri($string, false);
-		}
-		if (\str_contains($string, '@')) {
-			return static::emailToUtf8($string);
-		}
-		return \idn_to_utf8($string);
-	}
-
 	/**
 	 * Converts IDN domain part to lowercased punycode
 	 * Like: 'Smile😀@📧.SnappyMail.eu' to 'Smile😀@xn--du8h.snappymail.eu'

@@ -10,8 +10,13 @@ trait AdminDomains
 	public function DoAdminDomainLoad() : array
 	{
 		$this->IsAdminLoggined();
-
-		return $this->DefaultResponse($this->DomainProvider()->Load($this->GetActionParam('name', ''), false, false));
+		$mResult = false;
+		$oDomain = $this->DomainProvider()->Load($this->GetActionParam('name', ''), false, false);
+		if ($oDomain) {
+			$mResult = $oDomain->jsonSerialize();
+			$mResult['name'] = $oDomain->Name();
+		}
+		return $this->DefaultResponse($mResult);
 	}
 
 	public function DoAdminDomainList() : array
@@ -24,8 +29,7 @@ trait AdminDomains
 	public function DoAdminDomainDelete() : array
 	{
 		$this->IsAdminLoggined();
-
-		return $this->DefaultResponse($this->DomainProvider()->Delete((string) $this->GetActionParam('name', '')));
+		return $this->DefaultResponse($this->DomainProvider()->Delete($this->GetActionParam('name', '')));
 	}
 
 	public function DoAdminDomainDisable() : array
@@ -77,7 +81,7 @@ trait AdminDomains
 	public function DoAdminDomainAutoconfig() : array
 	{
 		$this->IsAdminLoggined();
-		$sDomain = $this->GetActionParam('domain');
+		$sDomain = \strtolower(\idn_to_ascii($this->GetActionParam('domain')));
 		$sEmail = "test@{$sDomain}";
 		return $this->DefaultResponse(array(
 			'email' => $sEmail,

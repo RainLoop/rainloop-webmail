@@ -240,14 +240,13 @@ class Domain implements \JsonSerializable
 	{
 		$aResult = array(
 //			'@Object' => 'Object/Domain',
-			'name' => \idn_to_utf8($this->Name),
 			'IMAP' => $this->IMAP,
 			'SMTP' => $this->SMTP,
 			'Sieve' => $this->Sieve,
 			'whiteList' => $this->whiteList
 		);
 		if ($this->aliasName) {
-			$aResult['aliasName'] = \idn_to_utf8($this->aliasName);
+			$aResult['aliasName'] = $this->aliasName;
 		}
 		return $aResult;
 	}

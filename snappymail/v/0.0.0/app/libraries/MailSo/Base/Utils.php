@@ -695,13 +695,11 @@ abstract class Utils
 	public static function IdnToUtf8(string $sStr) : string
 	{
 		$trace = \debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
-		\trigger_error("Deprecated function IdnToAscii called at {$trace['file']}#{$trace['line']}", \E_USER_DEPRECATED);
+		\SnappyMail\Log::warning('MailSo', "Deprecated function IdnToUtf8 called at {$trace['file']}#{$trace['line']}");
 		if (\preg_match('/(^|\.|@)xn--/i', $sStr)) {
-			try
-			{
-				$sStr = \SnappyMail\IDN::anyToUtf8($sStr);
-			}
-			catch (\Throwable $oException) {}
+			$sStr = \str_contains($sStr, '@')
+			? \SnappyMail\IDN::emailToUtf8($string)
+			: \idn_to_utf8($string);
 		}
 		return $sStr;
 	}
@@ -712,15 +710,11 @@ abstract class Utils
 	public static function IdnToAscii(string $sStr, bool $bLowerCase = false) : string
 	{
 		$trace = \debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
-		\trigger_error("Deprecated function IdnToAscii called at {$trace['file']}#{$trace['line']}", \E_USER_DEPRECATED);
+		\SnappyMail\Log::warning('MailSo', "Deprecated function IdnToAscii called at {$trace['file']}#{$trace['line']}");
 		$aParts = \explode('@', $sStr);
 		$sDomain = \array_pop($aParts);
-		if (\strlen($sDomain) && \preg_match('/[^\x20-\x7E]/', $sDomain)) {
-			try
-			{
-				$sDomain = \SnappyMail\IDN::anyToAscii($sDomain);
-			}
-			catch (\Throwable $oException) {}
+		if (\preg_match('/[^\x20-\x7E]/', $sDomain)) {
+			$sDomain = \idn_to_ascii($string);
 		}
 		if ($bLowerCase) {
 			$sDomain = \strtolower($sDomain);
