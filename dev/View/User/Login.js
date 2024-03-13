@@ -138,7 +138,7 @@ export class LoginUserView extends AbstractViewLogin {
 	onBuild(dom) {
 		super.onBuild(dom);
 
-		let signMe = (SettingsGet('signMe') || '').toLowerCase();
+		let signMe = SettingsGet('signMe');
 		switch (signMe) {
 			case SignMeOff:
 			case SignMeOn:
