@@ -26,7 +26,7 @@ const
 		imapType: 0,
 		imapTimeout: 300,
 		imapShortLogin: false,
-		imapLowerLogin: false,
+		imapLowerLogin: true,
 		// SSL
 		imapSslVerify_peer: false,
 		imapSslAllow_self_signed: false,
@@ -51,7 +51,7 @@ const
 		smtpType: 0,
 		smtpTimeout: 60,
 		smtpShortLogin: false,
-		smtpLowerLogin: false,
+		smtpLowerLogin: true,
 		smtpUseAuth: true,
 		smtpSetSender: false,
 		smtpAuthPlainLine: false,
