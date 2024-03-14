@@ -4,8 +4,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Nextcloud',
-		VERSION = '2.32',
-		RELEASE  = '2024-03-12',
+		VERSION = '2.33',
+		RELEASE  = '2024-03-14',
 		CATEGORY = 'Integrations',
 		DESCRIPTION = 'Integrate with Nextcloud v20+',
 		REQUIRED = '2.35.3';
@@ -199,7 +199,8 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function FilterAppData($bAdmin, &$aResult) : void
 	{
 		if (!$bAdmin && \is_array($aResult)) {
-			$sUID = \OC::$server->getUserSession()->getUser()->getUID();
+			$ocUser = \OC::$server->getUserSession()->getUser();
+			$sUID = $ocUser->getUID();
 			$oUrlGen = \OC::$server->getURLGenerator();
 			$sWebDAV = $oUrlGen->getAbsoluteURL($oUrlGen->linkTo('', 'remote.php') . '/dav');
 //			$sWebDAV = \OCP\Util::linkToRemote('dav');
@@ -226,6 +227,10 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 				$sCustomEmail = $config->getUserValue($sUID, 'snappymail', 'snappymail-email', '');
 				if ($sCustomEmail) {
 					$sEmail = $sCustomEmail;
+				}
+				if (!$sEmail) {
+					$sEmail = $ocUser->getEMailAddress();
+//						?: $oc->user->getPrimaryEMailAddress();
 				}
 /*
 				if ($config->getAppValue('snappymail', 'snappymail-autologin-oidc', false)) {
