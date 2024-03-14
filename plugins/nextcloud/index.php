@@ -227,6 +227,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 				if ($sCustomEmail) {
 					$sEmail = $sCustomEmail;
 				}
+/*
 				if ($config->getAppValue('snappymail', 'snappymail-autologin-oidc', false)) {
 					if (\OC::$server->getSession()->get('is_oidc')) {
 						$sEmail = "{$sUID}@nextcloud";
@@ -237,6 +238,7 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 				} else {
 					\SnappyMail\Log::debug('Nextcloud', 'OIDC is off');
 				}
+*/
 				$aResult['DevEmail'] = $sEmail ?: '';
 			} else if (!empty($aResult['ContactsSync'])) {
 				$bSave = false;
