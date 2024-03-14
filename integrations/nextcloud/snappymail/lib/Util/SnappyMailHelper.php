@@ -98,7 +98,7 @@ class SnappyMailHelper
 							$oActions->Plugins()->RunHook('login.success', array($oAccount));
 
 							$oActions->SetAuthToken($oAccount);
-							if ($oConfig->Get('login', 'sign_me_auto', \RainLoop\Enumerations\SignMeType::DEFAULT_OFF) === \RainLoop\Enumerations\SignMeType::DEFAULT_ON) {
+							if ($oConfig->Get('login', 'sign_me_auto', \RainLoop\Enumerations\SignMeType::DefaultOff) === \RainLoop\Enumerations\SignMeType::DefaultOn) {
 								$oActions->SetSignMeToken($oAccount);
 							}
 						}
