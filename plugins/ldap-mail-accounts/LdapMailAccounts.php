@@ -208,7 +208,7 @@ class LdapMailAccounts
 				{
 					//Try to login the user with the same password as the primary account has
 					//if this fails the user will see the new mail addresses but will be asked for the correct password
-					$sPass = $oAccount->IncPassword();
+					$sPass = new \SnappyMail\SensitiveString($oAccount->IncPassword());
 					//After creating the accounts here $sUsername is used as username to login to the IMAP server (see Account.php)
 					$oNewAccount = RainLoop\Model\AdditionalAccount::NewInstanceFromCredentials($oActions, $sEmail, $sUsername, $sPass);
 
