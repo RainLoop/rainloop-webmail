@@ -105,7 +105,7 @@ class SnappyMailHelper
 					} catch (\Throwable $e) {
 						// Login failure, reset password to prevent more attempts
 						$sUID = \OC::$server->getUserSession()->getUser()->getUID();
-						\OC::$server->getSession()['snappymail-password'] = '';
+						\OC::$server->getSession()['snappymail-passphrase'] = '';
 						\OC::$server->getConfig()->setUserValue($sUID, 'snappymail', 'snappymail-password', '');
 					}
 				}
@@ -165,16 +165,18 @@ class SnappyMailHelper
 			$sPassword = '';
 			if ($config->getAppValue('snappymail', 'snappymail-autologin', false)) {
 				$sEmail = $sUID;
-				$sPassword = $ocSession['snappymail-password'];
+				$sPassword = $ocSession['snappymail-passphrase'];
 			} else if ($config->getAppValue('snappymail', 'snappymail-autologin-with-email', false)) {
 				$sEmail = $config->getUserValue($sUID, 'settings', 'email');
-				$sPassword = $ocSession['snappymail-password'];
+				$sPassword = $ocSession['snappymail-passphrase'];
 			} else {
 				\SnappyMail\Log::debug('Nextcloud', 'snappymail-autologin is off');
 			}
 			if ($sPassword) {
 				return [$sUID, $sEmail, static::decodePassword($sPassword, $sUID)];
 			}
+		} else {
+			\SnappyMail\Log::debug('Nextcloud', "snappymail-nc-uid mismatch '{$ocSession['snappymail-nc-uid']}' != '{$sUID}'");
 		}
 
 		return [$sUID, '', ''];

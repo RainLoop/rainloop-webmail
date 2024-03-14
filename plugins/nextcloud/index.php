@@ -250,8 +250,13 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 					$aResult['ContactsSync']['User'] = $sUID;
 					$bSave = true;
 				}
-				if (empty($aResult['ContactsSync']['Password'])) {
-					$aResult['ContactsSync']['Password'] = '';
+				$pass = \OC::$server->getSession()['snappymail-passphrase'];
+				if ($pass/* && empty($aResult['ContactsSync']['Password'])*/) {
+					$pass = \SnappyMail\Crypt::DecryptUrlSafe($pass, $sUID);
+					if ($pass) {
+						$aResult['ContactsSync']['Password'] = $pass;
+						$bSave = true;
+					}
 				}
 				if ($bSave) {
 					$oActions = \RainLoop\Api::Actions();
