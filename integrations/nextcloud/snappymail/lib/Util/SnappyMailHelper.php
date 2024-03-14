@@ -106,7 +106,8 @@ class SnappyMailHelper
 						// Login failure, reset password to prevent more attempts
 						$sUID = \OC::$server->getUserSession()->getUser()->getUID();
 						\OC::$server->getSession()['snappymail-passphrase'] = '';
-						\OC::$server->getConfig()->setUserValue($sUID, 'snappymail', 'snappymail-password', '');
+						\OC::$server->getConfig()->setUserValue($sUID, 'snappymail', 'passphrase', '');
+						\SnappyMail\Log::error('Nextcloud', $e->getMessage());
 					}
 				}
 			}
@@ -132,11 +133,14 @@ class SnappyMailHelper
 		// If the user has set credentials for SnappyMail in their personal settings,
 		// this has the first priority.
 		$sEmail = $config->getUserValue($sUID, 'snappymail', 'snappymail-email');
-		$sPassword = $config->getUserValue($sUID, 'snappymail', 'snappymail-password');
+		$sPassword = $config->getUserValue($sUID, 'snappymail', 'passphrase')
+			?: $config->getUserValue($sUID, 'snappymail', 'snappymail-password');
 		if ($sEmail && $sPassword) {
 			$sPassword = static::decodePassword($sPassword, \md5($sEmail));
 			if ($sPassword) {
 				return [$sUID, $sEmail, $sPassword];
+			} else {
+				\SnappyMail\Log::debug('Nextcloud', 'decodePassword failed for getUserValue');
 			}
 		}
 
