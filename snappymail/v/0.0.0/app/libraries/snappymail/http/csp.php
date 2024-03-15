@@ -27,7 +27,7 @@ class CSP implements \Stringable
 		'img-src' => ["'self'", 'data:'],
 		'media-src' => ["'self'", 'data:'],
 		'style-src' => ["'self'", "'unsafe-inline'"],
-		'connect-src' => ["'self'", "keys.openpgp.org"]
+		'connect-src' => ["'self'", 'data:', "keys.openpgp.org"]
 	];
 
 	function __construct(string $default = '')
