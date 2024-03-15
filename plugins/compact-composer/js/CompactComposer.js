@@ -701,6 +701,7 @@
 							menuWrap.className += ' squire-html-mode-item';
 						}
 						const menuBtn = createElement('button');
+						menuBtn.type = 'button';
 						menuBtn.className = 'btn dropdown-toggle';
 						if (item.icon !== '') {
 							menuBtn.innerHTML = item.icon;
