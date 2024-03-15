@@ -1,14 +1,5 @@
 <?php
 
-use RainLoop\Model\Account;
-use MailSo\Imap\ImapClient;
-use MailSo\Imap\Settings as ImapSettings;
-use MailSo\Sieve\SieveClient;
-use MailSo\Sieve\Settings as SieveSettings;
-use MailSo\Smtp\SmtpClient;
-use MailSo\Smtp\Settings as SmtpSettings;
-use MailSo\Mime\Message as MimeMessage;
-
 class AttachmentsForceOpenPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
