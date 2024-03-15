@@ -75,7 +75,7 @@ library to convert back and forth between them.
 
 * If the user's browser supports [native WebCrypto](https://caniuse.com/#feat=cryptography) via the `window.crypto.subtle` API, this will be used. Under Node.js the native [crypto module](https://nodejs.org/api/crypto.html#crypto_crypto) is used.
 
-* The library implements the [IETF proposal](https://tools.ietf.org/html/draft-ietf-openpgp-rfc4880bis-10) for authenticated encryption using native AES-EAX, OCB, or GCM. This makes symmetric encryption up to 30x faster on supported platforms. Since the specification has not been finalized and other OpenPGP implementations haven't adopted it yet, the feature is currently behind a flag. **Note: activating this setting can break compatibility with other OpenPGP implementations, and also with future versions of OpenPGP.js. Don't use it with messages you want to store on disk or in a database.** You can enable it by setting `openpgp.config.aeadProtect = true`.
+* The library implements the [RFC4880bis proposal](https://tools.ietf.org/html/draft-ietf-openpgp-rfc4880bis-10) for authenticated encryption using native AES-EAX, OCB, or GCM. This makes symmetric encryption up to 30x faster on supported platforms. Since the specification has not been finalized and other OpenPGP implementations haven't adopted it yet, the feature is currently behind a flag. **Note: activating this setting can break compatibility with other OpenPGP implementations, and also with future versions of OpenPGP.js. Don't use it with messages you want to store on disk or in a database.** You can enable it by setting `openpgp.config.aeadProtect = true`.
 
   You can change the AEAD mode by setting one of the following options:
 
@@ -171,6 +171,16 @@ import * as openpgp from './openpgp.min.mjs';
 ```
 
 To offload cryptographic operations off the main thread, you can implement a Web Worker in your application and load OpenPGP.js from there. For an example Worker implementation, see `test/worker/worker_example.js`.
+
+#### TypeScript
+
+Since TS is not fully integrated in the library, TS-only dependencies are currently listed as `devDependencies`, so to compile the project you’ll need to add `@openpgp/web-stream-tools` manually (NB: only versions below v0.12 are compatible with OpenPGP.js v5):
+
+```sh
+npm install --save-dev @openpgp/web-stream-tools@0.0.11-patch-0
+```
+
+If you notice missing or incorrect type definitions, feel free to open a PR.
 
 ### Examples
 
