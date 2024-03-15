@@ -89,7 +89,7 @@ abstract class Base
 
 	public static function isSupported() : bool
 	{
-		return \is_callable('proc_open');
+		return \is_callable('shell_exec') && \is_callable('proc_open');
 	}
 
 	protected function listDecryptKeys(/*string|resource*/ $input, /*string|resource*/ $output = null)
