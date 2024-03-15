@@ -4,11 +4,11 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'Nextcloud',
-		VERSION = '2.33',
-		RELEASE  = '2024-03-14',
+		VERSION = '2.34',
+		RELEASE  = '2024-03-16',
 		CATEGORY = 'Integrations',
 		DESCRIPTION = 'Integrate with Nextcloud v20+',
-		REQUIRED = '2.35.3';
+		REQUIRED = '2.35.4';
 
 	public function Init() : void
 	{
@@ -170,10 +170,14 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 				$oFiles->is_dir($sSaveFolder) || $oFiles->mkdir($sSaveFolder);
 				$data->result = true;
 				foreach ($data->items as $aItem) {
-					$sSavedFileName = isset($aItem['fileName']) ? $aItem['fileName'] : 'file.dat';
-					$sSavedFileHash = !empty($aItem['fileHash']) ? $aItem['fileHash'] : '';
-					if (!empty($sSavedFileHash)) {
-						$fFile = $data->filesProvider->GetFile($data->account, $sSavedFileHash, 'rb');
+					$sSavedFileName = empty($aItem['fileName']) ? 'file.dat' : $aItem['fileName'];
+					if (!empty($aItem['data'])) {
+						$sSavedFileNameFull = static::SmartFileExists($sSaveFolder.'/'.$sSavedFileName, $oFiles);
+						if (!$oFiles->file_put_contents($sSavedFileNameFull, $aItem['data'])) {
+							$data->result = false;
+						}
+					} else if (!empty($aItem['fileHash'])) {
+						$fFile = $data->filesProvider->GetFile($data->account, $aItem['fileHash'], 'rb');
 						if (\is_resource($fFile)) {
 							$sSavedFileNameFull = static::SmartFileExists($sSaveFolder.'/'.$sSavedFileName, $oFiles);
 							if (!$oFiles->file_put_contents($sSavedFileNameFull, $fFile)) {
@@ -184,13 +188,6 @@ class NextcloudPlugin extends \RainLoop\Plugins\AbstractPlugin
 							}
 						}
 					}
-				}
-			}
-
-			foreach ($data->items as $aItem) {
-				$sFileHash = (string) (isset($aItem['fileHash']) ? $aItem['fileHash'] : '');
-				if (!empty($sFileHash)) {
-					$data->filesProvider->Clear($data->account, $sFileHash);
 				}
 			}
 		}

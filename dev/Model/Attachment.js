@@ -126,7 +126,10 @@ export class AttachmentModel extends AbstractModel {
 	}
 
 	get download() {
-		return b64EncodeJSONSafe({
+		return b64EncodeJSONSafe(this.url ? {
+			fileName: this.fileName,
+			data: this.url.replace(/^.+,/, '')
+		} : {
 			folder: this.folder,
 			uid: this.uid,
 			mimeIndex: this.mimeIndex,

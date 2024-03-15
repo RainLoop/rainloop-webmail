@@ -30,7 +30,7 @@ trait Attachments
 		if (\is_array($aHashes) && \count($aHashes)) {
 			foreach ($aHashes as $sZipHash) {
 				$aResult = $this->getMimeFileByHash($oAccount, $sZipHash);
-				if (empty($aResult['fileHash'])) {
+				if (empty($aResult['data']) && empty($aResult['fileHash'])) {
 					$bError = true;
 					break;
 				}
@@ -60,10 +60,16 @@ trait Attachments
 						$oZip->open($sZipFileName, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::OVERWRITE);
 						$oZip->setArchiveComment('SnappyMail/'.APP_VERSION);
 						foreach ($aData as $aItem) {
-							$sFullFileNameHash = $oFilesProvider->GetFileName($oAccount, $aItem['fileHash']);
 							$sFileName = ($mUIDs ? "{$aItem['uid']}/" : ($sFolder ? "{$aItem['uid']}-" : '')) . $aItem['fileName'];
-							if (!$oZip->addFile($sFullFileNameHash, $sFileName)) {
-								$bError = true;
+							if ($aItem['data']) {
+								if (!$oZip->addFromString($sFileName, $aItem['data'])) {
+									$bError = true;
+								}
+							} else {
+								$sFullFileNameHash = $oFilesProvider->GetFileName($oAccount, $aItem['fileHash']);
+								if (!$oZip->addFile($sFullFileNameHash, $sFileName)) {
+									$bError = true;
+								}
 							}
 						}
 
@@ -92,18 +98,20 @@ trait Attachments
 						$oZip = new \PharData($sZipFileName . '.zip', 0, null, \Phar::ZIP);
 						$oZip->compressFiles(\Phar::GZ);
 						foreach ($aData as $aItem) {
-							$oZip->addFile(
-								$oFilesProvider->GetFileName($oAccount, $aItem['fileHash']),
-								($mUIDs ? "{$aItem['uid']}/" : ($sFolder ? "{$aItem['uid']}-" : '')) . $aItem['fileName']
-							);
+							if ($aItem['data']) {
+								if (!$oZip->addFromString($sFileName, \MailSo\Base\Utils::UrlSafeBase64Decode($aItem['data']))) {
+									$bError = true;
+								}
+							} else {
+								$oZip->addFile(
+									$oFilesProvider->GetFileName($oAccount, $aItem['fileHash']),
+									($mUIDs ? "{$aItem['uid']}/" : ($sFolder ? "{$aItem['uid']}-" : '')) . $aItem['fileName']
+								);
+							}
 						}
 						$oZip->compressFiles(\Phar::GZ);
 						unset($oZip);
 						\rename($sZipFileName . '.zip', $sZipFileName);
-					}
-
-					foreach ($aData as $aItem) {
-						$oFilesProvider->Clear($oAccount, $aItem['fileHash']);
 					}
 
 					if (!$bError) {
@@ -129,46 +137,49 @@ trait Attachments
 				break;
 		}
 
+		foreach ($aData as $aItem) {
+			$aItem['fileHash'] && $oFilesProvider->Clear($oAccount, $aItem['fileHash']);
+		}
+
 		return $this->DefaultResponse($bError ? false : $mResult);
 	}
 
 	private function getMimeFileByHash(\RainLoop\Model\Account $oAccount, string $sHash) : array
 	{
 		$aValues = $this->decodeRawKey($sHash);
-
-		$sFolder = isset($aValues['folder']) ? (string) $aValues['folder'] : '';
-		$iUid = isset($aValues['uid']) ? (int) $aValues['uid'] : 0;
-		$sMimeIndex = isset($aValues['mimeIndex']) ? (string) $aValues['mimeIndex'] : '';
-
-		$sContentTypeIn = isset($aValues['mimeType']) ? (string) $aValues['mimeType'] : '';
-		$sFileNameIn = isset($aValues['fileName']) ? (string) $aValues['fileName'] : 'file.dat';
-
-		$oFileProvider = $this->FilesProvider();
-
-		$sResultHash = '';
-
-		$mResult = $this->MailClient()->MessageMimeStream(function ($rResource, $sContentType, $sFileName, $sMimeIndex = '')
-			use ($oAccount, $oFileProvider, $sFileNameIn, $sContentTypeIn, &$sResultHash) {
-
-				unset($sContentType, $sFileName, $sMimeIndex);
-
-				if (\is_resource($rResource)) {
-					$sHash = \MailSo\Base\Utils::Sha1Rand($sFileNameIn.'~'.$sContentTypeIn);
-					$rTempResource = $oFileProvider->GetFile($oAccount, $sHash, 'wb+');
-
-					if (\is_resource($rTempResource)) {
-						if (-1 < \MailSo\Base\Utils::WriteStream($rResource, $rTempResource)) {
-							$sResultHash = $sHash;
+		$aValues['fileName'] = empty($aValues['fileName']) ? 'file.dat' : (string) $aValues['fileName'];
+		$aValues['fileHash'] = null;
+		if (isset($aValues['data'])) {
+			$aValues['data'] = \MailSo\Base\Utils::UrlSafeBase64Decode($aValues['data']);
+		} else {
+			$sFolder = isset($aValues['folder']) ? (string) $aValues['folder'] : '';
+			$iUid = isset($aValues['uid']) ? (int) $aValues['uid'] : 0;
+			$sMimeIndex = isset($aValues['mimeIndex']) ? (string) $aValues['mimeIndex'] : '';
+			if ($sFolder && $iUid && $sMimeIndex) {
+				$oFileProvider = $this->FilesProvider();
+				$mResult = $this->MailClient()->MessageMimeStream(
+					function ($rResource, $sContentType, $sFileName, $sMimeIndex = '')
+					use ($oAccount, $oFileProvider, &$aValues) {
+						unset($sContentType, $sFileName, $sMimeIndex);
+						if (\is_resource($rResource)) {
+							$sContentTypeIn = isset($aValues['mimeType']) ? (string) $aValues['mimeType'] : '';
+							$sHash = \MailSo\Base\Utils::Sha1Rand($aValues['fileName'].'~'.$sContentTypeIn);
+							$rTempResource = $oFileProvider->GetFile($oAccount, $sHash, 'wb+');
+							if (\is_resource($rTempResource)) {
+								if (-1 < \MailSo\Base\Utils::WriteStream($rResource, $rTempResource)) {
+									$sResultHash = $sHash;
+									$aValues['fileHash'] = $sHash;
+								}
+								\fclose($rTempResource);
+							}
 						}
-
-						\fclose($rTempResource);
-					}
-				}
-
-			}, $sFolder, $iUid, $sMimeIndex);
-
-		$aValues['fileName'] = $sFileNameIn;
-		$aValues['fileHash'] = $mResult ? $sResultHash : '';
+					},
+					$sFolder,
+					$iUid,
+					$sMimeIndex
+				);
+			}
+		}
 
 		return $aValues;
 	}

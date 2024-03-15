@@ -146,7 +146,7 @@ export class MailMessageView extends AbstractViewRight {
 
 			downloadAsZipAllowed: () => this.attachmentsActions.includes('zip')
 				&& (currentMessage()?.attachments || [])
-					.filter(item => item?.download /*&& !item?.isLinked()*/ && item?.checked())
+					.filter(item => item?.checked() && item?.download /*&& !item?.isLinked()*/)
 					.length,
 
 			tagsAllowed: () => FolderUserStore.currentFolder()?.tagsAllowed(),
