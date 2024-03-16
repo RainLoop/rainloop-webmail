@@ -1,3 +1,27 @@
+## 2.35.4 – 2024-03-16
+
+### Added
+- \SnappyMail\IDN::toAscii()
+
+### Changed
+- OpenPGP.js to v5.11.1
+- punycode.js lowercase domain names
+- Nextcloud changed stored password handling
+- application.ini `login_lowercase` removed and now configurable per domain JSON `lowerLogin`
+- Update Portuguese by @ner00
+
+### Fixed
+- Raise JS TypeEroor "toLowerCase" after update
+  [#1491](https://github.com/the-djmaze/snappymail/issues/1491)
+- Call to undefined function shell_exec
+  [#1496](https://github.com/the-djmaze/snappymail/issues/1496)
+- Download attachments as ZIP doesn't work for PGP encrypted mail
+  [#1499](https://github.com/the-djmaze/snappymail/issues/1499)
+- Importing or downloading a PGP public key attachment from a PGP encrypted message doesn't work
+  [#1500](https://github.com/the-djmaze/snappymail/issues/1500)
+- VCard PHP Notice: Undefined index: ENCODING
+
+
 ## 2.35.3 – 2024-03-12
 
 ### Added
@@ -19,9 +43,9 @@
 - Improved error handling on PGP and S/MIME decrypt
 - Improved OpenPGP.js import keys
 - Use Identity S/MIME key and certificate from server instead of POST
-- application.ini `webmail/language_admin` to `admin_panel/language`
-- application.ini `security/admin_panel_host` to `admin_panel/host`
-- application.ini `security/admin_panel_key` to `admin_panel/key`
+- application.ini `[webmail]language_admin` to `[admin_panel]language`
+- application.ini `[security]admin_panel_host` to `[admin_panel]host`
+- application.ini `[security]admin_panel_key` to `[admin_panel]key`
 - Drop deprecated Domain::SetConfig()
 - Internationalized domain names are now handled as punycode
 - Cacher->Get() can now return NULL

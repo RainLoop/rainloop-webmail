@@ -203,6 +203,7 @@ trait Contacts
 		if (!isset($aData['Mode'])) {
 			$aData['Mode'] = empty($aData['Enable']) ? 0 : 1;
 		}
+//		$oAccount = $this->getAccountFromToken();
 		$oMainAccount = $this->getMainAccountFromToken();
 		if ($aData['Password']) {
 			$aData['Password'] = \SnappyMail\Crypt::EncryptToJSON($aData['Password'], $oMainAccount->CryptKey());
@@ -218,6 +219,7 @@ trait Contacts
 
 	protected function getContactsSyncData(\RainLoop\Model\Account $oAccount) : ?array
 	{
+//		$oAccount = $this->getAccountFromToken();
 		$sData = $this->StorageProvider()->Get($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 			'contacts_sync'

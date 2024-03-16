@@ -37,28 +37,36 @@ abstract class Log
 
 	protected static function log(int $level, string $prefix, string $msg)
 	{
-		\RainLoop\Api::Logger()->Write($msg, $level, $prefix);
+		if (\RainLoop\Api::Logger()->IsEnabled()) {
+			\RainLoop\Api::Logger()->Write($msg, $level, $prefix);
+		} else {
 /*
-		static $log_level;
-		// Default to level 4, 0 = LOG_EMERG, 7 = LOG_DEBUG
-		if (!$log_level) {
-			$log_level = \max(3, \RainLoop\Api::Config()->Get('logs', 'level', \LOG_WARNING));
-		}
-		if ($level <= $log_level) {
-			if (\RainLoop\Api::Config()->Get('logs', 'syslog') && \openlog('snappymail', \LOG_ODELAY, \LOG_USER)) {
-				\syslog($level, "{$prefix} {$msg}");
-				\closelog();
+			static $log_level;
+			// Default to level 4, 0 = LOG_EMERG, 7 = LOG_DEBUG
+			if (!$log_level) {
+				$log_level = \max(3, \RainLoop\Api::Config()->Get('logs', 'level', \LOG_WARNING));
+			}
+			if ($level <= $log_level) {
+				if (\RainLoop\Api::Config()->Get('logs', 'syslog') && \openlog('snappymail', \LOG_ODELAY, \LOG_USER)) {
+					\syslog($level, "{$prefix} {$msg}");
+					\closelog();
+				}
+
+				if (\filter_var(\ini_get('log_errors'), FILTER_VALIDATE_BOOLEAN)
+				&& (($level < \LOG_WARNING && \error_reporting() & \E_ERROR)
+				|| ($level == \LOG_WARNING && \error_reporting() & \E_WARNING)
+				|| ($level > \LOG_WARNING && \error_reporting() & \E_NOTICE)
+				)) {
+					\error_log($prefix . ' ' . static::$levels[$level] . ': ' . $msg);
+//					\error_log($prefix . ' ' . static::$levels[$level] . ': ' . $msg, 3, 'filename');
+				}
 			}
 
-			if (\filter_var(\ini_get('log_errors'), FILTER_VALIDATE_BOOLEAN)
-			 && (($level < \LOG_WARNING && \error_reporting() & \E_ERROR)
-			  || ($level == \LOG_WARNING && \error_reporting() & \E_WARNING)
-			  || ($level > \LOG_WARNING && \error_reporting() & \E_NOTICE)
-			)) {
-				\error_log($prefix . ' ' . static::$levels[$level] . ': ' . $msg);
-//				\error_log($prefix . ' ' . static::$levels[$level] . ': ' . $msg, 3, 'filename');
+			if (\class_exists('OC')) {
+//				\OCP\Log\logger('snappymail')->log(\intval($level), $msg);
+				\OCP\Log\logger('snappymail')->{static::$levels[$level]}($msg);
 			}
-		}
 */
+		}
 	}
 }
