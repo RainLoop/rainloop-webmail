@@ -1,6 +1,7 @@
 <?php
 
 use MailSo\Net\ConnectSettings;
+use SnappyMail\SensitiveString;
 
 class ChangePasswordHMailServerDriver
 {
@@ -37,7 +38,7 @@ class ChangePasswordHMailServerDriver
 		);
 	}
 
-	public function ChangePassword(\RainLoop\Model\Account $oAccount, string $sPrevPassword, string $sNewPassword) : bool
+	public function ChangePassword(\RainLoop\Model\Account $oAccount, SensitiveString $oPrevPassword, SensitiveString $oNewPassword) : bool
 	{
 		if (!\RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $this->oConfig->Get('plugin', 'hmailserver_emails', ''))) {
 			return false;
@@ -62,7 +63,7 @@ class ChangePasswordHMailServerDriver
 				if ($oHmailDomain) {
 					$oHmailAccount = $oHmailDomain->Accounts->ItemByAddress($sEmail);
 					if ($oHmailAccount) {
-						$oHmailAccount->Password = $sNewPassword;
+						$oHmailAccount->Password = (string) $oNewPassword;
 						$oHmailAccount->Save();
 						$bResult = true;
 					} else {

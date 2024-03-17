@@ -1,5 +1,7 @@
 <?php
 
+use SnappyMail\SensitiveString;
+
 class ChangePasswordISPConfigDriver
 {
 	const
@@ -44,7 +46,7 @@ class ChangePasswordISPConfigDriver
 		);
 	}
 
-	public function ChangePassword(\RainLoop\Model\Account $oAccount, string $sPrevPassword, string $sNewPassword) : bool
+	public function ChangePassword(\RainLoop\Model\Account $oAccount, SensitiveString $oPrevPassword, SensitiveString $oNewPassword) : bool
 	{
 		if (!\RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $this->oConfig->Get('plugin', 'ispconfig_allowed_emails', ''))) {
 			return false;
@@ -71,10 +73,10 @@ class ChangePasswordISPConfigDriver
 				if (!empty($aFetchResult['mailuser_id'])) {
 					$sDbPassword = $aFetchResult['password'];
 					$sDbSalt = \substr($sDbPassword, 0, \strrpos($sDbPassword, '$'));
-					if (\crypt($sPrevPassword, $sDbSalt) === $sDbPassword) {
+					if (\crypt($oPrevPassword, $sDbSalt) === $sDbPassword) {
 						$oStmt = $oPdo->prepare('UPDATE mail_user SET password = ? WHERE mailuser_id = ?');
 						return !!$oStmt->execute(array(
-							$this->cryptPassword($sNewPassword),
+							$this->cryptPassword($oNewPassword),
 							$aFetchResult['mailuser_id']
 						));
 					}
@@ -90,7 +92,7 @@ class ChangePasswordISPConfigDriver
 		return false;
 	}
 
-	private function cryptPassword(string $sPassword) : string
+	private function cryptPassword(SensitiveString $oPassword) : string
 	{
 		if (\defined('CRYPT_SHA512') && CRYPT_SHA512) {
 			$sSalt = '$6$rounds=5000$' . \bin2hex(\random_bytes(8)) . '$';
@@ -99,6 +101,6 @@ class ChangePasswordISPConfigDriver
 		} else {
 			$sSalt = '$1$' . \bin2hex(\random_bytes(6)) . '$';
 		}
-		return \crypt($sPassword, $sSalt);
+		return \crypt($oPassword, $sSalt);
 	}
 }

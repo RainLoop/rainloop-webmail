@@ -1,5 +1,7 @@
 <?php
 
+use SnappyMail\SensitiveString;
+
 class ChangePasswordHestiaDriver
 {
 	const
@@ -39,7 +41,7 @@ class ChangePasswordHestiaDriver
 		);
 	}
 
-	public function ChangePassword(\RainLoop\Model\Account $oAccount, string $sPrevPassword, string $sNewPassword) : bool
+	public function ChangePassword(\RainLoop\Model\Account $oAccount, SensitiveString $oPrevPassword, SensitiveString $oNewPassword) : bool
 	{
 		if (!\RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $this->oConfig->Get('plugin', 'hestia_allowed_emails', ''))) {
 			return false;
@@ -53,8 +55,8 @@ class ChangePasswordHestiaDriver
 		$HTTP = \SnappyMail\HTTP\Request::factory();
 		$postvars = array(
 			'email'    => $oAccount->Email(),
-			'password' => $sPrevPassword,
-			'new'      => $sNewPassword,
+			'password' => (string) $oPrevPassword,
+			'new'      => (string) $oNewPassword,
 		);
 		$response = $HTTP->doRequest('POST', 'https://'.$sHost.':'.$sPort.'/reset/mail/', \http_build_query($postvars));
 		if (!$response) {

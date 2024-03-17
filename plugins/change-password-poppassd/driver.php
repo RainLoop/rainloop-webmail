@@ -1,6 +1,7 @@
 <?php
 
 use MailSo\Net\ConnectSettings;
+use SnappyMail\SensitiveString;
 
 class ChangePasswordPoppassdDriver extends \MailSo\Net\NetClient
 {
@@ -33,7 +34,7 @@ class ChangePasswordPoppassdDriver extends \MailSo\Net\NetClient
 		);
 	}
 
-	public function ChangePassword(\RainLoop\Model\Account $oAccount, string $sPrevPassword, string $sNewPassword) : bool
+	public function ChangePassword(\RainLoop\Model\Account $oAccount, SensitiveString $oPrevPassword, SensitiveString $oNewPassword) : bool
 	{
 		if (!\RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $this->oConfig->Get('plugin', 'poppassd_allowed_emails', ''))) {
 			return false;
@@ -55,7 +56,7 @@ class ChangePasswordPoppassdDriver extends \MailSo\Net\NetClient
 			try
 			{
 				$this->sendRequestWithCheck('user', $oAccount->IncLogin(), true);
-				$this->sendRequestWithCheck('pass', $sPrevPassword, true);
+				$this->sendRequestWithCheck('pass', $oPrevPassword, true);
 			}
 			catch (\Throwable $oException)
 			{
@@ -65,7 +66,7 @@ class ChangePasswordPoppassdDriver extends \MailSo\Net\NetClient
 			$this->bIsLoggined = true;
 
 			if ($this->bIsLoggined) {
-				$this->sendRequestWithCheck('newpass', $sNewPassword);
+				$this->sendRequestWithCheck('newpass', $oNewPassword);
 			} else {
 				$this->writeLogException(
 					new \RuntimeException('Required login'),

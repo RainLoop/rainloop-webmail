@@ -1,5 +1,7 @@
 <?php
 
+use SnappyMail\SensitiveString;
+
 class ChangePasswordDriverPDO
 {
 	const
@@ -58,7 +60,7 @@ class ChangePasswordDriverPDO
 		);
 	}
 
-	public function ChangePassword(\RainLoop\Model\Account $oAccount, string $sPrevPassword, string $sNewPassword) : bool
+	public function ChangePassword(\RainLoop\Model\Account $oAccount, SensitiveString $oPrevPassword, SensitiveString $oNewPassword) : bool
 	{
 		try
 		{
@@ -85,8 +87,8 @@ class ChangePasswordDriverPDO
 
 			$placeholders = array(
 				':email' => $sEmail,
-				':oldpass' => $encrypt_prefix . \ChangePasswordPlugin::encrypt($encrypt, $sPrevPassword),
-				':newpass' => $encrypt_prefix . \ChangePasswordPlugin::encrypt($encrypt, $sNewPassword),
+				':oldpass' => $encrypt_prefix . \ChangePasswordPlugin::encrypt($encrypt, $oPrevPassword),
+				':newpass' => $encrypt_prefix . \ChangePasswordPlugin::encrypt($encrypt, $oNewPassword),
 				':domain' => \MailSo\Base\Utils::getEmailAddressDomain($sEmail),
 				':username' => \MailSo\Base\Utils::getEmailAddressLocalPart($sEmail),
 				':login_name' => $oAccount->IncLogin()
