@@ -139,6 +139,7 @@
 		"MENU_VIEW_ORIGINAL": "إظهار المصدر",
 		"HTML_VIEW": "View HTML message",
 		"PLAIN_VIEW": "View plain text message",
+		"SWAP_COLORS": "Swap default (background)-color",
 		"MENU_DOWNLOAD_ORIGINAL": ".eml التنزيل كملف",
 		"MENU_FILTER_SIMILAR": "تصفية رسائل مثل هذه",
 		"MENU_PRINT": "طباعة",

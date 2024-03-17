@@ -139,6 +139,7 @@
 		"MENU_VIEW_ORIGINAL": "원본 보기",
 		"HTML_VIEW": "View HTML message",
 		"PLAIN_VIEW": "View plain text message",
+		"SWAP_COLORS": "Swap default (background)-color",
 		"MENU_DOWNLOAD_ORIGINAL": ".eml 파일로 다운로드",
 		"MENU_FILTER_SIMILAR": "이런 유형의 메시지에 필터 적용",
 		"MENU_PRINT": "인쇄",

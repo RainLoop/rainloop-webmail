@@ -420,6 +420,11 @@ export class MessageModel extends AbstractModel {
 		return this.viewBody(false);
 	}
 
+	swapColors() {
+		const cl = this.body?.classList;
+		cl && cl.toggle('swapColors');
+	}
+
 	/**
 	 * @param {boolean=} print = false
 	 */

@@ -139,6 +139,7 @@
 		"MENU_VIEW_ORIGINAL": "Просмотреть оригинал",
 		"HTML_VIEW": "Просмотр сообщения в HTML",
 		"PLAIN_VIEW": "Просмотр простого текстового сообщения",
+		"SWAP_COLORS": "Swap default (background)-color",
 		"MENU_DOWNLOAD_ORIGINAL": "Скачать как .eml файл",
 		"MENU_FILTER_SIMILAR": "Фильтровать похожие",
 		"MENU_PRINT": "Распечатать",

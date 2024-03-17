@@ -139,6 +139,7 @@
 		"MENU_VIEW_ORIGINAL": "顯示原始內容",
 		"HTML_VIEW": "檢視 HTML 郵件",
 		"PLAIN_VIEW": "檢視純文字郵件",
+		"SWAP_COLORS": "Swap default (background)-color",
 		"MENU_DOWNLOAD_ORIGINAL": "下載為 .eml 檔案",
 		"MENU_FILTER_SIMILAR": "篩選這類郵件",
 		"MENU_PRINT": "列印郵件",

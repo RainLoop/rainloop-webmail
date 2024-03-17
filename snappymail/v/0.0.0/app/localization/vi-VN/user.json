@@ -139,6 +139,7 @@
 		"MENU_VIEW_ORIGINAL": "Hiển thị nguồn",
 		"HTML_VIEW": "Xem thư dạng HTML",
 		"PLAIN_VIEW": "Xem thư dạng văn bản thuần",
+		"SWAP_COLORS": "Swap default (background)-color",
 		"MENU_DOWNLOAD_ORIGINAL": "Tải xuống dưới dạng tập tin .eml",
 		"MENU_FILTER_SIMILAR": "Lọc ra những thư dạng này",
 		"MENU_PRINT": "In",
