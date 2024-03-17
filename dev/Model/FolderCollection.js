@@ -488,9 +488,13 @@ export class FolderModel extends AbstractModel {
 	rename(nameToEdit, parentName) {
 		nameToEdit = nameToEdit.trim();
 		const folder = this,
-			parentFolder = getFolderFromCacheList(parentName),
+			oldParent = getFolderFromCacheList(folder.parentName),
+			newParent = getFolderFromCacheList(parentName),
+			folderList = FolderUserStore.folderList,
+			newFolderList = newParent ? newParent.subFolders : folderList,
+			delimiter = (newParent || folder).delimiter,
 			oldFullname = folder.fullName,
-			newFullname = (parentFolder ? (parentName + parentFolder.delimiter) : '') + nameToEdit;
+			newFullname = (newParent ? parentName + delimiter : '') + nameToEdit;
 		if (nameToEdit && newFullname != oldFullname) {
 			Remote.abort('Folders').post('FolderRename', FolderUserStore.foldersRenaming, {
 					oldName: oldFullname,
@@ -498,21 +502,33 @@ export class FolderModel extends AbstractModel {
 					subscribe: folder.isSubscribed() ? 1 : 0
 				})
 				.then(() => {
-					folder.fullName = newFullname;
+					const
+						renameFolder = (folder, parent) => {
+							removeFolderFromCacheList(folder.fullName);
+							folder.parentName = (parent ? parent.fullName : '');
+							folder.fullName = (parent ? parent.fullName + delimiter : '') + folder.name();
+							folder.delimiter = delimiter;
+							folder.deep = (parent ? parent.deep : -1) + 1;
+							setFolder(folder);
+						},
+						renameChildren = folder => {
+							folder.subFolders.forEach(child => {
+								renameFolder(child, folder);
+								renameChildren(child);
+							})
+						};
 					folder.name(nameToEdit);
-					if (folder.subFolders.length || folder.parentName != parentName) {
-						Remote.setTrigger(FolderUserStore.foldersLoading, true);
-//						clearTimeout(Remote.foldersTimeout);
-//						Remote.foldersTimeout = setTimeout(loadFolders, 500);
-						setTimeout(loadFolders, 500);
-						// TODO: rename all subfolders with folder.delimiter to prevent reload?
-					} else {
-						removeFolderFromCacheList(oldFullname);
-						setFolder(folder);
-						sortFolders(parentFolder ? parentFolder.subFolders : FolderUserStore.folderList);
+					renameFolder(folder, newParent);
+					if (folder.subFolders.length || newParent != oldParent) {
+						// Rename all subfolders to prevent reload
+						renameChildren(folder);
 					}
+					(oldParent ? oldParent.subFolders : folderList).remove(folder);
+					newFolderList.push(folder);
+					sortFolders(newFolderList);
 				})
 				.catch(error => {
+					console.error(error);
 					FolderUserStore.error(
 						getNotification(error.code, '', Notifications.CantRenameFolder)
 						+ '.\n' + error.message);
