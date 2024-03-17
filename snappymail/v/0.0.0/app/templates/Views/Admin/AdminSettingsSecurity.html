@@ -65,7 +65,7 @@
 		<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off"
 			pattern="[A-Z2-7]{16,}"
 			data-bind="textInput: adminTOTP">
-		<button type="button" data-bind="click:generateTOTP">Generate</button>
+		<button type="button" data-bind="visible:!adminTOTP(), click:generateTOTP">Generate</button>
 	</div>
 	<div class="control-group">
 		<label></label>
