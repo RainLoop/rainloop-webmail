@@ -507,7 +507,7 @@ export class FolderModel extends AbstractModel {
 						setTimeout(loadFolders, 500);
 						// TODO: rename all subfolders with folder.delimiter to prevent reload?
 					} else {
-						removeFolderFromCacheList(folder.fullName);
+						removeFolderFromCacheList(oldFullname);
 						setFolder(folder);
 						sortFolders(parentFolder ? parentFolder.subFolders : FolderUserStore.folderList);
 					}
