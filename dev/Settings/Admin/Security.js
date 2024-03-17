@@ -77,6 +77,16 @@ export class AdminSettingsSecurity extends AbstractViewSettings {
 		});
 	}
 
+	generateTOTP() {
+		let CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567',
+			length = 16,
+			secret = '';
+		while (0 < length--) {
+			secret += CHARS[Math.floor(Math.random() * 32)];
+		}
+		this.adminTOTP(secret);
+	}
+
 	saveAdminUserCommand() {
 		if (!this.adminLogin().trim()) {
 			this.adminLoginError(true);
