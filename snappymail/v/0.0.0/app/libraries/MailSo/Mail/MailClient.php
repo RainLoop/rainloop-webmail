@@ -933,7 +933,7 @@ class MailClient
 	/**
 	 * @throws \InvalidArgumentException
 	 */
-	public function FolderRename(string $sPrevFolderFullName, string $sNewFolderFullName, bool $bSubscribe = true) : self
+	public function FolderRename(string $sPrevFolderFullName, string $sNewFolderFullName) : self
 	{
 		if (!\strlen($sPrevFolderFullName) || !\strlen($sNewFolderFullName)) {
 			throw new \ValueError;
@@ -949,19 +949,21 @@ class MailClient
 			throw new \MailSo\RuntimeException('New folder name contains delimiter.');
 		}
 */
-		$oSubscribedFolders = array();
-		if ($bSubscribe) {
-			$oSubscribedFolders = $this->oImapClient->FolderSubscribeList($sPrevFolderFullName, '*');
-			foreach ($oSubscribedFolders as /* @var $oFolder \MailSo\Imap\Folder */ $oFolder) {
-				$this->oImapClient->FolderUnsubscribe($oFolder->FullName);
-			}
-		}
+
+		/**
+		 * https://datatracker.ietf.org/doc/html/rfc3501#section-6.3.5
+		 *   Does not mention subscriptions
+		 * https://datatracker.ietf.org/doc/html/rfc9051#section-6.3.6
+		 *   Mentions that a server doesn't automatically manage subscriptions
+		 */
+		$oSubscribedFolders = $this->oImapClient->FolderSubscribeList($sPrevFolderFullName, '*');
 
 		$this->oImapClient->FolderRename($sPrevFolderFullName, $sNewFolderFullName);
 
 		foreach ($oSubscribedFolders as /* @var $oFolder \MailSo\Imap\Folder */ $oFolder) {
 			$sFolderFullNameForResubscribe = $oFolder->FullName;
 			if (\str_starts_with($sFolderFullNameForResubscribe, $sPrevFolderFullName)) {
+				$this->oImapClient->FolderUnsubscribe($sFolderFullNameForResubscribe);
 				$this->oImapClient->FolderSubscribe(
 					$sNewFolderFullName . \substr($sFolderFullNameForResubscribe, \strlen($sPrevFolderFullName))
 				);

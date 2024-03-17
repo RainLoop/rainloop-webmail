@@ -510,7 +510,7 @@
 		"TO_MANY_FOLDERS_DESC_2": "僅顯示部分資料夾，以避免性能問題。",
 		"HELP_DELETE_FOLDER": "刪除資料夾",
 		"HELP_SHOW_HIDE_FOLDER": "顯示\/隱藏資料夾",
-		"HELP_CHECK_FOR_NEW_MESSAGES": "檢查\/不檢查新郵件",
+		"HELP_CHECK_FOR_NEW_MESSAGES": "檢查新郵件",
 		"HIDE_UNSUBSCRIBED": "隱藏取消訂閱的資料夾",
 		"UNHIDE_KOLAB_FOLDERS": "取消隱藏 Kolab 資料夾",
 		"TYPE_CALENDAR": "日曆",

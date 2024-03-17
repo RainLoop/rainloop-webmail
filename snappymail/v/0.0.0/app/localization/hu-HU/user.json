@@ -510,7 +510,7 @@
 		"TO_MANY_FOLDERS_DESC_2": "Teljesítény problémák elkerülése miatt, csak egy részét jelenítjük meg.",
 		"HELP_DELETE_FOLDER": "Mappa törlés",
 		"HELP_SHOW_HIDE_FOLDER": "Mappa mutatás\/elrejtés",
-		"HELP_CHECK_FOR_NEW_MESSAGES": "Ellenőrizze\/ne ellenőrizze az új üzeneteket",
+		"HELP_CHECK_FOR_NEW_MESSAGES": "Ellenőrizze az új üzeneteket",
 		"HIDE_UNSUBSCRIBED": "Hide unsubscribed folders",
 		"UNHIDE_KOLAB_FOLDERS": "Unhide Kolab folders",
 		"TYPE_CALENDAR": "Naptár",

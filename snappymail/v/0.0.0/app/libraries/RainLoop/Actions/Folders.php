@@ -145,6 +145,42 @@ trait Folders
 		return $this->TrueResponse();
 	}
 
+	public function DoFolderSettings() : array
+	{
+		$this->initMailClientConnection();
+
+		$sFolderFullName = $this->GetActionParam('folder', '');
+
+		// DoFolderSubscribe
+		try
+		{
+			$bSubscribe = !empty($this->GetActionParam('subscribe', 0));
+			$this->ImapClient()->{$bSubscribe ? 'FolderSubscribe' : 'FolderUnsubscribe'}($sFolderFullName);
+		}
+		catch (\Throwable $oException)
+		{
+		}
+
+		// DoFolderCheckable
+		$this->SetFolderCheckable($sFolderFullName, !empty($this->GetActionParam('checkable')));
+
+		// DoFolderSetMetadata
+		try
+		{
+			$aKolab = $this->GetActionParam('kolab');
+			if ($aKolab['type']) {
+				$this->ImapClient()->FolderSetMetadata($sFolderFullName, [
+					$aKolab['type'] => $aKolab['value'] ?: null
+				]);
+			}
+		}
+		catch (\Throwable $oException)
+		{
+		}
+
+		return $this->TrueResponse();
+	}
+
 	public function DoFolderSubscribe() : array
 	{
 		$this->initMailClientConnection();
@@ -167,28 +203,35 @@ trait Folders
 		return $this->TrueResponse();
 	}
 
-	public function DoFolderCheckable() : array
+	protected function SetFolderCheckable(string $sFolderFullName, bool $bCheckable) : bool
 	{
 		$oAccount = $this->getAccountFromToken();
-
-		$sFolderFullName = $this->GetActionParam('folder', '');
-
 		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
-		$aCheckableFolder = \json_decode($oSettingsLocal->GetConf('CheckableFolder', '[]'));
-		if (!\is_array($aCheckableFolder)) {
-			$aCheckableFolder = array();
+		$aCheckableFolders = \json_decode($oSettingsLocal->GetConf('CheckableFolder', '[]'));
+		if (!\is_array($aCheckableFolders)) {
+			$aCheckableFolders = array();
 		}
 
-		if (!empty($this->GetActionParam('checkable', '0'))) {
-			$aCheckableFolder[] = $sFolderFullName;
-		} else if (($key = \array_search($sFolderFullName, $aCheckableFolder)) !== false) {
-			\array_splice($aCheckableFolder, $key, 1);
+		if ($bCheckable) {
+			$aCheckableFolders[] = $sFolderFullName;
+		} else if (($key = \array_search($sFolderFullName, $aCheckableFolders)) !== false) {
+			\array_splice($aCheckableFolders, $key, 1);
 		}
 
-		$oSettingsLocal->SetConf('CheckableFolder', \json_encode(\array_unique($aCheckableFolder)));
+		$oSettingsLocal->SetConf('CheckableFolder', \json_encode(\array_unique($aCheckableFolders)));
 
-		return $this->DefaultResponse($oSettingsLocal->save());
+		return $oSettingsLocal->save();
+	}
+
+	public function DoFolderCheckable() : array
+	{
+		return $this->DefaultResponse(
+			$this->SetFolderCheckable(
+				$this->GetActionParam('folder', ''),
+				!empty($this->GetActionParam('checkable'))
+			)
+		);
 	}
 
 	/**
@@ -200,11 +243,59 @@ trait Folders
 
 		try
 		{
-			$sFullName = $this->MailClient()->FolderRename(
-				$this->GetActionParam('oldName', ''),
-				$this->GetActionParam('newName', ''),
-				!empty($this->GetActionParam('subscribe', 1))
-			);
+			$sOldName = $this->GetActionParam('oldName', '');
+			$sNewName = $this->GetActionParam('newName', '');
+			$sDelimiter = $this->ImapClient()->FolderHierarchyDelimiter($sOldName);
+
+			$this->MailClient()->FolderRename($sOldName, $sNewName);
+
+			// DoFolderSubscribe
+			try
+			{
+				$bSubscribe = !empty($this->GetActionParam('subscribe', 0));
+				$this->ImapClient()->{$bSubscribe ? 'FolderSubscribe' : 'FolderUnsubscribe'}($sNewName);
+			}
+			catch (\Throwable $oException)
+			{
+			}
+
+			// DoFolderCheckable
+			$oAccount = $this->getAccountFromToken();
+			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
+			$aCheckableFolders = \json_decode($oSettingsLocal->GetConf('CheckableFolder', '[]'));
+			$aRemoveFolders = [];
+			if (\is_array($aCheckableFolders)) {
+				foreach ($aCheckableFolders as $sFolder) {
+					if (\str_starts_with($sFolder . $sDelimiter, $sOldName . $sDelimiter)) {
+						$aRemoveFolders[] = $sFolder;
+						if ($sFolder !== $sOldName) {
+							$aCheckableFolders[] = $sNewName . $sDelimiter . \substr($sFolder, \strlen($sOldName) + 1);
+						}
+					}
+				}
+				$aCheckableFolders = \array_diff($aCheckableFolders, $aRemoveFolders);
+			} else {
+				$aCheckableFolders = [];
+			}
+			if ($this->GetActionParam('checkable')) {
+				$aCheckableFolders[] = $sNewName;
+			}
+			$oSettingsLocal->SetConf('CheckableFolder', \json_encode(\array_unique($aCheckableFolders)));
+			$oSettingsLocal->save();
+
+			// DoFolderSetMetadata
+			try
+			{
+				$aKolab = $this->GetActionParam('kolab');
+				if ($aKolab['type']) {
+					$this->ImapClient()->FolderSetMetadata($sNewName, [
+						$aKolab['type'] => $aKolab['value'] ?: null
+					]);
+				}
+			}
+			catch (\Throwable $oException)
+			{
+			}
 		}
 		catch (\Throwable $oException)
 		{

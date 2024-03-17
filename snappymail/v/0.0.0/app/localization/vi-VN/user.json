@@ -510,7 +510,7 @@
 		"TO_MANY_FOLDERS_DESC_2": "Chúng tôi chỉ hiển thị một vài trong số đó, để tránh vấn đề hiệu năng sử dụng.",
 		"HELP_DELETE_FOLDER": "Xóa thư mục",
 		"HELP_SHOW_HIDE_FOLDER": "Hiển thị\/ẩn đi thư mục",
-		"HELP_CHECK_FOR_NEW_MESSAGES": "Kiểm tra\/không kiểm tra xem có thư mới không",
+		"HELP_CHECK_FOR_NEW_MESSAGES": "Kiểm tra xem có thư mới không",
 		"HIDE_UNSUBSCRIBED": "Ẩn đi những thư mục đã bỏ theo dõi",
 		"UNHIDE_KOLAB_FOLDERS": "Unhide Kolab folders",
 		"TYPE_CALENDAR": "Lịch",

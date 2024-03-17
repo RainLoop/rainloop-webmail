@@ -510,7 +510,7 @@
 		"TO_MANY_FOLDERS_DESC_2": "パフォーマンスの問題を回避するために、それらの一部のみを示しています。",
 		"HELP_DELETE_FOLDER": "フォルダーを削除",
 		"HELP_SHOW_HIDE_FOLDER": "フォルダーの表示\/非表示",
-		"HELP_CHECK_FOR_NEW_MESSAGES": "新しいメッセージをチェックする\/しない",
+		"HELP_CHECK_FOR_NEW_MESSAGES": "新しいメッセージを確認する",
 		"HIDE_UNSUBSCRIBED": "購読していないフォルダを隠す",
 		"UNHIDE_KOLAB_FOLDERS": "Unhide Kolab folders",
 		"TYPE_CALENDAR": "Calendar",

@@ -510,7 +510,7 @@
 		"TO_MANY_FOLDERS_DESC_2": "Näytetään vain osa.",
 		"HELP_DELETE_FOLDER": "Poista kansio",
 		"HELP_SHOW_HIDE_FOLDER": "Näytä\/Piilota kansio",
-		"HELP_CHECK_FOR_NEW_MESSAGES": "Tarkista\/Älä tarkista uudet viestit",
+		"HELP_CHECK_FOR_NEW_MESSAGES": "Tarkista uudet viestit",
 		"HIDE_UNSUBSCRIBED": "Hide unsubscribed folders",
 		"UNHIDE_KOLAB_FOLDERS": "Unhide Kolab folders",
 		"TYPE_CALENDAR": "Calendar",

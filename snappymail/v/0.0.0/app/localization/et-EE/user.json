@@ -510,7 +510,7 @@
 		"TO_MANY_FOLDERS_DESC_2": "Näitame sulle neist vaid osa, et vältida jõudlusprobleeme.",
 		"HELP_DELETE_FOLDER": "Kustuta kaust",
 		"HELP_SHOW_HIDE_FOLDER": "Näita\/peida kaust",
-		"HELP_CHECK_FOR_NEW_MESSAGES": "Kontrolli\/ära kontrolli uusi kirju",
+		"HELP_CHECK_FOR_NEW_MESSAGES": "Kontrolli uusi kirju",
 		"HIDE_UNSUBSCRIBED": "Hide unsubscribed folders",
 		"UNHIDE_KOLAB_FOLDERS": "Unhide Kolab folders",
 		"TYPE_CALENDAR": "Calendar",

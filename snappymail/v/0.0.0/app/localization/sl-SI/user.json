@@ -510,7 +510,7 @@
 		"TO_MANY_FOLDERS_DESC_2": "Prikazanih je le del, da se izognemo tehničnim težavam.",
 		"HELP_DELETE_FOLDER": "Izbriši mapo",
 		"HELP_SHOW_HIDE_FOLDER": "Prikaži\/skrij mapo",
-		"HELP_CHECK_FOR_NEW_MESSAGES": "Preverjaj\/ne preverjaj za nova sporočila",
+		"HELP_CHECK_FOR_NEW_MESSAGES": "Preverjaj za nova sporočila",
 		"HIDE_UNSUBSCRIBED": "Hide unsubscribed folders",
 		"UNHIDE_KOLAB_FOLDERS": "Unhide Kolab folders",
 		"TYPE_CALENDAR": "Calendar",

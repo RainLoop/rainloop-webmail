@@ -510,7 +510,7 @@
 		"TO_MANY_FOLDERS_DESC_2": "Můžeme zobrazit jen část z nich, abychom zabránili problémům s výkonem.",
 		"HELP_DELETE_FOLDER": "Smazat složku",
 		"HELP_SHOW_HIDE_FOLDER": "Zobrazit\/skrýt složku",
-		"HELP_CHECK_FOR_NEW_MESSAGES": "Kontrovat\/nekontrolovat nové příchozí zprávy",
+		"HELP_CHECK_FOR_NEW_MESSAGES": "Kontrovat nové příchozí zprávy",
 		"HIDE_UNSUBSCRIBED": "Hide unsubscribed folders",
 		"UNHIDE_KOLAB_FOLDERS": "Unhide Kolab folders",
 		"TYPE_CALENDAR": "Calendar",

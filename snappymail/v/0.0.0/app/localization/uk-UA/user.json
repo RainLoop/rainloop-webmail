@@ -510,7 +510,7 @@
 		"TO_MANY_FOLDERS_DESC_2": "We have shown only a part of them, to avoid performance problems.",
 		"HELP_DELETE_FOLDER": "Видалити теку",
 		"HELP_SHOW_HIDE_FOLDER": "Відобразити\/приховати теку",
-		"HELP_CHECK_FOR_NEW_MESSAGES": "Check\/don't check for new messages",
+		"HELP_CHECK_FOR_NEW_MESSAGES": "Check for new messages",
 		"HIDE_UNSUBSCRIBED": "Hide unsubscribed folders",
 		"UNHIDE_KOLAB_FOLDERS": "Unhide Kolab folders",
 		"TYPE_CALENDAR": "Calendar",

@@ -17,7 +17,7 @@
 	<div data-bind="with: folder">
 		<!-- ko if: canBeSubscribed -->
 		<div class="control-group">
-			<label></label>
+			<label class="fontastic">👁</label>
 			<div data-bind="component: {
 				name: 'Checkbox',
 				params: {
@@ -37,6 +37,26 @@
 			<span data-bind="text: unreadEmails"></span>
 			/ <span style="margin:0" data-bind="text: totalEmails"></span>
 		</div>
+		<!-- ko if: $root.displaySpecSetting && canBeSelected() && isSubscribed() -->
+		<div class="control-group">
+			<label class="icon-check-mark-circle-two"></label>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					name: 'checkable',
+					label: 'SETTINGS_FOLDERS/HELP_CHECK_FOR_NEW_MESSAGES',
+					value: checkable
+				}
+			}"></div>
+		</div>
+		<!-- /ko -->
+		<!-- ko if: $root.showKolab -->
+		<div class="control-group">
+			<label>Kolab</label>
+			<select data-bind="options: $root.kolabTypeOptions, value: kolabType,
+				optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defaultOptionsAfterRender"></select>
+		</div>
+		<!-- /ko -->
 	</div>
 	<div class="control-group" data-bind="if: ACLAllowed">
 		<label>ACL</label>

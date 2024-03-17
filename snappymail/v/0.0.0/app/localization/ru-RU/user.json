@@ -510,7 +510,7 @@
 		"TO_MANY_FOLDERS_DESC_2": "Мы показали только часть из них, чтобы избежать проблем с производительностью.",
 		"HELP_DELETE_FOLDER": "Удалить папку",
 		"HELP_SHOW_HIDE_FOLDER": "Показывать\/прятать папку",
-		"HELP_CHECK_FOR_NEW_MESSAGES": "Проверять\/не проверять новые сообщения",
+		"HELP_CHECK_FOR_NEW_MESSAGES": "Проверять новые сообщения",
 		"HIDE_UNSUBSCRIBED": "Скрыть папки, на которые нет подписки",
 		"UNHIDE_KOLAB_FOLDERS": "Показывать папки Kolab",
 		"TYPE_CALENDAR": "Календарь",

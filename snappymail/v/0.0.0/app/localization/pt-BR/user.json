@@ -510,7 +510,7 @@
 		"TO_MANY_FOLDERS_DESC_2": "Mostraremos apenas uma parte delas, para evitar problemas de desempenho.",
 		"HELP_DELETE_FOLDER": "Deletar pasta",
 		"HELP_SHOW_HIDE_FOLDER": "Mostrar\/esconder pasta",
-		"HELP_CHECK_FOR_NEW_MESSAGES": "Ativar\/Desativar verificação por novas mensagens",
+		"HELP_CHECK_FOR_NEW_MESSAGES": "Ativar verificação por novas mensagens",
 		"HIDE_UNSUBSCRIBED": "Hide unsubscribed folders",
 		"UNHIDE_KOLAB_FOLDERS": "Unhide Kolab folders",
 		"TYPE_CALENDAR": "Calendar",

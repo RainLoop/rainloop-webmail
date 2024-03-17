@@ -3,9 +3,8 @@ import { AbstractCollectionModel } from 'Model/AbstractCollection';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { isArray, getKeyByValue, forEachObjectEntry, b64EncodeJSONSafe } from 'Common/Utils';
 import { ClientSideKeyNameExpandedFolders, FolderType, FolderMetadataKeys } from 'Common/EnumsUser';
-import { clearCache, getFolderFromCacheList, setFolder, setFolderInboxName, removeFolderFromCacheList } from 'Common/Cache';
+import { clearCache, getFolderFromCacheList, setFolder, setFolderInboxName } from 'Common/Cache';
 import { Settings, SettingsGet, fireEvent } from 'Common/Globals';
-import { Notifications } from 'Common/Enums';
 
 import * as Local from 'Storage/Client';
 
@@ -15,7 +14,7 @@ import { MessagelistUserStore } from 'Stores/User/Messagelist';
 import { SettingsUserStore } from 'Stores/User/Settings';
 
 import { sortFolders } from 'Common/Folders';
-import { i18n, translateTrigger, getNotification } from 'Common/Translator';
+import { i18n, translateTrigger } from 'Common/Translator';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
@@ -483,57 +482,6 @@ export class FolderModel extends AbstractModel {
 
 	edit() {
 		showScreenPopup(FolderPopupView, [this]);
-	}
-
-	rename(nameToEdit, parentName) {
-		nameToEdit = nameToEdit.trim();
-		const folder = this,
-			oldParent = getFolderFromCacheList(folder.parentName),
-			newParent = getFolderFromCacheList(parentName),
-			folderList = FolderUserStore.folderList,
-			newFolderList = newParent ? newParent.subFolders : folderList,
-			delimiter = (newParent || folder).delimiter,
-			oldFullname = folder.fullName,
-			newFullname = (newParent ? parentName + delimiter : '') + nameToEdit;
-		if (nameToEdit && newFullname != oldFullname) {
-			Remote.abort('Folders').post('FolderRename', FolderUserStore.foldersRenaming, {
-					oldName: oldFullname,
-					newName: newFullname,
-					subscribe: folder.isSubscribed() ? 1 : 0
-				})
-				.then(() => {
-					const
-						renameFolder = (folder, parent) => {
-							removeFolderFromCacheList(folder.fullName);
-							folder.parentName = (parent ? parent.fullName : '');
-							folder.fullName = (parent ? parent.fullName + delimiter : '') + folder.name();
-							folder.delimiter = delimiter;
-							folder.deep = (parent ? parent.deep : -1) + 1;
-							setFolder(folder);
-						},
-						renameChildren = folder => {
-							folder.subFolders.forEach(child => {
-								renameFolder(child, folder);
-								renameChildren(child);
-							})
-						};
-					folder.name(nameToEdit);
-					renameFolder(folder, newParent);
-					if (folder.subFolders.length || newParent != oldParent) {
-						// Rename all subfolders to prevent reload
-						renameChildren(folder);
-					}
-					(oldParent ? oldParent.subFolders : folderList).remove(folder);
-					newFolderList.push(folder);
-					sortFolders(newFolderList);
-				})
-				.catch(error => {
-					console.error(error);
-					FolderUserStore.error(
-						getNotification(error.code, '', Notifications.CantRenameFolder)
-						+ '.\n' + error.message);
-				});
-		}
 	}
 
 	/**

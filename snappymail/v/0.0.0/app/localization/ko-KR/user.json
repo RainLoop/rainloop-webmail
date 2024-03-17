@@ -510,7 +510,7 @@
 		"TO_MANY_FOLDERS_DESC_2": "We have shown only a part of them, to avoid performance problems.",
 		"HELP_DELETE_FOLDER": "폴더 삭제",
 		"HELP_SHOW_HIDE_FOLDER": "폴더 표시\/숨기기",
-		"HELP_CHECK_FOR_NEW_MESSAGES": "새 메시지 확인\/확인 취소",
+		"HELP_CHECK_FOR_NEW_MESSAGES": "새 메시지 확인",
 		"HIDE_UNSUBSCRIBED": "Hide unsubscribed folders",
 		"UNHIDE_KOLAB_FOLDERS": "Unhide Kolab folders",
 		"TYPE_CALENDAR": "Calendar",

@@ -510,7 +510,7 @@
 		"TO_MANY_FOLDERS_DESC_2": "Kun nogle mapper vises for at undgå problemer.",
 		"HELP_DELETE_FOLDER": "Slet mappe",
 		"HELP_SHOW_HIDE_FOLDER": "Vis\/skjul mappe",
-		"HELP_CHECK_FOR_NEW_MESSAGES": "Markér\/fjern markering for nye meddelelser",
+		"HELP_CHECK_FOR_NEW_MESSAGES": "Markér for nye meddelelser",
 		"HIDE_UNSUBSCRIBED": "Hide unsubscribed folders",
 		"UNHIDE_KOLAB_FOLDERS": "Unhide Kolab folders",
 		"TYPE_CALENDAR": "Calendar",

@@ -510,7 +510,7 @@
 		"TO_MANY_FOLDERS_DESC_2": "جهت جلوگیری از کاهش کارایی سیستم، ما فقط قسمتی از آنها را به شما نشان می‌دهیم.",
 		"HELP_DELETE_FOLDER": "حذف پوشه",
 		"HELP_SHOW_HIDE_FOLDER": "نمایش\/مخفی‌بودن پوشه",
-		"HELP_CHECK_FOR_NEW_MESSAGES": "بررسی\/عدم‌بررسی برای پیام جدید",
+		"HELP_CHECK_FOR_NEW_MESSAGES": "پیام جدی را بررسی کنید",
 		"HIDE_UNSUBSCRIBED": "Hide unsubscribed folders",
 		"UNHIDE_KOLAB_FOLDERS": "Unhide Kolab folders",
 		"TYPE_CALENDAR": "Calendar",

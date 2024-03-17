@@ -510,7 +510,7 @@
 		"TO_MANY_FOLDERS_DESC_2": "Vengono visualizzate solo una parte per evitare problemi di performance.",
 		"HELP_DELETE_FOLDER": "Cancella cartella",
 		"HELP_SHOW_HIDE_FOLDER": "Mostra\/nascondi cartella",
-		"HELP_CHECK_FOR_NEW_MESSAGES": "Controlla\/non controlla la presenza di nuovi messaggi",
+		"HELP_CHECK_FOR_NEW_MESSAGES": "Controlla la presenza di nuovi messaggi",
 		"HIDE_UNSUBSCRIBED": "Nascondi le cartelle non sottoscritte",
 		"UNHIDE_KOLAB_FOLDERS": "Rendi visibili le cartelle Kolab",
 		"TYPE_CALENDAR": "Calendario",
