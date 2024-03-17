@@ -201,6 +201,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$oAccount->SetPassword($oNewPassword);
 		if ($oAccount instanceof \RainLoop\Model\MainAccount) {
 			$oActions->SetAuthToken($oAccount);
+			$oAccount->resealCryptKey($oPrevPassword);
 		}
 
 		return $this->jsonResponse(__FUNCTION__, $oActions->AppData(false));

@@ -77,8 +77,8 @@ class LoginOAuth2Plugin extends \RainLoop\Plugins\AbstractPlugin
 			 * So we need to securely save a cryptkey.
 			 * Encrypted using the old/new refresh token is an option:
 			 *   1. decrypt cryptkey with the old refresh token
-			 *   2. $oAccount->SetCryptKey('cryptkey')
-			 *   3. encrypt cryptkey with the new refresh token
+			 *   2. encrypt cryptkey with the new refresh token
+			 *   = $oAccount->resealCryptKey(new \SnappyMail\SensitiveString('old refresh token'))
 			 */
 		}
 	}
