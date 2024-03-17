@@ -80,6 +80,12 @@ export function MimeToMessage(data, message)
 						detached: true
 					});
 				}
+			} else if ('application/pkcs7-mime' === type.value /*&& 'signed-data' === type.params['smime-type']=*/) {
+				message.smimeSigned({
+					micAlg: type.micalg,
+					bodyPart: part,
+					detached: false
+				});
 			}
 		});
 
