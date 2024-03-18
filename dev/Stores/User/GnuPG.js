@@ -75,7 +75,7 @@ export const GnuPGUserStore = new class {
 									'GnuPG key<br>' + key.id + ' ' + key.emails[0],
 									btnTxt
 								);
-								pass && pass.remember && Passphrases.set(key, pass.password);
+								pass && pass.remember && Passphrases.handle(key, pass.password);
 								return pass?.password;
 							};
 						}

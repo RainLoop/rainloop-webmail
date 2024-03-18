@@ -34,7 +34,7 @@ const
 					privateKey: privateKey.key,
 					passphrase
 				});
-			result && pass.remember && Passphrases.set(privateKey, passphrase);
+			result && pass.remember && Passphrases.handle(privateKey, passphrase);
 			return result;
 		}
 	},

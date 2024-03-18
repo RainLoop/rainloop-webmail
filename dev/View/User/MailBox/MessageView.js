@@ -655,7 +655,7 @@ export class MailMessageView extends AbstractViewRight {
 					message.smimeDecrypted(true);
 					MimeToMessage(response.Result.data, message);
 					message.html() ? message.viewHtml() : message.viewPlain();
-					pass && pass.remember && Passphrases.set(identity, pass.password);
+					pass && pass.remember && Passphrases.handle(identity, pass.password);
 					if ('signed' in response.Result) {
 						message.smimeSigned(response.Result.signed);
 					}
