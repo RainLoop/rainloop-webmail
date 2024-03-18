@@ -30,7 +30,7 @@
 					link.remove();
 				}
 
-			}, 'JsonAdminGetData');
+			}, 'JsonAdminBackupData');
 		}
 
 		submitForm(form) {

@@ -6,8 +6,8 @@ class BackupPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Backup',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.1',
-		RELEASE  = '2023-12-12',
+		VERSION  = '1.2',
+		RELEASE  = '2024-03-18',
 		REQUIRED = '2.30.0',
 		CATEGORY = 'General',
 		LICENSE  = 'MIT',
@@ -17,12 +17,12 @@ class BackupPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		// Admin Settings tab
 		$this->addJs('js/BackupAdminSettings.js', true); // add js file
-		$this->addJsonHook('JsonAdminGetData');
+		$this->addJsonHook('JsonAdminBackupData');
 		$this->addJsonHook('JsonAdminRestoreData');
 		$this->addTemplate('templates/BackupAdminSettingsTab.html', true);
 	}
 
-	public function JsonAdminGetData()
+	public function JsonAdminBackupData()
 	{
 		if (!($this->Manager()->Actions() instanceof \RainLoop\ActionsAdmin)
 		 || !$this->Manager()->Actions()->IsAdminLoggined()
@@ -79,18 +79,17 @@ class BackupPlugin extends \RainLoop\Plugins\AbstractPlugin
 			return $this->jsonResponse(__FUNCTION__, false);
 		}
 
+		$result = false;
 		if (\class_exists('ZipArchive')) {
 			$oArchive = new \ZipArchive();
 			$oArchive->open($_FILES['backup']['tmp_name'], \ZIPARCHIVE::CREATE);
-			$oArchive->extractTo(APP_PRIVATE_DATA);
+			$result = $oArchive->extractTo(APP_PRIVATE_DATA);
 		} else if (\class_exists('PharData')) {
 			$oArchive = new \PharData($sTmp, 0, null, \Phar::GZ);
-			$oArchive->extractTo(APP_PRIVATE_DATA);
+			$result = $oArchive->extractTo(APP_PRIVATE_DATA);
 		}
 
-		return $this->jsonResponse(__FUNCTION__, array(
-			'$_FILES' => $_FILES
-		));
+		return $this->jsonResponse(__FUNCTION__, $result);
 	}
 
 }
