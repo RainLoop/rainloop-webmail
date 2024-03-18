@@ -139,7 +139,7 @@
 		"MENU_VIEW_ORIGINAL": "Toon origineel",
 		"HTML_VIEW": "Bekijk HTML bericht",
 		"PLAIN_VIEW": "Bekijk platte tekst bericht",
-		"SWAP_COLORS": "Swap default (background)color",
+		"SWAP_COLORS": "Verwissel standaard (achtergrond)kleur",
 		"MENU_DOWNLOAD_ORIGINAL": "Download als .eml bestand",
 		"MENU_FILTER_SIMILAR": "Filter gelijksoortige berichten",
 		"MENU_PRINT": "Afdrukken",
@@ -285,10 +285,10 @@
 		"CREATE_SELF_SIGNED": "Zelfondertekend certificaat aanmaken",
 		"VALID_UNTIL": "Geldig tot",
 		"PRIVATE_KEY": "Privésleutel",
-		"CHANGE_PASS": "Change passphrase",
-		"CURRENT_PASS": "Current passphrase",
-		"NEW_PASS": "New passphrase",
-		"ASK_CRYPTKEY_PASS": "Your login passphrase has changed. Please fill in your old login password to decrypt data"
+		"CHANGE_PASS": "Wijzig wachtwoord",
+		"CURRENT_PASS": "Huidige wachtwoord",
+		"NEW_PASS": "Nieuwe wachtwoord",
+		"ASK_CRYPTKEY_PASS": "Uw login wachtwoord is veranderd. Vul uw oude login wachtwoord in om de data te ontsleutelen."
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importeer OpenPGP sleutel",
@@ -412,7 +412,7 @@
 		"IMAGEUPLOAD": "Upload afbeelding",
 		"UNDO": "Ongedaan maken",
 		"REDO": "Opnieuw",
-		"REMOVESTYLE": "Remove style"
+		"REMOVESTYLE": "Verwijder css-stijl"
 	},
 	"SETTINGS_LABELS": {
 		"GENERAL": "Algemeen",
@@ -589,7 +589,7 @@
 		"DomainAlreadyExists": "Domein bestaat reeds",
 		"DomainNotAllowed": "Domein is niet toegestaan",
 		"AccountNotAllowed": "Account is niet toegestaan",
-		"CryptKeyError": "Your login passphrase has changed",
+		"CryptKeyError": "Uw login wachtwoord is veranderd",
 		"ContactsSyncError": "Contactpersonen synchronisatie fout",
 		"CantGetMessageList": "Berichtenlijst kan niet worden opgehaald",
 		"CantGetMessage": "Bericht kan niet worden opgehaald",
