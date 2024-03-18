@@ -49,7 +49,6 @@ class Backup
 				\RainLoop\Providers\Storage\Enumerations\StorageType::PGP,
 				true
 			);
-			$hash = $oAccount->CryptKey();
 			foreach (\glob("{$dir}*") as $file) {
 				if (\is_file($file)) {
 					if ('_public.asc' === \substr($file, -11)) {
@@ -61,6 +60,7 @@ class Backup
 						$key = \json_decode(\file_get_contents($file));
 						if (\is_array($key)) {
 							$mac = \array_pop($key);
+							$hash = $oAccount->CryptKey();
 							if (!empty($key[2]) && \hash_hmac('sha1', $key[2], $hash) === $mac) {
 								$key[1] = \base64_decode($key[1]);
 								$key[2] = \base64_decode($key[2]);

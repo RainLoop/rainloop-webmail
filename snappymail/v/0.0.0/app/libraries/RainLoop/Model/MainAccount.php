@@ -4,6 +4,7 @@ namespace RainLoop\Model;
 
 use RainLoop\Utils;
 use RainLoop\Exceptions\ClientException;
+use RainLoop\Notifications;
 use RainLoop\Providers\Storage\Enumerations\StorageType;
 use SnappyMail\SensitiveString;
 
@@ -45,6 +46,8 @@ class MainAccount extends Account
 			$sKey = \SnappyMail\Crypt::DecryptFromJSON($sKey, $this->IncPassword());
 			if ($sKey) {
 				$this->sCryptKey = new SensitiveString(\hex2bin($sKey));
+			} else {
+				throw new ClientException(Notifications::CryptKeyError);
 			}
 		}
 		return $this->sCryptKey;

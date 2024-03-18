@@ -284,7 +284,8 @@
 		"ERROR": "%TYPE% napaka: %ERROR%",
 		"CREATE_SELF_SIGNED": "Create self-signed",
 		"VALID_UNTIL": "Valid until",
-		"PRIVATE_KEY": "Private key"
+		"PRIVATE_KEY": "Private key",
+		"ASK_CRYPTKEY_PASS": "Your login passphrase has changed. Please fill in your old login password to decrypt data"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Uvoz OpenPGP ključa",
@@ -585,6 +586,7 @@
 		"DomainAlreadyExists": "Domena že obstaja",
 		"DomainNotAllowed": "Domena ni dovoljena",
 		"AccountNotAllowed": "Račun ni dovoljen",
+		"CryptKeyError": "Your login passphrase has changed",
 		"ContactsSyncError": "Napaka sinhronizacije stikov",
 		"CantGetMessageList": "Ni mogoče pridobiti seznama sporočil",
 		"CantGetMessage": "Ni mogoče pridobiti sporočila",

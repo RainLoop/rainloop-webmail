@@ -284,7 +284,8 @@
 		"ERROR": "%TYPE% 錯誤: %ERROR%",
 		"CREATE_SELF_SIGNED": "Create self-signed",
 		"VALID_UNTIL": "Valid until",
-		"PRIVATE_KEY": "Private key"
+		"PRIVATE_KEY": "Private key",
+		"ASK_CRYPTKEY_PASS": "Your login passphrase has changed. Please fill in your old login password to decrypt data"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "匯入 OpenPGP 金鑰",
@@ -585,6 +586,7 @@
 		"DomainAlreadyExists": "域名已經存在",
 		"DomainNotAllowed": "不可使用該域名",
 		"AccountNotAllowed": "不可使用該帳戶",
+		"CryptKeyError": "Your login passphrase has changed",
 		"ContactsSyncError": "連絡人同步錯誤",
 		"CantGetMessageList": "無法取得郵件清單",
 		"CantGetMessage": "無法取得郵件",

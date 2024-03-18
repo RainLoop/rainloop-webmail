@@ -284,7 +284,8 @@
 		"ERROR": "Błąd %TYPE%: %ERROR%",
 		"CREATE_SELF_SIGNED": "Utwórz samodzielnie podpisany certyfikat",
 		"VALID_UNTIL": "Ważny do",
-		"PRIVATE_KEY": "Private key"
+		"PRIVATE_KEY": "Private key",
+		"ASK_CRYPTKEY_PASS": "Your login passphrase has changed. Please fill in your old login password to decrypt data"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importowanie klucza OpenPGP",
@@ -585,6 +586,7 @@
 		"DomainAlreadyExists": "Domena już istnieje",
 		"DomainNotAllowed": "Domena jest niedozwolona",
 		"AccountNotAllowed": "Konto nie jest dozwolone",
+		"CryptKeyError": "Your login passphrase has changed",
 		"ContactsSyncError": "Błąd synchronizacji kontaktów",
 		"CantGetMessageList": "Nie można pobrać listy wiadomości",
 		"CantGetMessage": "Nie można pobrać wiadomości",

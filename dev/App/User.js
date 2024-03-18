@@ -86,6 +86,8 @@ export class AppUser extends AbstractApp {
 
 		this.folderList = FolderUserStore.folderList;
 		this.messageList = MessagelistUserStore;
+
+		this.ask = AskPopupView;
 	}
 
 	/**
@@ -248,3 +250,46 @@ export class AppUser extends AbstractApp {
 		showScreenPopup(ComposePopupView, params);
 	}
 }
+
+AskPopupView.password = function(sAskDesc, btnText) {
+	return new Promise(resolve => {
+		this.showModal([
+			sAskDesc,
+			view => resolve({password:view.passphrase(), remember:view.remember()}),
+			() => resolve(null),
+			true,
+			5,
+			btnText
+		]);
+	});
+};
+
+AskPopupView.cryptkey = () => new Promise(resolve => {
+	const fn = () => AskPopupView.showModal([
+		i18n('CRYPTO/ASK_CRYPTKEY_PASS'),
+		view => {
+			let pass = view.passphrase();
+			if (pass) {
+				Remote.post('ResealCryptKey', null, {
+					passphrase: pass
+				}).then(response => {
+					resolve(response?.Result);
+				}).catch(e => {
+					if (111 === e.code) {
+						fn();
+					} else {
+						console.error(e);
+						resolve(null);
+					}
+				});
+			} else {
+				resolve(null);
+			}
+		},
+		() => resolve(null),
+		true,
+		1,
+		i18n('CRYPTO/DECRYPT')
+	]);
+	fn();
+});

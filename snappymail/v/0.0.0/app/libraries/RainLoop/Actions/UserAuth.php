@@ -20,6 +20,15 @@ trait UserAuth
 	private $oAdditionalAuthAccount = false;
 	private $oMainAuthAccount = false;
 
+	public function DoResealCryptKey() : array
+	{
+		return $this->DefaultResponse(
+			$this->getMainAccountFromToken()->resealCryptKey(
+				new \SnappyMail\SensitiveString($this->GetActionParam('passphrase', ''))
+			)
+		);
+	}
+
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */

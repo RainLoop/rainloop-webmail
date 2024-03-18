@@ -132,7 +132,7 @@ export class AbstractFetchRemote
 		fetchJSON(sAction, getURL(sGetAdd),
 			sGetAdd ? null : (params || {}),
 			undefined === iTimeout ? 30000 : pInt(iTimeout),
-			data => {
+			async data => {
 				let iError = 0;
 				if (data) {
 /*
@@ -146,6 +146,10 @@ export class AbstractFetchRemote
 						checkResponseError(data);
 						iError = data.ErrorCode || Notifications.UnknownError
 					}
+				}
+
+				if (111 === iError && rl.app.ask && await rl.app.ask.cryptkey()) {
+					return this.request(sAction, fCallback, params, iTimeout, sGetAdd);
 				}
 
 				fCallback && fCallback(
@@ -185,11 +189,15 @@ export class AbstractFetchRemote
 	post(action, fTrigger, params, timeOut) {
 		this.setTrigger(fTrigger, true);
 		return fetchJSON(action, getURL(), params || {}, pInt(timeOut, 30000),
-			data => {
+			async data => {
 				abort(action, 0, 1);
 
 				if (!data) {
 					return Promise.reject(new FetchError(Notifications.JsonParse));
+				}
+
+				if (111 === data?.ErrorCode && rl.app.ask && await rl.app.ask.cryptkey()) {
+					return this.post(action, fTrigger, params, timeOut);
 				}
 /*
 				let isCached = false, type = '';

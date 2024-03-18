@@ -284,7 +284,8 @@
 		"ERROR": "%TYPE% hatası: %ERROR%",
 		"CREATE_SELF_SIGNED": "Create self-signed",
 		"VALID_UNTIL": "Valid until",
-		"PRIVATE_KEY": "Private key"
+		"PRIVATE_KEY": "Private key",
+		"ASK_CRYPTKEY_PASS": "Your login passphrase has changed. Please fill in your old login password to decrypt data"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "OpenPGP key'i içe aktar",
@@ -585,6 +586,7 @@
 		"DomainAlreadyExists": "Alanadı bulunuyor",
 		"DomainNotAllowed": "Alan Adına izin verilmemiş",
 		"AccountNotAllowed": "Hesaba izin verilmemiş",
+		"CryptKeyError": "Your login passphrase has changed",
 		"ContactsSyncError": "Kişi listesi senkronizasyon hatası",
 		"CantGetMessageList": "Mesaj listesi alınamadı",
 		"CantGetMessage": "Mesaj alınamadı",

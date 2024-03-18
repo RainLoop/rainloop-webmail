@@ -85,29 +85,3 @@ export class AskPopupView extends AbstractViewPopup {
 		});
 	}
 }
-
-AskPopupView.password = function(sAskDesc, btnText) {
-	return new Promise(resolve => {
-		this.showModal([
-			sAskDesc,
-			view => resolve({password:view.passphrase(), remember:view.remember()}),
-			() => resolve(null),
-			true,
-			5,
-			btnText
-		]);
-	});
-}
-
-AskPopupView.credentials = function(sAskDesc, btnText) {
-	return new Promise(resolve => {
-		this.showModal([
-			sAskDesc,
-			view => resolve({username:view.username(), password:view.passphrase(), remember:view.remember()}),
-			() => resolve(null),
-			true,
-			3,
-			btnText
-		]);
-	});
-}

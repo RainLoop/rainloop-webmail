@@ -17,6 +17,7 @@ class Notifications
 	const ConnectionError = 104;
 	const DomainNotAllowed = 109;
 	const AccountNotAllowed = 110;
+	const CryptKeyError = 111;
 
 	const ContactsSyncError = 140;
 

@@ -284,7 +284,8 @@
 		"ERROR": "%TYPE% error: %ERROR%",
 		"CREATE_SELF_SIGNED": "Create self-signed",
 		"VALID_UNTIL": "Valid until",
-		"PRIVATE_KEY": "Private key"
+		"PRIVATE_KEY": "Private key",
+		"ASK_CRYPTKEY_PASS": "Your login passphrase has changed. Please fill in your old login password to decrypt data"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Import OpenPGP key",
@@ -585,6 +586,7 @@
 		"DomainAlreadyExists": "Domeniu există deja.",
 		"DomainNotAllowed": "Domeniul nu apartine de Wey5",
 		"AccountNotAllowed": "Contul nu are permisiunea de conectare",
+		"CryptKeyError": "Your login passphrase has changed",
 		"ContactsSyncError": "Contacts synchronization error",
 		"CantGetMessageList": "Nu găsesc o lista de scrisori",
 		"CantGetMessage": "Nu pot obține scrisoarea. Încercați din nou",

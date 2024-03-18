@@ -11,6 +11,8 @@ import { LoginAdminScreen } from 'Screen/Admin/Login';
 import { startScreens } from 'Knoin/Knoin';
 import { AbstractApp } from 'App/Abstract';
 
+import { AskPopupView } from 'View/Popup/Ask';
+
 export class AdminApp extends AbstractApp {
 	constructor() {
 		super(Remote);
@@ -35,3 +37,16 @@ export class AdminApp extends AbstractApp {
 		}
 	}
 }
+
+AskPopupView.credentials = function(sAskDesc, btnText) {
+	return new Promise(resolve => {
+		this.showModal([
+			sAskDesc,
+			view => resolve({username:view.username(), password:view.passphrase()}),
+			() => resolve(null),
+			true,
+			3,
+			btnText
+		]);
+	});
+};

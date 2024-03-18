@@ -50,6 +50,7 @@ Notifications = {
 	ConnectionError: 104,
 	DomainNotAllowed: 109,
 	AccountNotAllowed: 110,
+	CryptKeyError: 111,
 
 	ContactsSyncError: 140,
 

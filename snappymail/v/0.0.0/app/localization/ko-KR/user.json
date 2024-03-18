@@ -284,7 +284,8 @@
 		"ERROR": "%TYPE% 오류: %ERROR%",
 		"CREATE_SELF_SIGNED": "Create self-signed",
 		"VALID_UNTIL": "Valid until",
-		"PRIVATE_KEY": "Private key"
+		"PRIVATE_KEY": "Private key",
+		"ASK_CRYPTKEY_PASS": "Your login passphrase has changed. Please fill in your old login password to decrypt data"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "OpenPGP 키 가져오기",
@@ -585,6 +586,7 @@
 		"DomainAlreadyExists": "이미 존재하는 도메인입니다.",
 		"DomainNotAllowed": "허용된 도메인이 아닙니다.",
 		"AccountNotAllowed": "허용된 계정이 아닙니다.",
+		"CryptKeyError": "Your login passphrase has changed",
 		"ContactsSyncError": "연락처 동기화 오류",
 		"CantGetMessageList": "메시지 목록을 불러 올 수 없습니다.",
 		"CantGetMessage": "메시지를 가져올 수 없습니다.",
