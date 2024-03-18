@@ -106,10 +106,16 @@ trait SMime
 		$result = $SMIME->decrypt($sBody);
 		if ($result) {
 			$result = ['data' => $result];
-			if (\str_contains($result['data'], 'multipart/signed')) {
+			if (\str_contains($result['data'], 'multipart/signed')
+			  || \preg_match('/smime-type=["\']?signed-data/', $result['data'])
+			) {
+				$signed = $SMIME->verify($result['data'], null, true);
 				$result['signed'] = [
-					'success' => !empty($SMIME->verify($result['data'], null, true)['success'])
+					'success' => !empty($signed['success'])
 				];
+				if (!empty($signed['body'])) {
+					$result['data'] = $signed['body'];
+				}
 			}
 		}
 
