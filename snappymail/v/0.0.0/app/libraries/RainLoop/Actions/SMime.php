@@ -68,6 +68,20 @@ trait SMime
 		return $this->DefaultResponse($result ?: false);
 	}
 
+	public function DoSMimeExportPrivateKey() : array
+	{
+		$SMIME = $this->SMIME();
+		$SMIME->setPrivateKey(
+			$this->GetActionParam('privateKey'),
+			new \SnappyMail\SensitiveString($this->GetActionParam('oldPassphrase', ''))
+		);
+		$result = $SMIME->exportPrivateKey(
+			new \SnappyMail\SensitiveString($this->GetActionParam('newPassphrase', ''))
+		);
+
+		return $this->DefaultResponse($result);
+	}
+
 	public function DoSMimeDecryptMessage() : array
 	{
 		$sFolderName = $this->GetActionParam('folder', '');

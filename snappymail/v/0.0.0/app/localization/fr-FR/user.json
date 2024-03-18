@@ -285,6 +285,9 @@
 		"CREATE_SELF_SIGNED": "Create self-signed",
 		"VALID_UNTIL": "Valable jusque",
 		"PRIVATE_KEY": "Clé privée",
+		"CHANGE_PASS": "Change passphrase",
+		"CURRENT_PASS": "Current passphrase",
+		"NEW_PASS": "New passphrase",
 		"ASK_CRYPTKEY_PASS": "Your login passphrase has changed. Please fill in your old login password to decrypt data"
 	},
 	"OPENPGP": {

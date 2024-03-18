@@ -13,7 +13,7 @@ class OpenSSL
 	private string $homedir;
 	private array $headers = [];
 	private int $flags = 0;
-	private int $cipher_algo = \OPENSSL_CIPHER_AES_128_CBC;
+	private int $cipher_algo = \OPENSSL_CIPHER_AES_128_CBC; // \OPENSSL_CIPHER_AES_256_CBC
 	private ?string $untrusted_certificates_filename = null;
 
 	// Used for sign and decrypt
@@ -142,6 +142,22 @@ class OpenSSL
 		if ($this->certificate && !\openssl_x509_check_private_key($this->certificate, $this->privateKey)) {
 			throw new \RuntimeException('OpenSSL setPrivateKey: ' . \openssl_error_string());
 		}
+	}
+
+	public function exportPrivateKey(?\SnappyMail\SensitiveString $passphrase = null): string
+	{
+		if (!$this->privateKey) {
+			throw new \RuntimeException('OpenSSL exportPrivateKey: key not loaded');
+		}
+		$options = [
+			'encrypt_key' => true,
+			'encrypt_key_cipher' => \OPENSSL_CIPHER_AES_256_CBC
+		];
+		$output = '';
+		if (!\openssl_pkey_export($this->privateKey, $output, $passphrase/*, $options*/)) {
+			throw new \RuntimeException('OpenSSL exportPrivateKey: ' . \openssl_error_string());
+		}
+		return $output;
 	}
 
 /*

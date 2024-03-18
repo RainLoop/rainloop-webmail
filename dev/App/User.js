@@ -251,14 +251,14 @@ export class AppUser extends AbstractApp {
 	}
 }
 
-AskPopupView.password = function(sAskDesc, btnText) {
+AskPopupView.password = function(sAskDesc, btnText, ask) {
 	return new Promise(resolve => {
 		this.showModal([
 			sAskDesc,
 			view => resolve({password:view.passphrase(), remember:view.remember()}),
 			() => resolve(null),
 			true,
-			5,
+			ask || 5,
 			btnText
 		]);
 	});
