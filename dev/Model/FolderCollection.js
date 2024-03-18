@@ -467,6 +467,19 @@ export class FolderModel extends AbstractModel {
 
 			detailedName: () => this.name() + ' ' + this.nameInfo(),
 
+			icon: () => {
+				switch (this.type())
+				{
+					case 1: return '📥'; // FolderType.Inbox
+					case 2: return '📧'; // FolderType.Sent icon-paper-plane
+					case 3: return '🗎'; // FolderType.Drafts
+					case 4: return '⚠'; // FolderType.Junk
+					case 5: return '🗑'; // FolderType.Trash
+					case 6: return '🗄'; // FolderType.Archive
+				}
+				return null;
+			},
+
 			hasSubscribedUnreadMessagesSubfolders: () =>
 				!!this.subFolders().find(
 					folder => folder.unreadEmails() | folder.hasSubscribedUnreadMessagesSubfolders()

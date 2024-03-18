@@ -6,27 +6,27 @@
 	<div class="form-horizontal">
 		<div class="alert" data-bind="visible: '' !== notification()" data-bind="text: notification"></div>
 		<div class="control-group">
-			<label data-i18n="FOLDER_LIST/SENT_NAME"></label>
+			<label data-icon="📧" data-i18n="FOLDER_LIST/SENT_NAME"></label>
 			<select data-bind="options: folderSelectList, value: sentFolder,
 				optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defaultOptionsAfterRender"></select>
 		</div>
 		<div class="control-group">
-			<label data-i18n="FOLDER_LIST/DRAFTS_NAME"></label>
+			<label data-icon="🗎" data-i18n="FOLDER_LIST/DRAFTS_NAME"></label>
 			<select data-bind="options: folderSelectList, value: draftsFolder,
 				optionsText: 'name', optionsValue: 'id', optionsAfterRender: defaultOptionsAfterRender"></select>
 		</div>
 		<div class="control-group">
-			<label data-i18n="GLOBAL/SPAM"></label>
+			<label data-icon="⚠" data-i18n="GLOBAL/SPAM"></label>
 			<select data-bind="options: folderSelectList, value: spamFolder,
 				optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defaultOptionsAfterRender"></select>
 		</div>
 		<div class="control-group">
-			<label data-i18n="FOLDER_LIST/TRASH_NAME"></label>
+			<label data-icon="🗑" data-i18n="FOLDER_LIST/TRASH_NAME"></label>
 			<select data-bind="options: folderSelectList, value: trashFolder,
 				optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defaultOptionsAfterRender"></select>
 		</div>
 		<div class="control-group">
-			<label data-i18n="FOLDER_LIST/ARCHIVE_NAME"></label>
+			<label data-icon="🗄" data-i18n="FOLDER_LIST/ARCHIVE_NAME"></label>
 			<select data-bind="options: folderSelectList, value: archiveFolder,
 				optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defaultOptionsAfterRender"></select>
 		</div>
