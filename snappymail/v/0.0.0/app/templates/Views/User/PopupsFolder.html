@@ -37,7 +37,7 @@
 			<span data-bind="text: unreadEmails"></span>
 			/ <span style="margin:0" data-bind="text: totalEmails"></span>
 		</div>
-		<!-- ko if: $root.displaySpecSetting && canBeSelected() && isSubscribed() -->
+		<!-- ko if: $root.displaySpecSetting() && canBeSelected() && isSubscribed() -->
 		<div class="control-group">
 			<label class="icon-check-mark-circle-two"></label>
 			<div data-bind="component: {
