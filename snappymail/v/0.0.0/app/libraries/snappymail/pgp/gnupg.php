@@ -12,7 +12,7 @@ abstract class GnuPG
 {
 	public static function isSupported() : bool
 	{
-		return GPG::isSupported();
+		return GPG::isSupported() || PECL::isSupported();
 	}
 
 	private static $instance = null;
@@ -22,11 +22,9 @@ abstract class GnuPG
 			if (GPG::isSupported()) {
 				static::$instance = new GPG($homedir);
 			}
-/*
 			else if (PECL::isSupported()) {
 				static::$instance = new PECL($homedir);
 			}
-*/
 		}
 		return static::$instance;
 	}

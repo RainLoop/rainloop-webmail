@@ -56,7 +56,8 @@ class PECL implements \SnappyMail\PGP\PGPInterface
 
 	public static function isSupported() : bool
 	{
-		return \class_exists('gnupg') && \version_compare(\phpversion('gnupg'), '1.5', '>=');
+		// Disabled due to failures with "no passphrase" while a passphrase does exist
+		return false && \class_exists('gnupg') && \version_compare(\phpversion('gnupg'), '1.5', '>=');
 	}
 
 	public function gnupgError()
