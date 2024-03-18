@@ -16,13 +16,13 @@
 		<span data-i18n="SETTINGS_ACCOUNTS/BUTTON_ADD_ACCOUNT"></span>
 	</a>
 	<table class="table table-hover list-table accounts-list" data-bind="i18nUpdate: accounts">
-		<tbody>
-			<td></td>
-			<td colspan="3" data-bind="text: mainEmail"></td>
-		</tbody>
 		<tbody data-bind="foreach: accounts">
-			<!-- ko if:isAdditional -->
-			<tr draggable="true" data-bind="sortableItem: { list: $root.accounts, afterMove: $root.accountsAndIdentitiesAfterMove }">
+			<tr draggable="true" data-bind="attr: {draggable:isAdditional}, sortableItem: { list: $root.accounts, afterMove: $root.accountsAndIdentitiesAfterMove }">
+				<!-- ko if:!isAdditional() -->
+				<td></td>
+				<td colspan="3" data-bind="text: displayName"></td>
+				<!-- /ko -->
+				<!-- ko if:isAdditional -->
 				<td>
 					<i class="fontastic drag-handle">⬍</i>
 				</td>
@@ -39,8 +39,8 @@
 				<td>
 					<span class="delete fontastic" data-bind="visible: !askDelete(), click: function (oAccount) { $root.accountForDeletion(oAccount); }">🗑</span>
 				</td>
+				<!-- /ko -->
 			</tr>
-			<!-- /ko -->
 		</tbody>
 	</table>
 </div>
