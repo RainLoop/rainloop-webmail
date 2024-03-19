@@ -184,7 +184,7 @@ trait Folders
 			 */
 /*
 			if ($this->hasCapability('ESEARCH') && !isset($oFolderInfo->UNSEEN)) {
-				$oFolderInfo->UNSEEN = $this->MessageSimpleESearch('UNSEEN', ['COUNT'])['COUNT'];
+				$oFolderInfo->UNSEEN = $this->MessageESearch('UNSEEN', ['COUNT'])['COUNT'];
 			}
 			return $oFolderInfo;
 */
@@ -435,7 +435,7 @@ trait Folders
 		$oResult->UNSEEN = null;
 /*
 		if ($this->hasCapability('ESEARCH')) {
-			$oResult->UNSEEN = $this->MessageSimpleESearch('UNSEEN', ['COUNT'])['COUNT'];
+			$oResult->UNSEEN = $this->MessageESearch('UNSEEN', ['COUNT'])['COUNT'];
 		}
 */
 		$this->oCurrentFolderInfo = $oResult;

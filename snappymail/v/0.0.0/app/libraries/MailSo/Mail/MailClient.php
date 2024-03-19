@@ -410,8 +410,8 @@ class MailClient
 		$sSerializedHashKey = null;
 		if ($oCacher && $oCacher->IsInited()) {
 			$sSerializedHashKey =
-				"ThreadsMapSorted/{$sSearch}/{$sFolderName}/{$oMessageCollection->FolderInfo->etag}";
-//				"ThreadsMapSorted/{$sSearch}/{$iThreadLimit}/{$sFolderName}/{$oMessageCollection->FolderInfo->etag}";
+				"ThreadsMapSorted/{$sSearch}/{$oMessageCollection->FolderInfo->etag}";
+//				"ThreadsMapSorted/{$sSearch}/{$iThreadLimit}/{$oMessageCollection->FolderInfo->etag}";
 
 			$this->logWrite($sSerializedHashKey);
 
@@ -441,7 +441,7 @@ class MailClient
 		$aResult = array();
 		try
 		{
-			foreach ($this->oImapClient->MessageSimpleThread($sSearch) as $mItem) {
+			foreach ($this->oImapClient->MessageThread($sSearch) as $mItem) {
 				// Flatten to single level
 				$aMap = [];
 				\array_walk_recursive($mItem, function($a) use (&$aMap) { $aMap[] = $a; });
@@ -628,12 +628,12 @@ class MailClient
 		$aResultUids = [];
 		if ($bUseSort) {
 //			$this->oImapClient->hasCapability('ESORT')
-//			$aResultUids = $this->oImapClient->MessageSimpleESort($aSortTypes, $oSearchCriterias)['ALL'];
-			$aResultUids = $this->oImapClient->MessageSimpleSort($aSortTypes, $oSearchCriterias, $bReturnUid);
+//			$aResultUids = $this->oImapClient->MessageESort($aSortTypes, $oSearchCriterias)['ALL'];
+			$aResultUids = $this->oImapClient->MessageSort($aSortTypes, $oSearchCriterias, $bReturnUid);
 		} else {
 //			$this->oImapClient->hasCapability('ESEARCH')
-//			$aResultUids = $this->oImapClient->MessageSimpleESearch($oSearchCriterias, null, $bReturnUid)
-			$aResultUids = $this->oImapClient->MessageSimpleSearch($oSearchCriterias,        $bReturnUid);
+//			$aResultUids = $this->oImapClient->MessageESearch($oSearchCriterias, null, $bReturnUid)
+			$aResultUids = $this->oImapClient->MessageSearch($oSearchCriterias,        $bReturnUid);
 		}
 
 		if ($bUseCache) {
@@ -848,7 +848,7 @@ class MailClient
 
 		$this->oImapClient->FolderExamine($sFolderName);
 
-		$aUids = $this->oImapClient->MessageSimpleSearch('HEADER Message-ID '.$sMessageId);
+		$aUids = $this->oImapClient->MessageSearch('HEADER Message-ID '.$sMessageId);
 
 		return 1 === \count($aUids) && \is_numeric($aUids[0]) ? (int) $aUids[0] : null;
 	}

@@ -548,6 +548,7 @@ class Message implements \JsonSerializable
 		}
 		if ($this->References) {
 			$result['references'] = $this->References;
+//			$result['references'] = \explode(' ', $this->References);
 		}
 		if ($this->sHtml || $this->sPlain) {
 			$result['html'] = $this->sHtml;

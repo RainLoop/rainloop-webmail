@@ -340,7 +340,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 
 		$sSearch = \MailSo\Imap\SearchCriterias::escapeSearchString($this->ImapClient(), $sSearch);
 		$aUids = \array_slice(
-			$this->ImapClient()->MessageSimpleSearch("FROM {$sSearch}"),
+			$this->ImapClient()->MessageSearch("FROM {$sSearch}"),
 			0, $iLimit
 		);
 
@@ -361,7 +361,7 @@ class KolabAddressBook implements \RainLoop\Providers\AddressBook\AddressBookInt
 		if ($bCreateAuto) {
 			foreach ($aEmails as $sEmail => $sAddress) {
 				$sSearch = \MailSo\Imap\SearchCriterias::escapeSearchString($this->ImapClient(), $sEmail);
-				if (!$this->ImapClient()->MessageSimpleSearch("FROM {$sSearch}")) {
+				if (!$this->ImapClient()->MessageSearch("FROM {$sSearch}")) {
 					$oVCard = new VCard;
 					$oVCard->add('EMAIL', $sEmail);
 					$sFullName = \trim(\MailSo\Mime\Email::Parse(\trim($sAddress))->GetDisplayName());

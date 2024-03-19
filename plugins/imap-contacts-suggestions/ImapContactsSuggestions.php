@@ -24,7 +24,7 @@ class ImapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 
 		$sQuery = \MailSo\Imap\SearchCriterias::escapeSearchString($oImapClient, $sQuery);
 		$aUids = \array_slice(
-			$oImapClient->MessageSimpleSearch("FROM {$sQuery}"),
+			$oImapClient->MessageSearch("FROM {$sQuery}"),
 			0, $iLimit
 		);
 

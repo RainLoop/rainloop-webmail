@@ -21,6 +21,7 @@ namespace MailSo\Imap\Requests;
  */
 class SORT extends Request
 {
+	// a parenthesized list of sort criteria
 	public string $sCriterias = 'ALL';
 
 	public string $sCharset = '';
@@ -52,6 +53,9 @@ class SORT extends Request
 		   PARTIAL 1:500
 			  Return all message numbers/UIDs which match the search criteria,
 			  in the requested sort order, using a sequence-set.
+
+		   SAVE
+			  This option tells the server to remember the result.
 		 */
 		];
 

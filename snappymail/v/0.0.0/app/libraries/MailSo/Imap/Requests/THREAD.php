@@ -23,6 +23,7 @@ class THREAD extends Request
 	// ORDEREDSUBJECT or REFERENCES or REFS
 	private string $sAlgorithm = '';
 
+	// a parenthesized list of sort criteria
 	public string $sCriterias = 'ALL';
 
 	public bool $bUid = true;
