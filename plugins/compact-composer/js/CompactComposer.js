@@ -14,34 +14,26 @@
 
 	const doc = win.document;
 
-	// If a user (or admin) selected the CompactComposer we need to
-	// replace PopupsCompose template with PopupsCompactCompose template.
-	// --
-	// This might break some plugins if they query/change PopupsCompose template
-	// before this code is called. They should instead listen for
-	// 'rl-view-model.create' to work properly.
-	if (rl.settings.get('editorWysiwyg') === 'CompactComposer') {
-		const compactTemplate = doc.getElementById('PopupsCompactCompose');
-		if (!compactTemplate) {
-			console.error('CompactComposer: PopupsCompactCompose template not found');
-			return;
+	addEventListener('rl-view-model', e => {
+		const vm = e.detail;
+		if ('PopupsCompose' === vm.viewModelTemplateID && rl.settings.get('editorWysiwyg') === 'CompactComposer') {
+			vm.querySelector('.tabs label[for="tab-body"]').dataset.bind = "visible: canMailvelope";
+			// Now move the attachments tab to the bottom of the screen
+			const
+				input = vm.querySelector('.tabs input[value="attachments"]'),
+				label = vm.querySelector('.tabs label[for="tab-attachments"]'),
+				area = vm.querySelector('.tabs .attachmentAreaParent');
+			input.remove();
+			label.remove();
+			area.remove();
+			area.classList.add('compact');
+			area.querySelector('.b-attachment-place').dataset.bind = "visible: addAttachmentEnabled(), css: {dragAndDropOver: dragAndDropVisible}";
+			vm.viewModelDom.append(area);
+			// There is a better way to do this probably,
+			// but we need this for drag and drop to work
+			e.detail.attachmentsArea = e.detail.bodyArea;
 		}
-		const originalTemplate = doc.getElementById('PopupsCompose');
-		if (originalTemplate) {
-			originalTemplate.id = 'PopupsCompose_replaced';
-		} else {
-			console.warn('CompactComposer: PopupsCompose template not found');
-		}
-		compactTemplate.id = 'PopupsCompose';
-
-		addEventListener('rl-view-model.create', e => {
-			if (e.detail.viewModelTemplateID === 'PopupsCompose') {
-				// There is a better way to do this probably,
-				// but we need this for drag and drop to work
-				e.detail.attachmentsArea = e.detail.bodyArea;
-			}
-		});
-	}
+	});
 
 	const
 		removeElements = 'HEAD,LINK,META,NOSCRIPT,SCRIPT,TEMPLATE,TITLE',
@@ -155,7 +147,7 @@
 			this.toolbar = toolbar;
 
 			toolbar.className = 'squire-toolbar btn-toolbar';
-			const actions = this.#makeActions(squire, toolbar);
+			const actions = this.makeActions(squire, toolbar);
 
 			this.squire.addEventListener('willPaste', pasteSanitizer);
 			this.squire.addEventListener('pasteImage', (e) => {
@@ -300,10 +292,11 @@
 		 * @param {Squire} squire
 		 * @param {HTMLDivElement} toolbar
 		 * @returns {Array}
+		 * @private
 		 */
-		#makeActions(squire, toolbar) {
+		makeActions(squire, toolbar) {
 
-			const clr = this.#makeClr();
+			const clr = this.makeClr();
 			const doClr = name => input => {
 				// https://github.com/the-djmaze/snappymail/issues/826
 				clr.style.left = (input.offsetLeft + input.parentNode.offsetLeft) + 'px';
@@ -640,11 +633,14 @@
 					actions: actions
 				}
 			}));
-			this.indicators = this.#addActionsToParent(actions, toolbar);
+			this.indicators = this.addActionsToParent(actions, toolbar);
 			return actions;
 		}
 
-		#makeClr() {
+		/**
+		 * @private
+		 */
+		makeClr() {
 			/**@type {HTMLInputElement} clr*/
 			const clr = createElement('input');
 			clr.type = 'color';
@@ -675,8 +671,9 @@
 		/**
 		 * @param {Array} items
 		 * @param {HTMLElement} parent
+		 * @private
 		 */
-		#addActionsToParent(items, parent) {
+		addActionsToParent(items, parent) {
 			const indicators = [];
 			items.forEach(item => {
 				let element, event;
@@ -688,7 +685,7 @@
 							group.className += ' squire-html-mode-item';
 						}
 						if (item.items) {
-							indicators.push(...this.#addActionsToParent(item.items, group));
+							indicators.push(...this.addActionsToParent(item.items, group));
 						}
 						parent.append(group);
 						return indicators;
@@ -720,7 +717,7 @@
 						menu.setAttribute('role', 'menu');
 
 						if (item.items) {
-							indicators.push(...this.#addActionsToParent(item.items, menu));
+							indicators.push(...this.addActionsToParent(item.items, menu));
 						}
 						menuWrap.appendChild(menu);
 						parent.append(menuWrap);

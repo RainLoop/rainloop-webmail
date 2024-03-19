@@ -103,7 +103,7 @@
 			<tr>
 				<td>
 					<label data-bind="css: {'error-to': emptyToError}, tooltipErrorTip: emptyToErrorTooltip"
-								 data-i18n="GLOBAL/TO"></label>
+						data-i18n="GLOBAL/TO"></label>
 				</td>
 				<td>
 					<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: to, autoCompleteSource: emailsSource">
@@ -146,7 +146,7 @@
 			</div>
 			<div class="btn-group">
 				<button class="btn fontastic" id="composeUploadButton"
-								data-bind="visible: addAttachmentEnabled()" data-i18n="[title]COMPOSE/ATTACH_FILES">
+					data-bind="visible: addAttachmentEnabled()" data-i18n="[title]COMPOSE/ATTACH_FILES">
 					⁺📎
 				</button>
 			</div>
@@ -156,24 +156,25 @@
 	<div class="tabs">
 		<input type="radio" name="tabs" value="body" id="tab-body" data-bind="checked: viewArea">
 		<label for="tab-body"
-					 role="tab"
-					 aria-selected="true"
-					 aria-controls="panel1"
-					 data-bind="visible: canMailvelope"
-					 tabindex="0">
+			role="tab"
+			aria-selected="true"
+			aria-controls="panel1"
+			data-bind="visible: canMailvelope"
+			tabindex="0">
 			<i class="icon-file-text"></i>
 			<span data-i18n="GLOBAL/TEXT"></span>
 		</label>
 		<div class="tab-content" role="tabpanel" aria-hidden="false" style="grid-column-end:3">
 			<div class="textAreaParent" data-bind="initDom: editorArea, attr:{spellcheck:allowSpellcheck()?'true':'false'}"></div>
 		</div>
+
 		<input type="radio" name="tabs" value="mailvelope" id="tab-mailvelope" data-bind="checked: viewArea">
 		<label for="tab-mailvelope"
-					 role="tab"
-					 aria-selected="false"
-					 aria-controls="panel3"
-					 tabindex="0"
-					 data-bind="visible: canMailvelope">
+			role="tab"
+			aria-selected="false"
+			aria-controls="panel3"
+			tabindex="0"
+			data-bind="visible: canMailvelope">
 			<i class="mailvelope-icon"></i>
 			<span>Mailvelope</span>
 		</label>
@@ -183,7 +184,7 @@
 
 <div class="attachmentAreaParent compact">
 	<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled(), css: {dragAndDropOver: dragAndDropVisible}"
-			 data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></div>
+		data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></div>
 	<ul class="attachmentList" data-bind="foreach: attachments">
 		<li class="attachmentItem" data-bind="attr: { title: title }, css: { waiting: waiting, error: '' !== error() }">
 			<div class="attachmentIcon">
