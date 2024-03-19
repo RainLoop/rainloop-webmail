@@ -155,8 +155,8 @@
 		"HAS_VIRUS_WARNING": "ATTENTION : virus détecté",
 		"TAGS": "Étiquettes",
 		"NEW_TAG": "Nouvelle étiquette",
-		"ENABLE_TRACKING_LINKS": "Enable tracking links",
-		"TRACKING_ENABLED": "Links are now tracked when clicked!"
+		"ENABLE_TRACKING_LINKS": "Activer les liens de suivi",
+		"TRACKING_ENABLED": "Les liens sont désormais suivis lorsque vous cliquez dessus !"
 	},
 	"MESSAGE_TAGS": {
 		"$important": "Important",
@@ -282,13 +282,13 @@
 		"VERIFY": "Vérifier",
 		"GOOD_SIGNATURE": "Signature valide pour %USER%",
 		"ERROR": "Erreur %TYPE%: %ERROR%",
-		"CREATE_SELF_SIGNED": "Create self-signed",
+		"CREATE_SELF_SIGNED": "Créer auto-signé",
 		"VALID_UNTIL": "Valable jusque",
 		"PRIVATE_KEY": "Clé privée",
-		"CHANGE_PASS": "Change passphrase",
-		"CURRENT_PASS": "Current passphrase",
-		"NEW_PASS": "New passphrase",
-		"ASK_CRYPTKEY_PASS": "Your login passphrase has changed. Please fill in your old login password to decrypt data"
+		"CHANGE_PASS": "Changer la phrase secrète",
+		"CURRENT_PASS": "Phrase secrète actuelle",
+		"NEW_PASS": "Nouvelle phrase secrète",
+		"ASK_CRYPTKEY_PASS": "Votre phrase secrète de connexion a été changé. Veuillez fournir votre ancien mot de passe de connexion pour décrypter les données"
 	},
 	"OPENPGP": {
 		"POPUP_IMPORT_TITLE": "Importer la clef OpenPGP",
