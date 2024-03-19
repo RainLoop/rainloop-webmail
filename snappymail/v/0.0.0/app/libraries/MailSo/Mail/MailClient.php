@@ -389,6 +389,27 @@ class MailClient
 		return '';
 	}
 
+	public function MessageThread(string $sMessageID) : MessageCollection
+	{
+		$sMessageID = SearchCriterias::escapeSearchString($this->oImapClient, $sMessageID);
+		$sSearch = "OR HEADER Message-ID {$sMessageID} HEADER References {$sMessageID}";
+		$aResult = [];
+		try
+		{
+			foreach ($this->oImapClient->MessageThread($sSearch) as $mItem) {
+				// Flatten to single level
+				\array_walk_recursive($mItem, fn($a) => $aResult[] = $a);
+			}
+		}
+		catch (\MailSo\RuntimeException $oException)
+		{
+			\SnappyMail\Log::warning('MailClient', 'MessageListThreadsMap ' . $oException->getMessage());
+			unset($oException);
+		}
+//		$this->logWrite('MessageThreadList: '.\print_r($threads, 1));
+		return $aResult;
+	}
+
 	/**
 	 * @throws \InvalidArgumentException
 	 * @throws \MailSo\RuntimeException
