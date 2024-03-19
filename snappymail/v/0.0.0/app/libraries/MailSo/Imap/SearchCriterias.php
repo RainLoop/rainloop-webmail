@@ -19,7 +19,7 @@ namespace MailSo\Imap;
 class SearchCriterias
 {
 	const
-		RegEx = 'in|e?mail|from|to|subject|has|is|date|since|before|text|body|size|larger|bigger|smaller|maxsize|minsize|keyword|older_than|newer_than|on|senton|sentsince|sentbefore';
+		RegEx = 'in|e?mail|from|to|subject|has|is|date|since|before|text|body|size|larger|bigger|smaller|maxsize|minsize|keyword|older_than|newer_than|on|senton|sentsince|sentbefore|header';
 	/**
 		https://datatracker.ietf.org/doc/html/rfc3501#section-6.4.4
 
@@ -234,6 +234,14 @@ class SearchCriterias
 							$aCriteriasResult[] = 'HEADER Content-Type multipart/report';
 							break;
 
+						case 'HEADER':
+							$aValue = \explode(' ', $sRawValue, 2);
+							$aCriteriasResult[] = 'HEADER '
+								. static::escapeSearchString($oImapClient, $aValue[0])
+								. ' '
+								. static::escapeSearchString($oImapClient, $aValue[1]);
+							break;
+
 						case 'FLAGGED':
 						case 'UNFLAGGED':
 						case 'SEEN':
@@ -433,6 +441,7 @@ class SearchCriterias
 				case 'BEFORE':
 				case 'OLDER':
 				case 'YOUNGER':
+				case 'HEADER':
 					if (\strlen($mValue)) {
 						$aResult[$sName] = $mValue;
 					}
