@@ -32,14 +32,12 @@ export class AdvancedSearchPopupView extends AbstractViewPopup {
 			// Almost the same as MessageModel.tagOptions
 			keywords: () => {
 				const keywords = [{value:'',label:''}];
-				FolderUserStore.currentFolder().permanentFlags.forEach(value => {
-					if (isAllowedKeyword(value)) {
-						let lower = value.toLowerCase();
-						keywords.push({
-							value: value,
-							label: i18n('MESSAGE_TAGS/'+lower, 0, lower)
-						});
-					}
+				FolderUserStore.currentFolder().optionalTags().forEach(value => {
+					let lower = value.toLowerCase();
+					keywords.push({
+						value: value,
+						label: i18n('MESSAGE_TAGS/'+lower, 0, lower)
+					});
 				});
 				return keywords
 			},

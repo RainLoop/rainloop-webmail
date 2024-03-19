@@ -29,6 +29,8 @@ import { FileInfo } from 'Common/File';
 import { FolderPopupView } from 'View/Popup/Folder';
 import { showScreenPopup } from 'Knoin/Knoin';
 
+import { isAllowedKeyword } from 'Stores/User/Folder';
+
 const
 //	isPosNumeric = value => null != value && /^[0-9]*$/.test(value.toString()),
 
@@ -410,6 +412,8 @@ export class FolderModel extends AbstractModel {
 
 			canBeSubscribed: () => this.selectable()
 				&& !(this.isSystemFolder() | !SettingsUserStore.hideUnsubscribed()),
+
+			optionalTags: () => this.permanentFlags.filter(isAllowedKeyword),
 
 			/**
 			 * Folder is visible when:

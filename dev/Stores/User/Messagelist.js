@@ -32,6 +32,8 @@ import { SettingsGet } from 'Common/Globals';
 import { SUB_QUERY_PREFIX } from 'Common/Links';
 import { AppUserStore } from 'Stores/User/App';
 
+import { baseCollator } from 'Common/Translator';
+
 const
 	isChecked = item => item.checked(),
 	replaceHash = hash => {
@@ -254,17 +256,14 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 
 						let flags = folderInfo.permanentFlags || [];
 						if (flags.includes('\\*')) {
+							/** Add Thunderbird labels */
 							let i = 6;
 							while (--i) {
 								flags.includes('$label'+i) || flags.push('$label'+i);
 							}
+							/** TODO: add others by default? */
 						}
-						flags.sort((a, b) => {
-							a = a.toUpperCase();
-							b = b.toUpperCase();
-							return (a < b) ? -1 : ((a > b) ? 1 : 0);
-						});
-						folder.permanentFlags(flags);
+						folder.permanentFlags(flags.sort(baseCollator().compare));
 
 						MessagelistUserStore.notifyNewMessages(folder.fullName, collection.newMessages);
 					}
