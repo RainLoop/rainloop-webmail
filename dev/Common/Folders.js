@@ -1,5 +1,6 @@
 import { RFC822 } from 'Common/File';
 import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
+import { baseCollator } from 'Common/Translator';
 import { isArray, arrayLength } from 'Common/Utils';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import { FolderUserStore } from 'Stores/User/Folder';
@@ -27,7 +28,7 @@ setRefreshFoldersInterval = minutes => {
 
 sortFolders = folders => {
 	try {
-		let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+		let collator = baseCollator(true);
 		folders.sort((a, b) =>
 			a.isInbox() ? -1 : (b.isInbox() ? 1 : collator.compare(a.fullName, b.fullName))
 		);

@@ -12,6 +12,8 @@ import { OpenPgpKeyPopupView } from 'View/Popup/OpenPgpKey';
 
 import { Passphrases } from 'Storage/Passphrases';
 
+import { baseCollator } from 'Common/Translator';
+
 const
 	findGnuPGKey = (keys, query/*, sign*/) =>
 		keys.find(key =>
@@ -106,7 +108,7 @@ export const GnuPGUserStore = new class {
 						key.view = () => key.fetch(() => showScreenPopup(OpenPgpKeyPopupView, [key]));
 						return key;
 					},
-					collator = new Intl.Collator(undefined, {sensitivity: 'base'}),
+					collator = baseCollator(),
 					sort = keys => keys.sort(
 						(a, b) => collator.compare(a.emails[0], b.emails[0]) || collator.compare(a.id, b.id)
 					);

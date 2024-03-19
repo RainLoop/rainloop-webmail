@@ -3,7 +3,7 @@ import { koComputable, addObservablesTo } from 'External/ko';
 import { Notifications } from 'Common/Enums';
 import { defaultOptionsAfterRender } from 'Common/Utils';
 import { folderListOptionsBuilder, sortFolders } from 'Common/Folders';
-import { getNotification } from 'Common/Translator';
+import { getNotification/*, baseCollator*/ } from 'Common/Translator';
 
 import { FolderUserStore } from 'Stores/User/Folder';
 
@@ -56,7 +56,7 @@ export class FolderCreatePopupView extends AbstractViewPopup {
 						folders.push(subFolder);
 						sortFolders(folders);
 /*
-						var collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+						var collator = baseCollator(true);
 						console.log((folder ? folder.subFolders : FolderUserStore.folderList).sort(collator.compare));
 */
 					},

@@ -1,3 +1,4 @@
+import { baseCollator } from 'Common/Translator';
 import { AbstractCollectionModel } from 'Model/AbstractCollection';
 import { AttachmentModel } from 'Model/Attachment';
 
@@ -11,7 +12,7 @@ export class AttachmentCollectionModel extends AbstractCollectionModel
 	 */
 	static reviveFromJson(items) {
 		const attachments = super.reviveFromJson(items, attachment => AttachmentModel.reviveFromJson(attachment));
-		let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+		let collator = baseCollator(true);
 		attachments.sort((a, b) => {
 			if (a.isInline()) {
 				if (!b.isInline()) {

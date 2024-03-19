@@ -218,7 +218,6 @@ export const
 		}),
 
 	/**
-	 *
 	 * @param {string} language
 	 * @param {boolean=} isEng = false
 	 * @returns {string}
@@ -228,6 +227,8 @@ export const
 			'LANGS_NAMES' + (true === isEng ? '_EN' : '') + '/' + language,
 			null,
 			language
-		);
+		),
+
+	baseCollator = numeric => new Intl.Collator(doc.documentElement.lang, {numeric: !!numeric, sensitivity: 'base'});
 
 init();
