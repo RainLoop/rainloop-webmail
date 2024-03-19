@@ -18,6 +18,7 @@ export function MimeToMessage(data, message)
 			subject = struct.headerValue('subject');
 		html = html ? html.body : '';
 
+		// Content-Type: ...; protected-headers="v1"
 		subject && message.subject(subject);
 
 		// EmailCollectionModel
@@ -99,6 +100,4 @@ export function MimeToMessage(data, message)
 	if (message.plain().includes(BEGIN_PGP_MESSAGE)) {
 		message.pgpSigned(true);
 	}
-
-	// TODO: Verify instantly?
 }

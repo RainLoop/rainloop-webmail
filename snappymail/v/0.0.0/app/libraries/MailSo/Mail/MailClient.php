@@ -389,9 +389,11 @@ class MailClient
 		return '';
 	}
 
-	public function MessageThread(string $sMessageID) : MessageCollection
+	public function MessageThread(string $sFolderName, string $sMessageID) : MessageCollection
 	{
-		$sMessageID = SearchCriterias::escapeSearchString($this->oImapClient, $sMessageID);
+		$this->oImapClient->FolderExamine($sFolderName);
+
+		$sMessageID = \MailSo\Imap\SearchCriterias::escapeSearchString($this->oImapClient, $sMessageID);
 		$sSearch = "OR HEADER Message-ID {$sMessageID} HEADER References {$sMessageID}";
 		$aResult = [];
 		try
