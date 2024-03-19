@@ -135,7 +135,7 @@
 			</div>
 			<div class="informationShort">
 				<span class="from" data-bind="html: viewFromShort, attr:{ title: message().from }"></span>
-				<i data-bind="visible: viewDkimIcon, css: dkimIconClass, attr:{ title: dkimTitle }"></i>
+				<i class="fontastic" data-bind="text: dkimIcon, css: dkimIconClass, attr:{ title: dkimTitle }"></i>
 			</div>
 		</div>
 		<div id="messageItem">
@@ -161,9 +161,7 @@
 					<table>
 						<tr data-bind="visible: from.length">
 							<td data-i18n="GLOBAL/FROM"></td>
-							<td><span data-bind="text: from"></span>
-								<i data-bind="visible: $parent.viewDkimIcon, css: $parent.dkimIconClass, attr:{ title: $parent.dkimTitle }"></i>
-							</td>
+							<td data-bind="text: from"></td>
 						</tr>
 						<tr data-bind="visible: to.length">
 							<td data-i18n="GLOBAL/TO"></td>

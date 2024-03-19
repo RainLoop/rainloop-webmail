@@ -46,9 +46,6 @@
 .icon-down-mini::before {
   content: "⌄";
 }
-.icon-cross::before {
-  content: "✖";
-}
 .icon-ok::before {
   content: "✔";
 }

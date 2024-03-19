@@ -174,18 +174,17 @@ export class MailMessageView extends AbstractViewRight {
 
 			canBeRepliedOrForwarded: () => !MessagelistUserStore.isDraftFolder() && this.messageVisible(),
 
-			viewDkimIcon: () => 'none' !== this.dkimData()[0],
-
-			dkimIconClass:() => {
+			dkimIcon: () => {
 				switch (this.dkimData()[0]) {
 					case 'none':
 						return '';
 					case 'pass':
-						return 'icon-ok iconcolor-green'; // ✔️
+						return '✔';
 					default:
-						return 'icon-cross iconcolor-red'; // ✖ ❌
+						return '✖';
 				}
 			},
+			dkimIconClass: () => 'pass' === this.dkimData()[0] ? 'iconcolor-green' : 'iconcolor-red',
 
 			dkimTitle:() => {
 				const dkim = this.dkimData();
