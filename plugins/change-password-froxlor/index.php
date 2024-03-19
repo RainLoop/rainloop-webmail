@@ -1,7 +1,5 @@
 <?php
 
-use RainLoop\Exceptions\ClientException;
-
 class ChangePasswordFroxlorPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const

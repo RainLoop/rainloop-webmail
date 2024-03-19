@@ -1,7 +1,5 @@
 <?php
 
-use RainLoop\Exceptions\ClientException;
-
 class ChangePasswordHMailServerPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
