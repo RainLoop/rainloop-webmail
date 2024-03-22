@@ -2549,6 +2549,11 @@ html.rl-mobile #rl-app #V-AdminPane>.b-toolbar {
 	color: var(--msgflag-\\flagged-color);
 }
 
+#rl-app #messageItem .b-text-part.swapColors {
+	background-color: var(--nc-color-primary);
+	color: var(--nc-color-primary-text);
+}
+
 /* #endregion */
 
 /* #endregion */
