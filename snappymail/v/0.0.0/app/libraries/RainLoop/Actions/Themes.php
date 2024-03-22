@@ -56,14 +56,18 @@ trait Themes
 		}
 
 		$sDir = APP_INDEX_ROOT_PATH . 'themes'; // custom user themes
-		if (\is_dir($sDir) && ($rDirH = \opendir($sDir))) {
-			while (($sFile = \readdir($rDirH)) !== false) {
-				if ('.' !== $sFile[0] && \is_dir($sDir . '/' . $sFile)
-				 && (\file_exists("{$sDir}/{$sFile}/styles.css") || \file_exists("{$sDir}/{$sFile}/styles.less"))) {
-					$aCache[] = $sFile . '@custom';
+		if (\is_dir($sDir)) {
+			if ($rDirH = \opendir($sDir)) {
+				while (($sFile = \readdir($rDirH)) !== false) {
+					if ('.' !== $sFile[0] && \is_dir($sDir . '/' . $sFile)
+					 && (\file_exists("{$sDir}/{$sFile}/styles.css") || \file_exists("{$sDir}/{$sFile}/styles.less"))) {
+						$aCache[] = $sFile . '@custom';
+					}
 				}
+				\closedir($rDirH);
+			} else {
+				$this->logWrite("{$sDir} not readable", \LOG_DEBUG, 'Themes');
 			}
-			\closedir($rDirH);
 		}
 
 		if (\class_exists('OC', false)) {
