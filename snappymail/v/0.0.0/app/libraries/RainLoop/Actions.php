@@ -479,49 +479,16 @@ class Actions
 		if (!isset($this->aCachers[$sIndexKey])) {
 			$this->aCachers[$sIndexKey] = new \MailSo\Cache\CacheClient();
 
-			$oDriver = null;
-			$sDriver = \strtoupper(\trim($this->oConfig->Get('cache', 'fast_cache_driver', 'files')));
-
-			switch (true) {
-				default:
-				case $bForceFile:
-					$oDriver = new \MailSo\Cache\Drivers\File(
-						\trim($this->oConfig->Get('cache', 'path', '')) ?: APP_PRIVATE_DATA . 'cache',
-						$sKey
-					);
-					break;
-
-				case ('APCU' === $sDriver) &&
-					\MailSo\Base\Utils::FunctionsCallable(array(
-						'apcu_store', 'apcu_fetch', 'apcu_delete', 'apcu_clear_cache')):
-
-					$oDriver = new \MailSo\Cache\Drivers\APCU($sKey);
-					break;
-
-				case ('MEMCACHE' === $sDriver || 'MEMCACHED' === $sDriver) &&
-					(\class_exists('Memcache',false) || \class_exists('Memcached',false)):
-					$oDriver = new \MailSo\Cache\Drivers\Memcache(
-						$this->oConfig->Get('labs', 'fast_cache_memcache_host', '127.0.0.1'),
-						(int) $this->oConfig->Get('labs', 'fast_cache_memcache_port', 11211),
-						43200,
-						$sKey
-					);
-					break;
-
-				case 'REDIS' === $sDriver && \class_exists('Predis\Client'):
-					$oDriver = new \MailSo\Cache\Drivers\Redis(
-						$this->oConfig->Get('labs', 'fast_cache_redis_host', '127.0.0.1'),
-						(int) $this->oConfig->Get('labs', 'fast_cache_redis_port', 6379),
-						43200,
-						$sKey
-					);
-					break;
+			$oDriver = $bForceFile ? null : $this->fabrica('cache');
+			if (!($oDriver instanceof \MailSo\Cache\DriverInterface)) {
+				$oDriver = new \MailSo\Cache\Drivers\File(
+					\trim($this->oConfig->Get('cache', 'path', '')) ?: APP_PRIVATE_DATA . 'cache'
+				);
 			}
+//			$sDriver = \strtoupper(\trim($this->oConfig->Get('cache', 'fast_cache_driver', 'files')));
+			$oDriver->setPrefix($sKey);
 
-			if ($oDriver) {
-				$this->aCachers[$sIndexKey]->SetDriver($oDriver);
-			}
-
+			$this->aCachers[$sIndexKey]->SetDriver($oDriver);
 			$this->aCachers[$sIndexKey]->SetCacheIndex($this->oConfig->Get('cache', 'fast_cache_index', ''));
 		}
 

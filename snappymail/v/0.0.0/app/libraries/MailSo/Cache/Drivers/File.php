@@ -22,18 +22,20 @@ class File implements \MailSo\Cache\DriverInterface
 
 	private string $sKeyPrefix = '';
 
-	function __construct(string $sCacheFolder, string $sKeyPrefix = '')
+	function __construct(string $sCacheFolder)
 	{
 		$this->sCacheFolder = \rtrim(\trim($sCacheFolder), '\\/').'/';
 
 		// http://www.brynosaurus.com/cachedir/
 		$tag = $this->sCacheFolder . 'CACHEDIR.TAG';
 		\is_file($tag) || \file_put_contents($tag, 'Signature: 8a477f597d28d172789f06886806bc55');
+	}
 
+	public function setPrefix(string $sKeyPrefix) : void
+	{
 		if (!empty($sKeyPrefix)) {
 			$sKeyPrefix = \str_pad(\preg_replace('/[^a-zA-Z0-9_]/', '_',
 				\rtrim(\trim($sKeyPrefix), '\\/')), 5, '_');
-
 			$this->sKeyPrefix = '__/'.
 				\substr($sKeyPrefix, 0, 2).'/'.\substr($sKeyPrefix, 2, 2).'/'.
 				$sKeyPrefix.'/';

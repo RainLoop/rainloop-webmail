@@ -17,6 +17,8 @@ namespace MailSo\Cache;
  */
 interface DriverInterface
 {
+	public function setPrefix(string $sKeyPrefix) : void;
+
 	public function Set(string $sKey, string $sValue) : bool;
 
 	public function Exists(string $sKey) : bool;

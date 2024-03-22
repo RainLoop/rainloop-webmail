@@ -394,7 +394,6 @@ Enables caching in the system'),
 
 				'index' => array('v1', 'Additional caching key. If changed, cache is purged'),
 
-				'fast_cache_driver' => array('files', 'Can be: files, APCU, memcache, redis (beta)'),
 				'fast_cache_index' => array('v1', 'Additional caching key. If changed, fast cache is purged'),
 
 				'http' => array(true, 'Browser-level cache. If enabled, caching is maintainted without using files'),
@@ -431,10 +430,6 @@ Enables caching in the system'),
 				'custom_login_link' => array(''),
 				'custom_logout_link' => array(''),
 				'http_client_ip_check_proxy' => array(false),
-				'fast_cache_memcache_host' => array('127.0.0.1'),
-				'fast_cache_memcache_port' => array(11211),
-				'fast_cache_redis_host' => array('127.0.0.1'),
-				'fast_cache_redis_port' => array(6379),
 				'use_local_proxy_for_external_images' => array(true),
 				'image_exif_auto_rotate' => array(false),
 				'cookie_default_path' => array(''),

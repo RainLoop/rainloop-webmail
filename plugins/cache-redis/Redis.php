@@ -27,7 +27,7 @@ class Redis implements \MailSo\Cache\DriverInterface
 
 	private string $sKeyPrefix;
 
-	function __construct(string $sHost = '127.0.0.1', int $iPort = 6379, int $iExpire = 43200, string $sKeyPrefix = '')
+	function __construct(string $sHost = '127.0.0.1', int $iPort = 6379, int $iExpire = 43200)
 	{
 		$this->iExpire = 0 < $iExpire ? $iExpire : 43200;
 
@@ -51,10 +51,14 @@ class Redis implements \MailSo\Cache\DriverInterface
 			$this->oRedis = null;
 			unset($oExc);
 		}
+	}
 
+	public function setPrefix(string $sKeyPrefix) : void
+	{
+		$sKeyPrefix = \rtrim(\trim($sKeyPrefix), '\\/');
 		$this->sKeyPrefix = empty($sKeyPrefix)
 			? $sKeyPrefix
-			: \preg_replace('/[^a-zA-Z0-9_]/', '_', rtrim(trim($sKeyPrefix), '\\/')) . '/';
+			: \preg_replace('/[^a-zA-Z0-9_]/', '_', $sKeyPrefix).'/';
 	}
 
 	public function Set(string $sKey, string $sValue) : bool

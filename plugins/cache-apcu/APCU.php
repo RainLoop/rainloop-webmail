@@ -20,11 +20,12 @@ class APCU implements \MailSo\Cache\DriverInterface
 {
 	private string $sKeyPrefix;
 
-	function __construct(string $sKeyPrefix = '')
+	public function setPrefix(string $sKeyPrefix) : void
 	{
+		$sKeyPrefix = \rtrim(\trim($sKeyPrefix), '\\/');
 		$this->sKeyPrefix = empty($sKeyPrefix)
 			? $sKeyPrefix
-			: \preg_replace('/[^a-zA-Z0-9_]/', '_', \rtrim(\trim($sKeyPrefix), '\\/')).'/';
+			: \preg_replace('/[^a-zA-Z0-9_]/', '_', $sKeyPrefix).'/';
 	}
 
 	public function Set(string $sKey, string $sValue) : bool

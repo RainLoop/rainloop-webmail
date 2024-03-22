@@ -27,7 +27,7 @@ class Memcache implements \MailSo\Cache\DriverInterface
 
 	private string $sKeyPrefix;
 
-	function __construct(string $sHost = '127.0.0.1', int $iPort = 11211, int $iExpire = 43200, string $sKeyPrefix = '')
+	function __construct(string $sHost = '127.0.0.1', int $iPort = 11211, int $iExpire = 43200)
 	{
 		$this->iExpire = 0 < $iExpire ? $iExpire : 43200;
 
@@ -35,10 +35,14 @@ class Memcache implements \MailSo\Cache\DriverInterface
 		if (!$this->oMem->addServer($sHost, \strpos($sHost, ':/') ? 0 : $iPort)) {
 			$this->oMem = null;
 		}
+	}
 
+	public function setPrefix(string $sKeyPrefix) : void
+	{
+		$sKeyPrefix = \rtrim(\trim($sKeyPrefix), '\\/');
 		$this->sKeyPrefix = empty($sKeyPrefix)
 			? $sKeyPrefix
-			: \preg_replace('/[^a-zA-Z0-9_]/', '_', \rtrim(\trim($this->sKeyPrefix), '\\/')) . '/';
+			: \preg_replace('/[^a-zA-Z0-9_]/', '_', $sKeyPrefix).'/';
 	}
 
 	public function Set(string $sKey, string $sValue) : bool
