@@ -10,13 +10,15 @@ namespace SnappyMail\DAV;
 
 class Client
 {
-	public $urlPath;
+	public string $urlPath;
 
 	const
 		NS_DAV  = 'urn:DAV',
 		NS_CARDDAV = 'urn:ietf:params:xml:ns:carddav';
 
-	protected $baseUri;
+	protected string $baseUri;
+
+	protected $HTTP;
 
 	/**
 	 * Constructor
