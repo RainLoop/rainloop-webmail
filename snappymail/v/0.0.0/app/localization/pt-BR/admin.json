@@ -12,7 +12,6 @@
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Usuário",
-		"LABEL_PASSWORD": "Senha",
 		"LABEL_TOTP": "TOTP code",
 		"BUTTON_LOGIN": "Entrar no painel administrativo"
 	},

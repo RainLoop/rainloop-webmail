@@ -12,7 +12,6 @@
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ログイン",
-		"LABEL_PASSWORD": "パスワード",
 		"LABEL_TOTP": "TOTPコード",
 		"BUTTON_LOGIN": "管理画面へログイン"
 	},

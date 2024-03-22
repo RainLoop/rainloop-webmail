@@ -6,13 +6,12 @@
 		"TEST": "Test",
 		"UPDATE": "Update",
 		"USERNAME": "Username",
-		"PASSWORD": "Password",
+		"PASSWORD": "Passphrase",
 		"CANCEL": "Cancel",
 		"SEARCH": "Search"
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
-		"LABEL_PASSWORD": "Password",
 		"LABEL_TOTP": "TOTP code",
 		"BUTTON_LOGIN": "Log into the admin panel"
 	},
@@ -45,7 +44,7 @@
 		"LABEL_ALLOW_IDENTITIES": "Allow multiple identities",
 		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
 		"ALERT_WARNING": "Warning!",
-		"HTML_ALERT_WEAK_PASSWORD": "You are using the default admin password.\n<br>\nFor security reasons please\n<strong><a href=\"#\/security\">change<\/a><\/strong>\npassword to something else now.\n"
+		"HTML_ALERT_WEAK_PASSWORD": "You are using the default admin passphrase.\n<br>\nFor security reasons please\n<strong><a href=\"#\/security\">change<\/a><\/strong>\npassphrase to something else now.\n"
 	},
 	"TAB_LOGIN": {
 		"LEGEND_LOGIN_SCREEN": "Login Screen",
@@ -68,7 +67,7 @@
 		"LABEL_STORAGE_TYPE": "Type",
 		"LABEL_STORAGE_DSN": "Data Source Name (DSN)",
 		"LABEL_STORAGE_USER": "User",
-		"LABEL_STORAGE_PASSWORD": "Password",
+		"LABEL_STORAGE_PASSWORD": "Passphrase",
 		"SQLITE_GLOBAL": "Use a global DB instead of per account",
 		"ALERT_NOTICE": "Notice!",
 		"SUGGESTIONS_LIMIT": "Suggestions limit",
@@ -88,9 +87,9 @@
 		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
 		"LABEL_SHOW_PHP_INFO": "Show PHP information",
 		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Admin Panel Access Credentials",
-		"LABEL_CURRENT_PASSWORD": "Current password",
-		"LABEL_NEW_PASSWORD": "New password",
-		"LABEL_REPEAT_PASSWORD": "Repeat",
+		"LABEL_CURRENT_PASSWORD": "Current passphrase",
+		"LABEL_NEW_PASSWORD": "New passphrase",
+		"LABEL_REPEAT_PASSWORD": "Repeat passphrase",
 		"LABEL_REQUIRE_VERIFICATION": "Require verification of SSL certificate",
 		"CRYPTO": "Crypto",
 		"LABEL_ALLOW_SELF_SIGNED": "Allow self signed certificates"

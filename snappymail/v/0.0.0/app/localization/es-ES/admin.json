@@ -12,7 +12,6 @@
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Ingresar",
-		"LABEL_PASSWORD": "Contraseña",
 		"LABEL_TOTP": "Código TOTP",
 		"BUTTON_LOGIN": "Ingresar al panel de control"
 	},

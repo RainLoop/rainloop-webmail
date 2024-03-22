@@ -12,7 +12,6 @@
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prijava",
-		"LABEL_PASSWORD": "Geslo",
 		"LABEL_TOTP": "TOTP code",
 		"BUTTON_LOGIN": "Prijava v administracijsko ploščo"
 	},

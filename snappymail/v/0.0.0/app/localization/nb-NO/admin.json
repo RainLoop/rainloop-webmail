@@ -12,7 +12,6 @@
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Brukernavn",
-		"LABEL_PASSWORD": "Passord",
 		"LABEL_TOTP": "TOTP-kode",
 		"BUTTON_LOGIN": "Logg inn på admin-panel"
 	},

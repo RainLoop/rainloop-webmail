@@ -12,7 +12,6 @@
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "登录",
-		"LABEL_PASSWORD": "密码",
 		"LABEL_TOTP": "TOTP 代码",
 		"BUTTON_LOGIN": "登录到控制面板"
 	},

@@ -12,7 +12,6 @@
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prihlasovanie",
-		"LABEL_PASSWORD": "Heslo",
 		"LABEL_TOTP": "TOTP code",
 		"BUTTON_LOGIN": "Prihlásiť sa do admin panelu"
 	},

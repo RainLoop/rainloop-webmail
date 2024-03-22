@@ -12,7 +12,6 @@
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Tunnus",
-		"LABEL_PASSWORD": "Salasana",
 		"LABEL_TOTP": "TOTP code",
 		"BUTTON_LOGIN": "Kirjaudu hallintapaneliin"
 	},

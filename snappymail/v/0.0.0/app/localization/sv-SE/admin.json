@@ -12,7 +12,6 @@
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Logga in",
-		"LABEL_PASSWORD": "Lösenord",
 		"LABEL_TOTP": "TOTP-kod",
 		"BUTTON_LOGIN": "Logga in till admin-panelen"
 	},

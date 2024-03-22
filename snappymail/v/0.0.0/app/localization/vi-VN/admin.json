@@ -12,7 +12,6 @@
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Đăng nhập",
-		"LABEL_PASSWORD": "Mật khẩu",
 		"LABEL_TOTP": "Mã TOTP",
 		"BUTTON_LOGIN": "Đăng nhập vào bảng quản trị"
 	},

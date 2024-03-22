@@ -12,7 +12,6 @@
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Belépés",
-		"LABEL_PASSWORD": "Jelszó",
 		"LABEL_TOTP": "TOTP kód",
 		"BUTTON_LOGIN": "Bejelentkezés az admin felületre"
 	},

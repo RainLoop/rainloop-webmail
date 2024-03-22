@@ -12,7 +12,6 @@
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Prisijungimo vardas",
-		"LABEL_PASSWORD": "Slaptažodis",
 		"LABEL_TOTP": "TOTP code",
 		"BUTTON_LOGIN": "Prisijungti prie valdymo skydo"
 	},

@@ -12,7 +12,6 @@
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
-		"LABEL_PASSWORD": "Pasahitza",
 		"LABEL_TOTP": "TOTP kodea",
 		"BUTTON_LOGIN": "Administradore panelean saioa hasi"
 	},

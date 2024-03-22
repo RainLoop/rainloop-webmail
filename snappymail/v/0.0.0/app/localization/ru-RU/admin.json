@@ -12,7 +12,6 @@
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "Логин",
-		"LABEL_PASSWORD": "Пароль",
 		"LABEL_TOTP": "TOTP code",
 		"BUTTON_LOGIN": "Войти в админ панель"
 	},

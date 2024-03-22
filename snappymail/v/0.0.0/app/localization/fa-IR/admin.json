@@ -12,7 +12,6 @@
 	},
 	"LOGIN": {
 		"LABEL_LOGIN": "ورود",
-		"LABEL_PASSWORD": "گذرواژه",
 		"LABEL_TOTP": "TOTP code",
 		"BUTTON_LOGIN": "ورود به صفحه مدیریت"
 	},
