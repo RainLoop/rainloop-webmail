@@ -13,7 +13,7 @@
 	"LOGIN": {
 		"LABEL_LOGIN": "Логін",
 		"LABEL_TOTP": "Код TOTP",
-		"BUTTON_LOGIN": "Увайсці ў панэль адмінстратара"
+		"BUTTON_LOGIN": "Увайсці ў панэль адміністратара"
 	},
 	"TOP_PANEL": {
 		"LABEL_ADMIN_PANEL": "Панэль кіравання адміністратара"
@@ -135,7 +135,7 @@
 		"SECURE_OPTION_NONE": "Не",
 		"LABEL_ALLOW_SIEVE_SCRIPTS": "Дазволіць сцэнары Sieve",
 		"LABEL_USE_SHORT_LOGIN": "Выкарыстоўваць кароткі логін",
-		"LABEL_LOWERCASE_LOGIN": "Логін у малым рэгістры (неадчувальны да рэгістра)",
+		"LABEL_LOWERCASE_LOGIN": "Логін у малым рэгістры (неадчувальны да рэгістру)",
 		"LABEL_USE_AUTH": "Выкарыстоўваць аўтэнтыфікацыю",
 		"LABEL_SET_SENDER": "Выкарыстоўваць логін у якасці адпраўшчыка",
 		"LABEL_AUTH_PLAIN_LINE": "Прымусовы ўваход камандаю AUTH PLAIN",
