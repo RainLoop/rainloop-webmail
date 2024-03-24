@@ -8,8 +8,8 @@ locale examples: en, en-US, nl, nl-NL
 
 https://github.com/the-djmaze/snappymail/issues/435
 
-https://tools.ietf.org/html/rfc1766
-https://tools.ietf.org/html/rfc3066
+https://datatracker.ietf.org/doc/html/rfc5646
+
 https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
 https://en.wikipedia.org/wiki/IETF_language_tag
 http://www.w3.org/WAI/ER/IG/ert/iso639.htm

@@ -34,6 +34,7 @@ trait Localization
 
 		$aHelper = array(
 			'ar' => 'ar-SA',
+			'be' => 'be-BY',
 			'cn' => 'zh-CN',
 			'cs' => 'cs-CZ',
 			'da' => 'da-DK',
@@ -60,17 +61,21 @@ trait Localization
 			return $sLanguage;
 		}
 
-		$sLanguage = \preg_replace('/^([a-zA-Z]{2})$/', '\1-\1', $sLanguage);
-
-		$sLanguage = \preg_replace_callback('/-([a-zA-Z]{2})$/', function ($aData) {
-			return \strtoupper($aData[0]);
-		}, $sLanguage);
-		if (\in_array($sLanguage, $aLang)) {
-			return $sLanguage;
+		if (\str_contains($sLanguage, '-')) {
+			$sLanguage = \strtok($sLanguage, '-');
+			if (\in_array($sLanguage, $aLang)) {
+				return $sLanguage;
+			}
 		}
 
 		if (\in_array($sDefault, $aLang)) {
 			return $sDefault;
+		}
+		if (\str_contains($sDefault, '-')) {
+			$sDefault = \strtok($sDefault, '-');
+			if (\in_array($sDefault, $aLang)) {
+				return $sDefault;
+			}
 		}
 
 		if ($bAllowEmptyResult) {

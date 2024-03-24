@@ -125,7 +125,7 @@
 		"NAME_HELPER": "wildcard supported",
 		"LABEL_SERVER": "Server",
 		"LABEL_PORT": "Port",
-		"LABEL_SECURE": "Secure",
+		"LABEL_SECURE": "Security",
 		"TIMEOUT": "Timeout",
 		"DISABLE_CAPABILITIES": "Disable capabilities",
 		"LIMITS": "Limits",
