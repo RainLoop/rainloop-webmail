@@ -171,8 +171,9 @@ class DefaultDomain implements DomainInterface
 				$aResult = \array_filter($aResult, fn($v) => $v !== $sName);
 			}
 			\RainLoop\Utils::saveFile($this->sDomainPath.'/disabled', \implode("\n", \array_unique($aResult)));
+			return $this->getDisabled() === $aResult;
 		}
-		return true;
+		return false;
 	}
 
 	public function Delete(string $sName) : bool
