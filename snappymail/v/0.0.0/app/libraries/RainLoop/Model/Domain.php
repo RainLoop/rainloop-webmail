@@ -200,7 +200,7 @@ class Domain implements \JsonSerializable
 			$oDomain->IMAP->shortLogin = !empty($aDomain['imap_short_login']);
 
 			$oDomain->Sieve->enabled = !empty($aDomain['sieve_use']);
-			$oDomain->Sieve->host = $aDomain['sieve_host'];
+			$oDomain->Sieve->host = $aDomain['sieve_host'] ?: '';
 			$oDomain->Sieve->port = (int) ($aDomain['sieve_port'] ?? 4190);;
 			$oDomain->Sieve->type = self::StrConnectionSecurityTypeToCons($aDomain['sieve_secure'] ?? '');
 
