@@ -63,6 +63,9 @@ trait Localization
 
 		if (\str_contains($sLanguage, '-')) {
 			$sLanguage = \strtok($sLanguage, '-');
+			if (isset($aHelper[$sLanguage])) {
+				$sLanguage = $aHelper[$sLanguage];
+			}
 			if (\in_array($sLanguage, $aLang)) {
 				return $sLanguage;
 			}
@@ -73,6 +76,9 @@ trait Localization
 		}
 		if (\str_contains($sDefault, '-')) {
 			$sDefault = \strtok($sDefault, '-');
+			if (isset($aHelper[$sDefault])) {
+				$sDefault = $aHelper[$sDefault];
+			}
 			if (\in_array($sDefault, $aLang)) {
 				return $sDefault;
 			}
