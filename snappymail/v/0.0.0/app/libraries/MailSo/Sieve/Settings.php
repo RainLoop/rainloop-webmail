@@ -21,20 +21,13 @@ class Settings extends \MailSo\Net\ConnectSettings
 
 	public bool $enabled = false;
 
-	public bool $authPlainLiteral = false;
-
-	public function __construct()
-	{
-		parent::__construct();
-		$oConfig = \RainLoop\API::Config();
-		$this->authPlainLiteral = !$oConfig->Get('labs', 'sieve_auth_plain_initial', true);
-	}
+	public bool $authLiteral = true;
 
 	public static function fromArray(array $aSettings) : self
 	{
 		$object = parent::fromArray($aSettings);
 		$object->enabled = !empty($aSettings['enabled']);
-//		$object->authPlainLiteral = !empty($aSettings['authPlainLiteral']);
+		$object->authLiteral = !isset($aSettings['authLiteral']) || !empty($aSettings['authLiteral']);
 		return $object;
 	}
 
@@ -46,7 +39,7 @@ class Settings extends \MailSo\Net\ConnectSettings
 			[
 //				'@Object' => 'Object/SmtpSettings',
 				'enabled' => $this->enabled,
-//				'authPlainLiteral' => $this->authPlainLiteral
+				'authLiteral' => $this->authLiteral
 			]
 		);
 	}

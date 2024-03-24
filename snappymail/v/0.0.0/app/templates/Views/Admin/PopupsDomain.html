@@ -272,6 +272,15 @@
 							<input name="Sieve[timeout]" type="number" min="5" step="1"  style="width:6em" data-bind="textInput: sieveTimeout">
 						</div>
 					</div>
+
+					<h4 data-i18n="LOGIN/LABEL_LOGIN"></h4>
+					<div data-bind="component: {
+						name: 'Checkbox',
+						params: {
+							value: sieveAuthLiteral,
+							label: 'Use LITERAL+'
+						}
+					}"></div>
 				</div>
 			</div>
 

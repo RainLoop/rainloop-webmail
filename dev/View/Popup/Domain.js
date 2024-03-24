@@ -45,6 +45,7 @@ const
 		sievePort: 4190,
 		sieveType: 0,
 		sieveTimeout: 10,
+		sieveAuthLiteral: true,
 
 		smtpHost: '',
 		smtpPort: 25,
@@ -108,6 +109,7 @@ const
 		},
 		Sieve: {
 			enabled: !!oDomain.sieveEnabled(),
+			authLiteral: !!oDomain.sieveAuthLiteral(),
 			host: oDomain.sieveHost,
 			port: oDomain.sievePort,
 			secure: pInt(oDomain.sieveType()),

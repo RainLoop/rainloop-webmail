@@ -134,7 +134,7 @@ class SieveClient extends \MailSo\Net\NetClient
 				$sAuth = $SASL->authenticate($sLogin, $sPassword, $sLoginAuthKey);
 				$this->logMask($sAuth);
 
-				if ($oSettings->authPlainLiteral) {
+				if ($oSettings->authLiteral) {
 					$this->sendRaw("AUTHENTICATE \"{$type}\" {".\strlen($sAuth).'+}');
 					$this->sendRaw($sAuth);
 				} else {
