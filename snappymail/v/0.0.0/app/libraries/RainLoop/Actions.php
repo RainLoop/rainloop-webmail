@@ -603,8 +603,7 @@ class Actions
 						'showNextMessage' => (bool) $oConfig->Get('defaults', 'view_show_next_message', false),
 						'AutoLogout' => (int) $oConfig->Get('defaults', 'autologout', 30),
 						'AllowDraftAutosave' => (bool) $oConfig->Get('defaults', 'allow_draft_autosave', true),
-						'ContactsAutosave' => (bool) $oConfig->Get('defaults', 'contacts_autosave', true),
-						'sieveAllowFileintoInbox' => (bool)$oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false)
+						'ContactsAutosave' => (bool) $oConfig->Get('defaults', 'contacts_autosave', true)
 					],
 					// MainAccount or AdditionalAccount
 					$this->getAccountData($oAccount)

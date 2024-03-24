@@ -30,8 +30,6 @@ const
 			sDeepPrefix = '\u00A0\u00A0\u00A0',
 			showUnsubscribed = true/*!SettingsUserStore.hideUnsubscribed()*/,
 
-			disabled = rl.settings.get('sieveAllowFileintoInbox') ? '' : 'INBOX',
-
 			foldersWalk = folders => {
 				folders.forEach(oItem => {
 					if (showUnsubscribed || oItem.hasSubscriptions() || !oItem.exists) {
@@ -39,7 +37,7 @@ const
 							id: oItem.fullName,
 							name: sDeepPrefix.repeat(oItem.deep) + oItem.detailedName(),
 							system: false,
-							disabled: !oItem.selectable() || disabled == oItem.fullName
+							disabled: !oItem.selectable()
 						});
 					}
 
