@@ -71,7 +71,7 @@ trait Attachments
 						$oZip->setArchiveComment('SnappyMail/'.APP_VERSION);
 						foreach ($aData as $aItem) {
 							$sFileName = ($mUIDs ? "{$aItem['uid']}/" : ($sFolder ? "{$aItem['uid']}-" : '')) . $aItem['fileName'];
-							if ($aItem['data']) {
+							if (isset($aItem['data'])) {
 								if (!$oZip->addFromString($sFileName, $aItem['data'])) {
 									$bError = true;
 								}
@@ -164,7 +164,7 @@ trait Attachments
 		} else if (!empty($aValues['folder']) && !empty($aValues['uid'])) {
 			$sFolder = (string) $aValues['folder'];
 			$iUid = (int) $aValues['uid'];
-			$sMimeIndex = (string) $aValues['mimeIndex'];
+			$sMimeIndex = (string) $aValues['mimeIndex'] ?: '';
 			$oFileProvider = $this->FilesProvider();
 			$mResult = $this->MailClient()->MessageMimeStream(
 				function ($rResource, $sContentType, $sFileName, $sMimeIndex = '')
