@@ -123,20 +123,27 @@ class DefaultDomain implements DomainInterface
 
 	public function Save(\RainLoop\Model\Domain $oDomain) : bool
 	{
-		$this->Delete($oDomain->Name());
 		$sRealFileName = static::encodeFileName($oDomain->Name());
-		\RainLoop\Utils::saveFile($this->sDomainPath.'/'.$sRealFileName.'.json', \json_encode($oDomain, \JSON_PRETTY_PRINT));
+		if (!$sRealFileName) {
+			return false;
+		}
+		$this->Delete($oDomain->Name());
+		\RainLoop\Utils::saveFile("{$this->sDomainPath}/{$sRealFileName}.json", \json_encode($oDomain, \JSON_PRETTY_PRINT));
 		$this->oCacher && $this->oCacher->Delete(static::CACHE_KEY);
 		return true;
 	}
 
 	public function SaveAlias(string $sName, string $sTarget) : bool
 	{
-//		$this->Delete($sName);
 //		$sTarget = \SnappyMail\IDN::toAscii($sTarget);
+//		$sTarget = static::encodeFileName($sTarget);
 		$sTarget = \strtolower(\idn_to_ascii($sTarget));
 		$sRealFileName = static::encodeFileName($sName);
-		\RainLoop\Utils::saveFile($this->sDomainPath.'/'.$sRealFileName.'.alias', $sTarget);
+		if (!$sRealFileName || !$sTarget/* || !\is_readable("{$this->sDomainPath}/{$sTarget}.json")*/) {
+			return false;
+		}
+//		$this->Delete($sName);
+		\RainLoop\Utils::saveFile("{$this->sDomainPath}/{$sRealFileName}.alias", $sTarget);
 		$this->oCacher && $this->oCacher->Delete(static::CACHE_KEY);
 		return true;
 	}
@@ -170,7 +177,8 @@ class DefaultDomain implements DomainInterface
 			} else {
 				$aResult = \array_filter($aResult, fn($v) => $v !== $sName);
 			}
-			\RainLoop\Utils::saveFile($this->sDomainPath.'/disabled', \implode("\n", \array_unique($aResult)));
+			$aResult = \array_unique($aResult);
+			\RainLoop\Utils::saveFile($this->sDomainPath.'/disabled', \implode("\n", $aResult));
 			return $this->getDisabled() === $aResult;
 		}
 		return false;
