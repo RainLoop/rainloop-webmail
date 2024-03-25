@@ -18,9 +18,8 @@ abstract class SASL
 		return false;
 	}
 
-	public function verify(string $data) : bool
+	public function verify(string $data) : void
 	{
-		return false;
 	}
 
 	final public static function factory(string $type)

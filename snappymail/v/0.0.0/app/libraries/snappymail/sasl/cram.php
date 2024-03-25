@@ -20,6 +20,9 @@ class Cram extends \SnappyMail\SASL
 		?string $challenge = null
 	) : string
 	{
+		if (empty($challenge)) {
+			$this->writeLogException(new \MailSo\Smtp\Exceptions\NegativeResponseException);
+		}
 		return $this->encode($authcid . ' ' . \hash_hmac($this->algo, $this->decode($challenge), $passphrase));
 	}
 

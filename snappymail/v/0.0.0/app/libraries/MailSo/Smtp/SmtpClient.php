@@ -176,36 +176,32 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 			try
 			{
+				$sRequest = '';
 				if (\str_starts_with($type, 'SCRAM-')) {
 					// RFC 5802
 					$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 234);
-					$sChallenge = $SASL->challenge($sResult);
-					$this->logMask($sChallenge);
-					$SASL->verify($this->sendRequestWithCheck($sChallenge, 235, true));
+					$sRequest = $SASL->challenge($sResult);
 				} else switch ($type) {
 				// RFC 4616
 				case 'PLAIN':
 				case 'XOAUTH2':
 				case 'OAUTHBEARER':
-					$sAuth = $SASL->authenticate($sLogin, $sPassword);
-					$this->logMask($sAuth);
-					$this->sendRequestWithCheck($sAuth, 235, true);
+					$sRequest = $SASL->authenticate($sLogin, $sPassword);
 					break;
 
 				case 'LOGIN':
 					$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 334);
-					$sPassword = $SASL->challenge($sResult);
-					$this->logMask($sPassword);
-					$this->sendRequestWithCheck($sPassword, 235, true);
+					$sRequest = $SASL->challenge($sResult);
 					break;
 
 				// RFC 2195
 				case 'CRAM-MD5':
-					if (empty($sResult)) {
-						$this->writeLogException(new \MailSo\Smtp\Exceptions\NegativeResponseException);
-					}
-					$this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 235, true);
+					$sRequest = $SASL->authenticate($sLogin, $sPassword, $sResult);
 					break;
+				}
+				if ($sRequest) {
+					$this->logMask($sRequest);
+					$SASL->verify($this->sendRequestWithCheck($sRequest, 235));
 				}
 			}
 			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
@@ -286,7 +282,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			$sCmd .= ' NOTIFY=SUCCESS,FAILURE';
 		}
 
-		$this->sendRequestWithCheck("RCPT {$sCmd}", array(250, 251), false, "Failed to add recipient '{$sTo}'");
+		$this->sendRequestWithCheck("RCPT {$sCmd}", [250, 251], "Failed to add recipient '{$sTo}'");
 
 		$this->bRcpt = true;
 
@@ -394,7 +390,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	public function Rset() : self
 	{
-		$this->sendRequestWithCheck('RSET', array(250, 220));
+		$this->sendRequestWithCheck('RSET', [250, 220]);
 
 		$this->bMail = false;
 		$this->bRcpt = false;
@@ -414,14 +410,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 /*
 		// RFC 6531
 		if ($this->hasCapability('SMTPUTF8')) {
-			$this->sendRequestWithCheck('VRFY ' . IDN::emailToUtf8($sUser) . ' SMTPUTF8',
-				array(250, 251, 252),
-			);
+			$this->sendRequestWithCheck('VRFY ' . IDN::emailToUtf8($sUser) . ' SMTPUTF8', [250, 251, 252]);
 		} else {
 */
-		$this->sendRequestWithCheck('VRFY ' . IDN::emailToAscii($sUser),
-			array(250, 251, 252)
-		);
+		$this->sendRequestWithCheck('VRFY ' . IDN::emailToAscii($sUser), [250, 251, 252]);
 		return $this;
 	}
 
@@ -440,13 +432,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 		$sUser = \MailSo\Base\Utils::Trim($sUser);
 		// RFC 6531
 		if ($this->hasCapability('SMTPUTF8')) {
-			$this->sendRequestWithCheck('EXPN ' . IDN::emailToUtf8($sUser) . ' SMTPUTF8',
-				array(250, 251, 252)
-			);
+			$this->sendRequestWithCheck('EXPN ' . IDN::emailToUtf8($sUser) . ' SMTPUTF8', [250, 251, 252]);
 		} else {
-			$this->sendRequestWithCheck('EXPN ' .  IDN::emailToAscii($sUser),
-			array(250, 251, 252),
-		);
+			$this->sendRequestWithCheck('EXPN ' . IDN::emailToAscii($sUser), [250, 251, 252]);
+		}
 		return $this;
 	}
 */
@@ -480,27 +469,15 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @throws \InvalidArgumentException
 	 * @throws \MailSo\RuntimeException
 	 * @throws \MailSo\Net\Exceptions\*
+	 * @throws \MailSo\Smtp\Exceptions\*
 	 */
-	private function sendRequest(string $sCommand, bool $bSecureLog = false) : void
+	private function sendRequestWithCheck(string $sCommand, $mExpectCode, string $sErrorPrefix = '') : string
 	{
 		if (!\strlen(\trim($sCommand))) {
 			$this->writeLogException(new \InvalidArgumentException, \LOG_ERR);
 		}
-
 		$this->IsConnected(true);
-
-		$this->sendRaw($sCommand, true, $bSecureLog ? '********' : '');
-	}
-
-	/**
-	 * @throws \InvalidArgumentException
-	 * @throws \MailSo\RuntimeException
-	 * @throws \MailSo\Net\Exceptions\*
-	 * @throws \MailSo\Smtp\Exceptions\*
-	 */
-	private function sendRequestWithCheck(string $sCommand, $mExpectCode, bool $bSecureLog = false, string $sErrorPrefix = '') : string
-	{
-		$this->sendRequest($sCommand, $bSecureLog);
+		$this->sendRaw($sCommand, true, '');
 		$this->validateResponse($mExpectCode, $sErrorPrefix);
 		return empty($this->aResults[0]) ? '' : \trim(\substr($this->aResults[0], 4));
 	}
