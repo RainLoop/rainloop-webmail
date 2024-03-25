@@ -96,6 +96,7 @@ trait Status
 			return;
 		}
 		if (!isset($this->MESSAGES, $this->UIDNEXT)) {
+			\error_log("{$this->FullName} MESSAGES or UIDNEXT missing " . \print_r(\debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS),true));
 			return;
 		}
 		$this->etag = \md5('FolderHash/'. \implode('-', [
@@ -146,10 +147,8 @@ trait Status
 		$bResult = false;
 
 		// OK untagged responses
-		if (\is_array($oResponse->OptionalResponse)) {
-			if (\count($oResponse->OptionalResponse) > 1) {
-				$bResult = $this->setStatusItem($oResponse->OptionalResponse[0], $oResponse->OptionalResponse[1]);
-			}
+		if (\is_array($oResponse->OptionalResponse) && \count($oResponse->OptionalResponse) > 1) {
+			$bResult = $this->setStatusItem($oResponse->OptionalResponse[0], $oResponse->OptionalResponse[1]);
 		}
 
 		// untagged responses
@@ -157,7 +156,8 @@ trait Status
 			// LIST or STATUS command
 			if ('STATUS' === $oResponse->ResponseList[1]
 			 && isset($oResponse->ResponseList[3])
-			 && \is_array($oResponse->ResponseList[3])) {
+			 && \is_array($oResponse->ResponseList[3])
+			) {
 				$c = \count($oResponse->ResponseList[3]);
 				for ($i = 0; $i < $c; $i += 2) {
 					$bResult |= $this->setStatusItem(

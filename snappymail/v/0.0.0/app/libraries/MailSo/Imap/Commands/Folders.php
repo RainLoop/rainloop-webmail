@@ -214,8 +214,7 @@ trait Folders
 //			$oFolderInfo->SIZE = \max($oFolderInfo->SIZE, $oInfo->SIZE);
 //			$oFolderInfo->RECENT = \max(0, $oFolderInfo->RECENT, $oInfo->RECENT);
 			$oFolderInfo->hasStatus = $oInfo->hasStatus;
-			$oFolderInfo->generateETag($this);
-			return $oFolderInfo;
+			$oInfo = $oFolderInfo;
 		}
 
 		$oInfo->generateETag($this);

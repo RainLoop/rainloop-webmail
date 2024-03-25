@@ -621,21 +621,20 @@ class MailClient
 /*
 		$oSearchCriterias->fuzzy = $oParams->bSearchFuzzy && $this->oImapClient->hasCapability('SEARCH=FUZZY');
 */
-
 		$sSerializedHash = '';
 		$sSerializedLog = '';
-		if ($bUseCache) {
+		if ($bUseCache && $oInfo->etag) {
 			$sSerializedHash = 'Get'
 				. ($bReturnUid ? 'UIDS/' : 'IDS/')
 				. "{$oParams->sSort}/{$this->oImapClient->Hash()}/{$sFolderName}/{$oSearchCriterias}";
 			$sSerializedLog = "\"{$sFolderName}\" / {$oParams->sSort} / {$oSearchCriterias}";
-
 			$sSerialized = $oCacher->Get($sSerializedHash);
 			if (!empty($sSerialized)) {
 				$aSerialized = \json_decode($sSerialized, true);
-				if (\is_array($aSerialized) && isset($aSerialized['FolderHash'], $aSerialized['Uids']) &&
-					$oInfo->etag === $aSerialized['FolderHash'] &&
-					\is_array($aSerialized['Uids'])
+				if (\is_array($aSerialized)
+				 && isset($aSerialized['FolderHash'], $aSerialized['Uids'])
+				 && $oInfo->etag === $aSerialized['FolderHash']
+				 && \is_array($aSerialized['Uids'])
 				) {
 					$this->logWrite('Get Serialized '.($bReturnUid?'UIDS':'IDS').' from cache ('.$sSerializedLog.') [count:'.\count($aSerialized['Uids']).']');
 					return $aSerialized['Uids'];
