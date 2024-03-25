@@ -59,29 +59,28 @@ trait Messages
 
 		$oAccount = $this->initMailClientConnection();
 
+		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
+		if ($oSettingsLocal instanceof \RainLoop\Settings) {
+			$oParams->bHideDeleted = !empty($oSettingsLocal->GetConf('HideDeleted', 1));
+		}
+
+//		$oParams->bUseSort = $this->ImapClient()->hasCapability('SORT');
+		$oParams->bUseSort = true;
+
 		if ($sHash) {
-//			$sFolderHash = $this->MailClient()->FolderHash($oParams->sFolderName);
 			$oInfo = $this->ImapClient()->FolderStatusAndSelect($oParams->sFolderName);
 			$aRequestHash = \explode('-', $sHash);
-			$sFolderHash = $oInfo->etag;
-			$sHash = $oParams->hash() . '-' . $sFolderHash;
-			if ($aRequestHash[1] == $sFolderHash) {
-				$this->verifyCacheByKey($sHash);
+			$sNewHash = $oParams->hash() . '-' . $oInfo->etag;
+			if ($aRequestHash[1] == $oInfo->etag) {
+				$this->verifyCacheByKey($sNewHash);
 			}
+			$sHash = $sNewHash;
 		}
 
 		try
 		{
 			if ($this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'server_uids', false)) {
 				$oParams->oCacher = $this->Cacher($oAccount);
-			}
-
-//			$oParams->bUseSort = $this->ImapClient()->hasCapability('SORT');
-			$oParams->bUseSort = true;
-
-			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
-			if ($oSettingsLocal instanceof \RainLoop\Settings) {
-				$oParams->bHideDeleted = !empty($oSettingsLocal->GetConf('HideDeleted', 1));
 			}
 
 //			\ignore_user_abort(true);
