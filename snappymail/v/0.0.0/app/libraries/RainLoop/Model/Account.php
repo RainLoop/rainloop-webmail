@@ -70,12 +70,9 @@ abstract class Account implements \JsonSerializable
 		$this->oPassword = $oPassword;
 	}
 
-	public function SetSmtpPassword(
-		#[\SensitiveParameter]
-		string $sPassword
-	) : void
+	public function SetSmtpPassword(SensitiveString $oPassword) : void
 	{
-		$this->oSmtpPassword = new SensitiveString($sPassword);
+		$this->oSmtpPassword = $oPassword;
 	}
 
 	#[\ReturnTypeWillChange]
@@ -169,7 +166,7 @@ abstract class Account implements \JsonSerializable
 				// init smtp user/password
 				if (isset($aAccountHash['smtp'])) {
 					$oAccount->sSmtpLogin = $aAccountHash['smtp']['user'];
-					$oAccount->SetSmtpPassword($aAccountHash['smtp']['pass']);
+					$oAccount->SetSmtpPassword(new SensitiveString($aAccountHash['smtp']['pass']));
 				}
 			}
 		}

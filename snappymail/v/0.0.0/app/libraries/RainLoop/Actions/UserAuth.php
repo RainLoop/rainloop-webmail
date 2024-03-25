@@ -106,7 +106,6 @@ trait UserAuth
 		}
 
 		$this->Plugins()->RunHook('login.credentials', array(&$sEmail, &$sLogin, &$sPassword));
-		$this->logMask($sPassword);
 
 		$oPassword->setValue($sPassword);
 	}
