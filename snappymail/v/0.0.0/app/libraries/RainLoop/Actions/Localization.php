@@ -32,30 +32,8 @@ trait Localization
 	{
 		$aLang = \SnappyMail\L10n::getLanguages($bAdmin);
 
-		$aHelper = array(
-			'ar' => 'ar-SA',
-			'be' => 'be-BY',
-			'cn' => 'zh-CN',
-			'cs' => 'cs-CZ',
-			'da' => 'da-DK',
-			'el' => 'el-GR',
-			'et' => 'et-EE',
-			'fa' => 'fa-IR',
-			'ja' => 'ja-JP',
-			'ko' => 'ko-KR',
-			'nb' => 'nb-NO',
-			'no' => 'nb-NO',
-			'sl' => 'sl-SI',
-			'sv' => 'sv-SE',
-			'tw' => 'zh-TW',
-			'ua' => 'uk-UA',
-			'uk' => 'uk-UA',
-			'vi' => 'vi-VN',
-			'zh' => 'zh-CN'
-		);
-
-		$sLanguage = isset($aHelper[$sLanguage]) ? $aHelper[$sLanguage] : \strtr($sLanguage, '_', '-');
-		$sDefault  = isset($aHelper[$sDefault])  ? $aHelper[$sDefault]  : \strtr($sDefault, '_', '-');
+		$sLanguage = \strtr($sLanguage, '_', '-');
+		$sDefault  = \strtr($sDefault, '_', '-');
 
 		if (\in_array($sLanguage, $aLang)) {
 			return $sLanguage;
@@ -63,9 +41,6 @@ trait Localization
 
 		if (\str_contains($sLanguage, '-')) {
 			$sLanguage = \strtok($sLanguage, '-');
-			if (isset($aHelper[$sLanguage])) {
-				$sLanguage = $aHelper[$sLanguage];
-			}
 			if (\in_array($sLanguage, $aLang)) {
 				return $sLanguage;
 			}
@@ -76,9 +51,6 @@ trait Localization
 		}
 		if (\str_contains($sDefault, '-')) {
 			$sDefault = \strtok($sDefault, '-');
-			if (isset($aHelper[$sDefault])) {
-				$sDefault = $aHelper[$sDefault];
-			}
 			if (\in_array($sDefault, $aLang)) {
 				return $sDefault;
 			}
