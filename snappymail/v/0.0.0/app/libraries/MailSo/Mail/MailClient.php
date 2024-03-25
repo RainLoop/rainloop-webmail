@@ -502,9 +502,11 @@ class MailClient
 	{
 		$oFolderInfo = $oMessageCollection->FolderInfo;
 
+		$bThreadSort = $this->bThreadSort && $this->oImapClient->hasCapability('SORT');
+
 		$sSerializedHashKey = null;
 		if ($oCacher && $oCacher->IsInited()) {
-			$sSerializedHashKey = "ThreadsOldUids/{$oFolderInfo->etag}";
+			$sSerializedHashKey = "ThreadsOldUids/{$oFolderInfo->etag}/" . ($bThreadSort ? 'S' : 'N');
 			$sSerializedUids = $oCacher->Get($sSerializedHashKey);
 			if (!empty($sSerializedUids)) {
 				$aSerializedUids = \json_decode($sSerializedUids, true);
@@ -517,7 +519,7 @@ class MailClient
 
 		$aUids = [];
 
-		if ($this->bThreadSort && $this->oImapClient->hasCapability('SORT')) {
+		if ($bThreadSort) {
 			$oParams = new MessageListParams;
 			$oParams->sFolderName = $oFolderInfo->FullName;
 			$oParams->sSort = 'DATE';
