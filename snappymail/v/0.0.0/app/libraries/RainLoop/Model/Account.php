@@ -35,6 +35,7 @@ abstract class Account implements \JsonSerializable
 
 	public function IncLogin() : string
 	{
+//		return $this->oDomain->ImapSettings()->fixUsername($this->sLogin);
 		return $this->sLogin;
 	}
 
@@ -45,7 +46,8 @@ abstract class Account implements \JsonSerializable
 
 	public function OutLogin() : string
 	{
-		return $this->sSmtpLogin ?: $this->sLogin;
+//		return $this->oDomain->SmtpSettings()->fixUsername($this->sSmtpLogin ?: $this->sEmail);
+		return $this->sSmtpLogin ?: $this->sEmail;
 	}
 
 	public function Domain() : Domain
