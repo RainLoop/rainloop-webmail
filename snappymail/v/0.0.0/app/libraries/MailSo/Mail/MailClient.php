@@ -750,9 +750,7 @@ class MailClient
 		$oAllParams = clone $oParams;
 		$oAllParams->sSearch = '';
 		$oAllParams->oSequenceSet = null;
-		if ($message_list_limit && $message_list_limit < $oInfo->MESSAGES && !$oParams->iThreadUid
-		 && $oParams->oCacher && $oParams->oCacher->IsInited()
-		) {
+		if ($message_list_limit && !$oParams->iThreadUid && $oParams->oCacher && $oParams->oCacher->IsInited()) {
 			$aUids = $this->GetUids($oAllParams, $oInfo, true);
 			if ($aUids) {
 				$message_list_limit = 0;
@@ -768,9 +766,8 @@ class MailClient
 			}
 		}
 
-		if ($message_list_limit && $message_list_limit < $oInfo->MESSAGES && !$aUids) {
-//		if ((0 < $message_list_limit && $message_list_limit < $oInfo->MESSAGES)
-//		 || (!$this->oImapClient->hasCapability('SORT') && !$this->oImapClient->CapabilityValue('THREAD'))) {
+		if ($message_list_limit && !$aUids) {
+//		if ($message_list_limit || (!$this->oImapClient->hasCapability('SORT') && !$this->oImapClient->CapabilityValue('THREAD'))) {
 			// Don't use THREAD for speed
 			$oMessageCollection->Limited = true;
 			$this->logWrite('List optimization (count: '.$oInfo->MESSAGES.', limit:'.$message_list_limit.')');
@@ -823,7 +820,7 @@ class MailClient
 					// Remove all threaded UID's except the most recent of each thread
 					$threadedUids = [];
 					foreach ($aAllThreads as $aMap) {
-						unset($aMap[\array_key_last($aMap)]);
+						unset($aMap[\array_search(\max($aMap), $aMap)]);
 						$threadedUids = \array_merge($threadedUids, $aMap);
 					}
 					$aUids = \array_diff($aUids, $threadedUids);
