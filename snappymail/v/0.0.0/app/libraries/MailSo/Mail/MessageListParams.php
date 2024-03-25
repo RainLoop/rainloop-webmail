@@ -64,6 +64,7 @@ class MessageListParams
 			$this->bSearchFuzzy ? '1' : '0',
 			$this->bUseSort ? $this->sSort : '0',
 			$this->bUseThreads ? $this->iThreadUid : '',
+//			$this->oSequenceSet ? $this->oSequenceSet : '',
 			$this->iPrevUidNext
 		]));
 	}
