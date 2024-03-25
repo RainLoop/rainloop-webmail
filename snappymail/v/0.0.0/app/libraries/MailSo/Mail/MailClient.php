@@ -551,47 +551,7 @@ class MailClient
 		$aSortTypes = [];
 		if ($bUseSort) {
 			if ($oParams->sSort) {
-				/* TODO: Validate $oParams->sSort
-				 * /(REVERSE\s+)?(ARRIVAL|CC|DATE|FROM|SIZE|SUBJECT|TO|DISPLAYFROM|DISPLAYTO)/
-					ARRIVAL
-						Internal date and time of the message.  This differs from the
-						ON criteria in SEARCH, which uses just the internal date.
-
-					CC
-						[IMAP] addr-mailbox of the first "cc" address.
-
-					DATE
-						Sent date and time, as described in section 2.2.
-
-					FROM
-						[IMAP] addr-mailbox of the first "From" address.
-
-					REVERSE
-						Followed by another sort criterion, has the effect of that
-						criterion but in reverse (descending) order.
-						Note: REVERSE only reverses a single criterion, and does not
-						affect the implicit "sequence number" sort criterion if all
-						other criteria are identical.  Consequently, a sort of
-						REVERSE SUBJECT is not the same as a reverse ordering of a
-						SUBJECT sort.  This can be avoided by use of additional
-						criteria, e.g., SUBJECT DATE vs. REVERSE SUBJECT REVERSE
-						DATE.  In general, however, it's better (and faster, if the
-						client has a "reverse current ordering" command) to reverse
-						the results in the client instead of issuing a new SORT.
-
-					SIZE
-						Size of the message in octets.
-
-					SUBJECT
-						Base subject text.
-
-					TO
-						[IMAP] addr-mailbox of the first "To" address.
-
-					RFC 5957:
-						$this->oImapClient->hasCapability('SORT=DISPLAY')
-						DISPLAYFROM, DISPLAYTO
-				 */
+				// TODO: $oParams->sortValid($this->oImapClient);
 				$aSortTypes[] = $oParams->sSort;
 			}
 			if (!\str_contains($oParams->sSort, 'DATE')) {
@@ -615,7 +575,7 @@ class MailClient
 		$bReturnUid = true;
 		if ($oParams->oSequenceSet) {
 			$bReturnUid = $oParams->oSequenceSet->UID;
-			$oSearchCriterias->prepend($oParams->oSequenceSet);
+			$oSearchCriterias->prepend(($bReturnUid ? 'UID ' : '') . $oParams->oSequenceSet);
 		}
 
 /*
@@ -820,6 +780,7 @@ class MailClient
 					// Remove all threaded UID's except the most recent of each thread
 					$threadedUids = [];
 					foreach ($aAllThreads as $aMap) {
+						// Not the best solution as older messages could have higher UID
 						unset($aMap[\array_search(\max($aMap), $aMap)]);
 						$threadedUids = \array_merge($threadedUids, $aMap);
 					}
