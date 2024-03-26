@@ -79,8 +79,6 @@ trait User
 
 	public function DoAppDelayStart() : array
 	{
-		$this->Plugins()->RunHook('service.app-delay-start-begin');
-
 		Utils::UpdateConnectionToken();
 
 		$bMainCache = false;
@@ -129,8 +127,6 @@ trait User
 			$this->FilesProvider()->GC(48);
 			$this->logWrite('Files GC: End');
 		}
-
-		$this->Plugins()->RunHook('service.app-delay-start-end');
 
 		return $this->TrueResponse();
 	}

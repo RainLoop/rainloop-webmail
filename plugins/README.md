@@ -411,12 +411,6 @@ and called in JavaScript using rl.pluginRemoteRequest().
 		string $sName
 		mixed &$mResult
 
-### service.app-delay-start-begin
-	no params
-
-### service.app-delay-start-end
-	no params
-
 # JavaScript Events
 
 ## mailbox
