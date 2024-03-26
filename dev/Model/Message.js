@@ -511,7 +511,7 @@ export class MessageModel extends AbstractModel {
 					hasImages = true;
 				},
 				attr = 'data-x-src',
-				src, useProxy = !!SettingsGet('useLocalProxyForExternalImages');
+				src, useProxy = !!SettingsGet('proxyExternalImages');
 			body.querySelectorAll('img[' + attr + ']').forEach(node => {
 				src = node.getAttribute(attr);
 				if (isValid(src)) {

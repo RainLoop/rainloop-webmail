@@ -484,16 +484,12 @@ export class FolderModel extends AbstractModel {
 				return null;
 			},
 
-			hasSubscribedUnreadMessagesSubfolders: () =>
-				!!this.subFolders().find(
-					folder => folder.unreadEmails() | folder.hasSubscribedUnreadMessagesSubfolders()
-				)
-/*
-				!!this.subFolders().filter(
-					folder => folder.unreadEmails() | folder.hasSubscribedUnreadMessagesSubfolders()
-				).length
-*/
-			,href: () => this.canBeSelected() && mailBox(this.fullNameHash)
+			hasUnreadInSub: () =>
+				this.subFolders().some(
+					folder => folder.unreadEmails() | folder.hasUnreadInSub()
+				),
+
+			href: () => this.canBeSelected() && mailBox(this.fullNameHash)
 		});
 	}
 

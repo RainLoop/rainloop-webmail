@@ -32,6 +32,14 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
 		this.hourCycle = LanguageStore.hourCycle;
+/*
+		// 'THREAD=REFS', 'THREAD=REFERENCES', 'THREAD=ORDEREDSUBJECT'
+		this.threadModes = ko.observableArray();
+		AppUserStore.capabilities.forEach(capa =>
+			capa.startsWith('THREAD=') && this.threadModes.push(capa.slice(7))
+		);
+		this.threadModes.sort((a, b) => a.length - b.length);
+*/
 
 		this.soundNotification = SMAudio.notifications;
 		this.notificationSound = ko.observable(SettingsGet('NotificationSound'));

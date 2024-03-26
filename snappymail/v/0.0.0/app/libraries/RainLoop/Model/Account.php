@@ -17,9 +17,9 @@ abstract class Account implements \JsonSerializable
 
 	private ?SensitiveString $oPassword = null;
 
-	private string $sSmtpLogin = '';
+	private string $sSmtpUser = '';
 
-	private ?SensitiveString $oSmtpPassword = null;
+	private ?SensitiveString $oSmtpPass = null;
 
 	private Domain $oDomain;
 
@@ -46,8 +46,8 @@ abstract class Account implements \JsonSerializable
 
 	public function OutLogin() : string
 	{
-//		return $this->oDomain->SmtpSettings()->fixUsername($this->sSmtpLogin ?: $this->sEmail);
-		return $this->sSmtpLogin ?: $this->sEmail;
+//		return $this->oDomain->SmtpSettings()->fixUsername($this->sSmtpUser ?: $this->sEmail);
+		return $this->sSmtpUser ?: $this->sEmail;
 	}
 
 	public function Domain() : Domain
@@ -72,7 +72,7 @@ abstract class Account implements \JsonSerializable
 
 	public function SetSmtpPassword(SensitiveString $oPassword) : void
 	{
-		$this->oSmtpPassword = $oPassword;
+		$this->oSmtpPass = $oPassword;
 	}
 
 	#[\ReturnTypeWillChange]
@@ -84,10 +84,10 @@ abstract class Account implements \JsonSerializable
 			'pass'  => $this->IncPassword(),
 			'name' => $this->sName
 		];
-		if ($this->sSmtpLogin && $this->oSmtpPassword) {
+		if ($this->sSmtpUser && $this->oSmtpPass) {
 			$result['smtp'] = [
-				'user' => $this->sSmtpLogin,
-				'pass' => $this->oSmtpPassword->getValue()
+				'user' => $this->sSmtpUser,
+				'pass' => $this->oSmtpPass->getValue()
 			];
 		}
 		return $result;
@@ -165,7 +165,7 @@ abstract class Account implements \JsonSerializable
 				}
 				// init smtp user/password
 				if (isset($aAccountHash['smtp'])) {
-					$oAccount->sSmtpLogin = $aAccountHash['smtp']['user'];
+					$oAccount->sSmtpUser = $aAccountHash['smtp']['user'];
 					$oAccount->SetSmtpPassword(new SensitiveString($aAccountHash['smtp']['pass']));
 				}
 			}
@@ -214,11 +214,11 @@ abstract class Account implements \JsonSerializable
 		$oSmtpClient->Connect($oSettings);
 		$oPlugins->RunHook('smtp.after-connect', array($this, $oSmtpClient, $oSettings));
 /*
-		if ($this->oDomain->OutAskCredentials() && !($this->oSmtpPassword && $this->sSmtpLogin)) {
+		if ($this->oDomain->OutAskCredentials() && !($this->oSmtpPass && $this->sSmtpUser)) {
 			throw new RequireCredentialsException
 		}
 */
-		$oSettings->passphrase = $this->oSmtpPassword ?: $this->oPassword;
+		$oSettings->passphrase = $this->oSmtpPass ?: $this->oPassword;
 		return $this->netClientLogin($oSmtpClient, $oPlugins);
 	}
 
