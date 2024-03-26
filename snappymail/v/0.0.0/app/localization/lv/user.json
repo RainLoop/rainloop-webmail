@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "Slēpt ziņojumus, kas atzīmēti dzēšanai",
 		"USE_CHECKBOXES_IN_LIST": "Rādīt checkboxes sarakstā",
 		"USE_THREADS": "Lietot saraksti",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "Atbildes ziņojumus ielikt mapē kurā atrodas vēstule uz kuru tiek atbildēts.",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",

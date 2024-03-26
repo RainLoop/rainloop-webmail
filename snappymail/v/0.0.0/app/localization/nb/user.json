@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "Skjul meldinger som er merket for sletting",
 		"USE_CHECKBOXES_IN_LIST": "Vis avkrysningsbokser i liste",
 		"USE_THREADS": "Bruk tråder",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "Legg svar i samme mappe som opprinnelig melding",
 		"PREFER_HTML": "Foretrekk HTML fremfor",
 		"PREFER_HTML_INFO": "Meldinger kan ankomme i både HTML og ren tekst. Dette valget styrer hvilken av dem du vil se.",

@@ -104,6 +104,10 @@
 			}"></div>
 		</div>
 	</div>
+	<div class="control-group" data-bind="visible: useThreads">
+		<label data-i18n="SETTINGS_GENERAL/THREAD_ALGORITHM"></label>
+		<select data-bind="options: threadAlgorithms, value: threadAlgorithm"></select>
+	</div>
 
 	<div class="legend" data-i18n="SHORTCUTS_HELP/TAB_COMPOSE"></div>
 	<div class="control-group">

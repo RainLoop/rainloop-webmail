@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "隱藏標示為已刪除的郵件",
 		"USE_CHECKBOXES_IN_LIST": "在清單中顯示核取方塊",
 		"USE_THREADS": "使用對話",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "放置回覆的郵件在其所在資料夾",
 		"PREFER_HTML": "偏好 HTML",
 		"PREFER_HTML_INFO": "部分郵件會有兩種格式。此選項旨在設定郵件應優先顯示 HTML 格式，或純文字格式。",

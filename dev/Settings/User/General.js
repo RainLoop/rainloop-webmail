@@ -15,6 +15,7 @@ import { showScreenPopup } from 'Knoin/Knoin';
 
 import { AppUserStore } from 'Stores/User/App';
 import { LanguageStore } from 'Stores/Language';
+import { FolderUserStore } from 'Stores/User/Folder';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import { IdentityUserStore } from 'Stores/User/Identity';
 import { NotificationUserStore } from 'Stores/User/Notification';
@@ -32,14 +33,6 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
 		this.hourCycle = LanguageStore.hourCycle;
-/*
-		// 'THREAD=REFS', 'THREAD=REFERENCES', 'THREAD=ORDEREDSUBJECT'
-		this.threadModes = ko.observableArray();
-		AppUserStore.capabilities.forEach(capa =>
-			capa.startsWith('THREAD=') && this.threadModes.push(capa.slice(7))
-		);
-		this.threadModes.sort((a, b) => a.length - b.length);
-*/
 
 		this.soundNotification = SMAudio.notifications;
 		this.notificationSound = ko.observable(SettingsGet('NotificationSound'));
@@ -49,8 +42,15 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 		this.isDesktopNotificationAllowed = NotificationUserStore.allowed;
 
 		this.threadsAllowed = AppUserStore.threadsAllowed;
+		// 'THREAD=REFS', 'THREAD=REFERENCES', 'THREAD=ORDEREDSUBJECT'
+		this.threadAlgorithms = ko.observableArray();
+		FolderUserStore.capabilities.forEach(capa =>
+			capa.startsWith('THREAD=') && this.threadAlgorithms.push(capa.slice(7))
+		);
+		this.threadAlgorithms.sort((a, b) => a.length - b.length);
+		this.threadAlgorithm = SettingsUserStore.threadAlgorithm;
 
-		['useThreads',
+		['useThreads', 'threadAlgorithm',
 		 // These use addSetting()
 		 'layout', 'messageReadDelay', 'messagesPerPage', 'checkMailInterval',
 		 'editorDefaultType', 'editorWysiwyg', 'msgDefaultAction', 'maxBlockquotesLevel',
@@ -152,6 +152,11 @@ export class UserSettingsGeneral extends AbstractViewSettings {
 			useThreads: value => {
 				MessagelistUserStore([]);
 				Remote.saveSetting('UseThreads', value);
+			},
+
+			threadAlgorithm: value => {
+				MessagelistUserStore([]);
+				Remote.saveSetting('threadAlgorithm', value);
 			},
 
 			checkMailInterval: () => {

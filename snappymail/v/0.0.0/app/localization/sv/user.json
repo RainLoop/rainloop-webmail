@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "Dölj meddelanden som är markerade för radering",
 		"USE_CHECKBOXES_IN_LIST": "Visa kryssrutor i listan",
 		"USE_THREADS": "Använd trådar",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "Placera svar i samma mapp som mottagna meddelandet",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",

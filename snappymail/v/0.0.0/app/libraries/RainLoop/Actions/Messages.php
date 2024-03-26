@@ -36,8 +36,13 @@ trait Messages
 				$oParams->iPrevUidNext = $aValues['uidNext'];
 			}
 			$oParams->bUseThreads = !empty($aValues['useThreads']);
-			if ($oParams->bUseThreads && isset($aValues['threadUid'])) {
-				$oParams->iThreadUid = $aValues['threadUid'];
+			if ($oParams->bUseThreads) {
+				if (isset($aValues['threadUid'])) {
+					$oParams->iThreadUid = $aValues['threadUid'];
+				}
+				if (isset($aValues['threadAlgorithm'])) {
+					$oParams->sThreadAlgorithm = $aValues['threadAlgorithm'];
+				}
 			}
 		} else {
 			// POST
@@ -50,6 +55,7 @@ trait Messages
 			$oParams->bUseThreads = !empty($this->GetActionParam('useThreads', '0'));
 			if ($oParams->bUseThreads) {
 				$oParams->iThreadUid = $this->GetActionParam('threadUid', '');
+				$oParams->sThreadAlgorithm = $this->GetActionParam('threadAlgorithm', '');
 			}
 		}
 

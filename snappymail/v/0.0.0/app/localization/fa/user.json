@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "پنهان کردن پیام های علامت گذاری شده برای حذف",
 		"USE_CHECKBOXES_IN_LIST": "نمایش چک‌باکس در لیست",
 		"USE_THREADS": "استفاده از حالت موضوعی",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": " جوابها را در پوشه‌ای که پیامها در آن جواب داده شده است قراردهید",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",

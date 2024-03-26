@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "Nascondi i messaggi contrassegnati per l'eliminazione",
 		"USE_CHECKBOXES_IN_LIST": "Mostra le caselle di spunta nella lista",
 		"USE_THREADS": "Usa le conversazioni",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "Posiziona le risposte nella cartella del messaggio a cui si è risposto",
 		"PREFER_HTML": "Usa HTML predefinito anziché formato testo",
 		"PREFER_HTML_INFO": "Il messaggio a volte contiene entrambi i formati. Questa opzione agisce sulla visualizzazione del messaggio in HTML o della versione in formato testo.",

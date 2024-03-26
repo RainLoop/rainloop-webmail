@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "Ocultar mensajes marcados para borrar",
 		"USE_CHECKBOXES_IN_LIST": "Mostrar casillas de verificación en la lista",
 		"USE_THREADS": "Usar hilos de conversación",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "Coloque las respuestas en la carpeta del mensaje que esta respondiendo.",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",

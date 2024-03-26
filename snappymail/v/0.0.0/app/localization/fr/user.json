@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "Masquer les messages marqués pour suppression",
 		"USE_CHECKBOXES_IN_LIST": "Afficher des cases à cocher dans la liste",
 		"USE_THREADS": "Regrouper en conversations",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "Placer les réponses dans le dossier du message",
 		"PREFER_HTML": "Préférer le HTML au texte brut",
 		"PREFER_HTML_INFO": "Les messages arrivent parfois dans les deux formats. Cette option contrôle si vous voulez que la partie HTML ou la partie texte brut soit affichée.",

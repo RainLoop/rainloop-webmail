@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "削除のマークが付いたメッセージを非表示にする",
 		"USE_CHECKBOXES_IN_LIST": "リストにチェックボックスを表示",
 		"USE_THREADS": "スレッドを使う",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "返信したメッセージのフォルダに送信メールを置く",
 		"PREFER_HTML": "プレーンテキストよりHTMLを優先する",
 		"PREFER_HTML_INFO": "メッセージがHTMLとプレーンテキストの両方の形式を含むことがあります。このオプションはそのような場合にどちらの形式を表示するかを制御します。",

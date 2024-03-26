@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "A törlésre megjelölt üzenetek elrejtése",
 		"USE_CHECKBOXES_IN_LIST": "Jelölőnégyzetek megjelenítése a listában",
 		"USE_THREADS": "Szálak használata",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "Válaszüzenetek elhelyezése az eredeti üzenet mappájában",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",

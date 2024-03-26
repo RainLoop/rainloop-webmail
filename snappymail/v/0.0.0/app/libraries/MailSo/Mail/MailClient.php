@@ -420,7 +420,7 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	protected function ThreadsMap(MessageCollection $oMessageCollection, ?\MailSo\Cache\CacheClient $oCacher, bool $bBackground = false) : array
+	protected function ThreadsMap(string $sAlgorithm, MessageCollection $oMessageCollection, ?\MailSo\Cache\CacheClient $oCacher, bool $bBackground = false) : array
 	{
 		$oFolderInfo = $oMessageCollection->FolderInfo;
 		$sFolderName = $oFolderInfo->FullName;
@@ -445,8 +445,8 @@ class MailClient
 */
 		$sSerializedHashKey = null;
 		if ($oCacher && $oCacher->IsInited()) {
-			$sSerializedHashKey = "ThreadsMap/{$sSearch}/{$oFolderInfo->etag}";
-//			$sSerializedHashKey = "ThreadsMap/{$sSearch}/{$iThreadLimit}/{$oFolderInfo->etag}";
+			$sSerializedHashKey = "ThreadsMap/{$sAlgorithm}/{$sSearch}/{$oFolderInfo->etag}";
+//			$sSerializedHashKey = "ThreadsMap/{$sAlgorithm}/{$sSearch}/{$iThreadLimit}/{$oFolderInfo->etag}";
 
 			$sSerializedUids = $oCacher->Get($sSerializedHashKey);
 			if (!empty($sSerializedUids)) {
@@ -463,7 +463,7 @@ class MailClient
 				$this->logWrite('Set ThreadsMap() as background task ("'.$sFolderName.'" / '.$sSearch.')');
 				\SnappyMail\Shutdown::add(function($oMailClient, $oFolderInfo, $oCacher) {
 					$oFolderInfo->MESSAGES = 0;
-					$oMailClient->ThreadsMap($oMessageCollection, $oCacher, true);
+					$oMailClient->ThreadsMap($sAlgorithm, $oMessageCollection, $oCacher, true);
 				}, [$this, $oFolderInfo, $oCacher]);
 				return [];
 			}
@@ -475,7 +475,7 @@ class MailClient
 		$aResult = array();
 		try
 		{
-			foreach ($this->oImapClient->MessageThread($sSearch) as $mItem) {
+			foreach ($this->oImapClient->MessageThread($sSearch, $sAlgorithm) as $mItem) {
 				// Flatten to single level
 				$aMap = [];
 				\array_walk_recursive($mItem, function($a) use (&$aMap) { $aMap[] = $a; });
@@ -534,6 +534,18 @@ class MailClient
 					$aUids = \array_merge($aUids, $aThreadUIDs);
 				}
 			}
+/*
+			// Idea to use one SORT for all threads instead of per thread
+			$aSortUids = \array_reduce($aAllThreads, 'array_merge', []);
+			$oParams->oSequenceSet = new \MailSo\Imap\SequenceSet($aSortUids);
+			$aSortUids = $this->GetUids($oParams, $oFolderInfo);
+			foreach ($aAllThreads as $aThreadUIDs) {
+				$aThreadUIDs = \array_intersect($aSortUids, $aThreadUIDs);
+				// Remove the most recent UID
+				\array_pop($aThreadUIDs);
+				$aUids = \array_merge($aUids, $aThreadUIDs);
+			}
+*/
 		} else {
 			// Not the best solution to remove the most recent UID,
 			// as older messages could have a higher UID
@@ -783,7 +795,7 @@ class MailClient
 				\SnappyMail\Shutdown::add(function($oMailClient, $oAllParams, $oInfo, $oMessageCollection) {
 					$oMailClient->GetUids($oAllParams, $oInfo);
 					if ($oAllParams->bUseThreads) {
-						$oMailClient->ThreadsMap($oMessageCollection, $oAllParams->oCacher, true);
+						$oMailClient->ThreadsMap($oAllParams->sThreadAlgorithm, $oMessageCollection, $oAllParams->oCacher, true);
 					}
 				}, [$this, $oAllParams, $oInfo, $oMessageCollection]);
 			}
@@ -825,7 +837,7 @@ class MailClient
 			}
 
 			if ($oParams->bUseThreads) {
-				$aAllThreads = $this->ThreadsMap($oMessageCollection, $oParams->oCacher);
+				$aAllThreads = $this->ThreadsMap($oParams->sThreadAlgorithm, $oMessageCollection, $oParams->oCacher);
 //				$iThreadLimit = $this->oImapClient->Settings->thread_limit;
 				if ($oParams->iThreadUid) {
 					// Only show the selected thread messages

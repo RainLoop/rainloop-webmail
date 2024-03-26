@@ -502,11 +502,16 @@ trait Messages
 	 * @throws \MailSo\Net\Exceptions\*
 	 * @throws \MailSo\Imap\Exceptions\*
 	 */
-	public function MessageThread(string $sSearchCriterias, bool $bReturnUid = true) : iterable
+	public function MessageThread(string $sSearchCriterias, string $sAlgorithm = '', $bReturnUid = true) : iterable
 	{
 		$oThread = new \MailSo\Imap\Requests\THREAD($this);
 		$oThread->sCriterias = $sSearchCriterias ?: 'ALL';
 		$oThread->bUid = $bReturnUid;
+		try {
+			$sAlgorithm && $oThread->setAlgorithm($sAlgorithm);
+		} catch (\Throwable $e) {
+			// ignore
+		}
 		yield from $oThread->SendRequestIterateResponse();
 	}
 

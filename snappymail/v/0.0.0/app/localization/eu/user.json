@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "Ezkutatu ezabatzeko markatutako mezuak",
 		"USE_CHECKBOXES_IN_LIST": "Bistaratu kontrol laukiak zerrendan",
 		"USE_THREADS": "Erabili hariak",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "Kokatu erantzunak erantzundako mezuaren karpeta berean",
 		"PREFER_HTML": "Lehenetsi HTMLa testu arruntari",
 		"PREFER_HTML_INFO": "Mezuak batzuetan bi formatuetan datoz. Aukera honekin HTML edo testu arrunt partea erakustea aukera dezakezu.",

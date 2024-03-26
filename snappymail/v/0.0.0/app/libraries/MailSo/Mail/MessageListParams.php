@@ -16,7 +16,8 @@ class MessageListParams
 	public string
 		$sFolderName,
 		$sSearch = '',
-		$sSort = '';
+		$sSort = '',
+		$sThreadAlgorithm = '';
 
 	public ?\MailSo\Cache\CacheClient
 		$oCacher = null;
@@ -64,6 +65,7 @@ class MessageListParams
 			$this->bSearchFuzzy ? '1' : '0',
 			$this->bUseSort ? $this->sSort : '0',
 			$this->bUseThreads ? $this->iThreadUid : '',
+			$this->bUseThreads ? $this->sThreadAlgorithm : '',
 //			$this->oSequenceSet ? $this->oSequenceSet : '',
 			$this->iPrevUidNext
 		]));

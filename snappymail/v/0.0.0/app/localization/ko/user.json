@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "삭제 표시된 메시지 숨기기",
 		"USE_CHECKBOXES_IN_LIST": "목록에서 확인상자 표시",
 		"USE_THREADS": "대화형 목록 사용",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "회신 메시지를 원본과 동일한 폴더 위치에 저장",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",

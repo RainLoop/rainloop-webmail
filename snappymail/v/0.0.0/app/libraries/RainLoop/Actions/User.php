@@ -212,6 +212,7 @@ trait User
 		$this->setSettingsFromParams($oSettings, 'Resizer5Height', 'int');
 
 		$this->setSettingsFromParams($oSettingsLocal, 'UseThreads', 'bool');
+		$this->setSettingsFromParams($oSettingsLocal, 'threadAlgorithm', 'string');
 		$this->setSettingsFromParams($oSettingsLocal, 'ReplySameFolder', 'bool');
 		$this->setSettingsFromParams($oSettingsLocal, 'HideUnsubscribed', 'bool');
 		$this->setSettingsFromParams($oSettingsLocal, 'HideDeleted', 'bool');

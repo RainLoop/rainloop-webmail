@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "Ukryj wiadomości oznaczone do usunięcia",
 		"USE_CHECKBOXES_IN_LIST": "Pokazuj pola zaznaczenia na listach",
 		"USE_THREADS": "Używaj wątków",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "Umieść odpowiedzi w folderach, z których pochodzą wiadomości",
 		"PREFER_HTML": "Preferuj HTML względem zwykłego tekstu",
 		"PREFER_HTML_INFO": "Wiadomości często przesyłane są w obu formatach. Ta opcja określa, czy ma być wyświetlana część HTML, czy zwykły tekst.",

@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "Zum Löschen markierte Nachrichten ausblenden",
 		"USE_CHECKBOXES_IN_LIST": "Kontrollkästchen in der Liste anzeigen",
 		"USE_THREADS": "Als Unterhaltungen anzeigen",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "Antworten im gleichen Ordner wie die Nachricht, auf die geantwortet wurde, abspeichern",
 		"PREFER_HTML": "HTML gegenüber Klartext bevorzugen",
 		"PREFER_HTML_INFO": "Nachrichten können manchmal in beiden Formaten empfangen werden. Diese Option setzt, ob die Nachricht standardmäßig in HTML oder als Klartext angezeigt wird.",

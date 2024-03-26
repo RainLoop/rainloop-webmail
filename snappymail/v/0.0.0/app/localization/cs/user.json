@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "Skrýt zprávy označené ke smazání",
 		"USE_CHECKBOXES_IN_LIST": "Zobrazení zaškrtávacích políček v seznamu",
 		"USE_THREADS": "Zobrazit jako konverzace",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "Ukládat odpovědi do složky se zprávou, které se týkají",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",

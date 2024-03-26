@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "Приховати повідомлення, позначені для видалення",
 		"USE_CHECKBOXES_IN_LIST": "Показувати чекбокси у списках",
 		"USE_THREADS": "Згортати листи у листуваннях",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "Поміщати відповіді в ту ж теку, де знаходиться оригінал",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",

@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "إخفاء الرسائل المحددة للحذف",
 		"USE_CHECKBOXES_IN_LIST": "عرض مربعات التحديد في القائمة",
 		"USE_THREADS": "إستخدام المواضيع",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "ضع الردود في مجلد الرسالة التي يتم الرد عليها",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",

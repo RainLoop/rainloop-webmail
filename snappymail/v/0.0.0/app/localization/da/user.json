@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "Skjul beskeder, der er markeret til sletning",
 		"USE_CHECKBOXES_IN_LIST": "Vis afkrydsningsfelt i oversigten",
 		"USE_THREADS": "Brug samtaler",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "Placer svar i samme mappe som oprindelig meddelelse",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",

@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "Slėpti pranešimus, pažymėtus ištrinti",
 		"USE_CHECKBOXES_IN_LIST": "Rodyti žymėjimo langelius sąraše",
 		"USE_THREADS": "Naudoti gijas",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "Atsakymus dėti į katalogą, kuriame yra pradinė žinutė",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",

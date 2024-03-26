@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "Sembunyikan pesan yang ditandai untuk dihapus",
 		"USE_CHECKBOXES_IN_LIST": "Tampilkan centang dalam daftar",
 		"USE_THREADS": "Gunakan tread",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "Tempatkan pesan balasan di folder pesan yang dibalas",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",

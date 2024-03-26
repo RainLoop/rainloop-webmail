@@ -313,6 +313,7 @@ MessagelistUserStore.reload = (bDropPagePosition = false, bDropCurrentFolderCach
 
 	if (AppUserStore.threadsAllowed() && SettingsUserStore.useThreads()) {
 		params.useThreads = 1;
+		params.threadAlgorithm = SettingsUserStore.threadAlgorithm();
 		params.threadUid = MessagelistUserStore.threadUid();
 	} else {
 		params.threadUid = 0;

@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "Hide messages marked for deletion",
 		"USE_CHECKBOXES_IN_LIST": "Display checkboxes in list",
 		"USE_THREADS": "Use threads",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "Place replies in the folder of the message being replied to",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",

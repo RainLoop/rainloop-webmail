@@ -455,6 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "Peida kustutamiseks märgitud kirjad",
 		"USE_CHECKBOXES_IN_LIST": "Kuva nimekirjas valikukastikesi",
 		"USE_THREADS": "Kasuta vestluse lõimesid",
+		"THREAD_ALGORITHM": "Threads algorithm",
 		"REPLY_SAME_FOLDER": "Pane vastused samasse kausta, kus asub vastatud kiri",
 		"PREFER_HTML": "Prefer HTML to plain text",
 		"PREFER_HTML_INFO": "Messages sometimes come in both formats. This option controls whether you want the HTML part or the plain text part to be displayed.",
