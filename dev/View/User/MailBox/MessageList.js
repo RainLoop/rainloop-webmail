@@ -162,11 +162,11 @@ export class MailMessageList extends AbstractViewRight {
 				let list = [], current, sort = FolderUserStore.sortMode() || 'DATE';
 				if (sort.includes('FROM')) {
 					MessagelistUserStore.forEach(msg => {
-						let email = msg.from[0].email;
+						let email = msg.from[0]?.email;
 						if (!current || email != current.id) {
 							current = {
 								id: email,
-								label: msg.from[0].toLine(),
+								label: msg.from[0]?.toLine(),
 								search: 'from=' + email,
 								messages: []
 							};
