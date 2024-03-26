@@ -60,7 +60,17 @@ $languages = ['<option></option>'];
 foreach (glob("{$root}/*", GLOB_ONLYDIR) as $dir) {
 	$name = basename($dir);
 	if ('en' !== $name) {
-		$languages[] = "<option value='{$name}'".($lang == $name ? ' selected' : '').">{$name}</option>";
+		$languages[$name] = "<option value='{$name}'".($lang == $name ? ' selected' : '').">{$name}</option>";
+	}
+}
+ksort($languages);
+
+$lang_names = json_decode(file_get_contents("{$root}/langs.json"), true)['LANGS_NAMES_EN'];
+
+$other_langs = [];
+foreach ($lang_names as $key => $name) {
+	if ('en' !== $key && !isset($languages[$key])) {
+		$other_langs[$key] = "<option value='{$key}'".($lang == $key ? ' selected' : '').">{$name}</option>";
 	}
 }
 
@@ -98,14 +108,16 @@ echo '<!DOCTYPE html>
 	}
 	</style>
 </head><body>
-<h1>Translate: <select onchange="location.href=\'?lang=\'+this.value">'.implode('',$languages).'</select></h1>
+<h1>Translate: <select onchange="location.href=\'?lang=\'+this.value">'.implode('',$languages).'
+	<optgroup label="Not translated">'.implode('',$other_langs).'</optgroup>
+</select></h1>
 <form action="" method="post">
 <input type="checkbox" id="untranslated"> Show untranslated only
 <table>
 <thead>
 	<tr>
 		<th>en</th>
-		<th>'.($lang ?: '<input name="lang" required="" pattern="[a-z]{2}(-[A-Z]{2})?">').'</th>
+		<th>'.($lang ? "{$lang_names[$lang]} ({$lang})" : '<input name="lang" required="" pattern="[a-z]{2}(-[A-Z]{2})?">').'</th>
 	</tr>
 </thead>';
 foreach ($en as $name => $sections) {
