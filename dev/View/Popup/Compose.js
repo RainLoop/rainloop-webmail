@@ -508,8 +508,10 @@ export class ComposePopupView extends AbstractViewPopup {
 								} else {
 									params.signPassphrase && Passphrases.delete(identity);
 									this.sendError(true);
-									this.sendErrorDesc(getNotification(iError, data?.ErrorMessage)
-										|| getNotification(Notifications.CantSendMessage));
+									this.sendErrorDesc(
+										getNotification(iError, data?.ErrorMessage, Notifications.CantSendMessage)
+										+ "\n" + data?.ErrorMessageAdditional
+									);
 								}
 							} else {
 								if (arrayLength(this.aDraftInfo) > 0) {
