@@ -13,44 +13,15 @@ abstract class Autoconfig
 		$domain = \MailSo\Base\Utils::getEmailAddressDomain($emailaddress);
 //		$domain = \SnappyMail\IDN::toAscii($domain);
 		$domain = \strtolower(\idn_to_ascii($domain));
-		// First try
-		$autoconfig = static::resolve($domain, $emailaddress);
-		if ($autoconfig) {
-			return $autoconfig;
-		}
-		// Else try MX
-		$suffixes = static::publicsuffixes();
-		$hostnames = [];
-		foreach (\SnappyMail\DNS::MX($domain) as $hostname) {
-			// Extract only the second-level domain from the MX hostname
-			$mxbasedomain = \explode('.', $hostname);
-			$i = -2;
-			while (\in_array(\implode('.', \array_slice($mxbasedomain, $i)), $suffixes)) {
-				--$i;
-			}
-			$mxbasedomain = \implode('.', \array_slice($mxbasedomain, $i));
-			if ($mxbasedomain) {
-				$mxfulldomain = $mxbasedomain;
-				if (\substr_count($hostname, '.') > \substr_count($mxbasedomain, '.')) {
-					// Remove the first component from the MX hostname
-					$mxfulldomain = \explode('.', $hostname, 2)[1];
-				}
-				$hostnames[$mxfulldomain] = $mxbasedomain;
-			}
-		}
-		foreach ($hostnames as $mxfulldomain => $mxbasedomain) {
-			if ($domain != $mxfulldomain) {
-				$autoconfig = static::resolve($mxfulldomain, $emailaddress);
-				if (!$autoconfig && $mxfulldomain != $mxbasedomain && $domain != $mxbasedomain) {
-					$autoconfig = static::resolve($mxbasedomain, $emailaddress);
-				}
-				if ($autoconfig) {
-					return $autoconfig;
-				}
-			}
-		}
-		// Else try Microsoft autodiscover
-		return static::autodiscover($domain);
+		return
+			// First try autoconfig
+			static::resolve($domain, $emailaddress)
+			// Else try MX, but it is mostly useless
+//			?: static::mx($domain, $emailaddress)
+			// Else try Microsoft autodiscover
+			?: static::autodiscover($domain)
+			// Else try DNS SRV
+			?: static::srv($domain);
 	}
 
 	private static function resolve(string $domain, string $emailaddress) : ?array
@@ -114,6 +85,78 @@ abstract class Autoconfig
 			$oCache->Set('public_suffix_list', \json_encode([$list, time() + 86400]));
 		}
 		return $list ?: [];
+	}
+
+	private static function mx(string $domain, string $emailaddress) : ?array
+	{
+		$suffixes = static::publicsuffixes();
+		foreach (\SnappyMail\DNS::MX($domain) as $hostname) {
+			// Extract only the second-level domain from the MX hostname
+			$mxbasedomain = \explode('.', $hostname);
+			$i = -2;
+			while (\in_array(\implode('.', \array_slice($mxbasedomain, $i)), $suffixes)) {
+				--$i;
+			}
+			$mxbasedomain = \implode('.', \array_slice($mxbasedomain, $i));
+			if ($mxbasedomain) {
+				$mxfulldomain = $mxbasedomain;
+				if (\substr_count($hostname, '.') > \substr_count($mxbasedomain, '.')) {
+					// Remove the first component from the MX hostname
+					$mxfulldomain = \explode('.', $hostname, 2)[1];
+				}
+				$hostnames[$mxfulldomain] = $mxbasedomain;
+			}
+		}
+		foreach ($hostnames as $mxfulldomain => $mxbasedomain) {
+			if ($domain != $mxfulldomain) {
+				$autoconfig = static::resolve($mxfulldomain, $emailaddress);
+				if (!$autoconfig && $mxfulldomain != $mxbasedomain && $domain != $mxbasedomain) {
+					$autoconfig = static::resolve($mxbasedomain, $emailaddress);
+				}
+				if ($autoconfig) {
+					return $autoconfig;
+				}
+			}
+		}
+	}
+
+	/**
+	 * https://datatracker.ietf.org/doc/html/rfc6186
+	 * https://datatracker.ietf.org/doc/html/rfc8314
+	 */
+	private static function srv(string $domain) : ?array
+	{
+		$srv = \SnappyMail\DNS::SRV('_submissions._tcp.'.$domain);
+		if (empty($srv[0]['target'])) {
+			$srv = \SnappyMail\DNS::SRV('_submission._tcp.'.$domain);
+		}
+		if (!empty($srv[0]['target'])) {
+			$result = [
+				'incomingServer' => [],
+				'outgoingServer' => [
+					'hostname' => $srv[0]['target'],
+					'port' => $srv[0]['port'],
+					'socketType' => (587 == $srv[0]['port']) ? 'STARTTLS' : (465 == $srv[0]['port'] ? 'SSL' : ''),
+					'authentication' => 'password-cleartext',
+					'username' => '%EMAILADDRESS%'
+				]
+			];
+			$srv = \SnappyMail\DNS::SRV('_imaps._tcp.'.$domain);
+			if (empty($srv[0]['target'])) {
+				$srv = \SnappyMail\DNS::SRV('_imap._tcp.'.$domain);
+			}
+			if (!empty($srv[0]['target'])) {
+				$result['incomingServer'][] = [
+					'hostname' => $srv[0]['target'],
+					'port' => $srv[0]['port'],
+					'socketType' => 993 == $srv[0]['port'] ? 'SSL' : '',
+					'authentication' => 'password-cleartext',
+					'username' => '%EMAILADDRESS%'
+				];
+				return $result;
+			}
+		}
+		return null;
 	}
 
 	/**
