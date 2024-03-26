@@ -4,7 +4,7 @@ RUN mkdir -p /app/code
 WORKDIR /app/code
 
 # If you change the extraction below, be sure to test on scaleway
-VERSION=2.35.4
+VERSION=2.36.0
 RUN wget https://github.com/the-djmaze/snappymail/releases/download/v${VERSION}/snappymail-${VERSION}.zip -O /tmp/snappymail.zip && \
     unzip /tmp/snappymail.zip -d /app/code && \
     rm /tmp/snappymail.zip && \

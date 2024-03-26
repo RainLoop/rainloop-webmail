@@ -455,7 +455,7 @@
 		"HIDE_DELETED_MESSAGES": "Berichten verbergen die zijn gemarkeerd voor verwijdering",
 		"USE_CHECKBOXES_IN_LIST": "Toon selectievakjes in de lijst",
 		"USE_THREADS": "Toon berichten in boomweergave",
-		"THREAD_ALGORITHM": "Threads algorithm",
+		"THREAD_ALGORITHM": "Boomweergave algoritme",
 		"REPLY_SAME_FOLDER": "Plaats antwoorden in de map van het originele bericht",
 		"PREFER_HTML": "Geef de voorkeur aan HTML boven platte tekst",
 		"PREFER_HTML_INFO": "Berichten komen soms in beide formaten. Deze optie bepaalt of u het HTML-gedeelte of het platte tekstgedeelte wilt weergeven.",
