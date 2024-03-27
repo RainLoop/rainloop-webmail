@@ -10,11 +10,11 @@ class OAuthBearer extends \SnappyMail\SASL
 {
 	public function authenticate(string $username,
 		#[\SensitiveParameter]
-		string $passphrase,
+		string $accessToken,
 		?string $authzid = null
 	) : string
 	{
-		return $this->encode("n,a={$username},\x01auth=Bearer {$passphrase}\x01\x01");
+		return $this->encode("n,a={$username},\x01auth=Bearer {$accessToken}\x01\x01");
 	}
 
 	public static function isSupported(string $param) : bool
