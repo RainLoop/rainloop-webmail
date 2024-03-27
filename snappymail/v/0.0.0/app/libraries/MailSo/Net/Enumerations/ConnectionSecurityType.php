@@ -20,6 +20,7 @@ abstract class ConnectionSecurityType
 {
 	const NONE = 0;
 	const SSL = 1;
+	const TLS = 1;
 	const STARTTLS = 2;
 	const AUTO_DETECT = 9;
 

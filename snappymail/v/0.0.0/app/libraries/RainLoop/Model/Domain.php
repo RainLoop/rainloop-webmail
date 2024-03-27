@@ -224,17 +224,14 @@ class Domain implements \JsonSerializable
 	 */
 	public static function StrConnectionSecurityTypeToCons(string $sType) : int
 	{
-		$iSecurityType = ConnectionSecurityType::NONE;
 		switch (\strtoupper($sType))
 		{
 			case 'SSL':
-				$iSecurityType = ConnectionSecurityType::SSL;
-				break;
+				return ConnectionSecurityType::SSL;
 			case 'TLS':
-				$iSecurityType = ConnectionSecurityType::STARTTLS;
-				break;
+				return ConnectionSecurityType::STARTTLS;
 		}
-		return $iSecurityType;
+		return ConnectionSecurityType::NONE;
 	}
 
 	#[\ReturnTypeWillChange]
