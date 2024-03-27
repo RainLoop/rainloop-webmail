@@ -777,40 +777,40 @@ trait Messages
 			$oAccount->SmtpConnectAndLogin($this->Plugins(), $oSmtpClient);
 
 			if ($oSmtpClient->Settings->usePhpMail) {
-				if (\MailSo\Base\Utils::FunctionCallable('mail')) {
-					$oToCollection = $oMessage->GetTo();
-					if ($oToCollection && $oFrom) {
-						$sRawBody = \stream_get_contents($rMessageStream);
-						if (!empty($sRawBody)) {
-							$sMailTo = \trim($oToCollection->ToString(true));
-							$sMailSubject = \trim($oMessage->GetSubject());
-							$sMailSubject = \strlen($sMailSubject) ? \MailSo\Base\Utils::EncodeHeaderValue($sMailSubject) : '';
+				if (!$sFrom || !\MailSo\Base\Utils::FunctionCallable('mail')) {
+					throw new ClientException(Notifications::CantSendMessage);
+				}
+				$oToCollection = $oMessage->GetTo();
+				if (!$oToCollection) {
+					throw new ClientException(Notifications::CantSendMessage);
+				}
+				$sRawBody = \stream_get_contents($rMessageStream);
+				if (empty($sRawBody)) {
+					throw new ClientException(Notifications::CantSendMessage);
+				}
+				$sMailTo = \trim($oToCollection->ToString(true));
+				$sMailSubject = \trim($oMessage->GetSubject());
+				$sMailSubject = \strlen($sMailSubject) ? \MailSo\Base\Utils::EncodeHeaderValue($sMailSubject) : '';
 
-							$sMailHeaders = $sMailBody = '';
-							list($sMailHeaders, $sMailBody) = \explode("\r\n\r\n", $sRawBody, 2);
-							unset($sRawBody);
+				$sMailHeaders = $sMailBody = '';
+				list($sMailHeaders, $sMailBody) = \explode("\r\n\r\n", $sRawBody, 2);
+				unset($sRawBody);
 
-							if ($this->Config()->Get('labs', 'mail_func_clear_headers', true)) {
-								$sMailHeaders = \MailSo\Base\Utils::RemoveHeaderFromHeaders($sMailHeaders, array(
-									MimeEnumHeader::TO_,
-									MimeEnumHeader::SUBJECT
-								));
-							}
+				if ($this->Config()->Get('labs', 'mail_func_clear_headers', true)) {
+					$sMailHeaders = \MailSo\Base\Utils::RemoveHeaderFromHeaders($sMailHeaders, array(
+						MimeEnumHeader::TO_,
+						MimeEnumHeader::SUBJECT
+					));
+				}
 
-							$this->Logger()->WriteDump(array(
-								$sMailTo, $sMailSubject, $sMailBody, $sMailHeaders
-							), \LOG_DEBUG);
+				$this->Logger()->WriteDump(array(
+					$sMailTo, $sMailSubject, $sMailBody, $sMailHeaders
+				), \LOG_DEBUG);
 
-							$bR = $this->Config()->Get('labs', 'mail_func_additional_parameters', false) ?
-								\mail($sMailTo, $sMailSubject, $sMailBody, $sMailHeaders, '-f'.$oFrom->GetEmail()) :
-								\mail($sMailTo, $sMailSubject, $sMailBody, $sMailHeaders);
-
-							if (!$bR) {
-								throw new ClientException(Notifications::CantSendMessage);
-							}
-						}
-					}
-				} else {
+				$bR = $this->Config()->Get('labs', 'mail_func_additional_parameters', false) ?
+					\mail($sMailTo, $sMailSubject, $sMailBody, $sMailHeaders, '-f'.$sFrom) :
+					\mail($sMailTo, $sMailSubject, $sMailBody, $sMailHeaders);
+				if (!$bR) {
 					throw new ClientException(Notifications::CantSendMessage);
 				}
 			} else if ($oSmtpClient->IsConnected()) {
