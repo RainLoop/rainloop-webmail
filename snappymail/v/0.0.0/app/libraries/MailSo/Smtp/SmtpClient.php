@@ -153,7 +153,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 			// https://github.com/the-djmaze/snappymail/issues/1038
 			try
 			{
-				$sResult = $this->sendRequestWithCheck('AUTH PLAIN ' . $SASL->authenticate($sLogin, $sPassword), 235);
+				$sRequest = $SASL->authenticate($sLogin, $sPassword);
+				$this->logMask($sRequest);
+				$sResult = $this->sendRequestWithCheck('AUTH PLAIN ' . $sRequest, 235);
 			}
 			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
 			{
@@ -179,7 +181,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 				$sRequest = '';
 				if (\str_starts_with($type, 'SCRAM-')) {
 					// RFC 5802
-					$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 234);
+					$sRequest = $SASL->authenticate($sLogin, $sPassword, $sResult);
+					$this->logMask($sRequest);
+					$sResult = $this->sendRequestWithCheck($sRequest, 234);
 					$sRequest = $SASL->challenge($sResult);
 				} else switch ($type) {
 				// RFC 4616
@@ -190,7 +194,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 					break;
 
 				case 'LOGIN':
-					$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 334);
+					$sRequest = $SASL->authenticate($sLogin, $sPassword, $sResult);
+					$this->logMask($sRequest);
+					$sResult = $this->sendRequestWithCheck($sRequest, 334);
 					$sRequest = $SASL->challenge($sResult);
 					break;
 
