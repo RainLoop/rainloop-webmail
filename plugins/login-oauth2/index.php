@@ -4,9 +4,9 @@ class LoginOAuth2Plugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'OAuth2',
-		VERSION  = '1.2',
-		RELEASE  = '2024-03-12',
-		REQUIRED = '2.35.3',
+		VERSION  = '1.3',
+		RELEASE  = '2024-03-27',
+		REQUIRED = '2.36.1',
 		CATEGORY = 'Login',
 		DESCRIPTION = 'IMAP, Sieve & SMTP login using RFC 7628 OAuth2';
 
@@ -91,7 +91,6 @@ class LoginOAuth2Plugin extends \RainLoop\Plugins\AbstractPlugin
 		{
 			$oAccount = $oActions->LoginProcess($sEmail, $sPassword);
 			if ($oAccount instanceof \RainLoop\Model\Account) {
-				$oActions->AuthToken($oAccount);
 				$iErrorCode = 0;
 			} else {
 				$oAccount = null;

@@ -92,15 +92,8 @@ class SnappyMailHelper
 				if ($doLogin && $aCredentials[1] && $aCredentials[2]) {
 					try {
 						$oAccount = $oActions->LoginProcess($aCredentials[1], $aCredentials[2]);
-						if ($oAccount) {
-							// Must be here due to bug #1241
-							$oActions->SetMainAuthAccount($oAccount);
-							$oActions->Plugins()->RunHook('login.success', array($oAccount));
-
-							$oActions->SetAuthToken($oAccount);
-							if ($oConfig->Get('login', 'sign_me_auto', \RainLoop\Enumerations\SignMeType::DefaultOff) === \RainLoop\Enumerations\SignMeType::DefaultOn) {
-								$oActions->SetSignMeToken($oAccount);
-							}
+						if ($oAccount && $oConfig->Get('login', 'sign_me_auto', \RainLoop\Enumerations\SignMeType::DefaultOff) === \RainLoop\Enumerations\SignMeType::DefaultOn) {
+							$oActions->SetSignMeToken($oAccount);
 						}
 					} catch (\Throwable $e) {
 						// Login failure, reset password to prevent more attempts

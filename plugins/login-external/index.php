@@ -6,9 +6,9 @@ class LoginExternalPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Login External',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.2',
-		RELEASE  = '2023-03-14',
-		REQUIRED = '2.27.0',
+		VERSION  = '1.3',
+		RELEASE  = '2024-03-27',
+		REQUIRED = '2.36.1',
 		CATEGORY = 'Login',
 		LICENSE  = 'MIT',
 		DESCRIPTION = 'Login with $_POST["Email"] and $_POST["Password"] from anywhere';
@@ -32,9 +32,7 @@ class LoginExternalPlugin extends \RainLoop\Plugins\AbstractPlugin
 		try
 		{
 			$oAccount = $oActions->LoginProcess($sEmail, $sPassword);
-			if ($oAccount instanceof \RainLoop\Model\MainAccount) {
-				$oActions->SetAuthToken($oAccount);
-			} else {
+			if (!$oAccount instanceof \RainLoop\Model\MainAccount) {
 				$oAccount = null;
 			}
 		}

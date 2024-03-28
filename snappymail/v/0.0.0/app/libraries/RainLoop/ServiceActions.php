@@ -563,7 +563,7 @@ class ServiceActions
 						$oAccount = $this->oActions->LoginProcess($sEmail, $oPassword);
 
 						if ($aAdditionalOptions) {
-							$bNeedToSettings = false;
+							$bSaveSettings = false;
 
 							$oSettings = $this->SettingsProvider()->Load($oAccount);
 							if ($oSettings) {
@@ -573,19 +573,15 @@ class ServiceActions
 								if ($sLanguage) {
 									$sLanguage = $this->oActions->ValidateLanguage($sLanguage);
 									if ($sLanguage !== $oSettings->GetConf('language', '')) {
-										$bNeedToSettings = true;
+										$bSaveSettings = true;
 										$oSettings->SetConf('language', $sLanguage);
 									}
 								}
 							}
 
-							if ($bNeedToSettings) {
+							if ($bSaveSettings) {
 								$oSettings->save();
 							}
-						}
-
-						if ($oAccount instanceof Model\MainAccount) {
-							$this->oActions->SetAuthToken($oAccount);
 						}
 					}
 					catch (\Throwable $oException)

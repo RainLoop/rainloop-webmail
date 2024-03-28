@@ -6,9 +6,9 @@ class ProxyAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Proxy Auth',
 		AUTHOR   = 'Philipp',
 		URL      = 'https://www.mundhenk.org/',
-		VERSION  = '0.2',
-		RELEASE  = '2024-01-22',
-		REQUIRED = '2.27.0',
+		VERSION  = '0.3',
+		RELEASE  = '2024-03-27',
+		REQUIRED = '2.36.1',
 		CATEGORY = 'Login',
 		LICENSE  = 'MIT',
 		DESCRIPTION = 'Uses HTTP Remote-User and (Dovecot) master user for login';
@@ -124,9 +124,6 @@ class ProxyAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 			{
 				static::$login = true;
 				$oAccount = $oActions->LoginProcess($sEmail, $sPassword);
-				if ($oAccount instanceof \RainLoop\Model\MainAccount) {
-					$oActions->SetAuthToken($oAccount);
-				}
 			}
 			catch (\Throwable $oException)
 			{

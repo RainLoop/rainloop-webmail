@@ -6,9 +6,9 @@ class LoginRemotePlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Login Remote',
 		AUTHOR   = 'SnappyMail',
 		URL      = 'https://snappymail.eu/',
-		VERSION  = '1.3',
-		RELEASE  = '2023-03-14',
-		REQUIRED = '2.27.0',
+		VERSION  = '1.4',
+		RELEASE  = '2024-03-27',
+		REQUIRED = '2.36.1',
 		CATEGORY = 'Login',
 		LICENSE  = 'MIT',
 		DESCRIPTION = 'Tries to login using the $_ENV["REMOTE_*"] variables';
@@ -44,9 +44,6 @@ class LoginRemotePlugin extends \RainLoop\Plugins\AbstractPlugin
 			{
 				static::$login = true;
 				$oAccount = $oActions->LoginProcess($sEmail, $sPassword);
-				if ($oAccount instanceof \RainLoop\Model\MainAccount) {
-					$oActions->SetAuthToken($oAccount);
-				}
 			}
 			catch (\Throwable $oException)
 			{

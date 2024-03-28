@@ -140,6 +140,12 @@ trait UserAuth
 		$this->imapConnect($oAccount, true);
 		if ($bMainAccount) {
 			$this->StorageProvider()->Put($oAccount, StorageType::SESSION, Utils::GetSessionToken(), 'true');
+
+			// Must be here due to bug #1241
+			$this->SetMainAuthAccount($oAccount);
+			$this->Plugins()->RunHook('login.success', array($oAccount));
+
+			$this->SetAuthToken($oAccount);
 		}
 
 		return $oAccount;
