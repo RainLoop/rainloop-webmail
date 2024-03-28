@@ -1,0 +1,210 @@
+
+#V-PopupsContacts {
+	height: 100vh;
+	height: 100dvh;
+	max-width: 900px;
+	min-height: 300px;
+
+	.control-group {
+		label.iconsize24 {
+			padding-top: 0;
+			width: 50px;
+		}
+	}
+
+	.modal-body {
+		display: flex;
+		height: 100%;
+		padding: 0;
+	}
+
+	/* Left */
+
+	.left {
+		max-width: 30%;
+	}
+
+	.b-list-toolbar {
+		padding: 0;
+		height: 44px;
+		text-align: center;
+		border-bottom: 1px solid var(--border-color, #ddd);
+
+		.e-search {
+			margin: 7px 0 0;
+			width: calc(100% - 10px);
+		}
+	}
+
+	.b-list-footer-toolbar {
+		height: 46px;
+		border-top: 1px solid var(--border-color, #ddd);
+
+		.footer-pager {
+			padding: 8px 10px 0 0;
+			text-align: var(--right, right);
+		}
+	}
+
+	.b-list-content {
+		height: calc(100% - 44px - 46px);
+		overflow: hidden;
+		overflow-y: auto;
+		scroll-behavior: smooth;
+
+		.listClear {
+			text-align: center;
+			padding: 10px;
+			line-height: 13px;
+			box-shadow: inset 0 -1px 0 #ccc;
+		}
+
+		.listEmptyList, .listEmptyListLoading, .listEmptySearchList {
+			color: #999;
+			text-align: center;
+			padding: 60px 10px;
+			font-size: 171%;
+			line-height: 30px;
+		}
+	}
+
+	.e-contact-item {
+		display: flex;
+		height: 55px;
+		max-height: 45px;
+		line-height: 45px;
+		overflow: hidden;
+		cursor: pointer;
+		position: relative;
+
+		margin: 0;
+		border-left: 6px solid #eee;
+		border-bottom: 1px solid var(--border-color, #ddd) !important;
+
+		&.focused {
+			border-color: #bbb;
+		}
+
+		&.deleted {
+			max-height: 0;
+			border-color: transparent !important;
+		}
+
+		.checkboxItem {
+			line-height: 45px;
+			padding: 0 8px 0 6px;
+		}
+
+		.nameParent {
+			font-size: 114%;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			width: 100%;
+		}
+
+		&.checked {
+			border-color: #69A8F5;
+
+			&.focused {
+				border-color: darken(#69A8F5, 5%);
+			}
+		}
+
+		&.selected {
+
+			background-color: rgba(140, 200, 255, 0.3);
+			border-color: #398CF2;
+
+			&.focused {
+				border-color: darken(#398CF2, 5%);
+			}
+		}
+	}
+
+	/* Right */
+
+	.right {
+		width: 100%;
+		border-left: 1px solid var(--border-color, #ddd);
+	}
+
+	.b-view-content-toolbar {
+		border-top: 1px solid var(--border-color, #ddd);
+		padding: 7px;
+		text-align: var(--right, right);
+
+		.dropdown-menu.right-edge {
+			top: auto;
+			bottom: 100%;
+		}
+	}
+
+	.b-view-content {
+		height: calc(100% - 46px);
+		margin: 0;
+		overflow: auto;
+
+		:not(.e-checkbox) > span {
+			height: 20px;
+			line-height: 20px;
+			display: none;
+			padding: 5px 7px;
+			font-size: 128%;
+			display: none;
+		}
+
+		.b-contact-view-desc {
+			text-align: center;
+			font-size: 171%;
+			line-height: 30px;
+			padding-top: 120px;
+			color: #999;
+		}
+
+		.property-line {
+			margin-bottom: 5px;
+		}
+
+		input:not([type='checkbox']), textarea {
+			width: 70vw;
+			max-width: 400px;
+		}
+	}
+
+	.read-only-sign {
+		display: none;
+		position: absolute;
+		top: 20px;
+		right: 40px;
+	}
+
+	.read-only {
+		span, .e-read-only-sign {
+			display: inline-block;
+		}
+
+		input, textarea {
+			display: none;
+		}
+	}
+
+	.tab-content {
+		grid-column-end: 4;
+		padding-top: 20px;
+	}
+}
+
+@media screen and (min-width: @maxMobileWidth + 1px) {
+	.hideContactListCheckbox {
+		.checkboxItem {
+			visibility: hidden;
+		}
+	}
+}
+
+@media screen and (max-width: @maxMobileWidth) {
+	#V-PopupsContacts {
+		width: 100%;
+	}
+}

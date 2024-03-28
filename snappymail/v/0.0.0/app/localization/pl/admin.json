@@ -1,0 +1,185 @@
+{
+	"GLOBAL": {
+		"ADD": "Dodaj",
+		"CLOSE": "Zamknij",
+		"SAVE": "Zapisz",
+		"TEST": "Testuj",
+		"UPDATE": "Zaktualizuj",
+		"USERNAME": "Nazwa użytkownika",
+		"PASSWORD": "Hasło",
+		"CANCEL": "Anuluj",
+		"SEARCH": "Szukaj"
+	},
+	"LOGIN": {
+		"LABEL_LOGIN": "Login",
+		"LABEL_TOTP": "Kod TOTP",
+		"BUTTON_LOGIN": "Zaloguj do panelu administracjnego"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "Panel administracyjny"
+	},
+	"SETTINGS_LABELS": {
+		"GENERAL": "Ogólne",
+		"LOGIN": "Logowanie",
+		"BRANDING": "Personalizacja",
+		"CONTACTS": "Kontakty",
+		"DOMAINS": "Domeny",
+		"SECURITY": "Bezpieczeństwo",
+		"PACKAGES": "Pakiety",
+		"CONFIG": "Plik konfiguracyjny",
+		"ABOUT": "O programie"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "Interfejs",
+		"LABEL_LANGUAGE": "Język",
+		"LABEL_LANGUAGE_ADMIN": "Język (admin)",
+		"LABEL_THEME": "Motyw",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Zezwól użytkownikowi na wybór języka",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Zezwól użytkownikowi na zmianę motywu",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Zezwól użytkownikowi na użycie własnego tła",
+		"LABEL_SHOW_THUMBNAILS": "Pokaż miniatury (załączniki)",
+		"LEGEND_MAIN": "Główne",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "Maksymalny rozmiar załącznika",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Zezwól na dodatkowe konta",
+		"LABEL_ALLOW_IDENTITIES": "Zezwól na posiadanie wielu tożsamości",
+		"ALERT_DATA_ACCESS": "Katalog „data” jest osiągalny z poziomu przeglądarki WWW. Zmień konfigurację serwera www, aby ukryć ten folder z zewnątrz. Więcej informacji tutaj: ",
+		"ALERT_WARNING": "Ostrzeżenie!",
+		"HTML_ALERT_WEAK_PASSWORD": "Korzystasz z domyślnego hasła administratora.\n<br>\nZe względów bezpieczeństwa\n<strong><a href=\"#\/security\">zmień hasło<\/a><\/strong>\nna inne.\n"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "Ekran logowania",
+		"LABEL_DEFAULT_DOMAIN": "Domyślna domena",
+		"LABEL_DETERMINE_USER_DOMAIN": "Spróbuj określić domenę użytkownika",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Zezwól na zmianę języka na ekranie logowania",
+		"LABEL_DETERMINE_USER_LANGUAGE": "Spróbuj określić język użytkownika"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Personalizacja",
+		"LABEL_PAGE_TITLE": "Tytuł strony",
+		"LABEL_LOADING_DESCRIPTION": "Komunikat ładowania strony",
+		"LABEL_FAVICON_URL": "Favikona"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "Kontakty",
+		"LEGEND_STORAGE": "Baza danych (PDO)",
+		"LABEL_ENABLE_CONTACTS": "Włącz kontakty",
+		"LABEL_ALLOW_SYNC": "Zezwól na synchronizację kontaktów (przy użyciu zewnętrznego serwera CardDAV)",
+		"LABEL_STORAGE_TYPE": "Typ",
+		"LABEL_STORAGE_DSN": "Adres DSN",
+		"LABEL_STORAGE_USER": "Użytkownik",
+		"LABEL_STORAGE_PASSWORD": "Hasło",
+		"SQLITE_GLOBAL": "Używaj globalnej bazy kontaktów zamiast indywidualnych dla każdego konta.",
+		"ALERT_NOTICE": "Ostrzeżenie!",
+		"SUGGESTIONS_LIMIT": "Limit sugestii",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Nie używaj tej bazy danych z dużą ilością aktywnych użytkowników.",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Twój system nie zawiera wsparcia dla obsługi kontaktów.\n<br>\nMusisz zainstalować lub uruchomić na serwerze jedno z rozszerzeń <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong>.\n"
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "Domeny",
+		"BUTTON_ADD_DOMAIN": "Dodaj domenę",
+		"BUTTON_ADD_ALIAS": "Dodaj alias",
+		"DELETE_ARE_YOU_SURE": "Czy na pewno?",
+		"HTML_DOMAINS_HELPER": "Lista domen, do których można uzyskać dostęp poprzez tego klienta.\n<br>\nKliknij na nazwę, aby skonfigurować domenę.\n"
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "Bezpieczeństwo",
+		"LABEL_USE_IMAGE_PROXY": "Użyj lokalnego serwera proxy dla zewnętrznych obrazów",
+		"LABEL_AUTO_VERIFY": "Weryfikuj podpisy automatycznie",
+		"LABEL_SHOW_PHP_INFO": "Pokaż informacje o wersji PHP",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Poświadczenia dostępu do panelu administracyjnego",
+		"LABEL_CURRENT_PASSWORD": "Bieżące hasło",
+		"LABEL_NEW_PASSWORD": "Nowe hasło",
+		"LABEL_REPEAT_PASSWORD": "Powtórz hasło",
+		"LABEL_REQUIRE_VERIFICATION": "Wymagaj weryfikacji używanego certyfikatu SSL",
+		"CRYPTO": "Kryptografia",
+		"LABEL_ALLOW_SELF_SIGNED": "Zezwól na certyfikaty podpisane samodzielnie"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Włącz obsługę wtyczek",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Dostępne do aktualizacji",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Dostępne do zainstalowania",
+		"LEGEND_INSTALLED_PACKAGES": "Zainstalowane pakiety",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Nie można uzyskać dostępu do repozytorium."
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "O programie",
+		"LABEL_TAG_HINT": "Prosty, nowoczesny i szybki klient poczty elektronicznej",
+		"LABEL_ALL_RIGHTS_RESERVED": "Wszystkie prawa zastrzeżone.",
+		"HINT_READ_CHANGE_LOG": "Przed aktualizacją przeczytaj proszę listę zmian.",
+		"HINT_IS_UP_TO_DATE": "SnappyMail jest aktualny.",
+		"HTML_NEW_VERSION": "Dostępna jest nowa wersja: <b>%VERSION%<\/b>.",
+		"LABEL_UPDATING": "Aktualizacja w toku...",
+		"LABEL_CHECKING": "Szukanie aktualizacji...",
+		"BUTTON_RELEASES": "Wydania"
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "Dodaj alias",
+		"LABEL_ALIAS": "Alias",
+		"LABEL_DOMAIN": "Domena"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "Dodawanie domeny",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "Dodawanie domeny „%NAME%”",
+		"TITLE_EDIT_DOMAIN": "Edycja domeny „%NAME%”",
+		"LABEL_NAME": "Nazwa",
+		"NAME_HELPER": "obsługiwany znak wieloznaczności - *",
+		"LABEL_SERVER": "Serwer",
+		"LABEL_PORT": "Port",
+		"LABEL_SECURE": "Rodzaj połączenia",
+		"TIMEOUT": "Limit czasu",
+		"DISABLE_CAPABILITIES": "Zablokuj funkcjonalności",
+		"LIMITS": "Limity",
+		"FOLDERS": "Foldery",
+		"MESSAGES": "Wiadomości",
+		"LABEL_WHITE_LIST": "Biała lista",
+		"SECURE_OPTION_NONE": "Bez zabezpieczeń",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Zezwól na skrypty sieve",
+		"LABEL_USE_SHORT_LOGIN": "Użyj krótkiego loginu",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
+		"LABEL_USE_AUTH": "Użyj uwierzytelnienia",
+		"LABEL_SET_SENDER": "Użyj loginu jako nadawcy",
+		"LABEL_AUTH_PLAIN_LINE": "Wymuś logowanie pojedynczą komendą AUTH PLAIN",
+		"LABEL_USE_PHP_MAIL": "Użyj funkcji php 'mail()'",
+		"BUTTON_WHITE_LIST": "Biała lista",
+		"BUTTON_SIEVE_CONFIGURATION": "Konfiguracja sieve",
+		"BUTTON_BACK_TO_IMAP": "Powrót do ustawień serwera IMAP",
+		"BUTTON_BACK": "Wstecz",
+		"BUTTON_UPDATE": "Zaktualizuj",
+		"NEW_DOMAIN_DESC": "Konfiguracja tej domeny pozwala na pracę z adresami e-mail: <strong>%NAME%<\/strong>",
+		"WHITE_LIST_ALERT": "Lista użytkowników domeny, którzy mogą uzyskać dostęp z tego webmaila.\nUżyj spacji do rozdzielenia.\n"
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "Wtyczka",
+		"DESC_NOTHING_TO_CONFIGURE": "Brak opcji do skonfigurowania"
+	},
+	"POPUPS_ASK": {
+		"BUTTON_YES": "Tak",
+		"BUTTON_NO": "Nie",
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Czy na pewno chcesz zamknąć to okno?"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "Wybierz swój język"
+	},
+	"HINTS": {
+		"BETA": "Beta",
+		"WARNING": "Ostrzeżenie!"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "Ta domena już istnieje",
+		"UNKNOWN_ERROR": "Nieznany błąd"
+	},
+	"NOTIFICATIONS": {
+		"RequestError": "Zapytanie zakończone niepowodzeniem",
+		"RequestAborted": "Zapytanie przerwane",
+		"RequestTimeout": "Upłynął limit czasu",
+		"InvalidToken": "Nieprawidłowy token",
+		"AuthError": "Uwierzytelnienie zakończone niepowodzeniem",
+		"DomainAlreadyExists": "Ta domena już istnieje",
+		"CantSavePluginSettings": "Nie można zapisać ustawień wtyczki",
+		"CantInstallPackage": "Instalacja wtyczki zakończona niepowodzeniem",
+		"CantDeletePackage": "Usunięcie wtyczki zakończone niepowodzeniem",
+		"InvalidPluginPackage": "Nieprawidłowa wtyczka",
+		"UnsupportedPluginPackage": "Nieobsługiwana wtyczka",
+		"UnknownError": "Nieznany błąd"
+	}
+}

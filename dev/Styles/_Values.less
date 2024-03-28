@@ -1,28 +1,17 @@
 
-@rlSyncFile: "images/sync.gif";
-@rlSyncFileStop: "images/sync.png";
-@rlEditorSprite: "images/editor.png";
-
 @rlLeftWidth: 200px;
-@rlInputBorderSize: 1px;
-@rlMainBorderSize: 1px;
-@rlLowBorderSize: 1px;
-
-@rlMainBorderRadius: 5px;
-@rlLowBorderRadius: 3px;
-
-@rlMainShadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
-
 @rlLowMargin: 8px;
-@rlBottomMargin: 5px;
 
-@rlMainDarkColor: #aaa;
-@rlMessageDelimiterColor: #999;
+/* mobile and tablet */
+@maxMobileWidth: 799px;
 
-// bootstart
-@btnBorderRadius: 3px;
-
-@tooltipColor:            #eee;
-@tooltipBackground:       #333;
-@tooltipArrowWidth:       5px;
-@tooltipArrowColor:       #333;
+:root {
+	--smDialogShrink: 20px;
+	--smMainShadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+/* For Firefox */
+@media screen and (max-width: @maxMobileWidth) {
+	:root {
+		--smDialogShrink: 25px;
+	}
+}

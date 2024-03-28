@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Actualizare",
+	"NO_SCRIPT_TITLE": "Pentru rulare este necesar JavaScript.",
+	"NO_SCRIPT_DESC": "Aparent, JavaScript nu este instalat, sau nu este acceptat de browserul dumneavoastră.\nActivați JavaScript, schimband optiunile browserului dvs., apoi încercați din nou.\n",
+	"NO_COOKIE_TITLE": "Cererea necesită Cookie-uri.",
+	"NO_COOKIE_DESC": "Aparent, Cookie sau nu este acceptat de browser-ul dvs. sau oprit.\nÎntoarceți Cookie, schimband optiunile browserului dvs., apoi încercați din nou.\n",
+	"BAD_BROWSER_TITLE": "Browser-ul dvs. este depășit.",
+	"BAD_BROWSER_DESC": "Pentru a utiliza toate caracteristicile cererii,\ndescărcați și instalați unul dintre aceste browsere:\n"
+}

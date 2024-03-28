@@ -1,0 +1,78 @@
+<div class="legend" data-i18n="TAB_SECURITY/LEGEND_SECURITY"></div>
+<div class="form-horizontal">
+	<div class="control-group">
+		<div data-bind="component: {
+			name: 'Checkbox',
+			params: {
+				label: 'TAB_SECURITY/LABEL_USE_IMAGE_PROXY',
+				value: proxyExternalImages
+			}
+		}"></div>
+	</div>
+</div>
+<div class="legend" data-i18n="TAB_SECURITY/CRYPTO"></div>
+<div class="form-horizontal">
+	<div class="control-group">
+		<div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'GnuPG',
+					value: capaGnuPG
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'OpenPGP.js',
+					value: capaOpenPGP
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'TAB_SECURITY/LABEL_AUTO_VERIFY',
+					value: autoVerifySignatures
+				}
+			}"></div>
+		</div>
+	</div>
+</div>
+<form class="form-horizontal" spellcheck="false">
+	<div class="legend" data-i18n="TAB_SECURITY/LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS"></div>
+	<div class="control-group" data-bind="css: {'error': adminLoginError}">
+		<label data-i18n="GLOBAL/USERNAME"></label>
+		<input type="text" autocomplete="username" autocorrect="off" autocapitalize="off"
+			data-bind="textInput: adminLogin">
+	</div>
+	<div class="control-group">
+		<label data-i18n="TAB_SECURITY/LABEL_CURRENT_PASSWORD"></label>
+		<input type="password" autocomplete="current-password" autocorrect="off" autocapitalize="off"
+			data-bind="textInput: adminPassword">
+	</div>
+	<div class="control-group" data-bind="css: {'error': adminPasswordNewError}">
+		<label data-i18n="TAB_SECURITY/LABEL_NEW_PASSWORD"></label>
+		<input type="password" autocomplete="new-password" autocorrect="off" autocapitalize="off"
+			data-bind="textInput: adminPasswordNew">
+	</div>
+	<div class="control-group" data-bind="css: {'error': adminPasswordNewError}">
+		<label data-i18n="TAB_SECURITY/LABEL_REPEAT_PASSWORD"></label>
+		<input type="password" autocomplete="new-password" autocorrect="off" autocapitalize="off"
+			data-bind="textInput: adminPasswordNew2">
+	</div>
+	<div class="control-group">
+		<label data-i18n="LOGIN/LABEL_TOTP"></label>
+		<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off"
+			pattern="[A-Z2-7]{16,}"
+			data-bind="textInput: adminTOTP">
+		<button type="button" data-bind="visible:!adminTOTP(), click:generateTOTP">Generate</button>
+	</div>
+	<div class="control-group">
+		<label></label>
+		<pre data-bind="text: viewQRCode" style="font-family:var(--fontMono);font-size:11px;letter-spacing:-1px;line-height:1;"></pre>
+	</div>
+	<div class="control-group">
+		<a class="btn" data-bind="command: saveAdminUserCommand, css: { 'btn-success': saveSuccess, 'btn-danger': saveError }"
+			data-icon="🔑" data-i18n="GLOBAL/SAVE"></a>
+	</div>
+</form>

@@ -1,0 +1,48 @@
+
+#V-Settings-Accounts {
+
+	.account-name {
+		display: inline-block;
+		word-break: break-all;
+	}
+
+	.identity-default {
+		cursor: pointer;
+		color: #ccc;
+	}
+
+	.identity-name {
+		display: inline-block;
+		word-break: break-all;
+		cursor: pointer;
+	}
+
+	table {
+		margin-top: 1em;
+	}
+
+	tr {
+		white-space: nowrap;
+	}
+
+	td + td + td {
+		text-align: var(--right, right);
+	}
+	td:first-child,
+	td:last-child, {
+		width: 1em;
+	}
+
+	.delete {
+		cursor: pointer;
+		opacity: 0.5;
+	}
+
+	.identity-default::before {
+		content: '(';
+	}
+	.identity-default::after {
+		content: ')';
+	}
+
+}

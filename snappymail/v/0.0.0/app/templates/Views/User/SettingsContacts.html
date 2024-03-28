@@ -1,0 +1,42 @@
+<div class="form-horizontal">
+	<div class="legend" data-i18n="GLOBAL/CONTACTS"></div>
+	<div class="control-group">
+		<div data-bind="component: {
+			name: 'Checkbox',
+			params: {
+				label: 'SETTINGS_CONTACTS/LABEL_CONTACTS_AUTOSAVE',
+				value: contactsAutosave
+			}
+		}"></div>
+	</div>
+</div>
+<form class="form-horizontal" spellcheck="false" data-bind="visible: allowContactsSync">
+	<div class="legend" data-i18n="SETTINGS_CONTACTS/LEGEND_CONTACTS_SYNC"></div>
+	<div class="control-group">
+		<label data-i18n="SETTINGS_CONTACTS/LABEL_CONTACTS_SYNC_ENABLE"></label>
+		<div data-bind="component: {
+			name: 'Select',
+			params: {
+				options: syncModeOptions,
+				value: syncMode,
+				optionsText: 'name',
+				optionsValue: 'id'
+			}
+		}"></div>
+	</div>
+	<div class="control-group">
+		<label data-i18n="SETTINGS_CONTACTS/LABEL_CONTACTS_SYNC_AB_URL"></label>
+		<input type="text" class="input-xxlarge" autocomplete="off" autocorrect="off" autocapitalize="off"
+			spellcheck="false" data-bind="value: syncUrl" placeholder="https://">
+	</div>
+	<div class="control-group">
+		<label data-i18n="SETTINGS_CONTACTS/LABEL_CONTACTS_SYNC_USER"></label>
+		<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off"
+			data-bind="value: syncUser">
+	</div>
+	<div class="control-group">
+		<label data-i18n="GLOBAL/PASSWORD"></label>
+		<input type="password" autocomplete="current-password" autocorrect="off" autocapitalize="off"
+			spellcheck="false" data-bind="value: syncPass">
+	</div>
+</form>

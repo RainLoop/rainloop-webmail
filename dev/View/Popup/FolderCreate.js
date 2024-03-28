@@ -1,85 +1,79 @@
-import ko from 'ko';
+import { koComputable, addObservablesTo } from 'External/ko';
 
-import { Notification } from 'Common/Enums';
-import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { bMobileDevice } from 'Common/Globals';
-import { trim, defautOptionsAfterRender, folderListOptionsBuilder } from 'Common/Utils';
+import { Notifications } from 'Common/Enums';
+import { defaultOptionsAfterRender } from 'Common/Utils';
+import { folderListOptionsBuilder, sortFolders } from 'Common/Folders';
+import { getNotification/*, baseCollator*/ } from 'Common/Translator';
 
-import FolderStore from 'Stores/User/Folder';
+import { FolderUserStore } from 'Stores/User/Folder';
 
-import Promises from 'Promises/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
-import { getApp } from 'Helper/Apps/User';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { setFolder, getFolderFromCacheList } from 'Common/Cache';
+import { FolderModel } from 'Model/FolderCollection';
 
-@popup({
-	name: 'View/Popup/FolderCreate',
-	templateID: 'PopupsFolderCreate'
-})
-class FolderCreateView extends AbstractViewNext {
+export class FolderCreatePopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('FolderCreate');
 
-		this.folderName = ko.observable('');
-		this.folderName.focused = ko.observable(false);
-
-		this.selectedParentValue = ko.observable(UNUSED_OPTION_VALUE);
-
-		this.parentFolderSelectList = ko.computed(() => {
-			const top = [],
-				list = FolderStore.folderList(),
-				fRenameCallback = (oItem) =>
-					oItem ? (oItem.isSystemFolder() ? oItem.name() + ' ' + oItem.manageFolderSystemName() : oItem.name()) : '';
-
-			top.push(['', '']);
-
-			let fDisableCallback = null;
-			if ('' !== FolderStore.namespace) {
-				fDisableCallback = (item) => FolderStore.namespace !== item.fullNameRaw.substr(0, FolderStore.namespace.length);
-			}
-
-			return folderListOptionsBuilder([], list, [], top, null, fDisableCallback, null, fRenameCallback);
+		addObservablesTo(this, {
+			name: '',
+			subscribe: true,
+			parentFolder: ''
 		});
 
-		this.defautOptionsAfterRender = defautOptionsAfterRender;
-	}
-
-	@command((self) => self.simpleFolderNameValidation(self.folderName()))
-	createFolderCommand() {
-		let parentFolderName = this.selectedParentValue();
-		if ('' === parentFolderName && 1 < FolderStore.namespace.length) {
-			parentFolderName = FolderStore.namespace.substr(0, FolderStore.namespace.length - 1);
-		}
-
-		getApp().foldersPromisesActionHelper(
-			Promises.folderCreate(this.folderName(), parentFolderName, FolderStore.foldersCreating),
-			Notification.CantCreateFolder
+		this.parentFolderSelectList = koComputable(() =>
+			folderListOptionsBuilder(
+				[],
+				[['', '']],
+				oItem => oItem ? oItem.detailedName() : '',
+				item => !item.subFolders.allow
+					|| (FolderUserStore.namespace && !item.fullName.startsWith(FolderUserStore.namespace))
+			)
 		);
 
-		this.cancelCommand();
+		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 	}
 
-	simpleFolderNameValidation(sName) {
-		return /^[^\\/]+$/g.test(trim(sName));
-	}
+	submitForm(form) {
+		if (form.reportValidity()) {
+			const data = new FormData(form);
 
-	clearPopup() {
-		this.folderName('');
-		this.selectedParentValue('');
-		this.folderName.focused(false);
+			let parentFolderName = this.parentFolder();
+			if (!parentFolderName && 1 < FolderUserStore.namespace.length) {
+				data.set('parent', FolderUserStore.namespace.slice(0, FolderUserStore.namespace.length - 1));
+			}
+
+			Remote.abort('Folders').post('FolderCreate', FolderUserStore.foldersCreating, data)
+				.then(
+					data => {
+						const folder = getFolderFromCacheList(parentFolderName),
+							subFolder = FolderModel.reviveFromJson(data.Result),
+							folders = (folder ? folder.subFolders : FolderUserStore.folderList);
+						setFolder(subFolder);
+						folders.push(subFolder);
+						sortFolders(folders);
+/*
+						var collator = baseCollator(true);
+						console.log((folder ? folder.subFolders : FolderUserStore.folderList).sort(collator.compare));
+*/
+					},
+					error => {
+						FolderUserStore.error(
+							getNotification(error.code, '', Notifications.CantCreateFolder)
+							+ '.\n' + error.message);
+					}
+				);
+
+			this.close();
+		}
 	}
 
 	onShow() {
-		this.clearPopup();
-	}
-
-	onShowWithDelay() {
-		if (!bMobileDevice) {
-			this.folderName.focused(true);
-		}
+		this.name('');
+		this.subscribe(true);
+		this.parentFolder('');
 	}
 }
-
-export { FolderCreateView, FolderCreateView as default };

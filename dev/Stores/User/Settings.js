@@ -1,82 +1,161 @@
-import window from 'window';
 import ko from 'ko';
+import { koComputable, addObservablesTo } from 'External/ko';
 
-import { MESSAGES_PER_PAGE, MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
-import { Layout, EditorDefaultType, Magics } from 'Common/Enums';
-import { $html } from 'Common/Globals';
+import { LayoutSideView, LayoutBottomView } from 'Common/EnumsUser';
 import { pInt } from 'Common/Utils';
-import * as Events from 'Common/Events';
+import { $htmlCL, SettingsGet, fireEvent } from 'Common/Globals';
+import { ThemeStore } from 'Stores/Theme';
 
-import * as Settings from 'Storage/Settings';
-
-class SettingsUserStore {
+export const SettingsUserStore = new class {
 	constructor() {
-		this.iAutoLogoutTimer = 0;
+		const self = this;
 
-		this.layout = ko
-			.observable(Layout.SidePreview)
-			.extend({ limitedList: [Layout.SidePreview, Layout.BottomPreview, Layout.NoPreview] });
+		self.messagesPerPage = ko.observable(25).extend({ debounce: 999 });
+		self.checkMailInterval = ko.observable(15).extend({ debounce: 999 });
+		self.messageReadDelay = ko.observable(5).extend({ debounce: 999 });
 
-		this.editorDefaultType = ko.observable(EditorDefaultType.Html).extend({
-			limitedList: [
-				EditorDefaultType.Html,
-				EditorDefaultType.Plain,
-				EditorDefaultType.HtmlForced,
-				EditorDefaultType.PlainForced
-			]
+		addObservablesTo(self, {
+			viewHTML: 1,
+			viewImages: 0,
+			viewImagesWhitelist: '',
+			removeColors: 0,
+			allowStyles: 0,
+			collapseBlockquotes: 1,
+			maxBlockquotesLevel: 0,
+			listInlineAttachments: 0,
+			simpleAttachmentsList: 0,
+			useCheckboxesInList: 1,
+			listGrouped: 0,
+			showNextMessage: 0,
+			allowDraftAutosave: 1,
+			useThreads: 0,
+			threadAlgorithm: '',
+			replySameFolder: 0,
+			hideUnsubscribed: 0,
+			hideDeleted: 1,
+			unhideKolabFolders: 0,
+			autoLogout: 0,
+			showUnreadCount: 0,
+			messageNewWindow: 0,
+			messageReadAuto: 0,
+
+			requestReadReceipt: 0,
+			requestDsn: 0,
+			requireTLS: 0,
+			pgpSign: 0,
+			pgpEncrypt: 0,
+			allowSpellcheck: 0,
+
+			layout: 1,
+			editorDefaultType: 'Html',
+			editorWysiwyg: 'Squire',
+			msgDefaultAction: 1
 		});
 
-		this.messagesPerPage = ko.observable(MESSAGES_PER_PAGE).extend({ limitedList: MESSAGES_PER_PAGE_VALUES });
+		self.init();
 
-		this.showImages = ko.observable(false);
-		this.useCheckboxesInList = ko.observable(true);
-		this.allowDraftAutosave = ko.observable(true);
-		this.useThreads = ko.observable(false);
-		this.replySameFolder = ko.observable(false);
+		self.usePreviewPane = koComputable(() => ThemeStore.isMobile() ? 0 : self.layout());
 
-		this.autoLogout = ko.observable(Magics.Time30mInMin);
+		const toggleLayout = () => {
+			const value = self.usePreviewPane();
+			$htmlCL.toggle('sm-msgView-side', LayoutSideView === value);
+			$htmlCL.toggle('sm-msgView-bottom', LayoutBottomView === value);
+			fireEvent('rl-layout', value);
+		};
+		self.layout.subscribe(toggleLayout);
+		ThemeStore.isMobile.subscribe(toggleLayout);
+		toggleLayout();
 
-		this.computers();
-		this.subscribers();
-	}
-
-	computers() {
-		this.usePreviewPane = ko.computed(() => Layout.NoPreview !== this.layout());
-	}
-
-	subscribers() {
-		this.layout.subscribe((value) => {
-			$html.toggleClass('rl-no-preview-pane', Layout.NoPreview === value);
-			$html.toggleClass('rl-side-preview-pane', Layout.SidePreview === value);
-			$html.toggleClass('rl-bottom-preview-pane', Layout.BottomPreview === value);
-			Events.pub('layout', [value]);
-		});
-	}
-
-	populate() {
-		this.layout(pInt(Settings.settingsGet('Layout')));
-		this.editorDefaultType(Settings.settingsGet('EditorDefaultType'));
-
-		this.autoLogout(pInt(Settings.settingsGet('AutoLogout')));
-		this.messagesPerPage(Settings.settingsGet('MPP'));
-
-		this.showImages(!!Settings.settingsGet('ShowImages'));
-		this.useCheckboxesInList(!!Settings.settingsGet('UseCheckboxesInList'));
-		this.allowDraftAutosave(!!Settings.settingsGet('AllowDraftAutosave'));
-		this.useThreads(!!Settings.settingsGet('UseThreads'));
-		this.replySameFolder(!!Settings.settingsGet('ReplySameFolder'));
-
-		Events.sub('rl.auto-logout-refresh', () => {
-			window.clearTimeout(this.iAutoLogoutTimer);
-			if (0 < this.autoLogout() && !Settings.settingsGet('AccountSignMe')) {
-				this.iAutoLogoutTimer = window.setTimeout(() => {
-					Events.pub('rl.auto-logout');
-				}, this.autoLogout() * Magics.Time1m);
+		let iAutoLogoutTimer;
+		self.delayLogout = (() => {
+			clearTimeout(iAutoLogoutTimer);
+			if (0 < self.autoLogout() && !SettingsGet('accountSignMe')) {
+				iAutoLogoutTimer = setTimeout(
+					rl.app.logout,
+					self.autoLogout() * 60000
+				);
 			}
+		}).throttle(5000);
+	}
+
+	init() {
+		const self = this;
+
+		[
+			'EditorDefaultType',
+			'editorWysiwyg',
+			'messageNewWindow',
+			'messageReadAuto',
+			'MsgDefaultAction',
+			'ViewHTML',
+			'ViewImages',
+			'ViewImagesWhitelist',
+			'RemoveColors',
+			'AllowStyles',
+			'CollapseBlockquotes',
+			'MaxBlockquotesLevel',
+			'ListInlineAttachments',
+			'simpleAttachmentsList',
+			'UseCheckboxesInList',
+			'listGrouped',
+			'showNextMessage',
+			'AllowDraftAutosave',
+			'useThreads',
+			'threadAlgorithm',
+			'ReplySameFolder',
+			'HideUnsubscribed',
+			'HideDeleted',
+			'ShowUnreadCount',
+			'UnhideKolabFolders',
+			'requestReadReceipt',
+			'requestDsn',
+			'requireTLS',
+			'pgpSign',
+			'pgpEncrypt',
+			'allowSpellcheck'
+/*
+			'MessagesPerPage',
+			'MessageReadDelay',
+			'SoundNotification',
+			'NotificationSound',
+			'DesktopNotifications',
+			'Layout',
+			'AutoLogout',
+			'ContactsAutosave',
+			'contactsAllowed',
+			'CheckMailInterval',
+			'SentFolder',
+			'DraftsFolder',
+			'JunkFolder',
+			'TrashFolder',
+			'ArchiveFolder',
+			'hourCycle',
+			'Resizer4Width',
+			'Resizer5Width',
+			'Resizer5Height',
+			'fontSansSerif',
+			'fontSerif',
+			'fontMono',
+			'userBackgroundName',
+			'userBackgroundHash',
+			'autoVerifySignatures',
+			'allowLanguagesOnSettings',
+			'attachmentLimit',
+			'Theme',
+			'language',
+			'clientLanguage',
+			'StaticLibsJs',
+*/
+		].forEach(name => {
+			let value = SettingsGet(name);
+			name = name[0].toLowerCase() + name.slice(1);
+			self[name](value);
 		});
 
-		Events.pub('rl.auto-logout-refresh');
+		self.layout(pInt(SettingsGet('Layout')));
+		self.messagesPerPage(pInt(SettingsGet('MessagesPerPage')));
+		self.checkMailInterval(pInt(SettingsGet('CheckMailInterval')));
+		self.messageReadDelay(pInt(SettingsGet('MessageReadDelay')));
+		self.autoLogout(pInt(SettingsGet('AutoLogout')));
 	}
-}
-
-export default new SettingsUserStore();
+};

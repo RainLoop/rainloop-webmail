@@ -1,0 +1,42 @@
+<div class="legend">
+	<span data-i18n="SETTINGS_FOLDERS/LEGEND_FOLDERS"></span>
+	&nbsp;&nbsp;&nbsp;
+	<i class="icon-spinner" style="margin-top: 5px" data-bind="visible: loading"></i>
+</div>
+
+<div style="margin-bottom:20px;" data-bind="component: {
+	name: 'Checkbox',
+	params: {
+		label: 'SETTINGS_FOLDERS/HIDE_UNSUBSCRIBED',
+		value: hideUnsubscribed
+	}
+}"></div>
+
+<!-- ko if: showKolab -->
+<div style="margin-bottom:20px;" data-bind="component: {
+	name: 'Checkbox',
+	params: {
+		label: 'SETTINGS_FOLDERS/UNHIDE_KOLAB_FOLDERS',
+		value: unhideKolabFolders
+	}
+}"></div>
+<!-- /ko -->
+
+<a class="btn" data-bind="click: createFolder">
+	<i class="icon-folder-add"></i>
+	<span data-i18n="SETTINGS_FOLDERS/BUTTON_CREATE"></span>
+</a>
+&nbsp;&nbsp;
+<a class="btn" data-bind="click: systemFolder" data-icon="🔧" data-i18n="SETTINGS_FOLDERS/BUTTON_SYSTEM"></a>
+<div class="alert folders-list-error" data-bind="visible: folderListOptimized">
+	<b data-i18n="SETTINGS_FOLDERS/TO_MANY_FOLDERS_DESC_1"></b>
+	<br>
+	<span data-i18n="SETTINGS_FOLDERS/TO_MANY_FOLDERS_DESC_2"></span>
+</div>
+<div class="alert folders-list-error" data-bind="visible: '' !== folderListError()">
+	<a href="#" class="close" data-bind="click: hideError">×</a>
+	<span data-bind="text: folderListError"></span>
+</div>
+<table class="table table-hover list-table" data-bind="i18nUpdate: folderList">
+	<tbody data-bind="template: { name: 'SettingsFolderItem', foreach: folderList }"></tbody>
+</table>

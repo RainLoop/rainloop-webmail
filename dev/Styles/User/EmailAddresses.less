@@ -1,0 +1,86 @@
+.emailaddresses {
+	background-color: var(--input-bg-clr, #fff);
+	border: 1px solid var(--input-border-clr, #ccc);
+	border-radius: var(--input-border-radius, 3px);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	color: var(--input-clr, #555);
+	cursor: text;
+	font-size: 90%;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	transition: border linear .2s, box-shadow linear .2s;
+	max-height: 5em;
+	overflow: auto;
+}
+
+.emailaddresses.emailaddresses-focused {
+	border-color: var(--input-focus-border-clr, #999);
+	box-shadow: none;
+}
+
+.emailaddresses li {
+	display: inline-block;
+}
+.emailaddresses li[draggable] {
+	background-color: #eee;
+	border: 1px solid #aaa;
+	border-radius: calc(var(--input-border-radius, 3px) - 1px);
+	box-shadow: 0 1px 0 rgba(255,255,255,0.75) inset;
+	color: #555;
+	cursor: default;
+	max-width: 500px;
+	overflow: hidden;
+	margin: 2px;
+	padding: 2px 15px 2px 5px;
+	position: relative;
+	text-overflow: ellipsis;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
+.emailaddresses li.pgp {
+	background-color: #E5F3E2;
+}
+
+.emailaddresses li span {
+	padding-right: 3px;
+}
+
+.emailaddresses li a {
+	font-size: 85%;
+	color: #999;
+	padding: 1px;
+	position: absolute;
+	right: 2px;
+	text-decoration: none;
+	top: 1px;
+}
+.emailaddresses li a:hover {
+	color: #666;
+}
+
+.emailaddresses .emailaddresses-input {
+	margin: 0 2px;
+	padding: 0;
+}
+
+#rl-app .emailaddresses input[type="text"],
+#rl-app .emailaddresses input[type="text"]:focus,
+#rl-app .emailaddresses input[type="text"]:hover {
+	border: 0;
+	box-shadow: none;
+	height: auto;
+	line-height: inherit;
+	margin: 0;
+	min-width: 18em;
+	max-width: 500px;
+	padding: 4px;
+	vertical-align: baseline;
+}
+
+.emailaddresses li.emailaddresses-selected,
+.emailaddresses li.emailaddresses-selected a {
+	background-color: Highlight;
+	color: HighlightText;
+}

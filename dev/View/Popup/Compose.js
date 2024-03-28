@@ -1,271 +1,288 @@
-import window from 'window';
-import _ from '_';
-import $ from '$';
 import ko from 'ko';
-import key from 'key';
-import Jua from 'Jua';
 
 import {
-	Capa,
-	Magics,
-	KeyState,
-	ComposeType,
-	StorageResultType,
-	EditorDefaultType,
-	Notification,
-	SetSystemFoldersNotification,
+	Notifications,
 	UploadErrorCode
 } from 'Common/Enums';
 
 import {
-	trim,
-	isArray,
-	isNormal,
-	delegateRun,
-	isNonEmptyArray,
-	clearBqSwitcher,
-	replySubjectAdd,
-	encodeHtml,
-	noopFalse,
-	inFocus,
-	delegateRunOnDestroy,
-	pInt,
-	isUnd
-} from 'Common/Utils';
+	ComposeType,
+	FolderType
+} from 'Common/EnumsUser';
+
+import { pInt, isArray, arrayLength, b64Encode } from 'Common/Utils';
+import { encodeHtml, htmlToPlain } from 'Common/Html';
+import { HtmlEditor } from 'Common/HtmlEditor';
+import { koArrayWithDestroy, addObservablesTo, addComputablesTo, addSubscribablesTo } from 'External/ko';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { bXMLHttpRequestSupported, bMobileDevice } from 'Common/Globals';
-import { upload } from 'Common/Links';
-import { i18n, getNotification, getUploadErrorDescByCode } from 'Common/Translator';
-import { format as momentorFormat } from 'Common/Momentor';
-import { getMessageFlagsFromCache, setMessageFlagsToCache, setFolderHash } from 'Common/Cache';
+import { folderInformation } from 'Common/Folders';
+import { serverRequest } from 'Common/Links';
+import { i18n, getNotification, getUploadErrorDescByCode, timestampToString } from 'Common/Translator';
+import { setFolderETag } from 'Common/Cache';
+import { SettingsCapa, SettingsGet, elementById, addShortcut, createElement } from 'Common/Globals';
+//import { exitFullscreen, isFullscreen, toggleFullscreen } from 'Common/Fullscreen';
 
-import { HtmlEditor } from 'Common/HtmlEditor';
+import { AppUserStore } from 'Stores/User/App';
+import { SettingsUserStore } from 'Stores/User/Settings';
+import { IdentityUserStore } from 'Stores/User/Identity';
+import { AccountUserStore } from 'Stores/User/Account';
+import { FolderUserStore } from 'Stores/User/Folder';
 
-import AppStore from 'Stores/User/App';
-import SettingsStore from 'Stores/User/Settings';
-import IdentityStore from 'Stores/User/Identity';
-import AccountStore from 'Stores/User/Account';
-import FolderStore from 'Stores/User/Folder';
-import PgpStore from 'Stores/User/Pgp';
-import MessageStore from 'Stores/User/Message';
-import SocialStore from 'Stores/Social';
+import { PgpUserStore } from 'Stores/User/Pgp';
+import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
+import { GnuPGUserStore } from 'Stores/User/GnuPG';
+import { MailvelopeUserStore } from 'Stores/User/Mailvelope';
+//import { OpenPgpImportPopupView } from 'View/Popup/OpenPgpImport';
+import { SMimeUserStore } from 'Stores/User/SMime';
+import { Passphrases } from 'Storage/Passphrases';
 
-import Remote from 'Remote/User/Ajax';
+import { MessageUserStore } from 'Stores/User/Message';
+import { MessagelistUserStore } from 'Stores/User/Messagelist';
 
-import * as Settings from 'Storage/Settings';
-import * as Events from 'Common/Events';
+import Remote from 'Remote/User/Fetch';
 
 import { ComposeAttachmentModel } from 'Model/ComposeAttachment';
+import { EmailModel } from 'Model/Email';
+import { MimeHeaderAutocryptModel } from 'Model/MimeHeaderAutocrypt';
+import { addressparser } from 'Mime/Address';
 
-import { getApp } from 'Helper/Apps/User';
+import { decorateKoCommands, showScreenPopup } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-import { popup, command, isPopupVisible, showScreenPopup, hideScreenPopup, routeOn, routeOff } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
+import { AskPopupView } from 'View/Popup/Ask';
+import { ContactsPopupView } from 'View/Popup/Contacts';
 
-@popup({
-	name: 'View/Popup/Compose',
-	templateID: 'PopupsCompose'
-})
-class ComposePopupView extends AbstractViewNext {
+/*
+import { ThemeStore } from 'Stores/Theme';
+
+let alreadyFullscreen;
+*/
+let oLastMessage;
+
+const
+	ScopeCompose = 'Compose',
+
+	tpl = createElement('template'),
+
+	base64_encode = text => text ? b64Encode(text).match(/.{1,76}/g).join('\r\n') : '',
+
+	getEmail = value => addressparser(value)[0]?.email || false,
+
+	/**
+	 * @param {Array} aList
+	 * @param {boolean} bFriendly
+	 * @returns {string}
+	 */
+	emailArrayToStringLineHelper = (aList, bFriendly) =>
+		aList.filter(item => item.email).map(item => item.toLine(bFriendly)).join(', '),
+
+	reloadDraftFolder = () => {
+		const draftsFolder = FolderUserStore.draftsFolder();
+		if (draftsFolder && UNUSED_OPTION_VALUE !== draftsFolder) {
+			setFolderETag(draftsFolder, '');
+			if (FolderUserStore.currentFolderFullName() === draftsFolder) {
+				MessagelistUserStore.reload(true);
+			} else {
+				folderInformation(draftsFolder);
+			}
+		}
+	},
+
+	findIdentity = addresses => {
+		addresses = addresses.map(item => item.email);
+		return IdentityUserStore.find(item => addresses.includes(item.email()));
+	},
+
+	/**
+	 * @param {Function} fKoValue
+	 * @param {Array} emails
+	 */
+	addEmailsTo = (fKoValue, emails) => {
+		if (arrayLength(emails)) {
+			const value = fKoValue().trim(),
+				values = emails.map(item => item ? item.toLine() : null)
+					.validUnique();
+
+			fKoValue(value + (value ? ', ' :  '') + values.join(', ').trim());
+		}
+	},
+
+	isPlainEditor = () => 'Plain' === SettingsUserStore.editorDefaultType(),
+
+	/**
+	 * @param {string} prefix
+	 * @param {string} subject
+	 * @returns {string}
+	 */
+	replySubjectAdd = (prefix, subject) => {
+		prefix = prefix.toUpperCase().trim();
+		subject = subject.replace(/\s+/g, ' ').trim();
+
+		let drop = false,
+			re = 'RE' === prefix,
+			fwd = 'FWD' === prefix;
+
+		const parts = [],
+			prefixIsRe = !fwd;
+
+		if (subject) {
+			subject.split(':').forEach(part => {
+				const trimmedPart = part.trim();
+				if (!drop && (/^(RE|FWD)$/i.test(trimmedPart) || /^(RE|FWD)[[(][\d]+[\])]$/i.test(trimmedPart))) {
+					if (!re) {
+						re = !!/^RE/i.test(trimmedPart);
+					}
+
+					if (!fwd) {
+						fwd = !!/^FWD/i.test(trimmedPart);
+					}
+				} else {
+					parts.push(part);
+					drop = true;
+				}
+			});
+		}
+
+		if (prefixIsRe) {
+			re = false;
+		} else {
+			fwd = false;
+		}
+
+		return ((prefixIsRe ? 'Re: ' : 'Fwd: ') + (re ? 'Re: ' : '')
+			+ (fwd ? 'Fwd: ' : '') + parts.join(':').trim()).trim();
+	};
+
+ko.extenders.toggleSubscribe = (target, options) => {
+	target.subscribe(options[1], options[0], 'beforeChange');
+	target.subscribe(options[2], options[0]);
+	return target;
+};
+
+class MimePart {
 	constructor() {
-		super();
+		this.headers = {};
+		this.body = '';
+		this.boundary = '';
+		this.children = [];
+	}
+
+	toString() {
+		const hasSub = this.children.length,
+			boundary = this.boundary || (this.boundary = 'part' + Jua.randomId()),
+			headers = this.headers;
+		if (hasSub && !headers['Content-Type'].includes(boundary)) {
+			headers['Content-Type'] += `; boundary="${boundary}"`;
+		}
+		let result = Object.entries(headers).map(([key, value]) => `${key}: ${value}`).join('\r\n') + '\r\n';
+		if (this.body) {
+			result += '\r\n' + this.body.replace(/\r?\n/g, '\r\n');
+		}
+		if (hasSub) {
+			this.children.forEach(part => result += '\r\n--' + boundary + '\r\n' + part);
+			result += '\r\n--' + boundary + '--\r\n';
+		}
+		return result;
+	}
+}
+
+export class ComposePopupView extends AbstractViewPopup {
+	constructor() {
+		super('Compose');
 
 		const fEmailOutInHelper = (context, identity, name, isIn) => {
-			if (identity && context && identity[name]() && (isIn ? true : context[name]())) {
-				const identityEmail = identity[name]();
-				let list = trim(context[name]()).split(/[,]/);
+			const identityEmail = context && identity?.[name]();
+			if (identityEmail && (isIn ? true : context[name]())) {
+				let list = context[name]().trim().split(',');
 
-				list = _.filter(list, (email) => {
-					email = trim(email);
-					return email && trim(identityEmail) !== email;
+				list = list.filter(email => {
+					email = email.trim();
+					return email && identityEmail.trim() !== email;
 				});
 
-				if (isIn) {
-					list.push(identityEmail);
-				}
+				isIn && list.push(identityEmail);
 
 				context[name](list.join(','));
 			}
 		};
 
-		this.oLastMessage = null;
 		this.oEditor = null;
-		this.aDraftInfo = null;
-		this.sInReplyTo = '';
-		this.bFromDraft = false;
-		this.sReferences = '';
 
 		this.sLastFocusedField = 'to';
 
-		this.resizerTrigger = _.bind(this.resizerTrigger, this);
+		this.allowContacts = AppUserStore.allowContacts();
+		this.allowIdentities = SettingsCapa('Identities');
+		this.allowSpellcheck = SettingsUserStore.allowSpellcheck;
 
-		this.allowContacts = !!AppStore.contactsIsAllowed();
-		this.allowFolders = !!Settings.capa(Capa.Folders);
+		addObservablesTo(this, {
+			// bootstrap dropdown
+			identitiesMenu: null,
 
-		this.bSkipNextHide = false;
-		this.composeInEdit = AppStore.composeInEdit;
-		this.editorDefaultType = SettingsStore.editorDefaultType;
+			from: '',
+			to: '',
+			cc: '',
+			bcc: '',
+			replyTo: '',
 
-		this.capaOpenPGP = PgpStore.capaOpenPGP;
+			subject: '',
 
-		this.identitiesDropdownTrigger = ko.observable(false);
+			isHtml: false,
 
-		this.to = ko.observable('');
-		this.to.focused = ko.observable(false);
-		this.cc = ko.observable('');
-		this.cc.focused = ko.observable(false);
-		this.bcc = ko.observable('');
-		this.bcc.focused = ko.observable(false);
-		this.replyTo = ko.observable('');
-		this.replyTo.focused = ko.observable(false);
+			requestDsn: false,
+			requestReadReceipt: false,
+			requireTLS: false,
+			markAsImportant: false,
 
-		// this.to.subscribe((v) => console.log(v));
+			sendError: false,
+			sendSuccessButSaveError: false,
+			savedError: false,
 
-		ko.computed(() => {
-			switch (true) {
-				case this.to.focused():
-					this.sLastFocusedField = 'to';
-					break;
-				case this.cc.focused():
-					this.sLastFocusedField = 'cc';
-					break;
-				case this.bcc.focused():
-					this.sLastFocusedField = 'bcc';
-					break;
-				// no default
-			}
-		}).extend({ notify: 'always' });
+			sendErrorDesc: '',
+			savedErrorDesc: '',
 
-		this.subject = ko.observable('');
-		this.subject.focused = ko.observable(false);
+			savedTime: 0,
 
-		this.isHtml = ko.observable(false);
+			emptyToError: false,
 
-		this.requestDsn = ko.observable(false);
-		this.requestReadReceipt = ko.observable(false);
-		this.markAsImportant = ko.observable(false);
+			attachmentsInProcessError: false,
+			attachmentsInErrorError: false,
 
-		this.sendError = ko.observable(false);
-		this.sendSuccessButSaveError = ko.observable(false);
-		this.savedError = ko.observable(false);
+			showCc: false,
+			showBcc: false,
+			showReplyTo: false,
 
-		this.sendButtonSuccess = ko.computed(() => !this.sendError() && !this.sendSuccessButSaveError());
+			doSign: false,
+			doEncrypt: false,
 
-		this.sendErrorDesc = ko.observable('');
-		this.savedErrorDesc = ko.observable('');
+			draftsFolder: '',
+			draftUid: 0,
+			sending: false,
+			saving: false,
 
-		this.sendError.subscribe((value) => {
-			if (!value) {
-				this.sendErrorDesc('');
-			}
+			viewArea: 'body',
+
+			attacheMultipleAllowed: false,
+			addAttachmentEnabled: false,
+
+			editorArea: null, // initDom
+
+			currentIdentity: IdentityUserStore()[0]
 		});
 
-		this.savedError.subscribe((value) => {
-			if (!value) {
-				this.savedErrorDesc('');
-			}
+		// Used by ko.bindingHandlers.emailsTags
+		['to','cc','bcc'].forEach(name => {
+			this[name].focused = ko.observable(false);
+			this[name].focused.subscribe(value => value && (this.sLastFocusedField = name));
 		});
 
-		this.sendSuccessButSaveError.subscribe((value) => {
-			if (!value) {
-				this.savedErrorDesc('');
-			}
-		});
+		this.attachments = koArrayWithDestroy();
+		this.encryptOptions = koArrayWithDestroy();
+		this.signOptions = koArrayWithDestroy();
 
-		this.savedTime = ko.observable(0);
-		this.savedTimeText = ko.computed(() =>
-			0 < this.savedTime() ? i18n('COMPOSE/SAVED_TIME', { 'TIME': momentorFormat(this.savedTime() - 1, 'LT') }) : ''
-		);
-
-		this.emptyToError = ko.observable(false);
-		this.emptyToErrorTooltip = ko.computed(() => (this.emptyToError() ? i18n('COMPOSE/EMPTY_TO_ERROR_DESC') : ''));
-
-		this.attachmentsInProcessError = ko.observable(false);
-		this.attachmentsInErrorError = ko.observable(false);
-
-		this.attachmentsErrorTooltip = ko.computed(() => {
-			let result = '';
-			switch (true) {
-				case this.attachmentsInProcessError():
-					result = i18n('COMPOSE/ATTACHMENTS_UPLOAD_ERROR_DESC');
-					break;
-				case this.attachmentsInErrorError():
-					result = i18n('COMPOSE/ATTACHMENTS_ERROR_DESC');
-					break;
-				// no default
-			}
-			return result;
-		});
-
-		this.showCc = ko.observable(false);
-		this.showBcc = ko.observable(false);
-		this.showReplyTo = ko.observable(false);
-
-		this.cc.subscribe((value) => {
-			if (false === this.showCc() && 0 < value.length) {
-				this.showCc(true);
-			}
-		});
-
-		this.bcc.subscribe((value) => {
-			if (false === this.showBcc() && 0 < value.length) {
-				this.showBcc(true);
-			}
-		});
-
-		this.replyTo.subscribe((value) => {
-			if (false === this.showReplyTo() && 0 < value.length) {
-				this.showReplyTo(true);
-			}
-		});
-
-		this.draftFolder = ko.observable('');
-		this.draftUid = ko.observable('');
-		this.sending = ko.observable(false);
-		this.saving = ko.observable(false);
-		this.attachments = ko.observableArray([]);
-
-		this.attachmentsInProcess = ko.computed(() => _.filter(this.attachments(), (item) => item && !item.complete()));
-		this.attachmentsInReady = ko.computed(() => _.filter(this.attachments(), (item) => item && item.complete()));
-		this.attachmentsInError = ko.computed(() => _.filter(this.attachments(), (item) => item && '' !== item.error()));
-
-		this.attachmentsCount = ko.computed(() => this.attachments().length);
-		this.attachmentsInErrorCount = ko.computed(() => this.attachmentsInError().length);
-		this.attachmentsInProcessCount = ko.computed(() => this.attachmentsInProcess().length);
-		this.isDraftFolderMessage = ko.computed(() => '' !== this.draftFolder() && '' !== this.draftUid());
-
-		this.attachmentsPlace = ko.observable(false);
-
-		this.attachments.subscribe(this.resizerTrigger);
-		this.attachmentsPlace.subscribe(this.resizerTrigger);
-
-		this.attachmentsInErrorCount.subscribe((value) => {
-			if (0 === value) {
-				this.attachmentsInErrorError(false);
-			}
-		});
-
-		this.composeUploaderButton = ko.observable(null);
-		this.composeUploaderDropPlace = ko.observable(null);
-		this.dragAndDropEnabled = ko.observable(false);
-		this.dragAndDropOver = ko.observable(false).extend({ throttle: 1 });
-		this.dragAndDropVisible = ko.observable(false).extend({ throttle: 1 });
-		this.attacheMultipleAllowed = ko.observable(false);
-		this.addAttachmentEnabled = ko.observable(false);
-
-		this.composeEditorArea = ko.observable(null);
-
-		this.identities = IdentityStore.identities;
-		this.identitiesOptions = ko.computed(() =>
-			_.map(IdentityStore.identities(), (item) => ({
-				'item': item,
-				'optValue': item.id(),
-				'optText': item.formattedName()
-			}))
-		);
-
-		this.currentIdentity = ko.observable(this.identities()[0] ? this.identities()[0] : null);
+		this.dragAndDropOver = ko.observable(false).extend({ debounce: 1 });
+		this.dragAndDropVisible = ko.observable(false).extend({ debounce: 1 });
 
 		this.currentIdentity.extend({
 			toggleSubscribe: [
@@ -281,564 +298,457 @@ class ComposePopupView extends AbstractViewNext {
 			]
 		});
 
-		this.currentIdentityView = ko.computed(() => {
-			const item = this.currentIdentity();
-			return item ? item.formattedName() : 'unknown';
-		});
-
-		this.to.subscribe((value) => {
-			if (this.emptyToError() && 0 < value.length) {
-				this.emptyToError(false);
-			}
-		});
-
-		this.attachmentsInProcess.subscribe((value) => {
-			if (this.attachmentsInProcessError() && isArray(value) && 0 === value.length) {
-				this.attachmentsInProcessError(false);
-			}
-		});
-
-		this.resizer = ko.observable(false).extend({ throttle: 50 });
-
-		this.resizer.subscribe(() => {
-			if (this.oEditor) {
-				this.oEditor.resize();
-			}
-		});
-
-		this.canBeSentOrSaved = ko.computed(() => !this.sending() && !this.saving());
-
-		this.sendMessageResponse = _.bind(this.sendMessageResponse, this);
-		this.saveMessageResponse = _.bind(this.saveMessageResponse, this);
-
-		Events.sub('interval.2m', () => {
-			if (
-				this.modalVisibility() &&
-				!FolderStore.draftFolderNotEnabled() &&
-				SettingsStore.allowDraftAutosave() &&
-				!this.isEmptyForm(false) &&
-				!this.saving() &&
-				!this.sending() &&
-				!this.savedError()
-			) {
-				this.saveCommand();
-			}
-		});
-
-		this.showCc.subscribe(this.resizerTrigger);
-		this.showBcc.subscribe(this.resizerTrigger);
-		this.showReplyTo.subscribe(this.resizerTrigger);
-
-		this.dropboxEnabled = SocialStore.dropbox.enabled;
-		this.dropboxApiKey = SocialStore.dropbox.apiKey;
-
-		this.driveEnabled = ko.observable(
-			bXMLHttpRequestSupported &&
-				!!Settings.settingsGet('AllowGoogleSocial') &&
-				!!Settings.settingsGet('AllowGoogleSocialDrive') &&
-				!!Settings.settingsGet('GoogleClientID') &&
-				!!Settings.settingsGet('GoogleApiKey')
-		);
-
-		this.driveVisible = ko.observable(false);
-
-		this.driveCallback = _.bind(this.driveCallback, this);
-
-		this.onMessageUploadAttachments = _.bind(this.onMessageUploadAttachments, this);
-
-		this.bDisabeCloseOnEsc = true;
-		this.sDefaultKeyScope = KeyState.Compose;
-
-		this.tryToClosePopup = _.debounce(_.bind(this.tryToClosePopup, this), Magics.Time200ms);
-
-		this.emailsSource = _.bind(this.emailsSource, this);
-		this.autosaveFunction = _.bind(this.autosaveFunction, this);
+		this.tryToClose = this.tryToClose.debounce(200);
 
 		this.iTimer = 0;
+
+		addComputablesTo(this, {
+			sendButtonSuccess: () => !this.sendError() && !this.sendSuccessButSaveError(),
+
+			savedTimeText: () =>
+				this.savedTime() ? i18n('COMPOSE/SAVED_TIME', { TIME: this.savedTime().format('LT') }) : '',
+
+			emptyToErrorTooltip: () => (this.emptyToError() ? i18n('COMPOSE/EMPTY_TO_ERROR_DESC') : ''),
+
+			attachmentsErrorTooltip: () => {
+				let result = '';
+				switch (true) {
+					case this.attachmentsInProcessError():
+						result = i18n('COMPOSE/ATTACHMENTS_UPLOAD_ERROR_DESC');
+						break;
+					case this.attachmentsInErrorError():
+						result = i18n('COMPOSE/ATTACHMENTS_ERROR_DESC');
+						break;
+					// no default
+				}
+				return result;
+			},
+
+			attachmentsInProcess: () => this.attachments.filter(item => item && !item.complete()),
+			attachmentsInError: () => this.attachments.filter(item => item?.error()),
+
+			attachmentsCount: () => this.attachments().length,
+			attachmentsInErrorCount: () => this.attachmentsInError.length,
+			attachmentsInProcessCount: () => this.attachmentsInProcess.length,
+			isDraft: () => this.draftsFolder() && this.draftUid(),
+
+			canEncrypt: () => this.encryptOptions().length,
+			canMailvelope: () => this.encryptOptions.includes('Mailvelope'),
+			canSign: () => this.signOptions().length,
+
+			identitiesOptions: () =>
+				IdentityUserStore.map(item => ({
+					item: item,
+					optValue: item.id(),
+					optText: item.formattedName()
+				})),
+
+			canBeSentOrSaved: () => !this.sending() && !this.saving()
+		});
+
+		addSubscribablesTo(this, {
+			sendError: value => !value && this.sendErrorDesc(''),
+
+			savedError: value => !value && this.savedErrorDesc(''),
+
+			sendSuccessButSaveError: value => !value && this.savedErrorDesc(''),
+
+			currentIdentity: value => {
+				if (value) {
+					this.from(value.formattedName());
+					this.doEncrypt(value.pgpEncrypt() || SettingsUserStore.pgpEncrypt());
+					this.doSign(value.pgpSign() || SettingsUserStore.pgpSign());
+				}
+			},
+
+			from: () => {
+				this.initSign();
+				this.initEncrypt();
+			},
+
+			cc: value => {
+				if (false === this.showCc() && value.length) {
+					this.showCc(true);
+				}
+				this.initEncrypt();
+			},
+
+			bcc: value => {
+				if (false === this.showBcc() && value.length) {
+					this.showBcc(true);
+				}
+				this.initEncrypt();
+			},
+
+			replyTo: value => {
+				if (false === this.showReplyTo() && value.length) {
+					this.showReplyTo(true);
+				}
+			},
+
+			attachmentsInErrorCount: value => {
+				if (0 === value) {
+					this.attachmentsInErrorError(false);
+				}
+			},
+
+			to: value => {
+				if (this.emptyToError() && value.length) {
+					this.emptyToError(false);
+				}
+				this.initEncrypt();
+			},
+
+			attachmentsInProcess: value => {
+				if (this.attachmentsInProcessError() && arrayLength(value)) {
+					this.attachmentsInProcessError(false);
+				}
+			},
+
+			viewArea: value => {
+				if (!this.mailvelope && 'mailvelope' == value) {
+					/**
+					 * Creates an iframe with an editor for a new encrypted mail.
+					 * The iframe will be injected into the container identified by selector.
+					 * https://mailvelope.github.io/mailvelope/Editor.html
+					 */
+					let armored = oLastMessage && oLastMessage.body.classList.contains('mailvelope'),
+						text = armored ? oLastMessage.plain() : this.oEditor.getData(),
+						draft = this.isDraft(),
+						encrypted = PgpUserStore.isEncrypted(text),
+						size = SettingsGet('phpUploadSizes')['post_max_size'],
+						quota = pInt(size);
+					switch (size.slice(-1)) {
+						case 'G': quota *= 1024; // fallthrough
+						case 'M': quota *= 1024; // fallthrough
+						case 'K': quota *= 1024;
+					}
+					// Issue: can't select signing key
+//					this.doSign(this.doSign() || confirm('Sign this message?'));
+					mailvelope.createEditorContainer('#mailvelope-editor', PgpUserStore.mailvelopeKeyring, {
+						// https://mailvelope.github.io/mailvelope/global.html#EditorContainerOptions
+						quota: Math.max(2048, (quota / 1024)) - 48, // (text + attachments) limit in kilobytes
+						armoredDraft: (encrypted && draft) ? text : '', // Ascii Armored PGP Text Block
+						predefinedText: encrypted ? '' : (this.oEditor.isHtml() ? htmlToPlain(text) : text),
+						quotedMail: (encrypted && !draft) ? text : '', // Ascii Armored PGP Text Block mail that should be quoted
+/*
+						quotedMailIndent: true, // if true the quoted mail will be indented (default: true)
+						quotedMailHeader: '', // header to be added before the quoted mail
+						keepAttachments: false, // add attachments of quotedMail to editor (default: false)
+						// Issue: can't select signing key
+						signMsg: this.doSign()
+*/
+					}).then(editor => this.mailvelope = editor);
+				}
+			}
+		});
+
+		decorateKoCommands(this, {
+			sendCommand: self => self.canBeSentOrSaved(),
+			saveCommand: self => self.canBeSentOrSaved(),
+			deleteCommand: self => self.isDraft(),
+			skipCommand: self => self.canBeSentOrSaved(),
+			contactsCommand: self => self.allowContacts
+		});
+
+		this.from(IdentityUserStore()[0].formattedName());
 	}
 
-	@command((self) => self.canBeSentOrSaved())
 	sendCommand() {
-		const sTo = trim(this.to()),
-			sCc = trim(this.cc()),
-			sBcc = trim(this.bcc());
-		let sSentFolder = FolderStore.sentFolder();
+		const identity = this.currentIdentity();
+		let sSentFolder = identity?.sentFolder?.() || FolderUserStore.sentFolder();
 
 		this.attachmentsInProcessError(false);
 		this.attachmentsInErrorError(false);
 		this.emptyToError(false);
 
-		if (0 < this.attachmentsInProcess().length) {
+		if (this.attachmentsInProcess().length) {
 			this.attachmentsInProcessError(true);
-			this.attachmentsPlace(true);
-		} else if (0 < this.attachmentsInError().length) {
+			this.attachmentsArea();
+		} else if (this.attachmentsInError().length) {
 			this.attachmentsInErrorError(true);
-			this.attachmentsPlace(true);
+			this.attachmentsArea();
 		}
 
-		if ('' === sTo && '' === sCc && '' === sBcc) {
+		if (!this.to().trim() && !this.cc().trim() && !this.bcc().trim()) {
 			this.emptyToError(true);
 		}
 
 		if (!this.emptyToError() && !this.attachmentsInErrorError() && !this.attachmentsInProcessError()) {
-			if (SettingsStore.replySameFolder()) {
+			if (SettingsUserStore.replySameFolder()) {
 				if (
-					isArray(this.aDraftInfo) &&
-					3 === this.aDraftInfo.length &&
-					isNormal(this.aDraftInfo[2]) &&
-					0 < this.aDraftInfo[2].length
+					3 === arrayLength(this.aDraftInfo) &&
+					null != this.aDraftInfo[2] &&
+					this.aDraftInfo[2].length
 				) {
 					sSentFolder = this.aDraftInfo[2];
 				}
 			}
 
-			if (!this.allowFolders) {
-				sSentFolder = UNUSED_OPTION_VALUE;
-			}
-
-			if ('' === sSentFolder) {
-				showScreenPopup(require('View/Popup/FolderSystem'), [SetSystemFoldersNotification.Sent]);
-			} else {
+			if (!sSentFolder) {
+				showScreenPopup(FolderSystemPopupView, [FolderType.Sent]);
+			} else try {
 				this.sendError(false);
 				this.sending(true);
 
-				if (isArray(this.aDraftInfo) && 3 === this.aDraftInfo.length) {
-					const flagsCache = getMessageFlagsFromCache(this.aDraftInfo[2], this.aDraftInfo[1]);
-					if (flagsCache) {
-						if ('forward' === this.aDraftInfo[0]) {
-							flagsCache[3] = true;
-						} else {
-							flagsCache[2] = true;
-						}
-
-						setMessageFlagsToCache(this.aDraftInfo[2], this.aDraftInfo[1], flagsCache);
-						getApp().reloadFlagsCurrentMessageListAndMessageFromCache();
-						setFolderHash(this.aDraftInfo[2], '');
-					}
-				}
-
 				sSentFolder = UNUSED_OPTION_VALUE === sSentFolder ? '' : sSentFolder;
 
-				setFolderHash(this.draftFolder(), '');
-				setFolderHash(sSentFolder, '');
-
-				Remote.sendMessage(
-					this.sendMessageResponse,
-					this.currentIdentity() ? this.currentIdentity().id() : '',
-					this.draftFolder(),
-					this.draftUid(),
-					sSentFolder,
-					sTo,
-					this.cc(),
-					this.bcc(),
-					this.replyTo(),
-					this.subject(),
-					this.oEditor ? this.oEditor.isHtml() : false,
-					this.oEditor ? this.oEditor.getData(true) : '',
-					this.prepearAttachmentsForSendOrSave(),
-					this.aDraftInfo,
-					this.sInReplyTo,
-					this.sReferences,
-					this.requestDsn(),
-					this.requestReadReceipt(),
-					this.markAsImportant()
-				);
+				this.getMessageRequestParams(sSentFolder).then(params => {
+					Remote.request('SendMessage',
+						(iError, data) => {
+							this.sending(false);
+							if (iError) {
+								if (Notifications.CantSaveMessage === iError) {
+									this.sendSuccessButSaveError(true);
+									let msg = i18n('COMPOSE/SAVED_ERROR_ON_SEND');
+									if (data?.ErrorMessageAdditional) {
+										msg = msg + "\n" + data?.ErrorMessageAdditional;
+									}
+									this.savedErrorDesc(msg);
+								} else {
+									params.signPassphrase && Passphrases.delete(identity);
+									this.sendError(true);
+									this.sendErrorDesc(
+										getNotification(iError, data?.ErrorMessage, Notifications.CantSendMessage)
+										+ "\n" + data?.ErrorMessageAdditional
+									);
+								}
+							} else {
+								if (arrayLength(this.aDraftInfo) > 0) {
+									const flag = {
+										'reply': '\\answered',
+										'forward': '$forwarded'
+									}[this.aDraftInfo[0]];
+									if (flag) {
+										const aFlags = oLastMessage.flags();
+										if (aFlags.indexOf(flag) === -1) {
+											aFlags.push(flag);
+											oLastMessage.flags(aFlags);
+										}
+									}
+								}
+								this.close();
+							}
+							setFolderETag(this.draftsFolder(), '');
+							setFolderETag(sSentFolder, '');
+							if (3 === arrayLength(this.aDraftInfo)) {
+								const folder = this.aDraftInfo[2];
+								setFolderETag(folder, '');
+							}
+							reloadDraftFolder();
+						},
+						params,
+						30000
+					);
+				}).catch(e => {
+					console.error(e);
+					this.sendError(true);
+					this.sendErrorDesc(e);
+					this.sending(false);
+				});
+			} catch (e) {
+				console.error(e);
+				this.sendError(true);
+				this.sendErrorDesc(e);
+				this.sending(false);
 			}
 		}
 	}
 
-	@command((self) => self.canBeSentOrSaved())
 	saveCommand() {
-		if (!this.allowFolders) {
-			return false;
+		if (!this.saving() && !this.sending()) {
+			if (FolderUserStore.draftsFolderNotEnabled()) {
+				showScreenPopup(FolderSystemPopupView, [FolderType.Drafts]);
+			} else {
+				this.savedError(false);
+				this.saving(true);
+				this.autosaveStart();
+				this.getMessageRequestParams(FolderUserStore.draftsFolder(), 1).then(params => {
+					Remote.request('SaveMessage',
+						(iError, oData) => {
+							let result = false;
+
+							this.saving(false);
+
+							if (!iError) {
+								if (oData.Result.folder && oData.Result.uid) {
+									result = true;
+
+									if (this.bFromDraft) {
+										const message = MessageUserStore.message();
+										if (message && this.draftsFolder() === message.folder && this.draftUid() == message.uid) {
+											MessageUserStore.message(null);
+										}
+									}
+
+									this.draftsFolder(oData.Result.folder);
+									this.draftUid(oData.Result.uid);
+
+									this.savedTime(new Date);
+
+									if (this.bFromDraft) {
+										setFolderETag(this.draftsFolder(), '');
+									}
+									setFolderETag(FolderUserStore.draftsFolder(), '');
+								}
+							}
+
+							if (!result) {
+								this.savedError(true);
+								this.savedErrorDesc(getNotification(Notifications.CantSaveMessage));
+							}
+
+							reloadDraftFolder();
+						},
+						params,
+						200000
+					);
+				}).catch(e => {
+					this.saving(false);
+					this.savedError(true);
+					this.savedErrorDesc(getNotification(Notifications.CantSaveMessage) + ': ' + e);
+				});
+			}
 		}
-
-		if (FolderStore.draftFolderNotEnabled()) {
-			showScreenPopup(require('View/Popup/FolderSystem'), [SetSystemFoldersNotification.Draft]);
-		} else {
-			this.savedError(false);
-			this.saving(true);
-
-			this.autosaveStart();
-
-			setFolderHash(FolderStore.draftFolder(), '');
-
-			Remote.saveMessage(
-				this.saveMessageResponse,
-				this.currentIdentity() ? this.currentIdentity().id() : '',
-				this.draftFolder(),
-				this.draftUid(),
-				FolderStore.draftFolder(),
-				this.to(),
-				this.cc(),
-				this.bcc(),
-				this.replyTo(),
-				this.subject(),
-				this.oEditor ? this.oEditor.isHtml() : false,
-				this.oEditor ? this.oEditor.getData(true) : '',
-				this.prepearAttachmentsForSendOrSave(),
-				this.aDraftInfo,
-				this.sInReplyTo,
-				this.sReferences,
-				this.markAsImportant()
-			);
-		}
-
-		return true;
 	}
 
-	@command((self) => self.isDraftFolderMessage())
 	deleteCommand() {
-		const PopupsAskViewModel = require('View/Popup/Ask');
-		if (!isPopupVisible(PopupsAskViewModel) && this.modalVisibility()) {
-			showScreenPopup(PopupsAskViewModel, [
-				i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'),
-				() => {
-					if (this.modalVisibility()) {
-						getApp().deleteMessagesFromFolderWithoutCheck(this.draftFolder(), [this.draftUid()]);
-						hideScreenPopup(ComposePopupView);
-					}
-				}
-			]);
-		}
+		AskPopupView.hidden()
+		&& showScreenPopup(AskPopupView, [
+			i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'),
+			() => {
+				const
+					sFromFolderFullName = this.draftsFolder(),
+					oUids = new Set([this.draftUid()]);
+				MessagelistUserStore.moveMessages(sFromFolderFullName, oUids);
+				this.close();
+			}
+		]);
 	}
 
-	@command((self) => self.canBeSentOrSaved())
-	skipCommand() {
-		this.bSkipNextHide = true;
+	onClose() {
+		this.skipCommand();
+		return false;
+	}
 
-		if (
-			this.modalVisibility() &&
-			!this.saving() &&
-			!this.sending() &&
-			!FolderStore.draftFolderNotEnabled() &&
-			SettingsStore.allowDraftAutosave()
-		) {
+	skipCommand() {
+		ComposePopupView.inEdit(true);
+
+		if (!FolderUserStore.draftsFolderNotEnabled() && SettingsUserStore.allowDraftAutosave()) {
 			this.saveCommand();
 		}
 
-		this.tryToClosePopup();
+		this.tryToClose();
 	}
 
-	@command((self) => self.allowContacts)
 	contactsCommand() {
 		if (this.allowContacts) {
 			this.skipCommand();
-			_.delay(() => {
-				showScreenPopup(require('View/Popup/Contacts'), [true, this.sLastFocusedField]);
-			}, Magics.Time200ms);
+			setTimeout(() => {
+				showScreenPopup(ContactsPopupView, [true, this.sLastFocusedField]);
+			}, 200);
 		}
-	}
-
-	@command((self) => self.dropboxEnabled())
-	dropboxCommand() {
-		if (window.Dropbox) {
-			window.Dropbox.choose({
-				success: (files) => {
-					if (files && files[0] && files[0].link) {
-						this.addDropboxAttachment(files[0]);
-					}
-				},
-				linkType: 'direct',
-				multiselect: false
-			});
-		}
-		return true;
-	}
-
-	@command((self) => self.driveEnabled())
-	driveCommand() {
-		this.driveOpenPopup();
-		return true;
-	}
-
-	autosaveFunction() {
-		if (
-			this.modalVisibility() &&
-			!FolderStore.draftFolderNotEnabled() &&
-			SettingsStore.allowDraftAutosave() &&
-			!this.isEmptyForm(false) &&
-			!this.saving() &&
-			!this.sending() &&
-			!this.savedError()
-		) {
-			this.saveCommand();
-		}
-
-		this.autosaveStart();
 	}
 
 	autosaveStart() {
-		window.clearTimeout(this.iTimer);
-		this.iTimer = window.setTimeout(this.autosaveFunction, Magics.Time1m);
-	}
-
-	autosaveStop() {
-		window.clearTimeout(this.iTimer);
-	}
-
-	emailsSource(oData, fResponse) {
-		getApp().getAutocomplete(oData.term, (aData) => {
-			fResponse(_.map(aData, (oEmailItem) => oEmailItem.toLine(false)));
-		});
-	}
-
-	openOpenPgpPopup() {
-		if (PgpStore.capaOpenPGP() && this.oEditor && !this.oEditor.isHtml()) {
-			showScreenPopup(require('View/Popup/ComposeOpenPgp'), [
-				(result) => {
-					this.editor((editor) => {
-						editor.setPlain(result);
-					});
-				},
-				this.oEditor.getData(false),
-				this.currentIdentity(),
-				this.to(),
-				this.cc(),
-				this.bcc()
-			]);
-		}
-	}
-
-	reloadDraftFolder() {
-		const draftFolder = FolderStore.draftFolder();
-		if ('' !== draftFolder && UNUSED_OPTION_VALUE !== draftFolder) {
-			setFolderHash(draftFolder, '');
-			if (FolderStore.currentFolderFullNameRaw() === draftFolder) {
-				getApp().reloadMessageList(true);
-			} else {
-				getApp().folderInformation(draftFolder);
+		clearTimeout(this.iTimer);
+		this.iTimer = setTimeout(()=>{
+			if (this.modalVisible()
+				&& !FolderUserStore.draftsFolderNotEnabled()
+				&& SettingsUserStore.allowDraftAutosave()
+				&& !this.isEmptyForm(false)
+				&& !this.savedError()
+			) {
+				this.saveCommand();
 			}
-		}
+
+			this.autosaveStart();
+		}, 60000);
 	}
 
-	findIdentityByMessage(composeType, message) {
-		let resultIndex = 1000,
-			resultIdentity = null;
-		const identities = IdentityStore.identities(),
-			identitiesCache = {},
-			fEachHelper = (item) => {
-				if (item && item.email && identitiesCache[item.email]) {
-					if (!resultIdentity || resultIndex > identitiesCache[item.email][1]) {
-						resultIdentity = identitiesCache[item.email][0];
-						resultIndex = identitiesCache[item.email][1];
-					}
+	// getAutocomplete
+	emailsSource(value, fResponse) {
+		Remote.abort('Suggestions').request('Suggestions',
+			(iError, data) => {
+				if (!iError && isArray(data.Result)) {
+					fResponse(
+						data.Result.map(item => (item?.[0] ? (new EmailModel(item[0], item[1])).toLine() : null))
+						.filter(v => v)
+					);
+				} else if (Notifications.RequestAborted !== iError) {
+					fResponse([]);
 				}
-			};
-
-		_.each(identities, (item, index) => {
-			identitiesCache[item.email()] = [item, index];
-		});
-
-		if (message) {
-			switch (composeType) {
-				case ComposeType.Empty:
-					break;
-				case ComposeType.Reply:
-				case ComposeType.ReplyAll:
-				case ComposeType.Forward:
-				case ComposeType.ForwardAsAttachment:
-					_.each(_.union(message.to, message.cc, message.bcc), fEachHelper);
-					if (!resultIdentity) {
-						_.each(message.deliveredTo, fEachHelper);
-					}
-					break;
-				case ComposeType.Draft:
-					_.each(_.union(message.from, message.replyTo), fEachHelper);
-					break;
-				// no default
+			},
+			{
+				Query: value
+//				,Page: 1
 			}
-		}
-
-		return resultIdentity || identities[0] || null;
+		);
 	}
 
 	selectIdentity(identity) {
-		if (identity && identity.item) {
-			this.currentIdentity(identity.item);
-			this.setSignatureFromIdentity(identity.item);
+		identity = identity?.item;
+		if (identity) {
+			this.currentIdentity(identity);
+			this.setSignature(identity);
 		}
-	}
-
-	sendMessageResponse(statusResult, data) {
-		let result = false,
-			message = '';
-
-		this.sending(false);
-
-		if (StorageResultType.Success === statusResult && data && data.Result) {
-			result = true;
-			if (this.modalVisibility()) {
-				delegateRun(this, 'closeCommand');
-			}
-		}
-
-		if (this.modalVisibility() && !result) {
-			if (data && Notification.CantSaveMessage === data.ErrorCode) {
-				this.sendSuccessButSaveError(true);
-				this.savedErrorDesc(trim(i18n('COMPOSE/SAVED_ERROR_ON_SEND')));
-			} else {
-				message = getNotification(
-					data && data.ErrorCode ? data.ErrorCode : Notification.CantSendMessage,
-					data && data.ErrorMessage ? data.ErrorMessage : ''
-				);
-
-				this.sendError(true);
-				this.sendErrorDesc(message || getNotification(Notification.CantSendMessage));
-			}
-		}
-
-		this.reloadDraftFolder();
-	}
-
-	saveMessageResponse(statusResult, oData) {
-		let result = false;
-
-		this.saving(false);
-
-		if (StorageResultType.Success === statusResult && oData && oData.Result) {
-			if (oData.Result.NewFolder && oData.Result.NewUid) {
-				result = true;
-
-				if (this.bFromDraft) {
-					const message = MessageStore.message();
-					if (message && this.draftFolder() === message.folderFullNameRaw && this.draftUid() === message.uid) {
-						MessageStore.message(null);
-					}
-				}
-
-				this.draftFolder(oData.Result.NewFolder);
-				this.draftUid(oData.Result.NewUid);
-
-				this.savedTime(window.Math.round(new window.Date().getTime() / 1000));
-
-				if (this.bFromDraft) {
-					setFolderHash(this.draftFolder(), '');
-				}
-			}
-		}
-
-		if (!result) {
-			this.savedError(true);
-			this.savedErrorDesc(getNotification(Notification.CantSaveMessage));
-		}
-
-		this.reloadDraftFolder();
 	}
 
 	onHide() {
-		this.autosaveStop();
+		// Stop autosave
+		clearTimeout(this.iTimer);
 
-		if (!this.bSkipNextHide) {
-			AppStore.composeInEdit(false);
-			this.reset();
-		}
-
-		this.bSkipNextHide = false;
+		ComposePopupView.inEdit() || this.reset();
 
 		this.to.focused(false);
 
-		routeOn();
+//		alreadyFullscreen || exitFullscreen();
+	}
+
+	dropMailvelope() {
+		if (this.mailvelope) {
+			elementById('mailvelope-editor').textContent = '';
+			this.mailvelope = null;
+		}
 	}
 
 	editor(fOnInit) {
-		if (fOnInit) {
-			if (!this.oEditor && this.composeEditorArea()) {
-				// _.delay(() => {
+		if (fOnInit && this.editorArea()) {
+			if (this.oEditor) {
+				fOnInit(this.oEditor);
+			} else {
+				// setTimeout(() => {
 				this.oEditor = new HtmlEditor(
-					this.composeEditorArea(),
-					null,
-					() => {
-						fOnInit(this.oEditor);
-						this.resizerTrigger();
-					},
-					(bHtml) => {
-						this.isHtml(!!bHtml);
-					}
+					this.editorArea(),
+					() => fOnInit(this.oEditor),
+					bHtml => this.isHtml(!!bHtml)
 				);
 				// }, 1000);
-			} else if (this.oEditor) {
-				fOnInit(this.oEditor);
-				this.resizerTrigger();
 			}
 		}
 	}
 
-	converSignature(signature) {
-		let limit = 10,
-			fromLine = '';
-
-		const moments = [],
-			momentRegx = /{{MOMENT:([^}]+)}}/g;
-
-		signature = signature.replace(/[\r]/g, '');
-
-		fromLine = this.oLastMessage ? this.emailArrayToStringLineHelper(this.oLastMessage.from, true) : '';
-		if ('' !== fromLine) {
-			signature = signature.replace(/{{FROM-FULL}}/g, fromLine);
-
-			if (-1 === fromLine.indexOf(' ') && 0 < fromLine.indexOf('@')) {
-				fromLine = fromLine.replace(/@[\S]+/, '');
-			}
-
-			signature = signature.replace(/{{FROM}}/g, fromLine);
-		}
-
-		signature = signature.replace(/[\s]{1,2}{{FROM}}/g, '{{FROM}}');
-		signature = signature.replace(/[\s]{1,2}{{FROM-FULL}}/g, '{{FROM-FULL}}');
-
-		signature = signature.replace(/{{FROM}}/g, '');
-		signature = signature.replace(/{{FROM-FULL}}/g, '');
-
-		if (-1 < signature.indexOf('{{DATE}}')) {
-			signature = signature.replace(/{{DATE}}/g, momentorFormat(0, 'llll'));
-		}
-
-		if (-1 < signature.indexOf('{{TIME}}')) {
-			signature = signature.replace(/{{TIME}}/g, momentorFormat(0, 'LT'));
-		}
-		if (-1 < signature.indexOf('{{MOMENT:')) {
-			try {
-				let match = null;
-				while (null !== (match = momentRegx.exec(signature))) {
-					// eslint-disable-line no-cond-assign
-					if (match && match[0] && match[1]) {
-						moments.push([match[0], match[1]]);
+	setSignature(identity, msgComposeType) {
+		if (identity && ComposeType.Draft !== msgComposeType && ComposeType.EditAsNew !== msgComposeType) {
+			this.editor(editor => {
+				let signature = identity.signature() || '',
+					isHtml = signature.startsWith(':HTML:'),
+					fromLine = oLastMessage ? emailArrayToStringLineHelper(oLastMessage.from, true) : '';
+				if (fromLine) {
+					signature = signature.replace(/{{FROM-FULL}}/g, fromLine);
+					if (!fromLine.includes(' ') && 0 < fromLine.indexOf('@')) {
+						fromLine = fromLine.replace(/@\S+/, '');
 					}
-
-					limit -= 1;
-					if (0 === limit) {
-						break;
-					}
+					signature = signature.replace(/{{FROM}}/g, fromLine);
 				}
-
-				if (moments && 0 < moments.length) {
-					_.each(moments, (data) => {
-						signature = signature.replace(data[0], momentorFormat(0, data[1]));
-					});
-				}
-
-				signature = signature.replace(/{{MOMENT:[^}]+}}/g, '');
-			} catch (e) {} // eslint-disable-line no-empty
-		}
-
-		return signature;
-	}
-
-	setSignatureFromIdentity(identity) {
-		if (identity) {
-			this.editor((editor) => {
-				let isHtml = false,
-					signature = identity.signature();
-
-				if ('' !== signature) {
-					if (':HTML:' === signature.substr(0, 6)) {
-						isHtml = true;
-						signature = signature.substr(6);
-					}
-				}
-
-				editor.setSignature(this.converSignature(signature), isHtml, !!identity.signatureInsertBefore());
+				signature = (isHtml ? signature.slice(6) : signature)
+					.replace(/\r/g, '')
+					.replace(/\s{1,2}?{{FROM}}/g, '')
+					.replace(/\s{1,2}?{{FROM-FULL}}/g, '')
+					.replace(/{{DATE}}/g, new Date().format({dateStyle: 'full', timeStyle: 'short'}))
+					.replace(/{{TIME}}/g, new Date().format('LT'))
+					.replace(/{{MOMENT:[^}]+}}/g, '');
+				signature.length && editor.setSignature(signature, isHtml, !!identity.signatureInsertBefore());
 			});
 		}
 	}
@@ -853,588 +763,444 @@ class ComposePopupView extends AbstractViewNext {
 	 * @param {string=} sCustomPlainText = null
 	 */
 	onShow(type, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText) {
-		routeOff();
-
 		this.autosaveStart();
 
-		if (AppStore.composeInEdit()) {
-			type = type || ComposeType.Empty;
-			if (ComposeType.Empty !== type) {
-				showScreenPopup(require('View/Popup/Ask'), [
+		this.viewModelDom.dataset.wysiwyg = SettingsUserStore.editorDefaultType();
+
+		let options = {
+			mode: type || ComposeType.Empty,
+			to:  aToEmails,
+			cc:  aCcEmails,
+			bcc: aBccEmails,
+			subject: sCustomSubject,
+			text: sCustomPlainText
+		};
+		if (1 < arrayLength(oMessageOrArray)) {
+			options.messages = oMessageOrArray;
+		} else {
+			options.message = isArray(oMessageOrArray) ? oMessageOrArray[0] : oMessageOrArray;
+		}
+
+		if (ComposePopupView.inEdit()) {
+			if (ComposeType.Empty !== options.mode) {
+				showScreenPopup(AskPopupView, [
 					i18n('COMPOSE/DISCARD_UNSAVED_DATA'),
-					() => {
-						this.initOnShow(type, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText);
-					},
-					null,
-					null,
+					() => this.initOnShow(options),
 					null,
 					false
 				]);
 			} else {
-				this.addEmailsTo(this.to, aToEmails);
-				this.addEmailsTo(this.cc, aCcEmails);
-				this.addEmailsTo(this.bcc, aBccEmails);
+				addEmailsTo(this.to, aToEmails);
+				addEmailsTo(this.cc, aCcEmails);
+				addEmailsTo(this.bcc, aBccEmails);
 
-				if (isNormal(sCustomSubject) && '' !== sCustomSubject && '' === this.subject()) {
+				if (sCustomSubject && !this.subject()) {
 					this.subject(sCustomSubject);
 				}
 			}
 		} else {
-			this.initOnShow(type, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText);
+			this.initOnShow(options);
 		}
-	}
 
-	onWarmUp() {
-		if (this.modalVisibility && !this.modalVisibility()) {
-			this.editor((editor) => editor.modeToggle(false));
-		}
-	}
-
-	/**
-	 * @param {Function} fKoValue
-	 * @param {Array} emails
-	 */
-	addEmailsTo(fKoValue, emails) {
-		if (isNonEmptyArray(emails)) {
-			const value = trim(fKoValue()),
-				values = _.uniq(_.compact(_.map(emails, (item) => (item ? item.toLine(false) : null))));
-
-			fKoValue(value + ('' === value ? '' : ', ') + trim(values.join(', ')));
-		}
+		ComposePopupView.inEdit(false);
+		// Chrome bug #298
+//		alreadyFullscreen = isFullscreen();
+//		alreadyFullscreen || (ThemeStore.isMobile() && toggleFullscreen());
 	}
 
 	/**
-	 *
-	 * @param {Array} aList
-	 * @param {boolean} bFriendly
-	 * @returns {string}
+	 * @param {object} options
 	 */
-	emailArrayToStringLineHelper(aList, bFriendly) {
-		bFriendly = !!bFriendly;
-		return _.map(aList, (item) => item.toLine(bFriendly)).join(', ');
-	}
+	initOnShow(options) {
 
-	/**
-	 * @param {string=} sType = ComposeType.Empty
-	 * @param {?MessageModel|Array=} oMessageOrArray = null
-	 * @param {Array=} aToEmails = null
-	 * @param {Array=} aCcEmails = null
-	 * @param {Array=} aBccEmails = null
-	 * @param {string=} sCustomSubject = null
-	 * @param {string=} sCustomPlainText = null
-	 */
-	initOnShow(sType, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText) {
-		AppStore.composeInEdit(true);
+		const
+//			excludeEmail = new Set(),
+			excludeEmail = {},
+			mEmail = AccountUserStore.email();
 
-		let sFrom = '',
-			sTo = '',
-			sCc = '',
-			sDate = '',
-			sSubject = '',
-			sText = '',
-			sReplyTitle = '',
-			identity = null,
-			aDraftInfo = null,
-			message = null;
+		oLastMessage = options.message;
 
-		const excludeEmail = {},
-			mEmail = AccountStore.email(),
-			lineComposeType = sType || ComposeType.Empty;
-
-		oMessageOrArray = oMessageOrArray || null;
-		if (oMessageOrArray && isNormal(oMessageOrArray)) {
-			message =
-				isArray(oMessageOrArray) && 1 === oMessageOrArray.length
-					? oMessageOrArray[0]
-					: !isArray(oMessageOrArray)
-					? oMessageOrArray
-					: null;
-		}
-
-		this.oLastMessage = message;
-
-		if (null !== mEmail) {
+		if (mEmail) {
+//			excludeEmail.add(mEmail);
 			excludeEmail[mEmail] = true;
 		}
 
 		this.reset();
 
-		identity = this.findIdentityByMessage(lineComposeType, message);
+		let identity = null;
+		if (oLastMessage) {
+			switch (options.mode) {
+				case ComposeType.Reply:
+				case ComposeType.ReplyAll:
+				case ComposeType.Forward:
+				case ComposeType.ForwardAsAttachment:
+					identity = findIdentity(oLastMessage.to.concat(oLastMessage.cc, oLastMessage.bcc))
+						/* || findIdentity(oLastMessage.deliveredTo)*/;
+					break;
+				case ComposeType.Draft:
+					identity = findIdentity(oLastMessage.from.concat(oLastMessage.replyTo));
+					break;
+				// no default
+//				case ComposeType.Empty:
+			}
+		}
+		identity = identity || IdentityUserStore()[0];
 		if (identity) {
+//			excludeEmail.add(identity.email());
 			excludeEmail[identity.email()] = true;
 		}
 
-		if (isNonEmptyArray(aToEmails)) {
-			this.to(this.emailArrayToStringLineHelper(aToEmails));
+		if (arrayLength(options.to)) {
+			this.to(emailArrayToStringLineHelper(options.to));
 		}
 
-		if (isNonEmptyArray(aCcEmails)) {
-			this.cc(this.emailArrayToStringLineHelper(aCcEmails));
+		if (arrayLength(options.cc)) {
+			this.cc(emailArrayToStringLineHelper(options.cc));
 		}
 
-		if (isNonEmptyArray(aBccEmails)) {
-			this.bcc(this.emailArrayToStringLineHelper(aBccEmails));
+		if (arrayLength(options.bcc)) {
+			this.bcc(emailArrayToStringLineHelper(options.bcc));
 		}
 
-		if ('' !== lineComposeType && message) {
-			sDate = momentorFormat(message.dateTimeStampInUTC(), 'FULL');
-			sSubject = message.subject();
-			aDraftInfo = message.aDraftInfo;
+		if (options.mode && oLastMessage) {
+			let encrypted,
+				sCc = '',
+				sDate = timestampToString(oLastMessage.dateTimestamp(), 'FULL'),
+				sSubject = oLastMessage.subject(),
+				sText = '',
+				aDraftInfo = oLastMessage.draftInfo;
 
-			const clonedText = $(message.body).clone();
-			if (clonedText) {
-				clearBqSwitcher(clonedText);
-
-				sText = clonedText.html();
-			}
-
-			let resplyAllParts = null;
-			switch (lineComposeType) {
-				case ComposeType.Empty:
-					break;
-
+			switch (options.mode) {
 				case ComposeType.Reply:
-					this.to(this.emailArrayToStringLineHelper(message.replyEmails(excludeEmail)));
+				case ComposeType.ReplyAll: {
+//					if (1 == oLastMessage.to.length) {
+//						setTimeout(() => this.from(emailArrayToStringLineHelper(oLastMessage.to)), 1);
+//					}
+					if (ComposeType.Reply === options.mode) {
+						this.to(emailArrayToStringLineHelper(oLastMessage.replyEmails(excludeEmail)));
+					} else {
+						let parts = oLastMessage.replyAllEmails(excludeEmail);
+						this.to(emailArrayToStringLineHelper(parts[0]));
+						this.cc(emailArrayToStringLineHelper(parts[1]));
+					}
 					this.subject(replySubjectAdd('Re', sSubject));
-					this.prepearMessageAttachments(message, lineComposeType);
-					this.aDraftInfo = ['reply', message.uid, message.folderFullNameRaw];
-					this.sInReplyTo = message.sMessageId;
-					this.sReferences = trim(this.sInReplyTo + ' ' + message.sReferences);
-					break;
-
-				case ComposeType.ReplyAll:
-					resplyAllParts = message.replyAllEmails(excludeEmail);
-					this.to(this.emailArrayToStringLineHelper(resplyAllParts[0]));
-					this.cc(this.emailArrayToStringLineHelper(resplyAllParts[1]));
-					this.subject(replySubjectAdd('Re', sSubject));
-					this.prepearMessageAttachments(message, lineComposeType);
-					this.aDraftInfo = ['reply', message.uid, message.folderFullNameRaw];
-					this.sInReplyTo = message.sMessageId;
-					this.sReferences = trim(this.sInReplyTo + ' ' + message.references());
-					break;
+					this.prepareMessageAttachments(oLastMessage, options.mode);
+					this.aDraftInfo = ['reply', oLastMessage.uid, oLastMessage.folder];
+					this.sInReplyTo = oLastMessage.messageId;
+					this.sReferences = (oLastMessage.references + ' ' + oLastMessage.messageId).trim();
+					oLastMessage.headers().valuesByName('autocrypt').forEach(value => {
+						let autocrypt = new MimeHeaderAutocryptModel(value);
+						if (autocrypt.addr && autocrypt.keydata) {
+							PgpUserStore.hasPublicKeyForEmails([autocrypt.addr]).then(result =>
+								result || PgpUserStore.importKey(autocrypt.pem(), true, true)
+//								result || showScreenPopup(OpenPgpImportPopupView, [autocrypt.pem()])
+							);
+						}
+					});
+				} break;
 
 				case ComposeType.Forward:
-					this.subject(replySubjectAdd('Fwd', sSubject));
-					this.prepearMessageAttachments(message, lineComposeType);
-					this.aDraftInfo = ['forward', message.uid, message.folderFullNameRaw];
-					this.sInReplyTo = message.sMessageId;
-					this.sReferences = trim(this.sInReplyTo + ' ' + message.sReferences);
-					break;
-
 				case ComposeType.ForwardAsAttachment:
 					this.subject(replySubjectAdd('Fwd', sSubject));
-					this.prepearMessageAttachments(message, lineComposeType);
-					this.aDraftInfo = ['forward', message.uid, message.folderFullNameRaw];
-					this.sInReplyTo = message.sMessageId;
-					this.sReferences = trim(this.sInReplyTo + ' ' + message.sReferences);
+					this.prepareMessageAttachments(oLastMessage, options.mode);
+					this.aDraftInfo = ['forward', oLastMessage.uid, oLastMessage.folder];
+					this.sInReplyTo = oLastMessage.messageId;
+					this.sReferences = (oLastMessage.references + ' ' + oLastMessage.messageId).trim();
 					break;
 
 				case ComposeType.Draft:
-					this.to(this.emailArrayToStringLineHelper(message.to));
-					this.cc(this.emailArrayToStringLineHelper(message.cc));
-					this.bcc(this.emailArrayToStringLineHelper(message.bcc));
-					this.replyTo(this.emailArrayToStringLineHelper(message.replyTo));
-
 					this.bFromDraft = true;
-
-					this.draftFolder(message.folderFullNameRaw);
-					this.draftUid(message.uid);
-
-					this.subject(sSubject);
-					this.prepearMessageAttachments(message, lineComposeType);
-
-					this.aDraftInfo = isNonEmptyArray(aDraftInfo) && 3 === aDraftInfo.length ? aDraftInfo : null;
-					this.sInReplyTo = message.sInReplyTo;
-					this.sReferences = message.sReferences;
-					break;
-
+					this.draftsFolder(oLastMessage.folder);
+					this.draftUid(oLastMessage.uid);
+					// fallthrough
 				case ComposeType.EditAsNew:
-					this.to(this.emailArrayToStringLineHelper(message.to));
-					this.cc(this.emailArrayToStringLineHelper(message.cc));
-					this.bcc(this.emailArrayToStringLineHelper(message.bcc));
-					this.replyTo(this.emailArrayToStringLineHelper(message.replyTo));
-
+					this.to(emailArrayToStringLineHelper(oLastMessage.to));
+					this.cc(emailArrayToStringLineHelper(oLastMessage.cc));
+					this.bcc(emailArrayToStringLineHelper(oLastMessage.bcc));
+					this.replyTo(emailArrayToStringLineHelper(oLastMessage.replyTo));
 					this.subject(sSubject);
-					this.prepearMessageAttachments(message, lineComposeType);
-
-					this.aDraftInfo = isNonEmptyArray(aDraftInfo) && 3 === aDraftInfo.length ? aDraftInfo : null;
-					this.sInReplyTo = message.sInReplyTo;
-					this.sReferences = message.sReferences;
+					this.prepareMessageAttachments(oLastMessage, options.mode);
+					this.aDraftInfo = 3 === arrayLength(aDraftInfo) ? aDraftInfo : null;
+					this.sInReplyTo = oLastMessage.inReplyTo;
+					this.sReferences = oLastMessage.references;
 					break;
+
+//				case ComposeType.Empty:
+//					break;
 				// no default
 			}
 
-			switch (lineComposeType) {
+			// https://github.com/the-djmaze/snappymail/issues/491
+			tpl.innerHTML = oLastMessage.bodyAsHTML();
+			tpl.content.querySelectorAll('img').forEach(img => {
+				img.src || img.dataset.xSrcCid || img.dataset.xSrc || img.replaceWith(img.alt || img.title)
+			});
+			sText = tpl.innerHTML.trim();
+
+			switch (options.mode) {
 				case ComposeType.Reply:
 				case ComposeType.ReplyAll:
-					sFrom = message.fromToLine(false, true);
-					sReplyTitle = i18n('COMPOSE/REPLY_MESSAGE_TITLE', {
-						'DATETIME': sDate,
-						'EMAIL': sFrom
-					});
-
-					sText = '<br /><br />' + sReplyTitle + ':' + '<br /><br />' + '<blockquote>' + trim(sText) + '</blockquote>';
-
+					sText = '<br><br><p>'
+						+ i18n('COMPOSE/REPLY_MESSAGE_TITLE', { DATETIME: sDate, EMAIL: oLastMessage.from.toString(false, true) })
+						+ ':</p><blockquote>'
+						+ sText.trim()
+						+ '</blockquote>';
 					break;
 
 				case ComposeType.Forward:
-					sFrom = message.fromToLine(false, true);
-					sTo = message.toToLine(false, true);
-					sCc = message.ccToLine(false, true);
-					sText =
-						'<br /><br />' +
-						i18n('COMPOSE/FORWARD_MESSAGE_TOP_TITLE') +
-						'<br />' +
-						i18n('COMPOSE/FORWARD_MESSAGE_TOP_FROM') +
-						': ' +
-						sFrom +
-						'<br />' +
-						i18n('COMPOSE/FORWARD_MESSAGE_TOP_TO') +
-						': ' +
-						sTo +
-						(0 < sCc.length ? '<br />' + i18n('COMPOSE/FORWARD_MESSAGE_TOP_CC') + ': ' + sCc : '') +
-						'<br />' +
-						i18n('COMPOSE/FORWARD_MESSAGE_TOP_SENT') +
-						': ' +
-						encodeHtml(sDate) +
-						'<br />' +
-						i18n('COMPOSE/FORWARD_MESSAGE_TOP_SUBJECT') +
-						': ' +
-						encodeHtml(sSubject) +
-						'<br /><br />' +
-						trim(sText) +
-						'<br /><br />';
+					sCc = oLastMessage.cc.toString(false, true);
+					sText = '<br><br><p>' + i18n('COMPOSE/FORWARD_MESSAGE_TOP_TITLE') + '</p><div>'
+						+ i18n('GLOBAL/FROM') + ': ' + oLastMessage.from.toString(false, true)
+						+ '<br>'
+						+ i18n('GLOBAL/TO') + ': ' + oLastMessage.to.toString(false, true)
+						+ (sCc.length ? '<br>' + i18n('GLOBAL/CC') + ': ' + sCc : '')
+						+ '<br>'
+						+ i18n('COMPOSE/FORWARD_MESSAGE_TOP_SENT')
+						+ ': '
+						+ encodeHtml(sDate)
+						+ '<br>'
+						+ i18n('GLOBAL/SUBJECT')
+						+ ': '
+						+ encodeHtml(sSubject)
+						+ '<br><br>'
+						+ sText.trim()
+						+ '</div>';
 					break;
 
 				case ComposeType.ForwardAsAttachment:
 					sText = '';
 					break;
-				// no default
+
+				default:
+					encrypted = PgpUserStore.isEncrypted(sText);
+					if (encrypted) {
+						sText = oLastMessage.plain();
+					}
 			}
 
-			this.editor((editor) => {
-				editor.setHtml(sText, false);
-
-				if (
-					EditorDefaultType.PlainForced === this.editorDefaultType() ||
-					(!message.isHtml() && EditorDefaultType.HtmlForced !== this.editorDefaultType())
-				) {
-					editor.modeToggle(false);
+			this.editor(editor => {
+				encrypted || editor.setHtml(sText);
+				if (encrypted || isPlainEditor()) {
+					editor.modePlain();
 				}
-
-				if (identity && ComposeType.Draft !== lineComposeType && ComposeType.EditAsNew !== lineComposeType) {
-					this.setSignatureFromIdentity(identity);
-				}
-
+				encrypted && editor.setPlain(sText);
+				this.setSignature(identity, options.mode);
 				this.setFocusInPopup();
 			});
-		} else if (ComposeType.Empty === lineComposeType) {
-			this.subject(isNormal(sCustomSubject) ? '' + sCustomSubject : '');
-
-			sText = isNormal(sCustomPlainText) ? '' + sCustomPlainText : '';
-
-			this.editor((editor) => {
-				editor.setHtml(sText, false);
-
-				if (
-					EditorDefaultType.Html !== this.editorDefaultType() &&
-					EditorDefaultType.HtmlForced !== this.editorDefaultType()
-				) {
-					editor.modeToggle(false);
-				}
-
-				if (identity) {
-					this.setSignatureFromIdentity(identity);
-				}
-
+		} else if (ComposeType.Empty === options.mode) {
+			this.subject(null != options.subject ? '' + options.subject : '');
+			this.editor(editor => {
+				editor.setHtml(options.text ? '' + options.text : '');
+				isPlainEditor() && editor.modePlain();
+				this.setSignature(identity);
 				this.setFocusInPopup();
 			});
-		} else if (isNonEmptyArray(oMessageOrArray)) {
-			_.each(oMessageOrArray, (item) => {
-				this.addMessageAsAttachment(item);
-			});
-
-			this.editor((editor) => {
-				editor.setHtml('', false);
-
-				if (
-					EditorDefaultType.Html !== this.editorDefaultType() &&
-					EditorDefaultType.HtmlForced !== this.editorDefaultType()
-				) {
-					editor.modeToggle(false);
-				}
-
-				if (identity && ComposeType.Draft !== lineComposeType && ComposeType.EditAsNew !== lineComposeType) {
-					this.setSignatureFromIdentity(identity);
-				}
-
+		} else if (options.messages) {
+			options.messages.forEach(item => this.addMessageAsAttachment(item));
+			this.editor(editor => {
+				isPlainEditor() ? editor.setPlain('') : editor.setHtml('');
+				this.setSignature(identity, options.mode);
 				this.setFocusInPopup();
 			});
 		} else {
 			this.setFocusInPopup();
 		}
 
-		const downloads = this.getAttachmentsDownloadsForUpload();
-		if (isNonEmptyArray(downloads)) {
-			Remote.messageUploadAttachments(this.onMessageUploadAttachments, downloads);
+		// item.cId item.isInline item.isLinked
+		const downloads = this.attachments.filter(item => item && !item.tempName()).map(item => item.id);
+		if (arrayLength(downloads)) {
+			Remote.request('MessageUploadAttachments',
+				(iError, oData) => {
+					const result = oData?.Result;
+					downloads.forEach((id, index) => {
+						const attachment = this.getAttachmentById(id);
+						if (attachment) {
+							attachment
+								.waiting(false)
+								.uploading(false)
+								.complete(true);
+							if (iError || !result?.[index]) {
+								attachment.error(getUploadErrorDescByCode(UploadErrorCode.NoFileUploaded));
+							} else {
+								attachment.tempName(result[index].tempName);
+								attachment.type(result[index].mimeType);
+							}
+						}
+					});
+				},
+				{
+					attachments: downloads
+				},
+				999000
+			);
 		}
 
-		if (identity) {
-			this.currentIdentity(identity);
-		}
-
-		this.resizerTrigger();
-	}
-
-	onMessageUploadAttachments(sResult, oData) {
-		if (StorageResultType.Success === sResult && oData && oData.Result) {
-			if (!this.viewModelVisibility()) {
-				_.each(oData.Result, (id, tempName) => {
-					const attachment = this.getAttachmentById(id);
-					if (attachment) {
-						attachment.tempName(tempName);
-						attachment
-							.waiting(false)
-							.uploading(false)
-							.complete(true);
-					}
-				});
-			}
-		} else {
-			this.setMessageAttachmentFailedDownloadText();
-		}
+		this.currentIdentity(identity);
 	}
 
 	setFocusInPopup() {
-		if (!bMobileDevice) {
-			_.delay(() => {
-				if ('' === this.to()) {
-					this.to.focused(true);
-				} else if (this.oEditor) {
-					if (!this.to.focused()) {
-						this.oEditor.focus();
-					}
-				}
-			}, Magics.Time100ms);
-		}
-	}
-
-	onShowWithDelay() {
-		this.resizerTrigger();
-	}
-
-	tryToClosePopup() {
-		const PopupsAskViewModel = require('View/Popup/Ask');
-		if (!isPopupVisible(PopupsAskViewModel) && this.modalVisibility()) {
-			if (this.bSkipNextHide || (this.isEmptyForm() && !this.draftUid())) {
-				delegateRun(this, 'closeCommand');
+		setTimeout(() => {
+			if (!this.to()) {
+				this.to.focused(true);
+			} else if (!this.subject()) {
+				this.viewModelDom.querySelector('input[name="subject"]').focus();
 			} else {
-				showScreenPopup(PopupsAskViewModel, [
+				this.oEditor?.focus();
+			}
+		}, 100);
+	}
+
+	tryToClose() {
+		if (AskPopupView.hidden()) {
+			if (ComposePopupView.inEdit() || (this.isEmptyForm() && !this.draftUid())) {
+				this.close();
+			} else {
+				showScreenPopup(AskPopupView, [
 					i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'),
-					() => {
-						if (this.modalVisibility()) {
-							delegateRun(this, 'closeCommand');
-						}
-					}
+					() => this.close()
 				]);
 			}
 		}
 	}
 
-	onBuild() {
-		this.initUploader();
+	onBuild(dom) {
+		// initUploader
+		const oJua = new Jua({
+				action: serverRequest('Upload'),
+				clickElement: dom.querySelector('#composeUploadButton'),
+				dragAndDropElement: dom.querySelector('.b-attachment-place')
+			}),
+			attachmentSizeLimit = pInt(SettingsGet('attachmentLimit'));
 
-		key('ctrl+q, command+q, ctrl+w, command+w', KeyState.Compose, noopFalse);
+		oJua
+			.on('onDragEnter', () => {
+				this.dragAndDropOver(true);
+			})
+			.on('onDragLeave', () => {
+				this.dragAndDropOver(false);
+			})
+			.on('onBodyDragEnter', () => {
+				this.attachmentsArea();
+				this.dragAndDropVisible(true);
+			})
+			.on('onBodyDragLeave', () => {
+				this.dragAndDropVisible(false);
+			})
+			.on('onProgress', (id, loaded, total) => {
+				let item = this.getAttachmentById(id);
+				if (item) {
+					item.progress(Math.floor((loaded / total) * 100));
+				}
+			})
+			.on('onSelect', (sId, oData) => {
+				this.dragAndDropOver(false);
 
-		key('`', KeyState.Compose, () => {
-			if (this.oEditor && !this.oEditor.hasFocus() && !inFocus()) {
-				this.identitiesDropdownTrigger(true);
-				return false;
-			}
+				const
+					size = pInt(oData.size, null),
+					attachment = new ComposeAttachmentModel(
+						sId,
+						oData.fileName ? oData.fileName.toString() : '',
+						size
+					);
 
-			return true;
-		});
+				this.addAttachment(attachment, 1, oJua);
 
-		key('ctrl+`', KeyState.Compose, () => {
-			this.identitiesDropdownTrigger(true);
+				if (0 < size && 0 < attachmentSizeLimit && attachmentSizeLimit < size) {
+					attachment
+						.waiting(false)
+						.uploading(true)
+						.complete(true)
+						.error(i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
+
+					return false;
+				}
+
+				return true;
+			})
+			.on('onStart', id => {
+				let item = this.getAttachmentById(id);
+				if (item) {
+					item
+						.waiting(false)
+						.uploading(true)
+						.complete(false);
+				}
+			})
+			.on('onComplete', (id, result, data) => {
+				const attachment = this.getAttachmentById(id),
+					response = data?.Result || {},
+					errorCode = response.ErrorCode,
+					attachmentJson = result && response.Attachment;
+
+				let error = '';
+				if (null != errorCode) {
+					error = getUploadErrorDescByCode(errorCode);
+				} else if (!attachmentJson) {
+					error = i18n('UPLOAD/ERROR_UNKNOWN');
+				}
+
+				if (attachment) {
+					if (error) {
+						attachment
+							.waiting(false)
+							.uploading(false)
+							.complete(true)
+							.error(error + '\n' + response.ErrorMessage);
+					} else if (attachmentJson) {
+						attachment
+							.waiting(false)
+							.uploading(false)
+							.complete(true);
+						attachment.fileName(attachmentJson.name);
+						attachment.size(attachmentJson.size ? pInt(attachmentJson.size) : 0);
+						attachment.tempName(attachmentJson.tempName ? attachmentJson.tempName : '');
+						attachment.isInline = false;
+						attachment.type(attachmentJson.mimeType);
+					}
+				}
+			});
+
+		this.addAttachmentEnabled(true);
+
+		addShortcut('q', 'meta', ScopeCompose, ()=>false);
+		addShortcut('w', 'meta', ScopeCompose, ()=>false);
+
+		addShortcut('m', 'meta', ScopeCompose, () => {
+			this.identitiesMenu().ddBtn.toggle();
 			return false;
 		});
 
-		key('esc, ctrl+down, command+down', KeyState.Compose, () => {
+		addShortcut('arrowdown', 'meta', ScopeCompose, () => {
 			this.skipCommand();
 			return false;
 		});
 
-		if (this.allowFolders) {
-			key('ctrl+s, command+s', KeyState.Compose, () => {
-				this.saveCommand();
-				return false;
-			});
-		}
-
-		if (Settings.appSettingsGet('allowCtrlEnterOnCompose')) {
-			key('ctrl+enter, command+enter', KeyState.Compose, () => {
-				this.sendCommand();
-				return false;
-			});
-		}
-
-		key('shift+esc', KeyState.Compose, () => {
-			if (this.modalVisibility()) {
-				this.tryToClosePopup();
-			}
+		addShortcut('s', 'meta', ScopeCompose, () => {
+			this.saveCommand();
+			return false;
+		});
+		addShortcut('save', '', ScopeCompose, () => {
+			this.saveCommand();
 			return false;
 		});
 
-		Events.sub('window.resize.real', this.resizerTrigger);
-		Events.sub('window.resize.real', _.debounce(this.resizerTrigger, Magics.Time50ms));
+		addShortcut('enter', 'meta', ScopeCompose, () => {
+//			if (SettingsUserStore.allowCtrlEnterOnCompose()) {
+				this.sendCommand();
+				return false;
+//			}
+		});
+		addShortcut('mailsend', '', ScopeCompose, () => {
+			this.sendCommand();
+			return false;
+		});
 
-		SocialStore.appendDropbox();
+		addShortcut('escape,close', 'shift', ScopeCompose, () => {
+			this.tryToClose();
+			return false;
+		});
 
-		if (this.driveEnabled()) {
-			$.getScript('https://apis.google.com/js/api.js', () => {
-				if (window.gapi) {
-					this.driveVisible(true);
-				}
-			});
-		}
-
-		window.setInterval(() => {
-			if (this.modalVisibility() && this.oEditor) {
-				this.oEditor.resize();
-			}
-		}, Magics.Time5s);
-	}
-
-	driveCallback(accessToken, data) {
-		if (
-			data &&
-			window.XMLHttpRequest &&
-			window.google &&
-			data[window.google.picker.Response.ACTION] === window.google.picker.Action.PICKED &&
-			data[window.google.picker.Response.DOCUMENTS] &&
-			data[window.google.picker.Response.DOCUMENTS][0] &&
-			data[window.google.picker.Response.DOCUMENTS][0].id
-		) {
-			const request = new window.XMLHttpRequest();
-			request.open(
-				'GET',
-				'https://www.googleapis.com/drive/v2/files/' + data[window.google.picker.Response.DOCUMENTS][0].id
-			);
-			request.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-			request.addEventListener('load', () => {
-				if (request && request.responseText) {
-					const response = window.JSON.parse(request.responseText),
-						fExport = (item, mimeType, ext) => {
-							if (item && item.exportLinks) {
-								if (item.exportLinks[mimeType]) {
-									response.downloadUrl = item.exportLinks[mimeType];
-									response.title = item.title + '.' + ext;
-									response.mimeType = mimeType;
-								} else if (item.exportLinks['application/pdf']) {
-									response.downloadUrl = item.exportLinks['application/pdf'];
-									response.title = item.title + '.pdf';
-									response.mimeType = 'application/pdf';
-								}
-							}
-						};
-
-					if (response && !response.downloadUrl && response.mimeType && response.exportLinks) {
-						switch (response.mimeType.toString().toLowerCase()) {
-							case 'application/vnd.google-apps.document':
-								fExport(response, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'docx');
-								break;
-							case 'application/vnd.google-apps.spreadsheet':
-								fExport(response, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'xlsx');
-								break;
-							case 'application/vnd.google-apps.drawing':
-								fExport(response, 'image/png', 'png');
-								break;
-							case 'application/vnd.google-apps.presentation':
-								fExport(response, 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'pptx');
-								break;
-							default:
-								fExport(response, 'application/pdf', 'pdf');
-								break;
-						}
-					}
-
-					if (response && response.downloadUrl) {
-						this.addDriveAttachment(response, accessToken);
-					}
-				}
-			});
-
-			request.send();
-		}
-	}
-
-	driveCreatePiker(authToken) {
-		if (window.gapi && authToken && authToken.access_token) {
-			window.gapi.load('picker', {
-				callback: () => {
-					if (window.google && window.google.picker) {
-						const drivePicker = new window.google.picker.PickerBuilder()
-							// .addView(window.google.picker.ViewId.FOLDERS)
-							.addView(window.google.picker.ViewId.DOCS)
-							.setAppId(Settings.settingsGet('GoogleClientID'))
-							.setOAuthToken(authToken.access_token)
-							.setCallback(_.bind(this.driveCallback, this, authToken.access_token))
-							.enableFeature(window.google.picker.Feature.NAV_HIDDEN)
-							// .setOrigin(window.location.protocol + '//' + window.location.host)
-							.build();
-
-						drivePicker.setVisible(true);
-					}
-				}
-			});
-		}
-	}
-
-	driveOpenPopup() {
-		if (window.gapi) {
-			window.gapi.load('auth', {
-				callback: () => {
-					const authToken = window.gapi.auth.getToken(),
-						fResult = (authResult) => {
-							if (authResult && !authResult.error) {
-								const token = window.gapi.auth.getToken();
-								if (token) {
-									this.driveCreatePiker(token);
-								}
-
-								return true;
-							}
-
-							return false;
-						};
-
-					if (!authToken) {
-						window.gapi.auth.authorize(
-							{
-								'client_id': Settings.settingsGet('GoogleClientID'),
-								'scope': 'https://www.googleapis.com/auth/drive.readonly',
-								'immediate': true
-							},
-							(authResult) => {
-								if (!fResult(authResult)) {
-									window.gapi.auth.authorize(
-										{
-											'client_id': Settings.settingsGet('GoogleClientID'),
-											'scope': 'https://www.googleapis.com/auth/drive.readonly',
-											'immediate': false
-										},
-										fResult
-									);
-								}
-							}
-						);
-					} else {
-						this.driveCreatePiker(authToken);
-					}
-				}
-			});
-		}
+		this.editor(editor => editor[isPlainEditor()?'modePlain':'modeWysiwyg']());
 	}
 
 	/**
@@ -1442,161 +1208,7 @@ class ComposePopupView extends AbstractViewNext {
 	 * @returns {?Object}
 	 */
 	getAttachmentById(id) {
-		return _.find(this.attachments(), (item) => item && id === item.id);
-	}
-
-	cancelAttachmentHelper(id, oJua) {
-		return () => {
-			const attachment = _.find(this.attachments(), (item) => item && item.id === id);
-			if (attachment) {
-				this.attachments.remove(attachment);
-				delegateRunOnDestroy(attachment);
-
-				if (oJua) {
-					oJua.cancel(id);
-				}
-			}
-		};
-	}
-
-	initUploader() {
-		if (this.composeUploaderButton()) {
-			const uploadCache = {},
-				attachmentSizeLimit = pInt(Settings.settingsGet('AttachmentLimit')),
-				oJua = new Jua({
-					'action': upload(),
-					'name': 'uploader',
-					'queueSize': 2,
-					'multipleSizeLimit': 50,
-					'clickElement': this.composeUploaderButton(),
-					'dragAndDropElement': this.composeUploaderDropPlace()
-				});
-
-			if (oJua) {
-				oJua
-					// .on('onLimitReached', (limit) => {
-					// 	alert(limit);
-					// })
-					.on('onDragEnter', () => {
-						this.dragAndDropOver(true);
-					})
-					.on('onDragLeave', () => {
-						this.dragAndDropOver(false);
-					})
-					.on('onBodyDragEnter', () => {
-						this.attachmentsPlace(true);
-						this.dragAndDropVisible(true);
-					})
-					.on('onBodyDragLeave', () => {
-						this.dragAndDropVisible(false);
-					})
-					.on('onProgress', (id, loaded, total) => {
-						let item = uploadCache[id];
-						if (!item) {
-							item = this.getAttachmentById(id);
-							if (item) {
-								uploadCache[id] = item;
-							}
-						}
-
-						if (item) {
-							item.progress(window.Math.floor((loaded / total) * 100));
-						}
-					})
-					.on('onSelect', (sId, oData) => {
-						this.dragAndDropOver(false);
-
-						const fileName = isUnd(oData.FileName) ? '' : oData.FileName.toString(),
-							size = isNormal(oData.Size) ? pInt(oData.Size) : null,
-							attachment = new ComposeAttachmentModel(sId, fileName, size);
-
-						attachment.cancel = this.cancelAttachmentHelper(sId, oJua);
-
-						this.attachments.push(attachment);
-
-						this.attachmentsPlace(true);
-
-						if (0 < size && 0 < attachmentSizeLimit && attachmentSizeLimit < size) {
-							attachment
-								.waiting(false)
-								.uploading(true)
-								.complete(true)
-								.error(i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
-
-							return false;
-						}
-
-						return true;
-					})
-					.on('onStart', (id) => {
-						let item = uploadCache[id];
-						if (!item) {
-							item = this.getAttachmentById(id);
-							if (item) {
-								uploadCache[id] = item;
-							}
-						}
-
-						if (item) {
-							item
-								.waiting(false)
-								.uploading(true)
-								.complete(false);
-						}
-					})
-					.on('onComplete', (id, result, data) => {
-						const attachment = this.getAttachmentById(id),
-							errorCode = data && data.Result && data.Result.ErrorCode ? data.Result.ErrorCode : null,
-							attachmentJson = result && data && data.Result && data.Result.Attachment ? data.Result.Attachment : null;
-
-						let error = '';
-						if (null !== errorCode) {
-							error = getUploadErrorDescByCode(errorCode);
-						} else if (!attachmentJson) {
-							error = i18n('UPLOAD/ERROR_UNKNOWN');
-						}
-
-						if (attachment) {
-							if ('' !== error && 0 < error.length) {
-								attachment
-									.waiting(false)
-									.uploading(false)
-									.complete(true)
-									.error(error);
-							} else if (attachmentJson) {
-								attachment
-									.waiting(false)
-									.uploading(false)
-									.complete(true);
-
-								attachment.initByUploadJson(attachmentJson);
-							}
-
-							if (isUnd(uploadCache[id])) {
-								delete uploadCache[id];
-							}
-						}
-					});
-
-				this.addAttachmentEnabled(true).dragAndDropEnabled(oJua.isDragAndDropSupported());
-			} else {
-				this.addAttachmentEnabled(false).dragAndDropEnabled(false);
-			}
-		}
-	}
-
-	/**
-	 * @returns {Object}
-	 */
-	prepearAttachmentsForSendOrSave() {
-		const result = {};
-		_.each(this.attachmentsInReady(), (item) => {
-			if (item && '' !== item.tempName() && item.enabled()) {
-				result[item.tempName()] = [item.fileName(), item.isInline ? '1' : '0', item.CID, item.contentLocation];
-			}
-		});
-
-		return result;
+		return this.attachments.find(item => item && id === item.id);
 	}
 
 	/**
@@ -1604,191 +1216,68 @@ class ComposePopupView extends AbstractViewNext {
 	 */
 	addMessageAsAttachment(message) {
 		if (message) {
-			let temp = message.subject();
-			temp = '.eml' === temp.substr(-4).toLowerCase() ? temp : temp + '.eml';
-
-			const attachment = new ComposeAttachmentModel(message.requestHash, temp, message.size());
-
+			const attachment = new ComposeAttachmentModel(
+				message.requestHash,
+				message.subject() /*+ '-' + Jua.randomId()*/ + '.eml',
+				message.size
+			);
 			attachment.fromMessage = true;
-			attachment.cancel = this.cancelAttachmentHelper(message.requestHash);
-			attachment
-				.waiting(false)
-				.uploading(true)
-				.complete(true);
-
-			this.attachments.push(attachment);
+			attachment.complete(true);
+			this.addAttachment(attachment);
 		}
 	}
 
+	addAttachment(attachment, view, oJua) {
+		oJua || attachment.waiting(false).uploading(true);
+		attachment.cancel = () => {
+			this.attachments.remove(attachment);
+			oJua?.cancel(attachment.id);
+		};
+		this.attachments.push(attachment);
+		view && this.attachmentsArea();
+	}
+
 	/**
-	 * @param {string} url
+	 * @param {string} id
 	 * @param {string} name
 	 * @param {number} size
 	 * @returns {ComposeAttachmentModel}
 	 */
-	addAttachmentHelper(url, name, size) {
-		const attachment = new ComposeAttachmentModel(url, name, size);
-
-		attachment.fromMessage = false;
-		attachment.cancel = this.cancelAttachmentHelper(url);
-		attachment
-			.waiting(false)
-			.uploading(true)
-			.complete(false);
-
-		this.attachments.push(attachment);
-
-		this.attachmentsPlace(true);
-
+	addAttachmentHelper(id, name, size) {
+		const attachment = new ComposeAttachmentModel(id, name, size);
+		this.addAttachment(attachment, 1);
 		return attachment;
-	}
-
-	/**
-	 * @param {Object} dropboxFile
-	 * @returns {boolean}
-	 */
-	addDropboxAttachment(dropboxFile) {
-		const attachmentSizeLimit = pInt(Settings.settingsGet('AttachmentLimit')),
-			mSize = dropboxFile.bytes,
-			attachment = this.addAttachmentHelper(dropboxFile.link, dropboxFile.name, mSize);
-
-		if (0 < mSize && 0 < attachmentSizeLimit && attachmentSizeLimit < mSize) {
-			attachment.uploading(false).complete(true);
-			attachment.error(i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
-			return false;
-		}
-
-		Remote.composeUploadExternals(
-			(statusResult, data) => {
-				let result = false;
-				attachment.uploading(false).complete(true);
-
-				if (StorageResultType.Success === statusResult && data && data.Result) {
-					if (data.Result[attachment.id]) {
-						result = true;
-						attachment.tempName(data.Result[attachment.id]);
-					}
-				}
-
-				if (!result) {
-					attachment.error(getUploadErrorDescByCode(UploadErrorCode.FileNoUploaded));
-				}
-			},
-			[dropboxFile.link]
-		);
-
-		return true;
-	}
-
-	/**
-	 * @param {Object} driveFile
-	 * @param {string} accessToken
-	 * @returns {boolean}
-	 */
-	addDriveAttachment(driveFile, accessToken) {
-		const attachmentSizeLimit = pInt(Settings.settingsGet('AttachmentLimit')),
-			size = driveFile.fileSize ? pInt(driveFile.fileSize) : 0,
-			attachment = this.addAttachmentHelper(driveFile.downloadUrl, driveFile.title, size);
-
-		if (0 < size && 0 < attachmentSizeLimit && attachmentSizeLimit < size) {
-			attachment.uploading(false).complete(true);
-			attachment.error(i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
-			return false;
-		}
-
-		Remote.composeUploadDrive(
-			(statusResult, data) => {
-				let result = false;
-				attachment.uploading(false).complete(true);
-
-				if (StorageResultType.Success === statusResult && data && data.Result) {
-					if (data.Result[attachment.id]) {
-						result = true;
-						attachment.tempName(data.Result[attachment.id][0]);
-						attachment.size(pInt(data.Result[attachment.id][1]));
-					}
-				}
-
-				if (!result) {
-					attachment.error(getUploadErrorDescByCode(UploadErrorCode.FileNoUploaded));
-				}
-			},
-			driveFile.downloadUrl,
-			accessToken
-		);
-
-		return true;
 	}
 
 	/**
 	 * @param {MessageModel} message
 	 * @param {string} type
 	 */
-	prepearMessageAttachments(message, type) {
+	prepareMessageAttachments(message, type) {
 		if (message) {
-			if (ComposeType.ForwardAsAttachment === type) {
-				this.addMessageAsAttachment(message);
-			} else {
-				const attachments = message.attachments();
-				_.each(isNonEmptyArray(attachments) ? attachments : [], (item) => {
-					let add = false;
-					switch (type) {
-						case ComposeType.Reply:
-						case ComposeType.ReplyAll:
-							add = item.isLinked;
-							break;
-
-						case ComposeType.Forward:
-						case ComposeType.Draft:
-						case ComposeType.EditAsNew:
-							add = true;
-							break;
-						// no default
-					}
-
-					if (add) {
+			let reply = [ComposeType.Reply, ComposeType.ReplyAll].includes(type);
+			if (reply || [ComposeType.Forward, ComposeType.Draft, ComposeType.EditAsNew].includes(type)) {
+				// item instanceof AttachmentModel
+				message.attachments.forEach(item => {
+					if (!reply || item.isLinked()) {
 						const attachment = new ComposeAttachmentModel(
 							item.download,
 							item.fileName,
 							item.estimatedSize,
-							item.isInline,
-							item.isLinked,
-							item.cid,
+							item.isInline(),
+							item.isLinked(),
+							item.cId,
 							item.contentLocation
 						);
-
 						attachment.fromMessage = true;
-						attachment.cancel = this.cancelAttachmentHelper(item.download);
-						attachment
-							.waiting(false)
-							.uploading(true)
-							.complete(false);
-
-						this.attachments.push(attachment);
+						attachment.type(item.mimeType);
+						this.addAttachment(attachment);
 					}
 				});
+			} else if (ComposeType.ForwardAsAttachment === type) {
+				this.addMessageAsAttachment(message);
 			}
 		}
-	}
-
-	removeLinkedAttachments() {
-		const arrachment = _.find(this.attachments(), (item) => item && item.isLinked);
-		if (arrachment) {
-			this.attachments.remove(arrachment);
-			delegateRunOnDestroy(arrachment);
-		}
-	}
-
-	setMessageAttachmentFailedDownloadText() {
-		_.each(this.attachments(), (attachment) => {
-			if (attachment && attachment.fromMessage) {
-				attachment
-					.waiting(false)
-					.uploading(false)
-					.complete(true)
-					.error(getUploadErrorDescByCode(UploadErrorCode.FileNoUploaded));
-			}
-		});
 	}
 
 	/**
@@ -1797,17 +1286,17 @@ class ComposePopupView extends AbstractViewNext {
 	 */
 	isEmptyForm(includeAttachmentInProgress = true) {
 		const withoutAttachment = includeAttachmentInProgress
-			? 0 === this.attachments().length
-			: 0 === this.attachmentsInReady().length;
+			? !this.attachments.length
+			: !this.attachments.some(item => item?.complete());
 
 		return (
-			0 === this.to().length &&
-			0 === this.cc().length &&
-			0 === this.bcc().length &&
-			0 === this.replyTo().length &&
-			0 === this.subject().length &&
+			!this.to.length &&
+			!this.cc.length &&
+			!this.bcc.length &&
+			!this.replyTo.length &&
+			!this.subject.length &&
 			withoutAttachment &&
-			(!this.oEditor || '' === this.oEditor.getData())
+			(!this.oEditor || !this.oEditor.getData())
 		);
 	}
 
@@ -1818,11 +1307,12 @@ class ComposePopupView extends AbstractViewNext {
 		this.replyTo('');
 		this.subject('');
 
-		this.requestDsn(false);
-		this.requestReadReceipt(false);
+		this.requestDsn(SettingsUserStore.requestDsn());
+		this.requestReadReceipt(SettingsUserStore.requestReadReceipt());
+		this.requireTLS(SettingsUserStore.requireTLS());
 		this.markAsImportant(false);
 
-		this.attachmentsPlace(false);
+		this.bodyArea();
 
 		this.aDraftInfo = null;
 		this.sInReplyTo = '';
@@ -1840,36 +1330,302 @@ class ComposePopupView extends AbstractViewNext {
 		this.showBcc(false);
 		this.showReplyTo(false);
 
-		delegateRunOnDestroy(this.attachments());
+		this.doSign(SettingsUserStore.pgpSign());
+		this.doEncrypt(SettingsUserStore.pgpEncrypt());
+
 		this.attachments([]);
 
 		this.dragAndDropOver(false);
 		this.dragAndDropVisible(false);
 
-		this.draftFolder('');
-		this.draftUid('');
+		this.draftsFolder('');
+		this.draftUid(0);
 
 		this.sending(false);
 		this.saving(false);
 
-		if (this.oEditor) {
-			this.oEditor.clear(false);
-		}
+		this.oEditor?.clear();
+
+		this.dropMailvelope();
+	}
+
+	attachmentsArea() {
+		this.viewArea('attachments');
+	}
+	bodyArea() {
+		this.viewArea('body');
+	}
+
+	allRecipients() {
+		return [
+				// From/sender is also recipient (Sent mailbox)
+//				this.currentIdentity().email(),
+				this.from(),
+				this.to(),
+				this.cc(),
+				this.bcc()
+			].join(',').split(',').map(value => getEmail(value.trim())).validUnique();
 	}
 
 	/**
-	 * @returns {Array}
+	 * Checks if signing a message is possible with from email address.
+	 * And sets all that can.
 	 */
-	getAttachmentsDownloadsForUpload() {
-		return _.map(
-			_.filter(this.attachments(), (item) => item && '' === item.tempName()),
-			(item) => item.id
-		);
+	initSign() {
+		let options = [],
+			identity = this.currentIdentity(),
+			email = getEmail(this.from()),
+			key = OpenPGPUserStore.getPrivateKeyFor(email, 1);
+		key && options.push(['OpenPGP', key]);
+		key = GnuPGUserStore.getPrivateKeyFor(email, 1);
+		key && options.push(['GnuPG', key]);
+		identity.smimeKeyValid() && identity.smimeCertificateValid() && identity.email() === email
+			&& options.push(['S/MIME']);
+		console.dir({signOptions: options});
+		this.signOptions(options);
 	}
 
-	resizerTrigger() {
-		this.resizer(!this.resizer());
+	async initEncrypt() {
+		const recipients = this.allRecipients(),
+			options = [];
+
+		if (recipients.length) {
+			GnuPGUserStore.hasPublicKeyForEmails(recipients)
+			&& options.push('GnuPG');
+
+			OpenPGPUserStore.hasPublicKeyForEmails(recipients)
+			&& options.push('OpenPGP');
+
+			if (await MailvelopeUserStore.hasPublicKeyForEmails(recipients)) {
+				options.push('Mailvelope');
+			} else {
+				'mailvelope' === this.viewArea() && this.bodyArea();
+//				this.dropMailvelope();
+			}
+
+			const count = recipients.length,
+				identity = this.currentIdentity(),
+				from = (identity.smimeKey() && identity.smimeCertificate()) ? identity.email() : null;
+			count
+				&& count === recipients.filter(email =>
+					email == from
+					|| SMimeUserStore.find(certificate => email == certificate.emailAddress && certificate.smimeencrypt)
+				).length
+				&& options.push('S/MIME');
+		}
+
+		console.dir({encryptOptions:options});
+		this.encryptOptions(options);
+	}
+
+	async getMessageRequestParams(sSaveFolder, draft)
+	{
+		let Text = this.oEditor.getData().trim(),
+			l,
+			hasAttachments = 0;
+
+		// Prepare ComposeAttachmentModel attachments
+		const attachments = {};
+		this.attachments.forEach(item => {
+			if (item?.complete() && item?.tempName() && item?.enabled()) {
+				++hasAttachments;
+				attachments[item.tempName()] = {
+					name: item.fileName(),
+					inline: item.isInline,
+					cId: item.cId,
+					location: item.contentLocation,
+					type: item.mimeType()
+				};
+			}
+		});
+/*
+		let sToAddress = this.to();
+
+		if (/".*" <.*,.*>/g.test(sToAddress)) {
+			sToAddress = sToAddress.match(/<.*>/g)[0].replace(/[<>]/g, '');
+		}
+*/
+		const
+			identity = this.currentIdentity(),
+			params = {
+				identityID: identity.id(),
+				messageFolder: this.draftsFolder(),
+				messageUid: this.draftUid(),
+				saveFolder: sSaveFolder,
+				from: this.from(),
+				to: this.to(),
+				cc: this.cc(),
+				bcc: this.bcc(),
+				replyTo: this.replyTo(),
+				subject: this.subject(),
+				draftInfo: this.aDraftInfo,
+				inReplyTo: this.sInReplyTo,
+				references: this.sReferences,
+				markAsImportant: this.markAsImportant() ? 1 : 0,
+				attachments: attachments,
+				// Only used at send, not at save:
+				dsn: this.requestDsn() ? 1 : 0,
+				requireTLS: this.requireTLS() ? 1 : 0,
+				readReceiptRequest: this.requestReadReceipt() ? 1 : 0,
+				autocrypt: [],
+				/**
+				 * Basic support for Linked Data (Structured Email)
+				 * https://json-ld.org/
+				 * https://structured.email/
+				 **/
+				linkedData: []
+			},
+			recipients = draft ? [identity.email()] : this.allRecipients(),
+			signOptions = !draft && this.doSign() && this.signOptions(),
+			encryptOptions = this.doEncrypt() && this.encryptOptions(),
+			isHtml = this.oEditor.isHtml();
+
+		if (isHtml) {
+			do {
+				l = Text.length;
+				Text = Text
+					// Remove Microsoft Office styling
+					.replace(/(<[^>]+[;"'])\s*mso-[a-z-]+\s*:[^;"']+/gi, '$1')
+					// Remove hubspot data-hs- attributes
+					.replace(/(<[^>]+)\s+data-hs-[a-z-]+=("[^"]+"|'[^']+')/gi, '$1');
+			} while (l != Text.length)
+			params.html = Text;
+			params.plain = htmlToPlain(Text);
+		} else {
+			params.plain = Text;
+		}
+
+		if (this.mailvelope && 'mailvelope' === this.viewArea()) {
+			params.encrypted = draft
+				? await this.mailvelope.createDraft()
+				: await this.mailvelope.encrypt(recipients);
+/*
+			Object.entries(PgpUserStore.getPublicKeyOfEmails(recipients) || {}).forEach(([k,v]) =>
+				params.autocrypt.push({addr:k, keydata:v.replace(/-----(BEGIN|END) PGP PUBLIC KEY BLOCK-----/g).trim()})
+			);
+*/
+		} else if (signOptions.length || encryptOptions.length) {
+			if (!draft && !hasAttachments && !Text.length) {
+				throw i18n('COMPOSE/ERROR_EMPTY_BODY');
+			}
+			let data = new MimePart;
+			data.headers['Content-Type'] = 'text/'+(isHtml?'html':'plain')+'; charset="utf-8"';
+			data.headers['Content-Transfer-Encoding'] = 'base64';
+			data.body = base64_encode(Text);
+			if (isHtml) {
+				const alternative = new MimePart, plain = new MimePart;
+				alternative.headers['Content-Type'] = 'multipart/alternative';
+				plain.headers['Content-Type'] = 'text/plain; charset="utf-8"';
+				plain.headers['Content-Transfer-Encoding'] = 'base64';
+				plain.body = base64_encode(params.plain);
+				// First add plain
+				alternative.children.push(plain);
+				// Now add HTML
+				alternative.children.push(data);
+				data = alternative;
+			}
+			let sign = true;
+			for (let i = 0; i < signOptions.length; ++i) {
+				if ('OpenPGP' == signOptions[i][0]) {
+					try {
+						// Doesn't sign attachments
+						params.html = params.plain = '';
+						let signed = new MimePart;
+						signed.headers['Content-Type'] =
+							'multipart/signed; micalg="pgp-sha256"; protocol="application/pgp-signature"';
+						signed.headers['Content-Transfer-Encoding'] = '7Bit';
+						signed.children.push(data);
+						let signature = new MimePart;
+						signature.headers['Content-Type'] = 'application/pgp-signature; name="signature.asc"';
+						signature.headers['Content-Transfer-Encoding'] = '7Bit';
+						signature.body = await OpenPGPUserStore.sign(data.toString(), signOptions[i][1], 1);
+						signed.children.push(signature);
+						params.signed = signed.toString();
+						params.boundary = signed.boundary;
+						data = signed;
+					} catch (e) {
+						sign = false;
+						console.error(e);
+					}
+					break;
+				}
+				if ('GnuPG' == signOptions[i][0]) {
+					// TODO: sign in PHP fails
+					let pass = await GnuPGUserStore.sign(signOptions[i][1]);
+					if (null != pass) {
+//						params.signData = data.toString();
+						params.signFingerprint = signOptions[i][1].fingerprint;
+						params.signPassphrase = pass;
+					} else {
+						sign = false;
+					}
+					break;
+				}
+				if ('S/MIME' == signOptions[i][0]) {
+					// TODO: sign in PHP fails
+					params.sign = 'S/MIME';
+//					params.signCertificate = identity.smimeCertificate();
+//					params.signPrivateKey = identity.smimeKey();
+					if (identity.smimeKeyEncrypted()) {
+						const pass = await Passphrases.ask(identity,
+							i18n('SMIME/PRIVATE_KEY_OF', {EMAIL: identity.email()}),
+							'CRYPTO/SIGN'
+						);
+						if (null != pass) {
+							params.signPassphrase = pass.password;
+//							pass.remember && Passphrases.handle(identity, pass.password);
+						} else {
+							sign = false;
+						}
+					}
+				}
+			}
+			if (signOptions.length && !sign) {
+				throw 'Signing failed';
+			}
+
+			if (encryptOptions.length) {
+				const autocrypt = () =>
+					Object.entries(PgpUserStore.getPublicKeyOfEmails(recipients) || {}).forEach(([k,v]) =>
+						params.autocrypt.push({
+							addr: k,
+							keydata: v.replace(/-----(BEGIN|END) PGP PUBLIC KEY BLOCK-----/g, '').trim()
+						})
+					);
+				for (let i = 0; i < encryptOptions.length; ++i) {
+					if ('OpenPGP' == encryptOptions[i]) {
+						// Doesn't encrypt attachments
+						params.encrypted = await OpenPGPUserStore.encrypt(data.toString(), recipients);
+						params.signed = '';
+						autocrypt();
+						break;
+					}
+					if ('GnuPG' == encryptOptions[i]) {
+						// Does encrypt attachments
+						params.encryptFingerprints = JSON.stringify(GnuPGUserStore.getPublicKeyFingerprints(recipients));
+						autocrypt();
+						break;
+					}
+					if ('S/MIME' == encryptOptions[i]) {
+						params.encryptCertificates = [identity.smimeCertificate()];
+						SMimeUserStore.forEach(certificate => {
+							certificate.emailAddress != identity.email()
+							&& recipients.includes(certificate.emailAddress)
+							&& params.encryptCertificates.push(certificate.id)
+						});
+						break;
+					}
+					// We skip Mailvelope as it has its own window
+				}
+			}
+		}
+
+		return params;
 	}
 }
 
-export { ComposePopupView, ComposePopupView as default };
+/**
+ * When view is closed and reopened, fill it with previous data.
+ * This, for example, happens when opening Contacts view to select recipients
+ */
+ComposePopupView.inEdit = ko.observable(false);

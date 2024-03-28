@@ -1,0 +1,185 @@
+{
+	"GLOBAL": {
+		"ADD": "Add",
+		"CLOSE": "Close",
+		"SAVE": "Save",
+		"TEST": "Test",
+		"UPDATE": "Update",
+		"USERNAME": "Username",
+		"PASSWORD": "Passphrase",
+		"CANCEL": "Cancel",
+		"SEARCH": "Search"
+	},
+	"LOGIN": {
+		"LABEL_LOGIN": "Login",
+		"LABEL_TOTP": "TOTP code",
+		"BUTTON_LOGIN": "Log into the admin panel"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "Admin Panel"
+	},
+	"SETTINGS_LABELS": {
+		"GENERAL": "General",
+		"LOGIN": "Login",
+		"BRANDING": "Branding",
+		"CONTACTS": "Contacts",
+		"DOMAINS": "Domains",
+		"SECURITY": "Security",
+		"PACKAGES": "Extensions",
+		"CONFIG": "Config",
+		"ABOUT": "About"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "Interface",
+		"LABEL_LANGUAGE": "Language",
+		"LABEL_LANGUAGE_ADMIN": "Language (admin)",
+		"LABEL_THEME": "Theme",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Allow language selection on settings screen",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Allow theme selection on settings screen",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Allow background selection on settings screen",
+		"LABEL_SHOW_THUMBNAILS": "Show thumbnails (attachments)",
+		"LEGEND_MAIN": "Main",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "Attachment size limit",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Allow additional accounts",
+		"LABEL_ALLOW_IDENTITIES": "Allow multiple identities",
+		"ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
+		"ALERT_WARNING": "Warning!",
+		"HTML_ALERT_WEAK_PASSWORD": "You are using the default admin passphrase.\n<br>\nFor security reasons please\n<strong><a href=\"#\/security\">change<\/a><\/strong>\npassphrase to something else now.\n"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "Login Screen",
+		"LABEL_DEFAULT_DOMAIN": "Default Domain",
+		"LABEL_DETERMINE_USER_DOMAIN": "Try to determine user domain",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Allow language selection on login screen",
+		"LABEL_DETERMINE_USER_LANGUAGE": "Try to determine user language"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Branding",
+		"LABEL_PAGE_TITLE": "Page Title",
+		"LABEL_LOADING_DESCRIPTION": "Loading Description",
+		"LABEL_FAVICON_URL": "Favicon"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "Contacts",
+		"LEGEND_STORAGE": "Storage (PDO)",
+		"LABEL_ENABLE_CONTACTS": "Enable contacts",
+		"LABEL_ALLOW_SYNC": "Allow contacts sync (with external CardDAV server)",
+		"LABEL_STORAGE_TYPE": "Type",
+		"LABEL_STORAGE_DSN": "Data Source Name (DSN)",
+		"LABEL_STORAGE_USER": "User",
+		"LABEL_STORAGE_PASSWORD": "Passphrase",
+		"SQLITE_GLOBAL": "Use a global DB instead of per account",
+		"ALERT_NOTICE": "Notice!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Don't use this database type with a large number of active users.",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Your system doesn't support contacts.\n<br>\nYou need to install or enable <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> extension on your server.\n"
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "Domains",
+		"BUTTON_ADD_DOMAIN": "Add Domain",
+		"BUTTON_ADD_ALIAS": "Add Alias",
+		"DELETE_ARE_YOU_SURE": "Are you sure?",
+		"HTML_DOMAINS_HELPER": "List of domains that are allowed.\n<br>\nClick on the name to configure the domain.\n"
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "Security",
+		"LABEL_USE_IMAGE_PROXY": "Use local proxy for external images",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
+		"LABEL_SHOW_PHP_INFO": "Show PHP information",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Admin Panel Access Credentials",
+		"LABEL_CURRENT_PASSWORD": "Current passphrase",
+		"LABEL_NEW_PASSWORD": "New passphrase",
+		"LABEL_REPEAT_PASSWORD": "Repeat passphrase",
+		"LABEL_REQUIRE_VERIFICATION": "Require verification of SSL certificate",
+		"CRYPTO": "Crypto",
+		"LABEL_ALLOW_SELF_SIGNED": "Allow self signed certificates"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Enable extensions",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Available for Update",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Available for Installation",
+		"LEGEND_INSTALLED_PACKAGES": "Installed Extensions",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Cannot access the repository at the moment."
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "About",
+		"LABEL_TAG_HINT": "Simple, modern & fast web-based email client",
+		"LABEL_ALL_RIGHTS_RESERVED": "All Rights Reserved.",
+		"HINT_READ_CHANGE_LOG": "Please read the change log before updating.",
+		"HINT_IS_UP_TO_DATE": "SnappyMail is up to date.",
+		"HTML_NEW_VERSION": "New <b>%VERSION%<\/b> version is available.",
+		"LABEL_UPDATING": "Updating",
+		"LABEL_CHECKING": "Checking for updates",
+		"BUTTON_RELEASES": "Releases"
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "Add Alias",
+		"LABEL_ALIAS": "Alias",
+		"LABEL_DOMAIN": "Domain"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "Add Domain",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "Add Domain \"%NAME%\"",
+		"TITLE_EDIT_DOMAIN": "Edit Domain \"%NAME%\"",
+		"LABEL_NAME": "Name",
+		"NAME_HELPER": "wildcard supported",
+		"LABEL_SERVER": "Server",
+		"LABEL_PORT": "Port",
+		"LABEL_SECURE": "Security",
+		"TIMEOUT": "Timeout",
+		"DISABLE_CAPABILITIES": "Disable capabilities",
+		"LIMITS": "Limits",
+		"FOLDERS": "Folders",
+		"MESSAGES": "Messages",
+		"LABEL_WHITE_LIST": "White List",
+		"SECURE_OPTION_NONE": "None",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Allow sieve scripts",
+		"LABEL_USE_SHORT_LOGIN": "Use short login",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
+		"LABEL_USE_AUTH": "Use authentication",
+		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
+		"LABEL_USE_PHP_MAIL": "Use php mail() function",
+		"BUTTON_WHITE_LIST": "White List",
+		"BUTTON_SIEVE_CONFIGURATION": "Sieve configuration",
+		"BUTTON_BACK_TO_IMAP": "Back to IMAP settings",
+		"BUTTON_BACK": "Back",
+		"BUTTON_UPDATE": "Update",
+		"NEW_DOMAIN_DESC": "This domain configuration will allow you to work with <strong>%NAME%<\/strong> email addresses.",
+		"WHITE_LIST_ALERT": "List of domain users webmail is allowed to access.\nUse a space as delimiter.\n"
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "Extension",
+		"DESC_NOTHING_TO_CONFIGURE": "Nothing to configure"
+	},
+	"POPUPS_ASK": {
+		"BUTTON_YES": "Yes",
+		"BUTTON_NO": "No",
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Are you sure you want to close this window?"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "Choose your language"
+	},
+	"HINTS": {
+		"BETA": "beta",
+		"WARNING": "Warning!"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "Domain already exists",
+		"UNKNOWN_ERROR": "Unknown error"
+	},
+	"NOTIFICATIONS": {
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "Invalid token",
+		"AuthError": "Authentication failed",
+		"DomainAlreadyExists": "Domain already exists",
+		"CantSavePluginSettings": "Can't save settings",
+		"CantInstallPackage": "Failed to install extension",
+		"CantDeletePackage": "Failed to remove extension",
+		"InvalidPluginPackage": "Invalid extension package",
+		"UnsupportedPluginPackage": "Unsupported extension package",
+		"UnknownError": "Unknown error"
+	}
+}

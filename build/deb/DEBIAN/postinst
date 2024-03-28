@@ -1,0 +1,3 @@
+#!/bin/sh
+chown -R www-data:www-data /var/lib/snappymail
+chown -R root:root /usr/share/snappymail/

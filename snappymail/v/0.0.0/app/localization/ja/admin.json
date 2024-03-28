@@ -1,0 +1,185 @@
+{
+	"GLOBAL": {
+		"ADD": "追加",
+		"CLOSE": "閉じる",
+		"SAVE": "保存",
+		"TEST": "テスト",
+		"UPDATE": "更新",
+		"USERNAME": "ユーザー名",
+		"PASSWORD": "パスワード",
+		"CANCEL": "キャンセル",
+		"SEARCH": "検索"
+	},
+	"LOGIN": {
+		"LABEL_LOGIN": "ログイン",
+		"LABEL_TOTP": "TOTPコード",
+		"BUTTON_LOGIN": "管理画面へログイン"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "管理画面"
+	},
+	"SETTINGS_LABELS": {
+		"GENERAL": "全般",
+		"LOGIN": "ログイン",
+		"BRANDING": "ブランド化",
+		"CONTACTS": "連絡先",
+		"DOMAINS": "ドメイン",
+		"SECURITY": "セキュリティ",
+		"PACKAGES": "パッケージ",
+		"CONFIG": "詳細",
+		"ABOUT": "SnappyMailについて"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "インターフェース",
+		"LABEL_LANGUAGE": "言語",
+		"LABEL_LANGUAGE_ADMIN": "言語(管理画面)",
+		"LABEL_THEME": "テーマ",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "設定画面で言語選択を使用する",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "設定画面でテーマ選択を使用する",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "設定画面で背景選択を使用する",
+		"LABEL_SHOW_THUMBNAILS": "サムネイルを表示(添付ファイル)",
+		"LEGEND_MAIN": "メイン",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "添付サイズ制限",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "追加のアカウントを使用する",
+		"LABEL_ALLOW_IDENTITIES": "複数の表示名を使用する",
+		"ALERT_DATA_ACCESS": "SnappyMailのデータフォルダがアクセス可能になっています。外部からSnappyMailのデータフォルダにアクセスできないよう、Webサーバーを設定してください。詳しくは以下をご覧ください:",
+		"ALERT_WARNING": "警告！",
+		"HTML_ALERT_WEAK_PASSWORD": "デフォルトの管理者パスワードを使用しています。\n<br>\nセキュリティ上の理由から、いますぐパスワードを\n<strong><a href=\"#\/security\">変更<\/a><\/strong>\nしてください。\n"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "ログイン画面",
+		"LABEL_DEFAULT_DOMAIN": "デフォルトドメイン",
+		"LABEL_DETERMINE_USER_DOMAIN": "ユーザードメインを自動で選ぶ",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "ログイン画面で言語選択を使用する",
+		"LABEL_DETERMINE_USER_LANGUAGE": "ユーザー言語を自動で選ぶ"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "ブランド化",
+		"LABEL_PAGE_TITLE": "ページタイトル",
+		"LABEL_LOADING_DESCRIPTION": "説明を読み込み中",
+		"LABEL_FAVICON_URL": "Favicon"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "連絡先",
+		"LEGEND_STORAGE": "ストレージ(PDO)",
+		"LABEL_ENABLE_CONTACTS": "連絡先を有効化",
+		"LABEL_ALLOW_SYNC": "(外部のCardDAVサーバーと)連絡先の同期を使用する",
+		"LABEL_STORAGE_TYPE": "タイプ",
+		"LABEL_STORAGE_DSN": "Dsn",
+		"LABEL_STORAGE_USER": "ユーザー",
+		"LABEL_STORAGE_PASSWORD": "パスワード",
+		"SQLITE_GLOBAL": "Use a global DB instead of per account",
+		"ALERT_NOTICE": "注意！",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "アクティブユーザーの数が多いとき、このデータベース・タイプを使用しないでください。",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "このシステムでは連絡先はサポートされていません。\n<br>\nサーバーへ<strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong>\n拡張モジュールのインストールが必要です。\n"
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "ドメイン",
+		"BUTTON_ADD_DOMAIN": "ドメインを追加",
+		"BUTTON_ADD_ALIAS": "エイリアスを追加",
+		"DELETE_ARE_YOU_SURE": "よろしいですか？",
+		"HTML_DOMAINS_HELPER": "ドメインの一覧は、Webメールのアクセスを許可されています。\n<br>\nドメインを設定するには、名前をクリックしてください。\n"
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "セキュリティ",
+		"LABEL_USE_IMAGE_PROXY": "外部イメージにローカルProxyを使う",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
+		"LABEL_SHOW_PHP_INFO": "PHP情報を表示",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "管理画面アクセス情報",
+		"LABEL_CURRENT_PASSWORD": "現在のパスワード",
+		"LABEL_NEW_PASSWORD": "新しいパスワード",
+		"LABEL_REPEAT_PASSWORD": "再入力",
+		"LABEL_REQUIRE_VERIFICATION": "のSSL証明書の検証を有効にする",
+		"CRYPTO": "Crypto",
+		"LABEL_ALLOW_SELF_SIGNED": "自己署名証明書を使う"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "プラグインを有効化",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "更新があります",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "インストール可能なパッケージ",
+		"LEGEND_INSTALLED_PACKAGES": "インストールされたパッケージ",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "現時点でリポジトリにアクセスすることはできません。"
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "SnappyMailについて",
+		"LABEL_TAG_HINT": "シンプル・モダン・高速なウェブベースのメールクライアント",
+		"LABEL_ALL_RIGHTS_RESERVED": "All Rights Reserved.",
+		"HINT_READ_CHANGE_LOG": "更新する前に変更ログをお読みください。",
+		"HINT_IS_UP_TO_DATE": "SnappyMailは最新のものです。",
+		"HTML_NEW_VERSION": "新しいバージョン<b>%VERSION%<\/b>があります",
+		"LABEL_UPDATING": "更新中",
+		"LABEL_CHECKING": "アップデートの確認",
+		"BUTTON_RELEASES": "Releases"
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "エイリアスを追加",
+		"LABEL_ALIAS": "エイリアス",
+		"LABEL_DOMAIN": "ドメイン"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "ドメインを追加",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "ドメイン\"%NAME%\"を追加",
+		"TITLE_EDIT_DOMAIN": "ドメイン\"%NAME%\"を編集",
+		"LABEL_NAME": "名前",
+		"NAME_HELPER": "ワイルドカード利用可",
+		"LABEL_SERVER": "サーバー",
+		"LABEL_PORT": "ポート",
+		"LABEL_SECURE": "セキュリティ",
+		"TIMEOUT": "Timeout",
+		"DISABLE_CAPABILITIES": "Disable capabilities",
+		"LIMITS": "Limits",
+		"FOLDERS": "Folders",
+		"MESSAGES": "Messages",
+		"LABEL_WHITE_LIST": "ホワイトリスト",
+		"SECURE_OPTION_NONE": "なし",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "SIEVEスクリプトを使用する",
+		"LABEL_USE_SHORT_LOGIN": "短いログイン名を使う",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
+		"LABEL_USE_AUTH": "認証を使用する",
+		"LABEL_SET_SENDER": "ログイン名を送信者として使う",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
+		"LABEL_USE_PHP_MAIL": "PHPのmail()関数を使用する",
+		"BUTTON_WHITE_LIST": "ホワイトリスト",
+		"BUTTON_SIEVE_CONFIGURATION": "SIEVE設定",
+		"BUTTON_BACK_TO_IMAP": "IMAP 設定に戻る",
+		"BUTTON_BACK": "戻る",
+		"BUTTON_UPDATE": "更新",
+		"NEW_DOMAIN_DESC": "このドメイン設定を使用すると、<strong>%NAME%<\/strong>メールアドレスで動作するようになります。",
+		"WHITE_LIST_ALERT": "ドメインの一覧は、Webメールのアクセスを許可されています。\n区切り文字としてスペースを使用してください。\n"
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "プラグイン",
+		"DESC_NOTHING_TO_CONFIGURE": "何も設定されていません"
+	},
+	"POPUPS_ASK": {
+		"BUTTON_YES": "はい",
+		"BUTTON_NO": "いいえ",
+		"DESC_WANT_CLOSE_THIS_WINDOW": "このウィンドウを閉じてもよろしいですか？"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "言語を選択してください"
+	},
+	"HINTS": {
+		"BETA": "beta",
+		"WARNING": "警告！"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "ドメインが既に存在しています",
+		"UNKNOWN_ERROR": "不明なエラー"
+	},
+	"NOTIFICATIONS": {
+		"RequestError": "要求は失敗しました",
+		"RequestAborted": "要求は中断されました",
+		"RequestTimeout": "要求はタイムアウトしました",
+		"InvalidToken": "無効なトークン",
+		"AuthError": "認証に失敗しました",
+		"DomainAlreadyExists": "ドメインが既に存在しています",
+		"CantSavePluginSettings": "設定が保存できません",
+		"CantInstallPackage": "パッケージのインストールに失敗しました",
+		"CantDeletePackage": "パッケージの削除に失敗しました",
+		"InvalidPluginPackage": "無効なプラグインパッケージ",
+		"UnsupportedPluginPackage": "サポートされていないプラグインパッケージ",
+		"UnknownError": "不明なエラー"
+	}
+}

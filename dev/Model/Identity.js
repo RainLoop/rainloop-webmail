@@ -1,27 +1,41 @@
-import ko from 'ko';
-
 import { AbstractModel } from 'Knoin/AbstractModel';
+import { addObservablesTo, addComputablesTo } from 'External/ko';
 
-class IdentityModel extends AbstractModel {
+export class IdentityModel extends AbstractModel {
 	/**
 	 * @param {string} id
 	 * @param {string} email
 	 */
-	constructor(id, email) {
-		super('IdentityModel');
+	constructor() {
+		super();
 
-		this.id = ko.observable(id || '');
-		this.email = ko.observable(email);
-		this.name = ko.observable('');
+		addObservablesTo(this, {
+			id: '',
+			label: '',
+			email: '',
+			name: '',
 
-		this.replyTo = ko.observable('');
-		this.bcc = ko.observable('');
+			replyTo: '',
+			bcc: '',
+			sentFolder: '',
 
-		this.signature = ko.observable('');
-		this.signatureInsertBefore = ko.observable(false);
+			signature: '',
+			signatureInsertBefore: false,
 
-		this.deleteAccess = ko.observable(false);
-		this.canBeDeleted = ko.computed(() => '' !== this.id());
+			pgpSign: false,
+			pgpEncrypt: false,
+
+			smimeKey: '',
+			smimeCertificate: '',
+
+			askDelete: false
+		});
+
+		addComputablesTo(this, {
+			smimeKeyEncrypted: () => this.smimeKey().includes('-----BEGIN ENCRYPTED PRIVATE KEY-----'),
+			smimeKeyValid: () => /^-----BEGIN (ENCRYPTED |RSA )?PRIVATE KEY-----/.test(this.smimeKey()),
+			smimeCertificateValid: () => /^-----BEGIN CERTIFICATE-----/.test(this.smimeCertificate())
+		});
 	}
 
 	/**
@@ -29,10 +43,8 @@ class IdentityModel extends AbstractModel {
 	 */
 	formattedName() {
 		const name = this.name(),
-			email = this.email();
-
-		return '' !== name ? name + ' (' + email + ')' : email;
+			email = this.email(),
+			label = this.label();
+		return (name ? `${name} ` : '') + `<${email}>` + (label ? ` (${label})` : '');
 	}
 }
-
-export { IdentityModel, IdentityModel as default };

@@ -1,0 +1,30 @@
+version: '2'
+services:
+  snappymail:
+    image: djmaze/snappymail:latest
+    ports:
+      - 8888:8888
+    environment:
+      - DEBUG=true
+    volumes:
+      - snappymail:/var/lib/snappymail
+    networks:
+      - default
+    restart: unless-stopped
+
+  # This provides prometheus metrics for snappymail's php-fpm
+  php-fpm-exporter:
+    image: hipages/php-fpm_exporter:2.2.0
+    ports:
+      - 9253:9253
+    environment:
+      - PHP_FPM_SCRAPE_URI=tcp://snappymail:9000/status
+    networks:
+      - default
+
+networks:
+  default:
+
+volumes:
+  snappymail:
+    driver: local

@@ -1,0 +1,39 @@
+<div class="legend">
+	<span data-i18n="SETTINGS_LABELS/PACKAGES"></span>
+	<i class="icon-spinner" style="margin: 5px" data-bind="visible: packages.loading"></i>
+</div>
+
+<div class="alert" style="margin-top: 10px;" data-bind="visible: !packages.real() && !packages.loading()">
+	<div data-i18n="TAB_PACKAGES/ALERT_CANNOT_ACCESS_REPOSITORY"></div>
+	<!-- ko text: packages.error() --><!-- /ko -->
+</div>
+
+<div class="alert" style="margin-top: 10px;" data-bind="visible: packagesError()">
+	<a href="#" class="close" data-bind="click: function () { packagesError('') }">×</a>
+	<span data-bind="text: packagesError"></span>
+</div>
+
+<div data-bind="component: {
+	name: 'Checkbox',
+	params: { value: pluginsEnable, label: 'TAB_PACKAGES/LABEL_ENABLE_PLUGINS' }
+}"></div>
+
+<br>
+
+<div data-bind="visible: packagesUpdate().length">
+	<div class="legend">
+		<span data-i18n="TAB_PACKAGES/LEGEND_AVAILABLE_FOR_UPDATE"></span>
+		(<span data-bind="text: packagesUpdate().length"></span>)
+	</div>
+	<div data-bind="template: { name: 'AdminSettingsPackagesTable', data: {f: packagesUpdate} }"></div>
+</div>
+
+<div id="packages-installed" data-bind="visible: packagesCurrent().length, css: {'disabled': !pluginsEnable()}">
+	<div class="legend" data-i18n="TAB_PACKAGES/LEGEND_INSTALLED_PACKAGES"></div>
+	<div data-bind="template: { name: 'AdminSettingsPackagesTable', data: {f: packagesCurrent} }"></div>
+</div>
+
+<div data-bind="visible: packagesAvailable().length">
+	<div class="legend" data-i18n="TAB_PACKAGES/LEGEND_AVAILABLE_FOR_INSTALLATION"></div>
+	<div data-bind="template: { name: 'AdminSettingsPackagesTable', data: {f: packagesAvailable} }"></div>
+</div>

@@ -1,0 +1,40 @@
+
+@keyframes highlight-folder-row {
+	0% { transform: scale(1); }
+	50% { transform: scale(1.1); }
+	100% { transform: scale(1); }
+}
+
+@keyframes animate-stripes {
+	0% {background-position: 0 0;}
+	100% {background-position: 60px 0;}
+}
+
+@media screen and (min-width: @maxMobileWidth + 1px) {
+
+	.b-folders li .anim-action-class {
+		animation: highlight-folder-row 0.5s linear;
+	}
+
+	.b-folders .btn.buttonContacts {
+		transition: margin 0.3s linear;
+	}
+
+	#rl-left .b-content {
+		transition: opacity 0.3s linear;
+	}
+
+	.b-list-content {
+		.e-contact-item {
+			transition: max-height 400ms ease;
+		}
+	}
+
+	#V-PopupsCompose header.loading {
+		background-size: 60px 60px;
+		background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%,
+			transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%,
+			transparent 75%, transparent);
+		animation: animate-stripes 2s linear infinite;
+	}
+}

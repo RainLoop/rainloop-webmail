@@ -1,0 +1,2 @@
+	window['ko'] = koExports;
+})(this);

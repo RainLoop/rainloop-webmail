@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Endurhlaða",
+	"NO_SCRIPT_TITLE": "JavaScript er nauðsynlegt fyrir þetta forrit.",
+	"NO_SCRIPT_DESC": "JavaScript stuðningur er ekki virkt í vafranum þínum.\nGerðu JavaScript virkt í stillingum vafrans og reyndu aftur.\n",
+	"NO_COOKIE_TITLE": "Stuðningur við vefkökur er nauðsynlegur fyrir þetta forrit.",
+	"NO_COOKIE_DESC": "Stuðningur við vefkökur er ekki til staðar í vafranum þínum.\nGerðu vefkökur virkar í vafranum þínum og reyndu aftur.\n",
+	"BAD_BROWSER_TITLE": "Vafrinn þinn er úreltur.",
+	"BAD_BROWSER_DESC": "Til að geta notað alla eiginleikana í þessu forriti,\nnáðu í og settu upp einn af þessum vöfrum:\n"
+}

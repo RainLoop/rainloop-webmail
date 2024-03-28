@@ -1,0 +1,463 @@
+
+#V-MailMessageList {
+	position: relative;
+	height: 100%;
+	width: 100%;
+}
+
+#V-MailMessageList.focused .messageList {
+	border-color: #9d9d9d;
+	box-shadow: var(--smMainShadow);
+}
+
+#no-sort-list,
+#sort-list-dropdown-id {
+	padding-left: 6px;
+	padding-right: 6px;
+}
+
+#V-MailMessageList .btn-toolbar {
+	padding: 10px 1px;
+	white-space: nowrap;
+}
+
+.messageList {
+	height: calc(100% - 60px);
+	background-color: var(--panel-bg-clr, #fff);
+	border: 1px solid var(--border-color, #aaa);
+	border-radius: var(--border-radius, 5px);
+	display: flex;
+	flex-direction: column;
+
+	.groupLabel {
+		background:rgba(128,128,128,0.2);
+		cursor: pointer;
+		font-size: 85%;
+		line-height: 2;
+		opacity: 0.6;
+		text-align: center;
+		text-transform: capitalize;
+	}
+
+	.reply::before {
+		content: '↳';
+		line-height: 3;
+		position: absolute;
+		margin-left: -1em;
+	}
+
+	.b-footer {
+		display: flex;
+		flex-shrink: 0;
+		padding: 7px;
+
+		background-color: var(--message-list-toolbar-bg-color, #eee);
+//		#gradient > .vertical(#f4f4f4, #dfdfdf);
+
+		border-bottom-right-radius: var(--border-radius, 5px);
+		border-bottom-left-radius: var(--border-radius, 5px);
+		border-top: 1px solid var(--border-color, #bbb);
+
+		.e-quota {
+			border-bottom: 1px dashed #333;
+			display: inline-block;
+			margin-top: 5px;
+			margin-left: 5px;
+			font-size: 128%;
+			cursor: help;
+		}
+	}
+
+	.b-footer nav {
+		flex-grow: 1;
+		display: flex;
+		justify-content: end;
+	}
+
+	.btn.buttonMoreSearch {
+		font-size: 80%;
+		padding-left: 8px;
+		padding-right: 8px;
+	}
+
+	.second-toolbar {
+		display: flex;
+		flex-shrink: 0;
+		padding: 10px 8px 10px 11px;
+		white-space: nowrap;
+
+		background-color: var(--message-list-toolbar-bg-color, #eee);
+//		#gradient > .vertical(#f4f4f4, #dfdfdf);
+
+		border-top-right-radius: var(--border-radius, 5px);
+		border-top-left-radius: var(--border-radius, 5px);
+		border-bottom: 1px solid var(--border-color, #bbb);
+	}
+
+	.checkboxCheckAll {
+		cursor: pointer;
+		margin: 0.45em 0.5em 0 0;
+	}
+
+	.search-input-wrp {
+		flex-grow: 1;
+	}
+
+	.inputSearch {
+		width: 100%;
+	}
+
+	.b-content {
+		height: 100%;
+		padding: 0;
+		overflow: auto;
+		scroll-behavior: smooth;
+
+		.listClear {
+			text-align: center;
+			padding: 10px;
+			line-height: 13px;
+		}
+
+		.listEmptyMessage, .listLoading, .listDragOver, .listError {
+			color: #999;
+			text-align: center;
+			padding: 60px 10px;
+			font-size: 171%;
+			line-height: 30px;
+		}
+
+		.listDragOver {
+			max-height: 0;
+			overflow: hidden;
+			padding: 0 10px;
+		}
+
+		.listDragOver.viewAppendArea {
+			max-height: 120px;
+			padding: 30px 10px;
+		}
+		.listDragOver.dragOverEnter {
+			background-color: #e0fdda;
+			color: #333;
+		}
+
+		.listError {
+			color: #DA4F49;
+		}
+
+		.listSearchDesc {
+			font-size: 114%;
+			padding: 12px;
+			border-bottom: 1px solid #eee;
+		}
+
+		.listThreadUidDesc {
+			font-size: 114%;
+			padding: 7px 20px 6px 20px;
+			background-color: rgba(128,128,128,0.5);
+			border-bottom: 1px solid #888;
+			color: #fff;
+			cursor: pointer;
+			text-shadow: 0 1px 0 #000;
+			text-align: center;
+		}
+
+		.fullThreadsParent {
+			height: 25px;
+			padding: 3px 5px;
+			background-color: #f4f4f4;
+			text-align: center;
+		}
+	}
+}
+
+.messageListItem > div + div {
+	display: flex;
+	overflow: hidden;
+	padding: 5px 0 5px 5px;
+	width: 100%;
+}
+
+.messageListItem {
+	cursor: pointer;
+	border: 0;
+	border-bottom: 1px solid rgba(153, 153, 153, 0.2);
+	border-left: 6px solid transparent;
+	display: flex;
+	font-size: 90%;
+	line-height: 2;
+	position: relative;
+/*
+	> * {
+		display: flex;
+		flex: 0 0 auto;
+		order: 0;
+	}
+*/
+	&.focused {
+		background-color: rgba(128, 128, 128, 0.1);
+		border-left-color: #ccc;
+		border-right-color: #ccc !important;
+	}
+
+	&.priorityHigh .subjectParent::before {
+		content: '! '; /*❗*/
+		color: red;
+		font-weight: bolder;
+	}
+
+	&.deleted {
+		opacity: .3;
+	}
+
+	.messageCheckbox {
+		font-size: 114%;
+		padding: 5px .5em 0;
+		white-space: nowrap;
+	}
+	.checkboxMessage {
+		display: inline;
+	}
+
+	time, .sizeParent {
+		margin: 0 5px 0 0;
+		opacity: 0.7;
+		font-size: 80%;
+		white-space: nowrap;
+		min-width: 3.5em;
+		text-align: var(--right, right);
+	}
+
+	.senderParent, .subjectParent {
+		margin: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.senderParent {
+		flex: 0 0 25%;
+	}
+
+	.subjectParent {
+		flex: 1 1 auto;
+	}
+
+	.subjectParent:empty {
+		font-style: italic;
+		opacity: 0.5;
+	}
+
+	.threadsCountParent {
+		display: inline;
+		overflow: hidden;
+		background-color: #eee;
+		padding: 1px 5px;
+		margin-right: 5px;
+		border: 1px solid #ccc;
+		border-radius: var(--border-radius, 5px);
+	}
+
+	.threadsCountParent.lastSelected {
+		background-color: #999;
+		border-color: #999;
+		color: #fff;
+	}
+
+	.threadsCountParent:hover {
+		border-color: #666;
+	}
+
+	.threads-len {
+		border-radius: var(--border-radius, 5px);
+		border: 1px solid #ccc;
+		font-size: 80%;
+		padding: 0 4px;
+		white-space: nowrap;
+		&:hover {
+			background-color: rgba(127,127,127,0.3);
+			border-color: #666;
+		}
+	}
+	.threads-len::after {
+		content: ' ›';
+	}
+
+	.replyFlag, .forwardFlag {
+		margin-right: 0.25em;
+	}
+
+	&.unseen {
+		background-color: rgba(255, 255, 64, 0.15);
+		border-left-color: orange;
+		border-right-color: orange !important;
+		.senderParent, .subjectParent {
+			font-weight: bold;
+		}
+
+		&.focused {
+			border-left-color: darken(orange, 10%);
+			border-right-color: darken(orange, 10%) !important;
+		}
+	}
+	[data-unseen] {
+		background-color: rgba(255, 255, 64, 0.15);
+		border-color: orange;
+	}
+
+	&.checked {
+		border-left-color: lighten(#398CF2, 10%);
+		border-right-color: lighten(#398CF2, 10%) !important;
+
+		&.focused {
+			border-left-color: darken(#398CF2, 5%);
+			border-right-color: darken(#398CF2, 5%) !important;
+		}
+	}
+
+	&.selected {
+		background-color: rgba(140, 200, 255, 0.3);
+		border-bottom-color: rgba(57, 140, 242, 0.2);
+		border-left-color: #398CF2;
+		border-right-color: #398CF2 !important;
+		z-index: 101;
+	}
+
+	.attachmentParent,
+	.flagParent {
+		margin: 0 10px 0 5px;
+	}
+	.flagParent::after {
+		content: '☆'; /*⚐*/
+	}
+	&.msgflag-\\flagged .flagParent::after,
+	&.hasFlaggedSubMessage .flagParent::after {
+		color: orange;
+		content: '★'; /*⚑*/
+	}
+	&:not(.msgflag-\\flagged):not(.hasFlaggedSubMessage) .flagParent:not(:hover)::after {
+		opacity: 0.5;
+	}
+
+	.senderParent::before {
+		font-family: snappymail;
+	}
+	&.msgflag-\\answered .senderParent::before {
+		content: '← ';
+	}
+	&.msgflag-\$forwarded .senderParent::before {
+		content: '→ ';
+	}
+	&.msgflag-\\answered.msgflag-\$forwarded .senderParent::before {
+		content: '←→ ';
+	}
+	&.msgflag-\\deleted {
+		opacity: .7;
+		.subjectParent {
+			text-decoration: line-through;
+		}
+	}
+}
+
+html:not(.sm-msgView-bottom):not(.sm-msgView-side) .message-selected #V-MailMessageList {
+	display: none;
+}
+
+@media screen and (max-width: @maxMobileWidth) {
+	#V-MailMessageList .btn-toolbar:not(.hasChecked) .onCheckedShow,
+	#V-MailMessageList .hasChecked .onCheckedHide {
+		display: none;
+	}
+}
+
+@media screen and (min-width: @maxMobileWidth + 1px) {
+	.messageList {
+		.listDragOver {
+			transition: all 400ms ease;
+		}
+	}
+
+	.hideMessageListCheckbox {
+		.checkboxCheckAll {
+			visibility: hidden;
+		}
+		.checkboxMessage {
+			display: none;
+		}
+	}
+
+	.sm-msgView-side #V-MailMessageList {
+		width: unset;
+
+		.messageList {
+			max-width: 50vw;
+			min-width: 320px;
+			overflow: auto;
+			resize: horizontal;
+			width: 35vw;
+		}
+	}
+
+	.sm-msgView-bottom #V-MailMessageList {
+		height: unset;
+		width: unset;
+
+		.messageList {
+			height: 35vh;
+			max-height: 50vh;
+			min-height: 200px;
+			overflow: auto;
+			resize: vertical;
+		}
+	}
+}
+
+#messagesDragImage {
+	color: #fff;
+	background-color: #000;
+	height: 20px;
+	min-width: 30px;
+	padding: 4px 10px;
+	position: fixed;
+	right: -100px;
+	top: 0;
+}
+
+.sm-msgView-side, .rl-mobile {
+
+	.messageListItem > div + div {
+		flex-wrap: wrap;
+	}
+
+	.messageListItem {
+		line-height: 1.5;
+
+		.messageCheckbox {
+			padding-top: 0.8em;
+		}
+
+		.senderParent {
+			flex: 1 0 25%;
+		}
+
+		.subjectParent {
+			flex: 1 0 auto;
+			line-height: 16px;
+			order: 1;
+			width: calc(100% - 120px);
+		}
+
+		.flagParent {
+			order: 1;
+		}
+
+		.sizeParent {
+			order: 2;
+		}
+
+		.attachmentParent {
+			order: 3;
+		}
+	}
+}

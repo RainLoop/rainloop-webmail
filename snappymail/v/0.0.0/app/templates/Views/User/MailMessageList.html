@@ -1,0 +1,183 @@
+<div class="btn-toolbar" data-bind="css: {'hasChecked':checkAll}">
+	<a class="btn btn-thin fontastic toggleLeft"></a>
+	<a class="btn buttonCompose onCheckedHide" data-bind="click: composeClick, css: {'btn-warning': composeInEdit, 'btn-success': !composeInEdit()}" data-i18n="[title]FOLDER_LIST/BUTTON_NEW_MESSAGE">
+		<i class="icon-paper-plane"></i>
+	</a>
+	<a class="btn onCheckedHide" data-bind="click: reload" data-i18n="[title]MESSAGE_LIST/BUTTON_RELOAD">
+		<i class="icon-spinner not-animated"></i>
+	</a>
+	<a href="#" tabindex="-1" class="btn onCheckedShow" data-bind="command: moveCommand" data-i18n="[title]GLOBAL/MOVE_TO">
+		<i class="icon-copy visible-on-ctrl-btn"></i>
+		<i class="fontastic hidden-on-ctrl-btn">📁</i>
+	</a>
+	<div class="btn-group onCheckedShow">
+		<a class="btn fontastic" data-bind="visible: archiveAllowed, command: archiveCommand" data-i18n="[title]GLOBAL/TO_ARCHIVE">🗄</a>
+		<a class="btn fontastic" data-bind="visible: canMarkAsSpam, command: spamCommand" data-i18n="[title]GLOBAL/TO_SPAM">⚠</a>
+		<a class="btn" data-bind="visible: isSpamFolder, command: notSpamCommand" data-i18n="[title]GLOBAL/NOT_SPAM">
+			<i class="icon-check-mark-circle-two"></i>
+		</a>
+		<a class="btn fontastic" data-bind="command: deleteCommand" data-i18n="[title]GLOBAL/DELETE">🗑</a>
+	</div>
+	<div class="btn-group dropdown" data-bind="registerBootstrapDropdown: true">
+		<a id="more-list-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1" data-i18n="[title]GLOBAL/MORE">☰</a>
+		<menu class="dropdown-menu" role="menu" aria-labelledby="more-list-dropdown-id">
+			<li role="presentation" data-bind="click: listUnsetSeen, css: {'disabled': !messageList.hasCheckedOrSelected()}">
+				<a href="#" tabindex="-1" data-icon="" data-i18n="MESSAGE_LIST/MENU_UNSET_SEEN"></a>
+			</li>
+			<li role="presentation" data-bind="click: listSetSeen, css: {'disabled': !messageList.hasCheckedOrSelected()}">
+				<a href="#" tabindex="-1" data-icon="" data-i18n="MESSAGE_LIST/MENU_SET_SEEN"></a>
+			</li>
+			<li role="presentation" data-bind="click: listSetFlags, css: {'disabled': !messageList.hasCheckedOrSelected()}">
+				<a href="#" tabindex="-1" data-icon="★" data-i18n="MESSAGE_LIST/MENU_SET_FLAG"></a>
+			</li>
+			<li role="presentation" data-bind="click: listUnsetFlags, css: {'disabled': !messageList.hasCheckedOrSelected()}">
+				<a href="#" tabindex="-1" data-icon="☆" data-i18n="MESSAGE_LIST/MENU_UNSET_FLAG"></a>
+			</li>
+			<li role="presentation" data-bind="click: listSetAllSeen, css: {'disabled': !messageList().length}">
+				<a href="#" tabindex="-1" data-icon="" data-i18n="MESSAGE_LIST/MENU_SET_ALL_SEEN"></a>
+			</li>
+			<li class="dividerbar" role="presentation" data-bind="command: forwardCommand">
+				<a href="#" tabindex="-1" data-icon="↞" data-i18n="MESSAGE_LIST/BUTTON_MULTY_FORWARD"></a>
+			</li>
+			<li role="presentation" data-bind="command: downloadAttachCommand, visible: downloadAsZipAllowed">
+				<a href="#" tabindex="-1" data-icon="📦" data-i18n="MESSAGE_LIST/DOWNLOAD_ALL_ATTACHMENTS"></a>
+			</li>
+			<li role="presentation" data-bind="command: downloadZipCommand, visible: downloadAsZipAllowed">
+				<a href="#" tabindex="-1" data-icon="💾" data-i18n="MESSAGE/LINK_DOWNLOAD_AS_ZIP"></a>
+			</li>
+			<li class="dividerbar" role="presentation" data-bind="command: moveCommand">
+				<a href="#" tabindex="-1" data-icon="📁" data-i18n="GLOBAL/MOVE_TO"></a>
+			</li>
+			<li role="presentation" data-bind="visible: archiveAllowed, command: archiveCommand">
+				<a href="#" tabindex="-1" data-icon="🗄" data-i18n="GLOBAL/TO_ARCHIVE">🗄</a>
+			</li>
+			<li role="presentation" data-bind="visible: canMarkAsSpam, command: spamCommand">
+				<a href="#" tabindex="-1" data-icon="⚠" data-i18n="GLOBAL/SPAM"></a>
+			</li>
+			<li role="presentation" data-bind="visible: isSpamFolder, command: notSpamCommand">
+				<a href="#" tabindex="-1" data-icon="" data-i18n="GLOBAL/NOT_SPAM"></a>
+			</li>
+			<li role="presentation" data-bind="command: deleteCommand">
+				<a href="#" tabindex="-1" data-icon="🗑" data-i18n="GLOBAL/DELETE"></a>
+			</li>
+			<li role="presentation" data-bind="visible: allowDangerousActions, command: deleteWithoutMoveCommand">
+				<a href="#" tabindex="-1" data-icon="🗑" data-i18n="MESSAGE_LIST/BUTTON_DELETE_WITHOUT_MOVE"></a>
+			</li>
+			<li role="presentation" data-bind="visible: allowDangerousActions, click: clear">
+				<a href="#" tabindex="-1" data-icon="🔥" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER"></a>
+			</li>
+		</menu>
+	</div>
+	<div class="btn-group dropdown onCheckedHide" data-bind="visible: !sortSupported()">
+		<div id="no-sort-list" class="btn fontastic" data-i18n="[title]MESSAGE_LIST/NO_SORT">✖⬇</div>
+	</div>
+	<div class="btn-group dropdown onCheckedHide" data-bind="visible: sortSupported(), registerBootstrapDropdown: true">
+		<a id="sort-list-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1" data-i18n="[title]MESSAGE_LIST/SORT" data-bind="text: sortText">⬇</a>
+		<menu class="dropdown-menu" role="menu" aria-labelledby="sort-list-dropdown-id">
+			<li role="presentation" data-sort="" data-bind="click: changeSort">
+				<a href="#" tabindex="-1" data-icon="📅⬇" data-i18n="MESSAGE_LIST/SORT_DATE_DESC"></a>
+			</li>
+			<li role="presentation" data-sort="DATE" data-bind="click: changeSort">
+				<a href="#" tabindex="-1" data-icon="📅⬆" data-i18n="MESSAGE_LIST/SORT_DATE_ASC"></a>
+			</li>
+			<li class="dividerbar" role="presentation" data-sort="FROM" data-bind="click: changeSort">
+				<a href="#" tabindex="-1" data-icon="@⬇" data-i18n="MESSAGE_LIST/SORT_FROM_ASC"></a>
+			</li>
+			<li role="presentation" data-sort="REVERSE FROM" data-bind="click: changeSort">
+				<a href="#" tabindex="-1" data-icon="@⬆" data-i18n="MESSAGE_LIST/SORT_FROM_DESC"></a>
+			</li>
+			<li class="dividerbar" role="presentation" data-sort="REVERSE SIZE" data-bind="click: changeSort">
+				<a href="#" tabindex="-1" data-icon="✉⬇" data-i18n="MESSAGE_LIST/SORT_SIZE_DESC"></a>
+			</li>
+			<li role="presentation" data-sort="SIZE" data-bind="click: changeSort">
+				<a href="#" tabindex="-1" data-icon="✉⬆" data-i18n="MESSAGE_LIST/SORT_SIZE_ASC"></a>
+			</li>
+			<li class="dividerbar" role="presentation" data-sort="SUBJECT" data-bind="click: changeSort">
+				<a href="#" tabindex="-1" data-icon="𝐒⬇" data-i18n="MESSAGE_LIST/SORT_SUBJECT_ASC"></a>
+			</li>
+			<li role="presentation" data-sort="REVERSE SUBJECT" data-bind="click: changeSort">
+				<a href="#" tabindex="-1" data-icon="𝐒⬆" data-i18n="MESSAGE_LIST/SORT_SUBJECT_DESC"></a>
+			</li>
+		</menu>
+	</div>
+</div>
+
+<div class="messageList g-ui-user-select-none" data-bind="css: {'hideMessageListCheckbox': !useCheckboxesInList() }">
+	<div class="second-toolbar thm-message-list-top-toolbar">
+		<i class="checkboxCheckAll fontastic" data-bind="text: checkAll() ? (isIncompleteChecked() ? '▣' : '☑') : '☐'"></i>
+		<div class="search-input-wrp">
+			<input type="search" class="inputSearch" tabindex="-1" placeholder="Search" autocorrect="off" autocapitalize="off" data-i18n="[placeholder]GLOBAL/SEARCH" data-bind="textInput: inputSearch, hasfocus: focusSearch">
+			<a class="closeSearch" data-bind="click: cancelSearch, visible: messageListSearchDesc()">×</a>
+		</div>
+		<a class="btn buttonMoreSearch" data-bind="click: advancedSearchClick">▼</a>
+	</div>
+	<div class="b-content">
+		<div class="listThreadUidDesc" data-bind="visible: messageList.threadUid(), click: cancelThreadUid"
+			data-icon="⬅" data-i18n="MESSAGE_LIST/BACK_TO_MESSAGE_LIST"></div>
+		<div class="listSearchDesc" data-bind="visible: messageListSearchDesc(), text: messageListSearchDesc"></div>
+		<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && !messageList.error() && !popupVisibility(), 'dragOverEnter': dragOverEnter }"
+			data-icon="⬇" data-i18n="MESSAGE_LIST/PUT_MESSAGE_HERE"></div>
+		<div class="listClear" data-bind="visible: clearListIsVisible()">
+			<a href="#" class="g-ui-link" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER" data-bind="click: clear"></a>
+		</div>
+		<div class="listError error" data-bind="visible: !dragOver() && messageList.error(), text: messageList.error"></div>
+		<div class="listEmptyMessage" data-bind="visible: listEmptyMessage(), text: listEmptyMessage()"></div>
+		<div class="listLoading" data-bind="visible: !dragOver() && !messageList().length &&
+			messageList.isLoading() && !messageList.error()">
+			<i class="icon-spinner"></i>
+			<span data-i18n="GLOBAL/LOADING"></span>
+		</div>
+
+		<!-- ko if: listGrouped -->
+		<div class="messageListPlace" data-bind="dragmessages: 1, i18nUpdate: groupedList, foreach: groupedList" draggable="true">
+			<div class="groupLabel" data-bind="text: label, click: $root.groupSearch" data-i18n="[title]GLOBAL/SEARCH"></div>
+			<!-- ko foreach: messages -->
+			<div class="messageListItem" data-bind="css: lineAsCss(), attr: {title: preview}">
+				<div class="messageCheckbox">
+					<div class="checkboxMessage fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
+				</div><div>
+					<div class="flagParent fontastic"></div>
+					<div class="senderParent" data-bind="attr: {title: senderClearEmailsString}, text: senderEmailsString"></div>
+					<div class="subjectParent" data-bind="text: subject"></div>
+					<div class="threads-len" data-bind="visible: 1 < threadsLen(), text: threadsLenText(), attr: {'data-unseen': threadUnseenLen() || null}"></div>
+					<div class="attachmentParent">
+						<i data-bind="css: attachmentIconClass"></i>
+					</div>
+					<div class="sizeParent" data-bind="text: friendlySize()"></div>
+					<time data-bind="attr:{'data-time-format':$root.timeFormat()}, time: dateTimestamp"></time>
+				</div>
+			</div>
+			<!-- /ko -->
+		</div>
+		<!-- /ko -->
+		<!-- ko ifnot: listGrouped -->
+		<div class="messageListPlace" data-bind="dragmessages: 1, foreach: messageList" draggable="true">
+			<div class="messageListItem" data-bind="css: lineAsCss(), attr:{title:preview}">
+				<div class="messageCheckbox">
+					<div class="checkboxMessage fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
+				</div><div data-bind="attr:{style:indent()}, css:{reply:indent()}">
+					<div class="flagParent fontastic"></div>
+					<div class="senderParent" data-bind="attr: {title: senderClearEmailsString}, text: senderEmailsString"></div>
+					<div class="subjectParent" data-bind="text: subject"></div>
+					<div class="threads-len" data-bind="visible: 1 < threadsLen(), text: threadsLenText(), attr: {'data-unseen': threadUnseenLen() || null}"></div>
+					<div class="attachmentParent">
+						<i data-bind="css: attachmentIconClass"></i>
+					</div>
+					<div class="sizeParent" data-bind="text: friendlySize()"></div>
+					<time data-time-format="AUTO" data-bind="time: dateTimestamp"></time>
+				</div>
+			</div>
+		</div>
+		<!-- /ko -->
+
+		<div id="messagesDragImage"><span class="text"></span>&nbsp;<span class="fontastic">✉</span></div>
+	</div>
+	<div class="b-footer thm-message-list-bottom-toolbar">
+		<!-- ko if: userUsageProc() -->
+		<span data-bind="attr: { title: quotaTooltip() }" class="e-quota">
+			<!-- ko text: userUsageProc --><!-- /ko -->%
+		</span>
+		<!-- /ko -->
+		<!-- ko template: { name: 'Paginator', data: messageListPaginator } --><!-- /ko -->
+	</div>
+</div>

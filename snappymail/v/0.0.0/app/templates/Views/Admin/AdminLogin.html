@@ -1,0 +1,34 @@
+<div class="descWrapper" data-i18n="TOP_PANEL/LABEL_ADMIN_PANEL"></div>
+<div class="alert" data-bind="hidden: !submitError()">
+	<a href="#" class="close" data-bind="click: hideError">×</a>
+	<span data-bind="text: submitError"></span>
+</div>
+<form action="#/" spellcheck="false" method="POST" data-bind="submit: submitForm, css: {'errorAnimated': formError, 'submitting': submitRequest()}">
+	<div class="controls" data-bind="css: {'error': loginError}">
+		<span class="fontastic">👤</span>
+		<input name="Login" required="" type="text" class="input-block-level"
+			autofocus="" autocomplete="username" autocorrect="off" autocapitalize="off"
+			data-bind="textInput: login, disable: submitRequest"
+			data-i18n="[placeholder]LOGIN/LABEL_LOGIN">
+	</div>
+	<div class="controls" data-bind="css: {'error': passwordError}">
+		<span class="fontastic">🔑</span>
+		<input name="Password" required="" type="password" class="input-block-level"
+			autocomplete="current-password" autocorrect="off" autocapitalize="off"
+			data-bind="textInput: password, disable: submitRequest"
+			data-i18n="[placeholder]GLOBAL/PASSWORD">
+	</div>
+	<div class="controls">
+		<span class="fontastic">⏱</span>
+		<input name="TOTP" type="text" pattern="[0-9]*" inputmode="numeric" class="input-block-level"
+			autocomplete="one-time-code" autocorrect="off" autocapitalize="off"
+			data-bind="textInput: totp, disable: submitRequest"
+			data-i18n="[placeholder]LOGIN/LABEL_TOTP">
+	</div>
+	<div id="plugin-Login-BottomControlGroup"></div>
+	<div class="controls">
+		<button class="btn btn-large buttonLogin"
+			data-bind="command: submitCommand"
+			data-i18n="LOGIN/BUTTON_LOGIN"></button>
+	</div>
+</form>

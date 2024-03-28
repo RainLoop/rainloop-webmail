@@ -1,0 +1,107 @@
+
+:root {
+	color-scheme: light;
+
+	/* MAIN */
+	--main-color: #333;
+	--main-bg-color: #e3e3e3;
+	--main-bg-image: none; /* url("images/background.png"); */
+	--main-bg-size: auto;
+	--main-bg-repeat: repeat;
+	--main-font-size: 14px;
+	--link-color: #369;
+	--border-color: #ddd;
+	--border-radius: 5px;
+	--hr-color: #eee;
+
+	--panel-bg-clr: #fff;
+
+	--warning-clr: #c09853;
+	--warning-bg-clr: #fcf8e3;
+	--warning-border-clr: #fbeed5;
+
+	--error-clr: #b94a48;
+	--error-bg-clr: #f2dede;
+	--error-border-clr: #eed3d7;
+
+	--info-clr: #3a87ad;
+	--info-bg-clr: #d9edf7;
+	--info-border-clr: #bce8f1;
+
+	/* LOADING */
+	--loading-color: #000;
+	--loading-text-shadow: none; /* 0px 1px 0px rgba(0, 0, 0, 0.5); */
+
+	/* LOGIN */
+	--login-color: #555;
+	--login-bg-color: #eee;
+	--login-box-shadow: none; /* 0px 2px 10px rgba(0,0,0,0.5) */
+	--login-border: 1px solid #ccc;
+	--login-border-radius: 7px;
+
+	--spinner-color: #fff;
+
+	/* MENU */
+	--dropdown-menu-color: #333;
+	--dropdown-menu-bg-color: #fff;
+	--dropdown-menu-hover-bg-color: #444;
+	--dropdown-menu-hover-color: #eee;
+	--dropdown-menu-disabled-color: #999;
+	--dropdown-menu-border-clr: rgba(0,0,0,.2);
+
+	/* FOLDERS */
+	--folders-color: #333;
+	--folders-disabled-color: #666;
+	--folders-selected-color: #eee;
+	--folders-selected-bg-color: #333;
+	--folders-focused-color: #eee;
+	--folders-focused-bg-color: #333;
+	--folders-hover-color: #eee;
+	--folders-hover-bg-color: false;
+	--folders-drop-color: #eee;
+	--folders-drop-bg-color: #333;
+	--unread-count-color: #fff;
+	--unread-count-bg-color: #333;
+
+	/* SETTINGS */
+	--settings-menu-color: #333;
+	--settings-menu-selected-color: #eee;
+	--settings-menu-selected-bg-color: #333;
+	--settings-menu-hover-color: #eee;
+	--settings-menu-hover-bg-color: #333;
+
+	/* MESSAGES */
+	--message-list-toolbar-bg-color: #eee;
+	--message-header-bg-clr: #f8f8f8;
+
+	/* DIALOGS */
+	--dialog-clr: #333;
+	--dialog-bg-clr: #fff;
+	--dialog-border-clr: rgba(0,0,0,.3);
+	--dialog-border-radius: 6px;
+
+	/* FORMS */
+	--btn-clr: #333;
+	--btn-bg-clr: #fff;
+	--btn-border-clr: #fff;
+	--btn-border-radius: 3px;
+	--btn-success-bg-clr: #84AB04;
+	--btn-danger-bg-clr: #ee5f5b;
+
+	--input-clr: #555;
+	--input-bg-clr: #fff;
+	--input-border-clr: #ccc;
+	--input-border-radius: 3px;
+	--input-focus-border-clr: #999;
+
+	/* TABLES */
+	--tr-hover-bg-clr: #f5f5f5;
+	--tr-odd-bg-clr: #f9f9f9; /* when striped */
+
+	/* TABS */
+	--tab-active-bg-clr: #fff;
+	--tab-hover-border-clr: #eee;
+
+	--smDialogShrink: 20px;
+	--smMainShadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}

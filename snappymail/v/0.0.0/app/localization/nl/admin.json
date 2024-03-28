@@ -1,0 +1,185 @@
+{
+	"GLOBAL": {
+		"ADD": "Toevoegen",
+		"CLOSE": "Sluiten",
+		"SAVE": "Opslaan",
+		"TEST": "Test",
+		"UPDATE": "Updaten",
+		"USERNAME": "Gebruikersnaam",
+		"PASSWORD": "Wachtwoord",
+		"CANCEL": "Annuleer",
+		"SEARCH": "Zoeken"
+	},
+	"LOGIN": {
+		"LABEL_LOGIN": "Inlognaam",
+		"LABEL_TOTP": "TOTP-code",
+		"BUTTON_LOGIN": "Aanmelden in het beheer paneel"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "Beheer paneel"
+	},
+	"SETTINGS_LABELS": {
+		"GENERAL": "Algemeen",
+		"LOGIN": "Inlogscherm",
+		"BRANDING": "Huisstijl",
+		"CONTACTS": "Contactpersonen",
+		"DOMAINS": "Domeinen",
+		"SECURITY": "Beveiliging",
+		"PACKAGES": "Extensies",
+		"CONFIG": "Configuratie",
+		"ABOUT": "Over"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "Omgeving",
+		"LABEL_LANGUAGE": "Taal",
+		"LABEL_LANGUAGE_ADMIN": "Taal (admin)",
+		"LABEL_THEME": "Thema",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Sta taalselectie toe in het instellingen scherm",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Sta thema selectie toe in het instellingen scherm",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Sta achtergrond selectie toe in het instellingen scherm",
+		"LABEL_SHOW_THUMBNAILS": "Toon miniaturen (bijlage)",
+		"LEGEND_MAIN": "Diverse",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "Maximale bijlage grootte",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Sta extra accounts toe",
+		"LABEL_ALLOW_IDENTITIES": "Meerdere identiteiten toestaan",
+		"ALERT_DATA_ACCESS": "Gegevensmap is toegankelijk. Configureer uw webserver om de gegevensmap te verbergen voor externe toegang. Lees hier meer:",
+		"ALERT_WARNING": "Waarschuwing!",
+		"HTML_ALERT_WEAK_PASSWORD": "U gebruikt het standaard beheer wachtwoord.\n<br>\n<strong><a href=\"#\/security\">Wijzig<\/a><\/strong>\na.u.b. voor uw veiligheid direct het wachtwoord."
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "Inlogscherm",
+		"LABEL_DEFAULT_DOMAIN": "Standaard domein",
+		"LABEL_DETERMINE_USER_DOMAIN": "Probeer gebruikersdomein te bepalen",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Sta taal selectie toe in het login scherm",
+		"LABEL_DETERMINE_USER_LANGUAGE": "Probeer gebruiker taal te bepalen"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Huisstijl",
+		"LABEL_PAGE_TITLE": "Pagina titel",
+		"LABEL_LOADING_DESCRIPTION": "Beschrijving tijdens laden",
+		"LABEL_FAVICON_URL": "Favicon"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "Contactpersonen",
+		"LEGEND_STORAGE": "Opslag (PDO)",
+		"LABEL_ENABLE_CONTACTS": "Contactpersonen inschakelen",
+		"LABEL_ALLOW_SYNC": "Contactpersoon synchronisatie (met externe CardDAV server) inschakelen",
+		"LABEL_STORAGE_TYPE": "Soort",
+		"LABEL_STORAGE_DSN": "Dsn",
+		"LABEL_STORAGE_USER": "Gebruikersnaam",
+		"LABEL_STORAGE_PASSWORD": "Wachtwoord",
+		"SQLITE_GLOBAL": "Gebruik een globale database in plaats van per account",
+		"ALERT_NOTICE": "Aandacht!",
+		"SUGGESTIONS_LIMIT": "Suggesties limiet",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Gegruik deze database soort niet met een groot aantal actieve gebrukers.",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Uw systeem ondersteund geen contactpersonen.\n<br>\nU moet een <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> extentie op uw server installeren of activeren."
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "Domeinen",
+		"BUTTON_ADD_DOMAIN": "Domein toevoegen",
+		"BUTTON_ADD_ALIAS": "Voeg alias toe",
+		"DELETE_ARE_YOU_SURE": "Weet u het zeker?",
+		"HTML_DOMAINS_HELPER": "Lijst van toegestane domeinen.\n<br>\nKlik op de domeinnaam om deze te configureren."
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "Beveiliging",
+		"LABEL_USE_IMAGE_PROXY": "Gebruik de server als proxy voor externe afbeeldingen",
+		"LABEL_AUTO_VERIFY": "Ondertekening automatisch verifiëren",
+		"LABEL_SHOW_PHP_INFO": "PHP informatie tonen",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Toegangsgegevens beheer paneel",
+		"LABEL_CURRENT_PASSWORD": "Huidig wachtwoord",
+		"LABEL_NEW_PASSWORD": "Nieuw wachtwoord",
+		"LABEL_REPEAT_PASSWORD": "Herhaal nieuw wachtwoord",
+		"LABEL_REQUIRE_VERIFICATION": "Verificatie van SSL certificaten",
+		"CRYPTO": "Crypto",
+		"LABEL_ALLOW_SELF_SIGNED": "Sta zelf ondertekende certificaten toe"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Extensies inschakelen",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Update beschikbaar",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Gereed voor installatie",
+		"LEGEND_INSTALLED_PACKAGES": "Geïnstalleerde extensies",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "De installatie bron is op het moment niet beschikbaar."
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "Over",
+		"LABEL_TAG_HINT": "Simpel, modern en snelle web-based e-mail client",
+		"LABEL_ALL_RIGHTS_RESERVED": "Alle rechten voorbehouden.",
+		"HINT_READ_CHANGE_LOG": "Lees a.u.b. het veranderingen logboek alvorens te updaten.",
+		"HINT_IS_UP_TO_DATE": "De laatste versie van SnappyMail is geïnstalleerd.",
+		"HTML_NEW_VERSION": "Een nieuwe versie <b>%VERSION%<\/b> is beschikbaar.",
+		"LABEL_UPDATING": "Bezig met updaten",
+		"LABEL_CHECKING": "Controleren op updates",
+		"BUTTON_RELEASES": "Uitgaven"
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "Voeg alias toe",
+		"LABEL_ALIAS": "Alias",
+		"LABEL_DOMAIN": "Domein"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "Voeg domein toe",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "Voeg domein \"%NAME%\" toe",
+		"TITLE_EDIT_DOMAIN": "Pas domein \"%NAME%\" aan",
+		"LABEL_NAME": "Naam",
+		"NAME_HELPER": "ondersteunt joker tekens",
+		"LABEL_SERVER": "Server",
+		"LABEL_PORT": "Poort",
+		"LABEL_SECURE": "Encryptie",
+		"TIMEOUT": "Time-out",
+		"DISABLE_CAPABILITIES": "Mogelijkheden uitschakelen",
+		"LIMITS": "Limieten",
+		"FOLDERS": "Mappen",
+		"MESSAGES": "Berichten",
+		"LABEL_WHITE_LIST": "Witte lijst",
+		"SECURE_OPTION_NONE": "Geen",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Sta Sieve scripts toe",
+		"LABEL_USE_SHORT_LOGIN": "Gebruik verkorte login",
+		"LABEL_LOWERCASE_LOGIN": "Kleine letters login (hoofdletterongevoelig)",
+		"LABEL_USE_AUTH": "Gebruik authenticatie",
+		"LABEL_SET_SENDER": "Gebruik login als verzender",
+		"LABEL_AUTH_PLAIN_LINE": "Forceer een enkele opdracht AUTH PLAIN-aanmelding",
+		"LABEL_USE_PHP_MAIL": "Gebruik php mail() functie",
+		"BUTTON_WHITE_LIST": "Witte lijst",
+		"BUTTON_SIEVE_CONFIGURATION": "Sieve configuratie",
+		"BUTTON_BACK_TO_IMAP": "Terug naar IMAP instellingen",
+		"BUTTON_BACK": "Terug",
+		"BUTTON_UPDATE": "Update",
+		"NEW_DOMAIN_DESC": "Dit domein stelt u in staat om met <strong>%NAME%<\/strong> e-mail adressen te werken.",
+		"WHITE_LIST_ALERT": "Lijst van gebruikers die dit domein mogen gebruiken.\nGebruik een spatie als scheidingsteken."
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "Extensie",
+		"DESC_NOTHING_TO_CONFIGURE": "Niets om te configureren"
+	},
+	"POPUPS_ASK": {
+		"BUTTON_YES": "Ja",
+		"BUTTON_NO": "Nee",
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Weet u zeker dat u dit venster wilt stuiten?"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "Kies uw taal"
+	},
+	"HINTS": {
+		"BETA": "bèta",
+		"WARNING": "Waarschuwing!"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "Domein bestaat al",
+		"UNKNOWN_ERROR": "Onbekende fout"
+	},
+	"NOTIFICATIONS": {
+		"RequestError": "Aanvraag mislukt",
+		"RequestAborted": "Aanvraag is afgebroken",
+		"RequestTimeout": "Aanvraag verlopen",
+		"InvalidToken": "Onjuiste token",
+		"AuthError": "Authenticatie mislukt",
+		"DomainAlreadyExists": "Domein bestaat al",
+		"CantSavePluginSettings": "Kan instellingen niet opslaan",
+		"CantInstallPackage": "Extensie installeren mislukt",
+		"CantDeletePackage": "Extensie verwijderen mislukt",
+		"InvalidPluginPackage": "Onjuist extensie pakket",
+		"UnsupportedPluginPackage": "Niet ondersteund extensie pakket",
+		"UnknownError": "Onbekende fout"
+	}
+}

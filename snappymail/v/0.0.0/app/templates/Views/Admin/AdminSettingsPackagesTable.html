@@ -1,0 +1,27 @@
+<table class="table table-hover table-bordered" data-bind="i18nUpdate: f">
+	<colgroup>
+		<col>
+		<col style="width: 100px">
+		<col style="width: 80px">
+	</colgroup>
+	<tbody data-bind="foreach: f">
+		<tr data-bind="css: {'disabled': !enabled() }">
+			<td>
+				<div>
+					<span class="package-name" data-bind="text: name"></span>
+					<a class="package-configure fontastic" data-bind="visible: installed">⚙</a>
+					<a class="package-active fontastic" data-bind="visible: installed, text: enabled() ? '☑' : '☐'"></a>
+					<span class="package-installed" data-bind="text: installed"></span>
+				</div>
+				<div class="package-desc" data-bind="text: desc"></div>
+			</td>
+			<td data-bind="text: version"></td>
+			<td>
+				<a class="fontastic" data-bind="visible: !loading() && canBeUpdated, click: function () { $root.installPackage($data); }">📥</a>
+				&nbsp;
+				<a class="fontastic" data-bind="visible: !loading() && canBeDeleted, click: function () { $root.deletePackage($data); }">🗑</a>
+				<i class="icon-spinner" data-bind="visible: loading"></i>
+			</td>
+		</tr>
+	</tbody>
+</table>

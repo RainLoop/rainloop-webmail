@@ -1,57 +1,79 @@
-
-#rl-content{
-	display: none;
+:root {
+	--fontSans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	--fontSerif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+	--fontMono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-.internal-hiddden{
-	display: none !important;
+#rl-app.fontArial {
+	--fontSans: "Nimbus Sans L", "Liberation sans", "Arial Unicode MS", Arial, Helvetica, Garuda, Utkal, FreeSans, sans-serif;
+}
+#rl-app.fontTahoma {
+	--fontSans: "Luxi Sans", Tahoma, Loma, Geneva, Meera, sans-serif;
+}
+#rl-app.fontTrebuchet {
+	--fontSans: "DejaVu Sans Condensed", Trebuchet, "Trebuchet MS", sans-serif;
+}
+#rl-app.fontLucida {
+	--fontSans: "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "DejaVu LGC Sans", sans-serif;
+}
+#rl-app.fontVerdana {
+	--fontSans: "DejaVu Sans", Verdana, Geneva, "Bitstream Vera Sans", "DejaVu LGC Sans", sans-serif;
+}
+#rl-app.fontMonoCourier {
+	--fontMono: "Liberation Mono", "Courier New", FreeMono, Courier, monospace;
+}
+#rl-app.fontMonoLucida {
+	--fontMono: "DejaVu Sans Mono", "DejaVu LGC Sans Mono", "Bitstream Vera Sans Mono", "Lucida Console", Monaco, monospace;
+}
+#rl-app.fontSerifTimes {
+	--fontSerif: "Nimbus Roman No9 L", "Times New Roman", Times, FreeSerif, serif;
+}
+#rl-app.fontSerifPalatino {
+	--fontSerif: "Bitstream Charter", "Palatino Linotype", Palatino, Palladio, "URW Palladio L", "Book Antiqua", Times, serif;
+}
+#rl-app.fontSerifGeorgia {
+	--fontSerif: "URW Palladio L", Georgia, Times, serif;
 }
 
-html.no-css, html.no-css body {
+html, body {
 	margin: 0;
 	padding: 0;
-	font-family: Arial, Verdana, Geneva, sans-serif;
-	background-color: #eee;
+	-webkit-text-size-adjust: 100%; /* 2 */
 }
 
-html.no-css #rl-content, html.no-css #rl-loading{
-	display: none;
+#rl-app *, #rl-app *::before, #rl-app *::after {
+	box-sizing: border-box;
 }
 
-html.no-css #rl-loading-error {
-	position: absolute;
-	font-size: 30px;
+#rl-app {
+	background-color: var(--main-bg-color, #aaa);
+	color: var(--main-color, #333);
+	font-family: var(--fontSans);
+
+	-webkit-touch-callout: none;
+	font-size: var(--main-font-size, 14px);
+	line-height: 1.25; /* 1 */
+	position: relative;
+}
+body#rl-app {
+	height: 100vh;
+	height: 100dvh;
+	width: 100vw;
+}
+
+#rl-loading, #rl-loading-error, #rl-BadBrowser, #rl-NoCookie {
+	color: var(--loading-color, #000);
+	text-shadow: var(--loading-text-shadow);
+	font-size: 214%;
 	line-height: 130%;
-	top: 50%;
-	width: 100%;
-	height: 65px;
-	margin: 0;
-	margin-top: -60px;
-	background-color: transparent;
+	position: fixed;
 	text-align: center;
-	color: #333;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 100%;
 }
 
-html.no-css .progressjs-container {
-	display: none;
-}
-
-html.no-css .thm-body {
-	color: #333;
-	background-color: #aaa;
-	background-image: none;
-}
-
-html.no-css .thm-loading {
-	color: #333 !important;
-	text-shadow: none !important;
-}
-
-html.no-css .thm-loading .e-spinner .e-bounce {
-	display: none !important;
-}
-
-html.no-css .thm-login-desc .desc {
-	color: #333 !important;
-	text-shadow: none !important;
+#rl-loading .icon-spinner {
+	height: 1em;
+	width: 1em;
 }

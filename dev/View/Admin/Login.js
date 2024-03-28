@@ -1,124 +1,71 @@
-import ko from 'ko';
-import _ from '_';
-
-import { trim, triggerAutocompleteInputChange } from 'Common/Utils';
-
-import { StorageResultType, Notification, Magics } from 'Common/Enums';
+import { fireEvent } from 'Common/Globals';
 import { getNotification } from 'Common/Translator';
-import { $win } from 'Common/Globals';
+import { addObservablesTo, addSubscribablesTo } from 'External/ko';
 
-import * as Settings from 'Storage/Settings';
+import Remote from 'Remote/Admin/Fetch';
 
-import Remote from 'Remote/Admin/Ajax';
+import { decorateKoCommands } from 'Knoin/Knoin';
+import { AbstractViewLogin } from 'Knoin/AbstractViews';
 
-import { getApp } from 'Helper/Apps/Admin';
-
-import { view, command, ViewType, routeOff } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
-
-@view({
-	name: 'View/Admin/Login',
-	type: ViewType.Center,
-	templateID: 'AdminLogin'
-})
-class LoginAdminView extends AbstractViewNext {
+export class AdminLoginView extends AbstractViewLogin {
 	constructor() {
-		super();
+		super('AdminLogin');
 
-		this.mobile = !!Settings.appSettingsGet('mobile');
-		this.mobileDevice = !!Settings.appSettingsGet('mobileDevice');
+		addObservablesTo(this, {
+			login: '',
+			password: '',
+			totp: '',
 
-		this.hideSubmitButton = !!Settings.appSettingsGet('hideSubmitButton');
+			loginError: false,
+			passwordError: false,
 
-		this.login = ko.observable('');
-		this.password = ko.observable('');
-
-		this.loginError = ko.observable(false);
-		this.passwordError = ko.observable(false);
-
-		this.loginErrorAnimation = ko.observable(false).extend({ 'falseTimeout': 500 });
-		this.passwordErrorAnimation = ko.observable(false).extend({ 'falseTimeout': 500 });
-
-		this.loginFocus = ko.observable(false);
-
-		this.formHidden = ko.observable(false);
-
-		this.formError = ko.computed(() => this.loginErrorAnimation() || this.passwordErrorAnimation());
-
-		this.login.subscribe(() => this.loginError(false));
-
-		this.password.subscribe(() => this.passwordError(false));
-
-		this.loginError.subscribe((v) => this.loginErrorAnimation(!!v));
-
-		this.passwordError.subscribe((v) => {
-			this.passwordErrorAnimation(!!v);
+			submitRequest: false,
+			submitError: ''
 		});
 
-		this.submitRequest = ko.observable(false);
-		this.submitError = ko.observable('');
+		addSubscribablesTo(this, {
+			login: () => this.loginError(false),
+			password: () => this.passwordError(false)
+		});
+
+		decorateKoCommands(this, {
+			submitCommand: self => !self.submitRequest()
+		});
 	}
 
-	@command((self) => !self.submitRequest())
-	submitCommand() {
-		triggerAutocompleteInputChange();
+	hideError() {
+		this.submitError('');
+	}
 
-		this.loginError(false);
-		this.passwordError(false);
+	submitCommand(self, event) {
+		let form = event.target.form,
+			data = new FormData(form),
+			valid = form.reportValidity() && fireEvent('sm-admin-login', data, 1);
 
-		this.loginError('' === trim(this.login()));
-		this.passwordError('' === trim(this.password()));
+		this.loginError(!this.login());
+		this.passwordError(!this.password());
+		this.formError(!valid);
 
-		if (this.loginError() || this.passwordError()) {
-			return false;
+		if (valid) {
+			this.submitRequest(true);
+
+			Remote.request('AdminLogin',
+				(iError, oData) => {
+					fireEvent('sm-admin-login-response', {
+						error: iError,
+						data: oData
+					});
+					if (iError) {
+						this.submitRequest(false);
+						this.submitError(getNotification(iError));
+					} else {
+						rl.setData(oData.Result);
+					}
+				},
+				data
+			);
 		}
 
-		this.submitRequest(true);
-		$win.trigger('rl.tooltips.diactivate');
-
-		Remote.adminLogin(
-			(sResult, oData) => {
-				$win.trigger('rl.tooltips.diactivate');
-				$win.trigger('rl.tooltips.activate');
-
-				if (StorageResultType.Success === sResult && oData && 'AdminLogin' === oData.Action) {
-					if (oData.Result) {
-						getApp().loginAndLogoutReload(true);
-					} else if (oData.ErrorCode) {
-						this.submitRequest(false);
-						this.submitError(getNotification(oData.ErrorCode));
-					}
-				} else {
-					this.submitRequest(false);
-					this.submitError(getNotification(Notification.UnknownError));
-				}
-			},
-			this.login(),
-			this.password()
-		);
-
-		return true;
-	}
-
-	onShow() {
-		routeOff();
-
-		_.delay(() => {
-			this.loginFocus(true);
-		}, Magics.Time100ms);
-	}
-
-	onHide() {
-		this.loginFocus(false);
-	}
-
-	onBuild() {
-		triggerAutocompleteInputChange(true);
-	}
-
-	submitForm() {
-		this.submitCommand();
+		return valid;
 	}
 }
-
-export { LoginAdminView, LoginAdminView as default };

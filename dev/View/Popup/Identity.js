@@ -1,171 +1,135 @@
-import ko from 'ko';
 
-import { StorageResultType, Notification } from 'Common/Enums';
-import { bMobileDevice } from 'Common/Globals';
-import { trim, fakeMd5 } from 'Common/Utils';
+import { addObservablesTo, koComputable } from 'External/ko';
+
 import { getNotification } from 'Common/Translator';
+import { loadAccountsAndIdentities } from 'Common/UtilsUser';
 
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
-import { getApp } from 'Helper/Apps/User';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { IdentityModel } from 'Model/Identity';
 
-@popup({
-	name: 'View/Popup/Identity',
-	templateID: 'PopupsIdentity'
-})
-class IdentityPopupView extends AbstractViewNext {
+import { folderListOptionsBuilder } from 'Common/Folders';
+import { i18n } from 'Common/Translator';
+import { defaultOptionsAfterRender } from 'Common/Utils';
+
+import { AskPopupView } from 'View/Popup/Ask';
+
+export class IdentityPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('Identity');
 
-		this.id = '';
-		this.edit = ko.observable(false);
-		this.owner = ko.observable(false);
-
-		this.email = ko.observable('').validateEmail();
-		this.email.focused = ko.observable(false);
-		this.name = ko.observable('');
-		this.name.focused = ko.observable(false);
-		this.replyTo = ko.observable('').validateSimpleEmail();
-		this.replyTo.focused = ko.observable(false);
-		this.bcc = ko.observable('').validateSimpleEmail();
-		this.bcc.focused = ko.observable(false);
-
-		this.signature = ko.observable('');
-		this.signatureInsertBefore = ko.observable(false);
-
-		this.showBcc = ko.observable(false);
-		this.showReplyTo = ko.observable(false);
-
-		this.submitRequest = ko.observable(false);
-		this.submitError = ko.observable('');
-
-		this.bcc.subscribe((value) => {
-			if (false === this.showBcc() && 0 < value.length) {
-				this.showBcc(true);
-			}
+		addObservablesTo(this, {
+			identity: null,
+			edit: false,
+			labelFocused: false,
+			nameFocused: false,
+			submitRequest: false,
+			submitError: ''
 		});
-
-		this.replyTo.subscribe((value) => {
-			if (false === this.showReplyTo() && 0 < value.length) {
-				this.showReplyTo(true);
-			}
-		});
-	}
-
-	@command((self) => !self.submitRequest())
-	addOrEditIdentityCommand() {
-		if (this.signature && this.signature.__fetchEditorValue) {
-			this.signature.__fetchEditorValue();
-		}
-
-		if (!this.email.hasError()) {
-			this.email.hasError('' === trim(this.email()));
-		}
-
-		if (this.email.hasError()) {
-			if (!this.owner()) {
-				this.email.focused(true);
-			}
-
-			return false;
-		}
-
-		if (this.replyTo.hasError()) {
-			this.replyTo.focused(true);
-			return false;
-		}
-
-		if (this.bcc.hasError()) {
-			this.bcc.focused(true);
-			return false;
-		}
-
-		this.submitRequest(true);
-
-		Remote.identityUpdate(
-			(result, data) => {
-				this.submitRequest(false);
-				if (StorageResultType.Success === result && data) {
-					if (data.Result) {
-						getApp().accountsAndIdentities();
-						this.cancelCommand();
-					} else if (data.ErrorCode) {
-						this.submitError(getNotification(data.ErrorCode));
-					}
-				} else {
-					this.submitError(getNotification(Notification.UnknownError));
-				}
-			},
-			this.id,
-			this.email(),
-			this.name(),
-			this.replyTo(),
-			this.bcc(),
-			this.signature(),
-			this.signatureInsertBefore()
+/*
+		this.email.valueHasMutated();
+		this.replyTo.valueHasMutated();
+		this.bcc.valueHasMutated();
+*/
+		this.folderSelectList = koComputable(() =>
+			folderListOptionsBuilder(
+				[],
+				[['', '('+i18n('GLOBAL/DEFAULT')+')']]
+			)
 		);
+		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 
-		return true;
+		this.createSelfSigned = this.createSelfSigned.bind(this);
+		this.setSMimeKeyPass = this.setSMimeKeyPass.bind(this);
 	}
 
-	clearPopup() {
-		this.id = '';
-		this.edit(false);
-		this.owner(false);
+	createSelfSigned() {
+		AskPopupView.password('', 'CRYPTO/CREATE_SELF_SIGNED').then(pass => {
+			if (pass) {
+				const identity = this.identity();
+				Remote.request('SMimeCreateCertificate', (iError, oData) => {
+					if (oData.Result.x509) {
+						identity.smimeKey(oData.Result.pkey);
+						identity.smimeCertificate(oData.Result.x509);
+					} else {
+						this.submitError(oData.ErrorMessage);
+					}
+				}, {
+					name: identity.name(),
+					email: identity.email(),
+					privateKey: identity.smimeKey(),
+					passphrase: pass.password
+				});
+			}
+		});
+	}
 
-		this.name('');
-		this.email('');
-		this.replyTo('');
-		this.bcc('');
-		this.signature('');
-		this.signatureInsertBefore(false);
+	async setSMimeKeyPass() {
+		const identity = this.identity();
+		let old = null
+		if (identity.smimeKeyEncrypted()) {
+			old = await AskPopupView.password(i18n('CRYPTO/CURRENT_PASS'), 'CRYPTO/DECRYPT', 1);
+			if (!old) {
+				return;
+			}
+		}
+		AskPopupView.password(i18n('CRYPTO/NEW_PASS'), 'GLOBAL/SAVE', 1).then(pass => {
+			if (pass) {
+				Remote.request('SMimeExportPrivateKey', (iError, oData) => {
+					if (oData.Result) {
+						identity.smimeKey(oData.Result);
+					} else {
+						this.submitError(oData.ErrorMessage);
+					}
+				}, {
+					privateKey: identity.smimeKey(),
+					oldPassphrase: old?.password,
+					newPassphrase: pass.password
+				});
+			}
+		});
+	}
 
-		this.email.hasError(false);
-		this.replyTo.hasError(false);
-		this.bcc.hasError(false);
-
-		this.showBcc(false);
-		this.showReplyTo(false);
-
-		this.submitRequest(false);
-		this.submitError('');
+	submitForm(form) {
+		if (!this.submitRequest() && form.reportValidity()) {
+			let identity = this.identity();
+			identity.signature?.__fetchEditorValue?.();
+			this.submitRequest(true);
+			const data = new FormData(form);
+			data.set('Id', identity.id());
+			data.set('Signature', identity.signature());
+			Remote.request('IdentityUpdate', iError => {
+					this.submitRequest(false);
+					if (iError) {
+						this.submitError(getNotification(iError));
+					} else {
+						loadAccountsAndIdentities();
+						this.close();
+					}
+				}, data
+			);
+		}
 	}
 
 	/**
 	 * @param {?IdentityModel} oIdentity
 	 */
 	onShow(identity) {
-		this.clearPopup();
-
+		this.submitRequest(false);
+		this.submitError('');
 		if (identity) {
 			this.edit(true);
-
-			this.id = identity.id() || '';
-			this.name(identity.name());
-			this.email(identity.email());
-			this.replyTo(identity.replyTo());
-			this.bcc(identity.bcc());
-			this.signature(identity.signature());
-			this.signatureInsertBefore(identity.signatureInsertBefore());
-
-			this.owner('' === this.id);
 		} else {
-			this.id = fakeMd5();
+			this.edit(false);
+			identity = new IdentityModel;
+			identity.id(Jua.randomId());
 		}
+		this.identity(identity);
 	}
 
-	onShowWithDelay() {
-		if (!this.owner() && !bMobileDevice) {
-			this.email.focused(true);
-		}
-	}
-
-	onHideWithDelay() {
-		this.clearPopup();
+	afterShow() {
+		this.identity().id() ? this.labelFocused(true) : this.nameFocused(true);
 	}
 }
-
-export { IdentityPopupView, IdentityPopupView as default };

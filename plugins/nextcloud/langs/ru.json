@@ -1,0 +1,14 @@
+{
+	"NEXTCLOUD": {
+		"SAVE_ATTACHMENTS": "Сохранить в Nextcloud",
+		"SAVE_EML": "Сохранить как .eml в Nextcloud",
+		"SAVE_ICS": "Вставить в календарь",
+		"SELECT_FOLDER": "Выбрите папку",
+		"SELECT_FILES": "Выберите файл(ы)",
+		"ATTACH_FILES": "Прикрепить файлы из Nextcloud",
+		"SELECT_CALENDAR": "Выбрать календарь",
+		"FILE_ATTACH": "Прикрепить с ПК",
+		"FILE_INTERNAL": "Внутреняя",
+		"FILE_PUBLIC": "Публичная"
+	}
+}

@@ -1,0 +1,34 @@
+<header>
+	<a href="#" class="close" data-bind="click: close">×</a>
+	<h3 data-i18n="POPUPS_DOMAIN_ALIAS/TITLE_ADD_DOMAIN_ALIAS"></h3>
+</header>
+<form id="DomainAlias" class="modal-body" spellcheck="false" autocomplete="off" autocapitalize="none" data-bind="submit: createCommand" >
+	<div class="control-group" data-bind="css: {error: '' !== savingError()}">
+		<label data-i18n="POPUPS_DOMAIN_ALIAS/LABEL_ALIAS"></label>
+		<div>
+			<input class="span4" type="text" autocorrect="off" data-bind="textInput: name">
+			<div class="alert-error" data-bind="visible: '' !== savingError(), text: savingError"></div>
+		</div>
+	</div>
+	<div class="control-group">
+		<label data-i18n="POPUPS_DOMAIN_ALIAS/LABEL_DOMAIN"></label>
+		<div data-bind="component: {
+			name: 'Select',
+			params: {
+				options: domainsOptions,
+				value: alias,
+				optionsText: 'optText',
+				optionsValue: 'optValue',
+				size: 4
+			}
+		}"></div>
+	</div>
+</form>
+<footer>
+	<button class="btn buttonClose" data-bind="click: close" data-icon="✖" data-i18n="GLOBAL/CLOSE"></button>
+	<button class="btn" data-bind="command: createCommand">
+		<i class="fontastic" data-bind="visible: !saving()">✚</i>
+		<i class="icon-spinner" data-bind="visible: saving"></i>
+		<span data-i18n="GLOBAL/ADD"></span>
+	</button>
+</footer>

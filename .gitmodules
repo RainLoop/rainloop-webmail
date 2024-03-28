@@ -1,0 +1,3 @@
+[submodule "vendors/openpgp-5"]
+	path = vendors/openpgp-5
+	url = git@github.com:the-djmaze/openpgpjs.git

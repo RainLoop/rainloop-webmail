@@ -1,46 +1,41 @@
-.popups {
-	.b-languages-content {
+#V-PopupsLanguages {
 
-		&.modal {
-			width: 700px;
+	max-width: 710px;
+
+	label {
+		display: inline-block;
+		padding: 5px 15px;
+		margin: 2px 5px;
+		width: 216px;
+		background-color: rgba(128, 128, 128, 0.1);
+		border: 1px solid transparent;
+		border-radius: var(--input-border-radius, 3px);
+		position: relative;
+		cursor: pointer;
+
+		&.user {
+			background-color: rgba(255, 255, 64, .15);
+			border-color: #ff5;
 		}
-
-		&.exp {
-			width: 701px;
+		&.selected {
+			background-color: rgba(64, 255, 64, 0.2);
+			border-color: #9c9;
 		}
-
-		.modal-header {
-			background-color: #fff;
+		&.selected::after {
+			content: "✔";
+			position: absolute;
+			right: 4px;
+			font-family: snappymail;
 		}
-
-		.lang-item {
-			display: inline-block;
-			padding: 5px 15px;
-			margin: 2px 5px;
-			width: 180px;
-			background-color: #fff;
-			text-align: left;
-			border: 1px solid transparent;
-			border-radius: 2px;
-
-			&.user {
-				background-color: #fffddd;
-				border-color: #fff555;
-			}
-			&.selected {
-				background-color: #f5f5f5;
-				border-color: #ccc;
-			}
-			&:hover {
-				background-color: #eee;
-				border-color: #ccc;
-			}
+		&:hover {
+			background-color: rgba(128, 128, 128, 0.2);
+			border-color: #ccc;
 		}
 	}
 }
 
-html.rl-mobile {
-	.b-languages-content .lang-item {
-		width: calc(~'100% - 40px');
+@media screen and (max-width: 480px) {
+	#V-PopupsLanguages label {
+		width: 100%;
 	}
 }

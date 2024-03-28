@@ -1,0 +1,335 @@
+<header class="b-header-toolbar g-ui-user-select-none">
+
+	<a href="#" class="close" data-bind="click: tryToClose">×</a>
+
+	<div class="btn-toolbar">
+
+		<a class="btn" data-bind="click: newContact" data-icon="✚" data-i18n="CONTACTS/BUTTON_ADD_CONTACT"></a>
+
+		<a class="btn btn-success fontastic" data-bind="command: newMessageCommand">✉</a>
+
+		<a class="btn fontastic" data-bind="command: deleteCommand">🗑</a>
+
+		<div class="btn-group dropdown" data-bind="registerBootstrapDropdown: true, visible: !contacts.importing() && !contacts.syncing()">
+			<a id="contacts-more-dropdown-id" class="btn dropdown-toggle fontastic" href="#">☰</a>
+			<menu class="dropdown-menu right-edge" role="menu" aria-labelledby="contacts-more-dropdown-id">
+				<li role="presentation">
+					<a href="#" data-bind="initDom: importButton">
+						<i data-bind="css: {'icon-import': !contacts.importing(), 'icon-spinner': contacts.importing}"></i>
+						<span data-i18n="CONTACTS/BUTTON_IMPORT"></span>
+					</a>
+				</li>
+				<li class="dividerbar" role="presentation">
+					<a href="#" data-bind="click: exportCsv">
+						<i class="icon-export"></i>
+						<span data-i18n="CONTACTS/BUTTON_EXPORT_CSV"></span>
+					</a>
+				</li>
+				<li role="presentation">
+					<a href="#" data-bind="click: exportVcf">
+						<i class="icon-export"></i>
+						<span data-i18n="CONTACTS/BUTTON_EXPORT_VCARD"></span>
+					</a>
+				</li>
+				<li class="dividerbar" role="presentation" data-bind="visible: contactsSyncEnabled">
+					<a href="#" data-bind="command: syncCommand">
+						<i class="fontastic" data-bind="css: {'icon-spinner': contacts.syncing}">⇆</i>
+						<span data-i18n="CONTACTS/BUTTON_SYNC"></span>
+					</a>
+				</li>
+			</menu>
+		</div>
+		<span data-bind="visible: contacts.importing() || contacts.syncing()" class="btn"><i class="icon-spinner"></i></span>
+	</div>
+</header>
+<div class="modal-body">
+	<div class="left">
+		<div class="b-list-toolbar">
+			<input type="search" class="e-search" placeholder="Search" autofocus="" autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n="[placeholder]GLOBAL/SEARCH" data-bind="value: search">
+		</div>
+		<div class="b-list-content g-ui-user-select-none" data-bind="css: {'hideContactListCheckbox': !useCheckboxesInList()}">
+			<div class="content">
+				<div class="listClear" data-bind="visible: !!search()">
+					<span class="g-ui-link" data-i18n="CONTACTS/CLEAR_SEARCH" data-bind="click: clearSearch"></span>
+				</div>
+				<div class="listEmptyList" data-bind="visible: 0 === contacts().length && '' === search() && !contacts.loading()"
+					data-i18n="CONTACTS/EMPTY_LIST"></div>
+				<div class="listEmptyListLoading" data-bind="visible: 0 === contacts().length && '' === search() && contacts.loading()">
+					<i class="icon-spinner"></i>
+					<span data-i18n="GLOBAL/LOADING"></span>
+				</div>
+				<div class="listEmptySearchList" data-bind="visible: 0 === contacts().length && '' !== search() && !contacts.loading()"
+					data-i18n="CONTACTS/EMPTY_SEARCH"></div>
+				<div class="e-contact-foreach g-ui-user-select-none" data-bind="foreach: contacts, visible: contacts().length">
+					<div class="e-contact-item g-ui-user-select-none" data-bind="css: lineAsCss()">
+						<div class="checkboxItem fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
+						<div class="nameParent" data-bind="text: display"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="b-list-footer-toolbar">
+			<div class="footer-pager">
+				<!-- ko template: { name: 'Paginator', data: contactsPaginator } --><!-- /ko -->
+			</div>
+		</div>
+	</div>
+	<div class="right">
+		<form class="b-view-content" spellcheck="false" data-bind="css: {'read-only': contact() && contact().readOnly()}">
+			<div class="b-contact-view-desc" data-bind="visible: !contact()"
+				data-i18n="CONTACTS/CONTACT_VIEW_DESC"></div>
+			<div class="tabs" data-bind="visible: contact, i18nUpdate: contact">
+				<!-- ko with: contact -->
+				<input type="radio" name="contacttabs" id="tab-contact" checked>
+				<label for="tab-contact"
+					role="tab"
+					aria-selected="true"
+					aria-controls="panel1"
+					tabindex="0"
+					data-i18n="CONTACTS/TAB_CONTACT"></label>
+				<div class="form-horizontal tab-content" role="tabpanel" aria-hidden="false">
+					<div class="control-group">
+						<label class="fontastic iconsize24">👤</label>
+						<div>
+							<div class="property-line" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME">
+								<span data-bind="text: givenName"></span>
+								<input type="text"
+									autocomplete="off" autocorrect="off" autocapitalize="off"
+									data-bind="textInput: givenName" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME">
+							</div>
+							<div class="property-line" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_LAST_NAME">
+								<span data-bind="text: surName"></span>
+								<input type="text"
+									autocomplete="off" autocorrect="off" autocapitalize="off"
+									data-bind="textInput: surName" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_LAST_NAME">
+							</div>
+<!--
+							<div class="property-line" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_MIDDLE_NAME">
+								<span data-bind="text: middleName"></span>
+								<input type="text"
+									autocomplete="off" autocorrect="off" autocapitalize="off"
+									data-bind="textInput: middleName" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_MIDDLE_NAME">
+							</div>
+							<div class="property-line" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_NAME_PREFIX">
+								<span data-bind="text: namePrefix"></span>
+								<input type="text"
+									autocomplete="off" autocorrect="off" autocapitalize="off"
+									data-bind="textInput: namePrefix" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_NAME_PREFIX">
+							</div>
+							<div class="property-line" data-i18n="[title]CONTACTS/PLACEHOLDER_ENTER_NAME_SUFFIX">
+								<span data-bind="text: nameSuffix"></span>
+								<input type="text"
+									autocomplete="off" autocorrect="off" autocapitalize="off"
+									data-bind="textInput: nameSuffix" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_NAME_SUFFIX">
+							</div>
+-->
+							<div class="property-line" data-bind="visible: null != nickname()" data-i18n="[title]CONTACTS/ADD_MENU_NICKNAME">
+								<span data-bind="text: nickname"></span>
+								<input type="text"
+									autocomplete="off" autocorrect="off" autocapitalize="off"
+									data-bind="textInput: nickname" data-i18n="[placeholder]CONTACTS/PLACEHOLDER_ENTER_NICK_NAME">
+							</div>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="fontastic iconsize24" data-i18n="[title]GLOBAL/EMAIL">@</label>
+						<div>
+							<label class="e-component e-checkbox material-design">
+								<div>
+									<input type="checkbox" data-bind="checked: sendToAll"/>
+									<div role="checkbox"></div>
+								</div>
+								<span data-i18n="CONTACTS/SEND_TO_ALL_CONTACT_EMAILS"></span>
+							</label>
+
+							<div data-bind="foreach: email">
+								<div class="property-line">
+									<span data-bind="text: value"></span>
+									<input type="text"
+										autocomplete="off" autocorrect="off" autocapitalize="off"
+										data-bind="textInput: value">
+								</div>
+							</div>
+							<a href="#" class="btn fontastic" data-bind="visible: !readOnly(), click: addEmail">✚</a>
+						</div>
+					</div>
+					<div class="control-group" data-bind="visible: tel().length">
+						<label class="fontastic iconsize24" data-i18n="[title]CONTACTS/ADD_MENU_PHONE">📞</label>
+						<div>
+							<div data-bind="foreach: tel">
+								<div class="property-line">
+									<span data-bind="text: value"></span>
+									<input type="text"
+										autocomplete="off" autocorrect="off" autocapitalize="off"
+										data-bind="textInput: value">
+								</div>
+							</div>
+							<a href="#" class="btn fontastic" data-bind="visible: !readOnly(), click: addTel">✚</a>
+						</div>
+					</div>
+					<div class="control-group" data-bind="visible: url().length">
+						<label class="fontastic iconsize24" data-i18n="[title]CONTACTS/ADD_MENU_URL">🌍</label>
+						<div>
+							<div data-bind="foreach: url">
+								<div class="property-line">
+									<span data-bind="text: value"></span>
+									<input type="text" placeholder="https://"
+										autocomplete="off" autocorrect="off" autocapitalize="off"
+										data-bind="textInput: value">
+								</div>
+							</div>
+							<a href="#" class="btn fontastic" data-bind="visible: !readOnly(), click: addUrl">✚</a>
+						</div>
+					</div>
+					<div class="control-group" data-bind="visible: null != note()">
+						<label class="fontastic iconsize24" data-i18n="[title]CONTACTS/ADD_MENU_NOTE">🖉</label>
+						<div class="property-line">
+							<span data-bind="text: note"></span>
+							<input type="text"
+								autocomplete="off" autocorrect="off" autocapitalize="off"
+								data-bind="textInput: note">
+						</div>
+					</div>
+				</div>
+<!--
+				<input type="radio" name="contacttabs" id="tab-contact-locations">
+				<label for="tab-contact-locations"
+					role="tab"
+					aria-selected="false"
+					aria-controls="panel2"
+					tabindex="0"
+					data-i18n="CONTACTS/TAB_LOCATIONS"></label>
+				<div class="form-horizontal tab-content" role="tabpanel" aria-hidden="false">
+					<div data-bind="foreach: adr">
+						<div class="control-group">
+							<div data-bind="text: type"></div>
+							<div data-bind="text: street"></div>
+							<div data-bind="text: street_ext"></div>
+							<div data-bind="text: locality"></div>
+							<div data-bind="text: region"></div>
+							<div data-bind="text: postcode"></div>
+							<div data-bind="text: pobox"></div>
+							<div data-bind="text: country"></div>
+							<div data-bind="text: preferred"></div>
+						</div>
+					</div>
+				</div>
+-->
+				<input type="radio" name="contacttabs" id="tab-contact-business">
+				<label for="tab-contact-business"
+					role="tab"
+					aria-selected="false"
+					aria-controls="panel3"
+					tabindex="0"
+					data-i18n="CONTACTS/TAB_BUSINESS"></label>
+				<div class="form-horizontal tab-content" role="tabpanel" aria-hidden="false">
+					<div class="control-group">
+						<label data-i18n="CONTACTS/LABEL_ORGANIZATION"></label>
+						<span data-bind="text: org"></span>
+						<input type="text"
+							autocomplete="off" autocorrect="off" autocapitalize="off"
+							data-bind="textInput: org">
+					</div>
+					<div class="control-group">
+						<label data-i18n="CONTACTS/LABEL_DEPARTMENT"></label>
+						<span data-bind="text: department"></span>
+						<input type="text"
+							autocomplete="off" autocorrect="off" autocapitalize="off"
+							data-bind="textInput: department">
+					</div>
+					<div class="control-group">
+						<label data-i18n="CONTACTS/LABEL_TITLE"></label>
+						<span data-bind="text: title"></span>
+						<input type="text"
+							autocomplete="off" autocorrect="off" autocapitalize="off"
+							data-bind="textInput: title">
+					</div>
+				</div>
+
+				<input type="radio" name="contacttabs" id="tab-contact-crypto">
+				<label for="tab-contact-crypto"
+					role="tab"
+					aria-selected="false"
+					aria-controls="panel4"
+					tabindex="0"
+					data-i18n="CONTACTS/TAB_CRYPTO"></label>
+				<div class="form-horizontal tab-content" role="tabpanel" aria-hidden="false">
+					<div class="control-group">
+						<label data-i18n="CRYPTO/SIGN"></label>
+						<select name="x-crypto[signpref]" data-bind="value: signpref">
+							<option value="Ask" data-i18n="CONTACTS/ASK"></option>
+							<option value="Never" data-i18n="CONTACTS/NEVER"></option>
+							<option value="Always" data-i18n="CONTACTS/ALWAYS"></option>
+							<option value="IfPossible" data-i18n="CONTACTS/ALWAYS_IF_POSSIBLE"></option>
+						</select>
+					</div>
+					<div class="control-group">
+						<label data-i18n="CRYPTO/ENCRYPT"></label>
+						<select name="x-crypto[encryptpref]" data-bind="value: encryptpref">
+							<option value="Ask" data-i18n="CONTACTS/ASK"></option>
+							<option value="Never" data-i18n="CONTACTS/NEVER"></option>
+							<option value="Always" data-i18n="CONTACTS/ALWAYS"></option>
+							<option value="IfPossible" data-i18n="CONTACTS/ALWAYS_IF_POSSIBLE"></option>
+						</select>
+					</div>
+				</div>
+				<!-- /ko -->
+			</div>
+		</form>
+		<div class="b-view-content-toolbar btn-toolbar" data-bind="i18nUpdate: contact">
+			<!-- ko with: contact -->
+			<div class="btn-group">
+				<button class="btn button-save-contact" data-bind="visible: !readOnly(), command: $root.saveCommand">
+					<i data-bind="css: {'icon-ok': !$root.isSaving(), 'icon-spinner': $root.isSaving()}"></i>
+					<span data-i18n="CONTACTS/BUTTON_CREATE_CONTACT" data-bind="visible: !id()"></span>
+					<span data-i18n="CONTACTS/BUTTON_UPDATE_CONTACT" data-bind="visible: id"></span>
+				</button>
+			</div>
+			<div class="btn-group dropdown" data-bind="visible: !readOnly(), registerBootstrapDropdown: true">
+				<a id="button-add-prop-dropdown-id" href="#" class="btn dropdown-toggle" data-i18n="CONTACTS/ADD_MENU_LABEL"></a>
+				<menu class="dropdown-menu right-edge" style="text-align: left" role="menu" aria-labelledby="button-add-prop-dropdown-id">
+					<li role="presentation" data-bind="visible: null == nickname()">
+						<a href="#" data-bind="click: addNickname">
+							<i class="icon-none"></i>
+							<span data-i18n="CONTACTS/ADD_MENU_NICKNAME"></span>
+						</a>
+					</li>
+					<li role="presentation">
+						<a href="#" data-bind="click: addEmail">
+							<i class="fontastic">@</i>
+							<span data-i18n="GLOBAL/EMAIL"></span>
+						</a>
+					</li>
+					<li role="presentation">
+						<a href="#" data-bind="click: addTel">
+							<i class="fontastic">📞</i>
+							<span data-i18n="CONTACTS/ADD_MENU_PHONE"></span>
+						</a>
+					</li>
+					<li role="presentation">
+						<a href="#" data-bind="click: addUrl">
+							<i class="fontastic">🌍</i>
+							<span data-i18n="CONTACTS/ADD_MENU_URL"></span>
+						</a>
+					</li>
+					<li role="presentation" data-bind="visible: null == note()">
+						<a href="#" data-bind="click: addNote">
+							<i class="fontastic">🖉</i>
+							<span data-i18n="CONTACTS/ADD_MENU_NOTE"></span>
+						</a>
+					</li>
+<!--
+					<li class="dividerbar" role="presentation">
+						<a href="#" data-bind="click: addNewAddress">
+							<span data-i18n="CONTACTS/ADD_MENU_ADDRESS"></span>
+						</a>
+					</li>-->
+				</menu>
+			</div>
+<!--
+			<div class="read-only-sign fontastic iconsize24" data-bind="visible: readOnly" data-i18n="[title]CONTACTS/LABEL_READ_ONLY">🔒</div>
+-->
+			<!-- /ko -->
+		</div>
+	</div>
+</div>

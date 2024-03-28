@@ -1,0 +1,30 @@
+
+#V-Settings-Domains {
+	table {
+		width: 600px;
+	}
+
+	.domain-name {
+		display: inline-block;
+		word-break: break-all;
+	}
+
+	.domain-alias {
+		display: inline-block;
+		color: #bbb;
+		padding-left: 5px;
+	}
+
+	.delete-domain, .disabled-domain {
+		cursor: pointer;
+	}
+	.delete-domain:not(:hover), .disabled-domain:not(:hover) {
+		opacity: 0.5;
+	}
+
+	tr.disabled {
+		.domain-name, .domain-alias {
+			color: #bbb;
+		}
+	}
+}

@@ -1,0 +1,36 @@
+	<label data-bind="text: label, visible: 5 !== type"></label>
+	<!-- ko if: 0 === type -->
+		<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off"
+			data-bind="value: value, attr: {placeholder: placeholder}">
+	<!-- /ko -->
+	<!-- ko if: 1 === type -->
+		<input type="number" step="1"
+			data-bind="value: value, attr: {placeholder: placeholder}">
+	<!-- /ko -->
+	<!-- ko if: 3 === type -->
+		<input type="password" autocomplete="off" autocorrect="off" autocapitalize="off"
+			data-bind="value: value, attr: {placeholder: placeholder}">
+	<!-- /ko -->
+	<!-- ko if: 2 === type -->
+		<textarea rows="5" autocomplete="off" autocorrect="off" autocapitalize="off"
+			data-bind="value: value, attr: {placeholder: placeholder }"></textarea>
+	<!-- /ko -->
+	<!-- ko if: 4 === type -->
+		<select data-bind="options: options, value: value"></select>
+	<!-- /ko -->
+	<!-- ko if: 5 === type -->
+		<div data-bind="component: {
+			name: 'Checkbox',
+			params: { value: value, label: label }
+		}"></div>
+	<!-- /ko -->
+	<!-- ko if: 6 === type -->
+		<input type="url"
+			data-bind="value: value, attr: {placeholder: placeholder}">
+	<!-- /ko -->
+	<!-- ko if: 8 === type -->
+		<select data-bind="options: options, optionsText: 'name', optionsValue: 'id', value: value"></select>
+	<!-- /ko -->
+	<!-- ko if: '' !== desc -->
+	<span tabindex="0" class="help-block"><span data-bind="text: desc"></span></span>
+	<!-- /ko -->

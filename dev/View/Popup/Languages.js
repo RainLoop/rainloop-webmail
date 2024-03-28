@@ -1,72 +1,29 @@
-import _ from '_';
 import ko from 'ko';
 
-import { convertLangName } from 'Common/Utils';
+import { convertLangName } from 'Common/Translator';
 
-// import {view, ViewType} from 'Knoin/Knoin';
-import { popup } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/Languages',
-	templateID: 'PopupsLanguages'
-})
-class LanguagesPopupView extends AbstractViewNext {
+export class LanguagesPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
-
+		super('Languages');
 		this.fLang = null;
-		this.userLanguage = ko.observable('');
-
-		this.langs = ko.observableArray([]);
-
-		this.languages = ko.computed(() => {
-			const userLanguage = this.userLanguage();
-			return _.map(this.langs(), (language) => ({
-				key: language,
-				user: language === userLanguage,
-				selected: ko.observable(false),
-				fullName: convertLangName(language)
-			}));
-		});
-
-		this.langs.subscribe(() => {
-			this.setLanguageSelection();
-		});
-	}
-
-	languageTooltipName(language) {
-		return convertLangName(language, true);
-	}
-
-	setLanguageSelection() {
-		const currentLang = this.fLang ? ko.unwrap(this.fLang) : '';
-		_.each(this.languages(), (item) => {
-			item.selected(item.key === currentLang);
-		});
-	}
-
-	onBeforeShow() {
-		this.fLang = null;
-		this.userLanguage('');
-
-		this.langs([]);
+		this.languages = ko.observableArray();
 	}
 
 	onShow(fLanguage, langs, userLanguage) {
 		this.fLang = fLanguage;
-		this.userLanguage(userLanguage || '');
-
-		this.langs(langs);
+		this.languages(langs.map(language => ({
+			key: language,
+			user: userLanguage === language,
+			selected: fLanguage?.() === language,
+			fullName: convertLangName(language),
+			title: convertLangName(language, true)
+		})));
 	}
 
 	changeLanguage(lang) {
-		if (this.fLang) {
-			this.fLang(lang);
-		}
-
-		this.cancelCommand();
+		this.fLang?.(lang);
+		this.close();
 	}
 }
-
-export { LanguagesPopupView, LanguagesPopupView as default };

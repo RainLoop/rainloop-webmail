@@ -1,66 +1,70 @@
-import _ from '_';
 import ko from 'ko';
 
-import { StorageResultType } from 'Common/Enums';
 import { showScreenPopup } from 'Knoin/Knoin';
 
-import DomainStore from 'Stores/Admin/Domain';
-import Remote from 'Remote/Admin/Ajax';
+import { DomainAdminStore } from 'Stores/Admin/Domain';
+import Remote from 'Remote/Admin/Fetch';
 
-import { getApp } from 'Helper/Apps/Admin';
+import { DomainPopupView } from 'View/Popup/Domain';
+import { DomainAliasPopupView } from 'View/Popup/DomainAlias';
 
-class DomainsAdminSettings {
+export class AdminSettingsDomains /*extends AbstractViewSettings*/ {
 	constructor() {
-		this.domains = DomainStore.domains;
+		this.domains = DomainAdminStore;
+		this.username = ko.observable('');
+		this.domainForDeletion = ko.observable(null).askDeleteHelper();
+	}
 
-		this.visibility = ko.computed(() => (this.domains.loading() ? 'visible' : 'hidden'));
-
-		this.domainForDeletion = ko.observable(null).deleteAccessHelper();
-
-		this.onDomainListChangeRequest = _.bind(this.onDomainListChangeRequest, this);
-		this.onDomainLoadRequest = _.bind(this.onDomainLoadRequest, this);
+	testUsername() {
+		Remote.request('AdminDomainMatch',
+			(iError, oData) => {
+				if (oData?.Result?.domain) {
+					alert(`${oData.Result.email} matched domain: ${oData.Result.domain.name}`);
+				} else {
+					alert('No domain match');
+				}
+			},
+			{
+				username: this.username
+			}
+		);
 	}
 
 	createDomain() {
-		showScreenPopup(require('View/Popup/Domain'));
+		showScreenPopup(DomainPopupView);
 	}
 
 	createDomainAlias() {
-		showScreenPopup(require('View/Popup/DomainAlias'));
+		showScreenPopup(DomainAliasPopupView);
 	}
 
 	deleteDomain(domain) {
-		this.domains.remove(domain);
-		Remote.domainDelete(this.onDomainListChangeRequest, domain.name);
+		DomainAdminStore.remove(domain);
+		Remote.request('AdminDomainDelete', DomainAdminStore.fetch, {
+			name: domain.name
+		});
 	}
 
 	disableDomain(domain) {
 		domain.disabled(!domain.disabled());
-		Remote.domainDisable(this.onDomainListChangeRequest, domain.name, domain.disabled());
+		Remote.request('AdminDomainDisable', DomainAdminStore.fetch, {
+			name: domain.name,
+			disabled: domain.disabled() ? 1 : 0
+		});
 	}
 
 	onBuild(oDom) {
-		const self = this;
-		oDom.on('click', '.b-admin-domains-list-table .e-item .e-action', function() {
-			// eslint-disable-line prefer-arrow-callback
-			const domainItem = ko.dataFor(this); // eslint-disable-line no-invalid-this
-			if (domainItem) {
-				Remote.domain(self.onDomainLoadRequest, domainItem.name);
-			}
+		oDom.addEventListener('click', event => {
+			let el = event.target.closestWithin('.b-admin-domains-list-table .e-action', oDom);
+			el && ko.dataFor(el) && Remote.request('AdminDomainLoad',
+				(iError, oData) => iError || showScreenPopup(DomainPopupView, [oData.Result]),
+				{
+					name: ko.dataFor(el).name
+				}
+			);
+
 		});
 
-		getApp().reloadDomainList();
-	}
-
-	onDomainLoadRequest(sResult, oData) {
-		if (StorageResultType.Success === sResult && oData && oData.Result) {
-			showScreenPopup(require('View/Popup/Domain'), [oData.Result]);
-		}
-	}
-
-	onDomainListChangeRequest() {
-		getApp().reloadDomainList();
+		DomainAdminStore.fetch();
 	}
 }
-
-export { DomainsAdminSettings, DomainsAdminSettings as default };

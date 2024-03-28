@@ -1,0 +1,19 @@
+{ "translations": {
+    "Email" : "Helbide elektronikoa",
+    "Error" : "Errorea",
+    "Invalid argument(s)" : "Argumentu baliogabea(k)",
+    "Saved successfully" : "Ondo gorde da",
+    "SnappyMail" : "SnappyMail",
+    "SnappyMail Webmail" : "SnappyMail Webmail",
+    "Go to SnappyMail Webmail admin panel" : "Joan SnappyMail Webmailen administrazio panelera",
+    "Users will login manually, or define credentials in their personal settings for automatic logins." : "Erabiltzaileek eskuz hasiko dute saioa, edo bestela beraien ezarpen pertsonaletan kredentzialak zehaztu ditzakete saio-hasiera automatikorako.",
+    "Attempt to automatically login users with their Nextcloud username and password, or user-defined credentials, if set." : "Ezarri saiakera erabiltzaileek saio-hasiera automatikoa egiteko Nextcloud erabiltzaile-izena eta pasahitzarekin, edo erabiltzaileek definitutako kredentzialekin, zehaztuz gero.",
+    "Attempt to automatically login users with their Nextcloud email and password, or user-defined credentials, if set." : "Ezarri saiakera erabiltzaileek saio-hasiera automatikoa egiteko Nextcloud e-posta eta pasahitzarekin, edo erabiltzaileek definitutako kredentzialekin, zehaztuz gero.",
+    "Save" : "Gorde",
+    "SnappyMail Webmail is not configured yet." : "SnappyMail Webmail ez dago konfiguratuta oraindik.",
+    "may have some" : "batzuk izan ditzake",
+    "security considerations" : "segurtasun kontuak",
+    "Enter an email and password to auto-login to SnappyMail." : "Saioa automatikoki hasteko sartu helbide elektronikoa eta pasahitza SnappyMail-en.",
+    "Password" : "Pasahitza"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}

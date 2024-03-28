@@ -1,33 +1,64 @@
-import ko from 'ko';
-
-import { change } from 'Common/Links';
-
 import { AbstractModel } from 'Knoin/AbstractModel';
+import { addObservablesTo } from 'External/ko';
+import Remote from 'Remote/User/Fetch';
+import { SettingsUserStore } from 'Stores/User/Settings';
 
-class AccountModel extends AbstractModel {
+export class AccountModel extends AbstractModel {
 	/**
 	 * @param {string} email
 	 * @param {boolean=} canBeDelete = true
 	 * @param {number=} count = 0
 	 */
-	constructor(email, canBeDelete = true, count = 0) {
-		super('AccountModel');
+	constructor(email, name, isAdditional = true) {
+		super();
 
+		this.name = name;
 		this.email = email;
 
-		this.count = ko.observable(count);
+		this.displayName = name ? name + ' <' + email + '>' : email;
 
-		this.deleteAccess = ko.observable(false);
-		this.canBeDeleted = ko.observable(!!canBeDelete);
-		this.canBeEdit = this.canBeDeleted;
+		addObservablesTo(this, {
+			unreadEmails: null,
+			askDelete: false,
+			isAdditional: isAdditional
+		});
+
+		// Load at random between 3 and 30 seconds
+		SettingsUserStore.showUnreadCount() && isAdditional
+		&& setTimeout(()=>this.fetchUnread(), (Math.ceil(Math.random() * 10)) * 3000);
+	}
+
+	label() {
+		return this.name || IDN.toUnicode(this.email);
 	}
 
 	/**
-	 * @returns {string}
+	 * Get INBOX unread messages
 	 */
-	changeAccountLink() {
-		return change(this.email);
+	fetchUnread() {
+		Remote.request('AccountUnread', (iError, oData) => {
+			iError || this.unreadEmails(oData?.Result?.unreadEmails || null);
+		}, {
+			email: this.email
+		});
 	}
-}
 
-export { AccountModel, AccountModel as default };
+	/**
+	 * Imports all mail to main account
+	 *//*
+	importAll(account) {
+		Remote.streamPerLine(line => {
+			try {
+				line = JSON.parse(line);
+				console.dir(line);
+			} catch (e) {
+				// OOPS
+			}
+		}, 'AccountImport', {
+			Action: 'AccountImport',
+			email: account.email
+		});
+	}
+	*/
+
+}

@@ -2,7 +2,12 @@
 
 class AddXOriginatingIpHeaderPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
-	public function Init()
+	const
+		NAME = 'X-Originating-IP',
+		VERSION = '2.0',
+		DESCRIPTION = 'Adds X-Originating-IP header to outgoing message, containing sender\'s IP address.';
+
+	public function Init() : void
 	{
 		$this->addHook('filter.build-message', 'FilterBuildMessage');
 	}
@@ -16,7 +21,7 @@ class AddXOriginatingIpHeaderPlugin extends \RainLoop\Plugins\AbstractPlugin
 		{
 			$sIP = $this->Manager()->Actions()->Http()->GetClientIp(
 				!!$this->Config()->Get('plugin', 'check_proxy', false));
-			
+
 			$oMessage->SetCustomHeader(
 				\MailSo\Mime\Enumerations\Header::X_ORIGINATING_IP,
 				$this->Manager()->Actions()->Http()->IsLocalhost($sIP) ? '127.0.0.1' : $sIP
@@ -27,7 +32,7 @@ class AddXOriginatingIpHeaderPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/**
 	 * @return array
 	 */
-	public function configMapping()
+	protected function configMapping() : array
 	{
 		return array(
 			\RainLoop\Plugins\Property::NewInstance('check_proxy')

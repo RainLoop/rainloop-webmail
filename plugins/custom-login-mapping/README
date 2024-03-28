@@ -1,8 +1,0 @@
-Plugin which allows you to set up custom username (login) by email address.
-
-Some mail servers use arbitrary usernames for logging in to the email service.
-This plugin replaces pre-@ email address with the predefined username for logging in.
-
-Usage:   <user email>:<username>
-Example: bob.jackson@mydomain.com:mydomain3
-By doing the above, users can log in with "bob.jackson@mydomain.com" instead of "mydomain3@mydomain.com"

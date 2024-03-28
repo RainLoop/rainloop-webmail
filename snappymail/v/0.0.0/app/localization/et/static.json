@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Taaslae",
+	"NO_SCRIPT_TITLE": "See rakendus vajab tööks JavaScripti",
+	"NO_SCRIPT_DESC": "Sinu veebilehitseja ei toeta JavaScripti.\nLuba selle kasutus veebilehitseja sätetes ja proovi uuesti.\n",
+	"NO_COOKIE_TITLE": "See rakendus vajab oma tööks veebiküpsiste tuge",
+	"NO_COOKIE_DESC": "Sinu veebilehitseja ei toeta veebiküpsiseid.\nLuba nende kasutus veebilehitseja sätetes ja proovi uuesti.\n",
+	"BAD_BROWSER_TITLE": "Sinu veebilehitseja on aegunud",
+	"BAD_BROWSER_DESC": "Rakenduse kõikide võimaluste kasutamiseks,\nlae alla ja paigalda mõni nendest veebilehitsejatest:\n"
+}

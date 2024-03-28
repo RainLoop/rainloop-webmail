@@ -1,0 +1,43 @@
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	# Redirect cPanel
+	RewriteRule cpsess.* https://%{HTTP_HOST}/ [L,R=301]
+</IfModule>
+
+<IfModule mod_expires.c>
+	ExpiresActive On
+	ExpiresByType text/css A15768000
+	ExpiresByType text/html A15768000
+	ExpiresByType application/javascript A15768000
+	ExpiresByType image/gif A15768000
+	ExpiresByType image/jpeg A15768000
+	ExpiresByType image/png A15768000
+	ExpiresByType image/svg+xml A15768000
+	ExpiresByType image/webp A15768000
+	ExpiresByType image/vnd.microsoft.icon A15768000
+	ExpiresByType font/woff A15768000
+	ExpiresByType font/woff2 A15768000
+</IfModule>
+
+<IfModule mod_headers.c>
+#	Header set Cache-Control "public, max-age=31536000"
+#	Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data:; style-src 'self' 'unsafe-inline'"
+#	Header set Referrer-Policy "no-referrer"
+#	Header set Strict-Transport-Security "max-age=31536000"
+	Header set imagetoolbar "no"
+#	Header set X-Content-Type-Options "nosniff"
+#	Header set X-XSS-Protection "1; mode=block"
+	Header set Service-Worker-Allowed "/"
+
+	# Google FLoC
+#	Header set Permissions-Policy "interest-cohort=()"
+</IfModule>
+
+#<IfModule mod_brotli.c>
+#	AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript application/javascript
+#</IfModule>
+
+<IfModule mod_deflate.c>
+	AddOutputFilterByType DEFLATE text/css text/html text/plain text/xml application/xml text/javascript application/javascript
+	AddOutputFilterByType DEFLATE font/opentype font/otf font/ttf font/woff
+</IfModule>

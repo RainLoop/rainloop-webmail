@@ -1,0 +1,2601 @@
+/**
+ * Nextcloud - SnappyMail mail plugin
+ *
+ * @author Rene Hampölz (@hampoelz), SnappyMail, Nextcloud Team
+ */
+
+/*
+ * Default Nextcloud (v25+) theme variables and colors
+ * based on https://github.com/nextcloud/server/blob/master/core/css/variables.scss
+ */
+/* #region theme */
+
+:root {
+	--border-color: var(--nc-color-border);
+	--dialog-border-clr: var(--nc-color-border);
+}
+
+:not([data-themes~="dark"]) {
+	--nc-color-main-background: var(--color-main-background, #ffffff);
+	--nc-color-main-background-rgb: var(--color-main-background-rgb, 255, 255, 255);
+	--nc-color-main-background-blur: var(--color-main-background-blur, rgba(var(--nc-color-main-background-rgb), .8));
+	--nc-filter-background-blur: var(--filter-background-blur, blur(25px));
+	--nc-color-background-hover: var(--color-background-hover, #f5f5f5);
+	--nc-color-background-dark: var(--color-background-dark, #ededed);
+	--nc-color-background-darker: var(--color-background-darker, #dbdbdb);
+	--nc-color-placeholder-light: var(--color-placeholder-light, #e6e6e6);
+	--nc-color-placeholder-dark: var(--color-placeholder-dark, #cccccc);
+	--nc-color-main-text: var(--color-main-text, #222222);
+	--nc-color-text-light: var(--color-text-light, #222222);
+	--nc-color-text-lighter: var(--color-text-lighter, #767676);
+	--nc-color-text-maxcontrast: var(--color-text-maxcontrast, #767676);
+	--nc-color-scrollbar: var(--color-scrollbar, rgba(34, 34, 34, .15));
+	--nc-color-error: var(--color-error, #e9322d);
+	--nc-color-error-rgb: var(--color-error-rgb, 233, 50, 45);
+	--nc-color-error-hover: var(--color-error-hover, #ed5a56);
+	--nc-color-warning: var(--color-warning, #eca700);
+	--nc-color-warning-rgb: var(--color-warning-rgb, 236, 167, 0);
+	--nc-color-warning-hover: var(--color-warning-hover, #efb832);
+	--nc-color-success: var(--color-success, #46ba61);
+	--nc-color-success-rgb: var(--color-success-rgb, 70, 186, 97);
+	--nc-color-success-hover: var(--color-success-hover, #6ac780);
+	--nc-color-loading-light: var(--color-loading-light, #cccccc);
+	--nc-color-loading-dark: var(--color-loading-dark, #444444);
+	--nc-color-box-shadow-rgb: var(--color-box-shadow-rgb, 77, 77, 77);
+	--nc-color-box-shadow: var(--color-box-shadow, rgba(var(--nc-color-box-shadow-rgb), 0.5));
+	--nc-color-border: var(--color-border, #ededed);
+	--nc-color-border-dark: var(--color-border-dark, #dbdbdb);
+	--nc-color-border-maxcontrast: var(--color-border-maxcontrast, #949494);
+	--nc-font-face: var(--font-face, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Cantarell, Ubuntu, 'Helvetica Neue', Arial, sans-serif, 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol');
+	--nc-default-font-size: var(--default-font-size, 15px);
+	--nc-default-line-height: var(--default-line-height, 24px);
+	--nc-animation-quick: var(--animation-quick, 100ms);
+	--nc-animation-slow: var(--animation-slow, 300ms);
+	--nc-border-radius: var(--border-radius, 3px);
+	--nc-border-radius-large: var(--border-radius-large, 10px);
+	--nc-border-radius-pill: var(--border-radius-pill, 100px);
+	--nc-default-grid-baseline: var(--default-grid-baseline, 4px);
+	--nc-navigation-width: var(--navigation-width, 300px);
+	--nc-sidebar-min-width: var(--sidebar-min-width, 300px);
+	--nc-sidebar-max-width: var(--sidebar-max-width, 500px);
+	--nc-list-min-width: var(--list-min-width, 200px);
+	--nc-list-max-width: var(--list-max-width, 300px);
+	--nc-breakpoint-mobile: var(--breakpoint-mobile, 1024px);
+	--nc-color-primary: var(--color-primary, #00639a);
+	--nc-color-primary-default: var(--color-primary-default, #0082c9);
+	--nc-color-primary-text: var(--color-primary-text, #ffffff);
+	--nc-color-primary-hover: var(--color-primary-hover, #3282ae);
+	--nc-color-primary-light: var(--color-primary-light, #e5eff4);
+	--nc-color-primary-light-text: var(--color-primary-light-text, #00273d);
+	--nc-color-primary-light-hover: var(--color-primary-light-hover, #dbe4e9);
+	--nc-color-primary-text-dark: var(--color-primary-text-dark, #ededed);
+	--nc-color-primary-element: var(--color-primary-element, #00639a);
+	--nc-color-primary-element-text: var(--color-primary-element-text, #ffffff);
+	--nc-color-primary-element-hover: var(--color-primary-element-hover, #3282ae);
+	--nc-color-primary-element-light: var(--color-primary-element-light, #e5eff4);
+	--nc-color-primary-element-light-text: var(--color-primary-element-light-text, #00273d);
+	--nc-color-primary-element-light-hover: var(--color-primary-element-light-hover, #dbe4e9);
+	--nc-color-primary-element-text-dark: var(--color-primary-element-text-dark, #ededed);
+}
+
+@media (prefers-color-scheme: dark) {
+	:not([data-themes~="light"]) {
+		--nc-color-main-background: var(--color-main-background, #171717);
+		--nc-color-main-background-rgb: var(--color-main-background-rgb, 23, 23, 23);
+		--nc-color-main-background-blur: var(--color-main-background-blur, rgba(var(--nc-color-main-background-rgb), .8));
+		--nc-filter-background-blur: var(--filter-background-blur, blur(25px));
+		--nc-color-background-hover: var(--color-background-hover, #212121);
+		--nc-color-background-dark: var(--color-background-dark, #292929);
+		--nc-color-background-darker: var(--color-background-darker, #3b3b3b);
+		--nc-color-placeholder-light: var(--color-placeholder-light, #313131);
+		--nc-color-placeholder-dark: var(--color-placeholder-dark, #4a4a4a);
+		--nc-color-main-text: var(--color-main-text, #D8D8D8);
+		--nc-color-text-light: var(--color-text-light, #bfbfbf);
+		--nc-color-text-lighter: var(--color-text-lighter, #a5a5a5);
+		--nc-color-text-maxcontrast: var(--color-text-maxcontrast, #8c8c8c);
+		--nc-color-scrollbar: var(--color-scrollbar, #3d3d3d);
+		--nc-color-error: var(--color-error, #e9322d);
+		--nc-color-error-rgb: var(--color-error-rgb, 233, 50, 45);
+		--nc-color-error-hover: var(--color-error-hover, #ed5a56);
+		--nc-color-warning: var(--color-warning, #eca700);
+		--nc-color-warning-rgb: var(--color-warning-rgb, 236, 167, 0);
+		--nc-color-warning-hover: var(--color-warning-hover, #efb832);
+		--nc-color-success: var(--color-success, #46ba61);
+		--nc-color-success-rgb: var(--color-success-rgb, 70, 186, 97);
+		--nc-color-success-hover: var(--color-success-hover, #6ac780);
+		--nc-color-loading-light: var(--color-loading-light, #777);
+		--nc-color-loading-dark: var(--color-loading-dark, #CCC);
+		--nc-color-box-shadow-rgb: var(--color-box-shadow-rgb, 0, 0, 0);
+		--nc-color-box-shadow: var(--color-box-shadow, #000000);
+		--nc-color-border: var(--color-border, #292929);
+		--nc-color-border-dark: var(--color-border-dark, #3b3b3b);
+		--nc-color-border-maxcontrast: var(--color-border-maxcontrast, #646464);
+		--nc-font-face: var(--font-face, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Cantarell, Ubuntu, 'Helvetica Neue', Arial, sans-serif, 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol');
+		--nc-default-font-size: var(--default-font-size, 15px);
+		--nc-default-line-height: var(--default-line-height, 24px);
+		--nc-animation-quick: var(--animation-quick, 100ms);
+		--nc-animation-slow: var(--animation-slow, 300ms);
+		--nc-border-radius: var(--border-radius, 3px);
+		--nc-border-radius-large: var(--border-radius-large, 10px);
+		--nc-border-radius-pill: var(--border-radius-pill, 100px);
+		--nc-default-grid-baseline: var(--default-grid-baseline, 4px);
+		--nc-navigation-width: var(--navigation-width, 300px);
+		--nc-sidebar-min-width: var(--sidebar-min-width, 300px);
+		--nc-sidebar-max-width: var(--sidebar-max-width, 500px);
+		--nc-list-min-width: var(--list-min-width, 200px);
+		--nc-list-max-width: var(--list-max-width, 300px);
+		--nc-breakpoint-mobile: var(--breakpoint-mobile, 1024px);
+		--nc-color-primary: var(--color-primary, #00639a);
+		--nc-color-primary-default: var(--color-primary-default, #0082c9);
+		--nc-color-primary-text: var(--color-primary-text, #ffffff);
+		--nc-color-primary-hover: var(--color-primary-hover, #04537f);
+		--nc-color-primary-light: var(--color-primary-light, #141e24);
+		--nc-color-primary-light-text: var(--color-primary-light-text, #99c0d6);
+		--nc-color-primary-light-hover: var(--color-primary-light-hover, #1d272d);
+		--nc-color-primary-text-dark: var(--color-primary-text-dark, #ededed);
+		--nc-color-primary-element: var(--color-primary-element, #00639a);
+		--nc-color-primary-element-text: var(--color-primary-element-text, #ffffff);
+		--nc-color-primary-element-hover: var(--color-primary-element-hover, #04537f);
+		--nc-color-primary-element-light: var(--color-primary-element-light, #141e24);
+		--nc-color-primary-element-light-text: var(--color-primary-element-light-text, #99c0d6);
+		--nc-color-primary-element-light-hover: var(--color-primary-element-light-hover, #1d272d);
+		--nc-color-primary-element-text-dark: var(--color-primary-element-text-dark, #ededed);
+	}
+}
+
+/* #endregion */
+
+/*
+ * Icons
+ */
+/* #region icons */
+
+#rl-app .iconcolor-green {
+	color: var(--nc-color-success) !important;
+}
+
+#rl-app .iconcolor-red {
+	color: var(--nc-color-error) !important;
+}
+
+#rl-app i.fontastic {
+	line-height: unset;
+}
+
+#rl-app [data-icon]::before {
+	vertical-align: -10%;
+}
+
+#rl-app .drag-handle {
+	color: var(--nc-color-text-lighter);
+}
+
+/* #endregion */
+
+/*
+ *  Elements
+ */
+
+/* #region elements */
+
+/* #region link */
+
+:root {
+	--link-color: var(--nc-color-primary-element-light-text);
+}
+
+#rl-app a[target="_blank"] {
+	color: var(--nc-color-primary-element-light-text);
+}
+
+#rl-app a[target="_blank"]:visited,
+#rl-app a[target="_blank"]:active {
+	color: var(--nc-color-primary-element);
+}
+
+/* #endregion */
+
+/* #region scrollbar */
+
+::-webkit-scrollbar {
+	width: 12px;
+	height: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--nc-color-scrollbar);
+	border-radius: var(--nc-border-radius-large);
+	border: 2px solid transparent;
+	background-clip: content-box;
+}
+
+::-webkit-scrollbar-corner,
+::-webkit-scrollbar-track-piece {
+	background-color: transparent;
+}
+
+/* #endregion */
+
+/* #region resizer */
+
+#rl-app .resizer {
+	opacity: 1;
+	background-color: unset;
+	border-right: solid 1px var(--nc-color-border);
+}
+
+::-webkit-resizer {
+	border: 10px solid transparent;
+	border-radius: var(--nc-border-radius);
+	border-bottom-color: var(--nc-color-border-dark);
+}
+
+::-webkit-resizer {
+	border-right-color: var(--nc-color-border-dark);
+}
+
+[dir="rtl"] ::-webkit-resizer {
+	border-right-color: transparent;
+	border-left-color: var(--nc-color-border-dark);
+}
+
+/* #endregion */
+
+/* #region meter */
+
+#rl-app meter::-webkit-meter-bar {
+	background-color: var(--nc-color-border-dark);
+	border-color: var(--nc-color-border-dark);
+	border-width: 2px;
+	height: 10px;
+}
+
+/* #endregion */
+
+/* #region horizontal rule */
+
+:root {
+	--hr-color: var(--nc-color-border-dark);
+}
+
+#rl-app hr {
+	border-color: var(--nc-color-border-dark);
+}
+
+/* #endregion */
+
+/* #region tooltip */
+
+#rl-app [data-rainloopErrorTip]::before,
+#rl-app .help-block span {
+	border: 1px solid var(--nc-color-border);
+	border-radius: var(--nc-border-radius);
+	box-shadow: 0 0 2px var(--nc-color-box-shadow);
+	background-color: var(--nc-color-background-dark);
+	font-size: 13px;
+	color: unset;
+	left: 10px;
+	right: unset;
+	padding: 5px;
+	margin: 7px;
+}
+
+#rl-app [data-rainloopErrorTip]::before {
+	color: var(--nc-color-error);
+	font-weight: 700;
+}
+
+/* #endregion */
+
+/* #region alert */
+
+#rl-app .alert {
+	text-shadow: unset;
+	border: unset;
+	color: var(--nc-color-main-text);
+	background-color: rgba(var(--nc-color-warning-rgb), 0.1);
+	border-inline-start: 4px solid var(--nc-color-warning);
+	border-radius: var(--nc-border-radius);
+	margin: 1rem;
+	padding: 1rem;
+}
+
+#rl-app .alert h4 {
+	font-weight: bold;
+	font-size: 20px;
+	margin-top: unset;
+	margin-bottom: 12px;
+	line-height: 30px;
+	color: var(--nc-color-text-light);
+}
+
+#rl-app .alert.alert-info {
+	background-color: var(--nc-color-background-dark);
+	border-color: var(--nc-color-background-darker);
+}
+
+#rl-app .alert.alert-warning {
+	background-color: rgba(var(--nc-color-warning-rgb), 0.1);
+	border-color: var(--nc-color-warning);
+}
+
+#rl-app .alert.alert-success {
+	background-color: rgba(var(--nc-color-success-rgb), 0.1);
+	border-color: var(--nc-color-success);
+}
+
+#rl-app .alert.alert-error {
+	background-color: rgba(var(--nc-color-error-rgb), 0.1);
+	border-color: var(--nc-color-error);
+}
+
+#rl-app .alert .close {
+	top: -0.6rem;
+	right: unset;
+}
+
+#rl-app .alert br {
+	display: none;
+}
+
+/* #endregion */
+
+/* #region button */
+
+#rl-app .btn,
+#rl-app button,
+#rl-app button.btn:not(.button-vue) {
+	min-height: 36px;
+	height: 36px;
+	box-sizing: border-box;
+	padding: 8px 14px;
+	line-height: 20px;
+	color: var(--nc-color-main-text);
+	background-color: var(--nc-color-background-dark);
+	border: 1px solid var(--nc-color-border-dark) !important;
+	border-radius: var(--nc-border-radius-pill);
+	font-size: var(--nc-default-font-size);
+	text-shadow: none;
+	box-shadow: none;
+}
+
+#rl-app .btn:hover,
+#rl-app .btn:focus,
+#rl-app .btn:active,
+#rl-app .btn.active,
+#rl-app button:hover,
+#rl-app button:focus,
+#rl-app button:active,
+#rl-app button.active,
+#rl-app span.fontastic:hover,
+#rl-app span.fontastic:focus,
+#rl-app span.fontastic:active {
+	outline: none;
+	opacity: unset;
+}
+
+#rl-app .btn.fontastic,
+#rl-app button.fontastic {
+	border-radius: var(--nc-border-radius-large);
+}
+
+#rl-app .btn.btn-thin,
+#rl-app button.btn-thin {
+	padding-right: 9px;
+	padding-left: 9px;
+}
+
+#rl-app .btn.btn-transparent,
+#rl-app button.btn-transparent {
+	background: unset !important;
+	border: unset !important;
+	opacity: 0.6;
+}
+
+#rl-app .btn.btn-warning,
+#rl-app button.btn-warning {
+	color: var(--nc-color-primary-element-text);
+	background-color: var(--nc-color-warning);
+	border-color: var(--nc-color-warning) !important;
+}
+
+#rl-app .btn.btn-warning:hover,
+#rl-app .btn.btn-warning:focus,
+#rl-app button.btn-warning:hover,
+#rl-app button.btn-warning:focus {
+	color: var(--nc-color-primary-element-text);
+	background-color: var(--nc-color-warning-hover);
+	border-color: var(--nc-color-warning-hover) !important;
+}
+
+#rl-app .btn.btn-danger,
+#rl-app button.btn-danger {
+	color: var(--nc-color-primary-element-text);
+	background-color: var(--nc-color-error);
+	border-color: var(--nc-color-error) !important;
+}
+
+#rl-app .btn.btn-danger:hover,
+#rl-app .btn.btn-danger:focus,
+#rl-app button.btn-danger:hover,
+#rl-app button.btn-danger:focus {
+	color: var(--nc-color-primary-element-text);
+	background-color: var(--nc-color-error-hover);
+	border-color: var(--nc-color-error-hover) !important;
+}
+
+#rl-app .btn.btn-success,
+#rl-app button.btn-success,
+#rl-app button.btn.buttonLogin {
+	color: var(--nc-color-primary-element-text);
+	background-color: var(--nc-color-primary-element);
+	border-color: var(--nc-color-primary-element) !important;
+}
+
+#rl-app .btn.btn-success:hover,
+#rl-app .btn.btn-success:focus,
+#rl-app button.btn-success:hover,
+#rl-app button.btn-success:focus,
+#rl-app button.btn.buttonLogin:hover,
+#rl-app button.btn.buttonLogin:focus {
+	color: var(--nc-color-primary-element-text);
+	background-color: var(--nc-color-primary-element-hover);
+	border-color: var(--nc-color-primary-element-hover) !important;
+}
+
+#rl-app span.fontastic {
+	padding: 6px;
+	height: fit-content;
+	border-radius: var(--nc-border-radius);
+}
+
+#rl-app span.fontastic:hover {
+	background-color: var(--nc-color-background-hover);
+}
+
+#rl-app span.fontastic:active {
+	background-color: var(--nc-color-primary-light);
+}
+
+#rl-app .btn.disabled, .btn[disabled],
+#rl-app .btn.disabled:hover, .btn[disabled]:hover,
+#rl-app .btn.disabled:focus, .btn[disabled]:focus,
+#rl-app .btn.disabled:active, .btn[disabled]:active,
+#rl-app button.disabled, button[disabled],
+#rl-app button.disabled:hover, button[disabled]:hover,
+#rl-app button.disabled:focus, button[disabled]:focus,
+#rl-app button.disabled:active, button[disabled]:active,
+#rl-app span.fontastic.disabled, span.fontastic[disabled],
+#rl-app span.fontastic.disabled:hover, span.fontastic[disabled]:hover,
+#rl-app span.fontastic.disabled:focus, span.fontastic[disabled]:focus,
+#rl-app span.fontastic.disabled:active, span.fontastic[disabled]:active {
+	opacity: .5;
+	filter: saturate(0.7);
+}
+
+#rl-app .btn:not(.disabled, [disabled]):hover,
+#rl-app .btn:not(.disabled, [disabled]):focus,
+#rl-app button:not(.disabled, [disabled]):hover,
+#rl-app button:not(.disabled, [disabled]):focus,
+#rl-app span.fontastic:not(.disabled, [disabled]):hover,
+#rl-app span.fontastic:not(.disabled, [disabled]):focus {
+	border-color: var(--nc-color-primary-element) !important;
+}
+
+#rl-app .btn:not(.disabled, [disabled]):active,
+#rl-app .btn:not(.disabled, [disabled]).active,
+#rl-app button:not(.disabled, [disabled]):active,
+#rl-app button:not(.disabled, [disabled]).active,
+#rl-app span.fontastic:not(.disabled, [disabled]):active,
+#rl-app span.fontastic:not(.disabled, [disabled]).active {
+	background-color: var(--nc-color-main-background);
+	color: var(--nc-color-text-light);
+}
+
+/* #endregion */
+
+/* #region button group */
+
+#rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])) {
+	margin-right: 0.5px;
+}
+
+/* fallback */
+#rl-app .btn-group .btn:first-of-type {
+	margin-right: 0.5px;
+}
+
+#rl-app .btn-group .btn:nth-last-child(1 of :not([style*="display: none;"])) {
+	margin-left: 0.5px;
+}
+
+/* fallback */
+#rl-app .btn-group .btn:last-of-type {
+	margin-left: 0.5px;
+}
+
+#rl-app .btn-group .btn:nth-child(n+2 of :not([style*="display: none;"])):nth-last-child(n+2 of :not([style*="display: none;"])) {
+	border-radius: 0 !important;
+	margin-right: 0.5px;
+	margin-left: 0.5px;
+}
+
+/* fallback */
+#rl-app .btn-group .btn:not(:first-of-type):not(:last-of-type) {
+	border-radius: 0;
+	margin: 0 0.5px;
+}
+
+#rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])),
+[dir="rtl"] #rl-app .btn-group .btn:nth-last-child(1 of :not([style*="display: none;"])) {
+	border-radius: 0 !important;
+	border-top-left-radius: var(--nc-border-radius-pill) !important;
+	border-bottom-left-radius: var(--nc-border-radius-pill) !important;
+}
+
+/* fallback */
+#rl-app .btn-group .btn:first-of-type,
+[dir="rtl"] #rl-app .btn-group .btn:last-of-type {
+	border-radius: 0;
+	border-top-left-radius: var(--nc-border-radius-pill);
+	border-bottom-left-radius: var(--nc-border-radius-pill);
+}
+
+#rl-app .btn-group .btn:nth-last-child(1 of :not([style*="display: none;"])),
+[dir="rtl"] #rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])) {
+	border-radius: 0 !important;
+	border-top-right-radius: var(--nc-border-radius-pill) !important;
+	border-bottom-right-radius: var(--nc-border-radius-pill) !important;
+}
+
+/* fallback */
+#rl-app .btn-group .btn:last-of-type,
+[dir="rtl"] #rl-app .btn-group .btn:first-of-type {
+	border-radius: 0;
+	border-top-right-radius: var(--nc-border-radius-pill);
+	border-bottom-right-radius: var(--nc-border-radius-pill);
+}
+
+#rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])),
+[dir="rtl"] #rl-app .btn-group .btn:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])) {
+	border-radius: var(--nc-border-radius-pill) !important;
+}
+
+/* fallback */
+#rl-app .btn-group .btn:first-of-type:last-of-type,
+[dir="rtl"] #rl-app .btn-group .btn:first-of-type:last-of-type {
+	border-radius: var(--nc-border-radius-pill) !important;
+}
+
+#rl-app .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])),
+[dir="rtl"] #rl-app .btn-group .btn.fontastic:nth-last-child(1 of :not([style*="display: none;"])) {
+	border-radius: 0 !important;
+	border-top-left-radius: var(--nc-border-radius-large) !important;
+	border-bottom-left-radius: var(--nc-border-radius-large) !important;
+}
+
+/* fallback */
+#rl-app .btn-group .btn.fontastic:first-of-type,
+[dir="rtl"] #rl-app .btn-group .btn.fontastic:last-of-type {
+	border-radius: 0;
+	border-top-left-radius: var(--nc-border-radius-large);
+	border-bottom-left-radius: var(--nc-border-radius-large);
+}
+
+#rl-app .btn-group .btn.fontastic:nth-last-child(1 of :not([style*="display: none;"])),
+[dir="rtl"] #rl-app .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])) {
+	border-radius: 0 !important;
+	border-top-right-radius: var(--nc-border-radius-large) !important;
+	border-bottom-right-radius: var(--nc-border-radius-large) !important;
+}
+
+/* fallback */
+#rl-app .btn-group .btn.fontastic:last-of-type,
+[dir="rtl"] #rl-app .btn-group .btn.fontastic:first-of-type {
+	border-radius: 0;
+	border-top-right-radius: var(--nc-border-radius-large);
+	border-bottom-right-radius: var(--nc-border-radius-large);
+}
+
+#rl-app .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])),
+[dir="rtl"] #rl-app .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])) {
+	border-radius: var(--nc-border-radius-large) !important;
+}
+
+/* fallback */
+#rl-app .btn-group .btn.fontastic:first-of-type:last-of-type,
+[dir="rtl"] #rl-app .btn-group .btn.fontastic:first-of-type:last-of-type {
+	border-radius: var(--nc-border-radius-large) !important;
+}
+
+/* #endregion */
+
+/* #region input & select */
+
+#rl-app select,
+#rl-app .select,
+#rl-app .emailaddresses,
+#rl-app input:not([type="checkbox"]) {
+	padding: 0 12px;
+	font-size: var(--nc-default-font-size);
+	color: var(--nc-color-main-text);
+	background-color: unset;
+	height: 36px;
+	border: 2px solid var(--nc-color-border-maxcontrast);
+	border-radius: var(--nc-border-radius-large);
+	line-height: 32px;
+	outline: none;
+}
+
+#rl-app select:hover,
+#rl-app select:active,
+#rl-app select:focus,
+#rl-app .select:hover,
+#rl-app .select:active,
+#rl-app .select:focus,
+#rl-app .emailaddresses:hover,
+#rl-app .emailaddresses:active,
+#rl-app .emailaddresses:focus,
+#rl-app input:hover,
+#rl-app input:active,
+#rl-app input:focus,
+#rl-app input:not([type="checkbox"]):hover,
+#rl-app input:not([type="checkbox"]):active,
+#rl-app input:not([type="checkbox"]):focus {
+	border-color: var(--nc-color-primary-element);
+}
+
+/* #endregion */
+
+/* #region input */
+
+#rl-app input {
+	box-shadow: none;
+}
+
+#rl-app input[type="search"]::-webkit-search-decoration,
+#rl-app input[type="search"]::-webkit-search-cancel-button,
+#rl-app input[type="search"]::-webkit-search-results-button,
+#rl-app input[type="search"]::-webkit-search-results-decoration {
+	-webkit-appearance: none;
+}
+
+#rl-app input::-webkit-outer-spin-button,
+#rl-app input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+#rl-app input[type=number] {
+	appearance: textfield;
+	margin: 0;
+	/* ? margin: 0 5px 0 0; */
+}
+
+#rl-app .search-input-wrp a {
+	position: absolute;
+	top: 2px;
+	right: 1px;
+	min-width: unset;
+	min-height: unset;
+	height: 32px;
+	font-size: 20px;
+	line-height: 30px;
+}
+
+/* #endregion */
+
+/* #region checkbox */
+
+#rl-app .e-checkbox.material-design {
+	width: fit-content !important;
+	width: -moz-fit-content !important;
+	display: flex;
+	position: relative;
+	align-items: center;
+	user-select: none;
+	height: 44px;
+	border-radius: 44px;
+	padding: 0 14px;
+	margin: 0;
+}
+
+#rl-app .e-checkbox.material-design:hover,
+#rl-app .e-checkbox.material-design:focus-within {
+	background-color: var(--nc-color-primary-light);
+	outline: none;
+}
+
+#rl-app .e-checkbox input[type="checkbox"] {
+	display: none;
+}
+
+#rl-app .e-checkbox:focus {
+	outline: none;
+}
+
+input[type="checkbox"] {
+	background-color: transparent;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+#rl-app .e-checkbox.material-design>div {
+	position: relative;
+	width: 18px;
+	top: 2px;
+}
+
+#rl-app input[type="checkbox"],
+#rl-app .e-checkbox.material-design input+div {
+	position: unset;
+	height: 18px !important;
+	width: 18px !important;
+	min-width: 18px !important;
+	flex-shrink: 0 !important;
+	border: 2px solid var(--nc-color-primary-element);
+	border-radius: 2px;
+	box-sizing: border-box;
+	animation: none;
+	transform: unset;
+}
+
+#rl-app input[type="checkbox"]:checked,
+#rl-app .e-checkbox.material-design input:checked+div {
+	--nc-svg-checked: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='3 3 18 18'><path d='M10,17L5,12L6.41,10.58L10,14.17L17.59,6.58L19,8M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z'></path></svg>");
+	-webkit-mask-image: var(--nc-svg-checked);
+	mask-image: var(--nc-svg-checked);
+	background: var(--nc-color-primary-element);
+	border-width: 0;
+	animation: none;
+	transform: unset;
+}
+
+/* #endregion */
+
+/* #region select */
+
+#rl-app select option,
+#rl-app select::-webkit-scrollbar-corner,
+#rl-app select::-webkit-scrollbar-track-piece {
+	background-color: var(--nc-color-main-background);
+	color: var(--nc-color-main-text);
+}
+
+/* #endregion */
+
+/* #region select email address */
+
+#rl-app .emailaddresses {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	padding: 0 0 4px;
+	width: 100%;
+	height: auto;
+	min-height: 44px;
+	max-height: calc(44px*2);
+	line-height: var(--nc-default-line-height);
+	background-color: var(--nc-color-main-background);
+	white-space: normal;
+}
+
+#rl-app .emailaddresses.emailaddresses-focused {
+	border: 2px solid var(--nc-color-primary-element);
+}
+
+#rl-app .emailaddresses li {
+	margin: 4px 2px 0;
+}
+
+#rl-app .emailaddresses li.emailaddresses-input>input[type="text"],
+#rl-app .emailaddresses li.emailaddresses-input>input[type="text"]:focus,
+#rl-app .emailaddresses li.emailaddresses-input>input[type="text"]:hover {
+	padding: 0 7px;
+	height: 36px;
+	max-width: 390px;
+	color: var(--nc-color-main-text);
+	font-size: var(--nc-default-font-size);
+	line-height: var(--nc-default-line-height);
+}
+
+#rl-app .emailaddresses li[draggable] {
+	display: flex;
+	align-items: center;
+	padding: 0 0.5em;
+	min-height: 36px;
+	line-height: var(--nc-default-line-height);
+	color: var(--nc-color-main-text);
+	border: 0;
+	border-radius: var(--nc-border-radius-large);
+	background-color: var(--nc-color-background-dark);
+	box-shadow: none;
+}
+
+#rl-app .emailaddresses li[draggable]>span {
+	max-width: calc(100vw - 140px);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+#rl-app .emailaddresses li[draggable]>a.ficon {
+	position: unset;
+	color: transparent;
+	text-shadow: 0 0 0 var(--nc-color-text-maxcontrast);
+	background: none;
+	border: 0;
+	cursor: pointer;
+	display: inline-flex;
+	margin-left: 4px;
+	padding: 0;
+}
+
+@media screen and (max-width: 480px) {
+	#rl-app .emailaddresses li.emailaddresses-input>input[type="text"] {
+		max-width: calc(100vw - 116px) !important;
+	}
+}
+
+/* #endregion */
+
+/* #region textarea */
+
+#rl-app .squire-toolbar {
+	height: 50px;
+	padding: 5px;
+	box-sizing: content-box;
+	border: none;
+}
+
+#rl-app textarea,
+#rl-app div[contenteditable],
+#rl-app .squire-wysiwyg,
+#rl-app .squire-plain {
+	padding: 8px 12px;
+	margin: unset;
+	font-size: var(--nc-default-font-size);
+	color: var(--nc-color-main-text);
+	background-color: unset;
+	outline: none;
+	border: 2px solid var(--nc-color-border-dark);
+	border-radius: var(--nc-border-radius-large);
+}
+
+#rl-app textarea:hover,
+#rl-app textarea:active,
+#rl-app textarea:focus,
+#rl-app div[contenteditable=true]:hover,
+#rl-app div[contenteditable=true]:active,
+#rl-app div[contenteditable=true]:focus,
+#rl-app .squire-wysiwyg:hover,
+#rl-app .squire-wysiwyg:active,
+#rl-app .squire-wysiwyg:focus,
+#rl-app .squire-plain:hover,
+#rl-app .squire-plain:active,
+#rl-app .squire-plain:focus {
+	border-color: var(--nc-color-primary-element);
+}
+
+/* #endregion */
+
+/* #region dropdown */
+
+#rl-app .dropdown.show {
+	box-shadow: none;
+}
+
+#rl-app .dropdown-menu {
+	background-color: var(--nc-color-main-background);
+	filter: drop-shadow(0 1px 5px var(--nc-color-box-shadow));
+	border-radius: var(--nc-border-radius-large);
+	color: var(--nc-color-main-text);
+	padding: 4px;
+}
+
+#rl-app .dropdown-menu a {
+	background-color: unset;
+	color: unset;
+	height: 22px;
+	line-height: 22px;
+	border-radius: 3px;
+	margin: 2px;
+	box-sizing: content-box;
+	text-align: start;
+}
+
+#rl-app .dropdown-menu li.disabled>a,
+#rl-app .dropdown-menu li.disabled>a:hover,
+#rl-app .dropdown-menu li.disabled>a:focus,
+#rl-app .dropdown-menu li.disabled>a:active {
+	opacity: .5;
+	filter: saturate(0.7);
+}
+
+#rl-app .dropdown-menu li:not(.disabled)>a:hover,
+#rl-app .dropdown-menu li:not(.disabled)>a:focus {
+	background-color: var(--nc-color-background-hover);
+	color: unset;
+	opacity: unset;
+}
+
+#rl-app .dropdown-menu li:not(.disabled)>a:active {
+	background-color: var(--nc-color-primary-element-light);
+}
+
+#rl-app .dropdown-menu *+.dividerbar {
+	border-color: var(--nc-color-border);
+}
+
+#rl-app .dropdown-menu::-webkit-scrollbar-track-piece {
+	background-color: inherit;
+	border-top-right-radius: inherit;
+	border-bottom-right-radius: inherit;
+}
+
+.rl-left-panel-disabled #rl-app .dropdown-menu:not(.right-edge) {
+	position: fixed;
+	top: auto;
+	left: 5px;
+	right: auto;
+}
+
+/* #endregion */
+
+/* #region dropdown account */
+
+#rl-app #V-SystemDropDown {
+	margin: 2px 5px 0 5px;
+}
+
+#rl-app #V-SystemDropDown .btn-toolbar {
+	border: solid 1px var(--nc-color-border-dark);
+	border-radius: var(--nc-border-radius-large);
+	height: 36px;
+	padding: 2px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	box-sizing: content-box;
+}
+
+#rl-app #V-SystemDropDown .accountPlace {
+	background: unset;
+	color: unset;
+	text-shadow: none;
+	border-color: var(--nc-color-border);
+}
+
+#rl-app #V-SystemDropDown #top-system-dropdown-id {
+	background-color: unset;
+	border: unset !important;
+	border-radius: var(--nc-border-radius-large) !important;
+	height: 20px;
+}
+
+#rl-app #V-SystemDropDown #top-system-dropdown-id:hover,
+#rl-app #V-SystemDropDown #top-system-dropdown-id:focus {
+	background-color: var(--nc-color-background-hover);
+}
+
+#rl-app #V-SystemDropDown #top-system-dropdown-id:active {
+	background-color: var(--nc-color-background-dark);
+}
+
+/* #endregion */
+
+/* #region tab */
+
+#rl-app .tabs>[id^=tab]:checked+label {
+	background-color: var(--nc-color-main-background);
+	border-color: var(--nc-color-primary-element);
+	border-bottom-color: transparent;
+}
+
+#rl-app .tabs>label {
+	margin: 0 2px -1px 2px;
+	border-radius: 0;
+	border-top-left-radius: var(--nc-border-radius);
+	border-top-right-radius: var(--nc-border-radius);
+	overflow-wrap: anywhere;
+}
+
+#rl-app .tabs>label:first-of-type {
+  margin-left: 0px;
+}
+
+#rl-app .tabs>label:last-of-type {
+  margin-right: 0px;
+}
+
+
+#rl-app .tabs>label:hover {
+	border-color: transparent;
+	border-bottom-color: var(--nc-color-primary-element);
+	background-color: var(--nc-color-background-hover)
+}
+
+#rl-app .tabs .tab-content {
+	border-top: solid 1px;
+	border-radius: 4px;
+	border-color: var(--nc-color-primary-element);
+}
+
+@media screen and (max-width: 480px) {
+	#rl-app .tabs>label>i,
+	#rl-app .tabs>label::before {
+		display: none;
+	}
+}
+
+/* #endregion */
+
+/* #region table */
+
+#rl-app .table td,
+#rl-app .table th,
+#rl-app .table-bordered {
+	border-color: var(--nc-color-border-dark);
+}
+
+#rl-app .table-hover tbody tr:hover td,
+#rl-app .table-hover tbody tr:hover th {
+	background-color: var(--nc-color-background-hover);
+}
+
+#rl-app .table-striped tbody tr:nth-child(odd) td,
+#rl-app .table-striped tbody tr:nth-child(odd) th {
+	background-color: var(--nc-color-background-dark);
+}
+
+/* #endregion */
+
+/* #region attachment */
+
+#rl-app .attachmentItem {
+	background-color: var(--nc-color-background-dark);
+	border-radius: var(--nc-border-radius);
+	box-shadow: none;
+	padding: 2px;
+}
+
+#rl-app .attachmentListSimple {
+  flex-wrap: wrap;
+  display: flex;
+}
+
+#rl-app .attachmentListSimple .attachmentItem {
+	display: flex;
+	width: min-content;
+	max-width: unset;
+}
+
+#rl-app .attachmentListSimple .attachmentName {
+	max-width: 200px;
+	margin: 5px;
+}
+
+#rl-app .attachmentListSimple .checkboxAttachment {
+	position: initial;
+  margin: 5px;
+  margin-left: 0;
+}
+
+#rl-app .attachmentItem:hover,
+#rl-app .attachmentItem:active {
+	background-color: var(--nc-color-background-darker);
+}
+
+#rl-app .attachmentItem:focus {
+	outline: none;
+}
+
+#rl-app .attachmentItem .iconProgress {
+	background-color: var(--nc-color-background-darker);
+}
+
+#rl-app .attachmentItem .iconBG {
+	font-weight: 700;
+	line-height: 48px;
+	font-size: unset;
+	text-shadow: unset;
+}
+
+#rl-app .attachmentItem .attachmentNameParent {
+	border-color: var(--nc-color-border-dark);
+}
+
+#rl-app .attachmentItem .iconMain,
+#rl-app .attachmentItem .iconPreview {
+	color: var(--nc-color-text-light);
+}
+
+/* #endregion */
+
+/* #endregion */
+
+/*
+ *  Views
+ */
+
+/* #region views */
+
+/* #region app */
+
+#rl-app {
+	color: var(--nc-color-main-text);
+	background-color: transparent;
+	font-family: var(--nc-font-face);
+	font-size: var(--nc-default-font-size);
+}
+
+#rl-app #rl-left {
+	background-color: var(--nc-color-main-background-blur, var(--nc-color-main-background));
+	-webkit-backdrop-filter: var(--nc-filter-background-blur, none);
+	backdrop-filter: var(--nc-filter-background-blur, none);
+	border-color: var(--nc-color-border);
+	width: 300px;
+}
+
+html:not(.rl-left-panel-disabled) #rl-left {
+	max-width: var(--nc-sidebar-max-width);
+}
+
+html.rl-left-panel-disabled #rl-app #rl-left {
+	width: 65px !important;
+}
+
+html.rl-mobile.rl-left-panel-disabled #rl-app #rl-left {
+	width: 0px !important;
+}
+
+#rl-app #rl-right {
+	background-color: var(--nc-color-main-background);
+}
+
+#rl-app::selection {
+	background-color: var(--nc-color-primary);
+	color: var(--nc-color-primary-text);
+}
+
+:not(#rl-app) ol, ul {
+	margin: unset;
+}
+
+#rl-app .control-group {
+	margin-bottom: 0.5em;
+}
+
+#rl-app .form-horizontal .control-group {
+	display: flex;
+	align-items: center;
+	margin-left: 0;
+}
+
+#rl-app .form-horizontal .control-group {
+	margin-bottom: 1em;
+}
+
+@media screen and (max-width: 799px) {
+	#rl-app .form-horizontal .control-group>label {
+		text-align: right;
+	}
+}
+
+/* #endregion */
+
+/* #region login & loading */
+
+#rl-app #V-Login,
+#rl-app #rl-loading,
+#rl-app #rl-loading-error {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+
+	top: unset;
+	position: unset;
+	min-width: unset;
+	max-width: unset;
+	transform: unset;
+	text-shadow: none;
+	transition: none;
+
+	background-color: var(--nc-color-main-background-blur, var(--nc-color-main-background));
+	-webkit-backdrop-filter: var(--nc-filter-background-blur, none);
+	backdrop-filter: var(--nc-filter-background-blur, none);
+
+	color: var(--nc-color-main-text);
+	width: 100%;
+	height: 100%;
+}
+
+#rl-app .LoginView .descWrapper {
+	color: var(--nc-color-main-text);
+}
+
+#rl-app .LoginView .alert {
+	position: unset;
+}
+
+#rl-app .LoginView form {
+	min-width: 250px;
+	max-width: 500px;
+	width: 90%;
+
+	background-color: var(--nc-color-main-background);
+	border: unset;
+	border-radius: var(--nc-border-radius-large);
+	box-shadow: 0 0 10px var(--nc-color-box-shadow);
+	color: var(--nc-color-main-text);
+}
+
+#rl-app .LoginView .controls>.fontastic:first-child {
+	padding: unset;
+	left: 10px;
+}
+
+#rl-app .LoginView .controls span.fontastic {
+	user-select: none;
+}
+
+#rl-app .LoginView .controls span.fontastic:active,
+#rl-app .LoginView .controls span.fontastic:hover {
+	background: unset;
+}
+
+#rl-app .LoginView .controls input:not([type="checkbox"]) {
+	padding-left: 30px;
+}
+
+#rl-app #rl-loading[hidden],
+#rl-app #rl-loading-error[hidden],
+#rl-app .LoginView .alert[hidden] {
+	display: none;
+}
+
+/* #endregion */
+
+/* #region side panel */
+
+html.rl-left-panel-disabled #rl-app #rl-left:has(#V-SettingsMenu:not([hidden])) {
+	width: 250px !important;
+}
+
+#rl-app #V-AdminPane>.b-toolbar,
+#rl-app #V-SettingsMenu>.b-toolbar {
+	top: 0;
+	left: 0;
+	height: auto !important;
+	padding-top: calc(var(--nc-default-grid-baseline) * 2) !important;
+	padding-bottom: calc(var(--nc-default-grid-baseline) * 2) !important;
+	font-weight: bold;
+}
+
+#rl-app .b-folders .b-toolbar {
+	height: unset;
+	display: flex;
+	flex-direction: row;
+	padding: 8px;
+}
+
+html.rl-left-panel-disabled #rl-app .b-folders .b-toolbar {
+	flex-direction: column;
+}
+
+#rl-app .b-folders .b-toolbar .btn.buttonCompose,
+#rl-app .b-folders .b-toolbar .btn.buttonContacts,
+#rl-app .b-footer .btn {
+	box-sizing: border-box;
+	padding: 4px 14px;
+	line-height: 36px;
+	height: 44px;
+	min-width: fit-content;
+	width: stretch;
+	width: -moz-available;
+	width: -webkit-fill-available;
+	margin: 3px !important;
+
+	font-size: var(--nc-default-font-size);
+}
+
+#rl-app .b-folders .b-toolbar .btn.buttonCompose {
+	min-width: 16px;
+	max-width: 100%;
+	font-weight: bold;
+	box-sizing: content-box !important;
+}
+
+#rl-app .b-folders .b-toolbar .btn.buttonContacts {
+	width: 44px;
+	min-width: 44px;
+}
+
+#rl-app #V-AdminMenu nav,
+#rl-app #V-SettingsMenu nav,
+#rl-app .b-folders .b-content {
+	padding: calc(var(--nc-default-grid-baseline) * 2);
+}
+
+#rl-app .b-folders .b-content {
+	top: 60px;
+	bottom: 162px;
+	color: unset;
+}
+
+#rl-app .b-folders .b-content.show-on-panel-disabled {
+	bottom: 56px;
+}
+
+#rl-app #V-AdminMenu nav a,
+#rl-app #V-AdminPane>.b-toolbar,
+#rl-app #V-SettingsMenu nav a,
+#rl-app #V-SettingsMenu>.b-toolbar,
+#rl-app .b-folders li a.selectable {
+	margin: 2px;
+	padding: 0 2em 0 15px;
+	height: 38px;
+	line-height: 38px !important;
+	border-radius: var(--nc-border-radius-pill);
+	color: unset;
+	border: none;
+}
+
+#rl-app #V-AdminMenu nav a,
+#rl-app #V-AdminPane>.b-toolbar,
+#rl-app #V-SettingsMenu nav a,
+#rl-app #V-SettingsMenu>.b-toolbar {
+	height: 44px;
+	min-height: 44px;
+	line-height: 44px !important;
+}
+
+#rl-app #V-AdminMenu nav a.selected,
+#rl-app #V-SettingsMenu nav a.selected,
+#rl-app .b-folders li a.selectable.selected {
+	color: unset;
+	background-color: var(--nc-color-primary-light);
+}
+
+#rl-app #V-AdminMenu nav a:not(.selected):hover,
+#rl-app #V-AdminMenu nav a:not(.selected):focus,
+#rl-app #V-SettingsMenu nav a:not(.selected):hover,
+#rl-app #V-SettingsMenu nav a:not(.selected):focus,
+#rl-app .b-folders li a.selectable:not(.selected):hover,
+#rl-app .b-folders li a.selectable:not(.selected):focus {
+	color: unset;
+	background-color: var(--nc-color-background-hover);
+}
+
+#rl-app .b-folders .b-folders-system a[data-unread]::after,
+#rl-app .b-folders .b-folders-user a[data-unread]::after {
+	display: block;
+	margin: 0;
+	padding: 2px 6px;
+	top: 50%;
+	transform: translateY(-50%);
+
+	color: var(--nc-color-primary-element);
+	background-color: var(--nc-color-primary-element-light);
+
+	font-size: 12px;
+	text-shadow: none;
+}
+
+html.rl-left-panel-disabled #rl-app .b-folders .b-folders-system a.selectable {
+	text-overflow: clip;
+}
+
+#rl-app .b-folders hr {
+	border-top: solid var(--nc-color-main-text);
+	border-radius: var(--nc-border-radius-pill);
+	opacity: .1;
+}
+
+#rl-app .b-folders .search-input-wrp {
+	width: calc(100% - 20px);
+	margin: 5px 10px;
+	opacity: .7;
+}
+
+#rl-app .b-folders .search-input-wrp input {
+	width: 100%;
+}
+
+#rl-app .b-footer.btn-toolbar.hide-mobile,
+#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled {
+	display: flex;
+	flex-direction: column;
+	align-content: stretch;
+	justify-content: flex-start;
+	height: unset;
+	box-sizing: border-box;
+}
+
+#rl-app .b-footer.btn-toolbar.hide-mobile,
+#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled {
+	margin: 0;
+	padding: 0;
+	bottom: 0;
+}
+
+#rl-app .b-footer.btn-toolbar {
+	overflow: unset;
+	padding: 3px;
+}
+
+#rl-app .b-footer.btn-toolbar .btn {
+	background: transparent;
+	border: unset !important;
+}
+
+#rl-app .b-footer.btn-toolbar .btn {
+	text-align: left;
+	font-size: 22px;
+	user-select: none;
+}
+
+#rl-app .b-footer.btn-toolbar .btn-group .btn:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])),
+#rl-app .b-footer.btn-toolbar .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])),
+[dir="rtl"] #rl-app .b-footer.btn-toolbar .btn-group .btn:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])),
+[dir="rtl"] #rl-app .b-footer.btn-toolbar .btn-group .btn.fontastic:nth-child(1 of :not([style*="display: none;"])):nth-last-child(1 of :not([style*="display: none;"])) {
+	border-radius: var(--nc-border-radius-pill) !important;
+}
+
+/* fallback */
+#rl-app .b-footer.btn-toolbar .btn-group .btn,
+#rl-app .b-footer.btn-toolbar .btn-group .btn.fontastic,
+[dir="rtl"] #rl-app .b-footer.btn-toolbar .btn-group .btn,
+[dir="rtl"] #rl-app .b-footer.btn-toolbar .btn-group .btn.fontastic {
+	border-radius: var(--nc-border-radius-pill) !important;
+}
+
+#rl-app .b-footer.btn-toolbar .btn:hover,
+#rl-app .b-footer.btn-toolbar .btn.fontastic:hover {
+	background-color: var(--nc-color-background-hover);
+}
+
+#rl-app .b-footer.btn-toolbar .btn:active,
+#rl-app .b-footer.btn-toolbar .btn.fontastic:active {
+	background-color: var(--nc-color-primary-light);
+}
+
+#rl-app .b-footer.btn-toolbar .btn:focus,
+#rl-app .b-footer.btn-toolbar .btn.fontastic:focus {
+	outline: none;
+}
+
+#rl-app .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn {
+	width: -webkit-fill-available;
+	width: -moz-available;
+	width: fill-available;
+	overflow: hidden;
+}
+
+#rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic {
+	background-color: var(--nc-color-main-background);
+}
+
+#rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn:after,
+[dir="rtl"] #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:before {
+	font-family: var(--nc-font-face);
+	font-size: var(--nc-default-font-size);
+	margin-left: 15px;
+}
+
+#rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn:after {
+	position: absolute;
+}
+
+[dir="rtl"] #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn:after {
+	position: unset;
+}
+
+#rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:after,
+[dir="rtl"] #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:before {
+	content: attr(title);
+	width: inherit;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+[dir="rtl"] #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group.hide-on-panel-disabled .btn.fontastic:after {
+	content: unset;
+}
+
+#rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group .btn.icon-folder-add:before {
+	line-height: unset;
+}
+
+#rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group .btn.icon-folder-add:after {
+	content: attr(title);
+	width: inherit;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+html.rl-left-panel-disabled #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group .btn.fontastic:after,
+html.rl-left-panel-disabled #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group .btn.icon-folder-add:after,
+html.rl-left-panel-disabled[dir="rtl"] #rl-app #V-MailFolderList .b-footer.btn-toolbar .btn-group .btn.fontastic:before {
+	content: '';
+}
+
+#rl-app #V-MailFolderList .b-footer .btn[data-bind*="toggleLeftPanel"] {
+	width: unset !important;
+}
+
+/* #endregion */
+
+/* #region message list & view */
+
+#rl-app .messageList,
+#rl-app .messageView {
+	height: calc(100% - 65px);
+	margin: 0 5px;
+	border: none;
+	box-shadow: none !important;
+	background: var(--nc-color-main-background);
+}
+
+#rl-app #V-MailMessageList .btn-toolbar,
+#rl-app #V-MailMessageView .btn-toolbar {
+	padding: 10px;
+	margin-top: 5px;
+}
+
+/* fallback */
+#rl-app #V-MailMessageList .btn-toolbar .btn-group .btn,
+#rl-app #V-MailMessageView .btn-toolbar .btn-group .btn {
+	border-radius: var(--nc-border-radius-large);
+}
+
+/* #endregion */
+
+/* #region message list */
+
+#rl-app #V-MailMessageList {
+	overflow: unset;
+}
+
+#rl-app #V-MailMessageList .btn-toolbar {
+	background: var(--nc-color-primary-light);
+	border-radius: var(--nc-border-radius-large);
+	margin: 5px 5px 0 5px;
+	text-align: start;
+}
+
+html.sm-msgView-side #V-MailMessageList .btn-toolbar {
+	text-align: center !important;
+}
+
+#rl-app #V-MailMessageList .btn-toolbar .btn:not(.btn-success) {
+	background: var(--nc-color-main-background);
+}
+
+#rl-app #V-MailMessageList .messageList {
+	min-width: 370px;
+}
+
+html.sm-msgView-bottom #rl-app .messageList {
+	height: 35vh;
+}
+
+#rl-app .messageList .second-toolbar,
+#rl-app .messageList .b-footer {
+	border-color: var(--nc-color-border);
+	background: unset !important;
+}
+
+#rl-app .messageList .second-toolbar {
+	align-items: center;
+}
+
+#rl-app .messageList .b-footer {
+	padding-bottom: 10px;
+}
+
+#rl-app .messageList .inputSearch {
+	max-width: unset;
+}
+
+#rl-app .messageList .checkboxCheckAll {
+	margin: 0 12px;
+}
+
+#rl-app .messageList .checkboxCheckAll:hover,
+#rl-app .messageList .checkboxCheckAll:focus {
+	color: var(--nc-color-primary-element);
+}
+
+#rl-app .messageList .checkboxCheckAll:active {
+	color: var(--nc-color-primary-element-hover);
+}
+
+html:not(rl-mobile) #rl-app .hideMessageListCheckbox .checkboxCheckAll {
+	display: none;
+}
+
+#rl-app .messageList .btn.buttonMoreSearch {
+	background: unset;
+	border-radius: var(--nc-border-radius-large);
+	margin: 0 0 0 8px;
+	line-height: 20px !important;
+}
+
+#rl-app .messageList .checkboxCheckAll,
+#rl-app .messageList .btn.buttonMoreSearch {
+	font-size: var(--nc-default-font-size);
+	height: 28px;
+	line-height: 28px;
+}
+
+#rl-app .messageList .b-content .listThreadUidDesc {
+	margin: 8px;
+	color: var(--nc-color-main-text);
+	background: unset;
+	border: solid 1px;
+	border-radius: var(--nc-border-radius-large);
+	border-color: var(--nc-color-border-dark);
+}
+
+#rl-app .messageList .b-content .listThreadUidDesc:hover,
+#rl-app .messageList .b-content .listThreadUidDesc:focus {
+	background: var(--nc-color-background-hover);
+}
+
+#rl-app .messageList .b-content .listThreadUidDesc:active {
+	background-color: var(--nc-color-primary-element-light);
+}
+
+#rl-app .messageList .b-content .listSearchDesc {
+	border-color: var(--nc-color-border);
+}
+
+#rl-app .messageList .b-content .listError {
+	color: var(--nc-color-error);
+}
+
+#rl-app .messageList .b-content .listDragOver.dragOverEnter {
+	background-color: var(--nc-color-background-dark);
+	border-radius: var(--nc-border-radius);
+	margin: 5px;
+}
+
+#rl-app .messageList .b-content .listDragOver,
+#rl-app .messageList .b-content .listEmptyMessage,
+#rl-app .messageList .b-content .listError,
+#rl-app .messageList .b-content .listLoading {
+	color: var(--nc-color-text-lighter);
+}
+
+#rl-app .messageList .groupLabel {
+	background-color: var(--nc-color-background-dark);
+	border-radius: var(--nc-border-radius);
+	margin: 2px 0;
+}
+
+/* #endregion */
+
+/* #region message list item */
+
+#rl-app .messageListItem .checkboxMessage {
+	border-color: var(--nc-color-text-lighter);
+	color: var(--nc-color-text-lighter);
+}
+
+#rl-app .messageListItem .checkboxMessage:hover,
+#rl-app .messageListItem .checkboxMessage:focus {
+	background-color: var(--nc-color-background-darker);
+}
+
+#rl-app .messageListItem .checkboxMessage:active {
+	background-color: var(--nc-color-primary-light-hover);
+}
+
+#rl-app .messageListItem .threads-len {
+	color: var(--nc-color-text-light);
+	border-color: var(--nc-color-text-light);
+	padding: 0 4px;
+	margin-right: 5px;
+}
+
+#rl-app .messageListItem .threads-len:hover,
+#rl-app .messageListItem .threads-len:focus {
+	background-color: var(--nc-color-background-darker);
+	border-color: unset;
+}
+
+#rl-app .messageListItem .threads-len:active {
+	background-color: var(--nc-color-primary-element-light-hover);
+}
+
+#rl-app .messageListItem {
+	padding: 8px;
+	margin: 2px 0;
+	border-bottom: unset;
+	border-radius: var(--nc-border-radius);
+}
+
+#rl-app .messageListItem,
+#rl-app .messageListItem.focused {
+	background-color: var(--nc-color-background);
+	border-color: var(--nc-color-border);
+}
+
+#rl-app .messageListItem:hover,
+#rl-app .messageListItem.focused:hover {
+	background-color: var(--nc-color-background-hover);
+	border-color: var(--nc-color-primary-light-hover);
+}
+
+#rl-app .messageListItem.selected,
+#rl-app .messageListItem.selected:hover {
+	background-color: var(--nc-color-primary-light) !important;
+	border-color: var(--nc-color-primary-light-text) !important;
+}
+
+#rl-app .messageListItem.unseen {
+	background-color: unset;
+	border-color: var(--nc-color-primary);
+}
+
+#rl-app .messageListItem.unseen.focused,
+#rl-app .messageListItem.unseen.focused:hover {
+	background-color: var(--nc-color-primary-light);
+	border-color: var(--nc-color-primary);
+}
+
+#rl-app .messageListItem.unseen:hover {
+	background-color: var(--nc-color-background-hover);
+	border-color: var(--nc-color-primary-hover);
+}
+
+#rl-app .messageListItem [data-unseen] {
+	border-color: var(--nc-color-primary-element);
+	background-color: var(--nc-color-primary-element-light);
+	border-width: 2px;
+	font-weight: 700;
+}
+
+#rl-app .messageListItem [data-unseen]:hover {
+	border-color: var(--nc-color-primary-element-hover);
+	background-color: var(--nc-color-primary-element-light-hover);
+}
+
+#rl-app .messageListItem.checked {
+	background-color: unset;
+	border-color: var(--nc-color-primary-light-text);
+}
+
+#rl-app .messageListItem.checked.focused {
+	background-color: inherit;
+	border-color: var(--nc-color-primary-light-text);
+}
+
+#rl-app .messageListItem.checked:hover,
+#rl-app .messageListItem.checked.focused:hover {
+	background-color: var(--nc-color-background-hover);
+	border-color: inherit;
+}
+
+#rl-app #messagesDragImage {
+	padding: 5px 5px 5px 10px;
+	color: var(--nc-color-text-lighter);
+	background-color: var(--nc-color-background-darker);
+	border-radius: var(--nc-border-radius);
+	box-shadow: 0 0 4px var(--nc-color-box-shadow);
+	height: unset;
+	min-width: unset;
+}
+
+/* #endregion */
+
+/* #region message view */
+
+#rl-app #V-MailMessageView {
+	bottom: 0;
+}
+
+html.sm-msgView-bottom #rl-app .messageView {
+	height: 100%;
+}
+
+#rl-app .messageView .b-message .message-fixed-button-toolbar .btn.buttonEdit {
+	padding: 4px 8px;
+	min-height: 28px;
+	height: 28px;
+	opacity: 0.8;
+}
+
+#rl-app .messageView .b-message .message-fixed-button-toolbar .btn.buttonEdit:hover,
+#rl-app .messageView .b-message .message-fixed-button-toolbar .btn.buttonEdit:focus,
+#rl-app .messageView .b-message .message-fixed-button-toolbar .btn.buttonEdit:active {
+	opacity: unset;
+}
+
+#rl-app .messageView .b-message-view-desc,
+#rl-app .messageView .b-message-view-checked-helper {
+	color: var(--nc-color-text-lighter);
+}
+
+#rl-app .messageView .b-message-view-desc.error {
+	color: var(--nc-color-error);
+}
+
+#rl-app .messageView .messageItemHeader .informationShort meter::-webkit-meter-optimum-value {
+	background-color: var(--nc-color-success);
+	border-radius: var(--nc-border-radius-pill);
+}
+
+#rl-app .messageView .messageItemHeader .informationShort meter::-webkit-meter-suboptimum-value {
+	background-color: var(--nc-color-warning);
+	border-radius: var(--nc-border-radius-pill);
+}
+
+#rl-app .messageView .messageItemHeader .informationShort meter::-webkit-meter-even-less-good-value {
+	background-color: var(--nc-color-error);
+	border-radius: var(--nc-border-radius-pill);
+}
+
+#rl-app .messageView .messageItemHeader .hasVirus {
+	background: unset;
+	border: solid 2px var(--nc-color-error);
+	border-radius: var(--nc-border-radius);
+	margin: 5px;
+}
+
+#rl-app .messageView .messageItemHeader .subject {
+	line-height: 30px;
+	height: 30px;
+}
+
+#rl-app .messageView .crypto-control.encrypted,
+#rl-app .messageView .crypto-control.signed {
+	border-radius: var(--nc-border-radius);
+}
+
+#rl-app #V-MailMessageView .b-message-view-backdrop {
+	background-color: var(--nc-color-main-background-blur);
+	-webkit-backdrop-filter: blur(2px);
+	backdrop-filter: blur(2px);
+}
+
+#rl-app #V-MailMessageView .b-message-view-backdrop .backdrop-message {
+	background-color: var(--nc-color-main-background);
+	border: solid 1px var(--nc-color-primary);
+	border-radius: var(--nc-border-radius-large);
+	text-shadow: none;
+	margin: 10px;
+	color: unset;
+}
+
+#rl-app .messageView .messageAssignedTags {
+	margin: 0 5px;
+}
+
+#rl-app .messageView .messageAssignedTags span {
+	border-radius: var(--nc-border-radius-pill);
+	background: unset;
+	padding: 2px 5px;
+}
+
+#rl-app #messageItem .bodySubHeader {
+	background-color: unset;
+}
+
+#rl-app #messageItem .bodySubHeader>* {
+	border-color: var(--nc-color-border);
+}
+
+.rl-left-panel-disabled #rl-app #messageItem .dropdown-menu {
+	position: absolute;
+}
+
+#rl-app #messageItem .readReceipt,
+#rl-app #messageItem .showImages {
+	margin: 8px;
+	padding: 10px;
+	color: var(--nc-color-main-text);
+	border: solid 1px var(--nc-color-primary);
+	background-color: var(--nc-color-primary-light);
+	border-radius: var(--nc-border-radius-large);
+}
+
+#rl-app #messageItem .showImages>.btn,
+#rl-app #messageItem .showImages>.btn-group {
+	margin: 2px;
+}
+
+#rl-app #messageItem .readReceipt:hover {
+	background-color: var(--nc-color-primary-light-hover);
+}
+
+#rl-app .messageView .messageItemHeader,
+#rl-app #messageItem .attachmentsPlace {
+	background-color: unset;
+	border-color: var(--nc-color-border);
+	color: var(--nc-color-main-text);
+}
+
+#rl-app #messageItem .attachmentsPlace {
+	border-top: 1px solid var(--nc-color-border);
+	top: -1px;
+}
+
+#rl-app #messageItem .attachmentsPlace .controls-handle {
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+#rl-app #messageItem .attachmentsControls {
+	background-color: unset;
+	border-color: var(--nc-color-border);
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+#rl-app #messageItem .attachmentsControls .icon-file-archive,
+#rl-app #messageItem .attachmentsControls .fontastic {
+	color: var(--nc-color-main-text);
+}
+
+/* #endregion */
+
+/* #region settings */
+
+#rl-app #V-SettingsPane {
+	margin: 62px 0 8px 0;
+	height: calc(100% - 62px - 8px);
+	background-color: unset;
+	box-shadow: none;
+	border: none;
+}
+
+#rl-app #V-SettingsPane .btn-toolbar {
+	padding: 8px;
+}
+
+#rl-app .row {
+	margin-left: unset;
+}
+
+#rl-app .legend,
+#rl-app #V-AdminPane hr,
+#rl-app #V-SettingsPane hr {
+	color: unset;
+	border-color: var(--nc-color-border);
+}
+
+#rl-app #V-Settings-Themes figure,
+#rl-app #V-Settings-Themes img {
+	border-radius: var(--nc-border-radius-large);
+}
+
+#rl-app #V-Settings-Themes figure:not(.selected):hover {
+	background-color: var(--nc-color-background-hover);
+	border-color: transparent;
+}
+
+#rl-app #V-Settings-Themes figure:not(.selected):active {
+	background-color: var(--nc-color-primary-element-light);
+}
+
+#rl-app #V-Settings-Themes figure:not(.selected):focus {
+	outline: none;
+}
+
+#rl-app #V-Settings-Themes figure.selected {
+	background-color: var(--nc-color-primary-element);
+	border-color: transparent;
+	color: var(--nc-color-primary-element-text);
+}
+
+/* hide additional theme settings, as these are made via Nextcloud theming */
+
+/* fonts */
+#rl-app #V-SettingsPane #V-Settings-Themes .form-horizontal:nth-of-type(3) {
+	display: none !important;
+}
+
+/* background */
+#content.app-snappymail #rl-app #V-SettingsPane #V-Settings-Themes .form-horizontal:nth-of-type(4) {
+	display: none !important;
+}
+
+/* #endregion */
+
+/* #region settings admin */
+
+#rl-app #V-AdminPane {
+	margin: 8px 0px;
+	height: calc(100% - 2*8px);
+	background-color: unset;
+	box-shadow: none;
+	border: none;
+}
+
+#rl-app #V-AdminPane>.b-toolbar {
+	width: 300px;
+	text-shadow: none;
+}
+
+html.rl-mobile #rl-app #V-AdminPane {
+	margin: 60px 0px 8px 0px;
+	height: calc(100% - 60px - 8px);
+}
+
+html.rl-mobile #rl-app #V-AdminPane>.b-toolbar {
+	width: unset;
+}
+
+#rl-app #V-Settings-Config th {
+	background-color: var(--nc-color-background-dark);
+}
+
+#rl-app #V-Settings-Config em {
+	word-break: break-word;
+}
+
+#rl-app #V-Settings-General label[data-i18n="TAB_GENERAL/LABEL_ATTACHMENT_SIZE_LIMIT"] {
+	align-self: self-start;
+}
+
+#rl-app #V-Settings-General label[data-i18n="TAB_GENERAL/LABEL_ATTACHMENT_SIZE_LIMIT"]~div .alert.alert-info {
+	margin-left: -130px;
+}
+
+#rl-app #V-Settings-Domains .btn[data-i18n="GLOBAL/TEST"] {
+	margin-left: 1rem;
+}
+
+@media screen and (max-width: 1024px) {
+	#rl-app #V-AdminPane table {
+		width: 100%;
+	}
+
+	#rl-app #V-AdminPane [class*="span"] {
+		width: unset;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	#rl-app #V-Settings-Config .table {
+		border-collapse: collapse;
+	}
+
+	#rl-app #V-Settings-Config .table tr {
+		border-top: 10px solid transparent;
+	}
+
+	#rl-app #V-Settings-Config .table td,
+	#rl-app #V-Settings-Config .table th {
+		display: block;
+		border-style: solid;
+		border-width: 1px 0px;
+	}
+}
+
+/* #endregion */
+
+/* #region popup */
+
+#rl-app dialog {
+	background: var(--nc-color-main-background);
+	color: var(--nc-color-main-text);
+	border-radius: var(--nc-border-radius-large);
+	filter: drop-shadow(0 1px 5px var(--nc-color-box-shadow));
+	box-shadow: none;
+	border-color: var(--nc-color-border);
+}
+
+#rl-app dialog>header,
+#rl-app dialog>footer {
+	border-color: var(--nc-color-border);
+}
+
+#rl-app dialog>footer .btn+.btn,
+#rl-app dialog>footer button+button {
+	margin: 0 0 0 5px;
+}
+
+#rl-app #V-PopupsPlugin .help-block {
+	margin-left: 5px;
+}
+
+#rl-app #V-PopupsIdentity .e-signature-place {
+	border: none;
+}
+
+#rl-app #V-PopupsLanguages label {
+	background-color: var(--nc-color-background-dark) !important;
+	border-color: var(--nc-color-border);
+	border-radius: var(--nc-border-radius);
+	padding: 8px 15px;
+}
+
+#rl-app #V-PopupsLanguages label:hover {
+	border-color: var(--nc-color-primary-element);
+	background-color: unset;
+}
+
+#rl-app #V-PopupsLanguages label.user {
+	background-color: var(--nc-color-main-background) !important;
+	color: var(--nc-color-text-light);
+}
+
+#rl-app #V-PopupsLanguages label.selected {
+	background-color: var(--nc-color-primary-element-light) !important;
+	border-color: var(--nc-color-primary-element);
+}
+
+@media screen and (max-width: 480px) {
+	#rl-app #V-PopupsAdvancedSearch .e-component.e-checkbox {
+		margin-left: -100%;
+	}
+
+	#rl-app #V-PopupsLanguages label {
+		margin-left: 0;
+		margin-right: 0;
+	}
+
+	#rl-app #V-PopupsKeyboardShortcutsHelp .modal-body,
+	#rl-app #V-PopupsDomain .modal-body {
+		padding-left: 0;
+		padding-right: 0;
+		overflow-x: hidden;
+	}
+}
+
+#rl-app #V-PopupsOpenPgpImport textarea {
+	width: 100%;
+}
+
+/* #endregion */
+
+/* #region popup contacts */
+
+#rl-app #V-PopupsContacts .right,
+#rl-app #V-PopupsContacts .b-list-toolbar,
+#rl-app #V-PopupsContacts .b-list-footer-toolbar,
+#rl-app #V-PopupsContacts .b-view-content-toolbar {
+	border-color: var(--nc-color-border);
+}
+
+#rl-app #V-PopupsContacts .b-list-toolbar {
+	height: 55px;
+}
+
+#rl-app #V-PopupsContacts .b-list-toolbar .e-search {
+	margin: 9px 5px;
+	width: calc(100% - 2*5px);
+}
+
+#rl-app #V-PopupsContacts .b-view-content {
+	margin-top: 20px;
+	height: calc(100% - 72px);
+	overflow: hidden;
+}
+
+#rl-app #V-PopupsContacts .b-list-content {
+	height: calc(100% - 35px - 72px);
+}
+
+#rl-app #V-PopupsContacts .b-list-content .listClear {
+	box-shadow: none;
+}
+
+#rl-app #V-PopupsContacts .tabs {
+	height: 100%;
+}
+
+#rl-app #V-PopupsContacts .tab-content {
+	overflow: auto;
+}
+
+#rl-app #V-PopupsContacts .e-contact-item {
+	padding: 4px;
+	margin: 2px 4px;
+	max-height: unset;
+	border-bottom: 0 !important;
+	border-radius: var(--nc-border-radius);
+}
+
+#rl-app #V-PopupsContacts .e-contact-item,
+#rl-app #V-PopupsContacts .e-contact-item.focused {
+	background-color: var(--nc-color-background);
+	border-color: var(--nc-color-border);
+}
+
+#rl-app #V-PopupsContacts .e-contact-item:hover,
+#rl-app #V-PopupsContacts .e-contact-item.focused:hover {
+	background-color: var(--nc-color-background-hover);
+	border-color: var(--nc-color-primary-light-hover);
+}
+
+#rl-app #V-PopupsContacts .e-contact-item.selected,
+#rl-app #V-PopupsContacts .e-contact-item.selected:hover {
+	background-color: var(--nc-color-primary-light);
+	border-color: var(--nc-color-primary-light-text);
+}
+
+#rl-app #V-PopupsContacts .e-contact-item.checked {
+	background-color: unset;
+	border-color: var(--nc-color-primary-light-text);
+}
+
+#rl-app #V-PopupsContacts .e-contact-item.checked.focused {
+	background-color: inherit;
+	border-color: var(--nc-color-primary-light-text);
+}
+
+#rl-app #V-PopupsContacts .e-contact-item.checked:hover,
+#rl-app #V-PopupsContacts .e-contact-item.checked.focused:hover {
+	background-color: var(--nc-color-background-hover);
+	border-color: inherit;
+}
+
+@media screen and (max-width: 799px) {
+	#rl-app #V-PopupsContacts .modal-body {
+		flex-direction: column;
+	}
+
+	#rl-app #V-PopupsContacts .left {
+		max-width: unset;
+		height: 40%;
+	}
+
+	#rl-app #V-PopupsContacts .b-list-footer-toolbar {
+		display: none;
+	}
+
+	#rl-app #V-PopupsContacts .b-list-content {
+		height: calc(100% - 55px);
+		border-bottom: 1px solid var(--nc-color-border);
+	}
+
+	#rl-app #V-PopupsContacts .right {
+		height: 60%;
+		border-left: unset;
+	}
+
+	#rl-app #V-PopupsContacts .control-group {
+		margin-right: 1em;
+	}
+}
+
+/* #endregion */
+
+/* #region popup compose */
+
+#rl-app #V-PopupsCompose header {
+	background-color: unset;
+	color: unset;
+}
+
+#rl-app #V-PopupsCompose header .close,
+#rl-app #V-PopupsCompose header .minimize-custom {
+	border-color: unset;
+}
+
+#rl-app #V-PopupsCompose .b-header {
+	background: unset;
+}
+
+#rl-app #V-PopupsCompose .b-header .error-to {
+	color: var(--nc-color-error);
+}
+
+#rl-app #V-PopupsCompose .pull-right>.btn,
+#rl-app #V-PopupsCompose .pull-right>.btn-group {
+	margin-left: 3px;
+}
+
+#rl-app #V-PopupsCompose .no-attachments-desc {
+	text-shadow: unset;
+}
+
+#rl-app #V-PopupsCompose .attachmentAreaParent .attachmentItem:hover,
+#rl-app #V-PopupsCompose .attachmentAreaParent .attachmentItem:active {
+	background-color: var(--nc-color-background-dark);
+}
+
+#rl-app #V-PopupsCompose .b-attachment-place {
+	border-color: var(--nc-color-border);
+	background-color: var(--nc-color-background-dark);
+}
+
+#rl-app #V-PopupsCompose .b-attachment-place.dragAndDropOver {
+	border-color: var(--nc-color-border);
+}
+
+#rl-app #V-PopupsCompose .tabs label[for="tab-attachments"] b {
+	padding: 2px 6px;
+	border-radius: 1em;
+	color: var(--nc-color-primary-element);
+	background-color: var(--nc-color-primary-element-light);
+	font-size: 12px;
+}
+
+/* #endregion */
+
+/* #region popup nextcloud files */
+
+#rl-app #V-PopupsCompose .btn[data-bind*="nextcloudAttach"] {
+	font-size: 0;
+}
+
+#rl-app #V-PopupsCompose .btn[data-bind*="nextcloudAttach"]::before {
+	display: block;
+	content: "";
+	height: 100%;
+	width: 30px;
+	--nc-logo: url("data:image/svg+xml,<svg height='29' width='64' fill-rule='evenodd' stroke-linecap='round' stroke-linejoin='round' version='1.1' xmlns='http://www.w3.org/2000/svg'><path d='m32.028 0c-6.6304 0-12.249 4.4952-13.991 10.564-1.5172-3.259-4.7762-5.5066-8.5971-5.5066-5.1694 0-9.4398 4.2704-9.4398 9.496s4.2704 9.4961 9.496 9.4961c3.7647 0 7.0799-2.2476 8.5971-5.5066 1.6856 6.0685 7.3046 10.564 13.935 10.564 6.5742 0 12.193-4.4389 13.991-10.451 1.5171 3.1466 4.7761 5.338 8.4846 5.338 5.2257 0 9.4961-4.2704 9.4961-9.4961s-4.2704-9.4398-9.4961-9.4398c-3.7085 0-6.9675 2.1914-8.4846 5.338-1.7981-5.9561-7.3608-10.395-13.991-10.395zm0 5.5628c5.0009 0 8.9903 3.9894 8.9903 8.9903s-3.9894 8.9904-8.9903 8.9904-8.9903-3.9895-8.9903-8.9904 3.9894-8.9903 8.9903-8.9903zm-22.532 5.057c2.1914 0 3.9333 1.7419 3.9333 3.9333s-1.7419 3.9333-3.9333 3.9333-3.9332-1.7419-3.9332-3.9333 1.7419-3.9333 3.9332-3.9333zm45.008 0c2.1915 0 3.9333 1.7419 3.9333 3.9333s-1.7418 3.9333-3.9333 3.9333-3.9332-1.7419-3.9332-3.9333c0.0562-2.1914 1.7418-3.9333 3.9332-3.9333z' fill-rule='nonzero'></path></svg>");
+	-webkit-mask-image: var(--nc-logo);
+	mask-image: var(--nc-logo);
+	-webkit-mask-position: center;
+	mask-position: center;
+	-webkit-mask-repeat: no-repeat;
+	mask-repeat: no-repeat;
+	-webkit-mask-size: 30px;
+	mask-size: 30px;
+	background-color: var(--nc-color-main-text);
+}
+
+#rl-app #V-PopupsNextcloudFiles {
+	user-select: none;
+}
+
+#rl-app #V-PopupsNextcloudFiles li {
+	line-height: unset;
+}
+
+#rl-app #V-PopupsNextcloudFiles li[data-icon],
+#rl-app #V-PopupsNextcloudFiles li:has(>button[name="create"]),
+#rl-app #V-PopupsNextcloudFiles li details summary {
+	padding: 5px 10px;
+	display: flex;
+	align-items: center !important;
+	overflow-wrap: anywhere;
+}
+
+/* fallback (Firefox ignores complete selector list if :has is used) */
+#rl-app #V-PopupsNextcloudFiles li[data-icon],
+#rl-app #V-PopupsNextcloudFiles li details summary {
+	padding: 5px 10px;
+	display: flex;
+	align-items: center !important;
+	overflow-wrap: anywhere;
+}
+
+#rl-app #V-PopupsNextcloudFiles li button,
+#rl-app #V-PopupsNextcloudFiles li input {
+	margin-left: auto !important;
+	align-self: center;
+}
+
+#rl-app #V-PopupsNextcloudFiles li input {
+	min-width: 100px;
+	flex-shrink: 1;
+}
+
+#rl-app #V-PopupsNextcloudFiles li button {
+	flex-shrink: 0;
+}
+
+#rl-app #V-PopupsNextcloudFiles li button[name="create"] {
+	margin-left: 10px !important;
+}
+
+#rl-app #V-PopupsNextcloudFiles li:not(:last-child),
+#rl-app #V-PopupsNextcloudFiles li details[open]>summary {
+	border-bottom: 1px solid var(--nc-color-border);
+}
+
+#rl-app #V-PopupsNextcloudFiles li details[open]>summary {
+	background-color: var(--nc-color-primary-element-light);
+	border-bottom-color: var(--nc-color-primary-element-hover);
+}
+
+#rl-app #V-PopupsNextcloudFiles li:hover {
+	background-color: unset;
+}
+
+#rl-app #V-PopupsNextcloudFiles li[data-icon]:hover,
+#rl-app #V-PopupsNextcloudFiles li details:not([open]):hover,
+#rl-app #V-PopupsNextcloudFiles li details[open]>summary:hover {
+	background-color: var(--nc-color-background-hover);
+}
+
+#rl-app #V-PopupsNextcloudFiles li details summary[data-icon] {
+	list-style-type: none;
+}
+
+#rl-app #V-PopupsNextcloudFiles li details summary[data-icon]::before {
+	color: var(--nc-color-primary);
+	font-size: 20px;
+}
+
+#rl-app #V-PopupsNextcloudFiles li[data-icon]::before,
+#rl-app #V-PopupsNextcloudFiles li details summary[data-icon]::before {
+	margin: 5px 10px 5px 0;
+}
+
+/* #endregion */
+
+/* #region popup nextcloud calendars */
+
+#rl-app #V-PopupsNextcloudCalendars li {
+	padding: 5px;
+	display: flex;
+	align-items: center !important;
+	border-bottom: solid 1px var(--nc-color-border);
+}
+
+#rl-app #V-PopupsNextcloudCalendars li button {
+	border: 0px !important;
+	margin-left: 8px !important;
+	color: var(--nc-color-primary-element-light-text) !important;
+}
+
+/* #endregion */
+
+/* #region popup openpgp generate */
+
+#rl-app #openpgp-generate.form-horizontal .control-group:has(.e-checkbox) {
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+#rl-app #openpgp-generate.form-horizontal .control-group:has(.e-checkbox) br {
+	display: none;
+}
+
+/* #endregion */
+
+/* #endregion */
+
+/*
+ * Extensions
+ */
+
+/* #region extensions */
+
+/* #region avatars */
+
+#rl-app .messageCheckbox .fromPic {
+	margin: -5px 0 -9px 8px;
+	height: 32px;
+	width: 32px;
+}
+
+/* #endregion */
+
+/* #endregion */
+
+/*
+ * Message Flags
+ */
+
+/* #region message flags */
+
+:root {
+	--msgflag-\$label1-color: #ae2c35;
+	--msgflag-\$label1-color-hover: #e13a45;
+	--msgflag-\$label2-color: #cc9827;
+	--msgflag-\$label2-color-hover: #ffbf31;
+	--msgflag-\$label3-color: #005235;
+	--msgflag-\$label3-color-hover: #008557;
+	--msgflag-\$label4-color: #005cc4;
+	--msgflag-\$label4-color-hover: #0074f8;
+	--msgflag-\$label5-color: #5631c0;
+	--msgflag-\$label5-color-hover: #6d3ff3;
+
+	--msgflag-\\flagged-color: #ffca32;
+}
+
+#rl-app .msgflag-\$label5:not(.focused) { border-color: var(--msgflag-\$label5-color); }
+#rl-app .msgflag-\$label4:not(.focused) { border-color: var(--msgflag-\$label4-color); }
+#rl-app .msgflag-\$label3:not(.focused) { border-color: var(--msgflag-\$label3-color); }
+#rl-app .msgflag-\$label2:not(.focused) { border-color: var(--msgflag-\$label2-color); }
+#rl-app .msgflag-\$label1:not(.focused) { border-color: var(--msgflag-\$label1-color); }
+
+#rl-app .msgflag-\$label5.focused:not(.selected) { border-color: var(--msgflag-\$label5-color) !important; }
+#rl-app .msgflag-\$label4.focused:not(.selected) { border-color: var(--msgflag-\$label4-color) !important; }
+#rl-app .msgflag-\$label3.focused:not(.selected) { border-color: var(--msgflag-\$label3-color) !important; }
+#rl-app .msgflag-\$label2.focused:not(.selected) { border-color: var(--msgflag-\$label2-color) !important; }
+#rl-app .msgflag-\$label1.focused:not(.selected) { border-color: var(--msgflag-\$label1-color) !important; }
+
+#rl-app .msgflag-\$label5:not(.focused):hover { border-color: var(--msgflag-\$label5-color-hover); }
+#rl-app .msgflag-\$label4:not(.focused):hover { border-color: var(--msgflag-\$label4-color-hover); }
+#rl-app .msgflag-\$label3:not(.focused):hover { border-color: var(--msgflag-\$label3-color-hover); }
+#rl-app .msgflag-\$label2:not(.focused):hover { border-color: var(--msgflag-\$label2-color-hover); }
+#rl-app .msgflag-\$label1:not(.focused):hover { border-color: var(--msgflag-\$label1-color-hover); }
+
+#rl-app .msgflag-\$label1:not(.focused), #rl-app .msgflag-\$label1 .checkboxMessage,
+#rl-app .msgflag-\$label2:not(.focused), #rl-app .msgflag-\$label2 .checkboxMessage,
+#rl-app .msgflag-\$label3:not(.focused), #rl-app .msgflag-\$label3 .checkboxMessage,
+#rl-app .msgflag-\$label4:not(.focused), #rl-app .msgflag-\$label4 .checkboxMessage,
+#rl-app .msgflag-\$label5:not(.focused), #rl-app .msgflag-\$label5 .checkboxMessage {
+	background-color: unset;
+	color: unset;
+}
+
+#rl-app .messageListItem.msgflag-\$label1:hover,
+#rl-app .messageListItem.msgflag-\$label2:hover,
+#rl-app .messageListItem.msgflag-\$label3:hover,
+#rl-app .messageListItem.msgflag-\$label4:hover,
+#rl-app .messageListItem.msgflag-\$label5:hover {
+	background-color: var(--nc-color-background-hover);
+}
+
+#rl-app a.msgflag-\$label1,
+#rl-app a.msgflag-\$label2,
+#rl-app a.msgflag-\$label3,
+#rl-app a.msgflag-\$label4,
+#rl-app a.msgflag-\$label5 {
+	border-left: solid 5px;
+}
+
+#rl-app .btn-group.show .dropdown-menu div li a[class^='msgflag-']:not(.msgflag-\$label1, .msgflag-\$label2, .msgflag-\$label3, .msgflag-\$label4, .msgflag-\$label5),
+#rl-app .btn-group.show .dropdown-menu div li a[class*='msgflag-']:not(.msgflag-\$label1, .msgflag-\$label2, .msgflag-\$label3, .msgflag-\$label4, .msgflag-\$label5) {
+	border-left: solid 5px gray;
+}
+
+#rl-app .b-folders .is-flagged .flag-icon::after,
+#rl-app .messageListItem.hasFlaggedSubMessage .flagParent::after,
+#rl-app .messageListItem.msgflag-\\flagged .flagParent::after {
+	color: var(--msgflag-\\flagged-color);
+}
+
+#rl-app #messageItem .b-text-part.swapColors {
+	background-color: var(--nc-color-primary);
+	color: var(--nc-color-primary-text);
+}
+
+/* #endregion */
+
+/* #endregion */
+
+/*
+ * Tablet Layout
+ */
+
+/* #region tablet layout */
+
+@media screen and (min-width: 800px) and (max-width: 1024px) {
+	#rl-app #rl-left {
+		width: 250px;
+	}
+
+	html:not(.rl-left-panel-disabled) #rl-left {
+		max-width: calc(var(--nc-sidebar-max-width) / 2);
+	}
+
+	#rl-app #V-SystemDropDown .accountPlace {
+		display: none;
+	}
+}
+
+/* #endregion */
+
+/*
+ * Keyframes
+ */
+
+/* #region keyframes */
+
+@keyframes highlight-folder-row {
+	0% {
+		transform: scale(1)
+	}
+
+	50% {
+		transform: scale(.95)
+	}
+
+	100% {
+		transform: scale(1)
+	}
+}

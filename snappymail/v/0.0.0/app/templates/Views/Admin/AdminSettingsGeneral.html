@@ -1,0 +1,113 @@
+<div class="row" data-bind="visible: weakPassword">
+	<div class="alert alert-warning span8" style="margin-top: 10px;">
+		<h4 data-i18n="TAB_GENERAL/ALERT_WARNING"></h4>
+		<br>
+		<div data-i18n="[html]TAB_GENERAL/HTML_ALERT_WEAK_PASSWORD"></div>
+	</div>
+</div>
+<div class="row" data-bind="visible: dataFolderAccess">
+	<div class="alert alert-error span8" style="margin-top: 10px;">
+		<h4 data-i18n="TAB_GENERAL/ALERT_WARNING"></h4>
+		<div data-i18n="TAB_GENERAL/ALERT_DATA_ACCESS"></div>
+		<a href="https://github.com/the-djmaze/snappymail/wiki/Installation-instructions#secure-data-folder"
+			target="_blank"><strong>https://github.com/the-djmaze/snappymail/wiki/Installation-instructions</strong></a>
+	</div>
+</div>
+<div class="form-horizontal">
+	<div class="legend" data-i18n="TAB_GENERAL/LEGEND_INTERFACE"></div>
+	<div class="control-group">
+		<label data-i18n="TAB_GENERAL/LABEL_LANGUAGE"></label>
+		<div>
+			<span class="select" tabindex="0" data-bind="text: languageFullName, click: selectLanguage, onSpace: selectLanguage, onEnter: selectLanguage"></span>
+			<span data-bind="saveTrigger: languageTrigger"></span>
+		</div>
+	</div>
+	<div class="control-group">
+		<label data-i18n="TAB_GENERAL/LABEL_LANGUAGE_ADMIN"></label>
+		<div>
+			<span class="select" tabindex="0" data-bind="text: languageAdminFullName, click: selectLanguageAdmin, onSpace: selectLanguageAdmin, onEnter: selectLanguageAdmin"></span>
+			<span data-bind="saveTrigger: languageAdminTrigger"></span>
+		</div>
+	</div>
+	<div class="control-group">
+		<label data-i18n="TAB_GENERAL/LABEL_THEME"></label>
+		<div data-bind="component: {
+			name: 'Select',
+			params: {
+				options: themesOptions,
+				value: theme,
+				trigger: themeTrigger,
+				optionsText: 'optText',
+				optionsValue: 'optValue',
+				size: 2
+			}
+		}"></div>
+	</div>
+	<div class="control-group">
+		<div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'TAB_GENERAL/LABEL_ALLOW_LANGUAGES_ON_SETTINGS',
+					value: allowLanguagesOnSettings
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'TAB_GENERAL/LABEL_ALLOW_THEMES_ON_SETTINGS',
+					value: capaThemes
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'TAB_GENERAL/LABEL_ALLOW_BACKGROUND_ON_SETTINGS',
+					value: capaUserBackground
+				}
+			}"></div>
+		</div>
+	</div>
+	<div class="control-group">
+		<div data-bind="component: {
+			name: 'Checkbox',
+			params: {
+				label: 'TAB_GENERAL/LABEL_SHOW_THUMBNAILS',
+				value: capaAttachmentThumbnails
+			}
+		}"></div>
+	</div>
+	<div class="legend" data-i18n="TAB_GENERAL/LEGEND_MAIN"></div>
+	<div class="control-group">
+		<label data-i18n="TAB_GENERAL/LABEL_ATTACHMENT_SIZE_LIMIT"></label>
+		<div>
+			<input type="number" min="1" step="1" class="span1" data-bind="textInput: attachmentLimit">
+			&nbsp;
+			<span data-i18n="MB"></span>
+			<span data-bind="saveTrigger: attachmentLimitTrigger"></span>
+			<br>
+			<br>
+			<div class="alert alert-info">
+				<b>PHP: </b><!-- ko text: uploadDataDesc --><!-- /ko -->
+			</div>
+		</div>
+	</div>
+	<div class="control-group">
+		<div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'TAB_GENERAL/LABEL_ALLOW_ADDITIONAL_ACCOUNTS',
+					value: capaAdditionalAccounts
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'TAB_GENERAL/LABEL_ALLOW_IDENTITIES',
+					value: capaIdentities
+				}
+			}"></div>
+		</div>
+	</div>
+</div>

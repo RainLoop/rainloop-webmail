@@ -1,0 +1,7 @@
+{ "translations": {
+    "Email" : "ইমেইল",
+    "Error" : "সমস্যা",
+    "Save" : "সংরক্ষণ",
+    "Password" : "কূটশব্দ"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}

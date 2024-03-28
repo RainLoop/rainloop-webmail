@@ -1,0 +1,185 @@
+{
+	"GLOBAL": {
+		"ADD": "Hozzáad",
+		"CLOSE": "Bezár",
+		"SAVE": "Mentés",
+		"TEST": "Teszt",
+		"UPDATE": "Frissítés",
+		"USERNAME": "Felhasználónév",
+		"PASSWORD": "Jelszó",
+		"CANCEL": "Mégse",
+		"SEARCH": "Nem találtam névjegyeket"
+	},
+	"LOGIN": {
+		"LABEL_LOGIN": "Belépés",
+		"LABEL_TOTP": "TOTP kód",
+		"BUTTON_LOGIN": "Bejelentkezés az admin felületre"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "Adminisztrációs felület"
+	},
+	"SETTINGS_LABELS": {
+		"GENERAL": "Általános",
+		"LOGIN": "Belépés",
+		"BRANDING": "Arculat",
+		"CONTACTS": "Névjegyek",
+		"DOMAINS": "Domainek",
+		"SECURITY": "Biztonság",
+		"PACKAGES": "Bővítmények",
+		"CONFIG": "Config",
+		"ABOUT": "Névjegy"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "Felület",
+		"LABEL_LANGUAGE": "Nyelv",
+		"LABEL_LANGUAGE_ADMIN": "Nyelv (admin)",
+		"LABEL_THEME": "Téma",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Nyelv választás engedélyezés a beállításoknál",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Téma választás engedélyezés a beállításoknál",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Háttér választás engedélyezés a beállításoknál",
+		"LABEL_SHOW_THUMBNAILS": "Előnézetek megjelenítése (mellékletek)",
+		"LEGEND_MAIN": "Fontos",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "Melléklet méret korlát",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "További fiókok engedélyezése",
+		"LABEL_ALLOW_IDENTITIES": "Több identitás engedélyezése",
+		"ALERT_DATA_ACCESS": "A SnappyMail adatmappája hozzáférhető. Kérlek állítsd be úgy a webszervert, hogy az adatmappát rejtse el a külső hozzáférés elől. További tudnivalók itt:",
+		"ALERT_WARNING": "Figyelmeztetés!",
+		"HTML_ALERT_WEAK_PASSWORD": "Az alapértelmezett admin jelszót használod\n<br>\nBiztonsági okokból kérlek\n<strong><a href=\"#\/security\">változtasd meg<\/a><\/strong>\na jelszót valami másra!\n"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "Bejelentkező képernyő",
+		"LABEL_DEFAULT_DOMAIN": "Alapértelmezett domain",
+		"LABEL_DETERMINE_USER_DOMAIN": "Próbálja megállapítani a felhasználó domainjét",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Nyel választás engedélyezése a bejelentkező képernyőn",
+		"LABEL_DETERMINE_USER_LANGUAGE": "Próbálja megállapítani a felhasználó nyelvét"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Arculat",
+		"LABEL_PAGE_TITLE": "Oldal címe",
+		"LABEL_LOADING_DESCRIPTION": "Betöltés leírás",
+		"LABEL_FAVICON_URL": "Favicon"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "Névjegyek",
+		"LEGEND_STORAGE": "Tárhely (PDO)",
+		"LABEL_ENABLE_CONTACTS": "Címtár engedélyezése",
+		"LABEL_ALLOW_SYNC": "Címtár szinkronizálás engedélyezése (külső CardDAV szerverrel)",
+		"LABEL_STORAGE_TYPE": "Típus",
+		"LABEL_STORAGE_DSN": "DSN",
+		"LABEL_STORAGE_USER": "Felhasználó",
+		"LABEL_STORAGE_PASSWORD": "Jelszó",
+		"SQLITE_GLOBAL": "Use a global DB instead of per account",
+		"ALERT_NOTICE": "Megjegyzés!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Ne használd ezt az adatbázis típust nagy számú aktív felhasználóval.",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "A rendszer nem támogatja a címtárat.\n<br>\nTelepítened vagy engedélyezned kell egy <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> kiterjesztést a szervereden.\n"
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "Domainek",
+		"BUTTON_ADD_DOMAIN": "Domain hozzáadás",
+		"BUTTON_ADD_ALIAS": "Álnév hozzáadás",
+		"DELETE_ARE_YOU_SURE": "Biztos vagy benne?",
+		"HTML_DOMAINS_HELPER": "Hozzáféréshez engedélyezett domainek listája:\n<br>\nA domain beállításához kattints a névre.\n"
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "Biztonság",
+		"LABEL_USE_IMAGE_PROXY": "Helyi proxy használata a külső képekhez",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
+		"LABEL_SHOW_PHP_INFO": "PHP információ megjelenítése",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Admin panel hozzáférés hitelesítés",
+		"LABEL_CURRENT_PASSWORD": "Jelenlegi jelszó",
+		"LABEL_NEW_PASSWORD": "Új jelszó",
+		"LABEL_REPEAT_PASSWORD": "Újra",
+		"LABEL_REQUIRE_VERIFICATION": "A használt tanúsítvány ellenőrzés megkövetelése",
+		"CRYPTO": "Crypto",
+		"LABEL_ALLOW_SELF_SIGNED": "Saját aláírt tanúsítványok engedélyezése"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Bővítmények engedélyezése",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Frissíthető",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Telepíthető",
+		"LEGEND_INSTALLED_PACKAGES": "Telepített csomagok",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Jelenleg nem lehet csatlakozni a tárolóhoz"
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "Névjegy",
+		"LABEL_TAG_HINT": "Egyszerű, modern és gyors webes email kliens",
+		"LABEL_ALL_RIGHTS_RESERVED": "Minden jog fenntartva.",
+		"HINT_READ_CHANGE_LOG": "Frissítés előtt kérlek olvasd el a változások listáját.",
+		"HINT_IS_UP_TO_DATE": "A SnappyMail naprakész.",
+		"HTML_NEW_VERSION": "Új verzió érhető el: <b>%VERSION%<\/b>",
+		"LABEL_UPDATING": "Frissítés",
+		"LABEL_CHECKING": "Frissítések ellenőrzése",
+		"BUTTON_RELEASES": "Releases"
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "Álnév hozzáadás",
+		"LABEL_ALIAS": "Álnév",
+		"LABEL_DOMAIN": "Domain"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "Domain hozzáadás",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "\"%NAME%\" domain hozzáadása",
+		"TITLE_EDIT_DOMAIN": "\"%NAME%\" domain szerkesztése",
+		"LABEL_NAME": "Név",
+		"NAME_HELPER": "helyettesítő karakter használható",
+		"LABEL_SERVER": "Szerver",
+		"LABEL_PORT": "Port",
+		"LABEL_SECURE": "Biztonság",
+		"TIMEOUT": "Timeout",
+		"DISABLE_CAPABILITIES": "Disable capabilities",
+		"LIMITS": "Limits",
+		"FOLDERS": "Folders",
+		"MESSAGES": "Messages",
+		"LABEL_WHITE_LIST": "Fehér lista",
+		"SECURE_OPTION_NONE": "Semmi",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "SIEVE szkriptek engedélyezése",
+		"LABEL_USE_SHORT_LOGIN": "Rövid felhasználónév használata",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
+		"LABEL_USE_AUTH": "Hitelesítés használata",
+		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
+		"LABEL_USE_PHP_MAIL": "A PHP mail() funkció használata",
+		"BUTTON_WHITE_LIST": "Fehér lista",
+		"BUTTON_SIEVE_CONFIGURATION": "SIEVE beállítás",
+		"BUTTON_BACK_TO_IMAP": "Vissza az IMAP beállításokhoz",
+		"BUTTON_BACK": "Vissza",
+		"BUTTON_UPDATE": "Frissítés",
+		"NEW_DOMAIN_DESC": "Ez a domain konfiguráció lehetővé teszi a <strong>%NAME%<\/strong> email címek használatát.",
+		"WHITE_LIST_ALERT": "Hozzáféréshez engedélyezett domainek listája.\nElválasztáshoz használd a szóközt.\n"
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "Bővítményt",
+		"DESC_NOTHING_TO_CONFIGURE": "Nincs mit beállítani"
+	},
+	"POPUPS_ASK": {
+		"BUTTON_YES": "Igen",
+		"BUTTON_NO": "Nem",
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Biztos, hogy be akarod zárni ezt az ablakot?"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "Válaszd ki a nyelvet"
+	},
+	"HINTS": {
+		"BETA": "béta",
+		"WARNING": "Figyelmeztetés!"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "A domain már létezik",
+		"UNKNOWN_ERROR": "Ismeretlen hiba"
+	},
+	"NOTIFICATIONS": {
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "Érvénytelen token",
+		"AuthError": "Sikertelen hitelesítés",
+		"DomainAlreadyExists": "A domain már létezik",
+		"CantSavePluginSettings": "Nem lehet menteni a beállításokat",
+		"CantInstallPackage": "Nem sikerült telepíteni a bővítményt",
+		"CantDeletePackage": "Nem sikerült eltávolítani a bővítményt",
+		"InvalidPluginPackage": "Érvénytelen kiterjesztési csomag",
+		"UnsupportedPluginPackage": "Nem támogatott bővítménycsomag",
+		"UnknownError": "Ismeretlen hiba"
+	}
+}

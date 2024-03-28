@@ -1,559 +1,291 @@
-import _ from '_';
-import $ from '$';
 import ko from 'ko';
-import hasher from 'hasher';
-import crossroads from 'crossroads';
+import { koComputable } from 'External/ko';
+import { doc, $htmlCL, elementById, createElement, fireEvent } from 'Common/Globals';
+import { forEachObjectEntry } from 'Common/Utils';
+import { i18nToNodes } from 'Common/Translator';
 
-import { Magics } from 'Common/Enums';
-import { runHook } from 'Common/Plugins';
-import { $html, VIEW_MODELS, popupVisibilityNames } from 'Common/Globals';
+import { leftPanelDisabled } from 'Common/Globals';
+import { ThemeStore } from 'Stores/Theme';
 
-import { isArray, isUnd, pString, log, isFunc, createCommandLegacy, delegateRun, isNonEmptyArray } from 'Common/Utils';
-
-let currentScreen = null,
+let
+	currentScreen = null,
 	defaultScreenName = '';
 
-const SCREENS = {};
+const
+	SCREENS = new Map,
 
-export const ViewType = {
-	Popup: 'Popups',
-	Left: 'Left',
-	Right: 'Right',
-	Center: 'Center'
-};
+	autofocus = dom => dom.querySelector('[autofocus]')?.focus(),
 
-/**
- * @returns {void}
- */
-export function hideLoading() {
-	$('#rl-content').addClass('rl-content-show');
-	$('#rl-loading')
-		.hide()
-		.remove();
-}
+	visiblePopups = new Set,
 
-/**
- * @param {Function} fExecute
- * @param {(Function|boolean|null)=} fCanExecute = true
- * @returns {Function}
- */
-export function createCommand(fExecute, fCanExecute = true) {
-	return createCommandLegacy(null, fExecute, fCanExecute);
-}
+	/**
+	 * @param {string} screenName
+	 * @returns {?Object}
+	 */
+	screen = screenName => (screenName && SCREENS.get(screenName)) || null,
 
-/**
- * @param {Function} SettingsViewModelClass
- * @param {string} template
- * @param {string} labelName
- * @param {string} route
- * @param {boolean=} isDefault = false
- * @returns {void}
- */
-export function addSettingsViewModel(SettingsViewModelClass, template, labelName, route, isDefault = false) {
-	SettingsViewModelClass.__rlSettingsData = {
-		Label: labelName,
-		Template: template,
-		Route: route,
-		IsDefault: !!isDefault
-	};
+	/**
+	 * Creates the extended AbstractView model
+	 * @param {Function} ViewModelClass
+	 * @param {Object=} vmScreen
+	 * @returns {*}
+	 */
+	buildViewModel = (ViewModelClass, vmScreen) => {
+		if (ViewModelClass && !ViewModelClass.__vm) {
+			const
+				vm = new ViewModelClass(vmScreen),
+				id = vm.viewModelTemplateID,
+				position = 'rl-' + vm.viewType,
+				dialog = ViewTypePopup === vm.viewType,
+				vmPlace = doc.getElementById(position);
 
-	VIEW_MODELS.settings.push(SettingsViewModelClass);
-}
+			if (vmPlace) {
+				ViewModelClass.__vm = vm;
 
-/**
- * @param {Function} SettingsViewModelClass
- * @returns {void}
- */
-export function removeSettingsViewModel(SettingsViewModelClass) {
-	VIEW_MODELS['settings-removed'].push(SettingsViewModelClass);
-}
+				let vmDom = dialog
+					? createElement('dialog',{id:'V-'+id})
+					: createElement('div',{id:'V-'+id,hidden:''})
+				vmPlace.append(vmDom);
 
-/**
- * @param {Function} SettingsViewModelClass
- * @returns {void}
- */
-export function disableSettingsViewModel(SettingsViewModelClass) {
-	VIEW_MODELS['settings-disabled'].push(SettingsViewModelClass);
-}
+				vm.viewModelDom = vmDom;
 
-/**
- * @returns {void}
- */
-export function routeOff() {
-	hasher.changed.active = false;
-}
-
-/**
- * @returns {void}
- */
-export function routeOn() {
-	hasher.changed.active = true;
-}
-
-/**
- * @param {string} screenName
- * @returns {?Object}
- */
-export function screen(screenName) {
-	return '' !== screenName && !isUnd(SCREENS[screenName]) ? SCREENS[screenName] : null;
-}
-
-/**
- * @param {Function} ViewModelClassToShow
- * @returns {Function|null}
- */
-export function getScreenPopup(PopuViewModelClass) {
-	let result = null;
-	if (PopuViewModelClass) {
-		result = PopuViewModelClass;
-		if (PopuViewModelClass.default) {
-			result = PopuViewModelClass.default;
-		}
-	}
-
-	return result;
-}
-
-/**
- * @param {Function} ViewModelClassToHide
- * @returns {void}
- */
-export function hideScreenPopup(ViewModelClassToHide) {
-	const ModalView = getScreenPopup(ViewModelClassToHide);
-	if (ModalView && ModalView.__vm && ModalView.__dom) {
-		ModalView.__vm.modalVisibility(false);
-	}
-}
-
-/**
- * @param {string} hookName
- * @param {Function} ViewModelClass
- * @param {mixed=} params = null
- */
-export function vmRunHook(hookName, ViewModelClass, params = null) {
-	_.each(ViewModelClass.__names, (name) => {
-		runHook(hookName, [name, ViewModelClass.__vm, params]);
-	});
-}
-
-/**
- * @param {Function} ViewModelClass
- * @param {Object=} vmScreen
- * @returns {*}
- */
-export function buildViewModel(ViewModelClass, vmScreen) {
-	if (ViewModelClass && !ViewModelClass.__builded) {
-		let vmDom = null;
-		const vm = new ViewModelClass(vmScreen),
-			position = ViewModelClass.__type || '',
-			vmPlace = position ? $('#rl-content #rl-' + position.toLowerCase()) : null;
-
-		ViewModelClass.__builded = true;
-		ViewModelClass.__vm = vm;
-
-		vm.onShowTrigger = ko.observable(false);
-		vm.onHideTrigger = ko.observable(false);
-
-		vm.viewModelName = ViewModelClass.__name;
-		vm.viewModelNames = ViewModelClass.__names;
-		vm.viewModelTemplateID = ViewModelClass.__templateID;
-		vm.viewModelPosition = ViewModelClass.__type;
-
-		if (vmPlace && 1 === vmPlace.length) {
-			vmDom = $('<div></div>')
-				.addClass('rl-view-model')
-				.addClass('RL-' + vm.viewModelTemplateID)
-				.hide();
-			vmDom.appendTo(vmPlace);
-
-			vm.viewModelDom = vmDom;
-			ViewModelClass.__dom = vmDom;
-
-			if (ViewType.Popup === position) {
-				vm.cancelCommand = vm.closeCommand = createCommand(() => {
-					hideScreenPopup(ViewModelClass);
-				});
-
-				vm.modalVisibility.subscribe((value) => {
-					if (value) {
-						vm.viewModelDom.show();
-						vm.storeAndSetKeyScope();
-
-						popupVisibilityNames.push(vm.viewModelName);
-						vm.viewModelDom.css('z-index', 3000 + popupVisibilityNames().length + 10);
-
-						if (vm.onShowTrigger) {
-							vm.onShowTrigger(!vm.onShowTrigger());
-						}
-
-						delegateRun(vm, 'onShowWithDelay', [], 500);
-					} else {
-						delegateRun(vm, 'onHide');
-						delegateRun(vm, 'onHideWithDelay', [], 500);
-
-						if (vm.onHideTrigger) {
-							vm.onHideTrigger(!vm.onHideTrigger());
-						}
-
-						vm.restoreKeyScope();
-
-						vmRunHook('view-model-on-hide', ViewModelClass);
-
-						popupVisibilityNames.remove(vm.viewModelName);
-						vm.viewModelDom.css('z-index', 2000);
-
-						_.delay(() => vm.viewModelDom.hide(), 300);
+				if (dialog) {
+					// Firefox < 98 / Safari < 15.4 HTMLDialogElement not defined
+					if (!vmDom.showModal) {
+						vmDom.className = 'polyfill';
+						vmDom.showModal = () => {
+							vmDom.backdrop ||
+								vmDom.before(vmDom.backdrop = createElement('div',{class:'dialog-backdrop'}));
+							vmDom.setAttribute('open','');
+							vmDom.open = true;
+							vmDom.backdrop.hidden = false;
+						};
+						vmDom.close = () => {
+//							if (vmDom.dispatchEvent(new CustomEvent('cancel', {cancelable:true}))) {
+								vmDom.backdrop.hidden = true;
+								vmDom.removeAttribute('open', null);
+								vmDom.open = false;
+//								vmDom.dispatchEvent(new CustomEvent('close'));
+//							}
+						};
 					}
-				});
-			}
+					// https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/cancel_event
+//					vmDom.addEventListener('cancel', event => (false === vm.onClose() && event.preventDefault()));
+//					vmDom.addEventListener('close', () => vm.modalVisible(false));
 
-			vmRunHook('view-model-pre-build', ViewModelClass, vmDom);
+					// show/hide popup/modal
+					const endShowHide = e => {
+						if (e.target === vmDom) {
+							if (vmDom.classList.contains('animate')) {
+								vm.afterShow?.();
+							} else {
+								vmDom.close();
+								vm.afterHide?.();
+							}
+						}
+					};
 
-			ko.applyBindingAccessorsToNode(
-				vmDom[0],
-				{
-					translatorInit: true,
-					template: () => ({ name: vm.viewModelTemplateID })
-				},
-				vm
-			);
-
-			delegateRun(vm, 'onBuild', [vmDom]);
-			if (vm && ViewType.Popup === position) {
-				vm.registerPopupKeyDown();
-			}
-
-			vmRunHook('view-model-post-build', ViewModelClass, vmDom);
-		} else {
-			log('Cannot find view model position: ' + position);
-		}
-	}
-
-	return ViewModelClass ? ViewModelClass.__vm : null;
-}
-
-/**
- * @param {Function} ViewModelClassToShow
- * @param {Array=} params
- * @returns {void}
- */
-export function showScreenPopup(ViewModelClassToShow, params = []) {
-	const ModalView = getScreenPopup(ViewModelClassToShow);
-	if (ModalView) {
-		buildViewModel(ModalView);
-
-		if (ModalView.__vm && ModalView.__dom) {
-			delegateRun(ModalView.__vm, 'onBeforeShow', params || []);
-
-			ModalView.__vm.modalVisibility(true);
-
-			delegateRun(ModalView.__vm, 'onShow', params || []);
-
-			vmRunHook('view-model-on-show', ModalView, params || []);
-		}
-	}
-}
-
-/**
- * @param {Function} ViewModelClassToShow
- * @returns {void}
- */
-export function warmUpScreenPopup(ViewModelClassToShow) {
-	const ModalView = getScreenPopup(ViewModelClassToShow);
-	if (ModalView) {
-		buildViewModel(ModalView);
-
-		if (ModalView.__vm && ModalView.__dom) {
-			delegateRun(ModalView.__vm, 'onWarmUp');
-		}
-	}
-}
-
-/**
- * @param {Function} ViewModelClassToShow
- * @returns {boolean}
- */
-export function isPopupVisible(ViewModelClassToShow) {
-	const ModalView = getScreenPopup(ViewModelClassToShow);
-	return ModalView && ModalView.__vm ? ModalView.__vm.modalVisibility() : false;
-}
-
-/**
- * @param {string} screenName
- * @param {string} subPart
- * @returns {void}
- */
-export function screenOnRoute(screenName, subPart) {
-	let vmScreen = null,
-		isSameScreen = false,
-		cross = null;
-
-	if ('' === pString(screenName)) {
-		screenName = defaultScreenName;
-	}
-
-	if ('' !== screenName) {
-		vmScreen = screen(screenName);
-		if (!vmScreen) {
-			vmScreen = screen(defaultScreenName);
-			if (vmScreen) {
-				subPart = screenName + '/' + subPart;
-				screenName = defaultScreenName;
-			}
-		}
-
-		if (vmScreen && vmScreen.__started) {
-			isSameScreen = currentScreen && vmScreen === currentScreen;
-
-			if (!vmScreen.__builded) {
-				vmScreen.__builded = true;
-
-				if (isNonEmptyArray(vmScreen.viewModels())) {
-					_.each(vmScreen.viewModels(), (ViewModelClass) => {
-						buildViewModel(ViewModelClass, vmScreen);
+					vm.modalVisible.subscribe(value => {
+						if (value) {
+							i18nToNodes(vmDom);
+							visiblePopups.add(vm);
+							vmDom.style.zIndex = 3001 + (visiblePopups.size * 2);
+							vmDom.showModal();
+							if (vmDom.backdrop) {
+								vmDom.backdrop.style.zIndex = 3000 + (visiblePopups.size * 2);
+							}
+							vm.keyScope.set();
+							setTimeout(()=>autofocus(vmDom),1);
+							requestAnimationFrame(() => { // wait just before the next paint
+								vmDom.offsetHeight; // force a reflow
+								vmDom.classList.add('animate'); // trigger the transitions
+							});
+						} else {
+							visiblePopups.delete(vm);
+							vm.onHide?.();
+							vm.keyScope.unset();
+							vmDom.classList.remove('animate'); // trigger the transitions
+						}
+						arePopupsVisible(0 < visiblePopups.size);
 					});
+					vmDom.addEventListener('transitionend', endShowHide);
 				}
 
-				delegateRun(vmScreen, 'onBuild');
+				fireEvent('rl-view-model.create', vm);
+
+				ko.applyBindingAccessorsToNode(
+					vmDom,
+					{
+						template: () => ({ name: id })
+					},
+					vm
+				);
+
+				vm.onBuild?.(vmDom);
+
+				fireEvent('rl-view-model', vm);
+			} else {
+				console.log('Cannot find view model position: ' + position);
+			}
+		}
+
+		return ViewModelClass?.__vm;
+	},
+
+	forEachViewModel = (screen, fn) => {
+		screen.viewModels.forEach(ViewModelClass => {
+			if (
+				ViewModelClass.__vm &&
+				ViewTypePopup !== ViewModelClass.__vm.viewType
+			) {
+				fn(ViewModelClass.__vm, ViewModelClass.__vm.viewModelDom);
+			}
+		});
+	},
+
+	hideScreen = (screenToHide, destroy) => {
+		screenToHide.onHide?.();
+		forEachViewModel(screenToHide, (vm, dom) => {
+			dom.hidden = true;
+			vm.onHide?.();
+			destroy && dom.remove();
+		});
+		ThemeStore.isMobile() && leftPanelDisabled(true);
+	},
+
+	/**
+	 * @param {string} screenName
+	 * @param {string} subPart
+	 * @returns {void}
+	 */
+	screenOnRoute = (screenName, subPart) => {
+		screenName = screenName || defaultScreenName;
+		if (screenName && fireEvent('sm-show-screen', screenName + (subPart ?  '/' + subPart : ''), 1)) {
+			// Close all popups
+			for (let vm of visiblePopups) {
+				(false === vm.onClose()) || vm.close();
 			}
 
-			_.defer(() => {
-				// hide screen
-				if (currentScreen && !isSameScreen) {
-					delegateRun(currentScreen, 'onHide');
-					delegateRun(currentScreen, 'onHideWithDelay', [], 500);
+			let vmScreen = screen(screenName);
+			if (!vmScreen) {
+				vmScreen = screen(defaultScreenName);
+				if (vmScreen) {
+					subPart = screenName + '/' + subPart;
+					screenName = defaultScreenName;
+				}
+			}
 
-					if (currentScreen.onHideTrigger) {
-						currentScreen.onHideTrigger(!currentScreen.onHideTrigger());
-					}
+			if (vmScreen?.__started) {
+				let isSameScreen = currentScreen && vmScreen === currentScreen;
 
-					if (isNonEmptyArray(currentScreen.viewModels())) {
-						_.each(currentScreen.viewModels(), (ViewModelClass) => {
-							if (
-								ViewModelClass.__vm &&
-								ViewModelClass.__dom &&
-								ViewType.Popup !== ViewModelClass.__vm.viewModelPosition
-							) {
-								ViewModelClass.__dom.hide();
-								ViewModelClass.__vm.viewModelVisibility(false);
+				if (!vmScreen.__builded) {
+					vmScreen.__builded = true;
 
-								delegateRun(ViewModelClass.__vm, 'onHide');
-								delegateRun(ViewModelClass.__vm, 'onHideWithDelay', [], 500);
+					vmScreen.viewModels.forEach(ViewModelClass =>
+						buildViewModel(ViewModelClass, vmScreen)
+					);
 
-								if (ViewModelClass.__vm.onHideTrigger) {
-									ViewModelClass.__vm.onHideTrigger(!ViewModelClass.__vm.onHideTrigger());
-								}
-							}
+					vmScreen.onBuild?.();
+				}
+
+				setTimeout(() => {
+					// hide screen
+					currentScreen && !isSameScreen && hideScreen(currentScreen);
+					// --
+
+					currentScreen = vmScreen;
+
+					// show screen
+					if (!isSameScreen) {
+						vmScreen.onShow?.();
+
+						forEachViewModel(vmScreen, (vm, dom) => {
+							vm.beforeShow?.();
+							i18nToNodes(dom);
+							dom.hidden = false;
+							vm.onShow?.();
+							autofocus(dom);
 						});
 					}
-				}
-				// --
+					// --
 
-				currentScreen = vmScreen;
-
-				// show screen
-				if (currentScreen && !isSameScreen) {
-					delegateRun(currentScreen, 'onShow');
-					if (currentScreen.onShowTrigger) {
-						currentScreen.onShowTrigger(!currentScreen.onShowTrigger());
-					}
-
-					runHook('screen-on-show', [currentScreen.screenName(), currentScreen]);
-
-					if (isNonEmptyArray(currentScreen.viewModels())) {
-						_.each(currentScreen.viewModels(), (ViewModelClass) => {
-							if (
-								ViewModelClass.__vm &&
-								ViewModelClass.__dom &&
-								ViewType.Popup !== ViewModelClass.__vm.viewModelPosition
-							) {
-								delegateRun(ViewModelClass.__vm, 'onBeforeShow');
-
-								ViewModelClass.__dom.show();
-								ViewModelClass.__vm.viewModelVisibility(true);
-
-								delegateRun(ViewModelClass.__vm, 'onShow');
-								if (ViewModelClass.__vm.onShowTrigger) {
-									ViewModelClass.__vm.onShowTrigger(!ViewModelClass.__vm.onShowTrigger());
-								}
-
-								delegateRun(ViewModelClass.__vm, 'onShowWithDelay', [], 200);
-								vmRunHook('view-model-on-show', ViewModelClass);
-							}
-						});
-					}
-				}
-				// --
-
-				cross = vmScreen && vmScreen.__cross ? vmScreen.__cross() : null;
-				if (cross) {
-					cross.parse(subPart);
-				}
-			});
+					vmScreen.__cross?.parse(subPart);
+				}, 1);
+			}
 		}
-	}
-}
+	};
 
-/**
- * @param {Array} screensClasses
- * @returns {void}
- */
-export function startScreens(screensClasses) {
-	_.each(screensClasses, (CScreen) => {
-		if (CScreen) {
+
+export const
+	ViewTypePopup = 'popups',
+
+	/**
+	 * @param {Function} ViewModelClassToShow
+	 * @param {Array=} params
+	 * @returns {void}
+	 */
+	showScreenPopup = (ViewModelClassToShow, params = []) => {
+		const vm = buildViewModel(ViewModelClassToShow);
+		if (vm) {
+			params = params || [];
+			vm.beforeShow?.(...params);
+			vm.modalVisible(true);
+			vm.onShow?.(...params);
+		}
+	},
+
+	arePopupsVisible = ko.observable(false),
+
+	/**
+	 * @param {Array} screensClasses
+	 * @returns {void}
+	 */
+	startScreens = screensClasses => {
+		hasher.clear();
+		SCREENS.forEach(screen => hideScreen(screen, 1));
+		SCREENS.clear();
+		currentScreen = null,
+		defaultScreenName = '';
+
+		screensClasses.forEach(CScreen => {
 			const vmScreen = new CScreen(),
-				screenName = vmScreen ? vmScreen.screenName() : '';
+				screenName = vmScreen.screenName;
+			defaultScreenName || (defaultScreenName = screenName);
+			SCREENS.set(screenName, vmScreen);
+		});
 
-			if (vmScreen && '' !== screenName) {
-				if ('' === defaultScreenName) {
-					defaultScreenName = screenName;
-				}
-
-				SCREENS[screenName] = vmScreen;
+		SCREENS.forEach(vmScreen => {
+			if (!vmScreen.__started) {
+				vmScreen.onStart();
+				vmScreen.__started = true;
 			}
-		}
-	});
+		});
 
-	_.each(SCREENS, (vmScreen) => {
-		if (vmScreen && !vmScreen.__started && vmScreen.__start) {
-			vmScreen.__started = true;
-			vmScreen.__start();
+		const cross = new Crossroads();
+		cross.addRoute(/^([^/]*)\/?(.*)$/, screenOnRoute);
 
-			runHook('screen-pre-start', [vmScreen.screenName(), vmScreen]);
-			delegateRun(vmScreen, 'onStart');
-			runHook('screen-post-start', [vmScreen.screenName(), vmScreen]);
-		}
-	});
+		hasher.add(cross.parse.bind(cross));
+		hasher.init();
 
-	const cross = crossroads.create();
-	cross.addRoute(/^([a-zA-Z0-9-]*)\/?(.*)$/, screenOnRoute);
+		setTimeout(() => $htmlCL.remove('rl-started-trigger'), 100);
 
-	hasher.initialized.add(cross.parse, cross);
-	hasher.changed.add(cross.parse, cross);
-	hasher.init();
+		const c = elementById('rl-content'), l = elementById('rl-loading');
+		c && (c.hidden = false);
+		l?.remove();
+	},
 
-	_.delay(() => $html.removeClass('rl-started-trigger').addClass('rl-started'), 100);
-	_.delay(() => $html.addClass('rl-started-delay'), 200);
-}
+	/**
+	 * Used by ko.bindingHandlers.command (template data-bind="command: ")
+	 * to enable/disable click/submit action.
+	 */
+	decorateKoCommands = (thisArg, commands) =>
+		forEachObjectEntry(commands, (key, canExecute) => {
+			let command = thisArg[key],
+				fn = (...args) => fn.canExecute() && command.apply(thisArg, args);
 
-/**
- * @param {string} sHash
- * @param {boolean=} silence = false
- * @param {boolean=} replace = false
- * @returns {void}
- */
-export function setHash(hash, silence = false, replace = false) {
-	hash = '#' === hash.substr(0, 1) ? hash.substr(1) : hash;
-	hash = '/' === hash.substr(0, 1) ? hash.substr(1) : hash;
+			fn.canExecute = koComputable(() => canExecute.call(thisArg, thisArg));
 
-	const cmd = replace ? 'replaceHash' : 'setHash';
+			thisArg[key] = fn;
+		});
 
-	if (silence) {
-		hasher.changed.active = false;
-		hasher[cmd](hash);
-		hasher.changed.active = true;
-	} else {
-		hasher.changed.active = true;
-		hasher[cmd](hash);
-		hasher.setHash(hash);
-	}
-}
-
-/**
- * @param {Object} params
- * @returns {Function}
- */
-function viewDecorator({ name, type, templateID }) {
-	return (target) => {
-		if (target) {
-			if (name) {
-				if (isArray(name)) {
-					target.__names = name;
-				} else {
-					target.__names = [name];
-				}
-
-				target.__name = target.__names[0];
-			}
-
-			if (type) {
-				target.__type = type;
-			}
-
-			if (templateID) {
-				target.__templateID = templateID;
-			}
-		}
-	};
-}
-
-/**
- * @param {Object} params
- * @returns {Function}
- */
-function popupDecorator({ name, templateID }) {
-	return viewDecorator({ name, type: ViewType.Popup, templateID });
-}
-
-/**
- * @param {Function} canExecute
- * @returns {Function}
- */
-function commandDecorator(canExecute = true) {
-	return (target, key, descriptor) => {
-		if (!key || !key.match(/Command$/)) {
-			throw new Error(`name "${key}" should end with Command suffix`);
-		}
-
-		const value = descriptor.value || descriptor.initializer(),
-			normCanExecute = isFunc(canExecute) ? canExecute : () => !!canExecute;
-
-		descriptor.value = function(...args) {
-			if (normCanExecute.call(this, this)) {
-				value.apply(this, args);
-			}
-
-			return false;
-		};
-
-		descriptor.value.__realCanExecute = normCanExecute;
-		descriptor.value.isCommand = true;
-
-		return descriptor;
-	};
-}
-
-/**
- * @param {miced} $items
- * @returns {Function}
- */
-function settingsMenuKeysHandler($items) {
-	return _.throttle((event, handler) => {
-		const up = handler && 'up' === handler.shortcut;
-
-		if (event && $items.length) {
-			let index = $items.index($items.filter('.selected'));
-			if (up && 0 < index) {
-				index -= 1;
-			} else if (!up && index < $items.length - 1) {
-				index += 1;
-			}
-
-			const resultHash = $items.eq(index).attr('href');
-			if (resultHash) {
-				setHash(resultHash, false, true);
-			}
-		}
-	}, Magics.Time200ms);
-}
-
-export {
-	commandDecorator,
-	commandDecorator as command,
-	viewDecorator,
-	viewDecorator as view,
-	viewDecorator as viewModel,
-	popupDecorator,
-	popupDecorator as popup,
-	settingsMenuKeysHandler
-};
+ko.decorateCommands = decorateKoCommands;

@@ -1,111 +1,55 @@
 <html>
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="user-scalable=no" />
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="robots" content="noindex, nofollow, noodp" />
-	<title>{{title}}</title>
+	<meta charset="utf-8"/>
+	<title></title>
 	<style>
 html, body {
-	background-color: #fff;
-	font-size: 13px;
-	font-family: arial, sans-serif;
 	margin: 0;
 	padding: 0;
 }
 
-a {color: blue; text-decoration: underline}
-a:visited {color: #609}
-a:active {color: red}
-blockquote {border-left: 2px solid black; margin: 0; padding: 0px 10px}
+header {
+	background: rgba(125,128,128,0.3);
+	border-bottom: 1px solid #888;
+}
+
+header h1 {
+	font-size: 120%;
+}
+
+header * {
+	margin: 5px 0;
+}
+
+header time {
+	float: right;
+}
+
+blockquote {
+	border-left: 2px solid rgba(125,128,128,0.5);
+	margin: 0;
+	padding: 0 0 0 10px;
+}
 
 pre {
-	margin: 0px;
-	padding: 0px;
-	font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
-	background: #fff;
-	border: none;
-	white-space: pre-wrap;
-	word-wrap: break-word;
-	word-break: break-all;
-}
-
-.body-wrp {
-	padding: 10px;
-}
-
-.body-wrp.html pre {
-	font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
 	white-space: pre-wrap;
 	word-wrap: break-word;
 	word-break: normal;
 }
 
-.body-wrp.plain {
-	padding: 15px;
-	white-space: pre-wrap;
-	font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+body > * {
+	padding: 0.5em 1em;
 }
 
-.body-wrp.plain pre {
-	margin: 0px;
-	padding: 0px;
-	background: #fff;
-	border: none;
-	font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
-	white-space: pre-wrap;
-	word-wrap: break-word;
-	word-break: normal;
+#attachments > * {
+	border: 1px solid rgba(125,128,128,0.5);
+	padding: 0.25em;
+	margin-right: 1em;
 }
-
-.body-wrp.plain blockquote {
-	border-left: 2px solid blue;
-	color: blue;
-}
-
-.body-wrp.plain blockquote blockquote {
-	border-left: 2px solid green;
-	color: green;
-}
-
-.body-wrp.plain blockquote blockquote blockquote {
-	border-left: 2px solid red;
-	color: red;
-}
-.rl-preview-subject {
-	font-size: 16px;
-	font-weight: bold;
-	padding: 15px;
-}
-.rl-preview-creds-from, .rl-preview-creds-to, .rl-preview-creds-cc {
-	font-size: 12px;
-	padding: 5px 15px;
-}
-.rl-preview-date {
-	float: right;
-	font-size: 12px;
-	padding: 10px 15px;
-}
-.rl-preview-section {
-	padding: 0;
-	margin: 0;
-	border-bottom: 1px solid #ccc;
-}
-.rl-preview-hide {
-	display: none;
+#attachments > *::before {
+	content: '📎 ';
 }
 	</style>
 </head>
-<body>
-	<div class="rl-preview-section">
-		<div class="rl-preview-subject">{{subject}}</div>
-	</div>
-	<div class="rl-preview-section">
-		<div class="rl-preview-date">{{date}}</div>
-		<div class="rl-preview-creds-from">{{fromCreds}}</div>
-		<div class="rl-preview-creds-to">{{toLabel}}: {{toCreds}}</div>
-		<div class="rl-preview-creds-cc {{ccClass}}">{{ccLabel}}: {{ccCreds}}</div>
-	</div>
-	<div class="body-wrp {{bodyClass}}">{{html}}</div>
-</body>
+<body></body>
 </html>

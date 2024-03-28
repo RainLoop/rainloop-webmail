@@ -1,0 +1,10 @@
+{
+	"LOGIN": {
+		"LABEL_FORGOT_PASSWORD": "Pozabljeno geslo",
+		"LABEL_REGISTRATION": "Registracija"
+	},
+	"TAB_LOGIN": {
+		"LABEL_FORGOT_PASSWORD_LINK_URL": "Forgot password url",
+		"LABEL_REGISTRATION_LINK_URL": "Register url"
+	}
+}

@@ -1,0 +1,221 @@
+* {
+/* Nextcloud 25
+	--background-image-invert-if-bright: no;
+	--background-invert-if-bright: invert(100%);
+	--background-invert-if-dark: no;
+	--border-radius: 3px;
+	--border-radius-large: 10px;
+	--border-radius-pill: 100px;
+	--breakpoint-mobile: 1024px;
+	--color-background-dark: #ededed;
+	--color-background-darker: #dbdbdb;
+	--color-background-hover: #f5f5f5;
+	--color-background-plain: #0082c9;
+	--color-border: #ededed;
+	--color-border-dark: #dbdbdb;
+	--color-box-shadow: rgba(var(--color-box-shadow-rgb), 0.5);
+	--color-box-shadow-rgb: 77,77,77;
+	--color-error: #e9322d;
+	--color-error-hover: #ed5a56;
+	--color-error-rgb: 233,50,45;
+	--color-loading-dark: #444444;
+	--color-loading-light: #cccccc;
+	--color-main-background: #ffffff;
+	--color-main-background-blur: rgba(var(--color-main-background-rgb), .8);
+	--color-main-background-rgb: 255,255,255;
+	--color-main-background-translucent: rgba(var(--color-main-background-rgb), .97);
+	--color-main-text: #222222;
+	--color-placeholder-dark: #cccccc;
+	--color-placeholder-light: #e6e6e6;
+	--color-primary-default: #0082c9;
+	--color-primary-element: #00639a;
+	--color-primary-element-hover: #3282ae;
+	--color-primary-element-light: #e5eff4;
+	--color-primary-element-light-hover: #dbe4e9;
+	--color-primary-element-light-text: #00273d;
+	--color-primary-element-text: #ffffff;
+	--color-primary-element-text-dark: #ededed;
+	--color-primary-hover: #3282ae;
+	--color-primary-light: #e5eff4;
+	--color-primary-light-hover: #dbe4e9;
+	--color-primary-light-text: #00273d;
+	--color-primary-text: #ffffff;
+	--color-primary-text-dark: #ededed;
+	--color-primary: #00639a;
+	--color-scrollbar: rgba(34,34,34, .15);
+	--color-success: #46ba61;
+	--color-success-hover: #6ac780;
+	--color-success-rgb: 70,186,97;
+	--color-text-light: #222222;
+	--color-text-lighter: #767676;
+	--color-text-maxcontrast: #767676;
+	--color-text-maxcontrast-background-blur: #646464;
+	--color-text-maxcontrast-default: #767676;
+	--color-warning: #eca700;
+	--color-warning-hover: #efb832;
+	--color-warning-rgb: 236,167,0;
+	--default-clickable-area: 44px;
+	--default-font-size: 15px;
+	--default-grid-baseline: 4px;
+	--default-line-height: 24px;
+	--filter-background-blur: blur(25px);
+	--font-face: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Cantarell, Ubuntu, 'Helvetica Neue', Arial, sans-serif, 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+	--gradient-main-background: var(--color-main-background) 0%, var(--color-main-background-translucent) 85%, transparent 100%;
+	--gradient-primary-background: linear-gradient(40deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+	--header-height: 50px;
+	--header-menu-item-height: 44px;
+	--header-menu-profile-item-height: 66px;
+	--image-background: url('/nextcloud/core/img/app-background.jpg');
+	--list-max-width: 300px;
+	--list-min-width: 200px;
+	--navigation-width: 300px;
+	--primary-invert-if-bright: no;
+	--sidebar-max-width: 500px;
+	--sidebar-min-width: 300px;
+*/
+	--fontSans: var(--font-face);
+
+	/* MAIN */
+	--main-color: var(--color-main-text);
+	--main-bg-color: var(--color-main-background);
+	--main-bg-image: none;
+	--main-bg-size: auto;
+	--main-bg-repeat: repeat;
+	--main-font-size: 14px;
+	--link-color: #369;
+	--border-color: var(--color-border);
+	--border-radius: var(--border-radius);
+	--hr-color: var(--color-border);
+
+	--panel-bg-clr: var(--color-main-background);
+
+	--warning-clr: var(--color-warning);
+	--warning-bg-clr: #fcf8e3;
+	--warning-border-clr: #fbeed5;
+
+	--error-clr: var(--color-error);
+	--error-bg-clr: #f2dede;
+	--error-border-clr: #eed3d7;
+
+	--info-clr: #3a87ad;
+	--info-bg-clr: #d9edf7;
+	--info-border-clr: #bce8f1;
+
+	/* LOADING */
+	--loading-color: var(--color-main-text);
+	--loading-text-shadow: none; /* 0px 1px 0px rgba(0, 0, 0, 0.5); */
+
+	/* LOGIN */
+	--login-color: var(--color-main-text);
+	--login-bg-color: var(--color-background-darker);
+	--login-box-shadow: var(--color-box-shadow);
+	--login-border: none;
+	--login-border-radius: var(--border-radius-large);
+
+	--spinner-color: #fff;
+
+	/* MENU */
+	--dropdown-menu-color: var(--color-main-text);
+	--dropdown-menu-bg-color: var(--color-main-background);
+	--dropdown-menu-hover-bg-color: var(--color-background-hover);
+	--dropdown-menu-hover-color: var(--color-main-text);
+	--dropdown-menu-disabled-color: #999;
+	--dropdown-menu-border-clr: var(--color-border);
+
+	/* FOLDERS */
+	--folders-color: var(--color-main-text);
+	--folders-disabled-color: #999;
+	--folders-selected-color: var(--color-primary-text);
+	--folders-selected-bg-color: var(--color-background-darker);
+	--folders-focused-color: var(--color-primary-text);
+	--folders-focused-bg-color: var(--color-background-dark);
+	--folders-hover-color: var(--color-primary-hover);
+	--folders-hover-bg-color: var(--color-background-hover);
+	--folders-drop-color: var(--color-primary-hover);
+	--folders-drop-bg-color:  var(--color-background-hover);
+	--unread-count-color: #fff;
+	--unread-count-bg-color: #333;
+
+	/* SETTINGS */
+	--settings-bg-clr: transparent;
+	--settings-menu-color: var(--color-main-text);
+	--settings-menu-selected-color: #eee;
+	--settings-menu-selected-bg-color: rgba(0,0,0,0.5);
+	--settings-menu-hover-color: #eee;
+	--settings-menu-hover-bg-color: rgba(0,0,0,0.5);
+
+	/* MESSAGE LIST */
+	--message-list-toolbar-bg-color: #eee;
+
+	/* MESSAGE */
+	--message-bg-color: #fff;
+
+	/* DIALOGS */
+	--dialog-clr: var(--color-main-text);
+	--dialog-bg-clr: var(--color-main-background);
+	--dialog-border-clr: var(--color-border);
+	--dialog-border-radius: var(--border-radius-large);
+
+	/* FORMS */
+	--btn-clr: var(--color-primary-text);
+	--btn-bg-clr: var(--color-primary-element);
+	--btn-border-clr: var(--color-border);
+	--btn-success-bg-clr: #84AB04;
+	--btn-danger-bg-clr: #ee5f5b;
+
+	--input-clr: var(--color-main-text);
+	--input-bg-clr: var(--color-main-background);
+	--input-border-clr: var(--color-border-dark);
+	--input-border-radius: var(--border-radius);
+	--input-focus-border-clr: var(--color-primary-element);
+
+	/* TABLES */
+	--tr-hover-bg-clr: var(--color-background-hover);
+	--tr-odd-bg-clr: var(--color-background-darker); /* when striped */
+
+	/* TABS */
+	--tab-active-bg-clr: var(--color-main-background);
+	--tab-hover-border-clr: var(--color-background-hover);
+}
+
+.thm-message-list-top-toolbar, .thm-message-list-bottom-toolbar {
+    background: transparent linear-gradient(to bottom, var(--color-main-background) 0%, var(--color-main-background-translucent) 85%, transparent 100%) repeat-x !important;
+}
+#V-AdminPane > .b-toolbar {
+	color: var(--main-color);
+	text-shadow: none;
+}
+
+#rl-app dialog header {
+	background-color: var(--color-primary-element);
+	background-image: linear-gradient(40deg, var(--color-primary) 0%, var(--color-primary-element-light) 100%);
+	color: var(--color-primary-text);
+}
+
+.messageList, .messageView {
+	background-color: var(--color-main-background, #fff);
+	border-color: var(--color-border);
+	border-radius: var(--border-radius);
+}
+
+#messageItem {
+	color: var(--main-color, #000);
+}
+.messageView .messageItemHeader,
+#messageItem .attachmentsPlace,
+#messageItem .attachmentsControls,
+#messageItem .bodySubHeader > * {
+	background-color: var(--color-main-background, #eee);
+}
+
+#V-MailFolderList.focused .b-content,
+#V-MailMessageList.focused .messageList,
+#V-MailMessageView.focused .messageView {
+	border-color: var(--color-border-dark);
+	box-shadow: 0 2px 8px var(--color-box-shadow);
+}
+
+#rl-app button.btn:not(.button-vue) {
+	color: var(--color-primary-text);
+	background-color: var(--color-primary-element);
+}

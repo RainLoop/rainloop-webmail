@@ -1,0 +1,145 @@
+/*
+This stylesheet is used when SnappyMail runs in embed mode.
+*/
+#content.app-snappymail {
+	max-height: 100%;
+}
+#content #rl-app {
+	min-width: 100%;
+	min-height: 100%;
+}
+
+.squire-wysiwyg {
+	min-width: 100%;
+	min-height: 100%;
+}
+
+#V-AdminPane .btn-logout {
+	display: none;
+}
+
+#rl-app select,
+#rl-app input
+{
+	min-height: auto;
+	height: auto;
+	margin: 0;
+	padding: 3px;
+}
+#rl-app .select, #rl-app select {
+	padding-right: 1.5em !important;
+}
+
+#rl-app button.btn:not(.button-vue) {
+	min-height: auto;
+	height: auto;
+	margin: 0;
+	padding: 0 12px;
+	line-height: 2;
+}
+
+#rl-app .form-horizontal .control-group > :not(label)
+{
+	margin-left: 20px;
+}
+
+#rl-app .LoginView .fontastic + input {
+	padding-left: 30px;
+}
+
+#rl-app .loading::after {
+	display: none;
+}
+
+#rl-app .squire-plain, #rl-app .squire-wysiwyg {
+	font-size: 13px;
+	height: 100%;
+	line-height: 16px;
+	min-height: 200px;
+}
+
+#rl-app tbody tr:hover {
+	background-color: inherit;
+}
+
+#rl-app table {
+	white-space: inherit;
+}
+
+#rl-app .b-text-part ul {
+	list-style: initial;
+}
+
+body > header ul {
+	margin: 0;
+}
+
+#rl-app h3 {
+	color: inherit;
+}
+
+.messageListItem * {
+	cursor: pointer;
+}
+
+/**
+ * Firefox < 98
+ * https://github.com/the-djmaze/snappymail/issues/673
+ */
+#rl-app dialog.polyfill {
+	margin-top: 50px;
+	max-height: calc(100vh - 60px);
+}
+
+/**
+ * hampoelz
+ * https://github.com/the-djmaze/snappymail/issues/96#issuecomment-1279783076
+ */
+
+.messageList {
+	margin: 0 5px 0 0;
+}
+
+a.selectable {
+	margin: 2px;
+	line-height: inherit !important;
+	border-radius: var(--border-radius-pill);
+}
+
+a.selectable::after {
+	display: block;
+	margin: 0 !important;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.btn {
+	border: initial !important;
+}
+
+.btn-group > .btn {
+	border-radius: 0;
+}
+.btn-group > .btn:first-child {
+	border-top-left-radius: var(--border-radius-pill, 3px);
+	border-bottom-left-radius: var(--border-radius-pill, 3px);
+}
+.btn-group > .btn:last-child {
+	border-top-right-radius: var(--border-radius-pill, 3px);
+	border-bottom-right-radius: var(--border-radius-pill, 3px);
+}
+
+@media print {
+	#body-user #header {
+		display: none;
+	}
+	#content {
+		padding-top: 0;
+	}
+}
+
+@media screen and (max-width: 799px) {
+	#body-user #rl-left {
+		top: 50px;
+	}
+}

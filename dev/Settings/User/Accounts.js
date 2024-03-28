@@ -1,56 +1,54 @@
-import window from 'window';
-import _ from '_';
 import ko from 'ko';
 
-import { Capa, StorageResultType } from 'Common/Enums';
-import { root } from 'Common/Links';
+//import { koComputable } from 'External/ko';
+import { SettingsCapa, SettingsGet } from 'Common/Globals';
+import { loadAccountsAndIdentities } from 'Common/UtilsUser';
 
-import { capa } from 'Storage/Settings';
+import { AccountUserStore } from 'Stores/User/Account';
+import { IdentityUserStore } from 'Stores/User/Identity';
+import { SettingsUserStore } from 'Stores/User/Settings';
+import Remote from 'Remote/User/Fetch';
 
-import AccountStore from 'Stores/User/Account';
-import IdentityStore from 'Stores/User/Identity';
-import Remote from 'Remote/User/Ajax';
+import { showScreenPopup } from 'Knoin/Knoin';
 
-import { getApp } from 'Helper/Apps/User';
+import { AccountPopupView } from 'View/Popup/Account';
+import { IdentityPopupView } from 'View/Popup/Identity';
 
-import { showScreenPopup, routeOff, setHash } from 'Knoin/Knoin';
-
-class AccountsUserSettings {
+export class UserSettingsAccounts /*extends AbstractViewSettings*/ {
 	constructor() {
-		this.allowAdditionalAccount = capa(Capa.AdditionalAccounts);
-		this.allowIdentities = capa(Capa.Identities);
+		this.allowAdditionalAccount = SettingsCapa('AdditionalAccounts');
+		this.allowIdentities = SettingsCapa('Identities');
 
-		this.accounts = AccountStore.accounts;
-		this.identities = IdentityStore.identities;
+		this.accounts = AccountUserStore;
+		this.loading = AccountUserStore.loading;
+		this.identities = IdentityUserStore;
+		this.mainEmail = SettingsGet('mainEmail');
 
-		this.accountForDeletion = ko.observable(null).deleteAccessHelper();
-		this.identityForDeletion = ko.observable(null).deleteAccessHelper();
-	}
+		this.accountForDeletion = ko.observable(null).askDeleteHelper();
+		this.identityForDeletion = ko.observable(null).askDeleteHelper();
 
-	scrollableOptions(wrapper) {
-		return {
-			handle: '.drag-handle',
-			containment: wrapper || 'parent',
-			axis: 'y'
-		};
+		this.showUnread = SettingsUserStore.showUnreadCount;
+		SettingsUserStore.showUnreadCount.subscribe(value => Remote.saveSetting('ShowUnreadCount', value));
+
+//		this.additionalAccounts = koComputable(() => AccountUserStore.filter(account => account.isAdditional()));
 	}
 
 	addNewAccount() {
-		showScreenPopup(require('View/Popup/Account'));
+		showScreenPopup(AccountPopupView);
 	}
 
 	editAccount(account) {
-		if (account && account.canBeEdit()) {
-			showScreenPopup(require('View/Popup/Account'), [account]);
+		if (account?.isAdditional()) {
+			showScreenPopup(AccountPopupView, [account]);
 		}
 	}
 
 	addNewIdentity() {
-		showScreenPopup(require('View/Popup/Identity'));
+		showScreenPopup(IdentityPopupView);
 	}
 
 	editIdentity(identity) {
-		showScreenPopup(require('View/Popup/Identity'), [identity]);
+		showScreenPopup(IdentityPopupView, [identity]);
 	}
 
 	/**
@@ -58,23 +56,20 @@ class AccountsUserSettings {
 	 * @returns {void}
 	 */
 	deleteAccount(accountToRemove) {
-		if (accountToRemove && accountToRemove.deleteAccess()) {
+		if (accountToRemove?.askDelete()) {
 			this.accountForDeletion(null);
-			if (accountToRemove) {
-				this.accounts.remove((account) => accountToRemove === account);
+			this.accounts.remove(account => accountToRemove === account);
 
-				Remote.accountDelete((result, data) => {
-					if (StorageResultType.Success === result && data && data.Result && data.Reload) {
-						routeOff();
-						setHash(root(), true);
-						routeOff();
-
-						_.defer(() => window.location.reload());
-					} else {
-						getApp().accountsAndIdentities();
-					}
-				}, accountToRemove.email);
-			}
+			Remote.request('AccountDelete', (iError, data) => {
+				if (!iError && data.Reload) {
+					rl.route.root();
+					setTimeout(() => location.reload(), 1);
+				} else {
+					loadAccountsAndIdentities();
+				}
+			}, {
+				emailToDelete: accountToRemove.email
+			});
 		}
 	}
 
@@ -83,42 +78,29 @@ class AccountsUserSettings {
 	 * @returns {void}
 	 */
 	deleteIdentity(identityToRemove) {
-		if (identityToRemove && identityToRemove.deleteAccess()) {
+		if (identityToRemove?.askDelete()) {
 			this.identityForDeletion(null);
-
-			if (identityToRemove) {
-				IdentityStore.identities.remove((oIdentity) => identityToRemove === oIdentity);
-
-				Remote.identityDelete(() => {
-					getApp().accountsAndIdentities();
-				}, identityToRemove.id);
-			}
+			IdentityUserStore.remove(oIdentity => identityToRemove === oIdentity);
+			Remote.request('IdentityDelete', () => rl.app.accountsAndIdentities(), {
+				idToDelete: identityToRemove.id()
+			});
 		}
 	}
 
 	accountsAndIdentitiesAfterMove() {
-		Remote.accountsAndIdentitiesSortOrder(null, AccountStore.accountsEmails.peek(), IdentityStore.identitiesIDS.peek());
+		Remote.request('AccountsAndIdentitiesSortOrder', null, {
+			Accounts: AccountUserStore.filter(item => item.isAdditional()).map(item => item.email),
+			Identities: IdentityUserStore.map(item => (item ? item.id() : ""))
+		});
 	}
 
 	onBuild(oDom) {
-		const self = this;
+		oDom.addEventListener('click', event => {
+			let el = event.target.closestWithin('.accounts-list .e-action', oDom);
+			el && ko.dataFor(el) && this.editAccount(ko.dataFor(el));
 
-		oDom
-			.on('click', '.accounts-list .account-item .e-action', function() {
-				// eslint-disable-line prefer-arrow-callback
-				const account = ko.dataFor(this); // eslint-disable-line no-invalid-this
-				if (account) {
-					self.editAccount(account);
-				}
-			})
-			.on('click', '.identities-list .identity-item .e-action', function() {
-				// eslint-disable-line prefer-arrow-callback
-				const identity = ko.dataFor(this); // eslint-disable-line no-invalid-this
-				if (identity) {
-					self.editIdentity(identity);
-				}
-			});
+			el = event.target.closestWithin('.identities-list .e-action', oDom);
+			el && ko.dataFor(el) && this.editIdentity(ko.dataFor(el));
+		});
 	}
 }
-
-export { AccountsUserSettings, AccountsUserSettings as default };

@@ -1,13 +1,5 @@
-import _ from '_';
-import ko from 'ko';
+import { koArrayWithDestroy } from 'External/ko';
 
-class IdentityUserStore {
-	constructor() {
-		this.identities = ko.observableArray([]);
-		this.identities.loading = ko.observable(false).extend({ throttle: 100 });
+export const IdentityUserStore = koArrayWithDestroy();
 
-		this.identitiesIDS = ko.computed(() => _.compact(_.map(this.identities(), (item) => (item ? item.id : null))));
-	}
-}
-
-export default new IdentityUserStore();
+IdentityUserStore.loading = ko.observable(false).extend({ debounce: 100 });

@@ -1,0 +1,9 @@
+<label class="e-component e-checkbox material-design" data-bind="css: { 'disabled': !enable() }">
+	<div>
+		<input type="checkbox" value="1" data-bind="checked: value, enable: enable, attr: {name: name}"/>
+		<div role="checkbox"></div>
+	</div>
+<!-- ko if: label -->
+	<span data-bind="attr: {'data-i18n': label}"></span>
+<!-- /ko -->
+</label>

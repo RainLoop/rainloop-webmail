@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Yenile",
+	"NO_SCRIPT_TITLE": "JavaScript bu uygulama için gereklidir.",
+	"NO_SCRIPT_DESC": "JavaScript desteği tarayıcınızda mevcut değil.\nTarayıcı ayarlarında JavaScript desteğini etkinleştirin ve yeniden deneyin.\n",
+	"NO_COOKIE_TITLE": "Çerezler desteği bu uygulama için gerekli.",
+	"NO_COOKIE_DESC": "Çerezler destek tarayıcınızda mevcut değil.\nTarayıcı ayarlarında Cookie desteği etkinleştirin ve yeniden deneyin.\n",
+	"BAD_BROWSER_TITLE": "Tarayıcınız çok eski.",
+	"BAD_BROWSER_DESC": "Uygulamanın tüm özelliklerini kullanmak için,\nBu tarayıcılardan birini indirmek ve yükleyin:\n"
+}

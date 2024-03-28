@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Ladda om",
+	"NO_SCRIPT_TITLE": "JavaScript krävs för denna applikation.",
+	"NO_SCRIPT_DESC": "JavaScript stöd är inte tillgängligt i din webläsare.\nVänligen aktivera JavaScript stöd i din webbläsares inställningar och försök igen.\n",
+	"NO_COOKIE_TITLE": "Cookies stöd krävs för denna applikation.",
+	"NO_COOKIE_DESC": "Cookies stöd är inte tillgängligt i din webbläsare.\nVänligen aktivera Cookie stöd i webbläsarens inställningar och försök igen.\n",
+	"BAD_BROWSER_TITLE": "Din webbläsare är föråldrad.",
+	"BAD_BROWSER_DESC": "För att kunna använda alla funktioner i ansökan,\nhämta och installera en av dessa webbläsare:\n"
+}

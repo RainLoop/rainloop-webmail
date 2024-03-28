@@ -1,0 +1,29 @@
+<div class="control-group" data-bind="css: {'error': actionValueError}">
+	<input type="text" class="span3" data-bind="value: actionValue"
+		data-i18n="[placeholder]GLOBAL/EMAIL">
+</div>
+<div class="control-group">
+	<div>
+		<div data-bind="component: {
+			name: 'Checkbox',
+			params: {
+				label: 'POPUPS_FILTER/KEEP_LABEL',
+				value: keep
+			}
+		}"></div>
+		<div data-bind="visible: $root.allowMarkAsRead, component: {
+			name: 'Checkbox',
+			params: {
+				label: 'POPUPS_FILTER/MARK_AS_READ_LABEL',
+				value: markAsRead
+			}
+		}"></div>
+		<div data-bind="component: {
+			name: 'Checkbox',
+			params: {
+				label: 'POPUPS_FILTER/STOP_LABEL',
+				value: stop
+			}
+		}"></div>
+	</div>
+</div>

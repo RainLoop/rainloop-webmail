@@ -1,30 +1,22 @@
-html {
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
-	font-family: Arial, Verdana, Geneva, sans-serif;
-	height: 100%;
+
+html.list-loading body {
+/*	cursor: wait;*/
+	cursor: progress;
 }
 
-body {
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
-	background-color: #e3e3e3;
-	font-family: Arial, Verdana, Geneva, sans-serif;
-
-	-webkit-touch-callout: none;
-
-	position: absolute;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
-	height: 100%;
+.toggleLeft::before {
+	content: '❮';
+}
+html.rl-left-panel-disabled .toggleLeft::before {
+	content: '❯';
 }
 
-textarea {
-	resize: none;
+@media screen and (min-width: @maxMobileWidth + 1px) {
+	#rl-app {
+		background-image: var(--main-bg-image);
+		background-size: var(--main-bg-size);
+		background-repeat: var(--main-bg-repeat);
+	}
 }
 
 option:disabled {
@@ -32,34 +24,111 @@ option:disabled {
 	cursor: not-allowed;
 }
 
-body:before {
-	content: "";
-	position: fixed;
-	top: -10px;
-	left: 0;
-	width: 100%;
-	height: 8px;
-	z-index: 100;
-	box-shadow: 0px 0px 10px rgba(0,0,0,.6);
-}
-
-* {
+*, select:focus {
 	outline: none;
-}
-
-select:focus {
-    outline: none;
-}
-
-html.mobile *, html.rl-mobile * {
 	-webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
-input[type="search"]{
-	box-sizing: content-box;
+#rl-content:not([hidden]) {
+	display:flex;
+	height: 100%;
 }
 
-input::-ms-clear,
-input::-ms-reveal {
-	display: none;
+dialog::backdrop {
+	background: rgba(0,0,0,0.5);
+}
+.dialog-backdrop {
+	background: rgba(0,0,0,0.5);
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+dialog {
+	border: 0;
+	background-color: var(--dialog-bg-clr, #fff);
+	border: 1px solid var(--dialog-border-clr, rgba(0,0,0,.3));
+	border-radius: var(--dialog-border-radius, 6px);
+	box-shadow: 0 5px 80px rgba(0,0,0,0.3);
+	color: var(--dialog-clr, #333);
+	display: flex;
+	flex-direction: column;
+	margin: 10px auto;
+	max-height: calc(100vh - var(--smDialogShrink));
+	max-height: calc(100dvh - var(--smDialogShrink));
+	max-width: 560px;
+	overflow: auto;
+	padding: 0;
+	position: fixed;
+	transition: all .2s ease-out;
+	top: 0;
+	width: calc(100% - 20px);
+}
+dialog:not([open]) {
+	display: none !important;
+}
+dialog.animate {
+	opacity: 1;
+}
+dialog:not(.animate) {
+	background-color: rgba(0,0,0,0);
+	opacity: 0;
+	top: -25%;
+}
+
+/**
+ * https://github.com/the-djmaze/snappymail/issues/686
+ */
+@media screen and (max-width: @maxMobileWidth) {
+	dialog {
+		margin: 0 auto;
+/*		max-height: calc(100vh - 86px);*/
+/*		max-height: 100dvh;*/
+		width: 100%;
+	}
+}
+
+dialog > header {
+	padding: 9px 15px;
+	border-bottom: 1px solid var(--border-color, #ddd);
+
+	// Close icon
+	.close {
+		margin-top: 2px;
+	}
+
+	// Heading
+	h3 {
+		margin: 0;
+		line-height: 30px;
+	}
+}
+
+// Body (where all modal content resides)
+dialog .modal-body {
+	overflow: auto;
+	margin: 0;
+	padding: 15px;
+	position: relative;
+}
+
+// Footer (for actions)
+dialog > footer {
+	padding: 9px 15px;
+	margin-bottom: 0;
+	text-align: var(--right, right); // right align buttons
+	border-top: 1px solid var(--border-color, #ddd);
+	border-radius: 0 0 var(--dialog-border-radius, 6px) var(--dialog-border-radius, 6px);
+
+	// Properly space out buttons
+	.btn + .btn {
+		margin-left: 5px;
+		margin-bottom: 0; // account for input[type="submit"] which gets the bottom margin like all other inputs
+	}
+	// but override that for button groups
+	.btn-group .btn + .btn {
+		margin-left: -1px;
+	}
 }

@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Oppdater",
+	"NO_SCRIPT_TITLE": "Dette programmet krever Javascript.",
+	"NO_SCRIPT_DESC": "Nettleseren din støtter ikke Javascript.\nSlå på Javascript-støtte i nettleserens innstillinger, og prøv på nytt.\n",
+	"NO_COOKIE_TITLE": "Dette programmet krever støtte for informasjonskapsler («cookies»).",
+	"NO_COOKIE_DESC": "Nettleseren din støtter ikke bruk av informasjonskapsler («cookies»).\nSlå på cookie-støtte i nettleserens innstillinger, og prøv på nytt.\n",
+	"BAD_BROWSER_TITLE": "Nettleseren din er utdatert.",
+	"BAD_BROWSER_DESC": "Hvis du vil bruke alle funksjonene i programmet,\nmå du laste ned og installere en av disse nettleserne:\n"
+}

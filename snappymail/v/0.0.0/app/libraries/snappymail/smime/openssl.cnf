@@ -1,0 +1,154 @@
+HOME			= .
+openssl_conf = openssl_init
+config_diagnostics = 1
+oid_section = new_oids
+[ new_oids ]
+tsa_policy1 = 1.2.3.4.1
+tsa_policy2 = 1.2.3.4.5.6
+tsa_policy3 = 1.2.3.4.5.7
+[openssl_init]
+providers = provider_sect
+ssl_conf = ssl_module
+[provider_sect]
+default = default_sect
+[default_sect]
+[ ssl_module ]
+system_default = crypto_policy
+[ crypto_policy ]
+.include = /etc/crypto-policies/back-ends/opensslcnf.config
+[ ca ]
+default_ca	= CA_default
+[ CA_default ]
+dir		= ./demoCA
+certs		= $dir/certs
+crl_dir		= $dir/crl
+database	= $dir/index.txt
+new_certs_dir	= $dir/newcerts
+certificate	= $dir/cacert.pem
+serial		= $dir/serial
+crlnumber	= $dir/crlnumber
+crl		= $dir/crl.pem
+private_key	= $dir/private/cakey.pem
+x509_extensions	= usr_cert
+name_opt 	= ca_default
+cert_opt 	= ca_default
+default_days	= 365
+default_crl_days= 30
+default_md	= default
+preserve	= no
+policy		= policy_match
+[ policy_match ]
+countryName		= match
+stateOrProvinceName	= match
+organizationName	= match
+organizationalUnitName	= optional
+commonName		= supplied
+emailAddress		= optional
+[ policy_anything ]
+countryName		= optional
+stateOrProvinceName	= optional
+localityName		= optional
+organizationName	= optional
+organizationalUnitName	= optional
+commonName		= supplied
+emailAddress		= optional
+[ req ]
+default_bits		= 2048
+default_keyfile 	= privkey.pem
+distinguished_name	= req_distinguished_name
+attributes		= req_attributes
+x509_extensions	= v3_ca
+string_mask = utf8only
+[ req_distinguished_name ]
+commonName			= Common Name (e.g. server FQDN or YOUR name)
+commonName_max			= 64
+emailAddress			= Email Address
+emailAddress_max		= 64
+[ req_attributes ]
+challengePassword		= A challenge password
+challengePassword_min		= 4
+challengePassword_max		= 20
+unstructuredName		= An optional company name
+[ usr_cert ]
+basicConstraints=CA:FALSE
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid,issuer
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+[ v3_ca ]
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid:always,issuer
+basicConstraints = critical,CA:true
+[ crl_ext ]
+authorityKeyIdentifier=keyid:always
+[ proxy_cert_ext ]
+basicConstraints=CA:FALSE
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid,issuer
+proxyCertInfo=critical,language:id-ppl-anyLanguage,pathlen:3,policy:foo
+[ tsa ]
+default_tsa = tsa_config1
+[ tsa_config1 ]
+dir		= ./demoCA
+serial		= $dir/tsaserial
+crypto_device	= builtin
+signer_cert	= $dir/tsacert.pem
+certs		= $dir/cacert.pem
+signer_key	= $dir/private/tsakey.pem
+signer_digest  = sha256
+default_policy	= tsa_policy1
+other_policies	= tsa_policy2, tsa_policy3
+digests     = sha1, sha256, sha384, sha512
+accuracy	= secs:1, millisecs:500, microsecs:100
+clock_precision_digits  = 0
+ordering		= yes
+tsa_name		= yes
+ess_cert_id_chain	= no
+ess_cert_id_alg		= sha1
+[insta]
+server = pki.certificate.fi:8700
+path = pkix/
+recipient = "/C=FI/O=Insta Demo/CN=Insta Demo CA"
+ignore_keyusage = 1
+unprotected_errors = 1
+extracertsout = insta.extracerts.pem
+ref = 3078
+secret = pass:insta
+cmd = ir
+subject = "/CN=openssl-cmp-test"
+newkey = insta.priv.pem
+out_trusted = apps/insta.ca.crt
+certout = insta.cert.pem
+[pbm]
+ref = $insta::ref
+secret = $insta::secret
+[signature]
+trusted = $insta::out_trusted
+secret =
+key = $insta::newkey
+cert = $insta::certout
+[ir]
+cmd = ir
+[cr]
+cmd = cr
+[kur]
+cmd = kur
+oldcert = $insta::certout
+[rr]
+cmd = rr
+oldcert = $insta::certout
+
+[ snappymail_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+extendedKeyUsage = clientAuth, emailProtection
+subjectAltName = email:copy
+
+[ snappymail_ca ]
+basicConstraints = critical,CA:true
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+extendedKeyUsage = clientAuth, emailProtection
+subjectAltName = email:copy
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer

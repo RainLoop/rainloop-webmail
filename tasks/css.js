@@ -1,24 +1,35 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under MIT */
 const gulp = require('gulp');
 
-const concat = require('gulp-concat-util');
+const concat = require('gulp-concat');
 const rename = require('gulp-rename');
 const replace = require('gulp-replace');
-const plumber = require('gulp-plumber');
-const gulpif = require('gulp-if');
 const eol = require('gulp-eol');
-const livereload = require('gulp-livereload');
 const filter = require('gulp-filter');
 const expect = require('gulp-expect-file');
+const gcmq = require('gulp-group-css-media-queries');
+const less = require('gulp-less');
 
 const { config } = require('./config');
 const { del } = require('./common');
 
+const cleanCss = require('gulp-clean-css');
 const cssClean = () => del(config.paths.staticCSS + '/*.css');
 
+const cssBootBuild = () => {
+	const
+		src = config.paths.css.boot.src;
+	return gulp
+		.src(src)
+		.pipe(expect.real({ errorOnFailure: true }, src))
+		.pipe(concat(config.paths.css.boot.name))
+		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
+		.pipe(eol('\n', true))
+		.pipe(gulp.dest(config.paths.staticCSS));
+};
+
 const cssMainBuild = () => {
-	const autoprefixer = require('gulp-autoprefixer'),
-		less = require('gulp-less'),
+	const
 		lessFilter = filter('**/*.less', { restore: true }),
 		src = config.paths.css.main.src.concat([config.paths.less.main.src]);
 
@@ -26,7 +37,6 @@ const cssMainBuild = () => {
 		.src(src)
 		.pipe(expect.real({ errorOnFailure: true }, src))
 		.pipe(lessFilter)
-		.pipe(gulpif(config.watch, plumber()))
 		.pipe(
 			less({
 				'paths': config.paths.less.main.options.paths
@@ -34,48 +44,63 @@ const cssMainBuild = () => {
 		)
 		.pipe(lessFilter.restore)
 		.pipe(concat(config.paths.css.main.name))
-		.pipe(autoprefixer())
 		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
 		.pipe(eol('\n', true))
-		.pipe(gulp.dest(config.paths.staticCSS))
-		.pipe(livereload());
+		.pipe(gulp.dest(config.paths.staticCSS));
 };
 
-const cssSocialBuild = () => {
-	const autoprefixer = require('gulp-autoprefixer'),
-		src = config.paths.css.social.src;
+const cssAdminBuild = () => {
+	const
+		lessFilter = filter('**/*.less', { restore: true }),
+		src = config.paths.css.admin.src;
+
 	return gulp
 		.src(src)
 		.pipe(expect.real({ errorOnFailure: true }, src))
-		.pipe(concat(config.paths.css.social.name))
-		.pipe(autoprefixer())
+		.pipe(lessFilter)
+		.pipe(
+			less({
+				'paths': config.paths.less.main.options.paths
+			})
+		)
+		.pipe(lessFilter.restore)
+		.pipe(concat(config.paths.css.admin.name))
 		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
+		.pipe(eol('\n', true))
+		.pipe(gulp.dest(config.paths.staticCSS));
+};
+
+const cssBootMin = () => {
+	return gulp
+		.src(config.paths.staticCSS + config.paths.css.boot.name)
+		.pipe(cleanCss())
+		.pipe(rename({ suffix: '.min' }))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(config.paths.staticCSS));
 };
 
 const cssMainMin = () => {
-	const cleanCss = require('gulp-clean-css');
 	return gulp
 		.src(config.paths.staticCSS + config.paths.css.main.name)
+		.pipe(gcmq())
 		.pipe(cleanCss())
 		.pipe(rename({ suffix: '.min' }))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(config.paths.staticCSS));
 };
 
-const cssSocialMin = () => {
-	const cleanCss = require('gulp-clean-css');
+const cssAdminMin = () => {
 	return gulp
-		.src(config.paths.staticCSS + config.paths.css.social.name)
+		.src(config.paths.staticCSS + config.paths.css.admin.name)
+		.pipe(gcmq())
 		.pipe(cleanCss())
 		.pipe(rename({ suffix: '.min' }))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(config.paths.staticCSS));
 };
 
-const cssBuild = gulp.parallel(cssMainBuild, cssSocialBuild);
-const cssMin = gulp.parallel(cssMainMin, cssSocialMin);
+const cssBuild = gulp.parallel(cssBootBuild, cssMainBuild, cssAdminBuild);
+const cssMin = gulp.parallel(cssBootMin, cssMainMin, cssAdminMin);
 
 const cssLint = (done) => done();
 

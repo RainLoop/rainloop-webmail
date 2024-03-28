@@ -1,113 +1,87 @@
-import ko from 'ko';
-import key from 'key';
-
-import { KeyState } from 'Common/Enums';
-import { isFunc } from 'Common/Utils';
 import { i18n } from 'Common/Translator';
+import { isFunction } from 'Common/Utils';
+import { addObservablesTo } from 'External/ko';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-import { popup } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
-
-@popup({
-	name: 'View/Popup/Ask',
-	templateID: 'PopupsAsk'
-})
-class AskPopupView extends AbstractViewNext {
+export class AskPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('Ask');
 
-		this.askDesc = ko.observable('');
-		this.yesButton = ko.observable('');
-		this.noButton = ko.observable('');
-
-		this.yesFocus = ko.observable(false);
-		this.noFocus = ko.observable(false);
-
-		this.fYesAction = null;
-		this.fNoAction = null;
-
-		this.bFocusYesOnShow = true;
-		this.bDisabeCloseOnEsc = true;
-		this.sDefaultKeyScope = KeyState.PopupAsk;
-	}
-
-	clearPopup() {
-		this.askDesc('');
-		this.yesButton(i18n('POPUPS_ASK/BUTTON_YES'));
-		this.noButton(i18n('POPUPS_ASK/BUTTON_NO'));
-
-		this.yesFocus(false);
-		this.noFocus(false);
+		addObservablesTo(this, {
+			askDesc: '',
+			yesButton: '',
+			noButton: '',
+			username: '',
+			askUsername: false,
+			passphrase: '',
+			askPass: false,
+			remember: true,
+			askRemeber: false
+		});
 
 		this.fYesAction = null;
 		this.fNoAction = null;
+
+		this.focusOnShow = true;
 	}
 
 	yesClick() {
-		this.cancelCommand();
+		this.close();
 
-		if (isFunc(this.fYesAction)) {
-			this.fYesAction.call(null);
-		}
+		isFunction(this.fYesAction) && this.fYesAction(this);
 	}
 
 	noClick() {
-		this.cancelCommand();
+		this.close();
 
-		if (isFunc(this.fNoAction)) {
-			this.fNoAction.call(null);
-		}
+		isFunction(this.fNoAction) && this.fNoAction(this);
 	}
 
 	/**
 	 * @param {string} sAskDesc
 	 * @param {Function=} fYesFunc
 	 * @param {Function=} fNoFunc
-	 * @param {string=} sYesButton
-	 * @param {string=} sNoButton
-	 * @param {boolean=} bFocusYesOnShow = true
+	 * @param {boolean=} focusOnShow = true
 	 * @returns {void}
 	 */
-	onShow(askDesc, fYesFunc = null, fNoFunc = null, yesButton = '', noButton = '', isFocusYesOnShow = true) {
-		this.clearPopup();
-
-		this.fYesAction = fYesFunc || null;
-		this.fNoAction = fNoFunc || null;
-
-		this.askDesc(askDesc || '');
-
-		if (yesButton) {
-			this.yesButton(yesButton);
-		}
-
-		if (noButton) {
-			this.noButton(noButton);
-		}
-
-		this.bFocusYesOnShow = !!isFocusYesOnShow;
+	onShow(sAskDesc, fYesFunc = null, fNoFunc = null, focusOnShow = true, ask = 0, btnText = '') {
+		this.askDesc(sAskDesc || '');
+		this.askUsername(ask & 2);
+		this.askPass(ask & 1);
+		this.askRemeber(ask & 4);
+		this.username('');
+		this.passphrase('');
+		this.remember(true);
+		this.yesButton(i18n(btnText || 'GLOBAL/YES'));
+		this.noButton(i18n(ask ? 'GLOBAL/CANCEL' : 'GLOBAL/NO'));
+		this.fYesAction = fYesFunc;
+		this.fNoAction = fNoFunc;
+		this.focusOnShow = focusOnShow
+			? (ask ? 'input[type="'+(ask&2?'text':'password')+'"]' : '.buttonYes')
+			: '';
 	}
 
-	onShowWithDelay() {
-		if (this.bFocusYesOnShow) {
-			this.yesFocus(true);
-		}
+	afterShow() {
+		this.focusOnShow && this.querySelector(this.focusOnShow).focus();
+	}
+
+	onClose() {
+		this.noClick();
+		return false;
 	}
 
 	onBuild() {
-		key('tab, shift+tab, right, left', KeyState.PopupAsk, () => {
-			if (this.yesFocus()) {
-				this.noFocus(true);
-			} else {
-				this.yesFocus(true);
+//		shortcuts.add('tab', 'shift', 'Ask', () => {
+		shortcuts.add('tab,arrowright,arrowleft', '', 'Ask', () => {
+			let yes = this.querySelector('.buttonYes'),
+				no = this.querySelector('.buttonNo');
+			if (yes.matches(':focus')) {
+				no.focus();
+				return false;
+			} else if (no.matches(':focus')) {
+				yes.focus();
+				return false;
 			}
-			return false;
-		});
-
-		key('esc', KeyState.PopupAsk, () => {
-			this.noClick();
-			return false;
 		});
 	}
 }
-
-export { AskPopupView, AskPopupView as default };

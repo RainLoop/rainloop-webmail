@@ -1,0 +1,185 @@
+{
+	"GLOBAL": {
+		"ADD": "Hinzufügen",
+		"CLOSE": "Schließen",
+		"SAVE": "Speichern",
+		"TEST": "Testen",
+		"UPDATE": "Aktualisieren",
+		"USERNAME": "Nutzername",
+		"PASSWORD": "Passwort",
+		"CANCEL": "Abbrechen",
+		"SEARCH": "Suchen"
+	},
+	"LOGIN": {
+		"LABEL_LOGIN": "Benutzer",
+		"LABEL_TOTP": "TOTP-Code",
+		"BUTTON_LOGIN": "Im Adminpanel anmelden"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "Adminpanel"
+	},
+	"SETTINGS_LABELS": {
+		"GENERAL": "Allgemein",
+		"LOGIN": "Anmeldung",
+		"BRANDING": "Branding",
+		"CONTACTS": "Kontakte",
+		"DOMAINS": "Domains",
+		"SECURITY": "Sicherheit",
+		"PACKAGES": "Erweiterungen",
+		"CONFIG": "Konfig",
+		"ABOUT": "Über"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "Oberfläche",
+		"LABEL_LANGUAGE": "Sprache",
+		"LABEL_LANGUAGE_ADMIN": "Sprache (Adminpanel)",
+		"LABEL_THEME": "Thema",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Sprachauswahl in den Einstellungen zulassen",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Themenauswahl in den Einstellungen zulassen",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Hintergrundauswahl in den Einstellungen zulassen",
+		"LABEL_SHOW_THUMBNAILS": "Vorschaubilder anzeigen (Anhänge)",
+		"LEGEND_MAIN": "Allgemein",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "Größenlimit für Anhänge",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Zusätzliche Konten erlauben",
+		"LABEL_ALLOW_IDENTITIES": "Mehrere Identitäten erlauben",
+		"ALERT_DATA_ACCESS": "Auf den \"Data\"-Ordner kann zugegriffen werden. Konfiguriere den Ordner so, dass von extern nicht zugegriffen werden kann. Weitere Informationen:",
+		"ALERT_WARNING": "Warnung!",
+		"HTML_ALERT_WEAK_PASSWORD": "Sie verwenden das Standard-Admin-Passwort.\n<br>\nBitte <strong><a href=\"#\/security\">ändern<\/a><\/strong> Sie\n das Passwort aus Sicherheitsgründen!"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "Anmeldebildschirm",
+		"LABEL_DEFAULT_DOMAIN": "Standarddomain",
+		"LABEL_DETERMINE_USER_DOMAIN": "Versuche Domain des Benutzers zu ermitteln",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Sprachauswahl bei der Anmeldung zulassen",
+		"LABEL_DETERMINE_USER_LANGUAGE": "Versuche Sprache des Benutzers zu ermitteln"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Branding",
+		"LABEL_PAGE_TITLE": "Seitentitel",
+		"LABEL_LOADING_DESCRIPTION": "Ladevorgang-Beschreibung",
+		"LABEL_FAVICON_URL": "Favicon"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "Kontakte",
+		"LEGEND_STORAGE": "Speicher (PDO)",
+		"LABEL_ENABLE_CONTACTS": "Kontakte aktivieren",
+		"LABEL_ALLOW_SYNC": "Synchronisierung von Kontakten erlauben (mit externem CardDAV-Server)",
+		"LABEL_STORAGE_TYPE": "Typ",
+		"LABEL_STORAGE_DSN": "DSN",
+		"LABEL_STORAGE_USER": "Benutzer",
+		"LABEL_STORAGE_PASSWORD": "Passwort",
+		"SQLITE_GLOBAL": "Use a global DB instead of per account",
+		"ALERT_NOTICE": "Hinweis!",
+		"SUGGESTIONS_LIMIT": "Limit für Empfehlungen",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Verwenden Sie diesen Datenbanktyp nicht bei einer hohen Anzahl aktiver Benutzer.",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Ihr System unterstützt keine Kontakte.\n<br>\nSie müssen die <strong>PDO-Erweiterung (SQLite \/ MySQL \/ PostgreSQL)<\/strong> auf Ihrem Server installieren oder aktivieren."
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "Domains",
+		"BUTTON_ADD_DOMAIN": "Domain hinzufügen",
+		"BUTTON_ADD_ALIAS": "Alias hinzufügen",
+		"DELETE_ARE_YOU_SURE": "Sind Sie sicher?",
+		"HTML_DOMAINS_HELPER": "Liste der Domains, die Webmail abrufen darf.\n<br>\nKlicken Sie auf den Namen, um die Domain zu konfigurieren."
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "Sicherheit",
+		"LABEL_USE_IMAGE_PROXY": "Lokalen Proxy für externe Bilder verwenden",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
+		"LABEL_SHOW_PHP_INFO": "PHP-Informationen anzeigen",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Adminpanel-Zugangsdaten",
+		"LABEL_CURRENT_PASSWORD": "Aktuelles Passwort",
+		"LABEL_NEW_PASSWORD": "Neues Passwort",
+		"LABEL_REPEAT_PASSWORD": "Wiederholen",
+		"LABEL_REQUIRE_VERIFICATION": "Verlangen, dass das verwendete SSL-Zertifikat signiert ist",
+		"CRYPTO": "Krypto",
+		"LABEL_ALLOW_SELF_SIGNED": "Selbst-signierte Zertifikate erlauben"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Erweiterungen aktivieren",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Zur Aktualisierung verfügbar",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Zur Installation verfügbar",
+		"LEGEND_INSTALLED_PACKAGES": "Installierte Erweiterungen",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Momentan kann nicht auf das Repository zugegriffen werden."
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "Über",
+		"LABEL_TAG_HINT": "Einfacher, moderner und schneller webbasierter E-Mail-Client",
+		"LABEL_ALL_RIGHTS_RESERVED": "Alle Rechte vorbehalten.",
+		"HINT_READ_CHANGE_LOG": "Bitte Lesen Sie das Changelog vor dem Update.",
+		"HINT_IS_UP_TO_DATE": "SnappyMail ist auf dem neusten Stand.",
+		"HTML_NEW_VERSION": "Neue Version <b>%VERSION%<\/b> verfügbar.",
+		"LABEL_UPDATING": "Aktualisiere",
+		"LABEL_CHECKING": "Überprüfe auf Aktualisierungen",
+		"BUTTON_RELEASES": "Veröffentlichungen"
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "Alias hinzufügen",
+		"LABEL_ALIAS": "Alias",
+		"LABEL_DOMAIN": "Domain"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "Domain hinzufügen",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "Domain \"%NAME%\" hinzufügen",
+		"TITLE_EDIT_DOMAIN": "Domain \"%NAME%\" bearbeiten",
+		"LABEL_NAME": "Name",
+		"NAME_HELPER": "Platzhalter unterstützt",
+		"LABEL_SERVER": "Server",
+		"LABEL_PORT": "Port",
+		"LABEL_SECURE": "Sicherheit",
+		"TIMEOUT": "Timeout",
+		"DISABLE_CAPABILITIES": "Funktionen deaktivieren",
+		"LIMITS": "Grenzwerte",
+		"FOLDERS": "Ordner",
+		"MESSAGES": "Nachrichten",
+		"LABEL_WHITE_LIST": "Whitelist",
+		"SECURE_OPTION_NONE": "Ohne",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Sieve-Skripte erlauben",
+		"LABEL_USE_SHORT_LOGIN": "Kurze Benutzernamen verwenden",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
+		"LABEL_USE_AUTH": "Authentifizierung verwenden",
+		"LABEL_SET_SENDER": "Verwenden Sie die Anmeldung als Absender",
+		"LABEL_AUTH_PLAIN_LINE": "Erzwinge einzelnen AUTH PLAIN Befehl bei der Anmeldung",
+		"LABEL_USE_PHP_MAIL": "PHPs mail()-Funktion verwenden",
+		"BUTTON_WHITE_LIST": "Whitelist",
+		"BUTTON_SIEVE_CONFIGURATION": "Sieve-Konfiguration",
+		"BUTTON_BACK_TO_IMAP": "Zurück zu IMAP-Einstellungen",
+		"BUTTON_BACK": "Zurück",
+		"BUTTON_UPDATE": "Aktualisieren",
+		"NEW_DOMAIN_DESC": "Diese Domain Konfiguration wird es dir möglich machen mit <strong>%NAME%<\/strong> Mailadressen zu arbeiten.",
+		"WHITE_LIST_ALERT": "Liste der User, die Webmail abrufen darf.\nVerwenden Sie Leerzeichen als Trennsymbol."
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "Erweiterung",
+		"DESC_NOTHING_TO_CONFIGURE": "Nichts zu konfigurieren"
+	},
+	"POPUPS_ASK": {
+		"BUTTON_YES": "Ja",
+		"BUTTON_NO": "Nein",
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Sind Sie sicher, dass Sie dieses Fenster schließen möchten?"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "Wählen Sie Ihre Sprache"
+	},
+	"HINTS": {
+		"BETA": "Beta",
+		"WARNING": "Warnung!"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "Domain existiert bereits",
+		"UNKNOWN_ERROR": "Unbekannter Fehler"
+	},
+	"NOTIFICATIONS": {
+		"RequestError": "Anfrage fehlgeschlagen",
+		"RequestAborted": "Anfrage abgebrochen",
+		"RequestTimeout": "Antrag auf Auslieferung",
+		"InvalidToken": "Ungültiger Token",
+		"AuthError": "Authentifizierung fehlgeschlagen",
+		"DomainAlreadyExists": "Diese Domain existiert bereits",
+		"CantSavePluginSettings": "Einstellungen können nicht gespeichert werden",
+		"CantInstallPackage": "Fehler beim Installieren der Erweiterung",
+		"CantDeletePackage": "Fehler beim entfernen der Erweiterung",
+		"InvalidPluginPackage": "Erweiterungspaket ist ungültig",
+		"UnsupportedPluginPackage": "Erweiterungspaket wird nicht unterstützt",
+		"UnknownError": "Unbekannter Fehler"
+	}
+}

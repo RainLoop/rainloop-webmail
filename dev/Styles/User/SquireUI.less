@@ -1,0 +1,153 @@
+
+.squire-toolbar {
+	border-bottom: 1px solid #b6b6b6;
+	min-height: 28px;
+	overflow-x: auto;
+	overflow-y: hidden;
+	padding: 2px;
+	position: relative;
+	white-space: nowrap;
+}
+
+.squire-toolbar input[type="color"] {
+	bottom: 0;
+	left: -100em;
+	opacity: 0;
+	position: absolute;
+	width: 40px;
+}
+
+.squire-toolbar select {
+	font-size: 85%;
+	padding: 4px 1.5em 4px 6px;
+	text-align: var(--left, left);
+	vertical-align: middle;
+	width: 7em;
+}
+.squire-toolbar select[data-action="fontSize"] {
+	width: 5em;
+}
+.squire-toolbar button {
+	font-family: snappymail, var(--fontSans)
+}
+.squire-toolbar button[data-action="bold"] {
+	font-weight: bold;
+}
+.squire-toolbar button[data-action="italic"] {
+	font-style: italic;
+}
+/*
+.squire-toolbar button[data-action="underline"] {
+	text-decoration: underline;
+}
+.squire-toolbar button[data-action="strikethrough"] {
+	text-decoration: line-through;
+}
+*/
+
+.squire-wysiwyg, .squire-plain {
+	height: 100%;
+	line-height: 16px;
+	min-height: 200px;
+	overflow: auto;
+	padding: 10px;
+}
+
+.squire-wysiwyg {
+	font-family: var(--fontSans);
+
+	ul {
+		padding-left: 40px;
+		li {
+			list-style-type: disc !important;
+		}
+	}
+
+	ol {
+		padding-left: 40px;
+		li {
+			list-style-type: decimal !important;
+		}
+	}
+
+	pre, code {
+		border: none;
+		border-radius: 0;
+		display: block;
+		font-family: var(--fontMono);
+		margin: 0;
+		padding: 0;
+		word-break: normal;
+		word-wrap: break-word;
+	}
+
+	code {
+		display: inline;
+		padding: 2px 5px;
+	}
+
+	pre {
+		border-radius: var(--border-radius, 5px);
+		padding: 5px 10px;
+	}
+
+	pre > code {
+		padding: 0;
+	}
+
+	blockquote {
+		border: 0;
+		border-left: 2px solid #444;
+		margin: 5px 0 5px 5px;
+		padding-left: 5px;
+	}
+
+	blockquote p {
+		margin: 0 0 10px;
+		line-height: 20px;
+	}
+
+	img {
+		vertical-align: bottom;
+	}
+}
+
+/* This does make the block element focusable with mouse in Gecko and Webkit so we don't need a <BR>.
+However, arrow up/down still not working.
+Secondly, we can't rely on MUA's what to do with :empty
+.squire-wysiwyg div:empty,
+.squire-wysiwyg div:-moz-only-whitespace {
+	min-height: 16px;
+}
+/* This "placeholder" doesn't work good in Gecko
+.squire-wysiwyg div:empty::before,
+.squire-wysiwyg div:-moz-only-whitespace::before {
+	content: "Start writing here…";
+	opacity: 0.5;
+	user-select: text;
+	-moz-user-select: text;
+}
+*/
+
+.squire-plain {
+	border: 0;
+	border-radius: 0;
+	display: none;
+	font-family: var(--fontMono);
+	margin: 0;
+	resize: none;
+	white-space: pre-wrap;
+	width: 100%;
+}
+
+.squire-mode-source .squire-wysiwyg,
+.squire-mode-wysiwyg .squire-plain,
+.squire-mode-plain .squire-wysiwyg,
+.squire-mode-plain .btn-group:not(#squire-toolgroup-mode) {
+	display: none;
+}
+
+.squire-mode-source .squire-plain,
+.squire-mode-plain .squire-plain {
+	display: block;
+}

@@ -1,0 +1,22 @@
+<div class="control-group" data-bind="css: {'error': actionValueError}">
+	<select class="span3" data-bind="options: $root.folderSelectList, value: $root.selectedFolderValue,
+		optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defaultOptionsAfterRender"></select>
+</div>
+<div class="control-group">
+	<div>
+		<div data-bind="visible: $root.allowMarkAsRead, component: {
+			name: 'Checkbox',
+			params: {
+				label: 'POPUPS_FILTER/MARK_AS_READ_LABEL',
+				value: markAsRead
+			}
+		}"></div>
+		<div data-bind="component: {
+			name: 'Checkbox',
+			params: {
+				label: 'POPUPS_FILTER/STOP_LABEL',
+				value: stop
+			}
+		}"></div>
+	</div>
+</div>

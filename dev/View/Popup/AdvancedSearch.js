@@ -1,158 +1,150 @@
-import _ from '_';
-import ko from 'ko';
+import { addObservablesTo, addComputablesTo } from 'External/ko';
+import { i18n, translateTrigger } from 'Common/Translator';
+import { pString } from 'Common/Utils';
 
-import { trim } from 'Common/Utils';
-import { i18n, trigger as translatorTrigger } from 'Common/Translator';
-import { searchSubtractFormatDateHelper } from 'Common/Momentor';
+import { MessagelistUserStore } from 'Stores/User/Messagelist';
 
-import MessageStore from 'Stores/User/Message';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
+import { FolderUserStore, isAllowedKeyword } from 'Stores/User/Folder';
 
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
-
-@popup({
-	name: 'View/Popup/AdvancedSearch',
-	templateID: 'PopupsAdvancedSearch'
-})
-class AdvancedSearchPopupView extends AbstractViewNext {
+export class AdvancedSearchPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('AdvancedSearch');
 
-		this.fromFocus = ko.observable(false);
+		addObservablesTo(this, {
+			from: '',
+			to: '',
+			subject: '',
+			text: '',
+			keyword: '',
+			repliedValue: -1,
+			selectedDateValue: -1,
+			selectedTreeValue: '',
 
-		this.from = ko.observable('');
-		this.to = ko.observable('');
-		this.subject = ko.observable('');
-		this.text = ko.observable('');
-		this.selectedDateValue = ko.observable(-1);
-
-		this.hasAttachment = ko.observable(false);
-		this.starred = ko.observable(false);
-		this.unseen = ko.observable(false);
-
-		this.selectedDates = ko.computed(() => {
-			translatorTrigger();
-			return [
-				{ id: -1, name: i18n('SEARCH/LABEL_ADV_DATE_ALL') },
-				{ id: 3, name: i18n('SEARCH/LABEL_ADV_DATE_3_DAYS') },
-				{ id: 7, name: i18n('SEARCH/LABEL_ADV_DATE_7_DAYS') },
-				{ id: 30, name: i18n('SEARCH/LABEL_ADV_DATE_MONTH') },
-				{ id: 90, name: i18n('SEARCH/LABEL_ADV_DATE_3_MONTHS') },
-				{ id: 180, name: i18n('SEARCH/LABEL_ADV_DATE_6_MONTHS') },
-				{ id: 365, name: i18n('SEARCH/LABEL_ADV_DATE_YEAR') }
-			];
+			hasAttachment: false,
+			starred: false,
+			unseen: false
 		});
-	}
 
-	@command()
-	searchCommand() {
-		const search = this.buildSearchString();
-		if ('' !== search) {
-			MessageStore.mainMessageListSearch(search);
-		}
+		addComputablesTo(this, {
+			showMultisearch: () => FolderUserStore.hasCapability('MULTISEARCH'),
 
-		this.cancelCommand();
-	}
+			// Almost the same as MessageModel.tagOptions
+			keywords: () => {
+				const keywords = [{value:'',label:''}];
+				FolderUserStore.currentFolder().optionalTags().forEach(value => {
+					let lower = value.toLowerCase();
+					keywords.push({
+						value: value,
+						label: i18n('MESSAGE_TAGS/'+lower, 0, lower)
+					});
+				});
+				return keywords
+			},
 
-	parseSearchStringValue(search) {
-		const parts = (search || '').split(/[\s]+/g);
-		_.each(parts, (part) => {
-			switch (part) {
-				case 'has:attachment':
-					this.hasAttachment(true);
-					break;
-				case 'is:unseen,flagged':
-					this.starred(true);
-				/* falls through */
-				case 'is:unseen':
-					this.unseen(true);
-					break;
-				// no default
+			showKeywords: () => FolderUserStore.currentFolder().permanentFlags().some(isAllowedKeyword),
+
+			repliedOptions: () => {
+				translateTrigger();
+				return [
+					{ id: -1, name: '' },
+					{ id: 1, name: i18n('GLOBAL/YES') },
+					{ id: 0, name: i18n('GLOBAL/NO') }
+				];
+			},
+
+			selectedDates: () => {
+				translateTrigger();
+				let prefix = 'SEARCH/DATE_';
+				return [
+					{ id: -1, name: i18n(prefix + 'ALL') },
+					{ id: 3, name: i18n(prefix + '3_DAYS') },
+					{ id: 7, name: i18n(prefix + '7_DAYS') },
+					{ id: 30, name: i18n(prefix + 'MONTH') },
+					{ id: 90, name: i18n(prefix + '3_MONTHS') },
+					{ id: 180, name: i18n(prefix + '6_MONTHS') },
+					{ id: 365, name: i18n(prefix + 'YEAR') }
+				];
+			},
+
+			selectedTree: () => {
+				translateTrigger();
+				let prefix = 'SEARCH/SUBFOLDERS_';
+				return [
+					{ id: '', name: i18n(prefix + 'NONE') },
+					{ id: 'subtree-one', name: i18n(prefix + 'SUBTREE_ONE') },
+					{ id: 'subtree', name: i18n(prefix + 'SUBTREE') }
+				];
 			}
 		});
 	}
 
-	buildSearchStringValue(value) {
-		if (-1 < value.indexOf(' ')) {
-			value = '"' + value + '"';
+	submitForm() {
+		const search = this.buildSearchString();
+		if (search) {
+			MessagelistUserStore.mainSearch(search);
 		}
-		return value;
+
+		this.close();
 	}
 
 	buildSearchString() {
-		const result = [],
-			from_ = trim(this.from()),
-			to = trim(this.to()),
-			subject = trim(this.subject()),
-			text = trim(this.text()),
-			isPart = [],
-			hasPart = [];
+		const
+			self = this,
+			data = new FormData(),
+			append = (key, value) => value.length && data.append(key, value);
 
-		if (from_ && '' !== from_) {
-			result.push('from:' + this.buildSearchStringValue(from_));
+		append('from', self.from().trim());
+		append('to', self.to().trim());
+		append('subject', self.subject().trim());
+		append('text', self.text().trim());
+		append('keyword', self.keyword());
+		append('in', self.selectedTreeValue());
+		if (-1 < self.selectedDateValue()) {
+			let d = new Date();
+			d.setDate(d.getDate() - self.selectedDateValue());
+			append('since', d.toISOString().split('T')[0]);
 		}
 
-		if (to && '' !== to) {
-			result.push('to:' + this.buildSearchStringValue(to));
+		let result = decodeURIComponent(new URLSearchParams(data).toString());
+
+		if (self.hasAttachment()) {
+			result += '&attachment';
+		}
+		if (self.unseen()) {
+			result += '&unseen';
+		}
+		if (self.starred()) {
+			result += '&flagged';
+		}
+		if (1 == self.repliedValue()) {
+			result += '&answered';
+		}
+		if (0 == self.repliedValue()) {
+			result += '&unanswered';
 		}
 
-		if (subject && '' !== subject) {
-			result.push('subject:' + this.buildSearchStringValue(subject));
-		}
-
-		if (this.hasAttachment()) {
-			hasPart.push('attachment');
-		}
-
-		if (this.unseen()) {
-			isPart.push('unseen');
-		}
-
-		if (this.starred()) {
-			isPart.push('flagged');
-		}
-
-		if (0 < hasPart.length) {
-			result.push('has:' + hasPart.join(','));
-		}
-
-		if (0 < isPart.length) {
-			result.push('is:' + isPart.join(','));
-		}
-
-		if (-1 < this.selectedDateValue()) {
-			result.push('date:' + searchSubtractFormatDateHelper(this.selectedDateValue()) + '/');
-		}
-
-		if (text && '' !== text) {
-			result.push('text:' + this.buildSearchStringValue(text));
-		}
-
-		return trim(result.join(' '));
-	}
-
-	clearPopup() {
-		this.from('');
-		this.to('');
-		this.subject('');
-		this.text('');
-
-		this.selectedDateValue(-1);
-		this.hasAttachment(false);
-		this.starred(false);
-		this.unseen(false);
-
-		this.fromFocus(true);
+		return result.replace(/^&+/, '');
 	}
 
 	onShow(search) {
-		this.clearPopup();
-		this.parseSearchStringValue(search);
-	}
-
-	onShowWithDelay() {
-		this.fromFocus(true);
+		const self = this,
+			params = new URLSearchParams('?'+search);
+		self.from(pString(params.get('from')));
+		self.to(pString(params.get('to')));
+		self.subject(pString(params.get('subject')));
+		self.text(pString(params.get('text')));
+		self.keyword(pString(params.get('keyword')));
+		self.selectedTreeValue(pString(params.get('in')));
+//		self.selectedDateValue(params.get('since'));
+		self.selectedDateValue(-1);
+		self.hasAttachment(params.has('attachment'));
+		self.starred(params.has('flagged'));
+		self.unseen(params.has('unseen'));
+		if (params.has('answered')) {
+			self.repliedValue(1);
+		} else if (params.has('unanswered')) {
+			self.repliedValue(0);
+		}
 	}
 }
-
-export { AdvancedSearchPopupView, AdvancedSearchPopupView as default };

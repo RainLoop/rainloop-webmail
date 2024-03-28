@@ -1,0 +1,34 @@
+<div class="control-group" style="margin-bottom: 0">
+	<div data-bind="component: {
+		name: 'Select',
+		params: {
+			options: [1, 2, 3, 7, 30],
+			label: 'POPUPS_FILTER/REPLY_INTERVAL_LABEL',
+			value: actionValueThird,
+			size: 1
+		}
+	}"></div>
+</div>
+<div class="control-group" data-bind="css: {'error': actionValueFourthError}" style="margin-bottom: 0">
+	<div>
+		<input type="text" class="span5" data-bind="value: actionValueFourth"
+			data-i18n="[placeholder]POPUPS_FILTER/VACATION_RECIPIENTS_LABEL">
+	</div>
+</div>
+<div class="control-group" style="margin-bottom: 0">
+	<input type="text" class="span5" data-bind="value: actionValueSecond"
+		data-i18n="[placeholder]POPUPS_FILTER/VACATION_SUBJECT_LABEL">
+</div>
+<div class="control-group" data-bind="css: {'error': actionValueError}" style="margin-bottom: 0">
+	<textarea class="span5" data-bind="value: actionValue" style="height: 100px;"
+		data-i18n="[placeholder]POPUPS_FILTER/VACATION_MESSAGE_LABEL"></textarea>
+</div>
+<div class="control-group">
+	<div data-bind="component: {
+		name: 'Checkbox',
+		params: {
+			label: 'POPUPS_FILTER/STOP_LABEL',
+			value: stop
+		}
+	}"></div>
+</div>

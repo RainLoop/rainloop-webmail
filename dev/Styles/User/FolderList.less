@@ -1,0 +1,213 @@
+
+@folderItemPadding: 7px;
+@subPadding: 15px;
+
+#V-MailFolderList,
+#V-MailFolderList .b-content {
+	height: 100%;
+}
+
+.focused .b-folders a.focused {
+	background-color: var(--folders-focused-bg-color, #333);
+	border-color: #fff;
+	color: var(--folders-focused-color, #eee);
+}
+
+#folderSearchInput {
+	width: 100%;
+}
+
+/* https://github.com/the-djmaze/snappymail/issues/1427 */
+#V-MailFolderList .e-checkbox {
+	margin: 0 4px;
+	width: calc(100% - 8px);
+}
+#V-MailFolderList .unreadOnly li a:not(.unread-sub):not([data-unread]) {
+    display:none;
+}
+
+.b-folders {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	padding-right: 2px;
+
+	ul {
+		margin: 0;
+	}
+
+	.move-action-content-wrapper {
+		z-index: -1;
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		opacity: 0.05;
+		background-color: #fff;
+		background-size: 60px 60px;
+		background-image: linear-gradient(135deg, #000 25%, transparent 25%,
+			transparent 50%, #000 50%, #000 75%,
+			transparent 75%, transparent);
+	}
+
+	.b-toolbar {
+		color: #fff;
+	}
+
+	.b-footer {
+		padding: 10px @rlLowMargin;
+		overflow: hidden;
+		white-space: nowrap;
+	}
+
+	.b-content {
+		overflow: hidden;
+		overflow-y: auto;
+		min-width: 100px;
+		color: var(--folders-color, #333);
+	}
+
+	hr {
+		margin: 10px;
+	}
+
+	li {
+		display: block;
+		overflow: hidden;
+		white-space: nowrap;
+
+		a {
+			background-color: transparent;
+			border-left: 3px solid transparent;
+			color: var(--folders-color, #333);
+			display: block;
+			line-height: 34px;
+			padding: 0 2em 0 @folderItemPadding;
+			position: relative;
+			text-decoration: none;
+			vertical-align: middle;
+			z-index: 1;
+
+			&.selectable {
+				cursor: pointer;
+
+				&:hover {
+					background-color: var(--folders-hover-bg-color, #333);
+					color: var(--folders-hover-color, #eee);
+				}
+
+				&.droppableHover {
+					background-color: var(--folders-drop-bg-color, #333);
+					color: var(--folders-drop-color, #eee);
+				}
+
+				&.droppableHover * {
+					pointer-events: none;
+				}
+
+				&.selected {
+					background-color: var(--folders-selected-bg-color, #333);
+					color: var(--folders-selected-color, #eee);
+				}
+			}
+			&:not(.selectable) {
+				color: var(--folders-disabled-color, #666);
+				cursor: default;
+				font-style: italic;
+			}
+
+			&.unread-sub {
+				font-weight: bold;
+			}
+
+			.e-collapsed-sign {
+				cursor: pointer;
+				font-size: 150%;
+				text-indent: 0;
+				vertical-align: inherit;
+			}
+		}
+
+		a[data-unread] {
+			font-weight: bold;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		ul.collapsed {
+			max-height: 0;
+			height: 0;
+			display: none;
+		}
+	}
+
+	.b-folders-system a[data-unread]::after,
+	.b-folders-user a[data-unread]:not(.system)::after
+	{
+		content: attr(data-unread);
+		background-color: var(--unread-count-bg-color, #999);
+		border-radius: 1em;
+		color: var(--unread-count-color, #fff);
+		font-size: 80%;
+		line-height: 1.5em;
+		margin-top: 7px;
+		min-width: 1.7em;
+		padding: 1px 4px;
+		text-align: center;
+		text-shadow: 0 -1px 0 rgba(0,0,0,.25);
+		position: absolute;
+		right: 3px;
+		text-indent: 0;
+	}
+
+	.flag-icon {
+		margin-left: 7px;
+	}
+	.flag-icon::after {
+		content:'☆';
+		opacity: .5;
+	}
+	.is-flagged {
+		.flag-icon::after {
+			color: orange;
+			content:'★';
+			opacity: 1;
+		}
+	}
+
+	.b-folders-system {
+		font-weight: bold;
+	}
+
+	li li a {
+		text-indent: 1em;
+	}
+	li li li a {
+		text-indent: 2em;
+	}
+	li li li li a {
+		text-indent: 3em;
+	}
+	li li li li li a {
+		text-indent: 4em;
+	}
+}
+
+#rl-left .buttonCompose {
+	max-height: 2em;
+	max-width: fit-content;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	width: calc(100% - 48px);
+}
+
+html.rl-left-panel-disabled {
+	.buttonComposeText,
+	.buttonContacts {
+		display: none;
+	}
+	#rl-left .buttonCompose {
+		width: auto;
+	}
+}

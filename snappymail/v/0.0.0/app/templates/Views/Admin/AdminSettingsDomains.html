@@ -1,0 +1,42 @@
+<div class="legend">
+	<span data-i18n="TAB_DOMAINS/LEGEND_DOMAINS"></span>
+	<i class="icon-spinner" style="margin: 5px" data-bind="visible: domains.loading"></i>
+</div>
+
+<p data-i18n="[html]TAB_DOMAINS/HTML_DOMAINS_HELPER"></p>
+<table class="table table-hover b-admin-domains-list-table" data-bind="i18nUpdate: domains">
+	<colgroup>
+		<col>
+		<col style="width: 140px">
+		<col style="width: 1%">
+		<col style="width: 1%">
+	</colgroup>
+	<tbody data-bind="foreach: domains">
+		<tr data-bind="css: {'disabled': disabled }">
+			<td class="e-action">
+				<span class="domain-name" data-bind="text: name"></span>
+				<span class="domain-alias" data-bind="if: alias">(alias)</span>
+			</td>
+			<td>
+				<a class="btn btn-small btn-danger button-confirm-delete" data-bind="css: {'delete-access': askDelete()}, click: function(oDomain) { $root.deleteDomain(oDomain); }"
+					data-i18n="TAB_DOMAINS/DELETE_ARE_YOU_SURE"></a>
+			</td>
+			<td>
+				<span class="delete-domain fontastic" data-bind="visible: !askDelete(), click: function (oDomain) { $root.domainForDeletion(oDomain); }">🗑</span>
+			</td>
+			<td class="disabled-domain fontastic" data-bind="click: function (oDomain) { $root.disableDomain(oDomain); }, text: disabled() ? '☐' : '☑'"></td>
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr><td colspan="4" style="text-align:right">
+			<a class="btn" data-bind="click: createDomain" data-icon="✚" data-i18n="TAB_DOMAINS/BUTTON_ADD_DOMAIN"></a>
+			&nbsp;&nbsp;
+			<a class="btn" data-bind="click: createDomainAlias" data-icon="✚" data-i18n="TAB_DOMAINS/BUTTON_ADD_ALIAS"></a>
+		</td></tr>
+	</tfoot>
+</table>
+
+<div>
+	<input data-i18n="[placeholder]GLOBAL/USERNAME" data-bind="textInput: username">
+	<button class="btn" data-i18n="GLOBAL/TEST" data-bind="click: testUsername"></button>
+</div>

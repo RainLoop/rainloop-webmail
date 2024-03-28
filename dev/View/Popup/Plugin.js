@@ -1,130 +1,111 @@
-import _ from '_';
 import ko from 'ko';
-import key from 'key';
+import { addObservablesTo, addComputablesTo } from 'External/ko';
 
-import { KeyState, Magics, StorageResultType, Notification } from 'Common/Enums';
-import { isNonEmptyArray, delegateRun } from 'Common/Utils';
 import { getNotification, i18n } from 'Common/Translator';
+import { arrayLength } from 'Common/Utils';
 
-import Remote from 'Remote/Admin/Ajax';
+import Remote from 'Remote/Admin/Fetch';
 
-import { popup, command, isPopupVisible, showScreenPopup } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { decorateKoCommands, showScreenPopup } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
+import { AskPopupView } from 'View/Popup/Ask';
 
-@popup({
-	name: 'View/Popup/Plugin',
-	templateID: 'PopupsPlugin'
-})
-class PluginPopupView extends AbstractViewNext {
+export class PluginPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('Plugin');
 
-		this.onPluginSettingsUpdateResponse = _.bind(this.onPluginSettingsUpdateResponse, this);
+		addObservablesTo(this, {
+			saveError: '',
+			id: '',
+			name: '',
+			readme: ''
+		});
 
-		this.saveError = ko.observable('');
+		this.config = ko.observableArray();
 
-		this.name = ko.observable('');
-		this.readme = ko.observable('');
+		addComputablesTo(this, {
+			hasReadme: () => !!this.readme(),
+			hasConfiguration: () => 0 < this.config().length
+		});
 
-		this.configures = ko.observableArray([]);
+		this.keyScope.scope = 'all';
 
-		this.hasReadme = ko.computed(() => '' !== this.readme());
-		this.hasConfiguration = ko.computed(() => 0 < this.configures().length);
-
-		this.readmePopoverConf = {
-			'placement': 'right',
-			'trigger': 'hover',
-			'title': i18n('POPUPS_PLUGIN/TOOLTIP_ABOUT_TITLE'),
-			'container': 'body',
-			'html': true,
-			'content': () => `<pre>${this.readme()}</pre>`
-		};
-
-		this.bDisabeCloseOnEsc = true;
-		this.sDefaultKeyScope = KeyState.All;
-
-		this.tryToClosePopup = _.debounce(_.bind(this.tryToClosePopup, this), Magics.Time200ms);
+		decorateKoCommands(this, {
+			saveCommand: self => self.hasConfiguration()
+		});
 	}
 
-	@command((self) => self.hasConfiguration())
-	saveCommand() {
-		const list = {};
-		list.Name = this.name();
+	hideError() {
+		this.saveError('');
+	}
 
-		_.each(this.configures(), (oItem) => {
-			let value = oItem.value();
+	saveCommand() {
+		const oConfig = {
+			id: this.id,
+			settings: {}
+		},
+		setItem = item => {
+			let value = item.value();
 			if (false === value || true === value) {
-				value = value ? '1' : '0';
+				value = value ? 1 : 0;
 			}
-			list['_' + oItem.Name] = value;
+			oConfig.settings[item.name] = value;
+		};
+
+		this.config.forEach(oItem => {
+			if (7 == oItem.type) {
+				// Group
+				oItem.config.forEach(oSubItem => setItem(oSubItem));
+			} else {
+				setItem(oItem);
+			}
 		});
 
 		this.saveError('');
-		Remote.pluginSettingsUpdate(this.onPluginSettingsUpdateResponse, list);
-	}
-
-	onPluginSettingsUpdateResponse(result, data) {
-		if (StorageResultType.Success === result && data && data.Result) {
-			this.cancelCommand();
-		} else {
-			this.saveError('');
-			if (data && data.ErrorCode) {
-				this.saveError(getNotification(data.ErrorCode));
-			} else {
-				this.saveError(getNotification(Notification.CantSavePluginSettings));
-			}
-		}
+		Remote.request('AdminPluginSettingsUpdate',
+			iError => iError
+				? this.saveError(getNotification(iError))
+				: this.close(),
+			oConfig);
 	}
 
 	onShow(oPlugin) {
-		this.name();
-		this.readme();
-		this.configures([]);
+		this.id('');
+		this.name('');
+		this.readme('');
+		this.config([]);
 
 		if (oPlugin) {
-			this.name(oPlugin.Name);
-			this.readme(oPlugin.Readme);
+			this.id(oPlugin.id);
+			this.name(oPlugin.name);
+			this.readme(oPlugin.readme);
 
-			const config = oPlugin.Config;
-			if (isNonEmptyArray(config)) {
-				this.configures(
-					_.map(config, (item) => ({
-						'value': ko.observable(item[0]),
-						'placeholder': ko.observable(item[6]),
-						'Name': item[1],
-						'Type': item[2],
-						'Label': item[3],
-						'Default': item[4],
-						'Desc': item[5]
-					}))
+			const config = oPlugin.config;
+			if (arrayLength(config)) {
+				this.config(
+					config.map(item => {
+						if (7 == item.type) {
+							// Group
+							item.config.forEach(subItem => {
+								subItem.value = ko.observable(subItem.value);
+							});
+						} else {
+							item.value = ko.observable(item.value);
+						}
+						return item;
+					})
 				);
 			}
 		}
 	}
 
-	tryToClosePopup() {
-		const PopupsAskViewModel = require('View/Popup/Ask');
-		if (!isPopupVisible(PopupsAskViewModel)) {
-			showScreenPopup(PopupsAskViewModel, [
+	onClose() {
+		if (AskPopupView.hidden()) {
+			showScreenPopup(AskPopupView, [
 				i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'),
-				() => {
-					if (this.modalVisibility()) {
-						delegateRun(this, 'cancelCommand');
-					}
-				}
+				() => this.close()
 			]);
 		}
-	}
-
-	onBuild() {
-		key('esc', KeyState.All, () => {
-			if (this.modalVisibility()) {
-				this.tryToClosePopup();
-			}
-
-			return false;
-		});
+		return false;
 	}
 }
-
-export { PluginPopupView, PluginPopupView as default };

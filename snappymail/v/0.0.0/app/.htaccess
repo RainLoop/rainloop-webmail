@@ -1,0 +1,9 @@
+<ifModule mod_authz_core.c>
+    Require all denied
+</ifModule>
+<ifModule !mod_authz_core.c>
+    Deny from all
+</ifModule>
+<IfModule mod_autoindex.c>
+	Options -Indexes
+</ifModule>

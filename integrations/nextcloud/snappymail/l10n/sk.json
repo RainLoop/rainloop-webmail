@@ -1,0 +1,19 @@
+{ "translations": {
+    "Email" : "E-mail",
+    "Error" : "Chyba",
+    "Invalid argument(s)" : "Neplatný(é) argument(y)",
+    "Saved successfully" : "Úspešne uložené",
+    "SnappyMail" : "SnappyMail",
+    "SnappyMail Webmail" : "SnappyMail Webmail",
+    "Go to SnappyMail Webmail admin panel" : "Prejdite na správcovský panel SnappyMail Webmail",
+    "Users will login manually, or define credentials in their personal settings for automatic logins." : "Používatelia sa budú prihlasovať manuálne alebo v osobných nastaveniach definujte prihlasovacie údaje pre automatické prihlásenie.",
+    "Attempt to automatically login users with their Nextcloud username and password, or user-defined credentials, if set." : "Pokúste sa automaticky prihlásiť používateľov pomocou ich používateľského mena a hesla Nextcloud alebo prihlasovacích údajov definovaných používateľom, ak sú nastavené.",
+    "Attempt to automatically login users with their Nextcloud email and password, or user-defined credentials, if set." : "Pokúste sa automaticky prihlásiť používateľov pomocou ich Nextcloud e-mailu a hesla alebo prihlasovacích údajov definovaných používateľom, ak sú nastavené.",
+    "Save" : "Uložiť",
+    "SnappyMail Webmail is not configured yet." : "SnappyMail Webmail ešte nie je nastavený.",
+    "may have some" : "môže mať",
+    "security considerations" : "vplyv na bezpečnosť",
+    "Enter an email and password to auto-login to SnappyMail." : "Zadajte e-mail a heslo pre automatické prihlásenie do SnappyMail.",
+    "Password" : "Heslo"
+},"pluralForm" :"nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);"
+}

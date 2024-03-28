@@ -1,0 +1,185 @@
+{
+	"GLOBAL": {
+		"ADD": "Adicionar",
+		"CLOSE": "Fechar",
+		"SAVE": "Salvar",
+		"TEST": "Testar",
+		"UPDATE": "Atualizar",
+		"USERNAME": "Nome de usuário",
+		"PASSWORD": "Senha",
+		"CANCEL": "Cancelar",
+		"SEARCH": "Nenhum contato encontrado"
+	},
+	"LOGIN": {
+		"LABEL_LOGIN": "Usuário",
+		"LABEL_TOTP": "TOTP code",
+		"BUTTON_LOGIN": "Entrar no painel administrativo"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "Painel Administrativo"
+	},
+	"SETTINGS_LABELS": {
+		"GENERAL": "Geral",
+		"LOGIN": "Login",
+		"BRANDING": "Personalizar",
+		"CONTACTS": "Contatos",
+		"DOMAINS": "Domínios",
+		"SECURITY": "Segurança",
+		"PACKAGES": "Pacotes",
+		"CONFIG": "Config",
+		"ABOUT": "Sobre"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "Interface",
+		"LABEL_LANGUAGE": "Idioma",
+		"LABEL_LANGUAGE_ADMIN": "Idioma (admin)",
+		"LABEL_THEME": "Tema Padrão",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Permitir escolha do idioma na tela de configurações",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Permitir escolha do tema na tela de configurações",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Permitir escolha de Imagem de Fundo na tela de configurações",
+		"LABEL_SHOW_THUMBNAILS": "Mostrar imagem miniatura (Anexos)",
+		"LEGEND_MAIN": "Principal",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "Tamanho limite de anexo",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Permitir contas adicionais",
+		"LABEL_ALLOW_IDENTITIES": "Permitir identidades multiplas",
+		"ALERT_DATA_ACCESS": "A pasta de dados SnappyMail está acessível. Por favor configure o seu servidor web para esconder a pasta de dados do acesso externo. Leia mais aqui:",
+		"ALERT_WARNING": "Aviso!",
+		"HTML_ALERT_WEAK_PASSWORD": "Você está usando a senha administrativa padrão.\n<br>\nPor motivo de segurança por favor\n<strong><a href=\"#\/security\">troque a senha<\/a><\/strong>\nagora.\n"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "Tela de entrada",
+		"LABEL_DEFAULT_DOMAIN": "Domínio padrão",
+		"LABEL_DETERMINE_USER_DOMAIN": "Tentar determinar o domínio do usuário",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Permitir escolha do idioma na tela de entrada",
+		"LABEL_DETERMINE_USER_LANGUAGE": "Tentar determinar o idioma do usuário"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Personalização",
+		"LABEL_PAGE_TITLE": "Título da página",
+		"LABEL_LOADING_DESCRIPTION": "Descrição do 'carregando'",
+		"LABEL_FAVICON_URL": "Favicon"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "Contatos",
+		"LEGEND_STORAGE": "Armazenamento (PDO)",
+		"LABEL_ENABLE_CONTACTS": "Habilitar contatos",
+		"LABEL_ALLOW_SYNC": "Permitir sincronização de contatos (com servidor externo CardDAV)",
+		"LABEL_STORAGE_TYPE": "Tipo",
+		"LABEL_STORAGE_DSN": "Dsn",
+		"LABEL_STORAGE_USER": "Usuário",
+		"LABEL_STORAGE_PASSWORD": "Senha",
+		"SQLITE_GLOBAL": "Use a global DB instead of per account",
+		"ALERT_NOTICE": "Aviso!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Não use este tipo de banco de dados com um grande número de usuários ativos.",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "O seu sistema não suporta o uso dos contatos.\n<br>\nVocê precisa instalar ou habilitar a extensão <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> em seu servidor.\n"
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "Domínios",
+		"BUTTON_ADD_DOMAIN": "Adicionar Domínio",
+		"BUTTON_ADD_ALIAS": "Adicionar apelido (Alias)",
+		"DELETE_ARE_YOU_SURE": "Você tem certeza?",
+		"HTML_DOMAINS_HELPER": "Lista dos domínios com acesso permitido ao webmail.\n<br>\nClique no domínio para configurá-lo.\n"
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "Segurança",
+		"LABEL_USE_IMAGE_PROXY": "Usar proxy local para imagens externas",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
+		"LABEL_SHOW_PHP_INFO": "Mostar informações PHP",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Credenciais de acesso ao Painel Administrativo",
+		"LABEL_CURRENT_PASSWORD": "Senha atual",
+		"LABEL_NEW_PASSWORD": "Nova senha",
+		"LABEL_REPEAT_PASSWORD": "Confirmar nova senha",
+		"LABEL_REQUIRE_VERIFICATION": "Exigir verificação do certificado SSL",
+		"CRYPTO": "Crypto",
+		"LABEL_ALLOW_SELF_SIGNED": "Permitir certificados auto-assinados"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Enable extensions",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Atualização disponível",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Disponíveis para instalação",
+		"LEGEND_INSTALLED_PACKAGES": "Pacotes já instalados",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Não foi possível acessar o repositório no momento."
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "Sobre",
+		"LABEL_TAG_HINT": "Leitor de email web simples, moderno & rápido.",
+		"LABEL_ALL_RIGHTS_RESERVED": "Todos os direitos reservados.",
+		"HINT_READ_CHANGE_LOG": "Por favor, leia o registro de alterações antes de atualizar.",
+		"HINT_IS_UP_TO_DATE": "SnappyMail está atualizado.",
+		"HTML_NEW_VERSION": "Está disponível uma nova versão: <b>%VERSION%<\/b>.",
+		"LABEL_UPDATING": "Atualizando",
+		"LABEL_CHECKING": "Checar por atualizações",
+		"BUTTON_RELEASES": "Releases"
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "Adicionar apelido (Alias)",
+		"LABEL_ALIAS": "Apelido (Alias)",
+		"LABEL_DOMAIN": "Domínio"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "Adicionar Domínio",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "Adicionar Domínio \"%NAME%\"",
+		"TITLE_EDIT_DOMAIN": "Editar Domínio \"%NAME%\"",
+		"LABEL_NAME": "Domínio",
+		"NAME_HELPER": "curinga (wildcard) suportado",
+		"LABEL_SERVER": "Servidor",
+		"LABEL_PORT": "Porta",
+		"LABEL_SECURE": "Criptografia",
+		"TIMEOUT": "Timeout",
+		"DISABLE_CAPABILITIES": "Disable capabilities",
+		"LIMITS": "Limits",
+		"FOLDERS": "Folders",
+		"MESSAGES": "Messages",
+		"LABEL_WHITE_LIST": "Lista branca",
+		"SECURE_OPTION_NONE": "Nenhuma",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Permitir scripts sieve",
+		"LABEL_USE_SHORT_LOGIN": "Usar login curto",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
+		"LABEL_USE_AUTH": "Usar autenticação",
+		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
+		"LABEL_USE_PHP_MAIL": "Usar função php mail()",
+		"BUTTON_WHITE_LIST": "Lista branca",
+		"BUTTON_SIEVE_CONFIGURATION": "Configurações Sieve",
+		"BUTTON_BACK_TO_IMAP": "Voltar para as configurações IMAP",
+		"BUTTON_BACK": "Voltar",
+		"BUTTON_UPDATE": "Atualizar",
+		"NEW_DOMAIN_DESC": "Esta configuração de domínio lhe permitirá trabalhar  com endereços de e-mail do <strong>%NAME%<\/strong>.",
+		"WHITE_LIST_ALERT": "Filtrar com lista dos únicos usuários do domínio que terão acesso ao webmail.\nUse um espaço como delimitador.\n"
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "Plugin",
+		"DESC_NOTHING_TO_CONFIGURE": "Nada para configurar"
+	},
+	"POPUPS_ASK": {
+		"BUTTON_YES": "Yes",
+		"BUTTON_NO": "No",
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Você tem certeza que deseja fechar esta janela?"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "Selecionar idioma"
+	},
+	"HINTS": {
+		"BETA": "beta",
+		"WARNING": "Aviso!"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "Domínio já existente",
+		"UNKNOWN_ERROR": "Erro desconhecido"
+	},
+	"NOTIFICATIONS": {
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "Senha inválida",
+		"AuthError": "Falha na autenticação",
+		"DomainAlreadyExists": "O domínio já existe",
+		"CantSavePluginSettings": "Não foi possível salvar as configurações",
+		"CantInstallPackage": "Erro ao instalar pacote de plugin",
+		"CantDeletePackage": "Erro ao remover pacote de plugin",
+		"InvalidPluginPackage": "Pacote de plugins inválido",
+		"UnsupportedPluginPackage": "Pacote de plugins insuportados",
+		"UnknownError": "Erro desconhecido"
+	}
+}

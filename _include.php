@@ -2,20 +2,30 @@
 
 // Name this file as "include.php" to enable it.
 
-/**
- * @return string
- */
-function __get_custom_data_full_path()
-{
-	return '';
-	return '/var/external-rainloop-data-folder/'; // custom data folder path
-}
+//header('Strict-Transport-Security: max-age=31536000');
 
 /**
- * @return string
+ * Uncomment to enable multiple domain installation.
  */
-function __get_additional_configuration_name()
-{
-	return '';
-	return defined('APP_SITE') && 0 < strlen(APP_SITE) ? APP_SITE.'.ini' : ''; // additional configuration file name
-}
+//define('MULTIDOMAIN', 1);
+
+/**
+ * Uncomment to disable APCU.
+ */
+//define('APP_USE_APCU_CACHE', false);
+
+/**
+ * Custom 'data' folder path
+ */
+//define('APP_DATA_FOLDER_PATH', dirname(__DIR__) . '/snappymail-data/');
+//define('APP_DATA_FOLDER_PATH', '/var/external-snappymail-data-folder/');
+
+/**
+ * Additional configuration file name
+ */
+//define('APP_CONFIGURATION_NAME', $_SERVER['HTTP_HOST'].'.ini');
+
+/**
+ * Also update extensions on upgrade
+ */
+//define('SNAPPYMAIL_UPDATE_PLUGINS', 1);

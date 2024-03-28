@@ -1,0 +1,86 @@
+<!-- ko with: script -->
+<header>
+	<a href="#" class="close" data-bind="click: $root.close">×</a>
+	<h3>
+		<span data-i18n="POPUPS_SIEVE_SCRIPT/TITLE_CREATE" data-bind="visible: !exists()"></span>
+		<span data-i18n="POPUPS_SIEVE_SCRIPT/TITLE_EDIT" data-bind="visible: exists"></span>
+		<span data-bind="visible: exists">: <!-- ko text: name--><!-- /ko --></span>
+	</h3>
+</header>
+<form class="modal-body" spellcheck="false">
+
+	<div class="control-group" data-bind="css: {'error': nameError}, hidden: exists">
+		<input type="text" class="span5"
+			data-bind="value: name, hasfocus: !exists()"
+			autocorrect="off" autocapitalize="off"
+			data-i18n="[placeholder]GLOBAL/NAME">
+	</div>
+
+	<div class="alert g-ui-user-select-none" data-bind="visible: hasChanges" data-icon="⚠" data-i18n="POPUPS_SIEVE_SCRIPT/CHANGES_NEED_TO_BE_SAVED_DESC"></div>
+	<div class="alert alert-error g-ui-user-select-none" style="white-space:pre" data-bind="visible: $root.errorText, text: $root.errorText" data-icon="⚠"></div>
+
+	<div class="control-group" data-bind="visible: $root.rawActive">
+		<details>
+			<summary data-i18n="POPUPS_SIEVE_SCRIPT/CAPABILITY_LABEL"></summary>
+			<pre data-bind="text: $root.sieveCapabilities"></pre>
+		</details>
+		<details>
+			<summary>Actions</summary>
+			<pre data-bind="text: $root.availableActions"></pre>
+		</details>
+		<details>
+			<summary>Controls</summary>
+			<pre data-bind="text: $root.availableControls"></pre>
+		</details>
+		<details>
+			<summary>Tests</summary>
+			<pre data-bind="text: $root.availableTests"></pre>
+		</details>
+		<textarea style="width:100%;height:60vh" data-bind="value: body, valueUpdate: 'input'"></textarea>
+	</div>
+	<div data-bind="visible: !$root.rawActive()">
+		<table class="table table-hover list-table filters-list g-ui-user-select-none">
+			<colgroup>
+				<col style="width: 30px">
+				<col style="width: 16px">
+				<col>
+				<col style="width: 140px">
+				<col style="width: 1em">
+			</colgroup>
+			<tbody data-bind="foreach: filters, i18nUpdate: filters">
+				<tr class="filter-item" draggable="true" data-bind="sortableItem: { list: $parent.filters }">
+					<td class="fontastic" data-bind="click: function () { $parent.hasChanges(true); enabled(!enabled()); }, text: enabled() ? '☑' : '☐'"></td>
+					<td class="drag-wrapper fontastic drag-handle">⬍</td>
+					<td class="e-action">
+						<span class="filter-name" data-bind="text: name()"></span>
+						&nbsp;&nbsp;
+						<span class="filter-sub-name" data-bind="text: nameSub()"></span>
+					</td>
+					<td>
+						<a class="btn btn-small btn-danger button-confirm-delete" data-bind="css: {'delete-access': askDelete()}, click: function(oFilter) { $root.deleteFilter(oFilter); }"
+							data-i18n="GLOBAL/ARE_YOU_SURE"></a>
+					</td>
+					<td>
+						<span class="delete-filter fontastic" data-bind="visible: !askDelete(), click: function (oFilter) { $root.filterForDeletion(oFilter); }">🗑</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<a class="btn" data-bind="click: $root.addFilter" data-icon="✚" data-i18n="POPUPS_SIEVE_SCRIPT/BUTTON_ADD_FILTER"></a>
+	</div>
+</form>
+<footer>
+	<a class="btn" data-bind="visible: allowFilters(), click: function() { $root.toggleFiltersRaw(); }, css: {'active': $root.rawActive }" data-i18n="[title]POPUPS_SIEVE_SCRIPT/BUTTON_RAW_SCRIPT">
+		<i class="icon-file-code"></i>
+	</a>
+<!--
+	<a class="btn" data-bind="visible: $root.rawActive, click: function() { $root.validateScript(); }">
+		<span data-i18n="POPUPS_SIEVE_SCRIPT/VALIDATE"></span>
+	</a>
+-->
+	<a class="btn buttonSave" data-bind="click: function() { $root.saveScript(); }, css: {'btn-danger': $root.saveError}">
+		<i class="fontastic" data-bind="css: {'icon-spinner': $root.saving}">💾</i>
+		<span data-i18n="GLOBAL/SAVE"></span>
+	</a>
+</footer>
+<!-- /ko -->

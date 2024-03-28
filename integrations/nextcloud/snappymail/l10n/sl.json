@@ -1,0 +1,19 @@
+{ "translations": {
+    "Email" : "Elektronski naslov",
+    "Error" : "Napaka",
+    "Invalid argument(s)" : "Neveljavni argumenti",
+    "Saved successfully" : "Uspešno shranjeno",
+    "SnappyMail" : "SnappyMail",
+    "SnappyMail Webmail" : "Spletna pošta SnappyMail",
+    "Go to SnappyMail Webmail admin panel" : "Skoči na skrbniške nastavitve spletne pošte SnappyMail",
+    "Users will login manually, or define credentials in their personal settings for automatic logins." : "Uporabniki se lahko prijavijo ročno, ali pa določijo poverila med osebnimi nastavitvami za samodejne prijave.",
+    "Attempt to automatically login users with their Nextcloud username and password, or user-defined credentials, if set." : "Poskusi samodejno prijaviti uporabnike z uporabniškim imenom Nextcloud in geslom oziroma z uporabniško določenimi poverili, če so ta določena.",
+    "Attempt to automatically login users with their Nextcloud email and password, or user-defined credentials, if set." : "Poskusi samodejno prijaviti uporabnike z elektronskim naslovom in geslom oziroma z uporabniško določenimi poverili, če so ta določena.",
+    "Save" : "Shrani",
+    "SnappyMail Webmail is not configured yet." : "Program SnappyMail še ni nastavljen.",
+    "may have some" : "nekatere pomembne",
+    "security considerations" : "varnostne omejitve",
+    "Enter an email and password to auto-login to SnappyMail." : "Vpišite elektronski naslov in geslo za samodejno vpisovanje v SnappyMail.",
+    "Password" : "Geslo"
+},"pluralForm" :"nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);"
+}

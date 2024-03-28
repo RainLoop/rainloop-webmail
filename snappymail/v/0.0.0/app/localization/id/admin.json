@@ -1,0 +1,185 @@
+{
+	"GLOBAL": {
+		"ADD": "Tambah",
+		"CLOSE": "Tutup",
+		"SAVE": "Simpan",
+		"TEST": "Ujicoba",
+		"UPDATE": "Pembaruan",
+		"USERNAME": "Nama belakang",
+		"PASSWORD": "Sandi",
+		"CANCEL": "Batal",
+		"SEARCH": "Tidak ditemukan kontak"
+	},
+	"LOGIN": {
+		"LABEL_LOGIN": "Login",
+		"LABEL_TOTP": "TOTP code",
+		"BUTTON_LOGIN": "Login ke panel admin"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "Panel Admin"
+	},
+	"SETTINGS_LABELS": {
+		"GENERAL": "Umum",
+		"LOGIN": "Login",
+		"BRANDING": "Branding",
+		"CONTACTS": "Kontak",
+		"DOMAINS": "Domain",
+		"SECURITY": "Keamanan",
+		"PACKAGES": "Paket",
+		"CONFIG": "Config",
+		"ABOUT": "Tentang"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "Antarmuka",
+		"LABEL_LANGUAGE": "Bahasa",
+		"LABEL_LANGUAGE_ADMIN": "Bahasa (admin)",
+		"LABEL_THEME": "Tema",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Izinkan pemilihan bahasa pada laman pengaturan",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Izinkan pemilihan tema di laman pengaturan",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Izinkan pemilihan gambar latar di laman pengaturan",
+		"LABEL_SHOW_THUMBNAILS": "Tampikankan gambar kecil (lampiran)",
+		"LEGEND_MAIN": "Utama",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "Batas ukuran lampiran",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Izinkan akun tambahan",
+		"LABEL_ALLOW_IDENTITIES": "Izinkan identitas jamak",
+		"ALERT_DATA_ACCESS": "Data foldel SnappyMail bisa diakses. Silahkan atur web server anda untuk menyembunyikan folder data dari akses eksternal. Baca selengkapnya di sini:",
+		"ALERT_WARNING": "Peringatan!",
+		"HTML_ALERT_WEAK_PASSWORD": "Anda menggunakan password admin bawaan.\n<br>\nAtas alasan keamanan, mohon\n<strong><a href=\"#\/security\">mengganti<\/a><\/strong>\npassword dengan frasa yang lainnya segera.\n"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "Laman login",
+		"LABEL_DEFAULT_DOMAIN": "Domain bawaan",
+		"LABEL_DETERMINE_USER_DOMAIN": "Coba untuk memeriksa user domain",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Izinkan pemilihan bahasa di laman login",
+		"LABEL_DETERMINE_USER_LANGUAGE": "Coba untuk memeriksa bahasa user"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Branding",
+		"LABEL_PAGE_TITLE": "Judul laman",
+		"LABEL_LOADING_DESCRIPTION": "Deskripsi loading",
+		"LABEL_FAVICON_URL": "Favicon"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "Kontak",
+		"LEGEND_STORAGE": "Media simpan (PDO)",
+		"LABEL_ENABLE_CONTACTS": "Izinkan kontak",
+		"LABEL_ALLOW_SYNC": "Izinkan sinkronisasi kontak (dengan server CardDAV eksternal)",
+		"LABEL_STORAGE_TYPE": "Tipe",
+		"LABEL_STORAGE_DSN": "Dsn",
+		"LABEL_STORAGE_USER": "User",
+		"LABEL_STORAGE_PASSWORD": "Password",
+		"SQLITE_GLOBAL": "Use a global DB instead of per account",
+		"ALERT_NOTICE": "Perhatian!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Jangan gunakan tipe database ini untuk jumlah user aktif yang besar.",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Sistem anda tidak mendukung kontak\n<br>\nAnda harus memasang atau mengaktifkan <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> extension pada server anda.\n"
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "Domain",
+		"BUTTON_ADD_DOMAIN": "Tambah domain",
+		"BUTTON_ADD_ALIAS": "Tambah alias",
+		"DELETE_ARE_YOU_SURE": "Anda yakin?",
+		"HTML_DOMAINS_HELPER": "Daftar domain webmail yang diizinkan mengakses.\n<br>\nKlik pada nama domain untuk mengatur domain.\n"
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "Keamanan",
+		"LABEL_USE_IMAGE_PROXY": "Gunakan proxy lokal untuk gambar dari luar",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
+		"LABEL_SHOW_PHP_INFO": "Tampilkan informasi PHP",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Hak Akses Panel Admin",
+		"LABEL_CURRENT_PASSWORD": "Password saat ini",
+		"LABEL_NEW_PASSWORD": "Password baru",
+		"LABEL_REPEAT_PASSWORD": "Ulangi",
+		"LABEL_REQUIRE_VERIFICATION": "Diperlukan verifikasi sertifikat SSL dengan",
+		"CRYPTO": "Crypto",
+		"LABEL_ALLOW_SELF_SIGNED": "Izinkan sertifikat yang dibuat sendiri"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Enable extensions",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Tersedia untuk Pembaruan",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Tersedia untuk Instalasi",
+		"LEGEND_INSTALLED_PACKAGES": "Paket Terinstal",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Tidak bisa menjangkau repositori saat ini"
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "Tentang",
+		"LABEL_TAG_HINT": "Klien web-based email yang simpel, modern & cepat",
+		"LABEL_ALL_RIGHTS_RESERVED": "Hak Cipta",
+		"HINT_READ_CHANGE_LOG": "Mohon baca log perubahan sebelum melakukan pembaruan",
+		"HINT_IS_UP_TO_DATE": "SnappyMail sudah terbaru",
+		"HTML_NEW_VERSION": "Versi  <b>%VERSION%<\/b> baru tersedia",
+		"LABEL_UPDATING": "Memperbarui",
+		"LABEL_CHECKING": "Memeriksa pembaruan",
+		"BUTTON_RELEASES": "Releases"
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "Tambah Alias",
+		"LABEL_ALIAS": "Alias",
+		"LABEL_DOMAIN": "Domain"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "Tambah Domain",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "Tambah \"%NAME%\" Domain",
+		"TITLE_EDIT_DOMAIN": "Ubah Domain \"%NAME%\"",
+		"LABEL_NAME": "Nama",
+		"NAME_HELPER": "Mendukung Wildcard",
+		"LABEL_SERVER": "Server",
+		"LABEL_PORT": "Port",
+		"LABEL_SECURE": "Aman",
+		"TIMEOUT": "Timeout",
+		"DISABLE_CAPABILITIES": "Disable capabilities",
+		"LIMITS": "Limits",
+		"FOLDERS": "Folders",
+		"MESSAGES": "Messages",
+		"LABEL_WHITE_LIST": "Daftar Putih",
+		"SECURE_OPTION_NONE": "Tidak satupun",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Izinkan script sieve",
+		"LABEL_USE_SHORT_LOGIN": "Gunakan login singkat",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
+		"LABEL_USE_AUTH": "Gunakan otentikasi",
+		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
+		"LABEL_USE_PHP_MAIL": "Gunakan fungsi mail() PHP",
+		"BUTTON_WHITE_LIST": "Daftar Putih",
+		"BUTTON_SIEVE_CONFIGURATION": "Konfigurasi Sieve",
+		"BUTTON_BACK_TO_IMAP": "Kembali ke pengaturan IMAP",
+		"BUTTON_BACK": "Kembali",
+		"BUTTON_UPDATE": "Perbarui",
+		"NEW_DOMAIN_DESC": "Domain ini mengizinkan anda bekerja dengan alamat email juga<strong>%NAME%<\/strong> ",
+		"WHITE_LIST_ALERT": "Daftar domain webmail user yang diizinkan diakses.\nGunakan spasi untuk pemisahnya\n"
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "Plugin",
+		"DESC_NOTHING_TO_CONFIGURE": "Tidak ada yang dikonfigurasi"
+	},
+	"POPUPS_ASK": {
+		"BUTTON_YES": "Yes",
+		"BUTTON_NO": "No",
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Anda yakin menutup jendela ini?"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "Pilih bahasa anda"
+	},
+	"HINTS": {
+		"BETA": "beta",
+		"WARNING": "Peringatan!"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "Domain sudah ada",
+		"UNKNOWN_ERROR": "Kesalahan tidak diketahui"
+	},
+	"NOTIFICATIONS": {
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "Token invalid",
+		"AuthError": "Otentikasi gagal",
+		"DomainAlreadyExists": "Domain sudah ada",
+		"CantSavePluginSettings": "Tidak bisa menyimpan pengaturan",
+		"CantInstallPackage": "Gagal memasang paket",
+		"CantDeletePackage": "Gagal menghapus paket",
+		"InvalidPluginPackage": "Paket plugin tidak sah",
+		"UnsupportedPluginPackage": "Paket plugin tidak didukung",
+		"UnknownError": "Kesalahan tidak diketahui"
+	}
+}

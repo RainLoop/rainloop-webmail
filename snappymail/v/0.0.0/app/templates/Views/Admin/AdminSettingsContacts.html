@@ -1,0 +1,115 @@
+<div class="row" data-bind="visible: !contactsSupported">
+	<div class="alert span8" style="margin-top: 10px;">
+		<h4 data-i18n="TAB_CONTACTS/ALERT_NOTICE"></h4>
+		<div data-i18n="[html]TAB_CONTACTS/HTML_ALERT_DOES_NOT_SUPPORTED"></div>
+	</div>
+</div>
+<form class="form-horizontal" spellcheck="false" data-bind="visible: contactsSupported">
+	<div class="legend" data-i18n="TAB_CONTACTS/LEGEND_CONTACTS"></div>
+	<div class="control-group">
+		<div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: { value: contactsEnable, label: 'TAB_CONTACTS/LABEL_ENABLE_CONTACTS' }
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: { value: contactsSync, label: 'TAB_CONTACTS/LABEL_ALLOW_SYNC' }
+			}"></div>
+		</div>
+	</div>
+	<div class="control-group">
+		<label data-i18n="TAB_CONTACTS/SUGGESTIONS_LIMIT"></label>
+		<div>
+			<input type="number" min="5" max="50" step="1" class="span1" data-bind="textInput: contactsSuggestionsLimit">
+			&nbsp;
+			<span data-bind="saveTrigger: contactsSuggestionsLimitTrigger"></span>
+		</div>
+	</div>
+</form>
+<form class="form-horizontal" spellcheck="false" data-bind="visible: contactsSupported">
+	<div class="legend" data-i18n="TAB_CONTACTS/LEGEND_STORAGE"></div>
+	<div class="control-group">
+		<label data-i18n="TAB_CONTACTS/LABEL_STORAGE_TYPE"></label>
+		<div data-bind="component: {
+			name: 'Select',
+			params: {
+				options: contactsTypesOptions,
+				value: mainContactsType,
+				trigger: contactsPdoTypeTrigger,
+				optionsText: 'name',
+				optionsValue: 'id'
+			}
+		}"></div>
+	</div>
+	<div data-bind="visible: 'sqlite' !== contactsPdoType()">
+		<div class="control-group">
+			<label data-i18n="TAB_CONTACTS/LABEL_STORAGE_DSN"></label>
+			<div>
+				<input type="text" class="span6" autocomplete="off" autocorrect="off" autocapitalize="off"
+					data-bind="value: contactsPdoDsn, saveTrigger: contactsPdoDsnTrigger" placeholder="mysql:host=127.0.0.1;port=3306;dbname=snappymail">
+			</div>
+		</div>
+		<div class="control-group">
+			<label data-i18n="TAB_CONTACTS/LABEL_STORAGE_USER"></label>
+			<div>
+				<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off"
+					data-bind="value: contactsPdoUser, saveTrigger: contactsPdoUserTrigger">
+			</div>
+		</div>
+		<div class="control-group">
+			<label data-i18n="TAB_CONTACTS/LABEL_STORAGE_PASSWORD"></label>
+			<div>
+				<input type="password" autocomplete="current-password" autocorrect="off" autocapitalize="off"
+					data-bind="value: contactsPdoPassword, saveTrigger: contactsPdoPasswordTrigger">
+			</div>
+		</div>
+
+		<div data-bind="visible: 'mysql' === contactsPdoType()">
+			<div class="control-group">
+				<label>SSL CA</label>
+				<div>
+					<textarea placeholder="PEM formatted" data-bind="value: contactsMySQLSSLCA, saveTrigger: contactsMySQLSSLCATrigger"></textarea>
+				</div>
+			</div>
+			<div class="control-group">
+				<label></label>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: { value: contactsMySQLSSLVerify, label: 'VERIFY SERVER CERT' }
+				}"></div>
+			</div>
+			<div class="control-group">
+				<label>SSL CIPHER</label>
+				<div>
+					<input type="text" placeholder="HIGH" data-bind="value: contactsMySQLSSLCiphers, saveTrigger: contactsMySQLSSLCiphersTrigger">
+				</div>
+			</div>
+		</div>
+	</div>
+	<div data-bind="visible: 'sqlite' === contactsPdoType()">
+		<div class="control-group">
+			<label></label>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: { value: contactsSQLiteGlobal, label: 'TAB_CONTACTS/SQLITE_GLOBAL' }
+			}"></div>
+		</div>
+		<div class="control-group" data-bind="visible: contactsSQLiteGlobal">
+			<div class="alert">
+				<h4 data-i18n="TAB_CONTACTS/ALERT_NOTICE"></h4>
+				<div data-i18n="[html]TAB_CONTACTS/HTML_ALERT_DO_NOT_USE_THIS_DATABASE"></div>
+			</div>
+		</div>
+	</div>
+	<div data-bind="visible: contactsPdoType">
+		<div class="control-group">
+			<label></label>
+			<a class="btn" data-bind="command: testContactsCommand, css: { 'btn-success': testContactsSuccess, 'btn-danger': testContactsError }">
+				<i class="fontastic" data-bind="css: {'icon-spinner': testing()}">ℹ</i>
+				<span data-i18n="GLOBAL/TEST"></span>
+			</a>
+		</div>
+	</div>
+	<div class="alert span8" data-bind="text: testContactsErrorMessage, visible: '' !== testContactsErrorMessage()"></div>
+</form>

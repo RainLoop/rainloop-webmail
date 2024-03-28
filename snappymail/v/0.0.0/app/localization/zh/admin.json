@@ -1,0 +1,185 @@
+{
+	"GLOBAL": {
+		"ADD": "添加",
+		"CLOSE": "关闭",
+		"SAVE": "保存",
+		"TEST": "测试",
+		"UPDATE": "更新",
+		"USERNAME": "用户名",
+		"PASSWORD": "密码",
+		"CANCEL": "取消",
+		"SEARCH": "搜索"
+	},
+	"LOGIN": {
+		"LABEL_LOGIN": "登录",
+		"LABEL_TOTP": "TOTP 代码",
+		"BUTTON_LOGIN": "登录到控制面板"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "控制面板"
+	},
+	"SETTINGS_LABELS": {
+		"GENERAL": "常规",
+		"LOGIN": "登录",
+		"BRANDING": "Logo",
+		"CONTACTS": "联系人",
+		"DOMAINS": "域名",
+		"SECURITY": "安全",
+		"PACKAGES": "插件包",
+		"CONFIG": "配置",
+		"ABOUT": "关于"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "界面",
+		"LABEL_LANGUAGE": "语言",
+		"LABEL_LANGUAGE_ADMIN": "语言(后台)",
+		"LABEL_THEME": "主题",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "允许在设置界面中选择语言",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "允许在设置界面中选择主题",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "允许在设置界面中选择背景",
+		"LABEL_SHOW_THUMBNAILS": "显示缩略图(附件)",
+		"LEGEND_MAIN": "主要设置",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "附件大小限制",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "允许额外的账户",
+		"LABEL_ALLOW_IDENTITIES": "允许多重身份",
+		"ALERT_DATA_ACCESS": "数据文件夹可被访问。请配置您的 Web 服务器以阻止从外部访问数据文件夹。获取更多帮助：",
+		"ALERT_WARNING": "警告！",
+		"HTML_ALERT_WEAK_PASSWORD": "您正在使用默认的管理员密码\n<br>\n安全起见，请立即将密码\n<strong><a href=\"#\/security\">更改<\/a><\/strong>\n为其他的字符串。\n"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "登录界面",
+		"LABEL_DEFAULT_DOMAIN": "默认域名",
+		"LABEL_DETERMINE_USER_DOMAIN": "尝试判断用户使用的域名",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "允许在登录界面选择语言",
+		"LABEL_DETERMINE_USER_LANGUAGE": "尝试判断用户使用语言"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Logo",
+		"LABEL_PAGE_TITLE": "页面标题",
+		"LABEL_LOADING_DESCRIPTION": "加载界面文字",
+		"LABEL_FAVICON_URL": "网站图标"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "联系人",
+		"LEGEND_STORAGE": "存储(PDO)",
+		"LABEL_ENABLE_CONTACTS": "启用联系人",
+		"LABEL_ALLOW_SYNC": "允许同步联系人(依靠外部CardDAV服务器)",
+		"LABEL_STORAGE_TYPE": "类型",
+		"LABEL_STORAGE_DSN": "Dsn",
+		"LABEL_STORAGE_USER": "用户",
+		"LABEL_STORAGE_PASSWORD": "密码",
+		"SQLITE_GLOBAL": "Use a global DB instead of per account",
+		"ALERT_NOTICE": "提示!",
+		"SUGGESTIONS_LIMIT": "建议数量上限",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "如果有大量的活跃用户，请不要选择此数据库类型。",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "您的系统不支持联系人\n<br>\n您需要在您的服务器上安装或启用<strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> 组件。\n"
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "域名",
+		"BUTTON_ADD_DOMAIN": "添加域名",
+		"BUTTON_ADD_ALIAS": "添加别名",
+		"DELETE_ARE_YOU_SURE": "您确定吗？",
+		"HTML_DOMAINS_HELPER": "允许访问的域名列表。\n<br>\n点击域名进行设置。\n"
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "安全",
+		"LABEL_USE_IMAGE_PROXY": "对外部图片使用本地代理",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
+		"LABEL_SHOW_PHP_INFO": "显示 PHP 信息",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "管理员面板访问凭据",
+		"LABEL_CURRENT_PASSWORD": "当前密码",
+		"LABEL_NEW_PASSWORD": "新密码",
+		"LABEL_REPEAT_PASSWORD": "重复输入新密码",
+		"LABEL_REQUIRE_VERIFICATION": "要求验证 SSL 证书",
+		"CRYPTO": "加密",
+		"LABEL_ALLOW_SELF_SIGNED": "允许自签名证书"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "启用插件",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "有更新可用",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "可用于安装",
+		"LEGEND_INSTALLED_PACKAGES": "已安装的插件包",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "目前无法访问插件仓库"
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "关于",
+		"LABEL_TAG_HINT": "简洁、现代化、快速的网页邮件客户端",
+		"LABEL_ALL_RIGHTS_RESERVED": "保留所有权利",
+		"HINT_READ_CHANGE_LOG": "请在更新前阅读更新日志",
+		"HINT_IS_UP_TO_DATE": "SnappyMail已经是最新版本的",
+		"HTML_NEW_VERSION": "有新的<b>%VERSION%<\/b> 版本可用.",
+		"LABEL_UPDATING": "更新中",
+		"LABEL_CHECKING": "检查更新",
+		"BUTTON_RELEASES": "Releases"
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "添加别名",
+		"LABEL_ALIAS": "别名",
+		"LABEL_DOMAIN": "域名"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "添加域名",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "添加域名 \"%NAME%\"",
+		"TITLE_EDIT_DOMAIN": "编辑域名 \"%NAME%\"",
+		"LABEL_NAME": "名字",
+		"NAME_HELPER": "支持通配符",
+		"LABEL_SERVER": "服务器",
+		"LABEL_PORT": "端口",
+		"LABEL_SECURE": "加密",
+		"TIMEOUT": "超时",
+		"DISABLE_CAPABILITIES": "禁用能力",
+		"LIMITS": "限制",
+		"FOLDERS": "文件夹",
+		"MESSAGES": "消息",
+		"LABEL_WHITE_LIST": "白名单",
+		"SECURE_OPTION_NONE": "无",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "可使用筛选脚本",
+		"LABEL_USE_SHORT_LOGIN": "使用短用户名登录",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
+		"LABEL_USE_AUTH": "使用认证",
+		"LABEL_SET_SENDER": "使用登录名作为发件人",
+		"LABEL_AUTH_PLAIN_LINE": "强制单一 AUTH PLAIN 命令登录",
+		"LABEL_USE_PHP_MAIL": "使用 php mail() 函数",
+		"BUTTON_WHITE_LIST": "白名单",
+		"BUTTON_SIEVE_CONFIGURATION": "筛选设置",
+		"BUTTON_BACK_TO_IMAP": "回到 IMAP 设置",
+		"BUTTON_BACK": "返回",
+		"BUTTON_UPDATE": "更新",
+		"NEW_DOMAIN_DESC": "此域名配置将允许您和<strong>%NAME%<\/strong>电子邮件地址一起工作.",
+		"WHITE_LIST_ALERT": "允许访问的域用户；使用空格分隔。\n"
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "插件",
+		"DESC_NOTHING_TO_CONFIGURE": "无可用配置"
+	},
+	"POPUPS_ASK": {
+		"BUTTON_YES": "是",
+		"BUTTON_NO": "否",
+		"DESC_WANT_CLOSE_THIS_WINDOW": "您确定要关闭此窗口吗？"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "选择您的语言"
+	},
+	"HINTS": {
+		"BETA": "测试版本",
+		"WARNING": "警告"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "域名已经存在",
+		"UNKNOWN_ERROR": "未知错误"
+	},
+	"NOTIFICATIONS": {
+		"RequestError": "请求失败",
+		"RequestAborted": "请求中止",
+		"RequestTimeout": "请求超时",
+		"InvalidToken": "无效标记",
+		"AuthError": "认证失败",
+		"DomainAlreadyExists": "域名已经存在",
+		"CantSavePluginSettings": "无法保存设置",
+		"CantInstallPackage": "安装插件包失败",
+		"CantDeletePackage": "移除插件包失败",
+		"InvalidPluginPackage": "无效插件包",
+		"UnsupportedPluginPackage": "不支持的插件包",
+		"UnknownError": "未知错误"
+	}
+}

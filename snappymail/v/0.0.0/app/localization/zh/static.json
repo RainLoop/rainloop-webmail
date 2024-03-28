@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "重新加载",
+	"NO_SCRIPT_TITLE": "此应用需要 JavaScript 支持！",
+	"NO_SCRIPT_DESC": "您的浏览器不支持 JavaScript。\n请启用浏览器的 JavaScript 并重试。\n",
+	"NO_COOKIE_TITLE": "此应用需要 Cookies 支持！",
+	"NO_COOKIE_DESC": "您的浏览器不支持 Cookies。\n请启用浏览器的 Cookies 并重试。\n",
+	"BAD_BROWSER_TITLE": "您的浏览器过时了。",
+	"BAD_BROWSER_DESC": "为了使用所有特性，\n下载并安装其中一款浏览器：\n"
+}

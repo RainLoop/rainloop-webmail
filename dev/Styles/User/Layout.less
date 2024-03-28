@@ -1,0 +1,236 @@
+
+#rl-app.UserBackground {
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#rl-left {
+	flex-grow: 0;
+	flex-shrink: 0;
+	position: relative;
+/*	transition: width 0.3s ease-out;*/
+	width: @rlLeftWidth;
+	z-index: 0;
+
+	.b-toolbar {
+		padding: 10px 0 10px @rlLowMargin;
+		white-space: nowrap;
+	}
+}
+
+#rl-right:not([hidden]) {
+	display: flex;
+	flex-grow: 1;
+	width: 20%;
+}
+
+/*
+.resizable::after {
+	background-color: #aaa;
+	bottom: 0;
+	content: '';
+	height: 22px;
+	pointer-events: none;
+	position: absolute;
+	right: 0;
+	text-align: center;
+	width: 20px;
+}
+.resizable::-webkit-resizer {
+	background: #aaa;
+	background: rgba(255,255,255,0.5);
+}
+*/
+
+html:not(.rl-left-panel-disabled) #rl-left {
+	resize: horizontal; overflow: auto;
+	min-width: 155px;
+	max-width: 350px;
+}
+
+#top-system-dropdown-id::after,
+#button-add-prop-dropdown-id::after {
+	content: '▼';
+	font-size: 80%;
+}
+
+.dropdown-menu * + .dividerbar {
+	margin-top: 9px;
+	padding-top: 9px;
+	border-top: 1px solid var(--border-color, #e5e5e5);
+}
+
+.dropdown.show {
+	box-shadow: 0 0 1px var(--main-color, #333);
+}
+
+.btn.btn-transparent {
+	background: none !important;
+	border-color: transparent !important;
+	box-shadow: none !important;
+	color: inherit;
+	text-shadow: none !important;
+	opacity: .6;
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
+.btn-group.open .btn.btn-transparent.dropdown-toggle {
+	color: #BD362F;
+}
+
+.btn-group > .btn.single {
+	border-radius: var(--input-border-radius, 3px) !important;
+}
+
+.search-input-wrp {
+	position: relative;
+}
+.search-input-wrp a {
+	position: absolute;
+	right: 0;
+	top: 5px;
+	margin: 0 7px;
+	z-index: 100;
+	opacity: .4;
+	cursor: pointer;
+
+	&:hover {
+		opacity: .6;
+	}
+}
+#rl-left .search-input-wrp {
+	margin: 0 4px;
+	width: calc(100% - 8px);
+}
+
+html:not(.rl-ctrl-key-pressed) .visible-on-ctrl-btn,
+html.rl-ctrl-key-pressed .hidden-on-ctrl-btn,
+.show-on-panel-disabled {
+	display: none;
+}
+
+html.rl-left-panel-disabled {
+
+	#rl-left {
+		width: 60px !important;
+
+		.show-on-panel-disabled {
+			display: block;
+		}
+
+		.b-content {
+			opacity: 0.3;
+		}
+
+		.hide-on-panel-disabled {
+			display: none;
+		}
+	}
+}
+
+.e-paginator {
+
+	a {
+		opacity: 0.5;
+		text-decoration: none;
+		font-size: 157%;
+		padding: 0 3px;
+		cursor: pointer;
+
+		&:hover {
+			opacity: 0.8;
+		}
+
+		&.current {
+			opacity: 1;
+			font-size: 179%;
+			cursor: default;
+		}
+	}
+}
+
+.resizer {
+	display: none;
+}
+
+@media screen and (max-width: @maxMobileWidth) {
+	#rl-app {
+		#V-SettingsPane {
+			margin-right: 0;
+			padding: 10px;
+		}
+	}
+
+	#rl-left {
+		background: var(--main-bg-color, #aaa);
+		border-right: 1px solid var(--border-color, #ddd);
+		position: fixed;
+/*		left: 0; RTL issue*/
+		top: 0;
+		bottom: 0;
+		width: 50vw;
+		z-index: 99;
+	}
+	.rl-left-panel-disabled #rl-left {
+		display: none;
+	}
+
+	.dropdown-menu a {
+		line-height: 2.5;
+	}
+
+	.hide-mobile {
+		display: none !important;
+	}
+}
+
+/* desktop */
+@media screen and (min-width: @maxMobileWidth + 1px) {
+	#rl-right .toggleLeft,
+	#V-MailMessageList .buttonCompose {
+		display: none !important;
+	}
+
+	.sm-msgView-bottom #rl-right {
+		flex-direction: column;
+	}
+
+	.resizer {
+		background: #aaa;
+		background: rgba(255,255,255,0.5);
+		opacity: 0;
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		z-index: 102;
+	}
+	.resizer:hover {
+		opacity: 1;
+	}
+	html:not(.rl-left-panel-disabled) #rl-left > .resizer,
+	.sm-msgView-side #V-MailMessageList .resizer {
+		cursor: ew-resize;
+		cursor: col-resize;
+		display: block;
+		top: 0;
+		width: 5px;
+	}
+	.sm-msgView-bottom #V-MailMessageList .resizer {
+		cursor: ns-resize;
+		cursor: row-resize;
+		display: block;
+		left: 0;
+		height: 5px;
+	}
+}
+
+/* desktop-large */
+@media screen and (min-width: 1401px) {
+	#rl-left {
+		width: @rlLeftWidth + 20;
+	}
+}

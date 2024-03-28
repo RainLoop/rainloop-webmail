@@ -1,76 +1,77 @@
-import _ from '_';
-import $ from '$';
-import ko from 'ko';
+import { addObservablesTo } from 'External/ko';
 
-import Jua from 'Jua';
-
-import { SaveSettingsStep, UploadErrorCode, Capa, Magics } from 'Common/Enums';
-import { changeTheme, convertThemeName } from 'Common/Utils';
-import { userBackground, themePreviewLink, uploadBackground } from 'Common/Links';
+import { SaveSettingStatus, UploadErrorCode } from 'Common/Enums';
+import { themePreviewLink, serverRequest } from 'Common/Links';
 import { i18n } from 'Common/Translator';
+import { SettingsCapa } from 'Common/Globals';
 
-import { capa } from 'Storage/Settings';
+import { ThemeStore, convertThemeName, changeTheme } from 'Stores/Theme';
+import { addSubscribablesTo } from 'External/ko';
 
-import ThemeStore from 'Stores/Theme';
+import Remote from 'Remote/User/Fetch';
 
-import Remote from 'Remote/User/Ajax';
+const themeBackground = {
+	name: ThemeStore.userBackgroundName,
+	hash: ThemeStore.userBackgroundHash
+};
+addObservablesTo(themeBackground, {
+	uploaderButton: null,
+	loading: false,
+	error: ''
+});
 
-class ThemesUserSettings {
+export class UserSettingsThemes /*extends AbstractViewSettings*/ {
 	constructor() {
+		this.fontSansSerif = ThemeStore.fontSansSerif;
+		this.fontSerif = ThemeStore.fontSerif;
+		this.fontMono = ThemeStore.fontMono;
+		addSubscribablesTo(ThemeStore, {
+			fontSansSerif: value => {
+				Remote.saveSettings(null, {
+					fontSansSerif: value
+				});
+			},
+			fontSerif: value => {
+				Remote.saveSettings(null, {
+					fontSerif: value
+				});
+			},
+			fontMono: value => {
+				Remote.saveSettings(null, {
+					fontMono: value
+				});
+			}
+		});
+
 		this.theme = ThemeStore.theme;
 		this.themes = ThemeStore.themes;
-		this.themesObjects = ko.observableArray([]);
+		this.themesObjects = ko.observableArray();
 
-		this.background = {};
-		this.background.name = ThemeStore.themeBackgroundName;
-		this.background.hash = ThemeStore.themeBackgroundHash;
-		this.background.uploaderButton = ko.observable(null);
-		this.background.loading = ko.observable(false);
-		this.background.error = ko.observable('');
+		themeBackground.enabled = SettingsCapa('UserBackground');
+		this.background = themeBackground;
 
-		this.capaUserBackground = ko.observable(capa(Capa.UserBackground));
+		this.themeTrigger = ko.observable(SaveSettingStatus.Idle).extend({ debounce: 100 });
 
-		this.themeTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: Magics.Time100ms });
-
-		this.iTimer = 0;
-		this.oThemeAjaxRequest = null;
-
-		this.theme.subscribe((value) => {
-			_.each(this.themesObjects(), (theme) => {
-				theme.selected(value === theme.name);
-			});
+		ThemeStore.theme.subscribe(value => {
+			this.themesObjects.forEach(theme => theme.selected(value === theme.name));
 
 			changeTheme(value, this.themeTrigger);
 
 			Remote.saveSettings(null, {
-				'Theme': value
+				Theme: value
 			});
-		});
-
-		this.background.hash.subscribe((value) => {
-			const $bg = $('#rl-bg');
-			if (!value) {
-				if ($bg.data('backstretch')) {
-					$bg.backstretch('destroy').attr('style', '');
-				}
-			} else {
-				$bg
-					.attr('style', 'background-image: none !important;')
-					.backstretch(userBackground(value), {
-						fade: Magics.Time1s,
-						centeredX: true,
-						centeredY: true
-					})
-					.removeAttr('style');
-			}
 		});
 	}
 
+	setTheme(theme) {
+		ThemeStore.theme(theme.name);
+	}
+
 	onBuild() {
-		const currentTheme = this.theme();
+		const currentTheme = ThemeStore.theme();
 
 		this.themesObjects(
-			_.map(this.themes(), (theme) => ({
+			ThemeStore.themes.map(theme => ({
 				name: theme,
 				nameDisplay: convertThemeName(theme),
 				selected: ko.observable(theme === currentTheme),
@@ -78,50 +79,25 @@ class ThemesUserSettings {
 			}))
 		);
 
-		this.initUploader();
-	}
+		// initUploader
 
-	onShow() {
-		this.background.error('');
-	}
-
-	clearBackground() {
-		if (this.capaUserBackground()) {
-			Remote.clearUserBackground(() => {
-				this.background.name('');
-				this.background.hash('');
-			});
-		}
-	}
-
-	initUploader() {
-		if (this.background.uploaderButton() && this.capaUserBackground()) {
+		if (themeBackground.uploaderButton() && themeBackground.enabled) {
 			const oJua = new Jua({
-				'action': uploadBackground(),
-				'name': 'uploader',
-				'queueSize': 1,
-				'multipleSizeLimit': 1,
-				'disableDragAndDrop': true,
-				'disableMultiple': true,
-				'clickElement': this.background.uploaderButton()
+				action: serverRequest('UploadBackground'),
+				limit: 1,
+				clickElement: themeBackground.uploaderButton()
 			});
 
 			oJua
 				.on('onStart', () => {
-					this.background.loading(true);
-					this.background.error('');
-					return true;
+					themeBackground.loading(true);
+					themeBackground.error('');
 				})
 				.on('onComplete', (id, result, data) => {
-					this.background.loading(false);
-
-					if (result && id && data && data.Result && data.Result.Name && data.Result.Hash) {
-						this.background.name(data.Result.Name);
-						this.background.hash(data.Result.Hash);
-					} else {
-						this.background.name('');
-						this.background.hash('');
-
+					themeBackground.loading(false);
+					themeBackground.name(data?.Result?.name || '');
+					themeBackground.hash(data?.Result?.hash || '');
+					if (!themeBackground.name() || !themeBackground.hash()) {
 						let errorMsg = '';
 						if (data.ErrorCode) {
 							switch (data.ErrorCode) {
@@ -135,17 +111,22 @@ class ThemesUserSettings {
 							}
 						}
 
-						if (!errorMsg && data.ErrorMessage) {
-							errorMsg = data.ErrorMessage;
-						}
-
-						this.background.error(errorMsg || i18n('SETTINGS_THEMES/ERROR_UNKNOWN'));
+						themeBackground.error(errorMsg || data.ErrorMessage || i18n('SETTINGS_THEMES/ERROR_UNKNOWN'));
 					}
-
-					return true;
 				});
 		}
 	}
-}
 
-export { ThemesUserSettings, ThemesUserSettings as default };
+	onShow() {
+		themeBackground.error('');
+	}
+
+	clearBackground() {
+		if (themeBackground.enabled) {
+			Remote.request('ClearUserBackground', () => {
+				themeBackground.name('');
+				themeBackground.hash('');
+			});
+		}
+	}
+}

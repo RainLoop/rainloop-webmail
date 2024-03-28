@@ -1,1037 +1,806 @@
-import window from 'window';
-import _ from '_';
-import $ from '$';
 import ko from 'ko';
-import key from 'key';
-import Jua from 'Jua';
-import ifvisible from 'ifvisible';
+import { addObservablesTo, addComputablesTo } from 'External/ko';
 
-import {
-	Capa,
-	Layout,
-	Focused,
-	ComposeType,
-	FolderType,
-	Magics,
-	MessageSetAction,
-	KeyState,
-	StorageResultType
-} from 'Common/Enums';
+import { ScopeFolderList, ScopeMessageList, ScopeMessageView } from 'Common/Enums';
+import { ComposeType, FolderType, MessageSetAction } from 'Common/EnumsUser';
+import { doc,
+	leftPanelDisabled, toggleLeftPanel,
+	Settings, SettingsCapa,
+	addEventsListeners, stopEvent,
+	addShortcut, registerShortcut, formFieldFocused
+} from 'Common/Globals';
+import { arrayLength } from 'Common/Utils';
+import { computedPaginatorHelper, showMessageComposer, populateMessageBody, downloadZip, moveAction } from 'Common/UtilsUser';
+import { FileInfo, RFC822 } from 'Common/File';
+import { isFullscreen, toggleFullscreen } from 'Common/Fullscreen';
 
-import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-
-import { bMobileDevice, popupVisibility, leftPanelDisabled, moveAction } from 'Common/Globals';
-
-import { noop, noopFalse, computedPagenatorHelper, draggablePlace, friendlySize, inArray, isUnd } from 'Common/Utils';
-
-import { mailBox, append } from 'Common/Links';
+import { mailBox } from 'Common/Links';
 import { Selector } from 'Common/Selector';
-import * as Events from 'Common/Events';
 
-import { i18n, initOnStartOrLangChange } from 'Common/Translator';
+import { i18n } from 'Common/Translator';
 
-import {
-	getFolderFromCacheList,
-	clearMessageFlagsFromCacheByFolder,
-	hasRequestedMessage,
-	addRequestedMessage
-} from 'Common/Cache';
+import { dropFilesInFolder } from 'Common/Folders';
 
-import AppStore from 'Stores/User/App';
-import QuotaStore from 'Stores/User/Quota';
-import SettingsStore from 'Stores/User/Settings';
-import FolderStore from 'Stores/User/Folder';
-import MessageStore from 'Stores/User/Message';
+import { getFolderFromCacheList } from 'Common/Cache';
 
-import * as Settings from 'Storage/Settings';
-import Remote from 'Remote/User/Ajax';
+import { AppUserStore } from 'Stores/User/App';
+import { SettingsUserStore } from 'Stores/User/Settings';
+import { FolderUserStore } from 'Stores/User/Folder';
+import { LanguageStore } from 'Stores/Language';
+import { MessageUserStore } from 'Stores/User/Message';
+import { MessagelistUserStore } from 'Stores/User/Messagelist';
+import { ThemeStore } from 'Stores/Theme';
 
-import { getApp } from 'Helper/Apps/User';
+import Remote from 'Remote/User/Fetch';
 
-import { view, command, ViewType, showScreenPopup, setHash } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { decorateKoCommands, showScreenPopup, arePopupsVisible } from 'Knoin/Knoin';
+import { AbstractViewRight } from 'Knoin/AbstractViews';
 
-const canBeMovedHelper = (self) => self.canBeMoved();
+import { FolderClearPopupView } from 'View/Popup/FolderClear';
+import { AdvancedSearchPopupView } from 'View/Popup/AdvancedSearch';
+import { ComposePopupView } from 'View/Popup/Compose';
 
-@view({
-	name: 'View/User/MailBox/MessageList',
-	type: ViewType.Right,
-	templateID: 'MailMessageList'
-})
-class MessageListMailBoxUserView extends AbstractViewNext {
+import { MessageModel } from 'Model/Message';
+
+import { LayoutSideView, ClientSideKeyNameMessageListSize } from 'Common/EnumsUser';
+import { setLayoutResizer } from 'Common/UtilsUser';
+
+const
+	canBeMovedHelper = () => MessagelistUserStore.hasCheckedOrSelected(),
+
+	/**
+	 * @param {string} sFolderFullName
+	 * @param {number} iSetAction
+	 * @param {Array=} aMessages = null
+	 * @returns {void}
+	 */
+	listAction = (...args) => MessagelistUserStore.setAction(...args),
+
+	moveMessagesToFolderType = (toFolderType, bDelete) => {
+		let messages = MessagelistUserStore.listCheckedOrSelectedUidsWithSubMails();
+		messages.size && rl.app.moveMessagesToFolderType(
+			toFolderType,
+			messages.folder,
+			messages,
+			bDelete
+		)
+	},
+
+	pad2 = v => 10 > v ? '0' + v : '' + v,
+	Ymd = dt => dt.getFullYear() + pad2(1 + dt.getMonth()) + pad2(dt.getDate()),
+
+	setMessage = msg => {
+		populateMessageBody(msg);
+/* This will replace url hash, and then load message
+ * It's working properly yet
+//		let hash = msg.href;
+		let hash = mailBox(
+			msg.folder,
+			MessagelistUserStore.page(),
+			MessagelistUserStore.listSearch(),
+			MessagelistUserStore.threadUid(),
+			msg.uid
+		);
+		MessageUserStore.message() ? hasher.replaceHash(hash) : hasher.setHash(hash);
+*/
+	};
+
+
+let
+	sLastSearchValue = '';
+
+export class MailMessageList extends AbstractViewRight {
 	constructor() {
 		super();
 
-		this.sLastUid = null;
-		this.bPrefetch = false;
-		this.emptySubjectValue = '';
+		this.allowDangerousActions = SettingsCapa('DangerousActions');
 
-		this.iGoToUpUpOrDownDownTimeout = 0;
+		this.messageList = MessagelistUserStore;
+		this.archiveAllowed = MessagelistUserStore.archiveAllowed;
+		this.canMarkAsSpam = MessagelistUserStore.canMarkAsSpam;
+		this.isSpamFolder = MessagelistUserStore.isSpamFolder;
 
-		this.mobile = !!Settings.appSettingsGet('mobile');
-		this.newMoveToFolder = AppStore.newMoveToFolder;
+		this.composeInEdit = ComposePopupView.inEdit;
 
-		this.allowReload = !!Settings.capa(Capa.Reload);
-		this.allowSearch = !!Settings.capa(Capa.Search);
-		this.allowSearchAdv = !!Settings.capa(Capa.SearchAdv);
-		this.allowComposer = !!Settings.capa(Capa.Composer);
-		this.allowMessageListActions = !!Settings.capa(Capa.MessageListActions);
-		this.allowDangerousActions = !!Settings.capa(Capa.DangerousActions);
-		this.allowFolders = !!Settings.capa(Capa.Folders);
+		this.isMobile = ThemeStore.isMobile; // Obsolete
 
-		this.popupVisibility = popupVisibility;
+		this.popupVisibility = arePopupsVisible;
 
-		this.message = MessageStore.message;
-		this.messageList = MessageStore.messageList;
-		this.messageListDisableAutoSelect = MessageStore.messageListDisableAutoSelect;
+		this.useCheckboxesInList = SettingsUserStore.useCheckboxesInList;
 
-		this.folderList = FolderStore.folderList;
+		this.userUsageProc = FolderUserStore.quotaPercentage;
 
-		this.composeInEdit = AppStore.composeInEdit;
-		this.leftPanelDisabled = leftPanelDisabled;
-
-		this.selectorMessageSelected = MessageStore.selectorMessageSelected;
-		this.selectorMessageFocused = MessageStore.selectorMessageFocused;
-		this.isMessageSelected = MessageStore.isMessageSelected;
-		this.messageListSearch = MessageStore.messageListSearch;
-		this.messageListThreadUid = MessageStore.messageListThreadUid;
-		this.messageListError = MessageStore.messageListError;
-		this.folderMenuForMove = FolderStore.folderMenuForMove;
-
-		this.useCheckboxesInList = SettingsStore.useCheckboxesInList;
-
-		this.mainMessageListSearch = MessageStore.mainMessageListSearch;
-		this.messageListEndFolder = MessageStore.messageListEndFolder;
-		this.messageListEndThreadUid = MessageStore.messageListEndThreadUid;
-
-		this.messageListChecked = MessageStore.messageListChecked;
-		this.messageListCheckedOrSelected = MessageStore.messageListCheckedOrSelected;
-		this.messageListCheckedOrSelectedUidsWithSubMails = MessageStore.messageListCheckedOrSelectedUidsWithSubMails;
-		this.messageListCompleteLoadingThrottle = MessageStore.messageListCompleteLoadingThrottle;
-		this.messageListCompleteLoadingThrottleForAnimation = MessageStore.messageListCompleteLoadingThrottleForAnimation;
-
-		initOnStartOrLangChange(() => {
-			this.emptySubjectValue = i18n('MESSAGE_LIST/EMPTY_SUBJECT_TEXT');
+		addObservablesTo(this, {
+			focusSearch: false
 		});
-
-		this.userQuota = QuotaStore.quota;
-		this.userUsageSize = QuotaStore.usage;
-		this.userUsageProc = QuotaStore.percentage;
-
-		this.moveDropdownTrigger = ko.observable(false);
-		this.moreDropdownTrigger = ko.observable(false);
 
 		// append drag and drop
-		this.dragOver = ko.observable(false).extend({ 'throttle': 1 });
-		this.dragOverEnter = ko.observable(false).extend({ 'throttle': 1 });
-		this.dragOverArea = ko.observable(null);
-		this.dragOverBodyArea = ko.observable(null);
+		this.dragOver = ko.observable(false).extend({ throttle: 1 });
+		this.dragOverEnter = ko.observable(false).extend({ throttle: 1 });
 
-		this.messageListItemTemplate = ko.computed(() =>
-			this.mobile || Layout.SidePreview === SettingsStore.layout()
-				? 'MailMessageListItem'
-				: 'MailMessageListItemNoPreviewPane'
-		);
+		const attachmentsActions = Settings.app('attachmentsActions');
+		this.attachmentsActions = ko.observableArray(arrayLength(attachmentsActions) ? attachmentsActions : []);
 
-		this.messageListSearchDesc = ko.computed(() => {
-			const value = MessageStore.messageListEndSearch();
-			return '' === value ? '' : i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', { 'SEARCH': value });
+		addComputablesTo(this, {
+
+			sortSupported: () => FolderUserStore.hasCapability('SORT') && !MessagelistUserStore.threadUid(),
+
+			messageListSearchDesc: () => {
+				const value = MessagelistUserStore().search;
+				return value ? i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', { SEARCH: value }) : ''
+			},
+
+			messageListPaginator: computedPaginatorHelper(MessagelistUserStore.page, MessagelistUserStore.pageCount),
+
+			checkAll: {
+				read: () => MessagelistUserStore.hasChecked(),
+				write: (value) => {
+					value = !!value;
+					MessagelistUserStore.forEach(message => message.checked(value));
+				}
+			},
+
+			inputSearch: {
+				read: MessagelistUserStore.mainSearch,
+				write: value => sLastSearchValue = value
+			},
+
+			isIncompleteChecked: () => {
+				const c = MessagelistUserStore.listChecked().length;
+				return c && MessagelistUserStore().length > c;
+			},
+
+			listGrouped: () => {
+				let uid = MessagelistUserStore.threadUid(),
+					sort = FolderUserStore.sortMode() || 'DATE';
+				return SettingsUserStore.listGrouped() && (sort.includes('DATE') || sort.includes('FROM')) && !uid;
+			},
+
+			timeFormat: () => (FolderUserStore.sortMode() || '').includes('FROM') ? 'AUTO' : 'LT',
+
+			groupedList: () => {
+				let list = [], current, sort = FolderUserStore.sortMode() || 'DATE';
+				if (sort.includes('FROM')) {
+					MessagelistUserStore.forEach(msg => {
+						let email = msg.from[0]?.email;
+						if (!current || email != current.id) {
+							current = {
+								id: email,
+								label: msg.from[0]?.toLine(),
+								search: 'from=' + email,
+								messages: []
+							};
+							list.push(current);
+						}
+						current.messages.push(msg);
+					});
+				} else if (sort.includes('DATE')) {
+					let today = Ymd(new Date()),
+						rtf = Intl.RelativeTimeFormat
+							? new Intl.RelativeTimeFormat(doc.documentElement.lang, { numeric: "auto" }) : 0;
+					MessagelistUserStore.forEach(msg => {
+						let dt = (new Date(msg.dateTimestamp() * 1000)),
+							date,
+							ymd = Ymd(dt);
+						if (!current || ymd != current.id) {
+							if (rtf && today == ymd) {
+								date = rtf.format(0, 'day');
+							} else if (rtf && today - 1 == ymd) {
+								date = rtf.format(-1, 'day');
+//							} else if (today - 7 < ymd) {
+//								date = dt.format({weekday: 'long'});
+//								date = dt.format({dateStyle: 'full'},0,LanguageStore.hourCycle());
+							} else {
+//								date = dt.format({dateStyle: 'medium'},0,LanguageStore.hourCycle());
+								date = dt.format({dateStyle: 'full'},0,LanguageStore.hourCycle());
+							}
+							current = {
+								id: ymd,
+								label: date,
+								search: 'on=' + dt.getFullYear() + '-' + pad2(1 + dt.getMonth()) + '-' + pad2(dt.getDate()),
+								messages: []
+							};
+							list.push(current);
+						}
+						current.messages.push(msg);
+					});
+				}
+				return list;
+			},
+
+			sortText: () => {
+				let mode = FolderUserStore.sortMode(),
+					desc = '' === mode || mode.includes('REVERSE');
+				mode = mode.split(/\s+/);
+				if (mode.includes('FROM')) {
+					 return '@' + (desc ? '⬆' : '⬇');
+				}
+				if (mode.includes('SUBJECT')) {
+					 return '𝐒' + (desc ? '⬆' : '⬇');
+				}
+				return (mode.includes('SIZE') ? '✉' : '📅') + (desc ? '⬇' : '⬆');
+			},
+
+			downloadAsZipAllowed: () => this.attachmentsActions.includes('zip')
 		});
-
-		this.messageListPagenator = ko.computed(
-			computedPagenatorHelper(MessageStore.messageListPage, MessageStore.messageListPageCount)
-		);
-
-		this.checkAll = ko.computed({
-			read: () => 0 < MessageStore.messageListChecked().length,
-			write: (value) => {
-				value = !!value;
-				_.each(MessageStore.messageList(), (message) => {
-					message.checked(value);
-				});
-			}
-		});
-
-		this.inputMessageListSearchFocus = ko.observable(false);
-
-		this.sLastSearchValue = '';
-		this.inputProxyMessageListSearch = ko.computed({
-			read: this.mainMessageListSearch,
-			write: (value) => {
-				this.sLastSearchValue = value;
-			}
-		});
-
-		this.isIncompleteChecked = ko.computed(() => {
-			const m = MessageStore.messageList().length,
-				c = MessageStore.messageListChecked().length;
-			return 0 < m && 0 < c && m > c;
-		});
-
-		this.hasMessages = ko.computed(() => 0 < this.messageList().length);
-
-		this.hasCheckedOrSelectedLines = ko.computed(() => 0 < this.messageListCheckedOrSelected().length);
-
-		this.isSpamFolder = ko.computed(
-			() => FolderStore.spamFolder() === this.messageListEndFolder() && '' !== FolderStore.spamFolder()
-		);
-
-		this.isSpamDisabled = ko.computed(() => UNUSED_OPTION_VALUE === FolderStore.spamFolder());
-
-		this.isTrashFolder = ko.computed(
-			() => FolderStore.trashFolder() === this.messageListEndFolder() && '' !== FolderStore.trashFolder()
-		);
-
-		this.isDraftFolder = ko.computed(
-			() => FolderStore.draftFolder() === this.messageListEndFolder() && '' !== FolderStore.draftFolder()
-		);
-
-		this.isSentFolder = ko.computed(
-			() => FolderStore.sentFolder() === this.messageListEndFolder() && '' !== FolderStore.sentFolder()
-		);
-
-		this.isArchiveFolder = ko.computed(
-			() => FolderStore.archiveFolder() === this.messageListEndFolder() && '' !== FolderStore.archiveFolder()
-		);
-
-		this.isArchiveDisabled = ko.computed(() => UNUSED_OPTION_VALUE === FolderStore.archiveFolder());
-
-		this.isArchiveVisible = ko.computed(
-			() => !this.isArchiveFolder() && !this.isArchiveDisabled() && !this.isDraftFolder()
-		);
-
-		this.isSpamVisible = ko.computed(
-			() => !this.isSpamFolder() && !this.isSpamDisabled() && !this.isDraftFolder() && !this.isSentFolder()
-		);
-
-		this.isUnSpamVisible = ko.computed(
-			() => this.isSpamFolder() && !this.isSpamDisabled() && !this.isDraftFolder() && !this.isSentFolder()
-		);
-
-		this.mobileCheckedStateShow = ko.computed(() => {
-			const checked = 0 < this.messageListChecked().length;
-			return this.mobile ? checked : true;
-		});
-
-		this.mobileCheckedStateHide = ko.computed(() => {
-			const checked = 0 < this.messageListChecked().length;
-			return this.mobile ? !checked : true;
-		});
-
-		this.messageListFocused = ko.computed(() => Focused.MessageList === AppStore.focusedState());
-
-		this.canBeMoved = this.hasCheckedOrSelectedLines;
-
-		this.quotaTooltip = _.bind(this.quotaTooltip, this);
 
 		this.selector = new Selector(
-			this.messageList,
-			this.selectorMessageSelected,
-			this.selectorMessageFocused,
-			'.messageListItem .actionHandle',
-			'.messageListItem.selected',
-			'.messageListItem .checkboxMessage',
-			'.messageListItem.focused'
+			MessagelistUserStore,
+			MessagelistUserStore.selectedMessage,
+			MessagelistUserStore.focusedMessage,
+			'.messageListItem',
+			'.messageListItem .messageCheckbox'
 		);
 
-		this.selector.on('onItemSelect', (message) => {
-			MessageStore.selectMessage(message);
+		this.selector.on('ItemSelect', message => {
+			if (message) {
+//				setMessage(message.clone());
+				setMessage(message);
+			} else {
+				MessageUserStore.message(null);
+			}
 		});
 
-		this.selector.on('onItemGetUid', (message) => (message ? message.generateUid() : ''));
+		this.selector.on('MiddleClick', message => populateMessageBody(message, true));
 
-		this.selector.on('onAutoSelect', () => this.useAutoSelect());
+		this.selector.on('ItemGetUid', message => (message ? message.folder + '/' + message.uid : ''));
 
-		this.selector.on('onUpUpOrDownDown', (v) => {
-			this.goToUpUpOrDownDown(v);
+		this.selector.on('canSelect', () => MessagelistUserStore.canSelect());
+
+		this.selector.on('click', (event, currentMessage) => {
+			const el = event.target;
+			if (el.closest('.flagParent')) {
+				if (currentMessage) {
+					const checked = MessagelistUserStore.listCheckedOrSelected();
+					listAction(
+						currentMessage.folder,
+						currentMessage.isFlagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
+						checked.find(message => message.uid == currentMessage.uid) ? checked : [currentMessage]
+					);
+				}
+			} else if (el.closest('.threads-len')) {
+				this.gotoThread(currentMessage);
+			} else {
+				return 1;
+			}
 		});
 
-		Events.sub('mailbox.message-list.selector.go-down', (select) => {
-			this.selector.goDown(select);
+		this.selector.on('UpOrDown', up => {
+			if (!MessagelistUserStore.hasChecked()) {
+				up = up ? -1 : 1;
+				const page = MessagelistUserStore.page() + up;
+				if (page > 0 && page <= MessagelistUserStore.pageCount()) {
+					if (SettingsUserStore.usePreviewPane() || MessageUserStore.message()) {
+						this.selector.iSelectNextHelper = up;
+					} else {
+						this.selector.iFocusedNextHelper = up;
+					}
+					this.selector.unselect();
+					this.gotoPage(page);
+				}
+			}
 		});
 
-		Events.sub('mailbox.message-list.selector.go-up', (select) => {
-			this.selector.goUp(select);
-		});
+		addEventListener('mailbox.message-list.selector.go-down',
+			e => this.selector.newSelectPosition('ArrowDown', false, e.detail)
+		);
 
-		Events.sub('mailbox.message.show', (sFolder, sUid) => {
-			const message = _.find(
-				this.messageList(),
-				(item) => item && sFolder === item.folderFullNameRaw && sUid === item.uid
+		addEventListener('mailbox.message-list.selector.go-up',
+			e => this.selector.newSelectPosition('ArrowUp', false, e.detail)
+		);
+
+		addEventListener('mailbox.message.show', e => {
+			const sFolder = e.detail.folder, iUid = e.detail.uid;
+
+			const message = MessagelistUserStore.find(
+				item => sFolder === item?.folder && iUid == item?.uid
 			);
 
 			if ('INBOX' === sFolder) {
-				setHash(mailBox(sFolder, 1));
+				hasher.setHash(mailBox(sFolder));
 			}
 
 			if (message) {
 				this.selector.selectMessageItem(message);
 			} else {
 				if ('INBOX' !== sFolder) {
-					setHash(mailBox(sFolder, 1));
+					hasher.setHash(mailBox(sFolder));
 				}
-
-				MessageStore.selectMessageByFolderAndUid(sFolder, sUid);
+				if (sFolder && iUid) {
+					let message = new MessageModel;
+					message.folder = sFolder;
+					message.uid = iUid;
+					setMessage(message);
+				} else {
+					MessageUserStore.message(null);
+				}
 			}
 		});
 
-		MessageStore.messageListEndHash.subscribe(() => {
-			this.selector.scrollToTop();
+		MessagelistUserStore.endHash.subscribe((() =>
+			this.selector.scrollToFocused()
+		).throttle(50));
+
+		decorateKoCommands(this, {
+			downloadAttachCommand: canBeMovedHelper,
+			downloadZipCommand: canBeMovedHelper,
+			forwardCommand: canBeMovedHelper,
+			deleteWithoutMoveCommand: canBeMovedHelper,
+			deleteCommand: canBeMovedHelper,
+			archiveCommand: canBeMovedHelper,
+			spamCommand: canBeMovedHelper,
+			notSpamCommand: canBeMovedHelper,
+			moveCommand: canBeMovedHelper,
 		});
 	}
 
-	@command()
-	clearCommand() {
-		if (Settings.capa(Capa.DangerousActions)) {
-			showScreenPopup(require('View/Popup/FolderClear'), [FolderStore.currentFolder()]);
-		}
-	}
-
-	@command()
-	reloadCommand() {
-		if (!MessageStore.messageListCompleteLoadingThrottleForAnimation() && this.allowReload) {
-			getApp().reloadMessageList(false, true);
-		}
-	}
-
-	@command(canBeMovedHelper)
-	multyForwardCommand() {
-		if (Settings.capa(Capa.Composer)) {
-			showScreenPopup(require('View/Popup/Compose'), [
-				ComposeType.ForwardAsAttachment,
-				MessageStore.messageListCheckedOrSelected()
-			]);
-		}
-	}
-
-	@command(canBeMovedHelper)
-	deleteWithoutMoveCommand() {
-		if (Settings.capa(Capa.DangerousActions)) {
-			getApp().deleteMessagesFromFolder(
-				FolderType.Trash,
-				FolderStore.currentFolderFullNameRaw(),
-				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(),
-				false
-			);
-		}
-	}
-
-	@command(canBeMovedHelper)
-	deleteCommand() {
-		getApp().deleteMessagesFromFolder(
-			FolderType.Trash,
-			FolderStore.currentFolderFullNameRaw(),
-			MessageStore.messageListCheckedOrSelectedUidsWithSubMails(),
-			true
-		);
-	}
-
-	@command(canBeMovedHelper)
-	archiveCommand() {
-		getApp().deleteMessagesFromFolder(
-			FolderType.Archive,
-			FolderStore.currentFolderFullNameRaw(),
-			MessageStore.messageListCheckedOrSelectedUidsWithSubMails(),
-			true
-		);
-	}
-
-	@command(canBeMovedHelper)
-	spamCommand() {
-		getApp().deleteMessagesFromFolder(
-			FolderType.Spam,
-			FolderStore.currentFolderFullNameRaw(),
-			MessageStore.messageListCheckedOrSelectedUidsWithSubMails(),
-			true
-		);
-	}
-
-	@command(canBeMovedHelper)
-	notSpamCommand() {
-		getApp().deleteMessagesFromFolder(
-			FolderType.NotSpam,
-			FolderStore.currentFolderFullNameRaw(),
-			MessageStore.messageListCheckedOrSelectedUidsWithSubMails(),
-			true
-		);
-	}
-
-	@command(canBeMovedHelper)
-	moveCommand() {} // eslint-disable-line no-empty-function
-
-	@command(canBeMovedHelper)
-	moveNewCommand(vm, event) {
-		if (this.newMoveToFolder() && this.mobileCheckedStateShow()) {
-			if (vm && event && event.preventDefault) {
-				event.preventDefault();
-				if (event.stopPropagation) {
-					event.stopPropagation();
-				}
-			}
-
-			if (moveAction()) {
-				AppStore.focusedState(Focused.MessageList);
-				moveAction(false);
-			} else {
-				AppStore.focusedState(Focused.FolderList);
-				moveAction(true);
-			}
-		}
-	}
-
-	hideLeft(item, event) {
-		event.preventDefault();
-		event.stopPropagation();
-
-		leftPanelDisabled(true);
-	}
-
-	showLeft(item, event) {
-		event.preventDefault();
-		event.stopPropagation();
-
-		leftPanelDisabled(false);
-	}
-
-	composeClick() {
-		if (Settings.capa(Capa.Composer)) {
-			showScreenPopup(require('View/Popup/Compose'));
-		}
-	}
-
-	goToUpUpOrDownDown(up) {
-		if (0 < this.messageListChecked().length) {
-			return false;
-		}
-
-		window.clearTimeout(this.iGoToUpUpOrDownDownTimeout);
-		this.iGoToUpUpOrDownDownTimeout = window.setTimeout(() => {
-			let prev = null,
-				next = null,
-				temp = null,
-				current = null;
-
-			_.find(this.messageListPagenator(), (item) => {
-				if (item) {
-					if (current) {
-						next = item;
-					}
-
-					if (item.current) {
-						current = item;
-						prev = temp;
-					}
-
-					if (next) {
-						return true;
-					}
-
-					temp = item;
-				}
-
-				return false;
-			});
-
-			if (Layout.NoPreview === SettingsStore.layout() && !this.message()) {
-				this.selector.iFocusedNextHelper = up ? -1 : 1;
-			} else {
-				this.selector.iSelectNextHelper = up ? -1 : 1;
-			}
-
-			if (up ? prev : next) {
-				this.selector.unselect();
-				this.gotoPage(up ? prev : next);
-			}
-		}, Magics.Time350ms);
-
-		return true;
-	}
-
-	useAutoSelect() {
-		if (this.messageListDisableAutoSelect()) {
-			return false;
-		}
-
-		if (/is:unseen/.test(this.mainMessageListSearch())) {
-			return false;
-		}
-
-		return Layout.NoPreview !== SettingsStore.layout();
-	}
-
-	searchEnterAction() {
-		this.mainMessageListSearch(this.sLastSearchValue);
-		this.inputMessageListSearchFocus(false);
-	}
-
-	/**
-	 * @returns {string}
-	 */
-	printableMessageCountForDeletion() {
-		const cnt = this.messageListCheckedOrSelectedUidsWithSubMails().length;
-		return 1 < cnt ? ' (' + (100 > cnt ? cnt : '99+') + ')' : ''; // eslint-disable-line no-magic-numbers
-	}
-
-	cancelSearch() {
-		this.mainMessageListSearch('');
-		this.inputMessageListSearchFocus(false);
-	}
-
-	cancelThreadUid() {
-		setHash(
-			mailBox(
-				FolderStore.currentFolderFullNameHash(),
-				MessageStore.messageListPageBeforeThread(),
-				MessageStore.messageListSearch()
-			)
-		);
-	}
-
-	/**
-	 * @param {string} sToFolderFullNameRaw
-	 * @param {boolean} bCopy
-	 * @returns {boolean}
-	 */
-	moveSelectedMessagesToFolder(sToFolderFullNameRaw, bCopy) {
-		if (this.canBeMoved()) {
-			getApp().moveMessagesToFolder(
-				FolderStore.currentFolderFullNameRaw(),
-				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(),
-				sToFolderFullNameRaw,
-				bCopy
-			);
-		}
-
-		return false;
-	}
-
-	dragAndDronHelper(oMessageListItem) {
-		if (oMessageListItem) {
-			oMessageListItem.checked(true);
-		}
-
-		const el = draggablePlace(),
-			updateUidsInfo = () => {
-				const uids = MessageStore.messageListCheckedOrSelectedUidsWithSubMails();
-				el.data('rl-uids', uids);
-				el.find('.text').text('' + uids.length);
-			};
-
-		el.data('rl-folder', FolderStore.currentFolderFullNameRaw());
-
-		updateUidsInfo();
-		_.defer(updateUidsInfo);
-
-		return el;
-	}
-
-	/**
-	 * @param {string} sFolderFullNameRaw
-	 * @param {number} iSetAction
-	 * @param {Array=} aMessages = null
-	 * @returns {void}
-	 */
-	setAction(sFolderFullNameRaw, iSetAction, aMessages) {
-		getApp().messageListAction(sFolderFullNameRaw, iSetAction, aMessages);
-	}
-
-	/**
-	 * @param {string} sFolderFullNameRaw
-	 * @param {number} iSetAction
-	 * @param {string} sThreadUid = ''
-	 * @returns {void}
-	 */
-	setActionForAll(sFolderFullNameRaw, iSetAction, sThreadUid = '') {
-		if ('' !== sFolderFullNameRaw) {
-			let cnt = 0;
-			const uids = [];
-
-			let folder = getFolderFromCacheList(sFolderFullNameRaw);
-			if (folder) {
-				switch (iSetAction) {
-					case MessageSetAction.SetSeen:
-						folder = getFolderFromCacheList(sFolderFullNameRaw);
-						if (folder) {
-							_.each(MessageStore.messageList(), (message) => {
-								if (message.unseen()) {
-									cnt += 1;
-								}
-
-								message.unseen(false);
-								uids.push(message.uid);
-							});
-
-							if (sThreadUid) {
-								folder.messageCountUnread(folder.messageCountUnread() - cnt);
-								if (0 > folder.messageCountUnread()) {
-									folder.messageCountUnread(0);
-								}
-							} else {
-								folder.messageCountUnread(0);
-							}
-
-							clearMessageFlagsFromCacheByFolder(sFolderFullNameRaw);
-						}
-
-						Remote.messageSetSeenToAll(noop, sFolderFullNameRaw, true, sThreadUid ? uids : null);
-						break;
-					case MessageSetAction.UnsetSeen:
-						folder = getFolderFromCacheList(sFolderFullNameRaw);
-						if (folder) {
-							_.each(MessageStore.messageList(), (message) => {
-								if (!message.unseen()) {
-									cnt += 1;
-								}
-
-								message.unseen(true);
-								uids.push(message.uid);
-							});
-
-							if (sThreadUid) {
-								folder.messageCountUnread(folder.messageCountUnread() + cnt);
-								if (folder.messageCountAll() < folder.messageCountUnread()) {
-									folder.messageCountUnread(folder.messageCountAll());
-								}
-							} else {
-								folder.messageCountUnread(folder.messageCountAll());
-							}
-
-							clearMessageFlagsFromCacheByFolder(sFolderFullNameRaw);
-						}
-
-						Remote.messageSetSeenToAll(noop, sFolderFullNameRaw, false, sThreadUid ? uids : null);
-						break;
-					// no default
-				}
-
-				getApp().reloadFlagsCurrentMessageListAndMessageFromCache();
-			}
-		}
-	}
-
-	listSetSeen() {
-		this.setAction(
-			FolderStore.currentFolderFullNameRaw(),
-			MessageSetAction.SetSeen,
-			MessageStore.messageListCheckedOrSelected()
-		);
-	}
-
-	listSetAllSeen() {
-		this.setActionForAll(
-			FolderStore.currentFolderFullNameRaw(),
-			MessageSetAction.SetSeen,
-			this.messageListEndThreadUid()
-		);
-	}
-
-	listUnsetSeen() {
-		this.setAction(
-			FolderStore.currentFolderFullNameRaw(),
-			MessageSetAction.UnsetSeen,
-			MessageStore.messageListCheckedOrSelected()
-		);
-	}
-
-	listSetFlags() {
-		this.setAction(
-			FolderStore.currentFolderFullNameRaw(),
-			MessageSetAction.SetFlag,
-			MessageStore.messageListCheckedOrSelected()
-		);
-	}
-
-	listUnsetFlags() {
-		this.setAction(
-			FolderStore.currentFolderFullNameRaw(),
-			MessageSetAction.UnsetFlag,
-			MessageStore.messageListCheckedOrSelected()
-		);
-	}
-
-	flagMessages(currentMessage) {
-		const checked = this.messageListCheckedOrSelected();
-		if (currentMessage) {
-			const checkedUids = _.map(checked, (message) => message.uid);
-			if (0 < checkedUids.length && -1 < inArray(currentMessage.uid, checkedUids)) {
-				this.setAction(
-					currentMessage.folderFullNameRaw,
-					currentMessage.flagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
-					checked
-				);
-			} else {
-				this.setAction(
-					currentMessage.folderFullNameRaw,
-					currentMessage.flagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
-					[currentMessage]
-				);
-			}
-		}
-	}
-
-	flagMessagesFast(bFlag) {
-		const checked = this.messageListCheckedOrSelected();
-		if (0 < checked.length) {
-			if (isUnd(bFlag)) {
-				const flagged = _.filter(checked, (message) => message.flagged());
-				this.setAction(
-					checked[0].folderFullNameRaw,
-					checked.length === flagged.length ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
-					checked
-				);
-			} else {
-				this.setAction(
-					checked[0].folderFullNameRaw,
-					!bFlag ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
-					checked
-				);
-			}
-		}
-	}
-
-	seenMessagesFast(seen) {
-		const checked = this.messageListCheckedOrSelected();
-		if (0 < checked.length) {
-			if (isUnd(seen)) {
-				const unseen = _.filter(checked, (message) => message.unseen());
-				this.setAction(
-					checked[0].folderFullNameRaw,
-					0 < unseen.length ? MessageSetAction.SetSeen : MessageSetAction.UnsetSeen,
-					checked
-				);
-			} else {
-				this.setAction(
-					checked[0].folderFullNameRaw,
-					seen ? MessageSetAction.SetSeen : MessageSetAction.UnsetSeen,
-					checked
-				);
-			}
-		}
-	}
-
-	gotoPage(page) {
-		if (page) {
-			setHash(
-				mailBox(
-					FolderStore.currentFolderFullNameHash(),
-					page.value,
-					MessageStore.messageListSearch(),
-					MessageStore.messageListThreadUid()
-				)
-			);
-		}
-	}
-
-	gotoThread(message) {
-		if (message && 0 < message.threadsLen()) {
-			MessageStore.messageListPageBeforeThread(MessageStore.messageListPage());
-
-			setHash(mailBox(FolderStore.currentFolderFullNameHash(), 1, MessageStore.messageListSearch(), message.uid));
-		}
+	changeSort(self, event) {
+		FolderUserStore.sortMode(event.target.closest('li').dataset.sort);
+		this.reload();
 	}
 
 	clearListIsVisible() {
 		return (
-			'' === this.messageListSearchDesc() &&
-			'' === this.messageListError() &&
-			'' === this.messageListEndThreadUid() &&
-			0 < this.messageList().length &&
-			(this.isSpamFolder() || this.isTrashFolder())
+			!this.messageListSearchDesc()
+		 && !MessagelistUserStore.error()
+		 && !MessagelistUserStore.endThreadUid()
+		 && MessagelistUserStore().length
+		 && (MessagelistUserStore.isSpamFolder() || MessagelistUserStore.isTrashFolder())
+		 && SettingsCapa('DangerousActions')
 		);
 	}
 
-	onBuild(dom) {
-		const self = this;
+	clear() {
+		SettingsCapa('DangerousActions')
+		&& showScreenPopup(FolderClearPopupView, [FolderUserStore.currentFolder()]);
+	}
 
-		this.oContentVisible = $('.b-content', dom);
-		this.oContentScrollable = $('.content', this.oContentVisible);
+	reload() {
+		MessagelistUserStore.isLoading()
+		|| MessagelistUserStore.reload(false, true);
+	}
 
-		this.selector.init(this.oContentVisible, this.oContentScrollable, KeyState.MessageList);
+	forwardCommand() {
+		showMessageComposer([
+			ComposeType.ForwardAsAttachment,
+			MessagelistUserStore.listCheckedOrSelected()
+		]);
+	}
 
-		if (this.mobile) {
-			dom.on('click', () => {
-				leftPanelDisabled(true);
-			});
-		}
+	/**
+	 * Download selected messages
+	 */
+	downloadZipCommand() {
+		let hashes = []/*, uids = []*/;
+//		MessagelistUserStore.forEach(message => message.checked() && uids.push(message.uid));
+		MessagelistUserStore.forEach(message => message.checked() && hashes.push(message.requestHash));
+		downloadZip(null, hashes, null, null, MessagelistUserStore().folder);
+	}
 
-		dom
-			.on('click', '.messageList .b-message-list-wrapper', () => {
-				if (Focused.MessageView === AppStore.focusedState()) {
-					AppStore.focusedState(Focused.MessageList);
-				}
-			})
-			.on('click', '.e-pagenator .e-page', function() {
-				// eslint-disable-line prefer-arrow-callback
-				self.gotoPage(ko.dataFor(this)); // eslint-disable-line no-invalid-this
-			})
-			.on('click', '.messageList .checkboxCkeckAll', () => {
-				this.checkAll(!this.checkAll());
-			})
-			.on('click', '.messageList .messageListItem .flagParent', function() {
-				// eslint-disable-line prefer-arrow-callback
-				self.flagMessages(ko.dataFor(this)); // eslint-disable-line no-invalid-this
-			})
-			.on('click', '.messageList .messageListItem .threads-len', function() {
-				// eslint-disable-line prefer-arrow-callback
-				self.gotoThread(ko.dataFor(this)); // eslint-disable-line no-invalid-this
-			})
-			.on('dblclick', '.messageList .messageListItem .actionHandle', function() {
-				// eslint-disable-line prefer-arrow-callback
-				self.gotoThread(ko.dataFor(this)); // eslint-disable-line no-invalid-this
-			});
+	/**
+	 * Download attachments of selected messages
+	 */
+	downloadAttachCommand() {
+		let hashes = [];
+		MessagelistUserStore.forEach(message => {
+			if (message.checked()) {
+				message.attachments.forEach(attachment => {
+					if (!attachment.isLinked() && attachment.download) {
+						hashes.push(attachment.download);
+					}
+				});
+			}
+		});
+		downloadZip(null, hashes);
+	}
 
-		this.initUploaderForAppend();
-		this.initShortcuts();
+	deleteWithoutMoveCommand() {
+		SettingsCapa('DangerousActions')
+		&& moveMessagesToFolderType(FolderType.Trash, true);
+	}
 
-		if (!bMobileDevice && ifvisible && Settings.capa(Capa.Prefetch)) {
-			ifvisible.setIdleDuration(Magics.ifvisibleIdle10s);
+	deleteCommand() {
+		moveMessagesToFolderType(FolderType.Trash);
+	}
 
-			ifvisible.idle(() => {
-				this.prefetchNextTick();
-			});
+	archiveCommand() {
+		moveMessagesToFolderType(FolderType.Archive);
+	}
+
+	spamCommand() {
+		moveMessagesToFolderType(FolderType.Junk);
+	}
+
+	notSpamCommand() {
+		moveMessagesToFolderType(FolderType.Inbox);
+	}
+
+	moveCommand(vm, event) {
+		if (canBeMovedHelper()) {
+			if (vm && event?.preventDefault) {
+				stopEvent(event);
+			}
+
+			let b = moveAction();
+			AppUserStore.focusedState(b ? ScopeMessageList : ScopeFolderList);
+			moveAction(!b);
 		}
 	}
 
-	initShortcuts() {
-		key('enter', KeyState.MessageList, () => {
-			if (this.message() && this.useAutoSelect()) {
-				Events.pub('mailbox.message-view.toggle-full-screen');
-				return false;
-			}
+	composeClick() {
+		showMessageComposer();
+	}
 
-			return true;
-		});
+	cancelSearch() {
+		MessagelistUserStore.mainSearch('');
+		this.focusSearch(false);
+	}
 
-		if (Settings.capa(Capa.MessageListActions)) {
-			// archive (zip)
-			key('z', [KeyState.MessageList, KeyState.MessageView], () => {
-				this.archiveCommand();
-				return false;
-			});
+	cancelThreadUid() {
+		// history.go(-1) better?
+		hasher.setHash(
+			mailBox(
+				FolderUserStore.currentFolderFullNameHash(),
+				MessagelistUserStore.pageBeforeThread(),
+				MessagelistUserStore.listSearch()
+			)
+		);
+	}
 
-			// delete
-			key('delete, shift+delete, shift+3', KeyState.MessageList, (event, handler) => {
-				if (event) {
-					if (0 < MessageStore.messageListCheckedOrSelected().length) {
-						if (handler && 'shift+delete' === handler.shortcut) {
-							this.deleteWithoutMoveCommand();
-						} else {
-							this.deleteCommand();
-						}
+	listSetSeen() {
+		listAction(
+			FolderUserStore.currentFolderFullName(),
+			MessageSetAction.SetSeen,
+			MessagelistUserStore.listCheckedOrSelected()
+		);
+	}
+
+	listSetAllSeen() {
+		let sFolderFullName = FolderUserStore.currentFolderFullName(),
+			iThreadUid = MessagelistUserStore.endThreadUid();
+		if (sFolderFullName) {
+			let cnt = 0;
+			const uids = [];
+
+			let folder = getFolderFromCacheList(sFolderFullName);
+			if (folder) {
+				MessagelistUserStore.forEach(message => {
+					if (message.isUnseen()) {
+						++cnt;
 					}
 
-					return false;
+					message.flags.push('\\seen');
+//					message.flags.valueHasMutated();
+					iThreadUid && uids.push(message.uid);
+				});
+
+				if (iThreadUid) {
+					folder.unreadEmails(Math.max(0, folder.unreadEmails() - cnt));
+				} else {
+					folder.unreadEmails(0);
 				}
 
-				return true;
+				Remote.request('MessageSetSeenToAll', null, {
+					folder: sFolderFullName,
+					setAction: 1,
+					threadUids: uids.join(',')
+				});
+			}
+		}
+	}
+
+	listUnsetSeen() {
+		listAction(
+			FolderUserStore.currentFolderFullName(),
+			MessageSetAction.UnsetSeen,
+			MessagelistUserStore.listCheckedOrSelected()
+		);
+	}
+
+	listSetFlags() {
+		listAction(
+			FolderUserStore.currentFolderFullName(),
+			MessageSetAction.SetFlag,
+			MessagelistUserStore.listCheckedOrSelected()
+		);
+	}
+
+	listUnsetFlags() {
+		listAction(
+			FolderUserStore.currentFolderFullName(),
+			MessageSetAction.UnsetFlag,
+			MessagelistUserStore.listCheckedOrSelected()
+		);
+	}
+
+	seenMessagesFast(seen) {
+		const checked = MessagelistUserStore.listCheckedOrSelected();
+		if (checked.length) {
+			listAction(
+				checked[0].folder,
+				seen ? MessageSetAction.SetSeen : MessageSetAction.UnsetSeen,
+				checked
+			);
+		}
+	}
+
+	gotoPage(page) {
+		page && hasher.setHash(
+			mailBox(
+				FolderUserStore.currentFolderFullNameHash(),
+				page,
+				MessagelistUserStore.listSearch(),
+				MessagelistUserStore.threadUid()
+			)
+		);
+	}
+
+	gotoThread(message) {
+		if (message?.threadsLen()) {
+			MessagelistUserStore.pageBeforeThread(MessagelistUserStore.page());
+
+			hasher.setHash(
+				mailBox(FolderUserStore.currentFolderFullNameHash(), 1, MessagelistUserStore.listSearch(), message.uid)
+			);
+		}
+	}
+
+	listEmptyMessage() {
+		if (!this.dragOver()
+		 && !MessagelistUserStore().length
+		 && !MessagelistUserStore.isLoading()
+		 && !MessagelistUserStore.error()) {
+			 return i18n('MESSAGE_LIST/EMPTY_' + (MessagelistUserStore.listSearch() ? 'SEARCH_' : '') + 'LIST');
+		}
+		return '';
+	}
+
+	onBuild(dom) {
+		const b_content = dom.querySelector('.b-content'),
+			eqs = (ev, s) => ev.target.closestWithin(s, dom);
+
+		setTimeout(() => {
+			// initMailboxLayoutResizer
+			const top = dom.querySelector('.messageList'),
+				fToggle = () => {
+					let layout = SettingsUserStore.usePreviewPane();
+					setLayoutResizer(top, ClientSideKeyNameMessageListSize,
+						layout ? (LayoutSideView === layout ? 'Width' : 'Height') : 0
+					);
+				};
+			if (top) {
+				fToggle();
+				addEventListener('rl-layout', fToggle);
+			}
+		}, 1);
+
+		this.selector.init(b_content, ScopeMessageList);
+
+		addEventsListeners(dom, {
+			click: event => {
+				if (eqs(event, '.toggleLeft')) {
+					toggleLeftPanel();
+				} else {
+					ThemeStore.isMobile() && leftPanelDisabled(true);
+
+					if (eqs(event, '.messageList') && ScopeMessageView === AppUserStore.focusedState()) {
+						AppUserStore.focusedState(ScopeMessageList);
+					}
+
+					let el = eqs(event, '.e-paginator a');
+					el && this.gotoPage(ko.dataFor(el)?.value);
+
+					eqs(event, '.checkboxCheckAll') && this.checkAll(!this.checkAll());
+				}
+			},
+			dblclick: event => {
+				let el = eqs(event, '.messageListItem');
+				el && this.gotoThread(ko.dataFor(el));
+			}
+		});
+
+		// initUploaderForAppend
+
+		if (Settings.app('allowAppendMessage')) {
+			const dropZone = dom.querySelector('.listDragOver'),
+				validFiles = oEvent => {
+					for (const item of oEvent.dataTransfer.items) {
+						if ('file' === item.kind && RFC822 === item.type) {
+							return true;
+						}
+					}
+				};
+			addEventsListeners(dropZone, {
+				dragover: oEvent => {
+					if (validFiles(oEvent)) {
+						oEvent.dataTransfer.dropEffect = 'copy';
+						oEvent.preventDefault();
+					}
+				},
+			});
+			addEventsListeners(b_content, {
+				dragenter: oEvent => {
+					if (validFiles(oEvent)) {
+						if (b_content.contains(oEvent.target)) {
+							this.dragOver(true);
+						}
+						if (oEvent.target == dropZone) {
+							oEvent.dataTransfer.dropEffect = 'copy';
+							this.dragOverEnter(true);
+						}
+					}
+				},
+				dragleave: oEvent => {
+					if (oEvent.target == dropZone) {
+						this.dragOverEnter(false);
+					}
+					let related = oEvent.relatedTarget;
+					if (!related || !b_content.contains(related)) {
+						this.dragOver(false);
+					}
+				},
+				drop: oEvent => {
+					oEvent.preventDefault();
+					if (oEvent.target == dropZone && validFiles(oEvent)) {
+						MessagelistUserStore.loading(true);
+						dropFilesInFolder(FolderUserStore.currentFolderFullName(), oEvent.dataTransfer.files);
+					}
+					this.dragOverEnter(false);
+					this.dragOver(false);
+				}
 			});
 		}
 
-		if (Settings.capa(Capa.Reload)) {
-			// check mail
-			key('ctrl+r, command+r', [KeyState.FolderList, KeyState.MessageList, KeyState.MessageView], () => {
-				this.reloadCommand();
+		// initShortcuts
+
+		addShortcut('enter,open', '', ScopeMessageList, () => {
+			if (formFieldFocused()) {
+				MessagelistUserStore.mainSearch(sLastSearchValue);
 				return false;
-			});
-		}
+			}
+			if (MessageUserStore.message() && MessagelistUserStore.canSelect()) {
+				isFullscreen() || toggleFullscreen();
+				return false;
+			}
+		});
+
+		// archive (zip)
+		registerShortcut('z', '', [ScopeMessageList, ScopeMessageView], () => {
+			this.archiveCommand();
+			return false;
+		});
+
+		// delete
+		registerShortcut('delete', 'shift', ScopeMessageList, () => {
+			MessagelistUserStore.listCheckedOrSelected().length && this.deleteWithoutMoveCommand();
+			return false;
+		});
+//		registerShortcut('3', 'shift', ScopeMessageList, () => {
+		registerShortcut('delete', '', ScopeMessageList, () => {
+			MessagelistUserStore.listCheckedOrSelected().length && this.deleteCommand();
+			return false;
+		});
+
+		// check mail
+		addShortcut('r', 'meta', [ScopeFolderList, ScopeMessageList, ScopeMessageView], () => {
+			this.reload();
+			return false;
+		});
 
 		// check all
-		key('ctrl+a, command+a', KeyState.MessageList, () => {
+		registerShortcut('a', 'meta', ScopeMessageList, () => {
 			this.checkAll(!(this.checkAll() && !this.isIncompleteChecked()));
 			return false;
 		});
 
-		if (Settings.capa(Capa.Composer)) {
-			// write/compose (open compose popup)
-			key('w,c', [KeyState.MessageList, KeyState.MessageView], () => {
-				showScreenPopup(require('View/Popup/Compose'));
-				return false;
-			});
-		}
-
-		if (Settings.capa(Capa.MessageListActions)) {
-			// important - star/flag messages
-			key('i', [KeyState.MessageList, KeyState.MessageView], () => {
-				this.flagMessagesFast();
-				return false;
-			});
-		}
-
-		key('t', [KeyState.MessageList], () => {
-			let message = this.selectorMessageSelected();
-			if (!message) {
-				message = this.selectorMessageFocused();
-			}
-
-			if (message && 0 < message.threadsLen()) {
-				this.gotoThread(message);
-			}
-
+		// write/compose (open compose popup)
+		registerShortcut('w,c,new', '', [ScopeMessageList, ScopeMessageView], () => {
+			showMessageComposer();
 			return false;
 		});
 
-		if (Settings.capa(Capa.MessageListActions)) {
-			// move
-			key('m', KeyState.MessageList, () => {
-				if (this.newMoveToFolder()) {
-					this.moveNewCommand();
-				} else {
-					this.moveDropdownTrigger(true);
-				}
+		// important - star/flag messages
+		registerShortcut('i', '', [ScopeMessageList, ScopeMessageView], () => {
+			const checked = MessagelistUserStore.listCheckedOrSelected();
+			if (checked.length) {
+				listAction(
+					checked[0].folder,
+					checked.every(message => message.isFlagged()) ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
+					checked
+				);
+			}
+			return false;
+		});
 
-				return false;
-			});
-		}
+		registerShortcut('t', '', [ScopeMessageList], () => {
+			let message = MessagelistUserStore.selectedMessage() || MessagelistUserStore.focusedMessage();
+			if (0 < message?.threadsLen()) {
+				this.gotoThread(message);
+			}
+			return false;
+		});
 
-		if (Settings.capa(Capa.MessageListActions)) {
-			// read
-			key('q', [KeyState.MessageList, KeyState.MessageView], () => {
-				this.seenMessagesFast(true);
-				return false;
-			});
+		// move
+		registerShortcut('insert', '', ScopeMessageList, () => {
+			this.moveCommand();
+			return false;
+		});
 
-			// unread
-			key('u', [KeyState.MessageList, KeyState.MessageView], () => {
-				this.seenMessagesFast(false);
-				return false;
-			});
-		}
+		// read
+		registerShortcut('q', '', [ScopeMessageList, ScopeMessageView], () => {
+			this.seenMessagesFast(true);
+			return false;
+		});
 
-		if (Settings.capa(Capa.Composer)) {
-			key('shift+f', [KeyState.MessageList, KeyState.MessageView], () => {
-				this.multyForwardCommand();
-				return false;
-			});
-		}
+		// unread
+		registerShortcut('u', '', [ScopeMessageList, ScopeMessageView], () => {
+			this.seenMessagesFast(false);
+			return false;
+		});
 
-		if (Settings.capa(Capa.Search)) {
+		registerShortcut('f,mailforward', 'shift', [ScopeMessageList, ScopeMessageView], () => {
+			this.forwardCommand();
+			return false;
+		});
+
+		if (SettingsCapa('Search')) {
 			// search input focus
-			key('/', [KeyState.MessageList, KeyState.MessageView], () => {
-				this.inputMessageListSearchFocus(true);
+			addShortcut('/', '', [ScopeMessageList, ScopeMessageView], () => {
+				this.focusSearch(true);
 				return false;
 			});
 		}
 
 		// cancel search
-		key('esc', KeyState.MessageList, () => {
-			if ('' !== this.messageListSearchDesc()) {
+		addShortcut('escape', '', ScopeMessageList, () => {
+			if (this.messageListSearchDesc()) {
 				this.cancelSearch();
 				return false;
-			} else if ('' !== this.messageListEndThreadUid()) {
+			} else if (MessagelistUserStore.endThreadUid()) {
 				this.cancelThreadUid();
 				return false;
 			}
-
-			return true;
 		});
 
 		// change focused state
-		key('tab, shift+tab, left, right', KeyState.MessageList, (event, handler) => {
-			if (event && handler && ('shift+tab' === handler.shortcut || 'left' === handler.shortcut)) {
-				AppStore.focusedState(Focused.FolderList);
-			} else if (this.message()) {
-				AppStore.focusedState(Focused.MessageView);
-			}
-
+		addShortcut('tab', 'shift', ScopeMessageList, () => {
+			AppUserStore.focusedState(ScopeFolderList);
 			return false;
 		});
-
-		key('ctrl+left, command+left', KeyState.MessageView, noopFalse);
-		key('ctrl+right, command+right', KeyState.MessageView, noopFalse);
-	}
-
-	prefetchNextTick() {
-		if (ifvisible && !this.bPrefetch && !ifvisible.now() && this.viewModelVisibility()) {
-			const message = _.find(
-				this.messageList(),
-				(item) => item && !hasRequestedMessage(item.folderFullNameRaw, item.uid)
-			);
-			if (message) {
-				this.bPrefetch = true;
-
-				addRequestedMessage(message.folderFullNameRaw, message.uid);
-
-				Remote.message(
-					(result, data) => {
-						const next = !!(StorageResultType.Success === result && data && data.Result);
-						_.delay(() => {
-							this.bPrefetch = false;
-							if (next) {
-								this.prefetchNextTick();
-							}
-						}, Magics.Time1s);
-					},
-					message.folderFullNameRaw,
-					message.uid
-				);
+		addShortcut('arrowleft', '', ScopeMessageList, () => {
+			AppUserStore.focusedState(ScopeFolderList);
+			return false;
+		});
+		addShortcut('tab,arrowright', '', ScopeMessageList, () => {
+			if (MessageUserStore.message()) {
+				AppUserStore.focusedState(ScopeMessageView);
+				return false;
 			}
-		}
+		});
+
+		addShortcut('arrowleft', 'meta', ScopeMessageView, ()=>false);
+		addShortcut('arrowright', 'meta', ScopeMessageView, ()=>false);
+
+		addShortcut('f', 'meta', ScopeMessageList, this.advancedSearchClick);
 	}
 
 	advancedSearchClick() {
-		if (Settings.capa(Capa.SearchAdv)) {
-			showScreenPopup(require('View/Popup/AdvancedSearch'), [this.mainMessageListSearch()]);
-		}
+		showScreenPopup(AdvancedSearchPopupView, [MessagelistUserStore.mainSearch()]);
+	}
+
+	groupSearch(group) {
+		group.search && MessagelistUserStore.mainSearch(group.search);
+	}
+
+	groupCheck(group) {
+		group.messages.forEach(message => message.checked(!message.checked()));
 	}
 
 	quotaTooltip() {
 		return i18n('MESSAGE_LIST/QUOTA_SIZE', {
-			'SIZE': friendlySize(this.userUsageSize()),
-			'PROC': this.userUsageProc(),
-			'LIMIT': friendlySize(this.userQuota())
-		});
-	}
-
-	initUploaderForAppend() {
-		if (!Settings.appSettingsGet('allowAppendMessage') || !this.dragOverArea()) {
-			return false;
-		}
-
-		const oJua = new Jua({
-			action: append(),
-			name: 'AppendFile',
-			queueSize: 1,
-			multipleSizeLimit: 1,
-			hidden: {
-				Folder: () => FolderStore.currentFolderFullNameRaw()
-			},
-			dragAndDropElement: this.dragOverArea(),
-			dragAndDropBodyElement: this.dragOverBodyArea()
-		});
-
-		this.dragOver.subscribe((value) => {
-			if (value) {
-				this.selector.scrollToTop();
-			}
-		});
-
-		oJua
-			.on('onDragEnter', () => {
-				this.dragOverEnter(true);
-			})
-			.on('onDragLeave', () => {
-				this.dragOverEnter(false);
-			})
-			.on('onBodyDragEnter', () => {
-				this.dragOver(true);
-			})
-			.on('onBodyDragLeave', () => {
-				this.dragOver(false);
-			})
-			.on('onSelect', (sUid, oData) => {
-				if (sUid && oData && 'message/rfc822' === oData.Type) {
-					MessageStore.messageListLoading(true);
-					return true;
-				}
-
-				return false;
-			})
-			.on('onComplete', () => {
-				getApp().reloadMessageList(true, true);
-			});
-
-		return !!oJua;
+			SIZE: FileInfo.friendlySize(FolderUserStore.quotaUsage()),
+			PROC: FolderUserStore.quotaPercentage(),
+			LIMIT: FileInfo.friendlySize(FolderUserStore.quotaLimit())
+		}).replace(/<[^>]+>/g, '');
 	}
 }
-
-export { MessageListMailBoxUserView, MessageListMailBoxUserView as default };

@@ -1,0 +1,50 @@
+<div class="form-horizontal">
+	<div class="legend">
+		<span data-i18n="SETTINGS_LABELS/FILTERS"></span>
+		&nbsp;&nbsp;&nbsp;
+		<i class="icon-spinner" style="margin-top: 5px" data-bind="visible: loading"></i>
+	</div>
+</div>
+<div class="alert alert-error g-ui-user-select-none" data-bind="visible: serverError, text: serverErrorDesc" data-icon="⚠"></div>
+<table class="table table-hover list-table g-ui-user-select-none">
+	<colgroup>
+		<col style="width: 30px">
+		<col>
+		<col style="width: 140px">
+		<col style="width: 1em">
+	</colgroup>
+	<tbody>
+		<tr class="script-item">
+			<td style="border:0" class="e-action fontastic" data-bind="click: disableScripts, text: hasActive() ? '○' : '⦿'"></td>
+			<td style="border:0" data-i18n="GLOBAL/INACTIVE">Inactive</td>
+			<td style="border:0"></td>
+			<td style="border:0"></td>
+		</tr>
+	</tbody>
+	<tbody data-bind="foreach: scripts, i18nUpdate: scripts">
+		<!-- ko if: allowFilters() -->
+		<tr><th colspan="4" data-i18n="SETTINGS_FILTERS/SIMPLE"></th></tr>
+		<tr class="script-item">
+			<td><div class="e-action fontastic" data-bind="visible: body, click: function (oScript) { $root.enableScript(oScript); }, text: active() ? '⦿' : '○'"></div></td>
+			<td class="e-action script-name" data-bind="text: name()"></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr><th colspan="4" data-i18n="SETTINGS_FILTERS/ADVANCED"></th></tr>
+		<!-- /ko -->
+		<!-- ko if: !allowFilters() -->
+		<tr class="script-item">
+			<td><div class="e-action fontastic" data-bind="visible: body, click: function (oScript) { $root.enableScript(oScript); }, text: active() ? '⦿' : '○'"></div></td>
+			<td class="e-action script-name" data-bind="text: name()"></td>
+			<td>
+				<a class="btn btn-small btn-danger button-confirm-delete" data-bind="css: {'delete-access': askDelete()}, click: function(oScript) { $root.deleteScript(oScript); }"
+					data-i18n="GLOBAL/ARE_YOU_SURE"></a>
+			</td>
+			<td>
+				<span class="e-action fontastic" data-bind="visible: !askDelete() && !allowFilters(), click: function (oScript) { $root.scriptForDeletion(oScript); }">🗑</span>
+			</td>
+		</tr>
+		<!-- /ko -->
+	</tbody>
+</table>
+<a class="btn" data-bind="click: addScript" data-icon="✚" data-i18n="SETTINGS_FILTERS/BUTTON_ADD_SCRIPT"></a>

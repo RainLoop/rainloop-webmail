@@ -1,0 +1,96 @@
+<header>
+	<a href="#" class="close" data-bind="click: close">×</a>
+	<h3 data-i18n="SHORTCUTS_HELP/LEGEND_SHORTCUTS_HELP"></h3>
+</header>
+<div class="modal-body">
+
+	<div class="tabs">
+
+		<input type="radio" name="helptabs" id="tab-help1" checked>
+		<label for="tab-help1"
+			role="tab"
+			aria-selected="true"
+			aria-controls="panel1"
+			tabindex="0"
+			data-i18n="SHORTCUTS_HELP/TAB_MAILBOX"></label>
+		<div class="tab-content" role="tabpanel" aria-hidden="false">
+			<table class="table table-striped table-bordered" style="border-radius: 0 4px 4px 4px">
+			<tbody>
+				<tr><td></td><td data-i18n="SHORTCUTS_HELP/LABEL_OPEN_USER_DROPDOWN"></td><td>M</td></tr>
+				<tr><td class="fontastic">←</td><td data-i18n="SHORTCUTS_HELP/LABEL_REPLY"></td><td>R, Reply</td></tr>
+				<tr><td class="fontastic">↞</td><td data-i18n="SHORTCUTS_HELP/LABEL_REPLY_ALL"></td><td>A, Shift + Reply</td></tr>
+				<tr><td class="fontastic">→</td><td data-i18n="SHORTCUTS_HELP/LABEL_FORWARD"></td><td>F, Fwd</td></tr>
+				<tr><td class="fontastic">→</td><td data-i18n="SHORTCUTS_HELP/LABEL_FORWARD_MULTIPLY"></td><td>Shift + F, Shift + Fwd</td></tr>
+				<tr><td class="icon-help"></td><td data-i18n="GLOBAL/HELP"></td><td>F1, Help</td></tr>
+			</tbody>
+			</table>
+		</div>
+
+		<input type="radio" name="helptabs" id="tab-help2">
+		<label for="tab-help2"
+			role="tab"
+			aria-selected="false"
+			aria-controls="panel2"
+			tabindex="0"
+			data-i18n="SHORTCUTS_HELP/TAB_MESSAGE_LIST"></label>
+		<div class="tab-content" role="tabpanel" aria-hidden="true">
+			<table class="table table-striped table-bordered">
+			<tbody>
+				<tr><td class="fontastic">☑</td><td data-i18n="SHORTCUTS_HELP/LABEL_CHECK_ALL"></td><td><!-- ko text: metaKey --><!-- /ko --> + A</td></tr>
+				<tr><td class="fontastic">🗄</td><td data-i18n="GLOBAL/TO_ARCHIVE"></td><td>Z</td></tr>
+				<tr><td class="fontastic">🗑</td><td data-i18n="SHORTCUTS_HELP/LABEL_DELETE"></td><td>Delete, Shift + Delete</td></tr>
+				<tr><td></td><td data-i18n="SHORTCUTS_HELP/LABEL_OPEN_THREAD"></td><td>T</td></tr>
+				<tr><td class="fontastic">📁</td><td data-i18n="SHORTCUTS_HELP/LABEL_MOVE"></td><td>Insert</td></tr>
+				<tr><td></td><td data-i18n="SHORTCUTS_HELP/LABEL_READ"></td><td>Q</td></tr>
+				<tr><td></td><td data-i18n="SHORTCUTS_HELP/LABEL_UNREAD"></td><td>U</td></tr>
+				<tr><td class="fontastic">★</td><td data-i18n="SHORTCUTS_HELP/LABEL_IMPORTANT"></td><td>I</td></tr>
+				<tr><td></td><td data-i18n="GLOBAL/SEARCH"></td><td>/</td></tr>
+				<tr><td class="icon-arrows-out"></td><td data-i18n="SHORTCUTS_HELP/LABEL_FULLSCREEN_ENTER"></td><td>Enter</td></tr>
+				<tr><td></td><td data-i18n="SHORTCUTS_HELP/LABEL_VIEW_MESSAGE_ENTER"></td><td>Enter</td></tr>
+				<tr><td></td><td data-i18n="SHORTCUTS_HELP/LABEL_SWITCH_TO_MESSAGE"></td><td>→, Tab</td></tr>
+				<tr><td></td><td data-i18n="SHORTCUTS_HELP/LABEL_SWITCH_TO_FOLDER_LIST"></td><td>←, Shift + Tab</td></tr>
+			</tbody>
+			</table>
+		</div>
+
+		<input type="radio" name="helptabs" id="tab-help3">
+		<label for="tab-help3"
+			role="tab"
+			aria-selected="false"
+			aria-controls="panel3"
+			tabindex="0"
+			data-i18n="SHORTCUTS_HELP/TAB_MESSAGE_VIEW"></label>
+		<div class="tab-content" role="tabpanel" aria-hidden="true">
+			<table class="table table-striped table-bordered">
+			<tbody>
+				<tr><td data-i18n="SHORTCUTS_HELP/LABEL_FULLSCREEN_TOGGLE"></td><td>Enter, Open</td></tr>
+				<tr><td data-i18n="SHORTCUTS_HELP/LABEL_BLOCKQUOTES_TOGGLE"></td><td>B</td></tr>
+				<tr><td data-i18n="SHORTCUTS_HELP/LABEL_EXIT_FULLSCREEN"></td><td>Esc, Close</td></tr>
+				<tr><td data-i18n="SHORTCUTS_HELP/LABEL_CLOSE_MESSAGE"></td><td>Esc, Close</td></tr>
+				<tr><td data-i18n="SHORTCUTS_HELP/LABEL_SWITCH_TO_LIST"></td><td>Shift + Tab, Esc</td></tr>
+			</tbody>
+			</table>
+		</div>
+
+		<input type="radio" name="helptabs" id="tab-help4">
+		<label for="tab-help4"
+			role="tab"
+			aria-selected="false"
+			aria-controls="panel4"
+			tabindex="0"
+			data-i18n="SHORTCUTS_HELP/TAB_COMPOSE"></label>
+		<div class="tab-content" role="tabpanel" aria-hidden="true">
+			<table class="table table-striped table-bordered">
+			<tbody>
+				<tr><td data-i18n="SHORTCUTS_HELP/LABEL_OPEN_COMPOSE_POPUP"></td><td>W, C, New</td></tr>
+				<tr><td data-i18n="SHORTCUTS_HELP/LABEL_OPEN_IDENTITIES_DROPDOWN"></td><td><!-- ko text: metaKey --><!-- /ko --> + M</td></tr>
+				<tr><td data-i18n="SHORTCUTS_HELP/LABEL_SAVE_MESSAGE"></td><td><!-- ko text: metaKey --><!-- /ko --> + S, Save</td></tr>
+				<tr><td data-i18n="SHORTCUTS_HELP/LABEL_SEND_MESSAGE"></td><td>Send, <!-- ko text: metaKey --><!-- /ko --> + Enter</td></tr>
+				<tr><td data-i18n="SHORTCUTS_HELP/LABEL_MINIMIZE_COMPOSE_POPUP"></td><td>Esc, Close</td></tr>
+				<tr><td data-i18n="SHORTCUTS_HELP/LABEL_CLOSE_COMPOSE"></td><td>Shift + Esc, Shift + Close</td></tr>
+			</tbody>
+			</table>
+		</div>
+
+	</div>
+</div>

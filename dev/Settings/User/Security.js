@@ -1,54 +1,87 @@
-import _ from '_';
-import ko from 'ko';
+import { koComputable } from 'External/ko';
 
-import { pInt, settingsSaveHelperSimpleFunction } from 'Common/Utils';
-import { Capa, SaveSettingsStep } from 'Common/Enums';
-import { i18n, trigger as translatorTrigger } from 'Common/Translator';
+import { SettingsCapa } from 'Common/Globals';
+import { i18n, translateTrigger, relativeTime } from 'Common/Translator';
 
-import { capa } from 'Storage/Settings';
+import { AbstractViewSettings } from 'Knoin/AbstractViews';
+
+import { SettingsUserStore } from 'Stores/User/Settings';
+
+import { GnuPGUserStore } from 'Stores/User/GnuPG';
+import { OpenPGPUserStore } from 'Stores/User/OpenPGP';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
-import SettinsStore from 'Stores/User/Settings';
+import { OpenPgpImportPopupView } from 'View/Popup/OpenPgpImport';
+import { OpenPgpGeneratePopupView } from 'View/Popup/OpenPgpGenerate';
 
-import Remote from 'Remote/User/Ajax';
+import { SMimeUserStore } from 'Stores/User/SMime';
+import { SMimeImportPopupView } from 'View/Popup/SMimeImport';
 
-class SecurityUserSettings {
+import Remote from 'Remote/User/Fetch';
+
+export class UserSettingsSecurity extends AbstractViewSettings {
 	constructor() {
-		this.capaAutoLogout = capa(Capa.AutoLogout);
-		this.capaTwoFactor = capa(Capa.TwoFactor);
+		super();
 
-		this.autoLogout = SettinsStore.autoLogout;
-		this.autoLogout.trigger = ko.observable(SaveSettingsStep.Idle);
-
-		this.autoLogoutOptions = ko.computed(() => {
-			translatorTrigger();
+		this.autoLogout = SettingsUserStore.autoLogout;
+		this.autoLogoutOptions = koComputable(() => {
+			translateTrigger();
 			return [
-				{ 'id': 0, 'name': i18n('SETTINGS_SECURITY/AUTOLOGIN_NEVER_OPTION_NAME') },
-				{ 'id': 5, 'name': i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', { 'MINUTES': 5 }) },
-				{ 'id': 10, 'name': i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', { 'MINUTES': 10 }) },
-				{ 'id': 30, 'name': i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', { 'MINUTES': 30 }) },
-				{ 'id': 60, 'name': i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', { 'MINUTES': 60 }) },
-				{ 'id': 60 * 2, 'name': i18n('SETTINGS_SECURITY/AUTOLOGIN_HOURS_OPTION_NAME', { 'HOURS': 2 }) },
-				{ 'id': 60 * 5, 'name': i18n('SETTINGS_SECURITY/AUTOLOGIN_HOURS_OPTION_NAME', { 'HOURS': 5 }) },
-				{ 'id': 60 * 10, 'name': i18n('SETTINGS_SECURITY/AUTOLOGIN_HOURS_OPTION_NAME', { 'HOURS': 10 }) }
+				{ id: 0, name: i18n('SETTINGS_SECURITY/AUTOLOGIN_NEVER_OPTION_NAME') },
+				{ id: 5, name: relativeTime(300) },
+				{ id: 10, name: relativeTime(600) },
+				{ id: 30, name: relativeTime(1800) },
+				{ id: 60, name: relativeTime(3600) },
+				{ id: 120, name: relativeTime(7200) },
+				{ id: 300, name: relativeTime(18000) },
+				{ id: 600, name: relativeTime(36000) }
 			];
 		});
+		this.addSetting('AutoLogout');
+
+		this.gnupgPublicKeys = GnuPGUserStore.publicKeys;
+		this.gnupgPrivateKeys = GnuPGUserStore.privateKeys;
+
+		this.openpgpkeysPublic = OpenPGPUserStore.publicKeys;
+		this.openpgpkeysPrivate = OpenPGPUserStore.privateKeys;
+
+		this.smimeCertificates = SMimeUserStore;
+
+		this.canOpenPGP = SettingsCapa('OpenPGP');
+		this.canGnuPG = GnuPGUserStore.isSupported();
+		this.canMailvelope = !!window.mailvelope;
 	}
 
-	configureTwoFactor() {
-		showScreenPopup(require('View/Popup/TwoFactorConfiguration'));
+	addOpenPgpKey() {
+		showScreenPopup(OpenPgpImportPopupView);
+	}
+
+	generateOpenPgpKey() {
+		showScreenPopup(OpenPgpGeneratePopupView);
+	}
+
+	importToOpenPGP() {
+		OpenPGPUserStore.isSupported() && Remote.request('GetPGPKeys',
+			(iError, oData) => !iError && oData.Result && OpenPGPUserStore.importKeys(oData.Result)
+		);
+	}
+
+	importToSMime() {
+		showScreenPopup(SMimeImportPopupView);
 	}
 
 	onBuild() {
-		if (this.capaAutoLogout) {
-			_.delay(() => {
-				const f0 = settingsSaveHelperSimpleFunction(this.autoLogout.trigger, this);
-
-				this.autoLogout.subscribe(Remote.saveSettingsHelper('AutoLogout', pInt, f0));
-			});
-		}
+		/**
+		 * Create an iframe to display the Mailvelope keyring settings.
+		 * The iframe will be injected into the container identified by selector.
+		 */
+		window.mailvelope && mailvelope.createSettingsContainer('#mailvelope-settings'/*[, keyring], options*/);
+		/**
+		 * https://github.com/the-djmaze/snappymail/issues/973
+		Remote.request('GetStoredPGPKeys', (iError, data) => {
+			console.dir([iError, data]);
+		});
+		*/
 	}
 }
-
-export { SecurityUserSettings, SecurityUserSettings as default };

@@ -1,0 +1,495 @@
+
+#V-MailMessageView {
+	flex-grow: 1;
+	overflow: auto;
+	padding-bottom: @rlLowMargin;
+
+	.b-message-view-backdrop {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, .4);
+		z-index: 10;
+		text-align: center;
+
+		.backdrop-message {
+			position: relative;
+			display: inline-block;
+			color: white;
+			font-size: 143%;
+			line-height: 30px;
+			background: rgba(0, 0, 0, .6);
+			padding: 15px;
+			border-radius: var(--border-radius, 5px);
+			text-shadow: 0 1px 1px #000;
+			transform: translateY(-50%);
+			top: 50%;
+		}
+	}
+}
+
+#V-MailMessageView .top-toolbar {
+	color: #fff;
+	padding: 10px 0;
+	visibility: visible;
+}
+
+.messageView {
+	background-color: var(--panel-bg-clr, #fff);
+	border: 1px solid var(--border-color, #aaa);
+	border-radius: var(--border-radius, 5px);
+	height: calc(100% - 50px);
+	position: relative;
+
+	.priorityHigh .subject::before {
+		content: '! '; /*❗*/
+		color: red;
+		font-weight: bolder;
+	}
+
+	.b-message {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+	}
+
+	.b-message-view-checked-helper {
+		text-align: center;
+		font-size: 70px;
+		padding-top: 25vh;
+		opacity: 0.6;
+	}
+	.b-message-view-checked-helper::after {
+		content: ' ✉';
+		font-family: snappymail;
+	}
+
+	.b-message-view-desc {
+		text-align: center;
+		font-size: 171%;
+		line-height: 30px;
+		color: #999;
+		padding: 25vh 10px 0;
+	}
+
+	.b-message-view-desc.error {
+		color: #DA4F49;
+	}
+
+	.message-fixed-button-toolbar {
+		z-index: 100;
+		position: absolute;
+		top: 33px;
+		right: 10px;
+	}
+
+	.infoParent {
+		cursor: pointer;
+		opacity: 0.5;
+
+		&:hover {
+			opacity: 1;
+		}
+	}
+
+	.flagParent {
+
+		cursor: pointer;
+
+		.flagOn {
+			color: orange;
+		}
+
+		&.flagOff:not(:hover) {
+			opacity: 0.5;
+		}
+	}
+
+	.messageTags {
+		align-items: baseline;
+		display: flex;
+	}
+	.messageTags > * {
+		flex: 0 0 0;
+	}
+	.messageAssignedTags {
+		flex: 1 0 0;
+	}
+	.messageAssignedTags span {
+		border: 1px solid #808080;
+		line-height: 2;
+		padding: 2px;
+		white-space: nowrap;
+	}
+
+	.messageItemHeader {
+
+		background-color: var(--message-header-bg-clr, #eee);
+		border-bottom: 1px solid var(--border-color, #bbb);
+		border-radius: var(--border-radius, 5px) var(--border-radius, 5px) 0 0;
+		padding: 10px;
+		flex-shrink: 0;
+		word-break: keep-all;
+
+		.fontastic + span {
+			margin-left: 0.25em;
+		}
+
+		.subjectParent {
+			display: flex;
+			font-size: 128%;
+			font-weight: bold;
+		}
+
+		.subject {
+			flex-grow: 1;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			margin: 0 0.25em;
+		}
+		.subject:empty {
+			font-style: italic;
+			opacity: 0.5;
+		}
+
+		.informationShort {
+			margin: 0 56px 0 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+
+			a {
+				.g-ui-link;
+			}
+		}
+
+		.informationShortWrp {
+			max-height: 100px;
+			overflow-y: auto;
+		}
+
+		.informationFull {
+
+			table {
+				border-spacing: 0;
+				width: 100%;
+			}
+
+			td {
+				padding: 4px;
+				vertical-align: top;
+				min-width: 43px;
+			}
+
+			td:first-child {
+				border-right: 1px solid #999;
+				text-align: var(--right, right);
+				white-space: nowrap;
+				width: 1%;
+			}
+		}
+
+		.hasVirus {
+			background: #f00;
+			color: #fff;
+			padding: 3px;
+		}
+	}
+
+	.crypto-control {
+		padding: 0.5em;
+
+		span {
+			margin-right: 1em;
+		}
+
+		button {
+			cursor: pointer;
+		}
+
+		&.encrypted {
+			border: 1px dashed #18F;
+			color: #18F;
+		}
+		&.signed {
+			border: 1px dashed #FA0;
+			color: #FA0;
+		}
+
+		&.success {
+			border-color: #090;
+			color: #090;
+		}
+		&.error {
+			border-color: #F00;
+			color: #F00;
+		}
+		&.error button,
+		&.success button {
+			display: none;
+		}
+	}
+
+	.thread-controls {
+		.dropdown-toggle {
+			padding-left: 10px;
+			padding-right: 10px;
+		}
+		&.open .dropdown-toggle {
+			padding-left: 10px;
+			padding-right: 10px;
+		}
+	}
+}
+
+#V-MailMessageView.focused .messageView {
+	border-color: #9d9d9d;
+	box-shadow: var(--smMainShadow);
+}
+
+#messageItem {
+
+	height: 100%;
+	overflow: auto;
+	scroll-behavior: smooth;
+
+	.loading {
+		text-align: center;
+		font-size: 171%;
+		color: grey;
+		padding: 50px 0;
+	}
+
+	.bodySubHeader {
+		background-color: var(--message-header-bg-clr, #eee);
+	}
+	.bodySubHeader > * {
+		border-bottom: 1px solid var(--border-color, #bbb);
+		cursor: pointer;
+		padding: 10px;
+	}
+
+	.pgpInfo {
+		padding: 5px 15px;
+		border-bottom: 1px solid var(--border-color, #bbb);
+		background-color: #fcf8e3;
+
+		&.success {
+			background-color: #e9f4ff;
+		}
+	}
+
+	.attachmentsPlace {
+
+		border-bottom: 1px solid var(--border-color, #bbb);
+		position: relative;
+
+		&:not(.selection-mode) {
+			.checkboxAttachment {
+				display: none;
+			}
+		}
+
+		.controls-handle {
+			position: absolute;
+			bottom: 5px;
+			right: 8px;
+			color: #999;
+			cursor: pointer;
+		}
+	}
+
+	.attachmentsControls {
+		padding-top: 7px;
+		border-top: 1px solid var(--border-color, #bbb);
+	}
+	.attachmentsControls > * {
+		display: inline-block;
+		margin-right: 0.5em;
+		white-space: nowrap;
+	}
+
+	.sm-bq-switcher > summary {
+		border: 1px solid #999;
+		cursor: pointer;
+		line-height: 1em;
+		margin: 2em 0 10px;
+		opacity: 0.5;
+		padding: 0 0.5em;
+		text-align: center;
+		width: fit-content;
+		&:hover {
+			opacity: 1;
+		}
+	}
+
+	.b-text-part {
+
+		height: 100%;
+		padding: 10px;
+		position: relative;
+
+		&.swapColors {
+			background-color: var(--main-color, currentcolor);
+			color: var(--main-bg-color);
+		}
+
+		* {
+			box-sizing: unset;
+/*			unicode-bidi: plaintext;*/
+		}
+
+		a {
+			color: var(--link-color, blue);
+			text-decoration: underline;
+
+			&:visited {
+				color: #609;
+			}
+			&:active {
+				color: red;
+			}
+		}
+
+		blockquote {
+			border-left: 2px solid #000;
+			opacity: 0.8;
+			padding: 0 10px;
+			margin: 0;
+
+			blockquote {
+				opacity: 1;
+			}
+		}
+
+		&.html {
+
+			img {
+				max-width: 100%;
+				height: auto;
+			}
+			img[data-x-src]:not([src]) {
+				border: 1px solid #999;
+				line-height: 1;
+				padding-left: 1.1em;
+				position: relative;
+			}
+			img[data-x-src]:not([src])::after {
+				content: "🖼";
+				font-family: snappymail;
+				position: absolute;
+				top: 0;
+				left: 0;
+				color: #000;
+				background-color: #fff;
+			}
+			img[data-x-src]:not([src]):hover::after {
+				content: attr(data-x-src);
+				font-family: var(--fontSans);
+				font-size: 80%;
+				height: auto;
+				transform: translate(-25%,0);
+				width: fit-content;
+				z-index: 1000;
+			}
+
+			pre, code {
+				margin: 0;
+				border: none;
+				word-break: normal;
+				word-wrap: break-word;
+			}
+
+			code {
+				border-radius: 0;
+				display: inline;
+				padding: 2px 5px;
+			}
+
+			pre {
+				border-radius: var(--border-radius, 5px);
+				display: block;
+				padding: 5px 10px;
+			}
+
+			pre > code {
+				padding: 0;
+			}
+		}
+
+		&.plain {
+
+			white-space: pre-wrap;
+			font-family: var(--fontMono);
+
+			pre {
+				margin: 0;
+				padding: 0;
+				border: none;
+				display: block;
+				word-break: normal;
+			}
+		}
+
+/*
+		&.openpgp-signed,
+		&.openpgp-encrypted {
+			border: 1px dashed #FA0;
+
+			&.success {
+				border-color: green;
+				background-color: rgba(0, 255, 0, 0.03);
+			}
+			&.error {
+				border-color: red;
+				background-color: rgba(255, 0, 0, 0.03);
+			}
+		}
+*/
+	}
+}
+
+.mailvelope iframe {
+	min-height: 400px;
+}
+
+html:not(.sm-msgView-bottom):not(.sm-msgView-side) {
+	#rl-right:not(.message-selected) #V-MailMessageView {
+		display: none;
+	}
+}
+
+@media screen and (max-width: 1400px) {
+	html.sm-msgView-side #V-MailMessageView .top-toolbar {
+		visibility: hidden;
+	}
+}
+
+html.sm-msgView-bottom {
+	#V-MailMessageView .top-toolbar {
+		display: none;
+	}
+	.messageView {
+		height: 100%;
+	}
+}
+
+/*
+@media all and (display-mode: fullscreen) {
+*/
+html.rl-fullscreen {
+
+	#rl-left,
+	#V-MailMessageList,
+	#V-SettingsPane,
+	#V-SystemDropDown,
+	#V-MailMessageView .top-toolbar {
+		display: none !important;
+	}
+
+	.messageView {
+		border: 0;
+	}
+}

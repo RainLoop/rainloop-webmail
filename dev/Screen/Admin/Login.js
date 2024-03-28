@@ -1,17 +1,13 @@
 import { AbstractScreen } from 'Knoin/AbstractScreen';
 
-import { getApp } from 'Helper/Apps/Admin';
+import { AdminLoginView } from 'View/Admin/Login';
 
-import { LoginAdminView } from 'View/Admin/Login';
-
-class LoginAdminScreen extends AbstractScreen {
+export class LoginAdminScreen extends AbstractScreen {
 	constructor() {
-		super('login', [LoginAdminView]);
+		super('login', [AdminLoginView]);
 	}
 
 	onShow() {
-		getApp().setWindowTitle('');
+		rl.setTitle();
 	}
 }
-
-export { LoginAdminScreen, LoginAdminScreen as default };

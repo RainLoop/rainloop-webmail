@@ -2,6 +2,11 @@
 
 class CustomSystemFoldersPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
+	const
+		NAME     = 'Custom System Folders',
+		CATEGORY = 'General',
+		DESCRIPTION = 'Set custom sytem folders';
+
 	/**
 	 * @var string
 	 */
@@ -27,7 +32,7 @@ class CustomSystemFoldersPlugin extends \RainLoop\Plugins\AbstractPlugin
 	 */
 	private $sArchiveFolder = '';
 
-	public function Init()
+	public function Init() : void
 	{
 		$this->sSentFolder = \trim($this->Config()->Get('plugin', 'sent_folder', ''));
 		$this->sDraftsFolder = \trim($this->Config()->Get('plugin', 'drafts_folder', ''));
@@ -121,7 +126,7 @@ class CustomSystemFoldersPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/**
 	 * @return array
 	 */
-	public function configMapping()
+	protected function configMapping() : array
 	{
 		return array(
 			\RainLoop\Plugins\Property::NewInstance('sent_folder')->SetLabel('Sent')

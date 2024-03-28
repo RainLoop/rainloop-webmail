@@ -1,0 +1,185 @@
+{
+	"GLOBAL": {
+		"ADD": "Thêm vào",
+		"CLOSE": "Đóng",
+		"SAVE": "Lưu",
+		"TEST": "Thử",
+		"UPDATE": "Cập nhật",
+		"USERNAME": "Tên tài khoản",
+		"PASSWORD": "Mật khẩu",
+		"CANCEL": "Hủy",
+		"SEARCH": "Tìm kiếm"
+	},
+	"LOGIN": {
+		"LABEL_LOGIN": "Đăng nhập",
+		"LABEL_TOTP": "Mã TOTP",
+		"BUTTON_LOGIN": "Đăng nhập vào bảng quản trị"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "Bảng quản trị"
+	},
+	"SETTINGS_LABELS": {
+		"GENERAL": "Tổng quan",
+		"LOGIN": "Đăng nhập",
+		"BRANDING": "Thương hiệu",
+		"CONTACTS": "Danh bạ",
+		"DOMAINS": "Tên miền",
+		"SECURITY": "An ninh",
+		"PACKAGES": "Tiện ích mở rộng",
+		"CONFIG": "Thiết lập",
+		"ABOUT": "Giới thiệu"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "Giao diện",
+		"LABEL_LANGUAGE": "Ngôn ngữ",
+		"LABEL_LANGUAGE_ADMIN": "Ngôn ngữ (admin)",
+		"LABEL_THEME": "Phông nền",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Cho phép lựa chọn ngôn ngữ trên màn hình cài đặt",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Cho phép lựa chọn phông nền trên màn hình cài đặt",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Cho phép lựa chọn hình nền trên màn hình cài đặt ",
+		"LABEL_SHOW_THUMBNAILS": "Hiển thị ảnh thu gọn (trong phần đính kèm)",
+		"LEGEND_MAIN": "Phần chính",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "Giới hạn dung lượng đính kèm",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Cho phép đăng nhập nhiều tài khoản",
+		"LABEL_ALLOW_IDENTITIES": "Cho phép sử dụng nhiều tên gọi",
+		"ALERT_DATA_ACCESS": "Thư mục dữ liệu hiện có thể truy cập. Xin hãy thiết lập máy chủ web của bạn để bảo vệ thư mục dữ liệu khỏi sự truy cập từ bên ngoài. Bạn có thể đọc thêm ở đây:",
+		"ALERT_WARNING": "Cảnh báo!",
+		"HTML_ALERT_WEAK_PASSWORD": "Bạn đang sử dụng mật khẩu admin cài sẵn.\n<br>\nVì lý do an ninh xin hãy \n<strong><a href=\"#\/security\">đổi<\/a><\/strong>\nmật khẩu khác ngay bây giờ.\n"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "Màn hình đăng nhập",
+		"LABEL_DEFAULT_DOMAIN": "Tên miền mặc định",
+		"LABEL_DETERMINE_USER_DOMAIN": "Hãy cài đặt tên miền người dùng",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Cho phép lựa chọn ngôn ngữ trên màn hình đăng nhập",
+		"LABEL_DETERMINE_USER_LANGUAGE": "Hãy cài đặt ngôn ngữ người dùng"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Thương hiệu",
+		"LABEL_PAGE_TITLE": "Tiêu đề trang",
+		"LABEL_LOADING_DESCRIPTION": "Đang tải mô tả",
+		"LABEL_FAVICON_URL": "Hình favicon"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "Danh bạ",
+		"LEGEND_STORAGE": "Lưu trữ (PDO)",
+		"LABEL_ENABLE_CONTACTS": "Bật danh bạ",
+		"LABEL_ALLOW_SYNC": "Cho phép đồng bộ hóa danh bạ (với máy chủ CardDAV ngoài)",
+		"LABEL_STORAGE_TYPE": "Loại lưu trữ",
+		"LABEL_STORAGE_DSN": "Dsn",
+		"LABEL_STORAGE_USER": "Người dùng",
+		"LABEL_STORAGE_PASSWORD": "Mật khẩu",
+		"SQLITE_GLOBAL": "Use a global DB instead of per account",
+		"ALERT_NOTICE": "Chú ý!",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Đừng nên sử dụng loại cơ sở dữ liệu này với lượng lớn người dùng mail đang hoạt động.",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Hệ thống của bạn không hỗ trợ chế độ danh bạ.\n<br>\nBạn cần cài đặt hoặc bật lên tiện ích mở rộng <strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> trên máy chủ của bạn.\n"
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "Tên miền",
+		"BUTTON_ADD_DOMAIN": "Thêm tên miền",
+		"BUTTON_ADD_ALIAS": "Thêm biệt danh khác",
+		"DELETE_ARE_YOU_SURE": "Bạn chắc chắn chứ?",
+		"HTML_DOMAINS_HELPER": "Danh sách những tên miền webmail được phép truy cập.\n<br>\nHãy nhấp vào tên để thiết lập tên miền.\n"
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "An ninh",
+		"LABEL_USE_IMAGE_PROXY": "Sử dụng proxy tại máy chủ cho những hình ảnh tải ngoài về",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
+		"LABEL_SHOW_PHP_INFO": "Hiển thị thông tin PHP",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Thông tin truy cập bảng quản trị",
+		"LABEL_CURRENT_PASSWORD": "Mật khẩu hiện tại",
+		"LABEL_NEW_PASSWORD": "Mật khẩu mới",
+		"LABEL_REPEAT_PASSWORD": "Lập lại mật khẩu",
+		"LABEL_REQUIRE_VERIFICATION": "Yêu cầu xác minh chứng chỉ SSL được dùng",
+		"CRYPTO": "Crypto",
+		"LABEL_ALLOW_SELF_SIGNED": "Cho phép chứng chỉ tự ký"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Bật tiện ích mở rộng",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Có cập nhật mới",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Có sẵn để cài đặt",
+		"LEGEND_INSTALLED_PACKAGES": "Tiện ích mở rộng đã cài đặt",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Không thể truy cập vào thư mục hiện giờ."
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "Giới thiệu",
+		"LABEL_TAG_HINT": "Trình duyệt mail trên web đơn giản, hiện đại & nhanh chóng",
+		"LABEL_ALL_RIGHTS_RESERVED": "Toàn Quyền Được Bảo Lưu",
+		"HINT_READ_CHANGE_LOG": "Xin xem nhật ký về những thay đổi trước khi cập nhật.",
+		"HINT_IS_UP_TO_DATE": "SnappyMail đã cập nhật phiên bản mới nhất.",
+		"HTML_NEW_VERSION": "Đã có phiên bản <b>%VERSION%<\/b> mới.",
+		"LABEL_UPDATING": "Đang cập nhật",
+		"LABEL_CHECKING": "Đang kiểm tra bản cập nhật mới",
+		"BUTTON_RELEASES": "Những phiên bản trước đã phát hành"
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "Thêm biệt danh khác",
+		"LABEL_ALIAS": "Biệt danh",
+		"LABEL_DOMAIN": "Tên miền"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "Thêm tên miền",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "Thêm tên miền \"%NAME%\"",
+		"TITLE_EDIT_DOMAIN": "Chỉnh sửa tên miền \"%NAME%\"",
+		"LABEL_NAME": "Tên",
+		"NAME_HELPER": "Có hỗ trợ wildcard",
+		"LABEL_SERVER": "Máy chủ",
+		"LABEL_PORT": "Cổng",
+		"LABEL_SECURE": "An ninh",
+		"TIMEOUT": "Timeout",
+		"DISABLE_CAPABILITIES": "Disable capabilities",
+		"LIMITS": "Limits",
+		"FOLDERS": "Folders",
+		"MESSAGES": "Messages",
+		"LABEL_WHITE_LIST": "Danh sách trắng",
+		"SECURE_OPTION_NONE": "Không có",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Cho phép script của sieve",
+		"LABEL_USE_SHORT_LOGIN": "Dùng đăng nhập ngắn",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
+		"LABEL_USE_AUTH": "Dùng xác minh",
+		"LABEL_SET_SENDER": "Dùng tên đăng nhập là email người dùng",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
+		"LABEL_USE_PHP_MAIL": "Dùng phương trình php mail()",
+		"BUTTON_WHITE_LIST": "Danh sách trắng",
+		"BUTTON_SIEVE_CONFIGURATION": "Thiết lập Sieve",
+		"BUTTON_BACK_TO_IMAP": "Trở về cài đặt IMAP",
+		"BUTTON_BACK": "Trở về",
+		"BUTTON_UPDATE": "Cập nhật",
+		"NEW_DOMAIN_DESC": "Thiết lập tên miền cho phép bạn thao tác với với địa chỉ email của <strong>%NAME%<\/strong>.",
+		"WHITE_LIST_ALERT": "Danh sách những người dùng tên miền mà webmail được quyền truy cập.\nSử dụng dấu cách làm dấu phân cách mỗi tên.\n"
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "Tiện ích mở rộng",
+		"DESC_NOTHING_TO_CONFIGURE": "Không có gì để thiết lập"
+	},
+	"POPUPS_ASK": {
+		"BUTTON_YES": "Ok",
+		"BUTTON_NO": "Không",
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Bạn có chắc chắn muốn đóng cửa sổ này?"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "Chọn ngôn ngữ"
+	},
+	"HINTS": {
+		"BETA": "đang thử nghiệm",
+		"WARNING": "Cảnh báo!"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "Tên miền đã tồn tại",
+		"UNKNOWN_ERROR": "Lỗi chưa xác định"
+	},
+	"NOTIFICATIONS": {
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "Token không hợp lệ",
+		"AuthError": "Xác minh thất bại",
+		"DomainAlreadyExists": "Tên miền đã tồn tại",
+		"CantSavePluginSettings": "Không thể lưu cài đặt",
+		"CantInstallPackage": "Không thể cài đặt tiện ích mở rộng",
+		"CantDeletePackage": "Không thể xóa bỏ tiện ích mở rộng",
+		"InvalidPluginPackage": "Gói tiện ích mở rộng không đúng",
+		"UnsupportedPluginPackage": "Gói tiện ích mở rộng chưa được hỗ trợ",
+		"UnknownError": "Lỗi chưa xác định"
+	}
+}

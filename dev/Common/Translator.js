@@ -1,311 +1,234 @@
-import window from 'window';
-import _ from '_';
-import $ from '$';
 import ko from 'ko';
-import { Notification, UploadErrorCode } from 'Common/Enums';
-import { pInt, isUnd, isNull, has, microtime, inArray } from 'Common/Utils';
-import { $html, bAnimationSupported } from 'Common/Globals';
-import { reload as momentorReload } from 'Common/Momentor';
+import { Notifications, UploadErrorCode } from 'Common/Enums';
 import { langLink } from 'Common/Links';
+import { doc, createElement } from 'Common/Globals';
+import { getKeyByValue, forEachObjectEntry } from 'Common/Utils';
+import { pInt } from 'Common/Utils';
+import { LanguageStore } from 'Stores/Language';
 
-let I18N_DATA = window.rainloopI18N || {};
+let I18N_DATA = {};
 
-const I18N_NOTIFICATION_DATA = {};
-const I18N_NOTIFICATION_MAP = [
-	[Notification.InvalidToken, 'NOTIFICATIONS/INVALID_TOKEN'],
-	[Notification.InvalidToken, 'NOTIFICATIONS/INVALID_TOKEN'],
-	[Notification.AuthError, 'NOTIFICATIONS/AUTH_ERROR'],
-	[Notification.AccessError, 'NOTIFICATIONS/ACCESS_ERROR'],
-	[Notification.ConnectionError, 'NOTIFICATIONS/CONNECTION_ERROR'],
-	[Notification.CaptchaError, 'NOTIFICATIONS/CAPTCHA_ERROR'],
-	[Notification.SocialFacebookLoginAccessDisable, 'NOTIFICATIONS/SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE'],
-	[Notification.SocialTwitterLoginAccessDisable, 'NOTIFICATIONS/SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE'],
-	[Notification.SocialGoogleLoginAccessDisable, 'NOTIFICATIONS/SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE'],
-	[Notification.DomainNotAllowed, 'NOTIFICATIONS/DOMAIN_NOT_ALLOWED'],
-	[Notification.AccountNotAllowed, 'NOTIFICATIONS/ACCOUNT_NOT_ALLOWED'],
+const
+	init = () => {
+		if (rl.I18N) {
+			I18N_DATA = rl.I18N;
+			rl.I18N = null;
+			doc.documentElement.dir = I18N_DATA.LANG_DIR;
+			return 1;
+		}
+	},
 
-	[Notification.AccountTwoFactorAuthRequired, 'NOTIFICATIONS/ACCOUNT_TWO_FACTOR_AUTH_REQUIRED'],
-	[Notification.AccountTwoFactorAuthError, 'NOTIFICATIONS/ACCOUNT_TWO_FACTOR_AUTH_ERROR'],
+	i18nKey = key => key.replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase(),
 
-	[Notification.CouldNotSaveNewPassword, 'NOTIFICATIONS/COULD_NOT_SAVE_NEW_PASSWORD'],
-	[Notification.CurrentPasswordIncorrect, 'NOTIFICATIONS/CURRENT_PASSWORD_INCORRECT'],
-	[Notification.NewPasswordShort, 'NOTIFICATIONS/NEW_PASSWORD_SHORT'],
-	[Notification.NewPasswordWeak, 'NOTIFICATIONS/NEW_PASSWORD_WEAK'],
-	[Notification.NewPasswordForbidden, 'NOTIFICATIONS/NEW_PASSWORD_FORBIDDENT'],
+	getNotificationMessage = code => {
+		let key = getKeyByValue(Notifications, code);
+		return key ? I18N_DATA.NOTIFICATIONS[key] : '';
+	},
 
-	[Notification.ContactsSyncError, 'NOTIFICATIONS/CONTACTS_SYNC_ERROR'],
+	fromNow = date => relativeTime(Math.round((date.getTime() - Date.now()) / 1000));
 
-	[Notification.CantGetMessageList, 'NOTIFICATIONS/CANT_GET_MESSAGE_LIST'],
-	[Notification.CantGetMessage, 'NOTIFICATIONS/CANT_GET_MESSAGE'],
-	[Notification.CantDeleteMessage, 'NOTIFICATIONS/CANT_DELETE_MESSAGE'],
-	[Notification.CantMoveMessage, 'NOTIFICATIONS/CANT_MOVE_MESSAGE'],
-	[Notification.CantCopyMessage, 'NOTIFICATIONS/CANT_MOVE_MESSAGE'],
+export const
+	translateTrigger = ko.observable(false),
 
-	[Notification.CantSaveMessage, 'NOTIFICATIONS/CANT_SAVE_MESSAGE'],
-	[Notification.CantSendMessage, 'NOTIFICATIONS/CANT_SEND_MESSAGE'],
-	[Notification.InvalidRecipients, 'NOTIFICATIONS/INVALID_RECIPIENTS'],
-
-	[Notification.CantSaveFilters, 'NOTIFICATIONS/CANT_SAVE_FILTERS'],
-	[Notification.CantGetFilters, 'NOTIFICATIONS/CANT_GET_FILTERS'],
-	[Notification.FiltersAreNotCorrect, 'NOTIFICATIONS/FILTERS_ARE_NOT_CORRECT'],
-
-	[Notification.CantCreateFolder, 'NOTIFICATIONS/CANT_CREATE_FOLDER'],
-	[Notification.CantRenameFolder, 'NOTIFICATIONS/CANT_RENAME_FOLDER'],
-	[Notification.CantDeleteFolder, 'NOTIFICATIONS/CANT_DELETE_FOLDER'],
-	[Notification.CantDeleteNonEmptyFolder, 'NOTIFICATIONS/CANT_DELETE_NON_EMPTY_FOLDER'],
-	[Notification.CantSubscribeFolder, 'NOTIFICATIONS/CANT_SUBSCRIBE_FOLDER'],
-	[Notification.CantUnsubscribeFolder, 'NOTIFICATIONS/CANT_UNSUBSCRIBE_FOLDER'],
-
-	[Notification.CantSaveSettings, 'NOTIFICATIONS/CANT_SAVE_SETTINGS'],
-	[Notification.CantSavePluginSettings, 'NOTIFICATIONS/CANT_SAVE_PLUGIN_SETTINGS'],
-
-	[Notification.DomainAlreadyExists, 'NOTIFICATIONS/DOMAIN_ALREADY_EXISTS'],
-
-	[Notification.CantInstallPackage, 'NOTIFICATIONS/CANT_INSTALL_PACKAGE'],
-	[Notification.CantDeletePackage, 'NOTIFICATIONS/CANT_DELETE_PACKAGE'],
-	[Notification.InvalidPluginPackage, 'NOTIFICATIONS/INVALID_PLUGIN_PACKAGE'],
-	[Notification.UnsupportedPluginPackage, 'NOTIFICATIONS/UNSUPPORTED_PLUGIN_PACKAGE'],
-
-	[Notification.LicensingServerIsUnavailable, 'NOTIFICATIONS/LICENSING_SERVER_IS_UNAVAILABLE'],
-	[Notification.LicensingExpired, 'NOTIFICATIONS/LICENSING_EXPIRED'],
-	[Notification.LicensingBanned, 'NOTIFICATIONS/LICENSING_BANNED'],
-
-	[Notification.DemoSendMessageError, 'NOTIFICATIONS/DEMO_SEND_MESSAGE_ERROR'],
-	[Notification.DemoAccountError, 'NOTIFICATIONS/DEMO_ACCOUNT_ERROR'],
-
-	[Notification.AccountAlreadyExists, 'NOTIFICATIONS/ACCOUNT_ALREADY_EXISTS'],
-	[Notification.AccountDoesNotExist, 'NOTIFICATIONS/ACCOUNT_DOES_NOT_EXIST'],
-
-	[Notification.MailServerError, 'NOTIFICATIONS/MAIL_SERVER_ERROR'],
-	[Notification.InvalidInputArgument, 'NOTIFICATIONS/INVALID_INPUT_ARGUMENT'],
-	[Notification.UnknownNotification, 'NOTIFICATIONS/UNKNOWN_ERROR'],
-	[Notification.UnknownError, 'NOTIFICATIONS/UNKNOWN_ERROR']
-];
-
-export const trigger = ko.observable(false);
-
-/**
- * @param {string} key
- * @param {Object=} valueList
- * @param {string=} defaulValue
- * @returns {string}
- */
-export function i18n(key, valueList, defaulValue) {
-	let valueName = '',
-		result = I18N_DATA[key];
-
-	if (isUnd(result)) {
-		result = isUnd(defaulValue) ? key : defaulValue;
-	}
-
-	if (!isUnd(valueList) && !isNull(valueList)) {
-		for (valueName in valueList) {
-			if (has(valueList, valueName)) {
-				result = result.replace('%' + valueName + '%', valueList[valueName]);
+	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
+	// see /snappymail/v/0.0.0/app/localization/relativetimeformat/
+	relativeTime = seconds => {
+		let unit = 'second',
+			t = [[60,'minute'],[3600,'hour'],[86400,'day'],[2628000,'month'],[31536000,'year']],
+			i = 5,
+			abs = Math.abs(seconds);
+		while (i--) {
+			if (t[i][0] <= abs) {
+				seconds = Math.round(seconds / t[i][0]);
+				unit = t[i][1];
+				break;
 			}
 		}
-	}
-
-	return result;
-}
-
-const i18nToNode = (element) => {
-	const $el = $(element),
-		key = $el.data('i18n');
-
-	if (key) {
-		if ('[' === key.substr(0, 1)) {
-			switch (key.substr(0, 6)) {
-				case '[html]':
-					$el.html(i18n(key.substr(6)));
-					break;
-				case '[place':
-					$el.attr('placeholder', i18n(key.substr(13)));
-					break;
-				case '[title':
-					$el.attr('title', i18n(key.substr(7)));
-					break;
-				// no default
-			}
-		} else {
-			$el.text(i18n(key));
+		if (Intl.RelativeTimeFormat) {
+			let rtf = new Intl.RelativeTimeFormat(doc.documentElement.lang);
+			return rtf.format(seconds, unit);
 		}
-	}
-};
+		// Safari < 14
+		abs = Math.abs(seconds);
+		let rtf = rl.relativeTime.long[unit][0 > seconds ? 'past' : 'future'],
+			plural = rl.relativeTime.plural(abs);
+		return (rtf[plural] || rtf).replace('{0}', abs);
+	},
 
-/**
- * @param {Object} elements
- * @param {boolean=} animate = false
- */
-export function i18nToNodes(elements, animate = false) {
-	_.defer(() => {
-		$('[data-i18n]', elements).each((index, item) => {
-			i18nToNode(item);
+	/**
+	 * @param {string} key
+	 * @param {Object=} valueList
+	 * @param {string=} defaulValue
+	 * @returns {string}
+	 */
+	i18n = (key, valueList, defaulValue) => {
+		let result = null == defaulValue ? key : defaulValue;
+		let path = key.split('/');
+		if (I18N_DATA[path[0]] && path[1]) {
+			result = I18N_DATA[path[0]][path[1]] || result;
+		}
+		valueList && forEachObjectEntry(valueList, (key, value) => {
+			result = result.replace('%' + key + '%', value);
 		});
+		return result;
+	},
 
-		if (animate && bAnimationSupported) {
-			$('.i18n-animation[data-i18n]', elements).letterfx({
-				'fx': 'fall fade',
-				'backwards': false,
-				'timing': 50,
-				'fx_duration': '50ms',
-				'letter_end': 'restore',
-				'element_end': 'restore'
-			});
+	/**
+	 * @param {Object} elements
+	 * @param {boolean=} animate = false
+	 */
+	i18nToNodes = element =>
+		setTimeout(() =>
+			element.querySelectorAll('[data-i18n]').forEach(element => {
+				const key = element.dataset.i18n;
+				if ('[' === key[0]) {
+					switch (key.slice(1, 6)) {
+						case 'html]':
+							element.innerHTML = i18n(key.slice(6));
+							break;
+						case 'place':
+							element.placeholder = i18n(key.slice(13));
+							break;
+						case 'title':
+							element.title = i18n(key.slice(7));
+							break;
+						// no default
+					}
+				} else {
+					element.textContent = i18n(key);
+				}
+			})
+		, 1),
+
+	timestampToString = (timeStampInUTC, formatStr) => {
+		const now = Date.now(),
+			time = 0 < timeStampInUTC ? timeStampInUTC * 1000 : (0 === timeStampInUTC ? now : 0);
+		if (31536000000 < time) {
+			const m = new Date(time), h = LanguageStore.hourCycle();
+			switch (formatStr) {
+				case 'FROMNOW':
+					return fromNow(m);
+				case 'AUTO': {
+					// 4 hours
+					if (14400000 >= now - time)
+						return fromNow(m);
+					const date = new Date,
+						dt = date.setHours(0,0,0,0);
+					return (time > dt - 86400000)
+						? i18n(
+							time > dt ? 'MESSAGE_LIST/TODAY_AT' : 'MESSAGE_LIST/YESTERDAY_AT',
+							{TIME: m.format('LT',0,h)}
+						)
+						: m.format(
+							date.getFullYear() === m.getFullYear()
+								? {day: '2-digit', month: 'short', hour: 'numeric', minute: 'numeric'}
+								: {dateStyle: 'medium', timeStyle: 'short'}
+							, 0, h);
+				}
+				case 'FULL':
+					return m.format('LLL',0,h);
+				default:
+					return m.format(formatStr,0,h);
+			}
 		}
-	});
-}
 
-const reloadData = () => {
-	if (window.rainloopI18N) {
-		I18N_DATA = window.rainloopI18N || {};
+		return '';
+	},
 
-		i18nToNodes(window.document, true);
-
-		momentorReload();
-		trigger(!trigger());
-	}
-
-	window.rainloopI18N = null;
-};
-
-/**
- * @returns {void}
- */
-export function initNotificationLanguage() {
-	I18N_NOTIFICATION_MAP.forEach((item) => {
-		I18N_NOTIFICATION_DATA[item[0]] = i18n(item[1]);
-	});
-}
-
-/**
- * @param {Function} startCallback
- * @param {Function=} langCallback = null
- */
-export function initOnStartOrLangChange(startCallback, langCallback = null) {
-	if (startCallback) {
-		startCallback();
-	}
-
-	if (langCallback) {
-		trigger.subscribe(() => {
-			if (startCallback) {
-				startCallback();
+	timeToNode = (element, time) => {
+		try {
+			if (time) {
+				element.dateTime = new Date(time * 1000).toISOString();
+			} else {
+				time = Date.parse(element.dateTime) / 1000;
 			}
-			if (langCallback) {
-				langCallback();
+
+			let key = element.dataset.timeFormat;
+			if (key) {
+				element.textContent = timestampToString(time, key);
+				if ('FULL' !== key && 'FROMNOW' !== key) {
+					element.title = timestampToString(time, 'FULL');
+				}
 			}
-		});
-	} else if (startCallback) {
-		trigger.subscribe(startCallback);
-	}
-}
+		} catch (e) {
+			// prevent knockout crashes
+			console.error(e);
+		}
+	},
 
-/**
- * @param {number} code
- * @param {*=} message = ''
- * @param {*=} defCode = null
- * @returns {string}
- */
-export function getNotification(code, message = '', defCode = null) {
-	code = window.parseInt(code, 10) || 0;
-	if (Notification.ClientViewError === code && message) {
-		return message;
-	}
+	reloadTime = () => doc.querySelectorAll('time').forEach(element => timeToNode(element)),
 
-	defCode = defCode ? window.parseInt(defCode, 10) || 0 : 0;
-	return isUnd(I18N_NOTIFICATION_DATA[code])
-		? defCode && isUnd(I18N_NOTIFICATION_DATA[defCode])
-			? I18N_NOTIFICATION_DATA[defCode]
-			: ''
-		: I18N_NOTIFICATION_DATA[code];
-}
+	/**
+	 * @param {Function} startCallback
+	 * @param {Function=} langCallback = null
+	 */
+	initOnStartOrLangChange = (startCallback, langCallback) => {
+		startCallback?.();
+		startCallback && translateTrigger.subscribe(startCallback);
+		langCallback && translateTrigger.subscribe(langCallback);
+	},
 
-/**
- * @param {object} response
- * @param {number} defCode = Notification.UnknownNotification
- * @returns {string}
- */
-export function getNotificationFromResponse(response, defCode = Notification.UnknownNotification) {
-	return response && response.ErrorCode
-		? getNotification(pInt(response.ErrorCode), response.ErrorMessage || '')
-		: getNotification(defCode);
-}
+	/**
+	 * @param {number} code
+	 * @param {*=} message = ''
+	 * @param {*=} defCode = null
+	 * @returns {string}
+	 */
+	getNotification = (code, message = '', defCode = 0) => {
+		code = pInt(code);
+		if (Notifications.ClientViewError === code && message) {
+			return message;
+		}
 
-/**
- * @param {*} code
- * @returns {string}
- */
-export function getUploadErrorDescByCode(code) {
-	let result = '';
-	switch (window.parseInt(code, 10) || 0) {
-		case UploadErrorCode.FileIsTooBig:
-			result = i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG');
-			break;
-		case UploadErrorCode.FilePartiallyUploaded:
-			result = i18n('UPLOAD/ERROR_FILE_PARTIALLY_UPLOADED');
-			break;
-		case UploadErrorCode.FileNoUploaded:
-			result = i18n('UPLOAD/ERROR_NO_FILE_UPLOADED');
-			break;
-		case UploadErrorCode.MissingTempFolder:
-			result = i18n('UPLOAD/ERROR_MISSING_TEMP_FOLDER');
-			break;
-		case UploadErrorCode.FileOnSaveingError:
-			result = i18n('UPLOAD/ERROR_ON_SAVING_FILE');
-			break;
-		case UploadErrorCode.FileType:
-			result = i18n('UPLOAD/ERROR_FILE_TYPE');
-			break;
-		default:
-			result = i18n('UPLOAD/ERROR_UNKNOWN');
-			break;
-	}
+		return getNotificationMessage(code)
+			|| getNotificationMessage(pInt(defCode))
+			|| '';
+	},
 
-	return result;
-}
+	/**
+	 * @param {*} code
+	 * @returns {string}
+	 */
+	getUploadErrorDescByCode = code => {
+		let key = getKeyByValue(UploadErrorCode, parseInt(code, 10));
+		return i18n('UPLOAD/ERROR_' + (key ? i18nKey(key) : 'UNKNOWN'));
+	},
 
-/**
- * @param {boolean} admin
- * @param {string} language
- */
-export function reload(admin, language) {
-	const start = microtime();
+	/**
+	 * @param {boolean} admin
+	 * @param {string} language
+	 */
+	translatorReload = (language, admin) =>
+		new Promise((resolve, reject) => {
+			const script = createElement('script');
+			script.onload = () => {
+				// reload the data
+				if (init()) {
+					i18nToNodes(doc);
+					translateTrigger(!translateTrigger());
+//					admin || reloadTime();
+				}
+				script.remove();
+				resolve();
+			};
+			script.onerror = () => reject(Error('Language '+language+' failed'));
+			script.src = langLink(language, admin);
+	//		script.async = true;
+			doc.head.append(script);
+		}),
 
-	$html.addClass('rl-changing-language');
+	/**
+	 * @param {string} language
+	 * @param {boolean=} isEng = false
+	 * @returns {string}
+	 */
+	convertLangName = (language, isEng = false) =>
+		i18n(
+			'LANGS_NAMES' + (true === isEng ? '_EN' : '') + '/' + language,
+			null,
+			language
+		),
 
-	return new window.Promise((resolve, reject) => {
-		$.ajax({
-			url: langLink(language, admin),
-			dataType: 'script',
-			cache: true
-		}).then(
-			() => {
-				_.delay(
-					() => {
-						reloadData();
+	baseCollator = numeric => new Intl.Collator(doc.documentElement.lang, {numeric: !!numeric, sensitivity: 'base'});
 
-						const isRtl = -1 < inArray((language || '').toLowerCase(), ['ar', 'ar_sa', 'he', 'he_he', 'ur', 'ur_ir']);
-
-						$html
-							.removeClass('rl-changing-language')
-							.removeClass('rl-rtl rl-ltr')
-							// .attr('dir', isRtl ? 'rtl' : 'ltr')
-							.addClass(isRtl ? 'rl-rtl' : 'rl-ltr');
-
-						resolve();
-					},
-					500 < microtime() - start ? 1 : 500
-				);
-			},
-			() => {
-				$html.removeClass('rl-changing-language');
-				window.rainloopI18N = null;
-				reject();
-			}
-		);
-	});
-}
-
-// init section
-$html.addClass('rl-' + ($html.attr('dir') || 'ltr'));
+init();

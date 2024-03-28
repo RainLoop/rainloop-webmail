@@ -1,0 +1,45 @@
+<div class="descWrapper" data-bind="visible: '' !== loadingDesc, text: loadingDesc"></div>
+<div class="alert" data-bind="hidden: !submitError()" hidden="">
+	<a href="#" class="close" data-bind="click: hideError">×</a>
+	<span data-bind="text: submitError"></span>
+	<p data-bind="visible: '' !== submitErrorAdditional()">
+		<span data-i18n="GLOBAL/SERVER_MESSAGE"></span>:
+		<!-- ko text: submitErrorAdditional --><!-- /ko -->
+	</p>
+</div>
+<form action="#/"  spellcheck="false" method="POST"
+	data-bind="submit: submitForm, css: {'errorAnimated': formError, 'submitting': submitRequest()}">
+	<div class="controls" data-bind="css: {'error': emailError}">
+		<span class="fontastic">✉</span>
+		<input name="Email" required="" type="text" class="input-block-level" pattern="[^@\s]+(@[^\s]+)?" inputmode="email"
+			autofocus="" autocomplete="email" autocorrect="off" autocapitalize="off"
+			data-bind="textInput: email, disable: submitRequest"
+			data-i18n="[placeholder]GLOBAL/EMAIL">
+	</div>
+	<div class="controls" data-bind="css: {'error': passwordError}">
+		<span class="fontastic">🔑</span>
+		<input name="Password" required="" type="password" class="input-block-level"
+			autocomplete="current-password" autocorrect="off" autocapitalize="off"
+			data-bind="textInput: password, disable: submitRequest"
+			data-i18n="[placeholder]GLOBAL/PASSWORD">
+	</div>
+	<div id="plugin-Login-BottomControlGroup"></div>
+	<div class="controls" style="display: flex">
+		<div class="e-checkbox" tabindex="0" data-bind="toggle: signMe">
+			<i role="checkbox" class="fontastic" data-bind="text: signMe() ? '☑' : '☐'"></i>
+			<span data-i18n="LOGIN/LABEL_SIGN_ME"></span>
+		</div>
+		<div class="language-buttons">
+			<a href="#" class="language-button fontastic"
+				data-bind="visible: allowLanguagesOnLogin, click: selectLanguage, css: { 'icon-spinner' : langRequest }"
+				data-i18n="[title]POPUPS_LANGUAGES/TITLE_LANGUAGES">
+				🌍
+			</a>
+		</div>
+	</div>
+	<div>
+		<button class="btn btn-large buttonLogin"
+			data-bind="command: submitCommand"
+			data-i18n="LOGIN/BUTTON_SIGN_IN"></button>
+	</div>
+</form>

@@ -1,140 +1,113 @@
-import _ from '_';
 import ko from 'ko';
 
-import { settingsSaveHelperSimpleFunction, defautOptionsAfterRender, inArray, trim, boolToAjax } from 'Common/Utils';
+import { SettingsGet } from 'Common/Globals';
+import { defaultOptionsAfterRender } from 'Common/Utils';
+import { addObservablesTo } from 'External/ko';
 
-import { SaveSettingsStep, StorageResultType, Magics } from 'Common/Enums';
-import { i18n } from 'Common/Translator';
-import { settingsGet } from 'Storage/Settings';
-import Remote from 'Remote/Admin/Ajax';
-import { command } from 'Knoin/Knoin';
+import Remote from 'Remote/Admin/Fetch';
+import { decorateKoCommands } from 'Knoin/Knoin';
+import { AbstractViewSettings } from 'Knoin/AbstractViews';
 
-class ContactsAdminSettings {
+export class AdminSettingsContacts extends AbstractViewSettings {
 	constructor() {
-		this.defautOptionsAfterRender = defautOptionsAfterRender;
-		this.enableContacts = ko.observable(!!settingsGet('ContactsEnable'));
-		this.contactsSync = ko.observable(!!settingsGet('ContactsSync'));
+		super();
+		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 
-		const supportedTypes = [],
-			types = ['sqlite', 'mysql', 'pgsql'],
-			getTypeName = (name) => {
-				switch (name) {
-					case 'sqlite':
-						name = 'SQLite';
-						break;
-					case 'mysql':
-						name = 'MySQL';
-						break;
-					case 'pgsql':
-						name = 'PostgreSQL';
-						break;
-					// no default
-				}
-
-				return name;
-			};
-
-		if (settingsGet('SQLiteIsSupported')) {
-			supportedTypes.push('sqlite');
-		}
-		if (settingsGet('MySqlIsSupported')) {
-			supportedTypes.push('mysql');
-		}
-		if (settingsGet('PostgreSqlIsSupported')) {
-			supportedTypes.push('pgsql');
-		}
-
-		this.contactsSupported = 0 < supportedTypes.length;
-
-		this.contactsTypes = ko.observableArray([]);
-		this.contactsTypesOptions = ko.computed(() =>
-			_.map(this.contactsTypes(), (value) => {
-				const disabled = -1 === inArray(value, supportedTypes);
-				return {
-					'id': value,
-					'name': getTypeName(value) + (disabled ? ' (' + i18n('HINTS/NOT_SUPPORTED') + ')' : ''),
-					'disabled': disabled
-				};
-			})
-		);
-
-		this.contactsTypes(types);
-		this.contactsType = ko.observable('');
-
-		this.mainContactsType = ko
-			.computed({
-				read: this.contactsType,
-				write: (value) => {
-					if (value !== this.contactsType()) {
-						if (-1 < inArray(value, supportedTypes)) {
-							this.contactsType(value);
-						} else if (0 < supportedTypes.length) {
-							this.contactsType('');
-						}
-					} else {
-						this.contactsType.valueHasMutated();
-					}
-				}
-			})
-			.extend({ notify: 'always' });
-
-		this.contactsType.subscribe(() => {
+		this.addSetting('contactsPdoDsn');
+		this.addSetting('contactsPdoUser');
+		this.addSetting('contactsPdoPassword');
+		this.addSetting('contactsPdoType', () => {
 			this.testContactsSuccess(false);
 			this.testContactsError(false);
 			this.testContactsErrorMessage('');
 		});
 
-		this.pdoDsn = ko.observable(settingsGet('ContactsPdoDsn'));
-		this.pdoUser = ko.observable(settingsGet('ContactsPdoUser'));
-		this.pdoPassword = ko.observable(settingsGet('ContactsPdoPassword'));
+		this.addSettings(['contactsEnable','contactsSync']);
 
-		this.pdoDsnTrigger = ko.observable(SaveSettingsStep.Idle);
-		this.pdoUserTrigger = ko.observable(SaveSettingsStep.Idle);
-		this.pdoPasswordTrigger = ko.observable(SaveSettingsStep.Idle);
-		this.contactsTypeTrigger = ko.observable(SaveSettingsStep.Idle);
+		this.addSetting('contactsMySQLSSLCA');
+		this.addSetting('contactsMySQLSSLVerify');
+		this.addSetting('contactsMySQLSSLCiphers');
 
-		this.testing = ko.observable(false);
-		this.testContactsSuccess = ko.observable(false);
-		this.testContactsError = ko.observable(false);
-		this.testContactsErrorMessage = ko.observable('');
+		this.addSetting('contactsSQLiteGlobal');
 
-		this.contactsType(settingsGet('ContactsPdoType'));
+		addObservablesTo(this, {
+			testing: false,
+			testContactsSuccess: false,
+			testContactsError: false,
+			testContactsErrorMessage: ''
+		});
 
-		this.onTestContactsResponse = _.bind(this.onTestContactsResponse, this);
+		this.addSetting('contactsSuggestionsLimit');
+
+		const supportedTypes = SettingsGet('supportedPdoDrivers') || [],
+			types = [{
+				id:'sqlite',
+				name:'SQLite'
+			},{
+				id:'mysql',
+				name:'MySQL'
+			},{
+				id:'pgsql',
+				name:'PostgreSQL'
+			}].filter(type => supportedTypes.includes(type.id));
+
+		this.contactsSupported = 0 < types.length;
+
+		this.contactsTypesOptions = types;
+
+		this.mainContactsType = ko
+			.computed({
+				read: this.contactsPdoType,
+				write: value => {
+					if (value !== this.contactsPdoType()) {
+						if (supportedTypes.includes(value)) {
+							this.contactsPdoType(value);
+						} else if (types.length) {
+							this.contactsPdoType('');
+						}
+					} else {
+						this.contactsPdoType.valueHasMutated();
+					}
+				}
+			})
+			.extend({ notify: 'always' });
+
+		decorateKoCommands(this, {
+			testContactsCommand: self => self.contactsPdoDsn() && self.contactsPdoUser()
+		});
 	}
 
-	@command((self) => '' !== self.pdoDsn() && '' !== self.pdoUser())
 	testContactsCommand() {
 		this.testContactsSuccess(false);
 		this.testContactsError(false);
 		this.testContactsErrorMessage('');
 		this.testing(true);
 
-		Remote.testContacts(this.onTestContactsResponse, {
-			'ContactsPdoType': this.contactsType(),
-			'ContactsPdoDsn': this.pdoDsn(),
-			'ContactsPdoUser': this.pdoUser(),
-			'ContactsPdoPassword': this.pdoPassword()
-		});
-	}
-
-	onTestContactsResponse(result, data) {
-		this.testContactsSuccess(false);
-		this.testContactsError(false);
-		this.testContactsErrorMessage('');
-
-		if (StorageResultType.Success === result && data && data.Result && data.Result.Result) {
-			this.testContactsSuccess(true);
-		} else {
-			this.testContactsError(true);
-			if (data && data.Result) {
-				this.testContactsErrorMessage(data.Result.Message || '');
-			} else {
+		Remote.request('AdminContactsTest',
+			(iError, data) => {
+				this.testContactsSuccess(false);
+				this.testContactsError(false);
 				this.testContactsErrorMessage('');
-			}
-		}
 
-		this.testing(false);
+				if (!iError && data.Result.Result) {
+					this.testContactsSuccess(true);
+				} else {
+					this.testContactsError(true);
+					this.testContactsErrorMessage(data?.Result?.Message || '');
+				}
+
+				this.testing(false);
+			}, {
+				PdoType: this.contactsPdoType(),
+				PdoDsn: this.contactsPdoDsn(),
+				PdoUser: this.contactsPdoUser(),
+				PdoPassword: this.contactsPdoPassword(),
+				MySQLSSLCA: this.contactsMySQLSSLCA(),
+				MySQLSSLVerify: this.contactsMySQLSSLVerify(),
+				MySQLSSLCiphers: this.contactsMySQLSSLCiphers(),
+				SQLiteGlobal: this.contactsSQLiteGlobal()
+			}
+		);
 	}
 
 	onShow() {
@@ -142,53 +115,4 @@ class ContactsAdminSettings {
 		this.testContactsError(false);
 		this.testContactsErrorMessage('');
 	}
-
-	onBuild() {
-		_.delay(() => {
-			const f1 = settingsSaveHelperSimpleFunction(this.pdoDsnTrigger, this),
-				f3 = settingsSaveHelperSimpleFunction(this.pdoUserTrigger, this),
-				f4 = settingsSaveHelperSimpleFunction(this.pdoPasswordTrigger, this),
-				f5 = settingsSaveHelperSimpleFunction(this.contactsTypeTrigger, this);
-
-			this.enableContacts.subscribe((value) => {
-				Remote.saveAdminConfig(null, {
-					'ContactsEnable': boolToAjax(value)
-				});
-			});
-
-			this.contactsSync.subscribe((value) => {
-				Remote.saveAdminConfig(null, {
-					'ContactsSync': boolToAjax(value)
-				});
-			});
-
-			this.contactsType.subscribe((value) => {
-				Remote.saveAdminConfig(f5, {
-					'ContactsPdoType': trim(value)
-				});
-			});
-
-			this.pdoDsn.subscribe((value) => {
-				Remote.saveAdminConfig(f1, {
-					'ContactsPdoDsn': trim(value)
-				});
-			});
-
-			this.pdoUser.subscribe((value) => {
-				Remote.saveAdminConfig(f3, {
-					'ContactsPdoUser': trim(value)
-				});
-			});
-
-			this.pdoPassword.subscribe((value) => {
-				Remote.saveAdminConfig(f4, {
-					'ContactsPdoPassword': trim(value)
-				});
-			});
-
-			this.contactsType(settingsGet('ContactsPdoType'));
-		}, Magics.Time50ms);
-	}
 }
-
-export { ContactsAdminSettings, ContactsAdminSettings as default };

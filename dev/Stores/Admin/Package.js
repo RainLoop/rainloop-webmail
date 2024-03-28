@@ -1,13 +1,48 @@
 import ko from 'ko';
+import { isArray } from 'Common/Utils';
+import { getNotification } from 'Common/Translator';
+import Remote from 'Remote/Admin/Fetch';
 
-class PackageAdminStore {
-	constructor() {
-		this.packages = ko.observableArray([]);
-		this.packages.loading = ko.observable(false).extend({ throttle: 100 });
+export const PackageAdminStore = ko.observableArray();
 
-		this.packagesReal = ko.observable(true);
-		this.packagesMainUpdatable = ko.observable(true);
-	}
-}
+PackageAdminStore.real = ko.observable(true);
 
-export default new PackageAdminStore();
+PackageAdminStore.loading = ko.observable(false);
+
+PackageAdminStore.error = ko.observable('');
+
+PackageAdminStore.fetch = () => {
+	PackageAdminStore.loading(true);
+	Remote.request('AdminPackagesList', (iError, data) => {
+		PackageAdminStore.loading(false);
+		if (iError) {
+			PackageAdminStore.real(false);
+			PackageAdminStore.error(getNotification(iError));
+//			let error = getNotification(iError);
+//			if (data.message) { error = data.message + error; }
+//			if (data.reason) { error = data.reason + " " + error; }
+//			PackageAdminStore.error(error);
+		} else {
+			PackageAdminStore.real(!!data.Result.Real);
+			PackageAdminStore.error(data.Result.Error);
+
+			const loading = {};
+			PackageAdminStore.forEach(item => {
+				if (item?.loading()) {
+					loading[item.file] = item;
+				}
+			});
+
+			let list = [];
+			if (isArray(data.Result.List)) {
+				list = data.Result.List.filter(v => v).map(item => {
+					item.loading = ko.observable(loading[item.file] !== undefined);
+					item.enabled = ko.observable(item.enabled);
+					return item;
+				});
+			}
+
+			PackageAdminStore(list);
+		}
+	});
+};

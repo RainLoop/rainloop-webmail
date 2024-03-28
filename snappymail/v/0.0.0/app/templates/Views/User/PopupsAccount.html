@@ -1,0 +1,36 @@
+<header>
+	<a href="#" class="close" data-bind="click: close">×</a>
+	<h3 data-bind="visible: isNew" data-i18n="POPUPS_ADD_ACCOUNT/TITLE_ADD_ACCOUNT"></h3>
+	<h3 data-bind="visible: !isNew()" data-i18n="POPUPS_ADD_ACCOUNT/TITLE_UPDATE_ACCOUNT"></h3>
+</header>
+<form id="accountform" class="modal-body form-horizontal" autocomplete="off" spellcheck="false" data-bind="submit: submitForm">
+	<div class="alert" data-bind="visible: '' !== submitError()">
+		<a href="#" class="close" data-bind="click: hideError">×</a>
+		<span data-bind="text: submitError"></span>
+		<div data-bind="visible: submitErrorAdditional, text: submitErrorAdditional"></div>
+	</div>
+	<div class="control-group">
+		<label data-i18n="GLOBAL/EMAIL"></label>
+		<strong style="margin-top: 5px;" data-bind="visible: !isNew(), text: email"></strong>
+		<input name="email" type="text" class="input-xlarge"
+			autofocus="" autocorrect="off" autocapitalize="off"
+			data-bind="visible: isNew, textInput: email, attr: {required: isNew}">
+	</div>
+	<div class="control-group">
+		<label data-i18n="GLOBAL/PASSWORD"></label>
+		<input name="password" type="password" class="input-xlarge" autocomplete="new-password" autocorrect="off" autocapitalize="off"
+			data-bind="value: password, attr: {required:isNew}">
+	</div>
+	<div class="control-group">
+		<label data-i18n="GLOBAL/NAME"></label>
+		<input name="name" type="text" class="input-xlarge" data-bind="value: name">
+	</div>
+</form>
+<footer>
+	<button form="accountform" class="btn buttonAddAccount">
+		<i data-bind="visible: isNew, css: {'icon-user-add': !submitRequest(), 'icon-spinner': submitRequest()}"></i>
+		<span data-bind="visible: isNew" data-i18n="POPUPS_ADD_ACCOUNT/BUTTON_ADD_ACCOUNT"></span>
+		<i data-bind="visible: !isNew(), css: {'icon-ok': !submitRequest(), 'icon-spinner': submitRequest()}"></i>
+		<span data-bind="visible: !isNew()" data-i18n="POPUPS_ADD_ACCOUNT/BUTTON_UPDATE_ACCOUNT"></span>
+	</button>
+</footer>

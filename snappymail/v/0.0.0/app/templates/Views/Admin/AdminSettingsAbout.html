@@ -1,0 +1,91 @@
+<div class="form-horizontal">
+	<div class="legend" data-i18n="TAB_ABOUT/LEGEND_ABOUT"></div>
+	<div class="row">
+		<div class="span4">
+			<div class="rl-logo"></div>
+			<div>
+				2024 © <span data-i18n="TAB_ABOUT/LABEL_ALL_RIGHTS_RESERVED"></span>
+				<br>
+				<a class="g-ui-link" href="https://snappymail.eu/" target="_blank" style="padding-left: 0">https://snappymail.eu/</a>
+			</div>
+		</div>
+		<div class="span6">
+			<h1 style="margin-bottom: 0;">SnappyMail</h1>
+			<h4 style="margin-top: 0;" data-bind="text: version"></h4>
+			<h4 style="color: #aaa; font-weight: normal;">An advanced fork of RainLoop</h4>
+			<h4 style="color: #aaa; font-weight: normal;" data-i18n="TAB_ABOUT/LABEL_TAG_HINT"></h4>
+
+			<a class="btn" target="_blank" href="https://github.com/sponsors/the-djmaze">
+				<svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true">
+					<path stroke="#db61a2" fill="#db61a2" d="m8 14.25.345.666a.75.75 0 0 1-.69 0l-.008-.004-.018-.01a7.152 7.152 0 0 1-.31-.17 22.055 22.055 0 0 1-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.066 22.066 0 0 1-3.744 2.584l-.018.01-.006.003h-.002ZM4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.58 20.58 0 0 0 8 13.393a20.58 20.58 0 0 0 3.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.749.749 0 0 1-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5Z"></path>
+				</svg>
+				<span style="margin-left:0.25rem">Sponsor</span>
+			</a>
+
+			<div>
+				<hr>
+				<div data-bind="visible: 'error' === statusType()">
+					<i class="fontastic" style="color:red">⚠</i>
+					<span data-bind="text: errorDesc"></span>
+				</div>
+				<div data-bind="visible: 'available' === statusType()">
+					<i class="fontastic" style="color:orange">⚠</i>
+					<span data-bind="html: coreVersionHtmlDesc"></span>
+					<br />
+					<span data-bind="if: coreWarning">
+						<br />
+						<i class="fontastic" style="color:red">⚠</i>
+						<b data-i18n="HINTS/WARNING"></b>
+						<span data-i18n="TAB_ABOUT/HINT_READ_CHANGE_LOG"></span>
+						<br />
+					</span>
+					<br />
+					<a class="btn" href="https://github.com/the-djmaze/snappymail/releases" target="_blank" data-i18n="TAB_ABOUT/BUTTON_RELEASES"></a>
+					<a class="btn" data-bind="visible: coreUpdatable, click: updateCoreData" data-i18n="GLOBAL/UPDATE"></a>
+					<a class="btn" href="https://github.com/the-djmaze/snappymail/releases/latest" data-bind="visible: !coreUpdatable()" data-i18n="GLOBAL/UPDATE"></a>
+				</div>
+				<div data-bind="visible: 'up-to-date' === statusType()">
+					<i style="color: green">✔</i>
+					<span data-i18n="TAB_ABOUT/HINT_IS_UP_TO_DATE"></span>
+				</div>
+				<div data-bind="visible: 'updating' === statusType()">
+					<i class="icon-spinner"></i>
+					<span data-i18n="TAB_ABOUT/LABEL_UPDATING"></span>…
+				</div>
+				<div data-bind="visible: 'checking' === statusType()">
+					<i class="icon-spinner"></i>
+					<span data-i18n="TAB_ABOUT/LABEL_CHECKING"></span>…
+				</div>
+			</div>
+
+			<h3>System</h3>
+			<table class="table table-hover table-bordered"><tbody>
+				<tr>
+					<td>Average load past minute</td>
+					<td data-bind="text: load1"></td>
+				</tr>
+				<tr>
+					<td>Average load past 5 minutes</td>
+					<td data-bind="text: load5"></td>
+				</tr>
+				<tr>
+					<td>Average load past 15 minutes</td>
+					<td data-bind="text: load15"></td>
+				</tr>
+			</tbody>
+			</table>
+
+			<h3>PHP optional extensions</h3>
+			<table class="table table-hover table-bordered"><thead><tr>
+				<th>Extension</th>
+				<th>Loaded</th>
+			</tr></thead><tbody data-bind="foreach: phpextensions">
+				<tr>
+					<td data-bind="text: name"></td>
+					<td data-bind="text: loaded ? '✔' : '❌'"></td>
+				</tr>
+			</tbody>
+			</table>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,185 @@
+{
+	"GLOBAL": {
+		"ADD": "Lägg till",
+		"CLOSE": "Stäng",
+		"SAVE": "Spara",
+		"TEST": "Test",
+		"UPDATE": "Uppdatera",
+		"USERNAME": "Användarnamn",
+		"PASSWORD": "Lösenord",
+		"CANCEL": "Avbryt",
+		"SEARCH": "Inga kontakter funna"
+	},
+	"LOGIN": {
+		"LABEL_LOGIN": "Logga in",
+		"LABEL_TOTP": "TOTP-kod",
+		"BUTTON_LOGIN": "Logga in till admin-panelen"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "Adminpanel"
+	},
+	"SETTINGS_LABELS": {
+		"GENERAL": "Allmän",
+		"LOGIN": "Logga in",
+		"BRANDING": "Branding",
+		"CONTACTS": "Kontakter",
+		"DOMAINS": "Domäner",
+		"SECURITY": "Säkerhet",
+		"PACKAGES": "Tillägg",
+		"CONFIG": "Config",
+		"ABOUT": "Om"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "Gränssnitt",
+		"LABEL_LANGUAGE": "Språk",
+		"LABEL_LANGUAGE_ADMIN": "Språk (administratör)",
+		"LABEL_THEME": "Tema",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Tillåt språkändringar på konfigurationspanelen ",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Tillåt tema val på konfigurationspanelen",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Tillåt bakgrundsändringar på konfigurationspanelen",
+		"LABEL_SHOW_THUMBNAILS": "Visa miniatyrer (bilagor)",
+		"LEGEND_MAIN": "Huvud",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "Bilagor storlek",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Tillåt ytterligare konton",
+		"LABEL_ALLOW_IDENTITIES": "Tillåt multiidentiteter",
+		"ALERT_DATA_ACCESS": "SnappyMails datamapp är åtkomstbar. Var vänlig konfigurera din webb-server för att förhindra extern åtkomst och synlighet. Läs mer här: ",
+		"ALERT_WARNING": "Varning!",
+		"HTML_ALERT_WEAK_PASSWORD": "Du använder standardlösenord.\n<br>\nFör säkerhetsskäl\n<strong><a href=\"#\/security\">ändra<\/a><\/strong>\nlösenord till något annat\n"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "Inloggningsskärm",
+		"LABEL_DEFAULT_DOMAIN": "Standarddomän",
+		"LABEL_DETERMINE_USER_DOMAIN": "Försök att bestämma användardomän",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Tillåt språkändringar på inloggningsskärmen",
+		"LABEL_DETERMINE_USER_LANGUAGE": "Försök att bestämma användarens språk"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Branding",
+		"LABEL_PAGE_TITLE": "Namn på sidan",
+		"LABEL_LOADING_DESCRIPTION": "Laddar beskrivning",
+		"LABEL_FAVICON_URL": "Favicon"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "Kontakter",
+		"LEGEND_STORAGE": "Storage (PDO)",
+		"LABEL_ENABLE_CONTACTS": "göra det möjligt för kontakterna",
+		"LABEL_ALLOW_SYNC": "Tillåt kontakter synkronisering (med extern CardDAV server)",
+		"LABEL_STORAGE_TYPE": "Typ",
+		"LABEL_STORAGE_DSN": "Dsn",
+		"LABEL_STORAGE_USER": "Användare",
+		"LABEL_STORAGE_PASSWORD": "Lösenord",
+		"SQLITE_GLOBAL": "Use a global DB instead of per account",
+		"ALERT_NOTICE": "Notis",
+		"SUGGESTIONS_LIMIT": "Suggestions limit",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Använd inte denna typ av databas med ett stort antal aktiva användare.",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Systemet stöder inte kontakter\n<br>\nDu behöver installera eller aktivera <strong>SUB (SQLite\/MySQL\/PostgreSQL)<\/strong> förlängning på server.\n"
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "Domäner",
+		"BUTTON_ADD_DOMAIN": "Lägg till domän",
+		"BUTTON_ADD_ALIAS": "Lägg till Alias",
+		"DELETE_ARE_YOU_SURE": "Är du säker?",
+		"HTML_DOMAINS_HELPER": "Lista med domäner webmail tillåts access.\n<br>\nKlicka på namnet för att konfigurera domain.\n"
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "Säkerhet",
+		"LABEL_USE_IMAGE_PROXY": "Använd lokal proxy för externa bilder",
+		"LABEL_AUTO_VERIFY": "Verify signatures automatically",
+		"LABEL_SHOW_PHP_INFO": "Visa PHP-information",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Administrativsuppgifter",
+		"LABEL_CURRENT_PASSWORD": "Nuvarande lösenord",
+		"LABEL_NEW_PASSWORD": "Nytt lösenord",
+		"LABEL_REPEAT_PASSWORD": "Upprepa",
+		"LABEL_REQUIRE_VERIFICATION": "Kräver verifiering av SSL-certifikat som används",
+		"CRYPTO": "Crypto",
+		"LABEL_ALLOW_SELF_SIGNED": "Låt självsignerade certifikat"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Aktivera Tillägg",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Tillåt uppdateringar",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Tillåt installation",
+		"LEGEND_INSTALLED_PACKAGES": "installerade paket",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Det går inte att komma åt arkivet för tillfället."
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "Om",
+		"LABEL_TAG_HINT": "Enkel, modern & snabb e-postklient",
+		"LABEL_ALL_RIGHTS_RESERVED": "Alla rättigheter förbehållna.",
+		"HINT_READ_CHANGE_LOG": "Vänligen läs ändringsloggen innan du uppdaterar.",
+		"HINT_IS_UP_TO_DATE": "SnappyMail är aktuell.",
+		"HTML_NEW_VERSION": "Ny <b>%VERSION%<\/b> version är tillgänglig",
+		"LABEL_UPDATING": "Uppdaterar",
+		"LABEL_CHECKING": "Letar efter uppdaterar",
+		"BUTTON_RELEASES": "Releases"
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "Lägg till Alias",
+		"LABEL_ALIAS": "Alias",
+		"LABEL_DOMAIN": "Domän"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "Lägg till domän",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "Lägg till domän \"%NAME%\"",
+		"TITLE_EDIT_DOMAIN": "Ändra domän \"%NAME%\"",
+		"LABEL_NAME": "Namn",
+		"NAME_HELPER": "jokertecken stöds",
+		"LABEL_SERVER": "Server",
+		"LABEL_PORT": "Port",
+		"LABEL_SECURE": "Säkerhet",
+		"TIMEOUT": "Timeout",
+		"DISABLE_CAPABILITIES": "Disable capabilities",
+		"LIMITS": "Limits",
+		"FOLDERS": "Folders",
+		"MESSAGES": "Messages",
+		"LABEL_WHITE_LIST": "Vitlista",
+		"SECURE_OPTION_NONE": "Ingen",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Tillåta sikt skript",
+		"LABEL_USE_SHORT_LOGIN": "Använda korta inloggning",
+		"LABEL_LOWERCASE_LOGIN": "Lowercase login (case-insensitive)",
+		"LABEL_USE_AUTH": "Använd autentisering",
+		"LABEL_SET_SENDER": "Use login as sender",
+		"LABEL_AUTH_PLAIN_LINE": "Force single command AUTH PLAIN login",
+		"LABEL_USE_PHP_MAIL": "Använd php mail() funktionen",
+		"BUTTON_WHITE_LIST": "Vitlista",
+		"BUTTON_SIEVE_CONFIGURATION": "sil-konfiguration",
+		"BUTTON_BACK_TO_IMAP": "Tillbaka till IMAP inställningar",
+		"BUTTON_BACK": "Tillbaka",
+		"BUTTON_UPDATE": "Uppdatera",
+		"NEW_DOMAIN_DESC": "Denna domän konfiguration gör att du kan arbeta med <strong>%NAME%<\/strong> e-postadresser.",
+		"WHITE_LIST_ALERT": "Lista över domänanvändare som tillåts.\nAnvända ett utrymme som avgränsare.\n"
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "Tillägget",
+		"DESC_NOTHING_TO_CONFIGURE": "Inget att konfigurera"
+	},
+	"POPUPS_ASK": {
+		"BUTTON_YES": "Ja",
+		"BUTTON_NO": "Nej",
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Är du säker på att du vill stänga sidan?"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "Välj ditt språk"
+	},
+	"HINTS": {
+		"BETA": "beta",
+		"WARNING": "Varning!"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "Domänen finns redan",
+		"UNKNOWN_ERROR": "Okänt fel"
+	},
+	"NOTIFICATIONS": {
+		"RequestError": "Request failed",
+		"RequestAborted": "Request is aborted",
+		"RequestTimeout": "Request timed out",
+		"InvalidToken": "ogiltiga symboler",
+		"AuthError": "Autentisering misslyckades",
+		"DomainAlreadyExists": "Domänen finns redan",
+		"CantSavePluginSettings": "Kan inte spara inställningarna",
+		"CantInstallPackage": "Det gick inte att installera tillägget",
+		"CantDeletePackage": "Det gick inte att ta bort tillägget",
+		"InvalidPluginPackage": "Ogiltigt tilläggspaket",
+		"UnsupportedPluginPackage": "Tillägg som inte stöds",
+		"UnknownError": "Okänt fel"
+	}
+}

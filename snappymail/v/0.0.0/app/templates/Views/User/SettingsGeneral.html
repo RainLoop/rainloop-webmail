@@ -1,0 +1,334 @@
+<div class="form-horizontal">
+	<div class="legend" data-i18n="SETTINGS_LABELS/GENERAL"></div>
+	<div class="control-group">
+		<label data-i18n="SETTINGS_GENERAL/IDENTITY"></label>
+		<b class="editMainIdentity" data-bind="click: editMainIdentity, text: identityMainDesc"></b>
+	</div>
+	<div class="control-group" data-bind="visible: allowLanguagesOnSettings">
+		<label data-i18n="SETTINGS_GENERAL/LANGUAGE"></label>
+		<div>
+			<span class="select" tabindex="0" data-bind="text: languageFullName, click: selectLanguage, onSpace: selectLanguage, onEnter: selectLanguage"></span>
+			<span data-bind="saveTrigger: languageTrigger"></span>
+		</div>
+	</div>
+	<div class="control-group">
+		<label data-i18n="SETTINGS_GENERAL/HOUR_FORMAT"></label>
+		<div>
+			<select data-bind="value: hourCycle">
+				<option value="" data-i18n="GLOBAL/DEFAULT">default</option>
+				<option value="h11">00:00 AM</option>
+				<option value="h12">12:00 AM</option>
+				<option value="h23">00:00 (24 hour)</option>
+				<option value="h24">24:00 (24 hour)</option>
+			</select>
+		</div>
+	</div>
+	<div class="control-group">
+		<label data-i18n="SETTINGS_GENERAL/LAYOUT"></label>
+		<div data-bind="component: {
+			name: 'Select',
+			params: {
+				options: layoutTypes,
+				value: layout,
+				trigger: layoutTrigger,
+				optionsText: 'name',
+				optionsValue: 'id'
+			}
+		}"></div>
+	</div>
+	<div class="control-group">
+		<label data-i18n="SETTINGS_GENERAL/CHECK_MAIL_INTERVAL"></label>
+		<div>
+			<input type="number" min="5" max="60" step="1" class="span1" data-bind="textInput: checkMailInterval">
+			<span data-i18n="SETTINGS_GENERAL/MINUTES"></span>
+			<span data-bind="saveTrigger: checkMailIntervalTrigger"></span>
+		</div>
+	</div>
+	<div class="control-group">
+		<div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_GENERAL/REPLY_SAME_FOLDER',
+					value: replySameFolder
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_GENERAL/SHOW_NEXT_MESSAGE',
+					value: showNextMessage
+				}
+			}"></div>
+		</div>
+	</div>
+
+	<div class="legend" data-i18n="SHORTCUTS_HELP/TAB_MESSAGE_LIST"></div>
+	<div class="control-group">
+		<label data-i18n="SETTINGS_GENERAL/MESSAGE_PER_PAGE"></label>
+		<div>
+			<input type="number" min="10" max="50" step="1" class="span1" data-bind="textInput: messagesPerPage">
+			&nbsp;
+			<span data-bind="saveTrigger: messagesPerPageTrigger"></span>
+		</div>
+	</div>
+	<div class="control-group">
+		<div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_GENERAL/HIDE_DELETED_MESSAGES',
+					value: hideDeleted
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_GENERAL/USE_CHECKBOXES_IN_LIST',
+					value: useCheckboxesInList
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_GENERAL/LIST_MESSAGES_GROUPED',
+					value: listGrouped
+				}
+			}"></div>
+			<div data-bind="visible: threadsAllowed, component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_GENERAL/USE_THREADS',
+					value: useThreads
+				}
+			}"></div>
+		</div>
+	</div>
+	<div class="control-group" data-bind="visible: useThreads">
+		<label data-i18n="SETTINGS_GENERAL/THREAD_ALGORITHM"></label>
+		<select data-bind="options: threadAlgorithms, value: threadAlgorithm"></select>
+	</div>
+
+	<div class="legend" data-i18n="SHORTCUTS_HELP/TAB_COMPOSE"></div>
+	<div class="control-group">
+		<label data-i18n="SETTINGS_GENERAL/EDITOR"></label>
+		<div data-bind="component: {
+			name: 'Select',
+			params: {
+				options: editorDefaultTypes,
+				value: editorDefaultType,
+				trigger: editorDefaultTypeTrigger,
+				optionsText: 'name',
+				optionsValue: 'id'
+			}
+		}"></div>
+	</div>
+	<div class="control-group" data-bind="visible: hasWysiwygs">
+		<label>WYSIWYG</label>
+		<div data-bind="component: {
+			name: 'Select',
+			params: {
+				options: wysiwygs,
+				value: editorWysiwyg,
+				trigger: editorWysiwygTrigger,
+				optionsText: 'name',
+				optionsValue: 'name'
+			}
+		}"></div>
+	</div>
+
+	<div class="control-group">
+		<div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'COMPOSE/ALLOW_DRAFT_AUTOSAVE',
+					value: allowDraftAutosave
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'COMPOSE/BUTTON_REQUEST_READ_RECEIPT',
+					value: requestReadReceipt
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'COMPOSE/BUTTON_REQUEST_DSN',
+					value: requestDsn
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'COMPOSE/BUTTON_REQUIRE_TLS',
+					value: requireTLS
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'CRYPTO/SIGN',
+					value: pgpSign
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'CRYPTO/ENCRYPT',
+					value: pgpEncrypt
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'COMPOSE/ALLOW_SPELLCHECK',
+					value: allowSpellcheck
+				}
+			}"></div>
+		</div>
+	</div>
+
+	<div class="legend" data-i18n="SHORTCUTS_HELP/TAB_MESSAGE_VIEW"></div>
+	<div class="control-group">
+		<div data-bind="component: {
+			name: 'Checkbox',
+			params: {
+				label: 'SETTINGS_GENERAL/MARK_MESSAGE_READ_AFTER',
+				value: messageReadAuto
+			}
+		}"></div>
+		<div>
+			<input type="number" min="0" step="1" class="span1" data-bind="textInput: messageReadDelay">
+			&nbsp;
+			<span data-i18n="SETTINGS_GENERAL/SECONDS"></span>
+			<span data-bind="saveTrigger: messageReadDelayTrigger"></span>
+		</div>
+	</div>
+	<div class="control-group">
+		<label data-i18n="SETTINGS_GENERAL/MSG_DEFAULT_ACTION"></label>
+		<div data-bind="component: {
+			name: 'Select',
+			params: {
+				options: msgDefaultActions,
+				value: msgDefaultAction,
+				trigger: msgDefaultActionTrigger,
+				optionsText: 'name',
+				optionsValue: 'id'
+			}
+		}"></div>
+	</div>
+	<div class="control-group">
+		<div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_GENERAL/COLLAPSE_BLOCKQUOTES',
+					value: collapseBlockquotes
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_GENERAL/LIST_INLINE_ATTACHMENTS',
+					value: listInlineAttachments
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_GENERAL/LIST_SIMPLE_ATTACHMENTS',
+					value: simpleAttachmentsList
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_GENERAL/REMOVE_COLORS',
+					value: removeColors
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_GENERAL/ALLOW_STYLES',
+					value: allowStyles
+				}
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_GENERAL/PREFER_HTML',
+					value: viewHTML
+				}
+			}"></div>
+			<em style="margin: 0 0 1em 2em;display: block;" data-i18n="SETTINGS_GENERAL/PREFER_HTML_INFO"></em>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SETTINGS_GENERAL/MESSAGE_POPUP_WINDOW',
+					value: messageNewWindow
+				}
+			}"></div>
+		</div>
+	</div>
+	<div class="control-group">
+		<label data-i18n="SETTINGS_GENERAL/MAX_QUOTE_LEVEL"></label>
+		<div>
+			<input type="number" min="0" step="1" class="span1" data-bind="textInput: maxBlockquotesLevel">
+			&nbsp;
+			<span data-bind="saveTrigger: maxBlockquotesLevelTrigger"></span>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label data-i18n="SETTINGS_GENERAL/EXTERNAL_IMAGES"></label>
+		<div>
+			<select data-bind="value: viewImages">
+				<option value="ask" data-i18n="SETTINGS_GENERAL/IMAGES_OPTION_ASK"></option>
+				<option value="match" data-i18n="SETTINGS_GENERAL/IMAGES_OPTION_WHITELIST"></option>
+				<option value="always" data-i18n="SETTINGS_GENERAL/IMAGES_OPTION_ALWAYS"></option>
+			</select>
+		</div>
+	</div>
+	<div class="control-group">
+		<label data-i18n="SETTINGS_GENERAL/IMAGES_WHITELIST"></label>
+		<div>
+			<textarea data-bind="textInput: viewImagesWhitelist"></textarea>
+		</div>
+	</div>
+
+	<div class="legend" data-i18n="SETTINGS_GENERAL/NOTIFICATIONS"></div>
+	<div class="control-group">
+		<div>
+			<div>
+				<div style="display: inline-block;" data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'SETTINGS_GENERAL/CHROME_NOTIFICATION_DESC',
+						value: desktopNotifications,
+						enable: isDesktopNotificationAllowed
+					}
+				}"></div>
+				&nbsp;
+				<span data-bind="visible: !isDesktopNotificationAllowed()" style="color: #999" data-i18n="SETTINGS_GENERAL/CHROME_NOTIFICATION_DESC_DENIED"></span>
+				<span class="fontastic" data-bind="click: testSystemNotification" style="color:green;cursor:pointer">▶️</span>
+			</div>
+			<div>
+				<div style="display: inline-block;" data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'SETTINGS_GENERAL/SOUND_NOTIFICATION',
+						value: soundNotification
+					}
+				}"></div>
+				&nbsp;
+				<select data-bind="options: notificationSounds, value: notificationSound"></select>
+				&nbsp;
+				<span class="fontastic" data-bind="click: testSoundNotification" style="color:green;cursor:pointer">▶️</span>
+			</div>
+		</div>
+	</div>
+</div>
