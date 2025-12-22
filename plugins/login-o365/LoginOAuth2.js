@@ -54,7 +54,7 @@
       }
 
       // "Add account" popup (Settings → Accounts → Add account)
-      if ("Account" === e.detail.viewModelTemplateID) {
+      if ("PopupsAccount" === e.detail.viewModelTemplateID) {
         // Only for the "Add account" mode, not "Edit account".
         if (typeof e.detail.isNew === "function" && !e.detail.isNew()) {
           return;
