@@ -13,17 +13,17 @@
 		"NO": "No"
 	},
 	"LOGIN": {
-		"LABEL_LOGIN": "Entrada",
+		"LABEL_LOGIN": "Inici de sessió",
 		"LABEL_TOTP": "Codi TOTP",
-		"BUTTON_LOGIN": "Entreu al tauler d'administració"
+		"BUTTON_LOGIN": "Accedeix al tauler d’administració"
 	},
 	"TOP_PANEL": {
-		"LABEL_ADMIN_PANEL": "Tauler d'administració"
+		"LABEL_ADMIN_PANEL": "Tauler d’administració"
 	},
 	"SETTINGS_LABELS": {
 		"GENERAL": "General",
-		"LOGIN": "Entrada",
-		"BRANDING": "Brànding",
+		"LOGIN": "Inici de sessió",
+		"BRANDING": "Imatge de marca",
 		"CONTACTS": "Contactes",
 		"DOMAINS": "Dominis",
 		"SECURITY": "Seguretat",
@@ -44,62 +44,62 @@
 		"LABEL_ATTACHMENT_SIZE_LIMIT": "Límit de mida dels adjunts",
 		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Permet comptes addicionals",
 		"LABEL_ALLOW_IDENTITIES": "Permet identitats múltiples",
-		"ALERT_DATA_ACCESS": "La carpeta de dades de RainLoop és accessible. Si us plau, configureu el servidor web perquè amagui la carpeta de dades de l'accés extern. Llegiu-ne més aquí:",
+		"ALERT_DATA_ACCESS": "La carpeta de dades és accessible des de l’exterior. Configureu el servidor web per impedir-hi l’accés extern. Més informació:",
 		"ALERT_WARNING": "Avís!",
-		"HTML_ALERT_WEAK_PASSWORD": "Useu una contrasenya d'administració per defecte.\n<br />\nPer raons de seguretat, si us plau,\n<strong><a href=\"#/security\">canvieu</a></strong>\nara la contrasenya per alguna altra cosa.\n"
+		"HTML_ALERT_WEAK_PASSWORD": "Esteu utilitzant la contrasenya d’administració predeterminada.\n<br>\nPer motius de seguretat,\n<strong><a href=\"#/security\">canvieu-la</a></strong>\nara per una altra.\n"
 	},
 	"TAB_LOGIN": {
-		"LEGEND_LOGIN_SCREEN": "Pantalla d'entrada",
-		"LABEL_DEFAULT_DOMAIN": "Domini per defecte",
-		"LABEL_DETERMINE_USER_DOMAIN": "Intenta determinar el domini de l'usuari",
-		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Permet la selecció de llengua a la pantalla d'entrada",
-		"LABEL_DETERMINE_USER_LANGUAGE": "Intenta determinar la llengua de l'usuari"
+		"LEGEND_LOGIN_SCREEN": "Pantalla d’inici de sessió",
+		"LABEL_DEFAULT_DOMAIN": "Domini predeterminat",
+		"LABEL_DETERMINE_USER_DOMAIN": "Intenta determinar el domini de l’usuari",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Permet triar la llengua a la pantalla d’inici de sessió",
+		"LABEL_DETERMINE_USER_LANGUAGE": "Intenta determinar la llengua de l’usuari"
 	},
 	"TAB_BRANDING": {
-		"LEGEND_BRANDING": "Brànding",
+		"LEGEND_BRANDING": "Imatge de marca",
 		"LABEL_PAGE_TITLE": "Títol de la pàgina",
-		"LABEL_LOADING_DESCRIPTION": "Descripció de la càrrega",
-		"LABEL_FAVICON_URL": "Icona de favorits"
+		"LABEL_LOADING_DESCRIPTION": "Text durant la càrrega",
+		"LABEL_FAVICON_URL": "URL de la icona de favorits"
 	},
 	"TAB_CONTACTS": {
 		"LEGEND_CONTACTS": "Contactes",
-		"LEGEND_STORAGE": "Emmagatzeatge (PDO)",
-		"LABEL_ENABLE_CONTACTS": "Habilita els contactes",
+		"LEGEND_STORAGE": "Emmagatzematge (PDO)",
+		"LABEL_ENABLE_CONTACTS": "Activa els contactes",
 		"LABEL_ALLOW_SYNC": "Permet la sincronització dels contactes (amb el servidor extern CardDAV)",
 		"LABEL_STORAGE_TYPE": "Tipus",
-		"LABEL_STORAGE_DSN": "Dsn (Nom d'origen de dades)",
+		"LABEL_STORAGE_DSN": "DSN (nom de la font de dades)",
 		"LABEL_STORAGE_USER": "Usuari",
 		"LABEL_STORAGE_PASSWORD": "Contrasenya",
 		"SQLITE_GLOBAL": "Utilitza una base de dades global en lloc d’una per compte",
 		"ALERT_NOTICE": "Atenció!",
 		"SUGGESTIONS_LIMIT": "Límit de suggeriments",
-		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "No useu aquest tipus de base de dades amb un gran nombre d'usuaris actius.",
-		"HTML_ALERT_DOES_NOT_SUPPORTED": "El sistema no admet contactes.\n<br />\nHeu d'instal·lar o habilitar l'extensió <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> al servidor.\n"
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "No useu aquest tipus de base de dades amb un gran nombre d’usuaris actius.",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "El sistema no admet els contactes.\n<br>\nHeu d’instal·lar o activar l’extensió <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> al servidor.\n"
 	},
 	"TAB_DOMAINS": {
 		"LEGEND_DOMAINS": "Dominis",
 		"BUTTON_ADD_DOMAIN": "Afegeix un domini",
 		"BUTTON_ADD_ALIAS": "Afegeix un àlies",
-		"DELETE_ARE_YOU_SURE": "N'esteu segur?",
-		"HTML_DOMAINS_HELPER": "Llista de dominis als quals el correu web té permès l'accés.\n<br />\nCliqueu al nom per configurar-ne el domini.\n"
+		"DELETE_ARE_YOU_SURE": "Voleu continuar?",
+		"HTML_DOMAINS_HELPER": "Llista de dominis als quals el correu web pot accedir.\n<br>\nFeu clic al nom d’un domini per configurar-lo.\n"
 	},
 	"TAB_SECURITY": {
 		"LEGEND_SECURITY": "Seguretat",
-		"LABEL_USE_IMAGE_PROXY": "Usa un intermediari local per a les imatges externes",
+		"LABEL_USE_IMAGE_PROXY": "Utilitza un servidor intermediari local per a les imatges externes",
 		"LABEL_AUTO_VERIFY": "Verifica les signatures automàticament",
 		"LABEL_SHOW_PHP_INFO": "Mostra la informació de PHP",
-		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Credencials d'accés al tauler d'administració",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Credencials d’accés al tauler d’administració",
 		"LABEL_CURRENT_PASSWORD": "Contrasenya actual",
 		"LABEL_NEW_PASSWORD": "Contrasenya nova",
-		"LABEL_REPEAT_PASSWORD": "Repetició",
-		"LABEL_REQUIRE_VERIFICATION": "Requereix la verificació del certificat SSL usat (IMAP / SMTP)",
+		"LABEL_REPEAT_PASSWORD": "Repetiu la contrasenya",
+		"LABEL_REQUIRE_VERIFICATION": "Exigeix la verificació del certificat SSL utilitzat (IMAP / SMTP)",
 		"CRYPTO": "Criptografia",
 		"LABEL_ALLOW_SELF_SIGNED": "Permet els certificats autosignats"
 	},
 	"TAB_PACKAGES": {
 		"LABEL_ENABLE_PLUGINS": "Activa les extensions",
-		"LEGEND_AVAILABLE_FOR_UPDATE": "Disponible per actualitzar",
-		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Disponible per instal·lar",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Actualitzacions disponibles",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Extensions disponibles per instal·lar",
 		"LEGEND_INSTALLED_PACKAGES": "Paquets instal·lats",
 		"ALERT_CANNOT_ACCESS_REPOSITORY": "Ara no es pot accedir al repositori."
 	},
@@ -107,11 +107,11 @@
 		"LEGEND_ABOUT": "Quant a",
 		"LABEL_TAG_HINT": "Client de correu electrònic senzill, modern i ràpid basat en la web",
 		"LABEL_ALL_RIGHTS_RESERVED": "Tots els drets reservats.",
-		"HINT_READ_CHANGE_LOG": "Si us plau, llegiu el registre de canvis abans d'actualitzar.",
-		"HINT_IS_UP_TO_DATE": "El RainLoop està actualitzat.",
-		"HTML_NEW_VERSION": "N'hi ha disponible la nova versió <b>%VERSION%</b>.",
-		"LABEL_UPDATING": "S'actualitza",
-		"LABEL_CHECKING": "Es comprova si hi ha actualitzacions.",
+		"HINT_READ_CHANGE_LOG": "Llegiu el registre de canvis abans d’actualitzar.",
+		"HINT_IS_UP_TO_DATE": "SnappyMail està actualitzat.",
+		"HTML_NEW_VERSION": "Hi ha disponible una versió nova: <b>%VERSION%</b>.",
+		"LABEL_UPDATING": "S’està actualitzant…",
+		"LABEL_CHECKING": "S’està comprovant si hi ha actualitzacions…",
 		"BUTTON_RELEASES": "Versions publicades"
 	},
 	"POPUPS_DOMAIN_ALIAS": {
@@ -121,34 +121,34 @@
 	},
 	"POPUPS_DOMAIN": {
 		"TITLE_ADD_DOMAIN": "Afegeix un domini",
-		"TITLE_ADD_DOMAIN_WITH_NAME": "Afegeix el domini \"%NAME%\"",
-		"TITLE_EDIT_DOMAIN": "Edita el domini \"%NAME%\"",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "Afegeix el domini «%NAME%»",
+		"TITLE_EDIT_DOMAIN": "Edita el domini «%NAME%»",
 		"LABEL_NAME": "Nom",
-		"NAME_HELPER": "s'admet el comodí",
+		"NAME_HELPER": "S’admet el comodí *",
 		"LABEL_SERVER": "Servidor",
 		"LABEL_PORT": "Port",
-		"LABEL_SECURE": "Segur",
+		"LABEL_SECURE": "Seguretat",
 		"TIMEOUT": "Temps d’espera",
 		"DISABLE_CAPABILITIES": "Desactiva capacitats",
 		"LIMITS": "Límits",
 		"FOLDERS": "Carpetes",
 		"MESSAGES": "Missatges",
 		"SECURE_OPTION_NONE": "Cap",
-		"LABEL_ALLOW_SIEVE_SCRIPTS": "Permet scripts de sedàs",
-		"LABEL_USE_SHORT_LOGIN": "Usa l'entrada breu",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Permet scripts Sieve",
+		"LABEL_USE_SHORT_LOGIN": "Utilitza el nom d’usuari sense el domini",
 		"LABEL_LOWERCASE_LOGIN": "Nom d’usuari en minúscules, sense distingir majúscules i minúscules",
-		"LABEL_USE_AUTH": "Usa autenticació",
+		"LABEL_USE_AUTH": "Utilitza l’autenticació",
 		"LABEL_SET_SENDER": "Utilitza el nom d’usuari com a remitent",
 		"LABEL_AUTH_PLAIN_LINE": "Força l’autenticació amb una sola ordre AUTH PLAIN",
-		"LABEL_USE_PHP_MAIL": "Usa la funció de php mail()",
-		"BUTTON_WHITE_LIST": "Llista blanca",
-		"NEW_DOMAIN_DESC": "Aquesta configuració de domini us permetrà treballar <br />amb les adreces de correu de <i>%NAME%</i>.",
-		"WHITE_LIST_ALERT": "Llista de dominis als quals el correu web té permès l'accés.\nUsa un espai com a delimitador.\n",
+		"LABEL_USE_PHP_MAIL": "Utilitza la funció mail() de PHP",
+		"BUTTON_WHITE_LIST": "Usuaris permesos",
+		"NEW_DOMAIN_DESC": "Aquesta configuració de domini us permetrà treballar amb les adreces de correu de <strong>%NAME%</strong>.\n",
+		"WHITE_LIST_ALERT": "Llista d’usuaris del domini que poden accedir al correu web.\nSepareu-los amb espais.\n",
 		"VALID_SPAM_HEADERS": "Capçaleres vàlides de correu brossa",
 		"VALID_VIRUS_HEADERS": "Capçaleres vàlides de virus"
 	},
 	"POPUPS_PLUGIN": {
-		"TITLE_PLUGIN": "Connector",
+		"TITLE_PLUGIN": "Extensió",
 		"DESC_NOTHING_TO_CONFIGURE": "No hi ha res per configurar."
 	},
 	"POPUPS_ASK": {
@@ -170,7 +170,7 @@
 		"RequestAborted": "S’ha cancel·lat la sol·licitud",
 		"RequestTimeout": "S’ha esgotat el temps d’espera de la sol·licitud",
 		"InvalidToken": "Testimoni no vàlid",
-		"AuthError": "Ha fallat l'autenticació",
+		"AuthError": "Ha fallat l’autenticació",
 		"DomainAlreadyExists": "El domini ja existeix.",
 		"CantSavePluginSettings": "No es pot desar la configuració.",
 		"CantInstallPackage": "No s’ha pogut instal·lar l’extensió",
