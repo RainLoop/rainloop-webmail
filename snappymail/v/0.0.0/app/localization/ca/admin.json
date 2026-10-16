@@ -13,7 +13,7 @@
 		"NO": "No"
 	},
 	"LOGIN": {
-		"LABEL_LOGIN": "Inici de sessió",
+		"LABEL_LOGIN": "Nom d’usuari",
 		"LABEL_TOTP": "Codi TOTP",
 		"BUTTON_LOGIN": "Accedeix al tauler d’administració"
 	},

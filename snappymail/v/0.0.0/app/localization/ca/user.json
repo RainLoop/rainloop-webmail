@@ -45,7 +45,7 @@
 		"ATTACHMENTS": "Adjunts"
 	},
 	"LOGIN": {
-		"LABEL_LOGIN": "Inici de sessió",
+		"LABEL_LOGIN": "Nom d’usuari",
 		"LABEL_SIGN_ME": "Recorda’m",
 		"BUTTON_SIGN_IN": "Inicia la sessió"
 	},
