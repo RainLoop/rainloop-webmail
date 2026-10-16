@@ -10,3 +10,7 @@ SnappyMail-specific strings were translated for this contribution. Preserve the
 original MIT copyright and permission notice in `LICENSE-RainLoop` when reusing
 the adapted RainLoop texts. The translation includes user, admin and static
 messages, plus the relative-time fallback resource.
+
+Native language selector on a test login page (no authenticated session or mail):
+
+![Català in the native selector](selector.png)
