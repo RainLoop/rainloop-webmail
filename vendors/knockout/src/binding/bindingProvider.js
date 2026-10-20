@@ -39,11 +39,11 @@ ko.bindingProvider = new class
                     // Deprecated: with is no longer recommended
                     var rewrittenBindings = ko.expressionRewriting.preProcessBindings(bindingsString),
                         functionBody = "with($data){return{" + rewrittenBindings + "}}";
-                    bindingFunction = new Function("$context", "$root", "$parent", "$data", "$element", functionBody);
+                    bindingFunction = new Function("$context", "$root", "$parent", "$data", functionBody);
                     bindingCache.set(cacheKey, bindingFunction);
                 }
                 return bindingFunction(bindingContext,
-                    bindingContext["$root"], bindingContext["$parent"], bindingContext["$data"] || {}, node
+                    bindingContext["$root"], bindingContext["$parent"], bindingContext["$data"] || {}
                 );
 */
                 if (!bindingFunction) {
@@ -58,7 +58,8 @@ ko.bindingProvider = new class
                     bindingContext,
                     {
                         has: () => true,
-                        get: (target, key) => target[key] || target['$data'][key]
+//                        get: (target, key) => target['$data'][key] || target[key]
+                        get: (target, key) => Reflect.has(target['$data'], key) ? target['$data'][key] : target[key]
                     }
                 );
                 return bindingFunction(bindingContext);
