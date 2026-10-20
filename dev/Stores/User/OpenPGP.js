@@ -58,10 +58,9 @@ const
 	 */
 	publicKeysItem = 'openpgp-public-keys',
 	privateKeysItem = 'openpgp-private-keys',
-	storage = window.localStorage,
 	loadOpenPgpKeys = async itemname => {
 		let keys = [], key,
-			armoredKeys = JSON.parse(storage.getItem(itemname)),
+			armoredKeys = JSON.parse(localStorage.getItem(itemname)),
 			i = arrayLength(armoredKeys);
 		while (i--) try {
 			key = await openpgp.readKey({armoredKey:armoredKeys[i]});
@@ -74,9 +73,9 @@ const
 	storeOpenPgpKeys = (keys, section) => {
 		let armoredKeys = keys.map(item => item.armor);
 		if (armoredKeys.length) {
-			storage.setItem(section, JSON.stringify(armoredKeys));
+			localStorage.setItem(section, JSON.stringify(armoredKeys));
 		} else {
-			storage.removeItem(section);
+			localStorage.removeItem(section);
 		}
 	};
 
