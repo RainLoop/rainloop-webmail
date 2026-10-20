@@ -495,6 +495,7 @@
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Заблоковано браузером)",
 		"COLLAPSE_BLOCKQUOTES": "Згорнути цитований текст",
 		"MAX_QUOTE_LEVEL": "Максимальний видимий рівень цитованого тексту",
+		"MIN_FONT_SIZE": "Minimum Font Size",
 		"LIST_INLINE_ATTACHMENTS": "Показати вбудовані вкладення у списку",
 		"LIST_SIMPLE_ATTACHMENTS": "Простий список вкладень",
 		"LIST_MESSAGES_GROUPED": "Показувати повідомлення групами (якщо сортування за датою або відправником)",

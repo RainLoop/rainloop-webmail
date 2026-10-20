@@ -198,6 +198,14 @@
 		</div>
 	</div>
 	<div class="control-group">
+		<label data-i18n="SETTINGS_GENERAL/MIN_FONT_SIZE"></label>
+		<div>
+			<input type="number" min="0" step="1" class="span1" data-bind="textInput: minFontSize">
+			px&nbsp;
+			<span data-bind="saveTrigger: minFontSizeTrigger"></span>
+		</div>
+	</div>
+	<div class="control-group">
 		<label data-i18n="SETTINGS_GENERAL/MAX_QUOTE_LEVEL"></label>
 		<div>
 			<input type="number" min="0" step="1" class="span1" data-bind="textInput: maxBlockquotesLevel">

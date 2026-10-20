@@ -495,6 +495,7 @@
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Bloccate dal browser)",
 		"COLLAPSE_BLOCKQUOTES": "Nascondi testo quotato",
 		"MAX_QUOTE_LEVEL": "Livelli massimi visibilità testo quotato",
+		"MIN_FONT_SIZE": "Minimum Font Size",
 		"LIST_INLINE_ATTACHMENTS": "Visualizza lista degli allegati in linea",
 		"LIST_SIMPLE_ATTACHMENTS": "Lista semplice allegati",
 		"LIST_MESSAGES_GROUPED": "Lista messaggi raggruppati (quando riordinati per data o mittente)",

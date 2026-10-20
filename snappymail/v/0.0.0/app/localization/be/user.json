@@ -495,6 +495,7 @@
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Заблакавана браўзэрам)",
 		"COLLAPSE_BLOCKQUOTES": "Згортваць блок с працытаваным тэкстам",
 		"MAX_QUOTE_LEVEL": "Максімальны ўзровень адлюстравання працытаванага тэксту",
+		"MIN_FONT_SIZE": "Minimum Font Size",
 		"LIST_INLINE_ATTACHMENTS": "Паказваць укладанні ў спісе",
 		"LIST_SIMPLE_ATTACHMENTS": "Просты спіс укладанняў",
 		"LIST_MESSAGES_GROUPED": "Группаванне спісу паведамленняў (пры сартаванні по даце альбо адпраўніку)",

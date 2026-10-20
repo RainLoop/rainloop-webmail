@@ -591,6 +591,7 @@ class Actions
 						'ListInlineAttachments' => false,
 						'CollapseBlockquotes' => $oConfig->Get('defaults', 'collapse_blockquotes', true),
 						'MaxBlockquotesLevel' => 0,
+						'minFontSize' => 0,
 						'simpleAttachmentsList' => false,
 						'listGrouped' => $oConfig->Get('defaults', 'mail_list_grouped', false),
 						'MessagesPerPage' => \max(10, \intval($oConfig->Get('webmail', 'messages_per_page', 25)) ?: 25),
@@ -687,6 +688,7 @@ class Actions
 					$aResult['ListInlineAttachments'] = (bool)$oSettings->GetConf('ListInlineAttachments', $aResult['ListInlineAttachments']);
 					$aResult['CollapseBlockquotes'] = (bool)$oSettings->GetConf('CollapseBlockquotes', $aResult['CollapseBlockquotes']);
 					$aResult['MaxBlockquotesLevel'] = (int)$oSettings->GetConf('MaxBlockquotesLevel', $aResult['MaxBlockquotesLevel']);
+					$aResult['minFontSize'] = (int)$oSettings->GetConf('minFontSize', $aResult['minFontSize']);
 					$aResult['simpleAttachmentsList'] = (bool)$oSettings->GetConf('simpleAttachmentsList', $aResult['simpleAttachmentsList']);
 					$aResult['listGrouped'] = (bool)$oSettings->GetConf('listGrouped', $aResult['listGrouped']);
 					$aResult['ContactsAutosave'] = (bool)$oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);
