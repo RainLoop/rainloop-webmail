@@ -18,23 +18,18 @@ use LibXMLError;
 class LibXMLException extends ParseException
 {
     /**
-     * The error list.
-     *
-     * @var \LibXMLError[]
-     */
-    protected array $errors;
-
-    /**
      * Creates the exception.
      *
      * You should pass a list of LibXMLError objects in its constructor.
      *
      * @param \LibXMLError[] $errors
      */
-    public function __construct(array $errors, int $code = 0, ?\Throwable $previousException = null)
+    public function __construct(/**
+     * The error list.
+     */
+        protected array $errors, int $code = 0, ?\Throwable $previousException = null)
     {
-        $this->errors = $errors;
-        parent::__construct($errors[0]->message.' on line '.$errors[0]->line.', column '.$errors[0]->column, $code, $previousException);
+        parent::__construct($this->errors[0]->message.' on line '.$this->errors[0]->line.', column '.$this->errors[0]->column, $code, $previousException);
     }
 
     /**

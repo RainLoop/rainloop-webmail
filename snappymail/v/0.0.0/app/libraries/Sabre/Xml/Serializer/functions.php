@@ -123,7 +123,7 @@ function valueObject(Writer $writer, object $valueObject, string $namespace): vo
  *
  * You can even mix the two array syntaxes.
  *
- * @param string|int|float|bool|array<int|string, mixed>|object $value
+ * @param string|int|float|bool|array<int|string, mixed>|object|null $value
  */
 function standardSerializer(Writer $writer, $value): void
 {
@@ -133,9 +133,9 @@ function standardSerializer(Writer $writer, $value): void
     } elseif ($value instanceof XmlSerializable) {
         // XmlSerializable classes or Element classes.
         $value->xmlSerialize($writer);
-    } elseif (is_object($value) && isset($writer->classMap[get_class($value)])) {
+    } elseif (is_object($value) && isset($writer->classMap[$value::class])) {
         // It's an object which class appears in the classmap.
-        $writer->classMap[get_class($value)]($writer, $value);
+        $writer->classMap[$value::class]($writer, $value);
     } elseif (is_callable($value)) {
         // A callback
         $value($writer);
@@ -144,8 +144,8 @@ function standardSerializer(Writer $writer, $value): void
         // describes a 'name' and optionally 'attributes' and 'value'.
 
         $name = $value['name'];
-        $attributes = isset($value['attributes']) ? $value['attributes'] : [];
-        $value = isset($value['value']) ? $value['value'] : null;
+        $attributes = $value['attributes'] ?? [];
+        $value = $value['value'] ?? null;
 
         $writer->startElement($name);
         $writer->writeAttributes($attributes);
@@ -157,7 +157,7 @@ function standardSerializer(Writer $writer, $value): void
                 // This item has a numeric index. We just loop through the
                 // array and throw it back in the writer.
                 standardSerializer($writer, $item);
-            } elseif (is_string($name) && is_array($item) && isset($item['attributes'])) {
+            } elseif (is_array($item) && isset($item['attributes'])) {
                 // The key is used for a name, but $item has 'attributes' and
                 // possibly 'value'
                 $writer->startElement($name);
@@ -176,7 +176,7 @@ function standardSerializer(Writer $writer, $value): void
             }
         }
     } elseif (is_object($value)) {
-        throw new \InvalidArgumentException('The writer cannot serialize objects of class: '.get_class($value));
+        throw new \InvalidArgumentException('The writer cannot serialize objects of class: '.$value::class);
     } elseif (!is_null($value)) {
         throw new \InvalidArgumentException('The writer cannot serialize values of type: '.get_debug_type($value));
     }
