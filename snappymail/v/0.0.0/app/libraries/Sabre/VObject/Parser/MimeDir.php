@@ -26,6 +26,11 @@ use Sabre\VObject\Property;
  */
 class MimeDir extends Parser
 {
+    public const TOKEN_PROPNAME = 1;
+    public const TOKEN_PROPVALUE = 2;
+    public const TOKEN_PARAMNAME = 3;
+    public const TOKEN_PARAMVALUE = 4;
+
     /**
      * The input stream.
      *
@@ -36,7 +41,7 @@ class MimeDir extends Parser
     /**
      * Root component.
      */
-    protected ?Document $root;
+    protected ?Document $root = null;
 
     /**
      * By default, all input will be assumed to be UTF-8.
@@ -106,7 +111,7 @@ class MimeDir extends Parser
      */
     public function setCharset(string $charset): void
     {
-        if (!in_array($charset, self::$SUPPORTED_CHARSETS)) {
+        if (!in_array($charset, self::$SUPPORTED_CHARSETS, true)) {
             throw new \InvalidArgumentException('Unsupported encoding. (Supported encodings: '.implode(', ', self::$SUPPORTED_CHARSETS).')');
         }
         $this->charset = $charset;
@@ -150,23 +155,18 @@ class MimeDir extends Parser
 
         // BOM is ZERO WIDTH NO-BREAK SPACE (U+FEFF).
         // It's 0xEF 0xBB 0xBF in UTF-8 hex.
-        if (3 <= strlen($line)
+        if (3 <= strlen((string) $line)
             && 0xEF === ord($line[0])
             && 0xBB === ord($line[1])
             && 0xBF === ord($line[2])) {
-            $line = \substr($line, 3);
+            $line = \substr((string) $line, 3);
         }
 
-        switch (strtoupper($line)) {
-            case 'BEGIN:VCALENDAR':
-                $class = VCalendar::$componentMap['VCALENDAR'];
-                break;
-            case 'BEGIN:VCARD':
-                $class = VCard::$componentMap['VCARD'];
-                break;
-            default:
-                throw new ParseException('This parser only supports VCARD and VCALENDAR files');
-        }
+        $class = match (strtoupper((string) $line)) {
+            'BEGIN:VCALENDAR' => VCalendar::$componentMap['VCALENDAR'],
+            'BEGIN:VCARD' => VCard::$componentMap['VCARD'],
+            default => throw new ParseException('This parser only supports VCARD and VCALENDAR files'),
+        };
 
         $this->root = new $class([], false);
 
@@ -174,10 +174,10 @@ class MimeDir extends Parser
             // Reading until we hit END:
             try {
                 $line = $this->readLine();
-            } catch (EofException $oEx) {
+            } catch (EofException) {
                 $line = 'END:'.$this->root->name;
             }
-            if ('END:' === strtoupper(\substr($line, 0, 4))) {
+            if ('END:' === strtoupper(\substr((string) $line, 0, 4))) {
                 break;
             }
             $result = $this->parseLine($line);
@@ -186,7 +186,7 @@ class MimeDir extends Parser
             }
         }
 
-        $name = strtoupper(\substr($line, 4));
+        $name = strtoupper(\substr((string) $line, 4));
         if ($name !== $this->root->name) {
             throw new ParseException('Invalid MimeDir file. expected: "END:'.$this->root->name.'" got: "END:'.$name.'"');
         }
@@ -215,7 +215,7 @@ class MimeDir extends Parser
             while (true) {
                 // Reading until we hit END:
                 $line = $this->readLine();
-                if ('END:' === strtoupper(\substr($line, 0, 4))) {
+                if ('END:' === strtoupper(\substr((string) $line, 0, 4))) {
                     break;
                 }
                 $result = $this->parseLine($line);
@@ -224,22 +224,21 @@ class MimeDir extends Parser
                 }
             }
 
-            $name = strtoupper(\substr($line, 4));
+            $name = strtoupper(\substr((string) $line, 4));
             if ($name !== $component->name) {
                 throw new ParseException('Invalid MimeDir file. expected: "END:'.$component->name.'" got: "END:'.$name.'"');
             }
 
             return $component;
-        } else {
-            // Property reader
-            $property = $this->readProperty($line);
-            if (!$property) {
-                // Ignored line
-                return false;
-            }
-
-            return $property;
         }
+        // Property reader
+        $property = $this->readProperty($line);
+        if (!$property) {
+            // Ignored line
+            return false;
+        }
+
+        return $property;
     }
 
     /**
@@ -360,6 +359,12 @@ class MimeDir extends Parser
             'value' => null,
         ];
 
+        /*
+         * Keep track on the last token we parsed in order to do
+         * better error checking
+         */
+        $lastToken = null;
+
         $lastParam = null;
 
         /*
@@ -385,10 +390,16 @@ class MimeDir extends Parser
                         // option is set to ignore invalid lines, we ignore this line
                         // This can happen when servers provide faulty data as iCloud
                         //  frequently does with X-APPLE-STRUCTURED-LOCATION
+                        $lastToken = self::TOKEN_PARAMVALUE;
                         continue;
                     }
                     throw new ParseException('Invalid Mimedir file. Line starting at '.$this->startLine.' did not follow iCalendar/vCard conventions');
                 }
+
+                if ('=' === $match[0][0] && self::TOKEN_PARAMNAME !== $lastToken) {
+                    throw new ParseException('Invalid Mimedir file. Line starting at '.$this->startLine.': Missing parameter name for parameter value "'.$match['paramValue'].'"');
+                }
+
                 if (\is_null($property['parameters'][$lastParam])) {
                     $property['parameters'][$lastParam] = $value;
                 } elseif (is_array($property['parameters'][$lastParam])) {
@@ -402,21 +413,23 @@ class MimeDir extends Parser
                         $value,
                     ];
                 }
+                $lastToken = self::TOKEN_PARAMVALUE;
                 continue;
             }
             if (isset($match['paramName'])) {
                 $lastParam = strtoupper($match['paramName']);
-                if (!isset($property['parameters'][$lastParam])) {
-                    $property['parameters'][$lastParam] = null;
-                }
+                $property['parameters'][$lastParam] ??= null;
+                $lastToken = self::TOKEN_PARAMNAME;
                 continue;
             }
             if (isset($match['propValue'])) {
                 $property['value'] = $match['propValue'];
+                $lastToken = self::TOKEN_PROPVALUE;
                 continue;
             }
-            if (isset($match['name']) && $match['name']) {
+            if (isset($match['name']) && 0 < strlen($match['name'])) {
                 $property['name'] = strtoupper($match['name']);
+                $lastToken = self::TOKEN_PROPNAME;
                 continue;
             }
 
@@ -425,10 +438,8 @@ class MimeDir extends Parser
             // @codeCoverageIgnoreEnd
         }
 
-        if (\is_null($property['value'])) {
-            $property['value'] = '';
-        }
-        if (!$property['name']) {
+        $property['value'] ??= '';
+        if (!isset($property['name']) || 0 === strlen($property['name'])) {
             if ($this->options & self::OPTION_IGNORE_INVALID_LINES) {
                 return false;
             }
@@ -671,7 +682,7 @@ class MimeDir extends Parser
         // missing a whitespace. So if 'forgiving' is turned on, we will take
         // those as well.
         if ($this->options & self::OPTION_FORGIVING) {
-            while ('=' === \substr($value, -1) && $this->lineBuffer) {
+            while (str_ends_with($value, '=') && $this->lineBuffer) {
                 // Reading the line
                 $this->readLine();
                 // Grabbing the raw form

@@ -79,9 +79,7 @@ class FreeBusyGenerator
         if ($objects) {
             $this->setObjects($objects);
         }
-        if (is_null($timeZone)) {
-            $timeZone = new \DateTimeZone('UTC');
-        }
+        $timeZone ??= new \DateTimeZone('UTC');
         $this->setTimeZone($timeZone);
     }
 
@@ -217,7 +215,7 @@ class FreeBusyGenerator
         $new = [];
 
         foreach ($old as $vavail) {
-            list($compStart, $compEnd) = $vavail->getEffectiveStartEnd();
+            [$compStart, $compEnd] = $vavail->getEffectiveStartEnd();
 
             // We don't care about date-times that are earlier or later than the
             // start and end of the freebusy report, so this gets normalized
@@ -237,7 +235,7 @@ class FreeBusyGenerator
             // Going through our existing list of components to see if there's
             // a higher priority component that already fully covers this one.
             foreach ($new as $higherVavail) {
-                list($higherStart, $higherEnd) = $higherVavail->getEffectiveStartEnd();
+                [$higherStart, $higherEnd] = $higherVavail->getEffectiveStartEnd();
                 if (
                     (is_null($higherStart) || $higherStart < $compStart)
                     && (is_null($higherEnd) || $higherEnd > $compEnd)
@@ -259,7 +257,7 @@ class FreeBusyGenerator
         // priority components to override the lower ones.
         foreach (array_reverse($new) as $vavail) {
             $busyType = isset($vavail->BUSYTYPE) ? strtoupper($vavail->BUSYTYPE) : 'BUSY-UNAVAILABLE';
-            list($vavailStart, $vavailEnd) = $vavail->getEffectiveStartEnd();
+            [$vavailStart, $vavailEnd] = $vavail->getEffectiveStartEnd();
 
             // Making the component size no larger than the requested free-busy
             // report range.
@@ -281,7 +279,7 @@ class FreeBusyGenerator
             // Looping over the AVAILABLE components.
             if (isset($vavail->AVAILABLE)) {
                 foreach ($vavail->AVAILABLE as $available) {
-                    list($availStart, $availEnd) = $available->getEffectiveStartEnd();
+                    [$availStart, $availEnd] = $available->getEffectiveStartEnd();
                     $fbData->add(
                         $availStart->getTimeStamp(),
                         $availEnd->getTimeStamp(),
@@ -362,7 +360,7 @@ class FreeBusyGenerator
                         if ($component->RRULE) {
                             try {
                                 $iterator = new EventIterator($object, (string) $component->UID, $this->timeZone);
-                            } catch (NoInstancesException $e) {
+                            } catch (NoInstancesException) {
                                 // This event is recurring, but it doesn't have a single
                                 // instance. We are skipping this event from the output
                                 // entirely.
@@ -437,12 +435,12 @@ class FreeBusyGenerator
                                 continue;
                             }
 
-                            $values = explode(',', $freebusy);
+                            $values = explode(',', (string) $freebusy);
                             foreach ($values as $value) {
-                                list($startTime, $endTime) = explode('/', $value);
+                                [$startTime, $endTime] = explode('/', $value);
                                 $startTime = DateTimeParser::parseDateTime($startTime);
 
-                                if ('P' === substr($endTime, 0, 1) || '-P' === substr($endTime, 0, 2)) {
+                                if (str_starts_with($endTime, 'P') || str_starts_with($endTime, '-P')) {
                                     $duration = DateTimeParser::parseDuration($endTime);
                                     $endTime = clone $startTime;
                                     $endTime = $endTime->add($duration);
@@ -507,7 +505,7 @@ class FreeBusyGenerator
         $vfreebusy->add($dtstamp);
 
         foreach ($fbData->getData() as $busyTime) {
-            $busyType = strtoupper($busyTime['type']);
+            $busyType = strtoupper((string) $busyTime['type']);
 
             // Ignoring all the FREE parts, because those are already assumed.
             if ('FREE' === $busyType) {

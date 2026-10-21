@@ -495,6 +495,7 @@
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Nabigatzaileak blokeatuta)",
 		"COLLAPSE_BLOCKQUOTES": "Bildu aipuko testua",
 		"MAX_QUOTE_LEVEL": "Ageriko aipamen-maila maximoak",
+		"MIN_FONT_SIZE": "Minimum Font Size",
 		"LIST_INLINE_ATTACHMENTS": "Erakutsi sareko eranskinak zerrendan",
 		"LIST_SIMPLE_ATTACHMENTS": "Eranskinen zerrenda arrunta",
 		"LIST_MESSAGES_GROUPED": "Zerrendatu mezuak taldekatuak (ordena jatorria edo data denean)",

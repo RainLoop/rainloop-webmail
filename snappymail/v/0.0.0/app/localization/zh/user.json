@@ -495,6 +495,7 @@
 		"CHROME_NOTIFICATION_DESC_DENIED": "(被浏览器阻止)",
 		"COLLAPSE_BLOCKQUOTES": "折叠引用文本",
 		"MAX_QUOTE_LEVEL": "最多显示的引用文本层级",
+		"MIN_FONT_SIZE": "Minimum Font Size",
 		"LIST_INLINE_ATTACHMENTS": "在列表中显示内联附件",
 		"LIST_SIMPLE_ATTACHMENTS": "简洁附件列表",
 		"LIST_MESSAGES_GROUPED": "按分组显示消息 (按时间或发件人排序时)",

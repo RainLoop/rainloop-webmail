@@ -54,9 +54,9 @@ class VTodo extends VObject\Component
                 return
                     ($start < $due || $start <= $dtstart)
                     && ($end > $dtstart || $end >= $due);
-            } else {
-                return $start <= $dtstart && $end > $dtstart;
             }
+
+            return $start <= $dtstart && $end > $dtstart;
         }
         if ($due) {
             return $start < $due && $end >= $due;
@@ -98,6 +98,7 @@ class VTodo extends VObject\Component
             'CLASS' => '?',
             'COMPLETED' => '?',
             'CREATED' => '?',
+            'COLOR' => '?',
             'DESCRIPTION' => '?',
             'DTSTART' => '?',
             'GEO' => '?',
@@ -120,7 +121,9 @@ class VTodo extends VObject\Component
             'ATTENDEE' => '*',
             'CATEGORIES' => '*',
             'COMMENT' => '*',
+            'CONFERENCE' => '*',
             'CONTACT' => '*',
+            'IMAGE' => '*',
             'EXDATE' => '*',
             'REQUEST-STATUS' => '*',
             'RELATED-TO' => '*',

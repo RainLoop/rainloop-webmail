@@ -31,23 +31,17 @@ abstract class Parser
     public const OPTION_IGNORE_INVALID_LINES = 2;
 
     /**
-     * Bitmask of parser options.
-     */
-    protected int $options;
-
-    /**
      * Creates the parser.
      *
      * Optionally, it's possible to parse the input stream here.
      *
      * @param int $options any parser options (OPTION constants)
      */
-    public function __construct($input = null, int $options = 0)
+    public function __construct($input = null, protected int $options = 0)
     {
         if (!is_null($input)) {
             $this->setInput($input);
         }
-        $this->options = $options;
     }
 
     /**

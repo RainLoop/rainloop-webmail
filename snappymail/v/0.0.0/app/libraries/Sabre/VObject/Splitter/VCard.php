@@ -23,13 +23,6 @@ use Sabre\VObject\Parser\MimeDir;
 class VCard implements SplitterInterface
 {
     /**
-     * File handle.
-     *
-     * @var resource
-     */
-    protected $input;
-
-    /**
      * Persistent parser.
      */
     protected MimeDir $parser;
@@ -42,10 +35,12 @@ class VCard implements SplitterInterface
      * @param resource $input
      * @param int      $options parser options, see the OPTIONS constants
      */
-    public function __construct($input, int $options = 0)
+    public function __construct(/**
+     * File handle.
+     */
+        protected $input, int $options = 0)
     {
-        $this->input = $input;
-        $this->parser = new MimeDir($input, $options);
+        $this->parser = new MimeDir($this->input, $options);
     }
 
     /**
@@ -64,7 +59,7 @@ class VCard implements SplitterInterface
             if (!$object instanceof Component\VCard) {
                 throw new VObject\ParseException('The supplied input contained non-VCARD data.');
             }
-        } catch (VObject\EofException $e) {
+        } catch (VObject\EofException) {
             return null;
         }
 

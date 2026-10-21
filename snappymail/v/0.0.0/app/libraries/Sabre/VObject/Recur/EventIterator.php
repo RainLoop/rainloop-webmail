@@ -91,9 +91,7 @@ class EventIterator implements \Iterator
      */
     public function __construct($input, ?string $uid = null, ?\DateTimeZone $timeZone = null)
     {
-        if (is_null($timeZone)) {
-            $timeZone = new \DateTimeZone('UTC');
-        }
+        $timeZone ??= new \DateTimeZone('UTC');
         $this->timeZone = $timeZone;
 
         if (is_array($input)) {
@@ -164,8 +162,12 @@ class EventIterator implements \Iterator
         }
 
         if (isset($this->masterEvent->RDATE)) {
+            $rdateValues = [];
+            foreach ($this->masterEvent->RDATE as $rdate) {
+                $rdateValues = array_merge($rdateValues, $rdate->getParts());
+            }
             $this->recurIterator = new RDateIterator(
-                $this->masterEvent->RDATE->getParts(),
+                $rdateValues,
                 $this->startDate
             );
         } elseif (isset($this->masterEvent->RRULE)) {
@@ -228,11 +230,10 @@ class EventIterator implements \Iterator
         }
         if ($this->currentOverriddenEvent && $this->currentOverriddenEvent->DTEND) {
             return $this->currentOverriddenEvent->DTEND->getDateTime($this->timeZone);
-        } else {
-            $end = clone $this->currentDate;
-
-            return $end->modify('+'.$this->eventDuration.' seconds');
         }
+        $end = clone $this->currentDate;
+
+        return $end->modify('+'.$this->eventDuration.' seconds');
     }
 
     /**

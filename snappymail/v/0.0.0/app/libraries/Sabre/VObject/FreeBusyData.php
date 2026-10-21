@@ -12,24 +12,18 @@ namespace Sabre\VObject;
 class FreeBusyData
 {
     /**
-     * Start timestamp.
-     */
-    protected int $start;
-
-    /**
-     * End timestamp.
-     */
-    protected int $end;
-
-    /**
      * A list of free-busy times.
      */
     protected array $data;
 
-    public function __construct(int $start, int $end)
+    public function __construct(/**
+     * Start timestamp.
+     */
+        protected int $start, /**
+     * End timestamp.
+     */
+        protected int $end)
     {
-        $this->start = $start;
-        $this->end = $end;
         $this->data = [];
 
         $this->data[] = [

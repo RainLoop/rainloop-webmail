@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Torna a carregar",
+	"NO_SCRIPT_TITLE": "Aquesta aplicació necessita JavaScript.",
+	"NO_SCRIPT_DESC": "El navegador no té activat JavaScript.\nActiveu-lo a la configuració del navegador i torneu-ho a provar.",
+	"NO_COOKIE_TITLE": "Aquesta aplicació necessita galetes.",
+	"NO_COOKIE_DESC": "El navegador no té activades les galetes.\nActiveu-les a la configuració del navegador i torneu-ho a provar.",
+	"BAD_BROWSER_TITLE": "El navegador està obsolet.",
+	"BAD_BROWSER_DESC": "Per utilitzar totes les funcions de l’aplicació,\nbaixeu i instal·leu un navegador actualitzat."
+}

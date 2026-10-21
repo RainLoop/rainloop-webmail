@@ -92,7 +92,7 @@ class Cli
         // @codeCoverageIgnoreEnd
 
         try {
-            list($options, $positional) = $this->parseArguments($argv);
+            [$options, $positional] = $this->parseArguments($argv);
 
             if (isset($options['q'])) {
                 $this->quiet = true;
@@ -110,27 +110,10 @@ class Cli
 
                         return 0;
                     case 'format':
-                        switch ($value) {
-                            // jcard/jcal documents
-                            case 'jcard':
-                            case 'jcal':
-                                // specific document versions
-                            case 'vcard21':
-                            case 'vcard30':
-                            case 'vcard40':
-                            case 'icalendar20':
-                                // specific formats
-                            case 'json':
-                            case 'mimedir':
-                                // icalendar/vcard
-                            case 'icalendar':
-                            case 'vcard':
-                                $this->format = $value;
-                                break;
-
-                            default:
-                                throw new \InvalidArgumentException('Unknown format: '.$value);
-                        }
+                        $this->format = match ($value) {
+                            'jcard', 'jcal', 'vcard21', 'vcard30', 'vcard40', 'icalendar20', 'json', 'mimedir', 'icalendar', 'vcard' => $value,
+                            default => throw new \InvalidArgumentException('Unknown format: '.$value),
+                        };
                         break;
                     case 'pretty':
                         $this->pretty = true;
@@ -139,28 +122,11 @@ class Cli
                         $this->forgiving = true;
                         break;
                     case 'inputformat':
-                        switch ($value) {
-                            // json formats
-                            case 'jcard':
-                            case 'jcal':
-                            case 'json':
-                                $this->inputFormat = 'json';
-                                break;
-
-                                // mimedir formats
-                            case 'mimedir':
-                            case 'icalendar':
-                            case 'vcard':
-                            case 'vcard21':
-                            case 'vcard30':
-                            case 'vcard40':
-                            case 'icalendar20':
-                                $this->inputFormat = 'mimedir';
-                                break;
-
-                            default:
-                                throw new \InvalidArgumentException('Unknown format: '.$value);
-                        }
+                        $this->inputFormat = match ($value) {
+                            'jcard', 'jcal', 'json' => 'json',
+                            'mimedir', 'icalendar', 'vcard', 'vcard21', 'vcard30', 'vcard40', 'icalendar20' => 'mimedir',
+                            default => throw new \InvalidArgumentException('Unknown format: '.$value),
+                        };
                         break;
                     default:
                         throw new \InvalidArgumentException('Unknown option: '.$name);
@@ -181,7 +147,7 @@ class Cli
                 throw new \InvalidArgumentException('Too many arguments');
             }
 
-            if (!in_array($positional[0], ['validate', 'repair', 'convert', 'color'])) {
+            if (!in_array($positional[0], ['validate', 'repair', 'convert', 'color'], true)) {
                 throw new \InvalidArgumentException('Unknown command: '.$positional[0]);
             }
         } catch (\InvalidArgumentException $e) {
@@ -201,14 +167,14 @@ class Cli
         }
 
         if (null === $this->inputFormat) {
-            if ('.json' === substr($this->inputPath, -5)) {
+            if (str_ends_with($this->inputPath, '.json')) {
                 $this->inputFormat = 'json';
             } else {
                 $this->inputFormat = 'mimedir';
             }
         }
         if (null === $this->format) {
-            if ('.json' === substr($this->outputPath, -5)) {
+            if (str_ends_with($this->outputPath, '.json')) {
                 $this->format = 'json';
             } else {
                 $this->format = 'mimedir';
@@ -219,12 +185,13 @@ class Cli
 
         try {
             while ($input = $this->readInput()) {
+                // @phpstan-ignore method.dynamicName
                 $returnCode = $this->$command($input);
                 if (0 !== $returnCode) {
                     $realCode = $returnCode;
                 }
             }
-        } catch (EofException $e) {
+        } catch (EofException) {
             // end of file
         } catch (\Exception $e) {
             $this->log('Error: '.$e->getMessage(), 'red');
@@ -408,7 +375,7 @@ HELP
             }
             fwrite($this->stdout, json_encode($vObj->jsonSerialize(), $jsonOptions));
         } else {
-            fwrite($this->stdout, $vObj->serialize());
+            fwrite($this->stdout, (string) $vObj->serialize());
         }
 
         return 0;
@@ -538,7 +505,7 @@ HELP
         $this->cWrite('red', ':');
 
         if ($property instanceof Property\Binary) {
-            $this->cWrite('default', 'embedded binary stripped. ('.strlen($property->getValue()).' bytes)');
+            $this->cWrite('default', 'embedded binary stripped. ('.strlen((string) $property->getValue()).' bytes)');
         } else {
             $parts = $property->getParts();
             $first1 = true;
@@ -593,17 +560,17 @@ HELP
 
             $v = $argv[$ii];
 
-            if ('--' === substr($v, 0, 2)) {
+            if (str_starts_with((string) $v, '--')) {
                 // This is a long-form option.
-                $optionName = substr($v, 2);
+                $optionName = substr((string) $v, 2);
                 $optionValue = true;
                 if (strpos($optionName, '=')) {
-                    list($optionName, $optionValue) = explode('=', $optionName);
+                    [$optionName, $optionValue] = explode('=', $optionName);
                 }
                 $options[$optionName] = $optionValue;
-            } elseif ('-' === substr($v, 0, 1) && strlen($v) > 1) {
+            } elseif (str_starts_with((string) $v, '-') && strlen((string) $v) > 1) {
                 // This is a short-form option.
-                foreach (str_split(substr($v, 1)) as $option) {
+                foreach (str_split(substr((string) $v, 1)) as $option) {
                     $options[$option] = true;
                 }
             } else {
@@ -628,6 +595,9 @@ HELP
         if (!$this->parser) {
             if ('-' !== $this->inputPath) {
                 $this->stdin = fopen($this->inputPath, 'r');
+                if (false === $this->stdin) {
+                    throw new InvalidDataException('Cannot open "'.$this->inputPath);
+                }
             }
 
             if ('mimedir' === $this->inputFormat) {

@@ -212,11 +212,13 @@ function valueObject(Reader $reader, string $className, string $namespace): obje
 
     $reader->read();
     do {
-        if (Reader::ELEMENT === $reader->nodeType && $reader->namespaceURI == $namespace) {
+        if (Reader::ELEMENT === $reader->nodeType && $reader->namespaceURI === $namespace) {
             if (property_exists($valueObject, $reader->localName)) {
                 if (is_array($defaultProperties[$reader->localName])) {
+                    // @phpstan-ignore property.dynamicName
                     $valueObject->{$reader->localName}[] = $reader->parseCurrentElement()['value'];
                 } else {
+                    // @phpstan-ignore property.dynamicName
                     $valueObject->{$reader->localName} = $reader->parseCurrentElement()['value'];
                 }
             } else {

@@ -18,11 +18,18 @@ class FindFromTimezoneMap implements TimezoneFinder
         '/^\((UTC|GMT)(\+|\-)[\d]{2}\.[\d]{2}\) (.*)/',
     ];
 
+    /**
+     * @throws void
+     */
     public function find(string $tzid, ?bool $failIfUncertain = false): ?\DateTimeZone
     {
         // Next, we check if the tzid is somewhere in our tzid map.
         if ($this->hasTzInMap($tzid)) {
-            return new \DateTimeZone($this->getTzFromMap($tzid));
+            try {
+                return new \DateTimeZone($this->getTzFromMap($tzid));
+            } catch (\Exception) {
+                return null;
+            }
         }
 
         // Some Microsoft products prefix the offset first, so let's strip that off
@@ -34,7 +41,11 @@ class FindFromTimezoneMap implements TimezoneFinder
             }
             $tzidAlternate = $matches[3];
             if ($this->hasTzInMap($tzidAlternate)) {
-                return new \DateTimeZone($this->getTzFromMap($tzidAlternate));
+                try {
+                    return new \DateTimeZone($this->getTzFromMap($tzidAlternate));
+                } catch (\Exception) {
+                    return null;
+                }
             }
         }
 

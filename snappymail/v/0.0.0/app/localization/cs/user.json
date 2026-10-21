@@ -100,7 +100,7 @@
 		"ACL_S": "\\SEEN značka",
 		"ACL_T": "\\DELETED značka",
 		"ACL_W": "Ostatní značky",
-		"ACL_X": "Smazat/Přejmenovat složku"
+		"ACL_X": "Smazat\/Přejmenovat složku"
 	},
 	"MESSAGE_LIST": {
 		"BUTTON_RELOAD": "Obnovit seznam zpráv",
@@ -130,6 +130,8 @@
 		"QUOTA_SIZE": "Používáte <strong>%SIZE% (%PROC%%)<\/strong> z vašich <strong>%LIMIT%<\/strong>",
 		"SORT": "Seřadit",
 		"NO_SORT": "Server nepodporuje řazení",
+		"SORT_ARRIVAL_ASC": "Arrived ascending",
+		"SORT_ARRIVAL_DESC": "Arrived descending",
 		"SORT_DATE_ASC": "Datum vzestupně",
 		"SORT_DATE_DESC": "Datum sestupně",
 		"SORT_SIZE_ASC": "Velikost vzestupně",
@@ -466,7 +468,7 @@
 		"LAYOUT_NO_SPLIT": "Nerozdělovat",
 		"LAYOUT_VERTICAL_SPLIT": "Vertikální rozdělení",
 		"LAYOUT_HORIZONTAL_SPLIT": "Horizontální rozdělení",
-		"SHOW_NEXT_MESSAGE": "Zobrazit další zprávu při přesunutí/odstranění aktuální zprávy",
+		"SHOW_NEXT_MESSAGE": "Zobrazit další zprávu při přesunutí\/odstranění aktuální zprávy",
 		"EDITOR": "Přednastavený editor zpráv",
 		"EDITOR_HTML": "Html",
 		"EDITOR_PLAIN": "Text",
@@ -493,6 +495,7 @@
 		"CHROME_NOTIFICATION_DESC_DENIED": "(Zablokované prohlížečem)",
 		"COLLAPSE_BLOCKQUOTES": "Sbalit citovaný text",
 		"MAX_QUOTE_LEVEL": "Maximální počet úrovní zobrazených citací",
+		"MIN_FONT_SIZE": "Minimum Font Size",
 		"LIST_INLINE_ATTACHMENTS": "Zobrazit vložené přílohy v seznamu",
 		"LIST_SIMPLE_ATTACHMENTS": "Jednoduchý seznam příloh",
 		"LIST_MESSAGES_GROUPED": "Seskupit zprávy v seznamu (při řazení podle data nebo odesílatele)",

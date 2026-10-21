@@ -123,7 +123,7 @@ class Service
         }
 
         // If input is empty, then it's safe to throw an exception
-        if (empty($input)) {
+        if ('' === $input) {
             throw new ParseException('The input element to parse is empty. Do not attempt to parse');
         }
 
@@ -174,7 +174,7 @@ class Service
         }
 
         // If input is empty, then it's safe to throw an exception
-        if (empty($input)) {
+        if ('' === $input) {
             throw new ParseException('The input element to parse is empty. Do not attempt to parse');
         }
 
@@ -254,14 +254,12 @@ class Service
      */
     public function mapValueObject(string $elementName, string $className): void
     {
-        list($namespace) = self::parseClarkNotation($elementName);
+        [$namespace] = self::parseClarkNotation($elementName);
 
         require_once __DIR__ . '/Deserializer/functions.php';
-        $this->elementMap[$elementName] = function (Reader $reader) use ($className, $namespace) {
-            return \Sabre\Xml\Deserializer\valueObject($reader, $className, $namespace);
-        };
+        $this->elementMap[$elementName] = (fn (Reader $reader) => \Sabre\Xml\Deserializer\valueObject($reader, $className, $namespace));
         require_once __DIR__ . '/Serializer/functions.php';
-        $this->classMap[$className] = function (Writer $writer, $valueObject) use ($namespace) {
+        $this->classMap[$className] = function (Writer $writer, $valueObject) use ($namespace): void {
             \Sabre\Xml\Serializer\valueObject($writer, $valueObject, $namespace);
         };
         $this->valueObjectMap[$className] = $elementName;
@@ -280,12 +278,12 @@ class Service
      */
     public function writeValueObject(object $object, ?string $contextUri = null): string
     {
-        if (!isset($this->valueObjectMap[get_class($object)])) {
-            throw new \InvalidArgumentException('"'.get_class($object).'" is not a registered value object class. Register your class with mapValueObject.');
+        if (!isset($this->valueObjectMap[$object::class])) {
+            throw new \InvalidArgumentException('"'.$object::class.'" is not a registered value object class. Register your class with mapValueObject.');
         }
 
         return $this->write(
-            $this->valueObjectMap[get_class($object)],
+            $this->valueObjectMap[$object::class],
             $object,
             $contextUri
         );
@@ -306,7 +304,7 @@ class Service
         static $cache = [];
 
         if (!isset($cache[$str])) {
-            if (!preg_match('/^{([^}]*)}(.*)$/', $str, $matches)) {
+            if (1 !== preg_match('/^{([^}]*)}(.*)$/', $str, $matches)) {
                 throw new \InvalidArgumentException('\''.$str.'\' is not a valid clark-notation formatted string');
             }
 

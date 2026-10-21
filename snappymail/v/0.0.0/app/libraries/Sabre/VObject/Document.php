@@ -118,10 +118,10 @@ abstract class Document extends Component
     public function create(string $name)
     {
         if (isset(static::$componentMap[strtoupper($name)])) {
-            return call_user_func_array([$this, 'createComponent'], func_get_args());
-        } else {
-            return call_user_func_array([$this, 'createProperty'], func_get_args());
+            return $this->createComponent(...func_get_args());
         }
+
+        return $this->createProperty(...func_get_args());
     }
 
     /**
@@ -146,9 +146,7 @@ abstract class Document extends Component
         if (isset(static::$componentMap[$name])) {
             $class = static::$componentMap[$name];
         }
-        if (is_null($children)) {
-            $children = [];
-        }
+        $children ??= [];
 
         return new $class($this, $name, $children, $defaults);
     }
@@ -180,26 +178,29 @@ abstract class Document extends Component
 
         $class = null;
 
+        // If a VALUE parameter is supplied, we have to use that
+        // According to https://datatracker.ietf.org/doc/html/rfc5545#section-3.2.20
+        //  If the property's value is the default value type, then this
+        //  parameter need not be specified.  However, if the property's
+        //  default value type is overridden by some other allowable value
+        //  type, then this parameter MUST be specified.
+        if (!$valueType) {
+            $valueType = $parameters['VALUE'] ?? null;
+        }
+
         if ($valueType) {
             // The valueType argument comes first to figure out the correct
             // class.
             $class = $this->getClassNameForPropertyValue($valueType);
         }
 
-        if (is_null($class)) {
-            // If a VALUE parameter is supplied, we should use that.
-            if (isset($parameters['VALUE'])) {
-                $class = $this->getClassNameForPropertyValue($parameters['VALUE']);
-                if (is_null($class)) {
-                    throw new InvalidDataException('Unsupported VALUE parameter for '.$name.' property. You supplied "'.$parameters['VALUE'].'"');
-                }
-            } else {
-                $class = $this->getClassNameForPropertyName($name);
-            }
-        }
-        if (is_null($parameters)) {
-            $parameters = [];
-        }
+        // If the value parameter is not set or set to something we do not recognize
+        // we do not attempt to interpret or parse the datass value as specified in
+        // https://datatracker.ietf.org/doc/html/rfc5545#section-3.2.20
+        // So when we so far did not get a class-name, we use the default for the property
+        $class ??= $this->getClassNameForPropertyName($name);
+
+        $parameters ??= [];
 
         return new $class($this, $name, $value, $parameters, $group, $lineIndex, $lineString);
     }

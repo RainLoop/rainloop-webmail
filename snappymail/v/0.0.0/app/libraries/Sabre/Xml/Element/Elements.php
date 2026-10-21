@@ -38,20 +38,16 @@ use Sabre\Xml\Serializer;
 class Elements implements Xml\Element
 {
     /**
-     * Value to serialize.
-     *
-     * @var array<int, mixed>
-     */
-    protected array $value;
-
-    /**
      * Constructor.
      *
      * @param array<int, mixed> $value
      */
-    public function __construct(array $value = [])
-    {
-        $this->value = $value;
+    public function __construct(
+        /**
+         * Value to serialize.
+         */
+        protected array $value = [],
+    ) {
     }
 
     /**

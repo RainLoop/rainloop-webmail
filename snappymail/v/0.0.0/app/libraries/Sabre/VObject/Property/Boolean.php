@@ -56,9 +56,7 @@ class Boolean extends Property
     public function setXmlValue(array $value): void
     {
         $value = array_map(
-            function ($value) {
-                return 'true' === $value;
-            },
+            fn ($value) => 'true' === $value,
             $value
         );
         parent::setXmlValue($value);

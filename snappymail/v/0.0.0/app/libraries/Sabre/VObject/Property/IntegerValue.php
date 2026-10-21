@@ -62,7 +62,7 @@ class IntegerValue extends Property
      */
     public function setXmlValue(array $value): void
     {
-        $value = array_map('intval', $value);
+        $value = array_map(intval(...), $value);
         parent::setXmlValue($value);
     }
 }

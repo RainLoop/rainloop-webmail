@@ -495,6 +495,7 @@
 		"CHROME_NOTIFICATION_DESC_DENIED": "(遭瀏覽器封鎖)",
 		"COLLAPSE_BLOCKQUOTES": "摺疊引文",
 		"MAX_QUOTE_LEVEL": "最大化顯示引文",
+		"MIN_FONT_SIZE": "Minimum Font Size",
 		"LIST_INLINE_ATTACHMENTS": "在清單中顯示內嵌附件",
 		"LIST_SIMPLE_ATTACHMENTS": "簡易附件清單",
 		"LIST_MESSAGES_GROUPED": "郵件清單已分組 (當以日期或寄件者排序)",
