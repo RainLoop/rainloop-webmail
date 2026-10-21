@@ -62,6 +62,7 @@ class VJournal extends VObject\Component
 
             'CLASS' => '?',
             'CREATED' => '?',
+            'COLOR' => '?',
             'DTSTART' => '?',
             'LAST-MODIFIED' => '?',
             'ORGANIZER' => '?',
@@ -78,6 +79,7 @@ class VJournal extends VObject\Component
             'CATEGORIES' => '*',
             'COMMENT' => '*',
             'CONTACT' => '*',
+            'IMAGE' => '*',
             'DESCRIPTION' => '*',
             'EXDATE' => '*',
             'RELATED-TO' => '*',

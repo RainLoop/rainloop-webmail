@@ -54,7 +54,7 @@ class Binary extends Property
      */
     public function setRawMimeDirValue(string $val): void
     {
-        $this->value = base64_decode($val);
+        $this->value = base64_decode($val, true);
     }
 
     /**
@@ -62,7 +62,7 @@ class Binary extends Property
      */
     public function getRawMimeDirValue(): string
     {
-        return base64_encode($this->value);
+        return base64_encode((string) $this->value);
     }
 
     /**
@@ -83,7 +83,7 @@ class Binary extends Property
      */
     public function getJsonValue(): array
     {
-        return [base64_encode($this->getValue())];
+        return [base64_encode((string) $this->getValue())];
     }
 
     /**
@@ -93,7 +93,7 @@ class Binary extends Property
      */
     public function setJsonValue(array $value): void
     {
-        $value = array_map('base64_decode', $value);
+        $value = array_map(base64_decode(...), $value);
         parent::setJsonValue($value);
     }
 }

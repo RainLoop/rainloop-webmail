@@ -26,9 +26,13 @@ class RDateIterator implements \Iterator
      *
      * @param string|array $rrule
      */
-    public function __construct($rrule, \DateTimeInterface $start)
+    public function __construct($rrule, /**
+     * The reference start date/time for the rrule.
+     *
+     * All calculations are based on this initial date.
+     */
+        protected \DateTimeInterface $startDate)
     {
-        $this->startDate = $start;
         $this->parseRDate($rrule);
         $this->currentDate = clone $this->startDate;
     }
@@ -116,13 +120,6 @@ class RDateIterator implements \Iterator
             $this->next();
         }
     }
-
-    /**
-     * The reference start date/time for the rrule.
-     *
-     * All calculations are based on this initial date.
-     */
-    protected \DateTimeInterface $startDate;
 
     /**
      * The date of the current iteration. You can get this by calling

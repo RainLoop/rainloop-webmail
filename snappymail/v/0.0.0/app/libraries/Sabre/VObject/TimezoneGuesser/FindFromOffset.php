@@ -24,6 +24,24 @@ class FindFromOffset implements TimezoneFinder
             // @codeCoverageIgnoreEnd
         }
 
+        if (0 === strncasecmp($tzid, 'UTC', 3)) {
+            $offset = substr($tzid, 3);
+            if (6 === strlen($offset) && ':' === $offset[3]) {
+                $offset = substr($offset, 0, 3).substr($offset, 4);
+            }
+
+            if (5 !== strlen($offset)
+                || ('+' !== $offset[0] && '-' !== $offset[0])
+                || 4 !== strspn(substr($offset, 1), '0123456789')
+                || (int) substr($offset, 1, 2) > 23
+                || (int) substr($offset, 3, 2) > 59
+            ) {
+                return null;
+            }
+
+            return new \DateTimeZone($offset);
+        }
+
         return null;
     }
 }

@@ -32,12 +32,12 @@ class Message
      * Contains the ITip method, which is something like REQUEST, REPLY or
      * CANCEL.
      */
-    public ?string $method;
+    public ?string $method = null;
 
     /**
      * The current sequence number for the event.
      */
-    public ?int $sequence;
+    public ?int $sequence = null;
 
     /**
      * The senders' email address.
@@ -52,7 +52,7 @@ class Message
      * The name of the sender. This is often populated from a CN parameter from
      * either the ORGANIZER or ATTENDEE, depending on the message.
      */
-    public ?string $senderName;
+    public ?string $senderName = null;
 
     /**
      * The recipient's email address.
@@ -63,7 +63,7 @@ class Message
      * The name of the recipient. This is usually populated with the CN
      * parameter from the ATTENDEE or ORGANIZER property, if it's available.
      */
-    public ?string $recipientName;
+    public ?string $recipientName = null;
 
     /**
      * After the message has been delivered, this should contain a string such
@@ -107,10 +107,9 @@ class Message
     {
         if (!$this->scheduleStatus) {
             return false;
-        } else {
-            list($scheduleStatus) = explode(';', $this->scheduleStatus);
-
-            return $scheduleStatus;
         }
+        [$scheduleStatus] = explode(';', $this->scheduleStatus);
+
+        return $scheduleStatus;
     }
 }

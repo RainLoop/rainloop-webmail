@@ -28,17 +28,17 @@ class XML extends Parser
     /**
      * The input data.
      */
-    protected ?array $input;
+    protected ?array $input = null;
 
     /**
      * A pointer/reference to the input.
      */
-    private ?array $pointer;
+    private ?array $pointer = null;
 
     /**
      * Document, root component.
      */
-    protected ?Document $root;
+    protected ?Document $root = null;
 
     /**
      * Creates the parser.
@@ -112,7 +112,7 @@ class XML extends Parser
      */
     protected function parseVCalendarComponents(Component $parentComponent): void
     {
-        foreach ($this->pointer['value'] ?: [] as $children) {
+        foreach ($this->pointer['value'] ?? [] as $children) {
             switch (static::getTagName($children['name'])) {
                 case 'properties':
                     $this->pointer = &$children['value'];
@@ -145,8 +145,8 @@ class XML extends Parser
      */
     protected function parseProperties(Component $parentComponent, string $propertyNamePrefix = ''): void
     {
-        foreach ($this->pointer ?: [] as $xmlProperty) {
-            list($namespace, $tagName) = SabreXml\Service::parseClarkNotation($xmlProperty['name']);
+        foreach ($this->pointer ?? [] as $xmlProperty) {
+            [$namespace, $tagName] = SabreXml\Service::parseClarkNotation($xmlProperty['name']);
 
             $propertyName = $tagName;
             $propertyValue = [];
@@ -322,7 +322,7 @@ class XML extends Parser
      */
     protected function parseComponent(Component $parentComponent): void
     {
-        $components = $this->pointer['value'] ?: [];
+        $components = $this->pointer['value'] ?? [];
 
         foreach ($components as $component) {
             $componentName = static::getTagName($component['name']);

@@ -40,13 +40,13 @@ class FindFromTimezoneIdentifier implements TimezoneFinder
 
         try {
             if (
-                in_array($tzid, $tzIdentifiers)
+                in_array($tzid, $tzIdentifiers, true)
                 || preg_match('/^GMT(\+|-)([0-9]{4})$/', $tzid, $matches)
-                || in_array($tzid, $this->getIdentifiersBC())
+                || in_array($tzid, $this->getIdentifiersBC(), true)
             ) {
                 return new \DateTimeZone($tzid);
             }
-        } catch (\Exception $e) {
+        } catch (\Exception) {
         }
 
         return null;

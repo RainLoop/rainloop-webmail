@@ -111,7 +111,7 @@ class DateTime extends Property
             !$this->hasTime()
             || (
                 !isset($this['TZID'])
-                && false === strpos($this->getValue(), 'Z')
+                && !str_contains((string) $this->getValue(), 'Z')
             );
     }
 
@@ -205,7 +205,7 @@ class DateTime extends Property
                 }
                 if (is_null($tz)) {
                     $tz = $d->getTimeZone();
-                    $isUtc = in_array($tz->getName(), ['UTC', 'GMT', 'Z', '+00:00']);
+                    $isUtc = in_array($tz->getName(), ['UTC', 'GMT', 'Z', '+00:00'], true);
                     if (!$isUtc) {
                         $this->offsetSet('TZID', $tz->getName());
                     }
@@ -257,15 +257,15 @@ class DateTime extends Property
         $isFloating = $this->isFloating();
 
         $tz = $dts[0]->getTimeZone();
-        $isUtc = !$isFloating && in_array($tz->getName(), ['UTC', 'GMT', 'Z']);
+        $isUtc = !$isFloating && in_array($tz->getName(), ['UTC', 'GMT', 'Z'], true);
 
         return array_map(
             function (\DateTimeInterface $dt) use ($hasTime, $isUtc) {
                 if ($hasTime) {
                     return $dt->format('Y-m-d\\TH:i:s').($isUtc ? 'Z' : '');
-                } else {
-                    return $dt->format('Y-m-d');
                 }
+
+                return $dt->format('Y-m-d');
             },
             $dts
         );
@@ -286,9 +286,7 @@ class DateTime extends Property
         // those.
         $this->setValue(
             array_map(
-                function ($item) {
-                    return strtr($item, [':' => '', '-' => '']);
-                },
+                fn ($item) => strtr($item, [':' => '', '-' => '']),
                 $value
             )
         );
@@ -306,7 +304,7 @@ class DateTime extends Property
     public function offsetSet($offset, $value): void
     {
         parent::offsetSet($offset, $value);
-        if ('VALUE' !== strtoupper($offset)) {
+        if ('VALUE' !== strtoupper((string) $offset)) {
             return;
         }
 
@@ -347,7 +345,7 @@ class DateTime extends Property
                         DateTimeParser::parseDateTime($value);
                         break;
                 }
-            } catch (InvalidDataException $e) {
+            } catch (InvalidDataException) {
                 $messages[] = [
                     'level' => 3,
                     'message' => 'The supplied value ('.$value.') is not a correct '.$valueType,

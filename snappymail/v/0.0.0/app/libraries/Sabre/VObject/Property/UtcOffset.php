@@ -42,9 +42,7 @@ class UtcOffset extends Text
     public function setJsonValue(array $value): void
     {
         $value = array_map(
-            function ($value) {
-                return str_replace(':', '', $value);
-            },
+            fn ($value) => str_replace(':', '', $value),
             $value
         );
         parent::setJsonValue($value);
@@ -58,10 +56,8 @@ class UtcOffset extends Text
     public function getJsonValue(): array
     {
         return array_map(
-            function ($value) {
-                return substr($value, 0, -2).':'.
-                       substr($value, -2);
-            },
+            fn ($value) => substr((string) $value, 0, -2).':'.
+                   substr((string) $value, -2),
             parent::getJsonValue()
         );
     }

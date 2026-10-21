@@ -41,7 +41,7 @@ class VFreeBusy extends VObject\Component
                 // Every period is formatted as [start]/[end]. The start is an
                 // absolute UTC time, the end may be an absolute UTC time, or
                 // duration (relative) value.
-                list($busyStart, $busyEnd) = explode('/', $period);
+                [$busyStart, $busyEnd] = explode('/', $period);
 
                 $busyStart = VObject\DateTimeParser::parse($busyStart);
                 $busyEnd = VObject\DateTimeParser::parse($busyEnd);

@@ -27,12 +27,12 @@ class Json extends Parser
     /**
      * The input data.
      */
-    protected ?array $input;
+    protected ?array $input = null;
 
     /**
      * Root component.
      */
-    protected ?Document $root;
+    protected ?Document $root = null;
 
     /**
      * This method starts the parsing process.
@@ -61,16 +61,11 @@ class Json extends Parser
             $this->options = $options;
         }
 
-        switch ($this->input[0]) {
-            case 'vcalendar':
-                $this->root = new VCalendar([], false);
-                break;
-            case 'vcard':
-                $this->root = new VCard([], false);
-                break;
-            default:
-                throw new ParseException('The root component must either be a vcalendar, or a vcard');
-        }
+        $this->root = match ($this->input[0]) {
+            'vcalendar' => new VCalendar([], false),
+            'vcard' => new VCard([], false),
+            default => throw new ParseException('The root component must either be a vcalendar, or a vcard'),
+        };
         foreach ($this->input[1] as $prop) {
             $this->root->add($this->parseProperty($prop));
         }
@@ -97,17 +92,13 @@ class Json extends Parser
         $self = $this;
 
         $properties = array_map(
-            function ($jProp) use ($self) {
-                return $self->parseProperty($jProp);
-            },
+            $self->parseProperty(...),
             $jComp[1]
         );
 
         if (isset($jComp[2])) {
             $components = array_map(
-                function ($jComp) use ($self) {
-                    return $self->parseComponent($jComp);
-                },
+                $self->parseComponent(...),
                 $jComp[2]
             );
         } else {
@@ -134,7 +125,7 @@ class Json extends Parser
             $valueType,
         ) = $jProp;
 
-        $propertyName = strtoupper($propertyName);
+        $propertyName = strtoupper((string) $propertyName);
 
         // This is the default class we would be using if we didn't know the
         // value type. We're using this value later in this function.
@@ -144,7 +135,7 @@ class Json extends Parser
 
         $value = array_slice($jProp, 3);
 
-        $valueType = strtoupper($valueType);
+        $valueType = strtoupper((string) $valueType);
 
         if (isset($parameters['group'])) {
             $propertyName = $parameters['group'].'.'.$propertyName;
@@ -169,7 +160,7 @@ class Json extends Parser
         // If the value type we received (e.g.: TEXT) was not the default value
         // type for the given property (e.g.: BDAY), we need to add a VALUE=
         // parameter.
-        if ($defaultPropertyClass !== get_class($prop)) {
+        if ($defaultPropertyClass !== $prop::class) {
             $prop['VALUE'] = $valueType;
         }
 

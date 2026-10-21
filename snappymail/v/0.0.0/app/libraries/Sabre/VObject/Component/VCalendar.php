@@ -145,6 +145,10 @@ class VCalendar extends VObject\Document
 
         // Additions from draft-daboo-calendar-availability-05
         'BUSYTYPE' => Property\Text::class,
+
+        // RFC 7986 properties
+        'NAME' => Property\FlatText::class,
+        'COLOR' => Property\FlatText::class,
     ];
 
     /**
@@ -164,7 +168,7 @@ class VCalendar extends VObject\Document
      *
      * @param string|null $componentName filter by component name
      *
-     * @return VObject\Component[]
+     * @return Component[]
      */
     public function getBaseComponents(?string $componentName = null): array
     {
@@ -327,7 +331,7 @@ class VCalendar extends VObject\Document
         foreach ($recurringEvents as $events) {
             try {
                 $it = new EventIterator($events, null, $timeZone);
-            } catch (NoInstancesException $e) {
+            } catch (NoInstancesException) {
                 // This event is recurring, but it doesn't have a single
                 // instance. We are skipping this event from the output
                 // entirely.
@@ -379,6 +383,18 @@ class VCalendar extends VObject\Document
 
             'CALSCALE' => '?',
             'METHOD' => '?',
+
+            // RFC 7986 calendar properties
+            'UID' => '?',
+            'LAST-MODIFIED' => '?',
+            'URL' => '?',
+            'REFRESH-INTERVAL' => '?',
+            'SOURCE' => '?',
+            'COLOR' => '?',
+            'NAME' => '*',
+            'DESCRIPTION' => '*',
+            'CATEGORIES' => '*',
+            'IMAGE' => '*',
         ];
     }
 
@@ -424,7 +440,7 @@ class VCalendar extends VObject\Document
             if ($child instanceof Component) {
                 ++$componentsFound;
 
-                if (!in_array($child->name, ['VEVENT', 'VTODO', 'VJOURNAL'])) {
+                if (!in_array($child->name, ['VEVENT', 'VTODO', 'VJOURNAL'], true)) {
                     continue;
                 }
                 $componentTypes[] = $child->name;

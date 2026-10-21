@@ -16,7 +16,7 @@ use Sabre\Xml;
  * @author Evert Pot (http://evertpot.com/)
  * @license http://sabre.io/license/ Modified BSD License
  */
-class Parameter extends Node
+class Parameter extends Node implements \Stringable
 {
     /**
      * Parameter name.
@@ -74,83 +74,12 @@ class Parameter extends Node
      */
     public static function guessParameterNameByValue(string $value): string
     {
-        switch (strtoupper($value)) {
-            // Encodings
-            case '7-BIT':
-            case 'QUOTED-PRINTABLE':
-            case 'BASE64':
-                $name = 'ENCODING';
-                break;
-
-                // Common types
-            case 'WORK':
-            case 'HOME':
-            case 'PREF':
-                // Delivery Label Type
-            case 'DOM':
-            case 'INTL':
-            case 'POSTAL':
-            case 'PARCEL':
-                // Telephone types
-            case 'VOICE':
-            case 'FAX':
-            case 'MSG':
-            case 'CELL':
-            case 'PAGER':
-            case 'BBS':
-            case 'MODEM':
-            case 'CAR':
-            case 'ISDN':
-            case 'VIDEO':
-                // EMAIL types (lol)
-            case 'AOL':
-            case 'APPLELINK':
-            case 'ATTMAIL':
-            case 'CIS':
-            case 'EWORLD':
-            case 'INTERNET':
-            case 'IBMMAIL':
-            case 'MCIMAIL':
-            case 'POWERSHARE':
-            case 'PRODIGY':
-            case 'TLX':
-            case 'X400':
-                // Photo / Logo format types
-            case 'GIF':
-            case 'CGM':
-            case 'WMF':
-            case 'BMP':
-            case 'DIB':
-            case 'PICT':
-            case 'TIFF':
-            case 'PDF':
-            case 'PS':
-            case 'JPEG':
-            case 'MPEG':
-            case 'MPEG2':
-            case 'AVI':
-            case 'QTIME':
-                // Sound Digital Audio Type
-            case 'WAVE':
-            case 'PCM':
-            case 'AIFF':
-                // Key types
-            case 'X509':
-            case 'PGP':
-                $name = 'TYPE';
-                break;
-
-                // Value types
-            case 'INLINE':
-            case 'URL':
-            case 'CONTENT-ID':
-            case 'CID':
-                $name = 'VALUE';
-                break;
-
-            default:
-                $name = '';
-        }
+        $name = match (strtoupper($value)) {
+            '7-BIT', 'QUOTED-PRINTABLE', 'BASE64' => 'ENCODING',
+            'WORK', 'HOME', 'PREF', 'DOM', 'INTL', 'POSTAL', 'PARCEL', 'VOICE', 'FAX', 'MSG', 'CELL', 'PAGER', 'BBS', 'MODEM', 'CAR', 'ISDN', 'VIDEO', 'AOL', 'APPLELINK', 'ATTMAIL', 'CIS', 'EWORLD', 'INTERNET', 'IBMMAIL', 'MCIMAIL', 'POWERSHARE', 'PRODIGY', 'TLX', 'X400', 'GIF', 'CGM', 'WMF', 'BMP', 'DIB', 'PICT', 'TIFF', 'PDF', 'PS', 'JPEG', 'MPEG', 'MPEG2', 'AVI', 'QTIME', 'WAVE', 'PCM', 'AIFF', 'X509', 'PGP' => 'TYPE',
+            'INLINE', 'URL', 'CONTENT-ID', 'CID' => 'VALUE',
+            default => '',
+        };
 
         return $name;
     }
@@ -177,9 +106,9 @@ class Parameter extends Node
     {
         if (is_array($this->value)) {
             return implode(',', $this->value);
-        } else {
-            return $this->value;
         }
+
+        return $this->value;
     }
 
     /**
@@ -201,9 +130,9 @@ class Parameter extends Node
             return $this->value;
         } elseif (is_null($this->value)) {
             return [];
-        } else {
-            return [$this->value];
         }
+
+        return [$this->value];
     }
 
     /**
@@ -234,7 +163,8 @@ class Parameter extends Node
     {
         return in_array(
             strtolower($value),
-            array_map('strtolower', (array) $this->value)
+            array_map(strtolower(...), (array) $this->value),
+            true
         );
     }
 
@@ -278,20 +208,19 @@ class Parameter extends Node
                 // added + as well.
                 if (!preg_match('#(?: [\n":;\^,\+] )#x', $item)) {
                     return $out.$item;
-                } else {
-                    // Enclosing in double-quotes, and using RFC6868 for encoding any
-                    // special characters
-                    $out .= '"'.strtr(
-                        $item,
-                        [
-                            '^' => '^^',
-                            "\n" => '^n',
-                            '"' => '^\'',
-                        ]
-                    ).'"';
-
-                    return $out;
                 }
+                // Enclosing in double-quotes, and using RFC6868 for encoding any
+                // special characters
+                $out .= '"'.strtr(
+                    $item,
+                    [
+                        '^' => '^^',
+                        "\n" => '^n',
+                        '"' => '^\'',
+                    ]
+                ).'"';
+
+                return $out;
             }
         );
     }

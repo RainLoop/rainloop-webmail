@@ -43,10 +43,10 @@ class CalAddress extends Text
     public function getNormalizedValue(): string
     {
         $input = $this->getValue();
-        if (!strpos($input, ':')) {
+        if (!strpos((string) $input, ':')) {
             return $input;
         }
-        list($schema, $everythingElse) = explode(':', $input, 2);
+        [$schema, $everythingElse] = explode(':', (string) $input, 2);
         $schema = strtolower($schema);
         if ('mailto' === $schema) {
             $everythingElse = strtolower($everythingElse);

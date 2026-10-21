@@ -23,7 +23,7 @@ class GuessFromLicEntry implements TimezoneGuesser
         // Libical generators may specify strings like
         // "SystemV/EST5EDT". For those we must remove the
         // SystemV part.
-        if ('SystemV/' === substr($lic, 0, 8)) {
+        if (str_starts_with($lic, 'SystemV/')) {
             $lic = substr($lic, 8);
         }
 

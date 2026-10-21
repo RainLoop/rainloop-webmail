@@ -41,10 +41,10 @@ class VEvent extends VObject\Component
      */
     public function isInTimeRange(\DateTimeInterface $start, \DateTimeInterface $end): bool
     {
-        if ($this->RRULE) {
+        if ($this->RRULE || $this->RDATE) {
             try {
                 $it = new EventIterator($this, null, $start->getTimezone());
-            } catch (NoInstancesException $e) {
+            } catch (NoInstancesException) {
                 // If we've caught this exception, there are no instances
                 // for the event that fall into the specified time-range.
                 return false;
@@ -117,6 +117,7 @@ class VEvent extends VObject\Component
             'DTSTART' => $hasMethod ? '?' : '1',
             'CLASS' => '?',
             'CREATED' => '?',
+            'COLOR' => '?',
             'DESCRIPTION' => '?',
             'GEO' => '?',
             'LAST-MODIFIED' => '?',
@@ -137,7 +138,9 @@ class VEvent extends VObject\Component
             'ATTENDEE' => '*',
             'CATEGORIES' => '*',
             'COMMENT' => '*',
+            'CONFERENCE' => '*',
             'CONTACT' => '*',
+            'IMAGE' => '*',
             'EXDATE' => '*',
             'REQUEST-STATUS' => '*',
             'RELATED-TO' => '*',

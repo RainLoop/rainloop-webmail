@@ -77,7 +77,7 @@ class DateAndOrTime extends Property
     public function setDateTime(\DateTimeInterface $dt): void
     {
         $tz = $dt->getTimeZone();
-        $isUtc = in_array($tz->getName(), ['UTC', 'GMT', 'Z']);
+        $isUtc = in_array($tz->getName(), ['UTC', 'GMT', 'Z'], true);
 
         if ($isUtc) {
             $value = $dt->format('Ymd\\THis\\Z');
@@ -232,14 +232,10 @@ class DateAndOrTime extends Property
         $value = '';
 
         // $d = defined
-        $d = function ($part) use ($parts): bool {
-            return !is_null($parts[$part]);
-        };
+        $d = (fn ($part): bool => !is_null($parts[$part]));
 
         // $r = read
-        $r = function ($part) use ($parts) {
-            return $parts[$part];
-        };
+        $r = (fn ($part) => $parts[$part]);
 
         // From the Relax NG Schema.
         //
@@ -341,7 +337,7 @@ class DateAndOrTime extends Property
 
         try {
             DateTimeParser::parseVCardDateTime($value);
-        } catch (InvalidDataException $e) {
+        } catch (InvalidDataException) {
             $messages[] = [
                 'level' => 3,
                 'message' => 'The supplied value ('.$value.') is not a correct DATE-AND-OR-TIME property',

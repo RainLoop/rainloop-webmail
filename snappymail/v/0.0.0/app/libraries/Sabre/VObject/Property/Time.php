@@ -104,7 +104,7 @@ class Time extends Text
                 $timeStr .= 'Z';
             } else {
                 $timeStr .=
-                    preg_replace('/([0-9]{2})([0-9]{2})$/', '$1:$2', $parts['timezone']);
+                    preg_replace('/([0-9]{2})([0-9]{2})$/', '$1:$2', (string) $parts['timezone']);
             }
         }
 
@@ -118,9 +118,7 @@ class Time extends Text
     public function setXmlValue(array $value): void
     {
         $value = array_map(
-            function ($value) {
-                return str_replace(':', '', $value);
-            },
+            fn ($value) => str_replace(':', '', $value),
             $value
         );
         parent::setXmlValue($value);

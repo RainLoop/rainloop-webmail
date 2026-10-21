@@ -42,7 +42,7 @@ abstract class Node implements \IteratorAggregate, \ArrayAccess, \Countable, \Js
     /**
      * Reference to the parent object, if this is not the top object.
      */
-    public ?Node $parent;
+    public ?Node $parent = null;
 
     /**
      * Iterator override.
@@ -52,7 +52,7 @@ abstract class Node implements \IteratorAggregate, \ArrayAccess, \Countable, \Js
     /**
      * The root document.
      */
-    protected ?Component $root;
+    protected ?Component $root = null;
 
     /**
      * Serializes the node into a mimedir format.

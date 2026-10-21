@@ -96,8 +96,8 @@ class ICalendar implements SplitterInterface
             }
 
             return $object;
-        } else {
-            return null;
         }
+
+        return null;
     }
 }

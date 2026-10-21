@@ -14,27 +14,8 @@ use Sabre\Xml;
  * @author Evert Pot (http://evertpot.com/)
  * @license http://sabre.io/license/ Modified BSD License
  */
-abstract class Property extends Node
+abstract class Property extends Node implements \Stringable
 {
-    /**
-     * The root document.
-     */
-    public ?Component $root;
-
-    /**
-     * Property name.
-     *
-     * This will contain a string such as DTSTART, SUMMARY, FN.
-     */
-    public ?string $name;
-
-    /**
-     * Property group.
-     *
-     * This is only used in vcards
-     */
-    public ?string $group;
-
     /**
      * List of parameters.
      */
@@ -75,13 +56,13 @@ abstract class Property extends Node
      * @param array             $parameters List of parameters
      * @param string|null       $group      The vcard property group
      */
-    public function __construct(Component $root, ?string $name, $value = null, array $parameters = [], ?string $group = null, ?int $lineIndex = null, ?string $lineString = null)
+    public function __construct(public ?Component $root, /**
+     * Property name.
+     *
+     * This will contain a string such as DTSTART, SUMMARY, FN.
+     */
+        public ?string $name, $value = null, array $parameters = [], public ?string $group = null, ?int $lineIndex = null, ?string $lineString = null)
     {
-        $this->name = $name;
-        $this->group = $group;
-
-        $this->root = $root;
-
         foreach ($parameters as $k => $v) {
             $this->add($k, $v);
         }
@@ -123,7 +104,7 @@ abstract class Property extends Node
     public function getValue()
     {
         if (is_array($this->value)) {
-            if (0 == count($this->value)) {
+            if (0 === count($this->value)) {
                 return null;
             } elseif (1 === count($this->value)) {
                 return $this->value[0];
@@ -155,9 +136,9 @@ abstract class Property extends Node
             return [];
         } elseif (is_array($this->value)) {
             return $this->value;
-        } else {
-            return [$this->value];
         }
+
+        return [$this->value];
     }
 
     /**
@@ -242,7 +223,7 @@ abstract class Property extends Node
         );
 
         // remove single space after last CRLF
-        return \substr($str, 0, -1);
+        return \substr((string) $str, 0, -1);
     }
 
     /**
@@ -282,7 +263,7 @@ abstract class Property extends Node
             if ('VALUE' === $parameter->name) {
                 continue;
             }
-            $parameters[strtolower($parameter->name)] = $parameter->jsonSerialize();
+            $parameters[strtolower((string) $parameter->name)] = $parameter->jsonSerialize();
         }
         // In jCard, we need to encode the property-group as a separate 'group'
         // parameter.
@@ -292,7 +273,7 @@ abstract class Property extends Node
 
         return array_merge(
             [
-                strtolower($this->name),
+                strtolower((string) $this->name),
                 (object) $parameters,
                 strtolower($this->getValueType()),
             ],
@@ -329,13 +310,13 @@ abstract class Property extends Node
             $parameters[] = $parameter;
         }
 
-        $writer->startElement(strtolower($this->name));
+        $writer->startElement(strtolower((string) $this->name));
 
-        if (!empty($parameters)) {
+        if ([] !== $parameters) {
             $writer->startElement('parameters');
 
             foreach ($parameters as $parameter) {
-                $writer->startElement(strtolower($parameter->name));
+                $writer->startElement(strtolower((string) $parameter->name));
                 $writer->write($parameter);
                 $writer->endElement();
             }
@@ -520,7 +501,7 @@ abstract class Property extends Node
         }
 
         // Checking if the property name does not contain any invalid bytes.
-        if (!preg_match('/^([A-Z0-9-]+)$/', $this->name)) {
+        if (!preg_match('/^([A-Z0-9-]+)$/', (string) $this->name)) {
             $warnings[] = [
                 'level' => $options & self::REPAIR ? 1 : 3,
                 'message' => 'The property name: '.$this->name.' contains invalid characters. Only A-Z, 0-9 and - are allowed',
@@ -572,7 +553,7 @@ abstract class Property extends Node
                         }
                         break;
                 }
-                if ($allowedEncoding && !in_array(strtoupper($encoding), $allowedEncoding)) {
+                if ($allowedEncoding && !in_array(strtoupper($encoding), $allowedEncoding, true)) {
                     $warnings[] = [
                         'level' => 3,
                         'message' => 'ENCODING='.strtoupper($encoding).' is not valid for this document type.',
