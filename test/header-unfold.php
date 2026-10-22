@@ -43,7 +43,8 @@ $cases = [
 	"Hello\r\n world" => 'Hello world',
 ];
 foreach ($cases as $raw => $want) {
-	$got = preg_replace('/\s+/', ' ', subject($raw));
+	// exact: a fold is one space, never two ("et  checklist" ended up in replies)
+	$got = subject($raw);
 	check($got === $want, "got [{$got}], want [{$want}]");
 }
 
