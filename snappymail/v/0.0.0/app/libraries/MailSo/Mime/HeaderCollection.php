@@ -136,12 +136,12 @@ class HeaderCollection extends \MailSo\Base\Collection
 					$sHeadersValue = \rtrim($sHeadersValue);
 				}
 
-				if ('=?' === \substr(\ltrim($sHeadersValue), 0, 2)) {
-					$sHeadersValue = \ltrim($sHeadersValue);
-				}
-
-				if ('=?' === \substr($sHeadersValue, 0, 2)) {
-					$sValue .= $sHeadersValue;
+				// RFC 2047 6.2: only whitespace between two encoded words is
+				// dropped; after a plain word the folding space is a real space.
+				if ('=?' === \substr(\ltrim($sHeadersValue), 0, 2) && '?=' === \substr($sValue, -2)) {
+					$sValue .= \ltrim($sHeadersValue);
+				} else if ('=?' === \substr(\ltrim($sHeadersValue), 0, 2)) {
+					$sValue .= ' '.\ltrim($sHeadersValue);
 				} else {
 					$sValue .= "\n".$sHeadersValue;
 				}
