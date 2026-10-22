@@ -5,8 +5,8 @@ class ICSViewerPlugin extends \RainLoop\Plugins\AbstractPlugin
 	const
 		NAME = 'ICS Viewer',
 		AUTHOR = 'PhieF',
-		VERSION = '1.0',
-		RELEASE  = '2024-09-17',
+		VERSION = '1.1',
+		RELEASE  = '2026-10-22',
 		CATEGORY = 'Messages',
 		DESCRIPTION = 'Display ICS attachment using ical lib, or JSON-LD details, based on viewICS',
 		REQUIRED = '2.34.0';
