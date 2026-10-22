@@ -303,14 +303,14 @@ export class MailMessageList extends AbstractViewRight {
 				item => sFolder === item?.folder && iUid == item?.uid
 			);
 
-			if ('INBOX' === sFolder) {
+			if ('INBOX' === sFolder && 'INBOX' !== FolderUserStore.currentFolderFullName()) {
 				hasher.setHash(mailBox(sFolder));
 			}
 
 			if (message) {
 				this.selector.selectMessageItem(message);
 			} else {
-				if ('INBOX' !== sFolder) {
+				if ('INBOX' !== sFolder && sFolder !== FolderUserStore.currentFolderFullName()) {
 					hasher.setHash(mailBox(sFolder));
 				}
 				if (sFolder && iUid) {
