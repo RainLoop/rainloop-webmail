@@ -1255,6 +1255,7 @@ trait Messages
 			$oPart->SubParts->append($oSignaturePart);
 		} else {
 			$sCertificate = $this->GetActionParam('signCertificate', '');
+			$sCertificateChain = $this->GetActionParam('signCertificateChain', '');
 			$sPrivateKey = $this->GetActionParam('signPrivateKey', '');
 			if ('S/MIME' === $this->GetActionParam('sign', '')) {
 				$sID = $this->GetActionParam('identityID', '');
@@ -1263,6 +1264,7 @@ trait Messages
 					 && ($oIdentity->Id() === $sID || $oIdentity->Email() === $oFrom->GetEmail())
 					) {
 						$sCertificate = $oIdentity->smimeCertificate;
+						$sCertificateChain = $oIdentity->smimeCertificateChain;
 						$sPrivateKey = $oIdentity->smimeKey;
 						break;
 					}
@@ -1303,6 +1305,7 @@ trait Messages
 
 				$SMIME = $this->SMIME();
 				$SMIME->setCertificate($sCertificate);
+				$SMIME->setCertificateChain($sCertificateChain);
 				$SMIME->setPrivateKey($sPrivateKey, $oPassphrase);
 				$sSignature = $SMIME->sign($tmp, $detached);
 

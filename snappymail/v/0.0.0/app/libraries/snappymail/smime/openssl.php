@@ -19,6 +19,7 @@ class OpenSSL
 	// Used for sign and decrypt
 	private $certificate; // OpenSSLCertificate|array|string
 	private $privateKey; // OpenSSLAsymmetricKey|OpenSSLCertificate|array|string
+	private ?string $certificateChain = null;
 
 	function __construct(string $homedir)
 	{
@@ -128,6 +129,15 @@ class OpenSSL
 		}
 		if ($this->privateKey && !\openssl_x509_check_private_key($this->certificate, $this->privateKey)) {
 			throw new \RuntimeException('OpenSSL x509: ' . \openssl_error_string());
+		}
+	}
+
+	public function setCertificateChain(/*string*/$certificateChain)
+	{
+		if ($certificateChain === "") {
+			$this->certificateChain = null;
+		} else {
+			$this->certificateChain = $certificateChain;
 		}
 	}
 
@@ -244,6 +254,13 @@ class OpenSSL
 			}
 			$input = $tmp;
 		}
+		if (\is_string($this->certificateChain)) {
+			$tmp = new Temporary('smimechain-');
+			if (!$tmp->putContents($this->certificateChain)) {
+				return null;
+			}
+			$certificateChain = $tmp;
+		}
 		$output = new Temporary('smimeout-');
 		if (!\openssl_pkcs7_sign(
 			$input->filename(),
@@ -252,7 +269,7 @@ class OpenSSL
 			$this->privateKey,
 			$this->headers,
 			$detached ? \PKCS7_DETACHED | \PKCS7_BINARY : 0, // | PKCS7_NOCERTS | PKCS7_NOATTR
-			$this->untrusted_certificates_filename
+			$certificateChain ?? null
 		)) {
 			throw new \RuntimeException('OpenSSL sign: ' . \openssl_error_string());
 		}

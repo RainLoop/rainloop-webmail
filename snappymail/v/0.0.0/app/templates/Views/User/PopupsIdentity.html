@@ -101,6 +101,10 @@
 					<label data-i18n="SMIME/CERTIFICATE"></label>
 					<textarea name="smimeCertificate" class="input-xxlarge" rows="14" autofocus="" autocomplete="off" data-bind="value: smimeCertificate"></textarea>
 				</div>
+				<div class="control-group" data-bind="css: {'error': smimeCertificateChain() && !smimeCertificateChainValid()}">
+					<label data-i18n="SMIME/CERTIFICATECHAIN"></label>
+					<textarea name="smimeCertificateChain" class="input-xxlarge" rows="14" autofocus="" autocomplete="off" data-bind="value: smimeCertificateChain"></textarea>
+				</div>
 				<div class="control-group" data-bind="hidden:smimeCertificate">
 					<label></label>
 					<button type="button" data-bind="click: $root.createSelfSigned" data-i18n="CRYPTO/CREATE_SELF_SIGNED"></button>

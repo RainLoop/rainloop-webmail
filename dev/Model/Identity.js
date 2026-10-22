@@ -24,6 +24,7 @@ export class IdentityModel extends EmailModel /*AbstractModel*/ {
 
 			smimeKey: '',
 			smimeCertificate: '',
+			smimeCertificateChain: '',
 
 			askDelete: false,
 
@@ -33,7 +34,9 @@ export class IdentityModel extends EmailModel /*AbstractModel*/ {
 		addComputablesTo(this, {
 			smimeKeyEncrypted: () => this.smimeKey().includes('-----BEGIN ENCRYPTED PRIVATE KEY-----'),
 			smimeKeyValid: () => /^-----BEGIN (ENCRYPTED |RSA )?PRIVATE KEY-----/.test(this.smimeKey()),
-			smimeCertificateValid: () => /^-----BEGIN CERTIFICATE-----/.test(this.smimeCertificate())
+			smimeCertificateValid: () => /^-----BEGIN CERTIFICATE-----/.test(this.smimeCertificate()),
+			smimeCertificateChainValid: () => !this.smimeCertificateChain()
+				|| /^-----BEGIN CERTIFICATE-----/.test(this.smimeCertificateChain())
 		});
 	}
 

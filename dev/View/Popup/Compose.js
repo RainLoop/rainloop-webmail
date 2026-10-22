@@ -1413,7 +1413,8 @@ export class ComposePopupView extends AbstractViewPopup {
 		key && options.push(['OpenPGP', key]);
 		key = GnuPGUserStore.getPrivateKeyFor(email, 1);
 		key && options.push(['GnuPG', key]);
-		identity.smimeKeyValid() && identity.smimeCertificateValid() && identity.email === email
+		identity.smimeKeyValid() && identity.smimeCertificateValid()
+			&& identity.smimeCertificateChainValid() && identity.email === email
 			&& options.push(['S/MIME']);
 		console.dir({signOptions: options});
 		this.signOptions(options);
@@ -1611,6 +1612,7 @@ export class ComposePopupView extends AbstractViewPopup {
 					// TODO: sign in PHP fails
 					params.sign = 'S/MIME';
 //					params.signCertificate = identity.smimeCertificate();
+//					params.signCertificateChain = identity.smimeCertificateChain();
 //					params.signPrivateKey = identity.smimeKey();
 //					params.attachCertificate = false;
 					if (identity.smimeKeyEncrypted()) {

@@ -333,6 +333,7 @@
 	"SMIME": {
 		"POPUP_IMPORT_TITLE": "S\/MIME-Zertifikat importieren",
 		"CERTIFICATE": "Zertifikat",
+		"CERTIFICATECHAIN": "Zwischenzertifikat(e)",
 		"CERTIFICATES": "S\/MIME-Zertifikate",
 		"SIGNED_MESSAGE": "S\/MIME-signierte Nachricht",
 		"ENCRYPTED_MESSAGE": "S\/MIME-verschlüsselte Nachricht",
