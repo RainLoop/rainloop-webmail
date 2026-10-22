@@ -99,9 +99,6 @@ RUN set -eux; \
 # mysql
 RUN docker-php-ext-install pdo_mysql
 
-# opcache
-RUN docker-php-ext-install opcache
-
 # postgres
 RUN set -eux; \
     apk add --no-cache postgresql-libs; \
