@@ -723,14 +723,20 @@ class PdoAddressBook
 			$aParams[':search_lower'] = array($sLowerSearch, \PDO::PARAM_STR);
 		}
 
-		$oContact = null;
-		$iIdContact = 0;
+		// This query selects id_contact only, so it must not be handed to
+		// getContactsFromPDO(), which unconditionally reads id_contact_str,
+		// changed, etag and jcard from every row. Look the contact up by id
+		// instead: GetContactByID() selects those columns, so the Contact it
+		// returns carries a real etag and changed value rather than 0.
+		$oStmt = $this->prepareAndExecute($sSql, $aParams);
+		if ($oStmt) {
+			$aFetch = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
+			if (\is_array($aFetch) && \count($aFetch) && !empty($aFetch[0]['id_contact'])) {
+				return $this->GetContactByID((int) $aFetch[0]['id_contact']);
+			}
+		}
 
-		$aContacts = $this->getContactsFromPDO(
-			$this->prepareAndExecute($sSql, $aParams)
-		);
-
-		return $aContacts ? $aContacts[0] : null;
+		return null;
 	}
 
 	/**
