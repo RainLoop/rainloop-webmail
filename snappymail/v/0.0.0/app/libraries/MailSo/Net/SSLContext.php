@@ -39,7 +39,7 @@ class SSLContext implements \JsonSerializable
 
 	public function __construct()
 	{
-		$oConfig = \RainLoop\API::Config();
+		$oConfig = \RainLoop\Api::Config();
 		$this->verify_peer = !!$oConfig->Get('ssl', 'verify_certificate', true);
 		$this->verify_peer_name = !!$oConfig->Get('ssl', 'verify_certificate', true);
 		$this->allow_self_signed = !!$oConfig->Get('ssl', 'allow_self_signed', false);
