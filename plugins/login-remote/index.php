@@ -43,6 +43,7 @@ class LoginRemotePlugin extends \RainLoop\Plugins\AbstractPlugin
 			try
 			{
 				static::$login = true;
+				$sPassword = new \SnappyMail\SensitiveString($sPassword);
 				$oAccount = $oActions->LoginProcess($sEmail, $sPassword);
 			}
 			catch (\Throwable $oException)
