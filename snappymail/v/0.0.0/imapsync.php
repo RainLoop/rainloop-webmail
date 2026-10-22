@@ -183,7 +183,7 @@ function getImapClient(int $host)
 
 	$oImapClient = new \MailSo\Imap\ImapClient;
 //	$oAccount = new \RainLoop\Model\Account;
-	$oImapClient->SetLogger(\RainLoop\API::Logger());
+	$oImapClient->SetLogger(\RainLoop\Api::Logger());
 //	$oPlugins->RunHook('imap.before-connect', array($oAccount, $oImapClient, $ImapSettings));
 	$oImapClient->Connect($ImapSettings);
 //	$oPlugins->RunHook('imap.after-connect', array($oAccount, $oImapClient, $ImapSettings));
