@@ -15,7 +15,7 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		REQUIRED = '2.33.0',
 		CATEGORY = 'Contacts',
 		LICENSE  = 'MIT',
-		DESCRIPTION = 'Show graphic of sender in message and messages list (supports BIMI, Gravatar, favicon and identicon, Contacts is still TODO)';
+		DESCRIPTION = 'Show graphic of sender in message and messages list (supports Contacts, BIMI, Gravatar, favicon and identicon)';
 
 	public function Init() : void
 	{
@@ -139,6 +139,10 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetAllowedInJs(true)
 				->SetDefaultValue(true),
+			\RainLoop\Plugins\Property::NewInstance('contacts')->SetLabel('Contacts')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDescription('Use the PHOTO stored on a matching address book contact')
+				->SetDefaultValue(true),
 			\RainLoop\Plugins\Property::NewInstance('bimi')->SetLabel('BIMI')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(false)
@@ -230,30 +234,23 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		\header('Cache-Control: private');
 //		\header('Expires: '.\gmdate('D, j M Y H:i:s', \time() + 86400).' UTC');
 
+		// A photo stored on the contact is authoritative, so it is consulted
+		// before the cache and before any network lookup: it beats a guessed
+		// avatar and replaces up to five remote round-trips. Deliberately not
+		// written to the avatars cache, which has no expiry - a cached copy
+		// would shadow later edits to the contact.
+		if ($this->Config()->Get('plugin', 'contacts', true)) {
+			$aResult = static::getContactPhoto($sAsciiEmail);
+			if ($aResult) {
+				return $aResult;
+			}
+		}
+
 		$aResult = static::getCachedImage($sEmail);
 		if ($aResult) {
 			return $aResult;
 		}
 
-		// TODO: lookup contacts vCard and return PHOTO value
-		/*
-		if (!$aResult) {
-			$oActions = \RainLoop\Api::Actions();
-			$oAccount = $oActions->getAccountFromToken();
-			if ($oAccount) {
-				$oAddressBookProvider = $oActions->AddressBookProvider($oAccount);
-				if ($oAddressBookProvider) {
-					$oContact = $oAddressBookProvider->GetContactByEmail($sEmail);
-					if ($oContact && $oContact->vCard && $oContact->vCard['PHOTO']) {
-						$aResult = [
-							'text/vcard',
-							$oContact->vCard
-						];
-					}
-				}
-			}
-		}
-		*/
 
 		if (!$aResult) {
 			$sDomain = \explode('@', $sEmail);
@@ -314,6 +311,77 @@ class AvatarsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$sDomain = \preg_replace('/^amazon.nl$/D', 'amazon.com', $sDomain);
 		$sDomain = \preg_replace('/^.+\\.([^.]+\\.[^.]+)$/D', '$1', $sDomain);
 		return $sDomain;
+	}
+
+	/**
+	 * Return the PHOTO of the address book contact owning this address.
+	 *
+	 * vCard 4.0 stores it as a data: URI, vCard 3.0 as ENCODING=b with a TYPE
+	 * parameter, and either version may point at an external URL instead.
+	 */
+	private static function getContactPhoto(string $sEmail) : ?array
+	{
+		try {
+			$oActions = \RainLoop\Api::Actions();
+			$oAccount = $oActions->getAccountFromToken(false);
+			if (!$oAccount) {
+				return null;
+			}
+			$oProvider = $oActions->AddressBookProvider($oAccount);
+			if (!$oProvider || !$oProvider->IsActive()) {
+				return null;
+			}
+			// Several contacts can share an address - a synced card, a manual
+			// entry, an auto-collected one - and only one of them may carry the
+			// photo. GetContactByEmail() returns whichever matches first, so
+			// fall back to scanning the matches for one that actually has it.
+			$oPhoto = null;
+			$oContact = $oProvider->GetContactByEmail($sEmail);
+			if ($oContact && $oContact->vCard && isset($oContact->vCard->PHOTO)) {
+				$oPhoto = $oContact->vCard->PHOTO;
+			} else {
+				$iCount = 0;
+				foreach ($oProvider->GetContacts(0, 20, $sEmail, $iCount) as $oCandidate) {
+					if ($oCandidate->vCard && isset($oCandidate->vCard->PHOTO)) {
+						$oPhoto = $oCandidate->vCard->PHOTO;
+						break;
+					}
+				}
+			}
+			if (!$oPhoto) {
+				return null;
+			}
+
+			$sValue = \trim((string) $oPhoto);
+			if (!\strlen($sValue)) {
+				return null;
+			}
+
+			// vCard 4.0: data:image/jpeg;base64,...
+			if (\preg_match('#^data:(image/[a-z0-9.+-]+);base64,(.+)$#si', $sValue, $aMatch)) {
+				$sBinary = \base64_decode(\preg_replace('#\s+#', '', $aMatch[2]), true);
+				return $sBinary ? [\strtolower($aMatch[1]), $sBinary] : null;
+			}
+
+			// vCard 3.0: PHOTO;ENCODING=b;TYPE=JPEG:<base64>
+			$sEncoding = \strtolower((string) ($oPhoto['ENCODING'] ?? ''));
+			if ('b' === $sEncoding || 'base64' === $sEncoding) {
+				$sBinary = \base64_decode(\preg_replace('#\s+#', '', $sValue), true);
+				if ($sBinary) {
+					$sType = \strtolower((string) ($oPhoto['TYPE'] ?? '')) ?: 'jpeg';
+					return [\str_starts_with($sType, 'image/') ? $sType : "image/{$sType}", $sBinary];
+				}
+				return null;
+			}
+
+			// Either version may reference the image instead of embedding it.
+			if (\preg_match('#^https?://#i', $sValue)) {
+				return static::getUrl($sValue);
+			}
+		} catch (\Throwable $oException) {
+			\SnappyMail\Log::notice('Avatar', 'contact photo lookup failed: ' . $oException->getMessage());
+		}
+		return null;
 	}
 
 	private static function cacheImage(string $sEmail, array $aResult) : void
