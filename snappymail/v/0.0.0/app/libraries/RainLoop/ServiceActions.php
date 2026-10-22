@@ -339,7 +339,7 @@ class ServiceActions
 					$sMethodName = 'Raw'.$sAction;
 					if (\method_exists($this->oActions, $sMethodName)) {
 						\header('X-Raw-Action: '.$sMethodName);
-						\header('Content-Security-Policy: script-src \'none\'; child-src \'none\'');
+						\header('Content-Security-Policy: script-src \'none\'; child-src \'none\'; object-src \'none\'');
 
 						$sRawError = '';
 						$this->oActions->SetActionParams(array(
