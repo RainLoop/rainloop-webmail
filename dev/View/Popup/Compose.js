@@ -1634,7 +1634,9 @@ export class ComposePopupView extends AbstractViewPopup {
 					Object.entries(PgpUserStore.getPublicKeyOfEmails(recipients) || {}).forEach(([k,v]) =>
 						params.autocrypt.push({
 							addr: k,
-							keydata: v.replace(/-----(BEGIN|END) PGP PUBLIC KEY BLOCK-----/g, '').trim()
+							keydata: v
+								.replace(/-----(BEGIN|END) PGP PUBLIC KEY BLOCK-----/g, '')
+								.replace(/\s+/g, '') // Single base64 string, let the server do compliance formatting
 						})
 					);
 				for (let i = 0; i < encryptOptions.length; ++i) {
