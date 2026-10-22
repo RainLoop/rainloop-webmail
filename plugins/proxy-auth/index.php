@@ -6,8 +6,8 @@ class ProxyAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME     = 'Proxy Auth',
 		AUTHOR   = 'Philipp',
 		URL      = 'https://www.mundhenk.org/',
-		VERSION  = '0.5',
-		RELEASE  = '2024-09-20',
+		VERSION  = '0.7',
+		RELEASE  = '2026-05-17',
 		REQUIRED = '2.36.1',
 		CATEGORY = 'Login',
 		LICENSE  = 'MIT',
@@ -19,26 +19,6 @@ class ProxyAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->addPartHook('ProxyAuth', 'ServiceProxyAuth');
 		$this->addPartHook('UserHeaderSet', 'ServiceUserHeaderSet');
 		$this->addHook('login.credentials', 'MapEmailAddress');
-	}
-
-	/* by https://gist.github.com/tott/7684443 */
-	/**
- 	 * Check if a given ip is in a network
- 	 * @param  string $ip    IP to check in IPV4 format eg. 127.0.0.1
- 	 * @param  string $range IP/CIDR netmask eg. 127.0.0.0/24, also 127.0.0.1 is accepted and /32 assumed
- 	 * @return boolean true if the ip is in this range / false if not.
- 	 */
-	private function ip_in_range( $ip, $range ) {
-		if ( strpos( $range, '/' ) == false ) {
-			$range .= '/32';
-		}
-		// $range is in IP/CIDR format eg 127.0.0.1/24
-		list( $range, $netmask ) = explode( '/', $range, 2 );
-		$range_decimal = ip2long( $range );
-		$ip_decimal = ip2long( $ip );
-		$wildcard_decimal = pow( 2, ( 32 - $netmask ) ) - 1;
-		$netmask_decimal = ~ $wildcard_decimal;
-		return ( ( $ip_decimal & $netmask_decimal ) == ( $range_decimal & $netmask_decimal ) );
 	}
 
 	public function MapEmailAddress(string &$sEmail, string &$sImapUser, string &$sPassword, string &$sSmtpUser)
@@ -80,59 +60,19 @@ class ProxyAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$sMsg = "Remote User: " . $sRemoteUser;
 		$oLogger->Write($sMsg, $sLevel, $sPrefix);
 
-		$sProxyIP = $this->Config()->getDecrypted('plugin', 'proxy_ip', '');
-		$sMsg = "ProxyIP: " . $sProxyIP;
-		$oLogger->Write($sMsg, $sLevel, $sPrefix);
+		/* create master user login from remote user header and settings */
+		$sEmail = $sRemoteUser . $sMasterSeparator . $sMasterUser;
+		$sPassword = new \SnappyMail\SensitiveString(\trim($this->Config()->getDecrypted('plugin', 'master_password', '')));
 
-		$sProxyCheck = $this->Config()->getDecrypted('plugin', 'proxy_check', '');
-		$sClientIPs = $this->Manager()->Actions()->Http()->GetClientIP(true);
-
-		/* make sure that remote user is only set by authorized proxy to avoid security risks */
-		if ($sProxyCheck) {
-			$sProxyRequest = false;
-			$sMsg = "checking client IPs: " . $sClientIPs;
-			$oLogger->Write($sMsg, $sLevel, $sPrefix);
-
-			$sClientIPs = explode(", ", $sClientIPs);
-			if (is_array($sClientIPs)) {
-				foreach ($sClientIPs as &$sIP) {
-					$sMsg = "checking client IP: " . $sIP;
-					$oLogger->Write($sMsg, $sLevel, $sPrefix);
-
-					if ($this->ip_in_range($sIP, $sProxyIP)) {
-						$sProxyRequest = true;
-					}
-				}
-			} else {
-				$sMsg = "checking client IP: " . $sClientIPs;
-				$oLogger->Write($sMsg, $sLevel, $sPrefix);
-
-				if ($this->ip_in_range($sClientIPs, $sProxyIP)) {
-					$sProxyRequest = true;
-				}
-			}
-		} else {
-			$sProxyRequest = true;
+		try
+		{
+			static::$login = true;
+			$oAccount = $oActions->LoginProcess($sEmail, $sPassword);
 		}
-
-		if ($sProxyRequest) {
-			/* create master user login from remote user header and settings */
-			$sEmail = $sRemoteUser . $sMasterSeparator . $sMasterUser;
-			$sPassword =  new \SnappyMail\SensitiveString(\trim($this->Config()->getDecrypted('plugin', 'master_password', '')));
-
-			try
-			{
-				static::$login = true;
-				$oAccount = $oActions->LoginProcess($sEmail, $sPassword);
-			}
-			catch (\Throwable $oException)
-			{
-				$oLogger = $oActions->Logger();
-				$oLogger && $oLogger->WriteException($oException);
-			}
-
-			\MailSo\Base\Http::Location('./');
-			return true;
+		catch (\Throwable $oException)
+		{
+			$oLogger = $oActions->Logger();
+			$oLogger && $oLogger->WriteException($oException);
 		}
 
 		\MailSo\Base\Http::Location('./');
@@ -187,18 +127,6 @@ class ProxyAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
 				->SetDescription('Name of header containing username')
 				->SetDefaultValue('Remote-User')
-				->SetEncrypted(),
-			\RainLoop\Plugins\Property::NewInstance('check_proxy')
-				->SetLabel('Check Proxy')
-				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
-				->SetDescription('Activates check if proxy is connecting')
-				->SetDefaultValue(true)
-				->SetEncrypted(),
-			\RainLoop\Plugins\Property::NewInstance('proxy_ip')
-				->SetLabel('Proxy IPNet')
-				->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
-				->SetDescription('IP or Subnet of proxy, auth header will only be accepted from this address')
-				->SetDefaultValue('10.1.0.0/24')
 				->SetEncrypted(),
 			\RainLoop\Plugins\Property::NewInstance('auto_login')
 				->SetAllowedInJs(true)

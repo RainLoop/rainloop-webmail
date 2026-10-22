@@ -19,9 +19,11 @@ The following steps are require in SnappyMail:
    - Master User is dependent on Dovecot config (see below)
    - Master User Password is dependent on Dovecot config (see below)
    - Header Name is dependent on authentication solution. This is the header containing the name of currently logged in user. In case of Authelia, this is "Remote-User".
-   - Check Proxy: Since this plugin partially bypasses authentication, it is important to only allow this access from well-defined hosts. It is highly recommended to activate this option!
-   - When checking for reverse proxy, it is required to set the IP filter to either an IP address or a subnet.
    - Automatic Login: Automatically logs in the user of user header is present (see below)
+
+> **Security note**
+>
+> This plugin trusts the configured request header as proof of identity. Anyone who can reach the SnappyMail container directly and set that header can log in as any user. You **must** ensure that SnappyMail is only reachable through your reverse proxy / SSO chain (e.g. via the docker network, a firewall, or by binding SnappyMail to a non-public interface) and that the upstream proxy strips any client-supplied value of the header before forwarding. The plugin itself does no source-IP validation — earlier versions had a `check_proxy` option, but it inspected the forwarded client IP (the end user's IP) and therefore did not actually verify that the request came from the proxy. It has been removed; gate access at the network layer instead.
 
 This concludes the setup of SnappyMail.
 
@@ -29,23 +31,22 @@ This concludes the setup of SnappyMail.
 
 In Dovecot, you need to enable Master User.
 Enable ```!include auth-master.conf.ext``` in /etc/dovecot/conf.d/10-auth.conf.
-The file /etc/dovecot/conf.d/auth-master.conf.ext should contain:
+In Dovecot 2.3, the file /etc/dovecot/conf.d/auth-master.conf.ext should contain:
 ```
-# Authentication for master users. Included from auth.conf.
-
-# By adding master=yes setting inside a passdb you make the passdb a list
-# of "master users", who can log in as anyone else.
-# <doc/wiki/Authentication.MasterUsers.txt>
-
-# Example master user passdb using passwd-file. You can use any passdb though.
 passdb {
   driver = passwd-file
   master = yes
   args = /etc/dovecot/master-users
-
-  # Unless you're using PAM, you probably still want the destination user to
-  # be looked up from passdb that it really exists. pass=yes does that.
   pass = yes
+}
+```
+
+In Dovecot 2.4, the file /etc/dovecot/conf.d/auth-master.conf.ext should contain:
+```
+passdb passwd-file {
+  master = yes
+  passwd_file_path = /etc/dovecot/master-users
+  result_success = continue
 }
 ```
 
@@ -80,3 +81,11 @@ The user is always considered logged in, as authentication is handled through re
 Auto login can be disabled in the plugin settings.
 You can also change the logout link in admin panel -> Config -> custom_logout_link to the one of your authentication system, e.g., ```https://auth.yourdomain.com/logout```.
 In this case, you can log out from your overall system via SnappyMail.
+
+## Troubleshooting
+
+### IMAP `AUTHENTICATIONFAILED` after a container rebuild / upgrade
+
+The master user/password fields are encrypted at rest using SnappyMail's `APP_SALT`. If that salt is regenerated (e.g., the data volume was reset, the container was rebuilt without persisting `_data_`, or the salt file was rotated), the values in `plugin-proxy-auth.json` can no longer be decrypted. `getDecrypted()` then silently returns `null`, an empty password is passed to IMAP, and Dovecot rejects the login with `AUTHENTICATIONFAILED`.
+
+Fix: open admin panel -> Extensions -> Proxy Auth, re-enter the Master User and Master Password (and any other previously-set encrypted fields), and save. The values will be re-encrypted under the current salt.
