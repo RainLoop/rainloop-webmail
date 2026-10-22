@@ -9,6 +9,12 @@ UPLOAD_MAX_SIZE=${UPLOAD_MAX_SIZE:-25M}
 MEMORY_LIMIT=${MEMORY_LIMIT:-128M}
 SECURE_COOKIES=${SECURE_COOKIES:-true}
 
+# Disable listening on ipv6 for ipv4-only environments, or nginx will fail to start
+if ! ip a | grep 'inet6 ' > /dev/null; then
+    echo "[INFO] ipv6 is disabled. Configuring nginx to not listen on ipv6"
+    sed -i '/listen \[::\]:/d' /etc/nginx/nginx.conf
+fi
+
 # Set attachment size limit
 sed -i "s/<UPLOAD_MAX_SIZE>/$UPLOAD_MAX_SIZE/g" /usr/local/etc/php-fpm.d/php-fpm.conf /etc/nginx/nginx.conf
 sed -i "s/<MEMORY_LIMIT>/$MEMORY_LIMIT/g" /usr/local/etc/php-fpm.d/php-fpm.conf
