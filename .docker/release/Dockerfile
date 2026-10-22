@@ -122,6 +122,13 @@ RUN set -eux; \
     apk del .build-dependencies; \
     apk del .deps
 
+# sqlite
+RUN set -eux; \
+    apk add --no-cache sqlite-libs; \
+    apk add --no-cache --virtual .deps sqlite-dev; \
+    docker-php-ext-install pdo_sqlite; \
+    apk del .deps
+
 # tidy
 RUN set -eux; \
     apk add --no-cache tidyhtml; \
