@@ -77,7 +77,7 @@ Now, login to [http://localhost:8888/?admin](http://localhost:8888/?admin) with 
 To use PostgreSQL as the DB, in Admin Panel, click `Contacts`, check `Enable contacts` and , and under `Storage (PDO)` choose the following:
 
 - Type: `PostgresSQL`
-- Data Source Name (DSN): `host=postgres;port=5432;dbname=snappymail`
+- Data Source Name (DSN): `host=db;port=5432;dbname=snappymail`
 - User `snappymail`
 - Password `snappymail`
 
