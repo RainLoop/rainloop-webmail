@@ -10,7 +10,7 @@ class LDAPLoginMappingPlugin extends AbstractPlugin
 		NAME     = 'LDAP login mapping',
 		VERSION  = '2.4',
 		AUTHOR   = 'RainLoop Team, Ludovic Pouzenc<ludovic@pouzenc.fr>, ZephOne<zephone@protonmail.com>',
-		RELEASE  = '2024-01-09',
+		RELEASE  = '2025-01-09',
 		REQUIRED = '2.36.1',
 		CATEGORY = 'Login',
 		DESCRIPTION = 'This plugins allows to authenticate using LDAP mail field, yet login field would still be used for IMAP and SMTP authentication';
