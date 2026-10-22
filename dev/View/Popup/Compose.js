@@ -1593,6 +1593,7 @@ export class ComposePopupView extends AbstractViewPopup {
 */
 						break;
 					} catch (e) {
+						Passphrases.delete(signOptions[i][1])
 						console.error(e);
 					}
 				} else if ('GnuPG' == signOptions[i][0]) {

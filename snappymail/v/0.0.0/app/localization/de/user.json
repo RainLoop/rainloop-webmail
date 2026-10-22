@@ -27,6 +27,8 @@
 		"USERNAME": "Nutzername",
 		"PASSWORD": "Passwort",
 		"REMEMBER": "Zugangsdaten merken",
+		"REMEMBER_FOR_SESSION": "Aktuelle Sitzung merken",
+		"REMEMBER_PERMANENT": "Dauerhaft merken",
 		"REPLY_TO": "Antwort an",
 		"SAVE": "Speichern",
 		"SAVE_CHANGES": "Änderungen speichern?",
@@ -458,7 +460,8 @@
 		"LEGEND_SECURITY": "Sicherheit",
 		"LABEL_AUTOLOGOUT": "Automatische Abmeldung",
 		"FORGET_KEY_PASS": "Passphrase für privaten Schlüssel vergessen",
-		"NEVER": "Nie"
+		"NEVER": "Nie",
+		"LABEL_STORED_PASS": "Passphrase gespeichert"
 	},
 	"SETTINGS_GENERAL": {
 		"LANGUAGE": "Sprache",

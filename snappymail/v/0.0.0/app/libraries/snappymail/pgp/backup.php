@@ -9,7 +9,7 @@ namespace SnappyMail\PGP;
 
 class Backup
 {
-	public static function PGPKey(string $key, string $keyId = '') : bool
+	public static function PGPKey(string $key, string $keyId = '', $doDelete = false) : bool
 	{
 		$oActions = \RainLoop\Api::Actions();
 		$oAccount = $oActions->getMainAccountFromToken();
@@ -21,15 +21,23 @@ class Backup
 				true
 			);
 			if (\str_contains($key, 'PGP PRIVATE KEY')) {
+				$fileName = "{$dir}{$keyId}.key";
+				if ($doDelete) {
+					return !file_exists($fileName) || unlink($fileName);
+				}
 				$hash = $oAccount->CryptKey();
 				$key = \SnappyMail\Crypt::Encrypt($key, $hash);
 				$key[1] = \base64_encode($key[1]);
 				$key[2] = \base64_encode($key[2]);
 				$key[3] = \hash_hmac('sha1', $key[2], $hash);
-				return !!\file_put_contents("{$dir}{$keyId}.key", \json_encode($key));
+				return !!\file_put_contents($fileName, \json_encode($key));
 			}
 			if (\str_contains($key, 'PGP PUBLIC KEY')) {
-				return !!\file_put_contents("{$dir}{$keyId}_public.asc", $key);
+				$fileName = "{$dir}{$keyId}_public.asc";
+				if ($doDelete) {
+					return !file_exists($fileName) || unlink($fileName);
+				}
+				return !!\file_put_contents($fileName, $key);
 			}
 		}
 		return false;

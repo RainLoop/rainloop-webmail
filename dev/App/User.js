@@ -260,7 +260,8 @@ AskPopupView.password = function(sAskDesc, btnText, ask) {
 			view => resolve({
 				password:view.passphrase(),
 				username:/*ask & 2 ? */view.username(),
-				remember:/*ask & 4 ? */view.remember()
+				remember:/*ask & 4 ? */view.remember(),
+				rememberPermanent: view.rememberPermanent(),
 			}),
 			() => resolve(null),
 			true,

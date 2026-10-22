@@ -9,13 +9,23 @@
 		<label data-i18n="GLOBAL/PASSWORD"></label>
 		<input type="password" data-bind="value: passphrase">
 	</div>
-	<div data-bind="visible: askRemeber, component: {
+		<div class="control-group" style="display: inline-flex; align-items: start;flex-direction: column;">
+		<div data-bind="visible: askRemeber, component: {
 		name: 'Checkbox',
 		params: {
-			label: 'GLOBAL/REMEMBER',
-			value: remember
+			label: 'GLOBAL/REMEMBER_FOR_SESSION',
+			value: remember,
+			enable: !rememberPermanent()
+		}
+}"></div>
+			<div data-bind="visible: askRememberPermanent, component: {
+		name: 'Checkbox',
+		params: {
+			label: 'GLOBAL/REMEMBER_PERMANENT',
+			value: rememberPermanent
 		}
 	}"></div>
+	</div>
 	</form>
 </div>
 <footer>

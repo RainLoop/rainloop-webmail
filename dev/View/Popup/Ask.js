@@ -15,9 +15,13 @@ export class AskPopupView extends AbstractViewPopup {
 			askUsername: false,
 			passphrase: '',
 			askPass: false,
-			remember: true,
-			askRemeber: false
+			remember: true, // remember for session
+			askRemeber: false,
+			rememberPermanent: false,
+			askRememberPermanent: false,
 		});
+
+		this.rememberPermanent.subscribe(value => value && this.remember(true));
 
 		this.fYesAction = null;
 		this.fNoAction = null;
@@ -48,10 +52,12 @@ export class AskPopupView extends AbstractViewPopup {
 		this.askDesc(sAskDesc || '');
 		this.askUsername(ask & 2);
 		this.askPass(ask & 1);
-		this.askRemeber(ask & 4);
+		this.askRemeber(ask & 4); // 0b0100
+		this.askRememberPermanent(ask & 0b1000)
 		this.username('');
 		this.passphrase('');
 		this.remember(true);
+		this.rememberPermanent(false);
 		this.yesButton(i18n(btnText || 'GLOBAL/YES'));
 		this.noButton(i18n(ask ? 'GLOBAL/CANCEL' : 'GLOBAL/NO'));
 		this.fYesAction = fYesFunc;

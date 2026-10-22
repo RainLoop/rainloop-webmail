@@ -287,6 +287,14 @@ trait Pgp
 		return $this->DefaultResponse(($key && $keyId && Backup::PGPKey($key, $keyId)));
 	}
 
+	public function DoDeletePGPKey(): array
+	{
+		$key = $this->GetActionParam('key', '');
+		$keyId = $this->GetActionParam('keyId', '');
+		$success = $key && Backup::PGPKey($key, $keyId, true);
+		return $this->DefaultResponse($success, ['code' => (int)!$success]);
+	}
+
 	/**
 	 * https://datatracker.ietf.org/doc/html/rfc3156#section-5
 	 */

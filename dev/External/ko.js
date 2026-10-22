@@ -176,6 +176,6 @@ ko.extenders.falseTimeout = (target, option) => {
 
 // functions
 
-ko.observable.fn.askDeleteHelper = function() {
-	return this.extend({ falseTimeout: 3000, toggleSubscribeProperty: [this, 'askDelete'] });
+ko.observable.fn.askDeleteHelper = function(prop='askDelete') {
+	return this.extend({ falseTimeout: 3000, toggleSubscribeProperty: [this, prop] });
 };

@@ -51,6 +51,13 @@ export const GnuPGUserStore = new class {
 						key.for = email => aEmails.includes(IDN.toASCII(email));
 						key.askDelete = ko.observable(false);
 						key.openForDeletion = ko.observable(null).askDeleteHelper();
+						key.askForgetPass = ko.observable(false);
+						key.openForPassForget = ko.observable(null).askDeleteHelper('askForgetPass');
+						key.forgetPass = () => {
+							Passphrases.delete(key);
+							key.hasStoredPass(false);
+						};
+						key.hasStoredPass = ko.observable(Passphrases.hasInLocalStorage(key));
 						key.remove = () => {
 							if (key.askDelete()) {
 								Remote.request('GnupgDeleteKey',
@@ -69,6 +76,7 @@ export const GnuPGUserStore = new class {
 										isPrivate: isPrivate
 									}
 								);
+								isPrivate && key.forgetPass();
 							}
 						};
 						if (isPrivate) {

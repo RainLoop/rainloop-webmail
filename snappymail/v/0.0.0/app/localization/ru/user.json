@@ -27,6 +27,8 @@
 		"USERNAME": "Имя пользователя",
 		"PASSWORD": "Пароль",
 		"REMEMBER": "Запомнить",
+		"REMEMBER_FOR_SESSION": "Запомнить Временное",
+		"REMEMBER_PERMANENT": "Запомнить Навсегда",
 		"REPLY_TO": "Ответить-на",
 		"SAVE": "Сохранить",
 		"SAVE_CHANGES": "Сохранить изменения?",
@@ -458,7 +460,8 @@
 		"LEGEND_SECURITY": "Безопасность",
 		"LABEL_AUTOLOGOUT": "Автоматический выход",
 		"FORGET_KEY_PASS": "Забыть парольную фразу закрытого ключа",
-		"NEVER": "Никогда"
+		"NEVER": "Никогда",
+		"LABEL_STORED_PASS": "Remembered Passphrase"
 	},
 	"SETTINGS_GENERAL": {
 		"LANGUAGE": "Язык",

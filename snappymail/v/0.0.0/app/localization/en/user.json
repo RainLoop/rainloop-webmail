@@ -27,6 +27,8 @@
 		"USERNAME": "Username",
 		"PASSWORD": "Passphrase",
 		"REMEMBER": "Remember",
+		"REMEMBER_FOR_SESSION": "Remember for this Session",
+		"REMEMBER_PERMANENT": "Remember Permanently",
 		"REPLY_TO": "Reply-To",
 		"SAVE": "Save",
 		"SAVE_CHANGES": "Save changes?",
@@ -458,7 +460,8 @@
 		"LEGEND_SECURITY": "Security",
 		"LABEL_AUTOLOGOUT": "Auto Logout",
 		"FORGET_KEY_PASS": "Forget private key passphrase",
-		"NEVER": "Never"
+		"NEVER": "Never",
+		"LABEL_STORED_PASS": "Remembered Passphrase"
 	},
 	"SETTINGS_GENERAL": {
 		"LANGUAGE": "Language",

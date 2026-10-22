@@ -27,6 +27,8 @@
 		"USERNAME": "Gebruikersnaam",
 		"PASSWORD": "Wachtwoord",
 		"REMEMBER": "Onthouden",
+		"REMEMBER_FOR_SESSION": "Onthoud voor deze sessie",
+		"REMEMBER_PERMANENT": "Onthoud permanent",
 		"REPLY_TO": "Antwoordadres",
 		"SAVE": "Opslaan",
 		"SAVE_CHANGES": "Wijzigingen opslaan?",
@@ -458,7 +460,8 @@
 		"LEGEND_SECURITY": "Beveiliging",
 		"LABEL_AUTOLOGOUT": "Automatisch uitloggen",
 		"FORGET_KEY_PASS": "Vergeet privésleutel wachtwoord",
-		"NEVER": "Nooit"
+		"NEVER": "Nooit",
+		"LABEL_STORED_PASS": "Wachtwoordzin opgeslagen"
 	},
 	"SETTINGS_GENERAL": {
 		"LANGUAGE": "Taal",

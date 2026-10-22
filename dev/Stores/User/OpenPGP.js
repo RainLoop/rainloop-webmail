@@ -13,7 +13,7 @@ import { OpenPgpKeyPopupView } from 'View/Popup/OpenPgpKey';
 
 import { Passphrases } from 'Storage/Passphrases';
 
-import { baseCollator } from 'Common/Translator';
+import { baseCollator, getNotification } from 'Common/Translator';
 
 const
 	loaded = () => !!window.openpgp,
@@ -90,6 +90,9 @@ class OpenPgpKeyModel {
 		this.armor = armor;
 		this.askDelete = ko.observable(false);
 		this.openForDeletion = ko.observable(null).askDeleteHelper();
+		this.hasStoredPass = ko.observable(Passphrases.hasInLocalStorage(this));
+		this.askForgetPass = ko.observable(false);
+		this.openForPassForget = ko.observable(null).askDeleteHelper('askForgetPass');
 //		key.getUserIDs()
 //		key.getPrimaryUser()
 	}
@@ -115,11 +118,28 @@ class OpenPgpKeyModel {
 			if (this.key.isPrivate()) {
 				OpenPGPUserStore.privateKeys.remove(this);
 				storeOpenPgpKeys(OpenPGPUserStore.privateKeys, privateKeysItem);
+				this.forgetPass()
 			} else {
 				OpenPGPUserStore.publicKeys.remove(this);
 				storeOpenPgpKeys(OpenPGPUserStore.publicKeys, publicKeysItem);
 			}
+			Remote.request('DeletePGPKey',
+				(iError, oData) => {
+					if (oData) {
+						if (iError || oData.Result === false) {
+							alert(oData.message || getNotification(iError));
+						}
+					}
+				}, {
+					key: this.armor
+				}
+			);
 		}
+	}
+
+	forgetPass() {
+		Passphrases.delete(this);
+		this.hasStoredPass(false);
 	}
 /*
 	toJSON() {
