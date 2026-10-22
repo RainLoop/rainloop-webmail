@@ -86,10 +86,17 @@
 							});
 						}
 					});
-					// ICS attachment
-//					let ics = msg.attachments.find(attachment => 'application/ics' == attachment.mimeType);
-
-					let ics = msg.attachments.find(attachment => 'text/calendar' == attachment.mimeType);
+					// ICS attachment.
+					// attachments is a ko.observableArray, so it must be
+					// unwrapped before array methods are used on it.
+					// A scheduling mail does not always carry a text/calendar
+					// attachment either: the part is often inline inside
+					// multipart/alternative and repeated as application/ics.
+					let ics = (msg.attachments() || []).find(attachment =>
+						'text/calendar' == attachment.mimeType
+						|| 'application/ics' == attachment.mimeType
+						|| 'text/x-vcalendar' == attachment.mimeType
+						|| /\.ics$/i.test(attachment.fileName || ''));
 					if (ics && ics.download) {
 
 						// fetch it and parse the VEVENT
