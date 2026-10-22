@@ -1,1 +1,1 @@
-Plugin which allows you to set up LDAP username by email address (when IMAP/SMTP requires it)
+This plugins allows to authenticate using LDAP mail field, yet login field would still be used for IMAP and SMTP authentication.

@@ -8,12 +8,12 @@ class LDAPLoginMappingPlugin extends AbstractPlugin
 {
 	const
 		NAME     = 'LDAP login mapping',
-		VERSION  = '2.3',
+		VERSION  = '2.4',
 		AUTHOR   = 'RainLoop Team, Ludovic Pouzenc<ludovic@pouzenc.fr>, ZephOne<zephone@protonmail.com>',
-		RELEASE  = '2024-09-20',
+		RELEASE  = '2024-01-09',
 		REQUIRED = '2.36.1',
 		CATEGORY = 'Login',
-		DESCRIPTION = 'Enable custom mapping using ldap field';
+		DESCRIPTION = 'This plugins allows to authenticate using LDAP mail field, yet login field would still be used for IMAP and SMTP authentication';
 	/**
 	 * @var array
 	 */
@@ -104,6 +104,7 @@ class LDAPLoginMappingPlugin extends AbstractPlugin
 			$sResult = $this->ldapSearch($sEmail);
 			if ( is_array($sResult) ) {
 				$sImapUser = $sResult['login'];
+				$sSmtpUser = $sResult['login'];
 				$sEmail = $sResult['email'];
 			}
 			syslog(LOG_WARNING, "plugins/ldap-login-mapping/index.php:FilterLoginСredentials() auth try: $sIP/$sEmail, resolved as $sImapUser/$sEmail");
