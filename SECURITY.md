@@ -36,5 +36,5 @@ YMXQVq4SJt7UpWABAORudfJxsBqCRKtPlZMgGTJLjcOkyFJ9C2Fx7DeN0J4I
 ## Publishing and Credits
 
 I will analyze and fix the reported issue as fast as possible.
-Together with the reporter I plan the disclosure of the found and fixed vulnerability.
+Together with the reporter, I plan the disclosure of the found and fixed vulnerability.
 Credits to the reporter are granted and can be included in all public communication if desired.
