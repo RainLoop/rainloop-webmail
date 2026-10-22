@@ -9,7 +9,7 @@ if (isset($options['plugins'])) {
 	require(ROOT_DIR . '/build/plugins.php');
 }
 
-$gulp = trim(`which gulp`);
+$gulp = trim(shell_exec('which gulp'));
 if (!$gulp) {
 	exit('gulp not installed, run as root: npm install --global gulp-cli');
 }
@@ -34,7 +34,7 @@ $options['aur'] = isset($options['aur']);
 
 // Docker build
 $options['docker'] = isset($options['docker']);
-if ($options['docker'] && !($docker = trim(`which docker`))) {
+if ($options['docker'] && !($docker = trim(shell_exec('which docker')))) {
 	exit('docker not found');
 }
 if ($options['docker'] && $options['aur']) {
@@ -60,7 +60,7 @@ if (!isset($options['skip-gulp'])) {
 
 	$cmddir = escapeshellcmd(ROOT_DIR) . '/snappymail/v/0.0.0/static';
 
-	if ($gzip = trim(`which gzip`)) {
+	if ($gzip = trim(shell_exec('which gzip'))) {
 		echo "\x1b[33;1m === Gzip *.js and *.css === \x1b[0m\n";
 		passthru("{$gzip} -k --best {$cmddir}/js/*.js");
 		passthru("{$gzip} -k --best {$cmddir}/js/min/*.js");
@@ -70,7 +70,7 @@ if (!isset($options['skip-gulp'])) {
 		unlink(ROOT_DIR . '/snappymail/v/0.0.0/static/js/min/boot.min.js.gz');
 	}
 
-	if ($brotli = trim(`which brotli`)) {
+	if ($brotli = trim(shell_exec('which brotli'))) {
 		echo "\x1b[33;1m === Brotli *.js and *.css === \x1b[0m\n";
 		passthru("{$brotli} -k --best {$cmddir}/js/*.js");
 		passthru("{$brotli} -k --best {$cmddir}/js/min/*.js");
@@ -188,7 +188,7 @@ file_put_contents("{$destPath}core.json", '{
 // Arch User Repository
 if ($options['aur']) {
 	// extension_loaded('blake2')
-	if (!function_exists('b2sum') && $b2sum = trim(`which b2sum`)) {
+	if (!function_exists('b2sum') && $b2sum = trim(shell_exec('which b2sum'))) {
 		function b2sum($file) {
 			$file = escapeshellarg($file);
 			exec("b2sum --binary {$file} 2>&1", $output, $exitcode);

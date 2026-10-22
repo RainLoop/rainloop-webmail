@@ -434,7 +434,7 @@ abstract class Base
 	public function agent()
 	{
 //		$home = \escapeshellarg($this->options['homedir']);
-//		echo `gpg-agent --daemon --homedir $home 2>&1`;
+//		echo \shell_exec('gpg-agent --daemon --homedir $home 2>&1');
 	}
 
 	protected function getPassphrase($key)
@@ -487,7 +487,7 @@ abstract class Base
 
 	protected static function findBinary($name) : ?string
 	{
-		$binary = \function_exists('shell_exec') ? \trim((string) `which $name`) : '';
+		$binary = \function_exists('shell_exec') ? \trim((string) \shell_exec('which $name')) : '';
 		if ($binary && \RainLoop\Utils::inOpenBasedir($binary) && \is_executable($binary)) {
 			return $binary;
 		}

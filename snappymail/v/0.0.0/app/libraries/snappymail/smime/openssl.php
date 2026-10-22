@@ -180,7 +180,7 @@ class OpenSSL
 			}
 			$input = $tmp;
 		}
-		`openssl asn1parse -in $input->filename()`
+		\shell_exec('openssl asn1parse -in $input->filename()');
 	}
 */
 	public function decrypt(/*string|Temporary*/ $input) : ?string
