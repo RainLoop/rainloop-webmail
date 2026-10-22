@@ -176,7 +176,8 @@ class SnappyMailHelper
 			// If OpenID Connect (OIDC) is enabled and used for login, use this.
 			if (static::isOIDCLogin()) {
 				$sEmail = $config->getUserValue($sUID, 'settings', 'email');
-				return [$sUID, $sEmail, "oidc_login|{$sUID}"];
+				$pwd = new \SnappyMail\SensitiveString("oidc_login|{$sUID}");
+				return [$sUID, $sEmail, $pwd];
 			}
 
 			// Only use the user's password in the current session if they have
