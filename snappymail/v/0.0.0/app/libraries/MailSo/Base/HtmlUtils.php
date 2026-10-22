@@ -160,12 +160,19 @@ abstract class HtmlUtils
 
 		// Remove all remaining data-* attributes
 		foreach ($xpath->query('//*[@*[starts-with(name(), "data-")]]') as $oElement) {
-			$sTagNameLower = \strtolower($oElement->nodeName);
 			if ($oElement->hasAttributes()) {
+				// DOMNamedNodeMap is live: removing the attribute the foreach is
+				// currently on ends the iteration, so exactly one data-* was
+				// removed per element however many it carried. Collect the
+				// names first, then remove.
+				$aNames = [];
 				foreach ($oElement->attributes as $oAttr) {
 					if ('data-' === \substr(\strtolower($oAttr->nodeName), 0, 5)) {
-						$oElement->removeAttribute($oAttr->nodeName);
+						$aNames[] = $oAttr->nodeName;
 					}
+				}
+				foreach ($aNames as $sName) {
+					$oElement->removeAttribute($sName);
 				}
 			}
 		}
