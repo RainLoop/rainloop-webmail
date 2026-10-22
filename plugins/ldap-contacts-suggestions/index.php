@@ -4,8 +4,8 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Contacts suggestions (LDAP)',
-		VERSION  = '2.14',
-		RELEASE  = '2024-03-12',
+		VERSION  = '2.15',
+		RELEASE  = '2026-08-19',
 		REQUIRED = '2.35.3',
 		CATEGORY = 'Contacts',
 		DESCRIPTION = 'Get contacts suggestions from LDAP.';
@@ -79,7 +79,7 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::PASSWORD)
 				->SetDefaultValue(''),
 			\RainLoop\Plugins\Property::NewInstance('base_dn')->SetLabel('Search base DN')
-				->SetDescription('DN to use as the search base. Supported tokens: {domain}, {domain:dc}, {email}, {email:user}, {email:domain}, {login}, {imap:login}, {imap:host}, {imap:port}')
+				->SetDescription('DN to use as the search base. Supported tokens: {domain}, {domain:dc}, {email}, {email:user}, {email:domain}, {login}, {imap:login}, {imap:host}, {imap:port} Several branches may be given, separated by | - useful when meeting rooms or other resources live outside the people branch.')
 				->SetDefaultValue('ou=People,dc=example,dc=com'),
 			\RainLoop\Plugins\Property::NewInstance('object_classes')->SetLabel('objectClasses')
 				->SetDescription('LDAP objectClasses to search for, comma separated list')
