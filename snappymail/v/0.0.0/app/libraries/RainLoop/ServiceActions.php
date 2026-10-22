@@ -281,7 +281,7 @@ class ServiceActions
 		$sData = empty($this->aPaths[1]) ? '' : $this->aPaths[1];
 		if ($sData
 		  && $this->Config()->Get('labs', 'use_local_proxy_for_external_images', false)
-		  && $this->oActions->getAccountFromToken()
+		  && $this->oActions->getMainAccountFromToken()
 		) {
 			$this->oActions->verifyCacheByKey($sData);
 			$sUrl = \MailSo\Base\Utils::UrlSafeBase64Decode($sData);
