@@ -14,6 +14,15 @@ trait Admin
 	public function IsAdminLoggined(bool $bThrowExceptionOnFalse = true) : bool
 	{
 		if ($this->Config()->Get('security', 'allow_admin_panel', true)) {
+			// [PATCH ronzz.org] OIDC bridge: nginx auth_request (webmail-admin.ronzz.org)
+			// sets X-NC-Admin after validating the Nextcloud session. Honored only on the
+			// dedicated admin host (admin_panel.host); the header is stripped/overridden
+			// at nginx for any other path.
+			if (!empty($_SERVER['HTTP_X_NC_ADMIN'])
+				&& \strtolower((string) $this->Config()->Get('admin_panel', 'host', '')) === \strtolower($this->Http()->GetHost()))
+			{
+				return true;
+			}
 			$sAdminKey = $this->getAdminAuthKey();
 			if ($sAdminKey && $this->Cacher(null, true)->Get(KeyPathHelper::SessionAdminKey($sAdminKey))) {
 				return true;
