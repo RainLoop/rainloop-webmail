@@ -1,54 +1,91 @@
-(rl => {
-	const client_id = rl.pluginSettingsGet('login-o365', 'client_id'),
-		// https://learn.microsoft.com/en-us/entra/identity-platform/reply-url#query-parameter-support-in-redirect-uris
-		query = rl.pluginSettingsGet('login-o365', 'personal') ? '' : '?',
-		tenant = rl.pluginSettingsGet('login-o365', 'tenant'),
-		login = () => {
-			document.location = 'https://login.microsoftonline.com/'+tenant+'/oauth2/v2.0/authorize?' + (new URLSearchParams({
-				response_type: 'code',
-				client_id: client_id,
-				redirect_uri: document.location.href.replace(/\/$/, '') + '/' + query + 'LoginO365',
-				scope: [
-					// Associate personal info
-					'openid',
-					'offline_access',
-					'email',
-					'profile',
-					// Access IMAP and SMTP through OAUTH
-					'https://graph.microsoft.com/IMAP.AccessAsUser.All',
-//					'https://graph.microsoft.com/Mail.ReadWrite'
-					'https://graph.microsoft.com/Mail.Send'
-/*					// Legacy:
-					'https://outlook.office.com/SMTP.Send',
-					'https://outlook.office.com/IMAP.AccessAsUser.All'
-*/
-				].join(' '),
-				state: 'o365', // + rl.settings.app('token') + localStorage.getItem('smctoken')
-				// Force authorize screen, so we always get a refresh_token
-				access_type: 'offline',
-				prompt: 'consent'
-			}));
-		};
+((rl) => {
+  const client_id = rl.pluginSettingsGet("login-o365", "client_id"),
+    allowAnyDomain = !!rl.pluginSettingsGet("login-o365", "allow_any_domain"),
+    isSupportedEmail = (email) => {
+      email = (email || "").toLowerCase();
+      if (!email.includes("@")) return false;
+      if (allowAnyDomain) return true;
+      return /@(outlook\.com|hotmail\.com|live\.com)$/.test(email);
+    },
+    startOAuth = (op, opts = {}) => {
+      const email = (opts.email || "").toLowerCase();
+      const name = opts.name || "";
+      const returnHash = opts.return || "";
 
-	if (client_id) {
-		addEventListener('sm-user-login', e => {
-			if (event.detail.get('Email').includes('@hotmail.com')) {
-				e.preventDefault();
-				login();
-			}
-		});
+      // Server mints a signed state + correct redirect_uri and returns full authUrl.
+      rl.pluginRemoteRequest((iError, data) => {
+        const url = data?.Result?.authUrl;
+        if (!iError && url) {
+          document.location = url;
+        }
+      }, "LoginO365AuthUrl", {
+        op: op,
+        email: email,
+        name: name,
+        return: returnHash,
+      });
+    };
 
-		addEventListener('rl-view-model', e => {
-			if ('Login' === e.detail.viewModelTemplateID) {
-				const
-					container = e.detail.viewModelDom.querySelector('#plugin-Login-BottomControlGroup'),
-					btn = Element.fromHTML('<button type="button">Outlook</button>'),
-					div = Element.fromHTML('<div class="controls"></div>');
-				btn.onclick = login;
-				div.append(btn);
-				container && container.append(div);
-			}
-		});
-	}
+  if (client_id) {
+    addEventListener("sm-user-login", (e) => {
+      const email = (e.detail.get("Email") || "").toLowerCase();
+      if (isSupportedEmail(email)) {
+        e.preventDefault();
+        startOAuth("login", { email });
+      }
+    });
 
+    addEventListener("rl-view-model", (e) => {
+      if ("Login" === e.detail.viewModelTemplateID) {
+        const
+		  container = e.detail.viewModelDom.querySelector("#plugin-Login-BottomControlGroup"),
+          btn = Element.fromHTML('<button type="button">Outlook</button>'),
+          div = Element.fromHTML('<div class="controls"></div>');
+        btn.onclick = () => {
+          // Best-effort: try to read the email field if present.
+          const input = e.detail.viewModelDom.querySelector('input[type="email"], input[name="Email"], input[name="email"], input');
+          const email = (input?.value || "").toLowerCase();
+          if (!email || isSupportedEmail(email)) {
+            startOAuth("login", { email });
+          }
+        };
+        div.append(btn);
+        container && container.append(div);
+      }
+
+      // "Add account" popup (Settings → Accounts → Add account)
+      if ("PopupsAccount" === e.detail.viewModelTemplateID) {
+        // Only for the "Add account" mode, not "Edit account".
+        if (typeof e.detail.isNew === "function" && !e.detail.isNew()) {
+          return;
+        }
+        const root = e.detail.viewModelDom;
+        if (!root) return;
+
+        const footer = root.querySelector("footer");
+        const form = root.querySelector("#accountform");
+        const addButton = root.querySelector("button.buttonAddAccount");
+        if (!footer || !form || !addButton) return;
+
+        // Avoid inserting duplicates when view model is re-rendered.
+        if (root.querySelector(".plugin-o365-add-account")) return;
+
+        const btn = Element.fromHTML(
+          '<button type="button" class="btn plugin-o365-add-account" style="margin-left: 6px;">Outlook</button>'
+        );
+
+        btn.onclick = () => {
+          const email = (form.querySelector('input[name="email"]')?.value || "").trim().toLowerCase();
+          const name = (form.querySelector('input[name="name"]')?.value || "").trim();
+          if (!email || !isSupportedEmail(email)) {
+            return;
+          }
+          startOAuth("add", { email, name, return: document.location.hash || "#/settings/accounts" });
+        };
+
+        // Put the button next to the default Add Account submit button.
+        footer.insertBefore(btn, addButton.nextSibling);
+      }
+    });
+  }
 })(window.rl);
