@@ -997,7 +997,7 @@ class PdoAddressBook
 					$sEmail = \trim($oItem->GetEmail(true));
 					if (\strlen($sEmail)) {
 						$aEmailsToUpdate[] = $sEmail;
-						return !\in_array($sEmail, $aExists);
+						return !\in_array(\mb_strtolower($sEmail), $aExists);
 					}
 				}
 				return false;
