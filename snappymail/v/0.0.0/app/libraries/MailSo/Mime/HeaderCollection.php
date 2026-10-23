@@ -136,14 +136,12 @@ class HeaderCollection extends \MailSo\Base\Collection
 					$sHeadersValue = \rtrim($sHeadersValue);
 				}
 
-				if ('=?' === \substr(\ltrim($sHeadersValue), 0, 2)) {
-					$sHeadersValue = \ltrim($sHeadersValue);
-				}
-
-				if ('=?' === \substr($sHeadersValue, 0, 2)) {
-					$sValue .= $sHeadersValue;
+				// RFC 5322 unfolding removes the line break and keeps the folding
+				// whitespace; RFC 2047 6.2 drops it only between two encoded words.
+				if ('=?' === \substr(\ltrim($sHeadersValue), 0, 2) && '?=' === \substr($sValue, -2)) {
+					$sValue .= \ltrim($sHeadersValue);
 				} else {
-					$sValue .= "\n".$sHeadersValue;
+					$sValue .= ' '.\ltrim($sHeadersValue);
 				}
 			} else {
 				if (null !== $sName) {
