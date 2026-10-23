@@ -39,21 +39,26 @@ class Response
 		$this->request_uri = $request_uri;
 		$this->final_uri   = $request_uri;
 		$this->status      = (int) $status;
-		if (\function_exists('gzinflate') && isset($this->headers['content-encoding'])
-		 && (false !== \stripos($this->headers['content-encoding'], 'gzip'))) {
-			$this->body = \gzinflate(\substr($body, 10, -4));
-			if (false === $this->body) {
-				$err = \error_get_last() ?: ['message' => 'gzinflate failed'];
-				throw new \RuntimeException("{$err['message']} for {$request_uri}");
-			}
-		} else {
-			$this->body = $body;
-		}
+		$this->body = $body;
 	}
 
 	function __get($k)
 	{
 		return \property_exists($this, $k) ? $this->$k : null;
+	}
+
+	public function decoded()/*: string|false*/
+	{
+		$body = $this->body;
+		if (\function_exists('gzinflate') && isset($this->headers['content-encoding'])
+		 && (false !== \stripos($this->headers['content-encoding'], 'gzip'))) {
+			$body = \gzinflate(\substr($body, 10, -4));
+			if (false === $body) {
+				$err = \error_get_last() ?: ['message' => 'gzinflate failed'];
+				throw new \RuntimeException("{$err['message']} for {$request_uri}");
+			}
+		}
+		return $body;
 	}
 
 	/**
