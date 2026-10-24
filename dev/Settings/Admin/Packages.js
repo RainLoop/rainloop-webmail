@@ -1,67 +1,93 @@
-import window from 'window';
-import _ from '_';
 import ko from 'ko';
 
-import { StorageResultType, Notification } from 'Common/Enums';
+import { Notifications } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
-import PackageStore from 'Stores/Admin/Package';
-import Remote from 'Remote/Admin/Ajax';
+import { PackageAdminStore } from 'Stores/Admin/Package';
+import Remote from 'Remote/Admin/Fetch';
 
-import { getApp } from 'Helper/Apps/Admin';
+import { showScreenPopup } from 'Knoin/Knoin';
+import { PluginPopupView } from 'View/Popup/Plugin';
+import { addObservablesTo, addComputablesTo } from 'External/ko';
+import { AbstractViewSettings } from 'Knoin/AbstractViews';
 
-class PackagesAdminSettings {
+export class AdminSettingsPackages extends AbstractViewSettings {
 	constructor() {
-		this.packagesError = ko.observable('');
+		super();
 
-		this.packages = PackageStore.packages;
-		this.packagesReal = PackageStore.packagesReal;
-		this.packagesMainUpdatable = PackageStore.packagesMainUpdatable;
+		this.addSettings(['pluginsEnable']);
 
-		this.packagesCurrent = ko.computed(() =>
-			_.filter(this.packages(), (item) => item && '' !== item.installed && !item.compare)
-		);
-		this.packagesAvailableForUpdate = ko.computed(() =>
-			_.filter(this.packages(), (item) => item && '' !== item.installed && !!item.compare)
-		);
-		this.packagesAvailableForInstallation = ko.computed(() =>
-			_.filter(this.packages(), (item) => item && '' === item.installed)
-		);
+		addObservablesTo(this, {
+			packagesError: '',
+			search: ''
+		});
 
-		this.visibility = ko.computed(() => (PackageStore.packages.loading() ? 'visible' : 'hidden'));
+		this.packages = PackageAdminStore;
+
+		addComputablesTo(this, {
+			packagesCurrent: () => PackageAdminStore().filter(item => item?.installed && !item.canBeUpdated),
+			packagesUpdate: () => PackageAdminStore().filter(item => item?.installed && item.canBeUpdated),
+			packagesAvailable: () => PackageAdminStore().filter(item => !item?.installed),
+
+			visibility: () => (PackageAdminStore.loading() ? 'visible' : 'hidden')
+		});
+
+		this.search.subscribe(value => {
+			const v = value.toLowerCase(),
+				qsa = (node, selector, fn) => node.querySelectorAll(selector).forEach(fn),
+				match = node => node.textContent.toLowerCase().includes(v);
+			if (v.length) {
+				qsa(this.viewModelDom, 'td:first-child', td => {
+					td.parentNode.hidden = !match(td);
+				});
+			} else {
+				qsa(this.viewModelDom, 'tr[hidden]', n => n.hidden = false);
+			}
+		});
 	}
 
 	onShow() {
 		this.packagesError('');
 	}
 
-	onBuild() {
-		getApp().reloadPackagesList();
+	onBuild(oDom) {
+		PackageAdminStore.fetch();
+
+		oDom.addEventListener('click', event => {
+			// configurePlugin
+			let el = event.target.closestWithin('.package-configure', oDom),
+				data = el && ko.dataFor(el);
+			data && Remote.request('AdminPluginLoad',
+				(iError, data) => iError || showScreenPopup(PluginPopupView, [data.Result]),
+				{
+					id: data.id
+				}
+			);
+			// disablePlugin
+			el = event.target.closestWithin('.package-active', oDom);
+			data = el && ko.dataFor(el);
+			data && this.disablePlugin(data);
+		});
 	}
 
 	requestHelper(packageToRequest, install) {
-		return (result, data) => {
-			if (StorageResultType.Success !== result || !data || !data.Result) {
-				if (data && data.ErrorCode) {
-					this.packagesError(getNotification(data.ErrorCode));
-				} else {
-					this.packagesError(
-						getNotification(install ? Notification.CantInstallPackage : Notification.CantDeletePackage)
-					);
-				}
-			}
-
-			_.each(this.packages(), (item) => {
-				if (item && packageToRequest && item.loading && item.loading() && packageToRequest.file === item.file) {
+		return (iError, data) => {
+			PackageAdminStore.forEach(item => {
+				if (packageToRequest && item?.loading?.() && packageToRequest.file === item.file) {
 					packageToRequest.loading(false);
 					item.loading(false);
 				}
 			});
 
-			if (StorageResultType.Success === result && data && data.Result && data.Result.Reload) {
-				window.location.reload();
+			if (iError) {
+				this.packagesError(
+					getNotification(install ? Notifications.CantInstallPackage : Notifications.CantDeletePackage)
+					+ (data.message ? ':\n' + data.message : '')
+				);
+			} else if (data.Result.Reload) {
+				location.reload();
 			} else {
-				getApp().reloadPackagesList();
+				PackageAdminStore.fetch();
 			}
 		};
 	}
@@ -69,16 +95,49 @@ class PackagesAdminSettings {
 	deletePackage(packageToDelete) {
 		if (packageToDelete) {
 			packageToDelete.loading(true);
-			Remote.packageDelete(this.requestHelper(packageToDelete, false), packageToDelete);
+			Remote.request('AdminPackageDelete',
+				this.requestHelper(packageToDelete, false),
+				{
+					id: packageToDelete.id
+				}
+			);
 		}
 	}
 
 	installPackage(packageToInstall) {
 		if (packageToInstall) {
 			packageToInstall.loading(true);
-			Remote.packageInstall(this.requestHelper(packageToInstall, true), packageToInstall);
+			Remote.request('AdminPackageInstall',
+				this.requestHelper(packageToInstall, true),
+				{
+					id: packageToInstall.id,
+					type: packageToInstall.type,
+					file: packageToInstall.file
+				},
+				60000
+			);
 		}
 	}
-}
 
-export { PackagesAdminSettings, PackagesAdminSettings as default };
+	disablePlugin(plugin) {
+		let disable = plugin.enabled();
+		plugin.enabled(!disable);
+		Remote.request('AdminPluginDisable',
+			(iError, data) => {
+				if (iError) {
+					plugin.enabled(disable);
+					this.packagesError(
+						(Notifications.UnsupportedPluginPackage === iError && data?.message)
+						? data.message
+						: getNotification(iError)
+					);
+				}
+//				PackageAdminStore.fetch();
+			}, {
+				id: plugin.id,
+				disabled: disable ? 1 : 0
+			}
+		);
+	}
+
+}

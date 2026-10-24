@@ -1,4 +1,4 @@
 import bootstrap from 'bootstrap';
-import App from 'App/User';
+import { AppUser } from 'App/User';
 
-bootstrap(App);
+bootstrap(new AppUser);

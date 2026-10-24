@@ -1,0 +1,44 @@
+
+/**
+ * .SML-@type where @type is the value of the JSON-LD "@type":
+ * See http://schema.org/
+ */
+
+.SML-FlightReservation {
+}
+
+	.SML-Airline {
+	}
+
+	.SML-Airport {
+	}
+
+	.SML-Flight {
+	}
+
+.SML-FoodEstablishmentReservation {
+}
+
+	.SML-FoodEstablishment {
+	}
+
+.SML-ParcelDelivery {
+}
+
+	.SML-Order {
+	}
+
+	.SML-Organization {
+	}
+
+	.SML-Product {
+	}
+
+	.SML-PostalAddress {
+	}
+
+.SML-Person {
+}
+
+.SML-PromotionCard {
+}

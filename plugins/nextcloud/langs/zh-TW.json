@@ -1,0 +1,14 @@
+{
+	"NEXTCLOUD": {
+		"SAVE_ATTACHMENTS": "儲存到 Nextcloud",
+		"SAVE_EML": "以 .eml 檔案儲存到 Nextcloud",
+		"SAVE_ICS": "新增到日曆",
+		"SELECT_FOLDER": "選擇檔案夾",
+		"SELECT_FILES": "選擇檔案",
+		"ATTACH_FILES": "新增 Nextcloud 檔案",
+		"SELECT_CALENDAR": "選擇日曆",
+		"FILE_ATTACH": "附加",
+		"FILE_INTERNAL": "內部",
+		"FILE_PUBLIC": "公開"
+	}
+}

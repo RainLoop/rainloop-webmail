@@ -1,0 +1,87 @@
+<header>
+	<a href="#" class="close" data-bind="click: close">×</a>
+	<h3 data-bind="text: folder()?.fullName"></h3>
+</header>
+<form id="folderform" class="modal-body form-horizontal" autocomplete="off" spellcheck="false" data-bind="submit: submitForm">
+	<div class="control-group" data-bind="if: editing">
+		<label data-i18n="POPUPS_CREATE_FOLDER/LABEL_PARENT"></label>
+		<select name="parent" data-bind="options: parentFolderSelectList, value: parentFolder,
+			optionsText: 'name', optionsValue: 'id', optionsAfterRender: defaultOptionsAfterRender"></select>
+	</div>
+	<div class="control-group" data-bind="if: editing">
+		<label data-i18n="GLOBAL/NAME"></label>
+		<input name="folder" type="text"
+			autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+			required="" data-bind="textInput: name">
+	</div>
+	<div data-bind="with: folder">
+		<!-- ko if: canBeSubscribed -->
+		<div class="control-group">
+			<label class="fontastic">👁</label>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					name: 'subscribe',
+					label: 'SETTINGS_FOLDERS/BUTTON_SUBSCRIBE',
+					value: isSubscribed
+				}
+			}"></div>
+		</div>
+		<!-- /ko -->
+		<div class="control-group">
+			<label data-i18n="POPUPS_FILTER/SELECT_FIELD_SIZE"></label>
+			<span data-bind="text: friendlySize"></span>
+		</div>
+		<div class="control-group">
+			<label data-i18n="MESSAGE_LIST/MENU_SELECT_UNSEEN"></label>
+			<span data-bind="text: unreadEmails"></span>
+			/ <span style="margin:0" data-bind="text: totalEmails"></span>
+		</div>
+		<!-- ko if: $root.displaySpecSetting() && canBeSelected() && isSubscribed() -->
+		<div class="control-group">
+			<label class="icon-check-mark-circle-two"></label>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					name: 'checkable',
+					label: 'SETTINGS_FOLDERS/HELP_CHECK_FOR_NEW_MESSAGES',
+					value: checkable
+				}
+			}"></div>
+		</div>
+		<!-- /ko -->
+		<!-- ko if: $root.showKolab -->
+		<div class="control-group">
+			<label>Kolab</label>
+			<select data-bind="options: $root.kolabTypeOptions, value: kolabType,
+				optionsText: 'name', optionsValue: 'id', optionsAfterRender: $root.defaultOptionsAfterRender"></select>
+		</div>
+		<!-- /ko -->
+	</div>
+	<div class="control-group" data-bind="if: ACLAllowed">
+		<label>ACL</label>
+		<div>
+			<table class="table table-hover" style="width:auto"><tbody>
+				<!-- ko foreach: folder()?.ACL -->
+				<tr>
+					<td data-bind="text: identifier"></td>
+					<td>
+						<button class="btn fontastic" data-bind="visible: mine, click: $root.editACL">👁</button>
+						<button class="btn fontastic" data-bind="visible: !mine(), click: $root.editACL">🖉</button>
+						<button class="btn fontastic" data-bind="visible: !mine(), click: $root.deleteACL">🗑</button>
+					</td>
+				</tr>
+				<!-- /ko -->
+				<tr data-bind="visible: adminACL"><td></td><td>
+					<button class="btn fontastic" data-bind="click: createACL">✚</button>
+				</td></tr>
+			</tbody></table>
+		</div>
+	</div>
+</form>
+<footer>
+	<button form="folderform" class="btn">
+		<i class="icon-folder-add"></i>
+		<span data-i18n="GLOBAL/SAVE"></span>
+	</button>
+</footer>

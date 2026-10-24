@@ -1,0 +1,19 @@
+{ "translations": {
+    "Email" : "メール",
+    "Error" : "エラー",
+    "Invalid argument(s)" : "無効な（複数の）引数",
+    "Saved successfully" : "保存しました",
+    "SnappyMail" : "SnappyMail",
+    "SnappyMail Webmail" : "SnappyMail Webメール",
+    "Go to SnappyMail Webmail admin panel" : "SnappyMail Webメールの管理画面を開く",
+    "Users will login manually, or define credentials in their personal settings for automatic logins." : "ユーザーは手動でログインするか、個人設定で資格情報を定義して自動ログインを行います。",
+    "Attempt to automatically login users with their Nextcloud username and password, or user-defined credentials, if set." : "Nextcloudのユーザー名とパスワード、またはユーザー定義の資格情報が設定されている場合は、ユーザーの自動ログインを試みます。",
+    "Attempt to automatically login users with their Nextcloud email and password, or user-defined credentials, if set." : "Nextcloudの電子メールとパスワード、または設定されている場合はユーザー定義の資格情報を使用して、ユーザーの自動的ログインを試みます。",
+    "Save" : "保存",
+    "SnappyMail Webmail is not configured yet." : "SnappyMail Webmail はまだ設定されていません。",
+    "may have some" : "あるかもしれない",
+    "security considerations" : "セキュリティ上の配慮事項",
+    "Enter an email and password to auto-login to SnappyMail." : "SnappyMailに自動ログインするには、メールアドレスとパスワードを入力してください。",
+    "Password" : "パスワード"
+},"pluralForm" :"nplurals=1; plural=0;"
+}

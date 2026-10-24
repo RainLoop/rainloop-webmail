@@ -1,0 +1,54 @@
+<header>
+	<a href="#" class="close" data-bind="click: close">×</a>
+	<h3 data-i18n="SFILTERS/WHEN_MESSAGE_MATCH_SEARCH_CRITERIA"></h3>
+</header>
+<form id="search-filters-form" class="modal-body form-horizontal" action="#/" autocomplete="off" spellcheck="false"
+	data-bind="submit: submitForm">
+	<div>
+		<div class="control-group">
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SFILTERS/MOVE_TO_FOLDER',
+					value: usefFolder
+				}
+			}"></div>
+			<select data-bind="
+				options: folders,
+				value: fFolder,
+				optionsText: 'name',
+				optionsValue: 'id',
+				enable: usefFolder
+			"></select>
+		</div>
+		<div class="control-group">
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SFILTERS/MARK_AS_READ',
+					value: fSeen
+				}
+			}"></div>
+		</div>
+		<div class="control-group">
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: {
+					label: 'SFILTERS/STAR_IT',
+					value: fFlag
+				}
+			}"></div>
+		</div>
+		<div class="control-group">
+			<label for="priority" data-i18n="SFILTERS/PRIORITY_LABLE"></label>
+			<select data-bind="
+				options: Priorities,
+				value: priority,
+			"></select>
+		</div>
+	</div>
+</form>
+<footer>
+	<button form="search-filters-form" class="btn buttonSearchFilters" data-icon="✔"
+		data-i18n="SFILTERS/CREATE_FILTER"></button>
+</footer>

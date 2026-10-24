@@ -1,0 +1,19 @@
+{ "translations": {
+    "Email" : "Email",
+    "Error" : "Fout",
+    "Invalid argument(s)" : "Ongeldig(e) argument(en)",
+    "Saved successfully" : "Succesvol opgeslagen",
+    "SnappyMail" : "SnappyMail",
+    "SnappyMail Webmail" : "SnappyMail Webmail",
+    "Go to SnappyMail Webmail admin panel" : "Ga naar SnappyMail Webmail beheerscherm",
+    "Users will login manually, or define credentials in their personal settings for automatic logins." : "Gebruikers loggen handmatig in of geven hun inloggegevens op in hun persoonlijke instellingen voor automatische logins.",
+    "Attempt to automatically login users with their Nextcloud username and password, or user-defined credentials, if set." : "Probeer gebruikers automatisch te laten inloggen met hun Nextcloud-gebruikersnaam en wachtwoord, of door de gebruiker gedefinieerde inloggegevens, als dat is ingesteld.",
+    "Attempt to automatically login users with their Nextcloud email and password, or user-defined credentials, if set." : "Probeer gebruikers automatisch te laten inloggen met hun Nextcloud-e-mailadres en wachtwoord, of door de gebruiker gedefinieerde inloggegevens, als dat is ingesteld.",
+    "Save" : "Opslaan",
+    "SnappyMail Webmail is not configured yet." : "SnappyMail Webmail is nog niet geconfigureerd.",
+    "may have some" : "kan wat hebben",
+    "security considerations" : "Beveiligingoverwegingen",
+    "Enter an email and password to auto-login to SnappyMail." : "Geef een e-mailadres en wachtwoord op voor auto-login naar SnappyMail.",
+    "Password" : "Wachtwoord"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}

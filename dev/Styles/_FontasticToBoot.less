@@ -1,84 +1,24 @@
 
+.fontastic + span,
+[class^="icon-"] + span,
+[class*=" icon-"] + span {
+	margin-left: 0.5em;
+}
+
 [class^="icon-"],
 [class*=" icon-"] {
 	display: inline-block;
-	width: 16px;
-	height: 16px;
-	line-height: 17px;
-	font-size: 16px;
-	vertical-align: text-top;
+	min-width: 1em;
 
-	.disabled &, .btn[disabled] &{
-		color: grey;
-		&.icon-white {
-			color: #fff;
-		}
+	.disabled &,
+	.btn[disabled] & {
+		opacity: 0.5;
 	}
 }
 
-.icon-folder, .icon-folder-add, .icon-list {
-	line-height: 18px;
-	font-size: 18px;
-	margin-top: -1px;
-	margin-left: -1px;
-	width: 17px;
-}
-
-.iconsize50 {
-	line-height: 50px;
-	font-size: 50px;
-	width: 50px;
-	height: 50px;
-}
-
+/* .b-contacts-content .b-view-content */
 .iconsize24 {
-	line-height: 24px;
-	font-size: 24px;
-}
-
-.iconsize20 {
-	line-height: 20px;
-	font-size: 20px;
-}
-
-/* White icons with optional class, or on hover/active states of certain elements */
-.icon-white,
-.nav > .active > a > [class^="icon-"],
-.nav > .active > a > [class*=" icon-"] {
-	color: #fff;
-}
-
-.g-ui-menu .e-item:hover [class^="icon-"],
-.g-ui-menu .e-item:hover [class*=" icon-"] {
-	color: #fff;
-}
-
-.icon-none {
-	background-image: none !important;
-}
-
-.icon-checkbox-checked, .icon-checkbox-unchecked, .icon-checkbox-partial, .icon-radio-checked, .icon-radio-unchecked {
-	cursor: pointer;
-	color: #555;
-	font-size: 1em;
-
-	&:hover, &:active {
-		color: #000;
-	}
-}
-
-.icon-white {
-	&.icon-checkbox-checked, &.icon-checkbox-unchecked, &.icon-checkbox-partial, &.icon-radio-checked, &.icon-radio-unchecked {
-		color: #eee;
-
-		&:hover, &:active {
-			color: #fff;
-		}
-	}
-}
-
-.iconcolor-display-none {
-	display: none;
+	font-size: 171%;
 }
 
 .iconcolor-green {
@@ -89,113 +29,37 @@
 	color: red;
 }
 
-.iconcolor-white {
-	color: white;
-}
-
-.iconcolor-grey {
-	color: #aaa;
-}
-
-.denied-by-browser {
-	cursor: default;
-	.icon-checkbox-checked, icon-checkbox-unchecked {
-		cursor: default;
-	}
-}
-
-.right-mini, .down-mini {
-	width: 16px;
-	line-height: 20px;
-}
-
-/*
-@keyframes rotation {
-	to   {transform: rotate(1turn);}
-}
-
-.icon-spinner {
-    width: 16px;
-    height: 16px;
-
-	&:before {
-		transform-origin: 8px 8px;
-		margin-top: 1px;
-		display: inline-block;
-		font-size: 16px;
-		line-height: 100%;
-	}
-}
-*/
-
 @keyframes rotation {
 	to   {transform: rotate(1turn);}
 }
 
 .icon-spinner {
 
-	font-family: Arial;
+	height: 1.2em;
+	width: 1.2em;
 
-	&:before {
-		content: "";
-	}
-
-	height: 11px;
-	width: 11px;
-
-	margin-right: -1px;
-	background: none;
+	margin: 0 -1px;
 
 	border: 3px solid #aaa;
 	border-top-color: #333;
 	border-radius: 100%;
 
-	animation: none;
-
-	&.animated {
-		border-color: transparent;
-		border-top-color: #999;
-
-		animation: rotation .8s infinite ease-in-out;
-	}
-
-	&.big {
-
-		height: 13px;
-		width: 13px;
-
-		margin-top: -2px;
-		margin-left: -2px;
-	}
-
-	&.white, &.icon-white {
-
-		border-color: #fff;
-		border-top-color: #999;
-
-		&.animated {
-			border-color: transparent;
-			border-top-color: #fff;
-		}
-	}
+	vertical-align: text-top;
 }
 
-html.no-cssanimations .icon-spinner {
-	background: none;
-	background-image: url('@{rlSyncFileStop}');
-	background-repeat: no-repeat;
+.icon-spinner:not(.not-animated),
+.list-loading .icon-spinner.not-animated {
+	border-color: transparent;
+	border-top-color: #999;
+	animation: rotation .8s infinite ease-in-out;
+}
 
-	border: none;
-	box-shadow: none;
-	height: 16px;
-	width: 16px;
+.btn.btn-success .icon-spinner {
+	border-color: transparent;
+	border-top-color: #fff;
+}
 
-	font-family: Arial;
-	&:before {
-		content: "";
-	}
-	&.animated {
-		background: none;
-		background-image: url('@{rlSyncFile}');
-	}
+.fontastic.icon-spinner {
+	text-indent: -5em;
+	overflow: hidden;
 }

@@ -1,0 +1,78 @@
+<header>
+	<a href="#" class="close" data-bind="click: close">×</a>
+	<h3>ACL: <span data-bind="text: folderName"></span></h3>
+</header>
+<form id="folderaclform" class="modal-body form-horizontal" autocomplete="off" spellcheck="false" data-bind="submit: submitForm">
+	<div class="control-group">
+		<label data-i18n="GLOBAL/EMAIL"></label>
+		<input name="identifier" class="input-xlarge" autofocus=""
+			autocomplete="off" autocorrect="off" autocapitalize="off"
+			data-bind="visible: create, value: identifier" required="">
+		<span data-bind="visible: !create(), text: identifier"></span>
+	</div>
+	<div class="control-group">
+		<label data-i18n="IMAP/ACL_RIGHTS"></label>
+		<table class="table table-hover table-bordered" style="width:auto"><tbody>
+		<tr title="SETACL/DELETEACL/GETACL/LISTRIGHTS">
+			<td data-i18n="IMAP/ACL_A"></td>
+			<td><input type="checkbox" value="a" data-bind="checked: rights, disable: mine" /></td>
+		</tr>
+		<tr title="SELECT the mailbox, perform STATUS">
+			<td data-i18n="IMAP/ACL_R"></td>
+			<td><input type="checkbox" value="r" data-bind="checked: rights, disable: mine" /></td>
+		</tr>
+		<tr title="Mailbox is visible to LIST/LSUB commands, SUBSCRIBE mailbox">
+			<td data-i18n="IMAP/ACL_L"></td>
+			<td><input type="checkbox" value="l" data-bind="checked: rights, disable: mine" /></td>
+		</tr>
+		<tr title="perform APPEND, COPY into mailbox">
+			<td data-i18n="IMAP/ACL_I"></td>
+			<td><input type="checkbox" value="i" data-bind="checked: rights, disable: mine" /></td>
+		</tr>
+		<tr title="set or clear \SEEN flag via STORE, also set \SEEN during APPEND/COPY/FETCH BODY[...]">
+			<td data-i18n="IMAP/ACL_S"></td>
+			<td><input type="checkbox" value="s" data-bind="checked: rights, disable: mine" /></td>
+		</tr>
+		<tr title="set or clear \DELETED flag via STORE, set \DELETED flag during APPEND/COPY">
+			<td data-i18n="IMAP/ACL_T"></td>
+			<td><input type="checkbox" value="t" data-bind="checked: rights, disable: mine" /></td>
+		</tr>
+<!--
+		<tr title="STORE DELETED flag, perform EXPUNGE">
+			<td data-i18n="IMAP/ACL_T">Old</td>
+			<td><input type="checkbox" value="d" data-bind="checked: rights, disable: mine" /></td>
+		</tr>
+-->
+		<tr title="set or clear flags other than \SEEN and \DELETED via STORE, also set them during APPEND/COPY">
+			<td data-i18n="IMAP/ACL_W"></td>
+			<td><input type="checkbox" value="w" data-bind="checked: rights, disable: mine" /></td>
+		</tr>
+		<tr title="send mail to submission address for mailbox, not enforced by IMAP4 itself">
+			<td data-i18n="IMAP/ACL_P"></td>
+			<td><input type="checkbox" value="p" data-bind="checked: rights, disable: mine" /></td>
+		</tr>
+		<tr title="CREATE new sub-mailboxes in any implementation-defined hierarchy, parent mailbox for the new mailbox name in RENAME">
+			<td data-i18n="IMAP/ACL_K"></td>
+			<td><input type="checkbox" value="k" data-bind="checked: rights, disable: mine" /></td>
+		</tr>
+<!--
+		<tr title="CREATE new sub-mailboxes in any implementation-defined hierarchy">
+			<td data-i18n="IMAP/ACL_K">Old</td>
+			<td><input type="checkbox" value="c" data-bind="checked: rights, disable: mine" /></td>
+		</tr>
+-->
+		<tr title="DELETE mailbox, old mailbox name in RENAME">
+			<td data-i18n="IMAP/ACL_X"></td>
+			<td><input type="checkbox" value="x" data-bind="checked: rights, disable: mine" /></td>
+		</tr>
+		<tr title="perform EXPUNGE and expunge as a part of CLOSE">
+			<td data-i18n="IMAP/ACL_E"></td>
+			<td><input type="checkbox" value="e" data-bind="checked: rights, disable: mine" /></td>
+		</tr>
+		</tbody></table>
+	</div>
+</form>
+<footer>
+	<button data-bind="visible: mine" form="folderaclform" class="btn" data-i18n="GLOBAL/CLOSE"></button>
+	<button data-bind="visible: !mine()" form="folderaclform" class="btn" data-i18n="GLOBAL/SAVE"></button>
+</footer>

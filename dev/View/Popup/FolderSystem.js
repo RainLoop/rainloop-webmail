@@ -1,113 +1,71 @@
-import _ from '_';
 import ko from 'ko';
+import { koComputable, addSubscribablesTo } from 'External/ko';
 
-import { SetSystemFoldersNotification, Magics } from 'Common/Enums';
+import { FolderType } from 'Common/EnumsUser';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { folderListOptionsBuilder, noop, defautOptionsAfterRender } from 'Common/Utils';
-import { initOnStartOrLangChange, i18n } from 'Common/Translator';
+import { defaultOptionsAfterRender } from 'Common/Utils';
+import { folderListOptionsBuilder } from 'Common/Folders';
+import { i18n } from 'Common/Translator';
 
-import FolderStore from 'Stores/User/Folder';
+import { FolderUserStore } from 'Stores/User/Folder';
 
-import * as Settings from 'Storage/Settings';
-import Remote from 'Remote/User/Ajax';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-import { popup } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
-
-@popup({
-	name: 'View/Popup/FolderSystem',
-	templateID: 'PopupsFolderSystem'
-})
-class FolderSystemPopupView extends AbstractViewNext {
+export class FolderSystemPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
-
-		this.sChooseOnText = '';
-		this.sUnuseText = '';
-
-		initOnStartOrLangChange(() => {
-			this.sChooseOnText = i18n('POPUPS_SYSTEM_FOLDERS/SELECT_CHOOSE_ONE');
-			this.sUnuseText = i18n('POPUPS_SYSTEM_FOLDERS/SELECT_UNUSE_NAME');
-		});
+		super('FolderSystem');
 
 		this.notification = ko.observable('');
 
-		this.folderSelectList = ko.computed(() =>
+		this.folderSelectList = koComputable(() =>
 			folderListOptionsBuilder(
-				[],
-				FolderStore.folderList(),
-				FolderStore.folderListSystemNames(),
+				FolderUserStore.systemFoldersNames(),
 				[
-					['', this.sChooseOnText],
-					[UNUSED_OPTION_VALUE, this.sUnuseText]
-				],
-				null,
-				null,
-				null,
-				null,
-				null,
-				true
+					['', i18n('POPUPS_SYSTEM_FOLDERS/SELECT_CHOOSE_ONE')],
+					[UNUSED_OPTION_VALUE, i18n('POPUPS_SYSTEM_FOLDERS/SELECT_UNUSE_NAME')]
+				]
 			)
 		);
 
-		this.sentFolder = FolderStore.sentFolder;
-		this.draftFolder = FolderStore.draftFolder;
-		this.spamFolder = FolderStore.spamFolder;
-		this.trashFolder = FolderStore.trashFolder;
-		this.archiveFolder = FolderStore.archiveFolder;
+		this.sentFolder = FolderUserStore.sentFolder;
+		this.draftsFolder = FolderUserStore.draftsFolder;
+		this.spamFolder = FolderUserStore.spamFolder;
+		this.trashFolder = FolderUserStore.trashFolder;
+		this.archiveFolder = FolderUserStore.archiveFolder;
 
-		const fSetSystemFolders = () => {
-				Settings.settingsSet('SentFolder', FolderStore.sentFolder());
-				Settings.settingsSet('DraftFolder', FolderStore.draftFolder());
-				Settings.settingsSet('SpamFolder', FolderStore.spamFolder());
-				Settings.settingsSet('TrashFolder', FolderStore.trashFolder());
-				Settings.settingsSet('ArchiveFolder', FolderStore.archiveFolder());
-			},
-			fSaveSystemFolders = _.debounce(() => {
-				fSetSystemFolders();
-				Remote.saveSystemFolders(noop, {
-					SentFolder: FolderStore.sentFolder(),
-					DraftFolder: FolderStore.draftFolder(),
-					SpamFolder: FolderStore.spamFolder(),
-					TrashFolder: FolderStore.trashFolder(),
-					ArchiveFolder: FolderStore.archiveFolder(),
-					NullFolder: 'NullFolder'
-				});
-			}, Magics.Time1s),
-			fCallback = () => {
-				fSetSystemFolders();
-				fSaveSystemFolders();
-			};
+		const fSaveSystemFolders = (()=>FolderUserStore.saveSystemFolders()).debounce(1000);
 
-		FolderStore.sentFolder.subscribe(fCallback);
-		FolderStore.draftFolder.subscribe(fCallback);
-		FolderStore.spamFolder.subscribe(fCallback);
-		FolderStore.trashFolder.subscribe(fCallback);
-		FolderStore.archiveFolder.subscribe(fCallback);
+		addSubscribablesTo(FolderUserStore, {
+			sentFolder: fSaveSystemFolders,
+			draftsFolder: fSaveSystemFolders,
+			spamFolder: fSaveSystemFolders,
+			trashFolder: fSaveSystemFolders,
+			archiveFolder: fSaveSystemFolders
+		});
 
-		this.defautOptionsAfterRender = defautOptionsAfterRender;
+		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 	}
 
 	/**
-	 * @param {number=} notificationType = SetSystemFoldersNotification.None
+	 * @param {number=} notificationType = 0
 	 */
-	onShow(notificationType = SetSystemFoldersNotification.None) {
-		let notification = '';
+	onShow(notificationType = 0) {
+		let notification = '', prefix = 'POPUPS_SYSTEM_FOLDERS/NOTIFICATION_';
 		switch (notificationType) {
-			case SetSystemFoldersNotification.Sent:
-				notification = i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_SENT');
+			case FolderType.Sent:
+				notification = i18n(prefix + 'SENT');
 				break;
-			case SetSystemFoldersNotification.Draft:
-				notification = i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_DRAFTS');
+			case FolderType.Drafts:
+				notification = i18n(prefix + 'DRAFTS');
 				break;
-			case SetSystemFoldersNotification.Spam:
-				notification = i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_SPAM');
+			case FolderType.Junk:
+				notification = i18n(prefix + 'SPAM');
 				break;
-			case SetSystemFoldersNotification.Trash:
-				notification = i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_TRASH');
+			case FolderType.Trash:
+				notification = i18n(prefix + 'TRASH');
 				break;
-			case SetSystemFoldersNotification.Archive:
-				notification = i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_ARCHIVE');
+			case FolderType.Archive:
+				notification = i18n(prefix + 'ARCHIVE');
 				break;
 			// no default
 		}
@@ -115,5 +73,3 @@ class FolderSystemPopupView extends AbstractViewNext {
 		this.notification(notification);
 	}
 }
-
-export { FolderSystemPopupView, FolderSystemPopupView as default };

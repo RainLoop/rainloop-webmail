@@ -1,0 +1,11 @@
+{ "translations": {
+    "Email" : "Sähköposti",
+    "Error" : "Virhe",
+    "Invalid argument(s)" : "Yksi tai useampi virheellinen argumentti",
+    "Saved successfully" : "Tallennettu onnistuneesti",
+    "SnappyMail" : "SnappyMail",
+    "Save" : "Tallenna",
+    "SnappyMail Webmail is not configured yet." : "SnappyMail Webmailia ei ole vielä määritetty.",
+    "Password" : "Salasana"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}

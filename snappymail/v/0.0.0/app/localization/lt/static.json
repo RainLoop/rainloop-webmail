@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Perkrauti",
+	"NO_SCRIPT_TITLE": "Šiai aplikacijai reikalinga JavaScript.",
+	"NO_SCRIPT_DESC": "JavaScript nepalaikoma Jūsų naršyklėje.\nĮjunkite JavaScript palaikymą naršyklėje ir bandykite vėl.\n",
+	"NO_COOKIE_TITLE": "Slapukų palaikymas būtinas šiai aplikacijai.",
+	"NO_COOKIE_DESC": "Slapukų palaikymas negalimas jūsų naršyklėje.\nĮjunkite slapukų palaikymą naršyklėje ir bandykite vėl.\n",
+	"BAD_BROWSER_TITLE": "Jūsų naršyklė pasenusi.",
+	"BAD_BROWSER_DESC": "Norint naudotis visais šios aplikacijos privalumais,\nparsisiųskite ir įsidiekite vieną iš šių naršyklių:\n"
+}

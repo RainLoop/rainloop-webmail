@@ -1,0 +1,182 @@
+{
+	"GLOBAL": {
+		"ADD": "Додати",
+		"CLOSE": "Закрити",
+		"SAVE": "Зберегти",
+		"TEST": "Тест",
+		"UPDATE": "Оновити",
+		"USERNAME": "Ім'я користувача",
+		"PASSWORD": "Пароль",
+		"CANCEL": "Скасувати",
+		"SEARCH": "Пошук",
+		"YES": "Так",
+		"NO": "Ні"
+	},
+	"LOGIN": {
+		"LABEL_LOGIN": "Логін",
+		"LABEL_TOTP": "Код підтвердження TOTP",
+		"BUTTON_LOGIN": "Увійти в панель адміністратора"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "Панель управління адміністратора"
+	},
+	"SETTINGS_LABELS": {
+		"GENERAL": "Загальні",
+		"LOGIN": "Вхід",
+		"BRANDING": "Брендінг",
+		"CONTACTS": "Контакти",
+		"DOMAINS": "Домени",
+		"SECURITY": "Безпека",
+		"PACKAGES": "Плагіни",
+		"CONFIG": "Файл конфігурації",
+		"ABOUT": "Про програму"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "Інтерфейс",
+		"LABEL_LANGUAGE": "Мова",
+		"LABEL_LANGUAGE_ADMIN": "Мова (Панелі Адміністратора)",
+		"LABEL_THEME": "Тема за замовчуванням",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Дозволити користувачу вибір мови",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Дозволити користувачу вибір теми",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Дозволити користувачу вибір фону",
+		"LABEL_SHOW_THUMBNAILS": "Показувати мініатюри (для вкладень)",
+		"LEGEND_MAIN": "Основне",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "Ліміт розміру вкладень",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Дозволити додаткові облікові записи",
+		"LABEL_ALLOW_IDENTITIES": "Дозволити кілька варіантів відправника",
+		"ALERT_DATA_ACCESS": "Папка даних SnappyMail доступна. Будь ласка, налаштуйте свій веб-сервер так, щоб приховати папку даних із зовнішнього доступу. Детальніше тут:",
+		"ALERT_WARNING": "Увага!",
+		"HTML_ALERT_WEAK_PASSWORD": "Ви використовуєте стандартний пароль адміністратора.\n<br>\nЗ міркувань безпеки, будь ласка,\n<strong><a href=\"#\/security\">змініть пароль<\/a><\/strong> просто зараз.\n"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "Сторінка Входу",
+		"LABEL_DEFAULT_DOMAIN": "Основний домен",
+		"LABEL_DETERMINE_USER_DOMAIN": "Намагатися визначити домен користувача",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Дозволити вибір мови на сторінці входу",
+		"LABEL_DETERMINE_USER_LANGUAGE": "Намагатися визначити мову користувача"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Брендінг",
+		"LABEL_PAGE_TITLE": "Назва сторінки (Title)",
+		"LABEL_LOADING_DESCRIPTION": "Назва при завантаженні та на сторінці входу",
+		"LABEL_FAVICON_URL": "Значок (favicon)"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "Контакти",
+		"LEGEND_STORAGE": "Сховище (СУБД)",
+		"LABEL_ENABLE_CONTACTS": "Увімкнути контакти",
+		"LABEL_ALLOW_SYNC": "Дозволити синхронізацію контактів (із зовнішнім CardDAV сервером)",
+		"LABEL_STORAGE_TYPE": "Тип",
+		"LABEL_STORAGE_DSN": "Dsn",
+		"LABEL_STORAGE_USER": "Користувач",
+		"LABEL_STORAGE_PASSWORD": "Пароль",
+		"SQLITE_GLOBAL": "Використати глобальну БД для всіх, замість окремого для кожного облікового запису",
+		"ALERT_NOTICE": "Увага!",
+		"SUGGESTIONS_LIMIT": "Ліміт пропозицій",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Не використовуйте цей тип бази даних з великою кількістю активних користувачів.",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "Ваша система не підтримує контактів.\n<br>\nВам необхідно встановити чи увімкнути <strong>СУБД (SQLite \/ MySQL \/ PostgreSQL)<\/strong> PHP-розширення на вашому сервері.\n"
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "Домени",
+		"BUTTON_ADD_DOMAIN": "Додати домен",
+		"BUTTON_ADD_ALIAS": "Додати аліас",
+		"DELETE_ARE_YOU_SURE": "Ви впевнені?",
+		"HTML_DOMAINS_HELPER": "Список доменів до яких дозволено доступ.\n<br>\nНатисніть на ім'я, щоб настроїти домен.\n"
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "Безпека",
+		"LABEL_USE_IMAGE_PROXY": "Використовувати локальний проксі для зовнішніх зображень",
+		"LABEL_AUTO_VERIFY": "Перевіряти підписи автоматично",
+		"LABEL_SHOW_PHP_INFO": "Показати PHP інформацію",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Облікові дані для доступу до панелі адміністратора",
+		"LABEL_CURRENT_PASSWORD": "Поточний пароль",
+		"LABEL_NEW_PASSWORD": "Новий пароль",
+		"LABEL_REPEAT_PASSWORD": "Повторити пароль",
+		"LABEL_REQUIRE_VERIFICATION": "Вимагати перевірку SSL сертифікату",
+		"CRYPTO": "Шифрування",
+		"LABEL_ALLOW_SELF_SIGNED": "Дозволити самопідписані сертифікати"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Увімкнути плагіни",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Є оновлення для наступних плагінів",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Доступні плагіни",
+		"LEGEND_INSTALLED_PACKAGES": "Встановлені плагіни",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Наразі не вдається отримати доступ до сховища пакетів."
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "Про програму",
+		"LABEL_TAG_HINT": "Простий, сучасний та швидкий веб-клієнт електронної пошти\n",
+		"LABEL_ALL_RIGHTS_RESERVED": "Всі права захищені.",
+		"HINT_READ_CHANGE_LOG": "Будь ласка, ознайомтеся зі змінами перед оновленням.\n",
+		"HINT_IS_UP_TO_DATE": "Версія SnappyMail актуальна.",
+		"HTML_NEW_VERSION": "Нова <b>%VERSION%<\/b> версія доступна.",
+		"LABEL_UPDATING": "Оновлення",
+		"LABEL_CHECKING": "Перевірка",
+		"BUTTON_RELEASES": "Релізи"
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "Додати аліас",
+		"LABEL_ALIAS": "Аліас",
+		"LABEL_DOMAIN": "Домен"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "Додати домен",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "Додати домен \"%NAME%\"",
+		"TITLE_EDIT_DOMAIN": "Редагувати домен \"%NAME%\"",
+		"LABEL_NAME": "Імя",
+		"NAME_HELPER": "підтримуються шаблони",
+		"LABEL_SERVER": "Сервер",
+		"LABEL_PORT": "Порт",
+		"LABEL_SECURE": "Безпека",
+		"TIMEOUT": "Тайм-аут",
+		"DISABLE_CAPABILITIES": "Вимкнути функції",
+		"LIMITS": "Ліміти",
+		"FOLDERS": "Папки",
+		"MESSAGES": "Листи",
+		"SECURE_OPTION_NONE": "Немає",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Дозволити Sieve скрипти",
+		"LABEL_USE_SHORT_LOGIN": "Використовувати короткий логін",
+		"LABEL_LOWERCASE_LOGIN": "Логін у нижньому регістрі (незалежно від регістру)",
+		"LABEL_USE_AUTH": "Використовувати автентифікацію",
+		"LABEL_SET_SENDER": "Використовувати логін як відправника",
+		"LABEL_AUTH_PLAIN_LINE": "Примусовий вхід командою AUTH PLAIN",
+		"LABEL_USE_PHP_MAIL": "Використовувати mail() функцію",
+		"BUTTON_WHITE_LIST": "Білий список",
+		"NEW_DOMAIN_DESC": "Ця конфігурація дозволить вам працювати з <strong>%NAME%<\/strong> адресами.",
+		"WHITE_LIST_ALERT": "Список користувачів домену, до яких дозволено доступ.\nВикористовуйте пробіл як роздільник.\n",
+		"VALID_SPAM_HEADERS": "Valid SPAM headers",
+		"VALID_VIRUS_HEADERS": "Valid virus headers"
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "Плагін",
+		"DESC_NOTHING_TO_CONFIGURE": "Нічого налаштовувати"
+	},
+	"POPUPS_ASK": {
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Ви впевнені, що хочете закрити це вікно?"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "Виберіть мову"
+	},
+	"HINTS": {
+		"BETA": "beta",
+		"WARNING": "Увага!"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "Домен вже існує",
+		"UNKNOWN_ERROR": "Невідома помилка"
+	},
+	"NOTIFICATIONS": {
+		"RequestError": "Запит не виконано",
+		"RequestAborted": "Запит перерваний",
+		"RequestTimeout": "Минув час запиту",
+		"InvalidToken": "Невірний токен запиту",
+		"AuthError": "Не вдалося авторизуватись",
+		"DomainAlreadyExists": "Домен вже існує",
+		"CantSavePluginSettings": "Не можу зберегти налаштування",
+		"CantInstallPackage": "Помилка встановлення плагіна",
+		"CantDeletePackage": "Помилка видалення плагіна",
+		"InvalidPluginPackage": "Помилка пакета плагіна",
+		"UnsupportedPluginPackage": "Для роботи плагіна потрібна повна підтримка сервера",
+		"UnknownError": "Невідома помилка"
+	}
+}

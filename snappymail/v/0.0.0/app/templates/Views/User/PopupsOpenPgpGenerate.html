@@ -1,0 +1,78 @@
+<header>
+	<a href="#" class="close" data-bind="click: close">×</a>
+	<h3 data-i18n="OPENPGP/POPUP_GENERATE_TITLE"></h3>
+</header>
+<form id="openpgp-generate" class="modal-body form-horizontal" autocomplete="off" spellcheck="false" data-bind="submit: submitForm">
+	<div class="alert" data-bind="visible: '' !== submitError()">
+		<a href="#" class="close" data-bind="click: hideError">×</a>
+		<span data-bind="text: submitError"></span>
+	</div>
+	<!-- Disable stupid browser password autofill -->
+	<input type="password" style="display:none">
+	<div class="control-group" data-bind="css: {'error': emailError}">
+		<label data-i18n="GLOBAL/EMAIL"></label>
+		<input type="email" required="" class="input-xlarge"
+			autocomplete="off" autocorrect="off" autocapitalize="off"
+			list="emailaddresses" data-bind="value: email">
+	</div>
+	<div class="control-group">
+		<label data-i18n="GLOBAL/NAME"></label>
+		<input type="text" required="" class="input-xlarge"
+			autocomplete="off" autocorrect="off" autocapitalize="off"
+			data-bind="value: name">
+	</div>
+	<div class="control-group">
+		<label data-i18n="GLOBAL/PASSWORD"></label>
+		<input type="password" required="" class="input-xlarge"
+			autocomplete="new-password" autocorrect="off" autocapitalize="off"
+			data-bind="value: password">
+	</div>
+	<div class="control-group">
+		<label data-i18n="OPENPGP/LABEL_KEY_TYPE"></label>
+		<select data-bind="value: keyType, options: ['ECC', 'RSA']"></select>
+	</div>
+	<div class="control-group">
+		<div data-bind="component: {
+			name: 'Checkbox',
+			params: {
+				label: 'OPENPGP/BACKUP_PUBLIC_KEY_ON_SERVER',
+				value: backupPublicKey
+			}
+		}"></div>
+		<br>
+		<div data-bind="component: {
+			name: 'Checkbox',
+			params: {
+				label: 'OPENPGP/BACKUP_PRIVATE_KEY_ON_SERVER',
+				value: backupPrivateKey
+			}
+		}"></div>
+		<br>
+		<div data-bind="visible: canGnuPG, component: {
+			name: 'Checkbox',
+			params: {
+				label: 'OPENPGP/STORE_PUBLIC_KEY_IN_GNUPG',
+				value: saveGnuPGPublic
+			}
+		}"></div>
+		<br>
+		<div data-bind="visible: canGnuPG, component: {
+			name: 'Checkbox',
+			params: {
+				label: 'OPENPGP/STORE_PRIVATE_KEY_IN_GNUPG',
+				value: saveGnuPGPrivate
+			}
+		}"></div>
+	</div>
+	<datalist id="emailaddresses">
+		<!-- ko foreach: identities -->
+		<option data-bind="attr:{value:email}"></option>
+		<!-- /ko -->
+	</datalist>
+</form>
+<footer>
+	<button class="btn" form="openpgp-generate">
+		<i class="fontastic" data-bind="css: {'icon-spinner': submitRequest()}">🔑</i>
+		<span data-i18n="OPENPGP/POPUP_GENERATE_BUTTON"></span>
+	</button>
+</footer>

@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Actualizar",
+	"NO_SCRIPT_TITLE": "JavaScript es requerido para esta aplicación.",
+	"NO_SCRIPT_DESC": "JavaScript está desactivado. Por favor habilite JavaScript en la configuración de su navegador e inténtelo de nuevo.\n",
+	"NO_COOKIE_TITLE": "Las Cookies son requeridas para esta aplicación.",
+	"NO_COOKIE_DESC": "Las Cookies están desactivadas. Por favor habilite las Cookies en la configuración de su navegador e inténtelo de nuevo.\n",
+	"BAD_BROWSER_TITLE": "El navegador no está actualizado",
+	"BAD_BROWSER_DESC": "Para usar todas las características de esta aplicación,\ndescargue e instale uno de estos navegadores:\n"
+}

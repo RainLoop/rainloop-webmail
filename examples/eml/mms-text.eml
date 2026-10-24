@@ -1,0 +1,45 @@
+Return-Path: <example@example.com>
+Delivered-To: example@example.com
+Authentication-Results: OpenDMARC; dmarc=none (p=none dis=none) header.from=mms.att.net
+Authentication-Results: mx.openmbox.net;
+	dkim=pass (2048-bit key; unprotected) header.d=mms.att.net header.i=@mms.att.net header.a=rsa-sha256 header.s=EMG20171113 header.b=GcdBwt6y;
+	dkim-atps=neutral
+Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=44.202.169.45; helo=omta046.useast.a.cloudfilter.net; envelope-from=example@example.com; receiver=<UNKNOWN>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mms.att.net;
+	s=EMG20171113; t=1698342917;
+	bh=M3LX5C0C3qQXh0kAN3/Saon5/gfmPas4QOsI95X7Lfk=;
+	h=In-Reply-To:To:From:Date;
+	b=GcdBwt6yjVyiftB7LlpmgsvZO3RNgXyYXq1VD1wjAXTHXX7DSCJbUZplQlpy8M6hc
+	 4TEUDsJYdsHv8ATD8hxyep9DxJIdYsigChIc7MjbOAAWzZ3bLyyku44G587Wdziqg9
+	 4hIHQsMiH1b1OlsBdVLT/x2ITG2uWUMRRRrYZPwWrRfAtuvb6vVcgV56coeQIFkftj
+	 nKW2LEUzjC7IVzlJ9031VVFrgFk5PiB4Tq5aO1LFyRyf9x1a7uHMJPBZMKP3Hn5fQA
+	 f7klGU6JNWmJlQ/utOvoPVZIujbFKjLrFsB4T++UtZwJSMBBaJo0z1ZvER2iZuE3ig
+	 JVMusIgmkGe9w==
+X-Authority-Analysis: v=2.4 cv=WJ1s41gR c=1 sm=1 tr=0 ts=653aa804
+ a=4KXCUzhBzoMCTCvOBLK/Fg==:117 a=0+xkjrd6YXNsCDu6qej0Vw==:17
+ a=s5jvgZ67dGcA:10 a=bhdUkHdE2iEA:10 a=Jg6cXP8y7QPT-mWRylsA:9 a=QEXdDO2ut3YA:10
+Message-ID: <w4F1qyGBP1PJfw4ZgqPYHY@txt.att.net>
+In-Reply-To: 750185620.20857872.1698342916592.JavaMail.nems@zwhp1ammsc01nfe001
+X-Mms-Message-Type: m-send-req
+X-Mms-Transaction-Id: 1698342912-2
+X-Mms-MMS-Version: 1.2
+To: example@example.com
+From: example@example.com
+Date: Thu, 26 Oct 2023 17:55:16 +0000 (UTC)
+Subject: MMS received text
+X-Mms-Sender-Visibility: Show
+Content-Type: multipart/mixed;
+	boundary="----=_Part_20857871_171488604.1698342916592"
+MIME-Version: 1.0
+X-CMAE-Envelope: MS4xfDzjWfgMQkj7Acfuw1x4/STexPLS/5ft1aLx0YttKdGnHkOi+pZyP6QEG0wOnAdrOd9wVuimUsyNjn3w8TzxPDRQ4gR0E//gBqpnJl1gpwIhow4YnPkE
+ LYgJ+J4bLCkuo6HWTKdXqMoHBR8igs6tv+8JU4AKdtCPRT9dnyk6KmRZ7s6nN1EjquGCGb9+VIn14VuumX0tm+IhPSAdks7oZcp6Do/DwcrUUi/DT6pq293i
+
+------=_Part_20857871_171488604.1698342916592
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: Attachment; Filename=text_0.txt; Charset=US-ASCII
+Content-ID: 0
+Content-Location: text_0.txt
+Content-Transfer-Encoding: BASE64
+
+NjYzMjQx
+------=_Part_20857871_171488604.1698342916592--

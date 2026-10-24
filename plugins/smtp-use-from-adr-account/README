@@ -1,0 +1,5 @@
+What does it do?
+
+You can configure multible identities, but if you send eMails it depends on the smtp server whether it accepts sending mails for an foreign eMail-Adress.
+By default, the smtp server of the account currently displayed in the interface is used.
+The plugin checks if you use a different From-Adress (identity). Then it searchs for a matching account (for the user) and rewrites smpt-config and credentials.

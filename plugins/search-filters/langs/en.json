@@ -1,0 +1,21 @@
+{
+	"SFILTERS": {
+		"WHEN_MESSAGE_MATCH_SEARCH_CRITERIA": "When a message is an exact match for your search criteria:",
+		"FILTERS": "Filters",
+		"FILTER": "Filter",
+		"MOVE_TO_FOLDER": "Move to folder: ",
+		"CREATE_FILTER": "Create filter",
+		"EDIT_FILTERS": "Edit filters",
+		"MATCHES": "Matches: ",
+		"DO_THIS": "Do this: ",
+		"SAVE": "Save",
+		"EDIT": "Edit",
+		"REMOVE": "Remove",
+		"NO_FILTERS": "You haven't added any filters yet.",
+		"THE_FOLLOWING_FILTERS_ARE_APPLIED": "The following filters are applied to all incoming mail: ",
+		"MARK_AS_READ": "Mark as read",
+		"STAR_IT": "Star it",
+		"PRIORITY_LABLE": "Priority points, Higher means it'll apply first",
+		"PRIORITY_POINTS": "Priority points"
+	}
+}

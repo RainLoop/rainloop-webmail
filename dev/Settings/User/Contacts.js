@@ -1,51 +1,63 @@
 import ko from 'ko';
+import { koComputable } from 'External/ko';
 
-import { Magics } from 'Common/Enums';
-import { boolToAjax } from 'Common/Utils';
+import { SettingsGet } from 'Common/Globals';
+import { i18n, translateTrigger, getErrorMessage } from 'Common/Translator';
+import { ContactUserStore } from 'Stores/User/Contact';
+import Remote from 'Remote/User/Fetch';
 
-import AppStore from 'Stores/User/App';
-import ContactStore from 'Stores/User/Contact';
-import Remote from 'Remote/User/Ajax';
-
-class ContactsUserSettings {
+export class UserSettingsContacts /*extends AbstractViewSettings*/ {
 	constructor() {
-		this.contactsAutosave = AppStore.contactsAutosave;
+		this.contactsAutosave = ko.observable(!!SettingsGet('ContactsAutosave'));
 
-		this.allowContactsSync = ContactStore.allowContactsSync;
-		this.enableContactsSync = ContactStore.enableContactsSync;
-		this.contactsSyncUrl = ContactStore.contactsSyncUrl;
-		this.contactsSyncUser = ContactStore.contactsSyncUser;
-		this.contactsSyncPass = ContactStore.contactsSyncPass;
+		this.allowContactsSync = ContactUserStore.allowSync;
+		this.syncMode = ContactUserStore.syncMode;
+		this.syncUrl = ContactUserStore.syncUrl;
+		this.syncUser = ContactUserStore.syncUser;
+		this.syncPass = ContactUserStore.syncPass;
+		this.syncError = ko.observable('');
 
-		this.saveTrigger = ko
-			.computed(() =>
+		this.syncModeOptions = koComputable(() => {
+			translateTrigger();
+			return [
+				{ id: 0, name: i18n('GLOBAL/NO') },
+				{ id: 1, name: i18n('GLOBAL/YES') },
+				{ id: 2, name: i18n('SETTINGS_CONTACTS/SYNC_READ') },
+			];
+		});
+
+		this.saveTrigger = koComputable(() =>
 				[
-					this.enableContactsSync() ? '1' : '0',
-					this.contactsSyncUrl(),
-					this.contactsSyncUser(),
-					this.contactsSyncPass()
+					ContactUserStore.syncMode(),
+					ContactUserStore.syncUrl(),
+					ContactUserStore.syncUser(),
+					ContactUserStore.syncPass()
 				].join('|')
 			)
-			.extend({ throttle: Magics.Time500ms });
+			.extend({ debounce: 500 });
+
+		this.contactsAutosave.subscribe(value =>
+			Remote.saveSettings(null, { ContactsAutosave: value })
+		);
+
+		this.saveTrigger.subscribe(() =>
+			Remote.request('SaveContactsSyncData', null, {
+				Mode: ContactUserStore.syncMode(),
+				Url: ContactUserStore.syncUrl(),
+				User: ContactUserStore.syncUser(),
+				Password: ContactUserStore.syncPass()
+			})
+		);
 	}
 
-	onBuild() {
-		this.contactsAutosave.subscribe((value) => {
-			Remote.saveSettings(null, {
-				'ContactsAutosave': boolToAjax(value)
-			});
-		});
-
-		this.saveTrigger.subscribe(() => {
-			Remote.saveContactsSyncData(
-				null,
-				this.enableContactsSync(),
-				this.contactsSyncUrl(),
-				this.contactsSyncUser(),
-				this.contactsSyncPass()
-			);
-		});
+	test() {
+		this.syncError('');
+		Remote.request('TestContactsSyncData', (iError, data) => {
+			iError && this.syncError(data.messageAdditional || data.message || getErrorMessage(iError, data));
+		}, {
+			Url: ContactUserStore.syncUrl(),
+			User: ContactUserStore.syncUser(),
+			Password: ContactUserStore.syncPass()
+		})
 	}
 }
-
-export { ContactsUserSettings, ContactsUserSettings as default };

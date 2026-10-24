@@ -1,0 +1,18 @@
+<header>
+	<a href="#" class="close" data-bind="click: close">×</a>
+	<h3 data-i18n="POPUPS_CLEAR_FOLDER/TITLE_CLEAR_FOLDER" data-bind="hidden: clearing"></h3>
+	<h3 data-i18n="POPUPS_CLEAR_FOLDER/TITLE_CLEARING_PROCESS" data-bind="visible: clearing"></h3>
+</header>
+<div class="modal-body">
+	<i class="fontastic" style="color:red">⚠</i>
+	&nbsp;
+	<strong data-i18n="[html]POPUPS_CLEAR_FOLDER/DANGER_DESC_WARNING"></strong>
+	<p data-bind="html: dangerDescHtml"></p>
+	<span data-i18n="[html]POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_2"></span>
+</div>
+<footer>
+	<a class="btn btn-danger" data-bind="command: clearCommand">
+		<i class="fontastic" data-bind="css: {'icon-spinner white': clearing}">🔥</i>
+		<span data-i18n="GLOBAL/CLEAR"></span>
+	</a>
+</footer>

@@ -1,0 +1,130 @@
+html[dir="rtl"] {
+	direction: rtl;
+
+	--right: left;
+	--left: right;
+}
+
+[dir="rtl"] {
+
+	.LoginView .controls > .fontastic:first-child {
+		left: unset;
+		right: 6px;
+	}
+
+	&.sm-msgView-side #V-MailMessageList .resizer,
+	.search-input-wrp a {
+		right: unset;
+		left: 0;
+	}
+
+	.fontastic + span, [class^="icon-"] + span, [class*=" icon-"] + span {
+		margin-left: unset;
+		margin-right: 0.5em;
+	}
+
+	[data-icon]::before {
+		margin-left: 0.5em;
+		margin-right: 0;
+	}
+
+	.dropdown-menu.right-edge {
+		right: auto;
+		left: 0;
+	}
+
+	.form-horizontal .control-group > :not(label) {
+		margin: 0 20px 0 0;
+	}
+
+	.messageList .checkboxCheckAll {
+		margin: 0.45em 0 0 0.5em;
+	}
+
+	.messageListItem {
+		border-left: 0;
+		border-right: 6px solid transparent;
+
+		time, .sizeParent {
+			margin: 0 0 0 5px;
+		}
+
+		.attachmentParent,
+		.flagParent {
+			margin: 0 5px 0 10px;
+		}
+	}
+	.messageListItem > div + div {
+		padding: 5px 5px 5px 0;
+	}
+
+	#V-SystemDropDown {
+		right: unset;
+		left: 0;
+
+		.accountPlace {
+			border-right: 0;
+			border-left: 1px solid var(--btn-border-clr, rgba(0, 0, 0, 0.2));
+			margin: 0 0 -4px 6px;
+			padding-right: 0;
+			padding-left: 6px;
+		}
+	}
+
+	#V-PopupsCompose {
+		.b-header {
+			td:first-child {
+				padding: 0 0 0 10px;
+			}
+		}
+
+		header .close,
+		header .minimize-custom {
+			margin-left: 0;
+			margin-right: 0.7em;
+		}
+	}
+
+	.b-folders {
+		padding-left: 2px;
+		padding-right: unset;
+
+		.b-folders-system a[data-unread]::after,
+		.b-folders-user a[data-unread]:not(.system)::after {
+			right: unset;
+			left: 3px;
+		}
+		.flag-icon {
+			margin-left: 0;
+			margin-right: 7px;
+		}
+		li a {
+			border-left: 0;
+			border-right: 3px solid transparent;
+			padding: 0 @folderItemPadding 0 2em;
+		}
+	}
+
+	.messageView .messageItemHeader .informationShort {
+		margin: 0 0 0 56px;
+	}
+	.messageView .messageItemHeader .informationFull td:first-child {
+		border-right: 0;
+		border-left: 1px solid #999;
+	}
+	.messageView .message-fixed-button-toolbar {
+		right: unset;
+		left: 10px;
+	}
+
+	#V-PopupsContacts {
+		.e-contact-item {
+			border-left: 0;
+			border-right: 6px solid #eee;
+		}
+	}
+
+	[data-rainloopErrorTip]::before {
+		left: 100%;
+	}
+}

@@ -1,0 +1,101 @@
+
+#rl-left {
+	flex-grow: 0;
+	flex-shrink: 0;
+	padding-top: 50px + @rlLowMargin + 10px;
+	transition: width 0.3s ease-out;
+	width: @rlLeftWidth;
+
+	nav {
+		a {
+			color: var(--settings-menu-color, #333);
+			cursor: pointer;
+			display: block;
+			font-size: 128%;
+			line-height: 30px;
+			padding: 4px 10px;
+			text-decoration: none;
+		}
+
+		a:focus, a:hover {
+			background-color: var(--settings-menu-hover-bg-color, #333);
+			color: var(--settings-menu-hover-color, #eee);
+		}
+
+		a.selected {
+			background-color: var(--settings-menu-selected-bg-color, #333);
+			color: var(--settings-menu-selected-color, #eee);
+		}
+	}
+}
+
+#rl-right {
+	flex-grow: 1;
+	transition: left 0.3s ease-out, right 0.3s ease-out;
+	z-index: 1;
+}
+
+#V-AdminPane {
+	height: calc(100% - 50px - @rlLowMargin);
+	margin: 50px @rlLowMargin 0 0;
+
+	background-color: var(--panel-bg-clr, #fff);
+	border: 1px solid var(--border-color, #aaa);
+	border-radius: var(--border-radius, 5px);
+	box-shadow: var(--smMainShadow);
+	overflow-y: auto;
+	padding: 20px;
+	scroll-behavior: smooth;
+
+	> .b-toolbar {
+		color: #fff;
+		display: flex;
+		position: absolute;
+		top: 0;
+		right: 0;
+		left: 0;
+		padding: 8px @rlLowMargin 8px 0;
+		text-shadow: 0 1px 1px #000;
+
+		h4 {
+			flex-grow: 1;
+			margin: 8px;
+		}
+	}
+}
+
+.btn.btn-logout {
+	padding-left: 12px;
+	padding-right: 12px;
+}
+
+/* desktop */
+@media screen and (min-width: @maxMobileWidth + 1px) {
+	.toggleLeft {
+		display: none;
+	}
+}
+
+/* desktop-large */
+@media screen and (min-width: 1401px) {
+	#rl-left {
+		width: @rlLeftWidth + 20;
+	}
+}
+
+@media screen and (max-width: @maxMobileWidth) {
+	#rl-right {
+		min-width: calc(100% - @rlLowMargin);
+	}
+
+	#V-AdminPane {
+		margin-right: 0;
+		padding: 10px;
+	}
+
+	html.rl-left-panel-disabled {
+		#rl-left {
+			width: 0;
+		}
+	}
+}

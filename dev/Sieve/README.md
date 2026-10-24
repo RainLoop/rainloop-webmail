@@ -1,0 +1,33 @@
+https://www.iana.org/assignments/sieve-extensions/sieve-extensions.xhtml
+
+- [ ] RFC2852 envelope-deliverby / redirect-deliverby
+- [ ] RFC3461 envelope-dsn / redirect-dsn
+- [x] RFC3894 copy
+- [ ] RFC4790 comparator-*
+- [x] RFC5173 body
+- [x] RFC5183 environment
+- [x] RFC5228 encoded-character / envelope / fileinto
+- [x] RFC5229 variables
+- [x] RFC5230 vacation
+- [x] RFC5231 relational
+- [x] RFC5232 imap4flags
+- [x] RFC5233 subaddress
+- [x] RFC5235 spamtest / spamtestplus / virustest
+- [x] RFC5260 date / index
+- [x] RFC5293 editheader
+- [x] RFC5429 ereject / reject
+- [x] RFC5435 enotify
+- [x] RFC5463 ihave
+- [x] RFC5490 mailbox / mboxmetadata / servermetadata
+- [x] RFC5703 enclose / extracttext / foreverypart / mime / replace
+- [x] RFC6131 vacation-seconds
+- [ ] RFC6134 extlists
+- [ ] RFC6558 convert
+- [x] RFC6609 include
+- [ ] RFC6785 imapsieve
+- [ ] RFC7352 duplicate
+- [ ] RFC8579 special-use
+- [ ] RFC8580 fcc
+- [ ] RFC     regex                https://tools.ietf.org/html/draft-ietf-sieve-regex-01
+- [ ]         vnd.cyrus.*
+- [ ]         vnd.dovecot.*

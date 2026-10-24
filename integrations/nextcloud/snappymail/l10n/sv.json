@@ -1,0 +1,8 @@
+{ "translations": {
+    "Email" : "E-post",
+    "Error" : "Fel",
+    "Go to SnappyMail Webmail admin panel" : "Gå till administrationsdelen i Rainloop webbmejl",
+    "Save" : "Spara",
+    "Password" : "Lösenord"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}

@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Újratöltés",
+	"NO_SCRIPT_TITLE": "Az alkalmazáshoz JavaScript szükséges.",
+	"NO_SCRIPT_DESC": "A JavaScript támogatás nem érhető el a böngésződben.\nKérlek engedélyezd böngésződben a JavaScript támogatást, majd próbáld újra.\n",
+	"NO_COOKIE_TITLE": "Az alkalmazáshoz Cookie támogatásra van szükség.",
+	"NO_COOKIE_DESC": "A Cookie támogatás nem érhető el a böngésződben.\nKérlek engedélyezd böngésződben a Cookie támogatást, majd próbáld újra.\n",
+	"BAD_BROWSER_TITLE": "A böngésződ elavult.",
+	"BAD_BROWSER_DESC": "Az alkalmazás összes funkciójának használatához\ntölts le és telepítsd az alábbi böngészők egyikét:\n"
+}

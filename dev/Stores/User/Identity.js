@@ -1,13 +1,12 @@
-import _ from '_';
-import ko from 'ko';
+import { koArrayWithDestroy, koComputable } from 'External/ko';
+import { isArray } from 'Common/Utils';
 
-class IdentityUserStore {
-	constructor() {
-		this.identities = ko.observableArray([]);
-		this.identities.loading = ko.observable(false).extend({ throttle: 100 });
+export const IdentityUserStore = koArrayWithDestroy();
 
-		this.identitiesIDS = ko.computed(() => _.compact(_.map(this.identities(), (item) => (item ? item.id : null))));
-	}
-}
+IdentityUserStore.loading = ko.observable(false).extend({ debounce: 100 });
 
-export default new IdentityUserStore();
+/** Returns main (login) identity */
+IdentityUserStore.main = koComputable(() => {
+	const list = IdentityUserStore();
+	return isArray(list) ? list.find(item => item && !item.id()) : null;
+});

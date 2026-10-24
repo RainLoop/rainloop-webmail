@@ -1,0 +1,34 @@
+<div>
+	<div class="form-horizontal">
+		<div class="legend">
+			<span class="i18n" data-i18n="SETTINGS_EXAMPLE_PLUGIN/LEGEND_EXAMPLE"></span>
+			&nbsp;&nbsp;&nbsp;
+			<i class="icon-spinner animated" style="margin-top: 5px" data-bind="visible: loading"></i>
+		</div>
+		<div class="control-group">
+			<label class="control-label">
+				<span class="i18n" data-i18n="SETTINGS_EXAMPLE_PLUGIN/LABEL_SKYPE"></span>
+			</label>
+			<div class="controls">
+				<input type="text" data-bind="value: userSkype, enable: !savingOrLoading()" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">
+				<span class="i18n" data-i18n="SETTINGS_EXAMPLE_PLUGIN/LABEL_FACEBOOK"></span>
+			</label>
+			<div class="controls">
+				<input type="text" data-bind="value: userFacebook, enable: !savingOrLoading()" />
+			</div>
+		</div>
+		<div class="control-group">
+			<div class="controls">
+				<button class="btn" data-bind="click: exampleJsonSaveData, enable: !savingOrLoading()">
+					<i data-bind="css: {'icon-floppy': !saving(), 'icon-spinner animated': saving()}" class="icon-floppy"></i>
+					&nbsp;&nbsp;
+					<span class="i18n" data-i18n="SETTINGS_EXAMPLE_PLUGIN/BUTTON_SAVE"></span>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

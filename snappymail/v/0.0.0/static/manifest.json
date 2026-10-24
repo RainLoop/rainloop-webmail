@@ -1,0 +1,23 @@
+{
+	"name": "SnappyMail Webmail",
+	"short_name": "SnappyMail",
+	"description": "Simple, modern & fast web-based email client",
+	"display": "standalone",
+	"background_color": "white",
+	"theme_color": "black",
+	"icons": [{
+		"src": "apple-touch-icon.png",
+		"sizes": "64x64",
+		"type": "image/png"
+	}, {
+		"src": "android-icon.png",
+		"sizes": "192x192",
+		"type": "image/png"
+	}, {
+		"src": "logo-512.png",
+		"sizes": "512x512",
+		"type": "image/png",
+		"purpose": "any maskable"
+	}],
+	"start_url": "../../../../"
+}

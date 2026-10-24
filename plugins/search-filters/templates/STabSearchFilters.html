@@ -1,0 +1,39 @@
+<div>
+	<div class="form-horizontal">
+		<div class="legend">
+			<span data-i18n="SFILTERS/THE_FOLLOWING_FILTERS_ARE_APPLIED"></span>
+			&nbsp;&nbsp;&nbsp;
+			<i class="icon-spinner animated" style="margin-top: 5px" data-bind="visible: loading"></i>
+		</div>
+
+		<div data-bind="visible: ioFilters().length == 0">
+			<span data-i18n="SFILTERS/NO_FILTERS"> </span>
+		</div>
+
+		<!-- ko foreach: ioFilters -->
+		<label class="control-label">
+			<span data-bind="text: $root.i18n('MATCHES')"> </span>
+			<span data-bind="text: searchQ"></span>
+			&nbsp;
+			<span data-bind="text: $root.i18n('PRIORITY_POINTS')"></span>
+			:
+			&nbsp;
+			<span data-bind="text: priority"></span>
+			<br>
+			<span data-bind="text: $root.i18n('DO_THIS')"></span>
+			<span data-bind="visible: fFolder, text: $root.i18n('MOVE_TO_FOLDER')"></span>
+			<span data-bind="visible: fFolder, text: fFolder"></span>
+			&nbsp;
+			<span data-bind="visible: fSeen, text: $root.i18n('MARK_AS_READ')"></span>
+			&nbsp;
+			<span data-bind="visible: fFlag, text: $root.i18n('STAR_IT')"></span>
+		</label>
+		<div class="controls">
+			<button class="btn" data-bind="click: $root.edit, text: $root.i18n('EDIT')"></button>
+			<button class="btn" data-bind="click: $root.remove, text: $root.i18n('REMOVE')"></button>
+		</div>
+		<br>
+		<!-- /ko -->
+
+	</div>
+</div>

@@ -1,104 +1,64 @@
-import ko from 'ko';
-import { isUnd, pInt, friendlySize, mimeContentType, getFileExtension } from 'Common/Utils';
+import { FileInfo } from 'Common/File';
 
-import { staticIconClass, staticFileType } from 'Model/Attachment';
 import { AbstractModel } from 'Knoin/AbstractModel';
+import { addObservablesTo, addComputablesTo } from 'External/ko';
 
-class ComposeAttachmentModel extends AbstractModel {
+export class ComposeAttachmentModel extends AbstractModel {
 	/**
 	 * @param {string} id
 	 * @param {string} fileName
 	 * @param {?number=} size = null
 	 * @param {boolean=} isInline = false
 	 * @param {boolean=} isLinked = false
-	 * @param {string=} CID = ''
+	 * @param {string=} cId = ''
 	 * @param {string=} contentLocation = ''
 	 */
-	constructor(id, fileName, size = null, isInline = false, isLinked = false, CID = '', contentLocation = '') {
-		super('ComposeAttachmentModel');
+	constructor(id, fileName, size = null, isInline = false, isLinked = false, cId = '', contentLocation = '') {
+		super();
 
 		this.id = id;
 		this.isInline = !!isInline;
 		this.isLinked = !!isLinked;
-		this.CID = CID;
+		this.cId = cId;
 		this.contentLocation = contentLocation;
 		this.fromMessage = false;
 
-		this.fileName = ko.observable(fileName);
-		this.size = ko.observable(size);
-		this.tempName = ko.observable('');
+		addObservablesTo(this, {
+			fileName: fileName,
+			size: size,
+			tempName: '',
+			type: '', // application/octet-stream
 
-		this.progress = ko.observable(0);
-		this.error = ko.observable('');
-		this.waiting = ko.observable(true);
-		this.uploading = ko.observable(false);
-		this.enabled = ko.observable(true);
-		this.complete = ko.observable(false);
-
-		this.progressText = ko.computed(() => {
-			const p = this.progress();
-			return 0 === p ? '' : '' + (98 < p ? 100 : p) + '%';
+			progress: 0,
+			error: '',
+			waiting: true,
+			uploading: false,
+			enabled: true,
+			complete: false
 		});
 
-		this.progressStyle = ko.computed(() => {
-			const p = this.progress();
-			return 0 === p ? '' : 'width:' + (98 < p ? 100 : p) + '%';
+		addComputablesTo(this, {
+			progressText: () => {
+				const p = this.progress();
+				return 1 > p ? '' : (100 < p ? 100 : p) + '%';
+			},
+
+			progressStyle: () => {
+				const p = this.progress();
+				return 1 > p ? '' : 'width:' + (100 < p ? 100 : p) + '%';
+			},
+
+			title: () => this.error() || this.fileName(),
+
+			friendlySize: () => {
+				const localSize = this.size();
+				return null === localSize ? '' : FileInfo.friendlySize(localSize);
+			},
+
+			mimeType: () => this.type() || FileInfo.getContentType(this.fileName()),
+			fileExt: () => FileInfo.getExtension(this.fileName()),
+
+			iconClass: () => FileInfo.getIconClass(this.fileExt(), this.mimeType())
 		});
-
-		this.title = ko.computed(() => {
-			const error = this.error();
-			return '' !== error ? error : this.fileName();
-		});
-
-		this.friendlySize = ko.computed(() => {
-			const localSize = this.size();
-			return null === localSize ? '' : friendlySize(localSize);
-		});
-
-		this.mimeType = ko.computed(() => mimeContentType(this.fileName()));
-		this.fileExt = ko.computed(() => getFileExtension(this.fileName()));
-
-		this.regDisposables([
-			this.progressText,
-			this.progressStyle,
-			this.title,
-			this.friendlySize,
-			this.mimeType,
-			this.fileExt
-		]);
-	}
-
-	/**
-	 * @param {AjaxJsonComposeAttachment} json
-	 * @returns {boolean}
-	 */
-	initByUploadJson(json) {
-		let bResult = false;
-		if (json) {
-			this.fileName(json.Name);
-			this.size(isUnd(json.Size) ? 0 : pInt(json.Size));
-			this.tempName(isUnd(json.TempName) ? '' : json.TempName);
-			this.isInline = false;
-
-			bResult = true;
-		}
-
-		return bResult;
-	}
-
-	/**
-	 * @returns {string}
-	 */
-	iconClass() {
-		return staticIconClass(staticFileType(this.fileExt(), this.mimeType()))[0];
-	}
-
-	/**
-	 * @returns {string}
-	 */
-	iconText() {
-		return staticIconClass(staticFileType(this.fileExt(), this.mimeType()))[1];
 	}
 }
-
-export { ComposeAttachmentModel, ComposeAttachmentModel as default };

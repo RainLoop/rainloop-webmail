@@ -2,54 +2,80 @@
 
 class OverrideSmtpCredentialsPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
-	public function Init()
+	const
+		NAME = 'Override SMTP Credentials',
+		VERSION = '2.5',
+		RELEASE = '2024-03-12',
+		REQUIRED = '2.35.3',
+		CATEGORY = 'Filters',
+		DESCRIPTION = 'Override SMTP credentials for specific users.';
+
+	public function Init() : void
 	{
-		$this->addHook('filter.smtp-credentials', 'FilterSmtpCredentials');
+		$this->addHook('smtp.before-connect', 'FilterSmtpConnect');
+		$this->addHook('smtp.before-login', 'FilterSmtpCredentials');
 	}
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
-	 * @param array $aSmtpCredentials
+	 * @param \MailSo\Smtp\SmtpClient $oSmtpClient
+	 * @param \MailSo\Smtp\Settings $oSettings
 	 */
-	public function FilterSmtpCredentials($oAccount, &$aSmtpCredentials)
+	public function FilterSmtpConnect(\RainLoop\Model\Account $oAccount, \MailSo\Smtp\SmtpClient $oSmtpClient, \MailSo\Smtp\Settings $oSettings)
 	{
-		if ($oAccount instanceof \RainLoop\Model\Account && \is_array($aSmtpCredentials))
-		{
-			$sEmail = $oAccount->Email();
-
+		$sEmail = $oAccount->Email();
+		$sWhiteList = \trim($this->Config()->Get('plugin', 'override_users', ''));
+		$sFoundValue = '';
+		if (\strlen($sWhiteList) && \RainLoop\Plugins\Helper::ValidateWildcardValues($sEmail, $sWhiteList, $sFoundValue)) {
+			\SnappyMail\LOG::debug('SMTP Override', "{$sEmail} matched {$sFoundValue}");
+			$oSettings->usePhpMail = false;
 			$sHost = \trim($this->Config()->Get('plugin', 'smtp_host', ''));
-			$sWhiteList = \trim($this->Config()->Get('plugin', 'override_users', ''));
-
-			if (0 < strlen($sWhiteList) && 0 < \strlen($sHost) && \RainLoop\Plugins\Helper::ValidateWildcardValues($sEmail, $sWhiteList))
-			{
-				$aSmtpCredentials['Host'] = $sHost;
-				$aSmtpCredentials['Port'] = (int) $this->Config()->Get('plugin', 'smtp_port', 25);
-
+			if (\strlen($sHost)) {
+				$oSettings->host = $sHost;
+				$oSettings->port = (int) $this->Config()->Get('plugin', 'smtp_port', 25);
 				$sSecure = \trim($this->Config()->Get('plugin', 'smtp_secure', 'None'));
 				switch ($sSecure)
 				{
 					case 'SSL':
-						$aSmtpCredentials['Secure'] = MailSo\Net\Enumerations\ConnectionSecurityType::SSL;
+						$oSettings->type = MailSo\Net\Enumerations\ConnectionSecurityType::SSL;
 						break;
 					case 'TLS':
-						$aSmtpCredentials['Secure'] = MailSo\Net\Enumerations\ConnectionSecurityType::STARTTLS;
+					case 'STARTTLS':
+						$oSettings->type = MailSo\Net\Enumerations\ConnectionSecurityType::STARTTLS;
+						break;
+					case 'Detect':
+						$oSettings->type = MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT;
 						break;
 					default:
-						$aSmtpCredentials['Secure'] = MailSo\Net\Enumerations\ConnectionSecurityType::NONE;
+						$oSettings->type = MailSo\Net\Enumerations\ConnectionSecurityType::NONE;
 						break;
 				}
-
-				$aSmtpCredentials['UseAuth'] = (bool) $this->Config()->Get('plugin', 'smtp_auth', true);
-				$aSmtpCredentials['Login'] = \trim($this->Config()->Get('plugin', 'smtp_user', ''));
-				$aSmtpCredentials['Password'] = (string) $this->Config()->Get('plugin', 'smtp_password', '');
 			}
+		} else {
+			\SnappyMail\LOG::debug('SMTP Override', "{$sEmail} no match");
+		}
+	}
+
+	/**
+	 * @param \RainLoop\Model\Account $oAccount
+	 * @param \MailSo\Smtp\SmtpClient $oSmtpClient
+	 * @param \MailSo\Smtp\Settings $oSettings
+	 */
+	public function FilterSmtpCredentials(\RainLoop\Model\Account $oAccount, \MailSo\Smtp\SmtpClient $oSmtpClient, \MailSo\Smtp\Settings $oSettings)
+	{
+		$sWhiteList = \trim($this->Config()->Get('plugin', 'override_users', ''));
+		$sFoundValue = '';
+		if (\strlen($sWhiteList) && \RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $sWhiteList, $sFoundValue)) {
+			$oSettings->useAuth = (bool) $this->Config()->Get('plugin', 'smtp_auth', true);
+			$oSettings->username = \trim($this->Config()->Get('plugin', 'smtp_user', ''));
+			$oSettings->passphrase = (string) $this->Config()->Get('plugin', 'smtp_password', '');
 		}
 	}
 
 	/**
 	 * @return array
 	 */
-	public function configMapping()
+	protected function configMapping() : array
 	{
 		return array(
 			\RainLoop\Plugins\Property::NewInstance('smtp_host')->SetLabel('SMTP Host')
@@ -59,7 +85,7 @@ class OverrideSmtpCredentialsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetDefaultValue(25),
 			\RainLoop\Plugins\Property::NewInstance('smtp_secure')->SetLabel('SMTP Secure')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::SELECTION)
-				->SetDefaultValue(array('None', 'SSL', 'TLS')),
+				->SetDefaultValue(array('None', 'Detect', 'SSL', 'STARTTLS')),
 			\RainLoop\Plugins\Property::NewInstance('smtp_auth')->SetLabel('Use auth')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 				->SetDefaultValue(true),

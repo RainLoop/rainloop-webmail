@@ -1,0 +1,60 @@
+
+#V-SettingsMenu {
+	nav {
+
+		a {
+			background-color: transparent;
+			color: var(--settings-menu-color, #333);
+			cursor: pointer;
+			display: block;
+			font-size: 128%;
+			line-height: 2em;
+			max-height: 2em;
+			overflow: hidden;
+			padding: 0 10px;
+			text-decoration: none;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		a:focus, a:hover {
+			background-color: var(--settings-menu-hover-bg-color, #333);
+			color: var(--settings-menu-hover-color, #eee);
+		}
+
+		a.selected {
+			background-color: var(--settings-menu-selected-bg-color, #333);
+			color: var(--settings-menu-selected-color, #eee);
+		}
+	}
+}
+
+#V-SettingsPane {
+	height: calc(100% - 50px - @rlLowMargin);
+	margin: 50px @rlLowMargin 0 0;
+	padding:20px;
+	width: 100%;
+
+	background-color: var(--panel-bg-clr, #fff);
+	border: 1px solid var(--border-color, #aaa);
+	border-radius: var(--border-radius, 5px);
+	box-shadow: var(--smMainShadow);
+	overflow-y: auto;
+	scroll-behavior: smooth;
+
+	.btn-toolbar {
+		position: absolute;
+		top: 8px;
+		left: @rlLowMargin;
+	}
+
+	td {
+		padding: 4px 8px;
+		line-height: 30px;
+	}
+}
+
+.firefox-drag #V-SettingsPane,
+.firefox-drag .modal-body {
+	overflow: hidden;
+}

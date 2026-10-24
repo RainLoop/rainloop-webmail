@@ -1,0 +1,10 @@
+{
+	"LOGIN": {
+		"LABEL_FORGOT_PASSWORD": "Mot de passe oublié",
+		"LABEL_REGISTRATION": "S'enregistrer"
+	},
+	"TAB_LOGIN": {
+		"LABEL_FORGOT_PASSWORD_LINK_URL": "URL du mot de passe oublié",
+		"LABEL_REGISTRATION_LINK_URL": "URL d'enregistrement"
+	}
+}

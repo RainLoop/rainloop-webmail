@@ -1,0 +1,14 @@
+{
+	"NEXTCLOUD": {
+		"SAVE_ATTACHMENTS": "Zapisz w Nextcloudzie",
+		"SAVE_EML": "Zapisz jako .eml w Nextcloudzie",
+		"SAVE_ICS": "Dodaj do Kalendarza",
+		"SELECT_FOLDER": "Wybierz folder",
+		"SELECT_FILES": "Wybierz plik(i)",
+		"ATTACH_FILES": "Dodaj załącznik z Nextclouda",
+		"SELECT_CALENDAR": "Wybierz kalendarz",
+		"FILE_ATTACH": "dołącz",
+		"FILE_INTERNAL": "link wewnętrzny",
+		"FILE_PUBLIC": "link publiczny"
+	}
+}

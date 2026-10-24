@@ -1,0 +1,34 @@
+<header>
+	<a href="#" class="close" data-bind="click: close">×</a>
+	<h3 data-i18n="OPENPGP/POPUP_IMPORT_TITLE"></h3>
+</header>
+<form id="openpgp-import" class="modal-body" autocomplete="off" data-bind="submit: submitForm">
+	<div class="alert"  data-bind="visible: keyError() && keyErrorMessage(), text: keyErrorMessage"></div>
+	<div class="control-group">
+		<!-- could be email or fingerprint -->
+		<input type="search" data-bind="textInput: search"/>
+		<button class="btn" type="button" data-bind="enable: search, click: searchPGP" data-i18n="GLOBAL/SEARCH"></button>
+	</div>
+	<div class="control-group" data-bind="css: {'error': keyError}">
+		<textarea class="input-xxlarge" rows="14" autofocus="" autocomplete="off" data-bind="value: key" required=""></textarea>
+	</div>
+	<div class="control-group">
+		<div data-bind="component: {
+			name: 'Checkbox',
+			params: {
+				label: 'OPENPGP/BACKUP_ON_SERVER',
+				value: saveServer
+			}
+		}"></div>
+		<div data-bind="visible: canGnuPG, component: {
+			name: 'Checkbox',
+			params: {
+				label: 'OPENPGP/STORE_IN_GNUPG',
+				value: saveGnuPG
+			}
+		}"></div>
+	</div>
+</form>
+<footer>
+	<button class="btn" form="openpgp-import" data-icon="✚" data-i18n="OPENPGP/POPUP_IMPORT_BUTTON"></button>
+</footer>

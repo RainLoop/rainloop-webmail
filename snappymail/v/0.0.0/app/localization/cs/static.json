@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Obnovit",
+	"NO_SCRIPT_TITLE": "Tato aplikace vyžaduje JavaScript.",
+	"NO_SCRIPT_DESC": "Váš internetový prohlížeč nepodporuje JavaScript.\nProsím povolte podporu JavaScriptu v nastavení vašeho internetového prohlížeče a zkuste to znovu.\n",
+	"NO_COOKIE_TITLE": "Tato aplikace vyžaduje podporu Cookies.",
+	"NO_COOKIE_DESC": "Váš internetový prohlížeč nepodporuje Cookies.\nProsím povolte podporu Cookies v nastavení vašeho internetového prohlížeče a zkuste to znovu.\n",
+	"BAD_BROWSER_TITLE": "Používáte zastaralý internetový prohlížeč.",
+	"BAD_BROWSER_DESC": "Abyste mohli využívat všechny funkce této aplikace,\npoužijte některý z následujících internetových prohlížečů:\n"
+}

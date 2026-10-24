@@ -1,0 +1,34 @@
+<div class="modal-body">
+	<div data-bind="html: askDesc"></div>
+	<form class="form-horizontal" data-bind="visible: askPass() || askUsername(), submit: yesClick" style="margin: 2em 0 0" id="AskForm">
+	<div class="control-group" data-bind="visible: askUsername">
+		<label data-i18n="GLOBAL/USERNAME"></label>
+		<input type="text" data-bind="value: username">
+	</div>
+	<div class="control-group" data-bind="visible: askPass">
+		<label data-i18n="GLOBAL/PASSWORD"></label>
+		<input type="password" data-bind="value: passphrase">
+	</div>
+		<div class="control-group" style="display: inline-flex; align-items: start;flex-direction: column;">
+		<div data-bind="visible: askRemeber, component: {
+		name: 'Checkbox',
+		params: {
+			label: 'GLOBAL/REMEMBER_FOR_SESSION',
+			value: remember,
+			enable: !rememberPermanent()
+		}
+}"></div>
+			<div data-bind="visible: askRememberPermanent, component: {
+		name: 'Checkbox',
+		params: {
+			label: 'GLOBAL/REMEMBER_PERMANENT',
+			value: rememberPermanent
+		}
+	}"></div>
+	</div>
+	</form>
+</div>
+<footer>
+	<button class="btn buttonYes" form="AskForm" data-bind="click: yesClick, text: yesButton" data-icon="✔"></button>
+	<button class="btn buttonNo" data-bind="click: noClick, text: noButton" data-icon="✖"></button>
+</footer>

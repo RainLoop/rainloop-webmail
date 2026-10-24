@@ -1,131 +1,131 @@
-import window from 'window';
-import { bMobileDevice, bSafari } from 'Common/Globals';
 import * as Links from 'Common/Links';
-import * as Events from 'Common/Events';
-import { trim } from 'Common/Utils';
+import { doc, SettingsGet, fireEvent, addEventsListener } from 'Common/Globals';
+import { addObservablesTo } from 'External/ko';
 
-class Audio {
-	notificator = null;
-	player = null;
+let notificator = null,
+	player = null,
+	canPlay = type => !!player?.canPlayType(type).replace('no', ''),
 
-	supported = false;
-	supportedMp3 = false;
-	supportedOgg = false;
-	supportedWav = false;
-	supportedNotification = false;
+	audioCtx = window.AudioContext || window.webkitAudioContext,
 
-	constructor() {
-		this.player = this.createNewObject();
-
-		this.supported = !bMobileDevice && !bSafari && !!this.player && !!this.player.play;
-		if (this.supported && this.player && this.player.canPlayType) {
-			this.supportedMp3 = '' !== this.player.canPlayType('audio/mpeg;').replace(/no/, '');
-			this.supportedWav = '' !== this.player.canPlayType('audio/wav; codecs="1"').replace(/no/, '');
-			this.supportedOgg = '' !== this.player.canPlayType('audio/ogg; codecs="vorbis"').replace(/no/, '');
-			this.supportedNotification = this.supported && this.supportedMp3;
+	play = (url, name) => {
+		if (player) {
+			player.src = url;
+			player.play();
+			name = name.trim();
+			fireEvent('audio.start', name.replace(/\.([a-z0-9]{3})$/, '') || 'audio');
 		}
+	},
 
-		if (!this.player || (!this.supportedMp3 && !this.supportedOgg && !this.supportedWav)) {
-			this.supported = false;
-			this.supportedMp3 = false;
-			this.supportedOgg = false;
-			this.supportedWav = false;
-			this.supportedNotification = false;
-		}
-
-		if (this.supported && this.player) {
-			const stopFn = () => this.stop();
-
-			this.player.addEventListener('ended', stopFn);
-			this.player.addEventListener('error', stopFn);
-
-			Events.sub('audio.api.stop', stopFn);
-		}
-	}
-
-	createNewObject() {
+	createNewObject = () => {
 		try {
-			const player = window.Audio ? new window.Audio() : null;
-			if (player && player.canPlayType && player.pause && player.play) {
+			const player = new Audio;
+			if (player.canPlayType && player.pause && player.play) {
 				player.preload = 'none';
 				player.loop = false;
 				player.autoplay = false;
 				player.muted = false;
+				return player;
 			}
-
-			return player;
-		} catch (e) {} // eslint-disable-line no-empty
-
+		} catch (e) {
+			console.error(e);
+		}
 		return null;
+	},
+
+	// The AudioContext is not allowed to start.
+	// It must be resumed (or created) after a user gesture on the page. https://goo.gl/7K7WLu
+	// Setup listeners to attempt an unlock
+	unlockEvents = [
+		'click','dblclick',
+		'contextmenu',
+		'auxclick',
+		'mousedown','mouseup',
+		'pointerup',
+		'touchstart','touchend',
+		'keydown','keyup'
+	],
+	unlock = () => {
+		unlockEvents.forEach(type => doc.removeEventListener(type, unlock, true));
+		if (audioCtx) {
+			console.log('AudioContext ' + audioCtx.state);
+			audioCtx.resume();
+		}
+//		setTimeout(()=>SMAudio.playNotification(0,1),1);
+	};
+
+if (audioCtx) {
+	audioCtx = audioCtx ? new audioCtx : null;
+	audioCtx.onstatechange = unlock;
+}
+unlockEvents.forEach(type => doc.addEventListener(type, unlock, true));
+
+/**
+ * Browsers can't play without user interaction
+ */
+
+export const SMAudio = new class {
+	constructor() {
+		player || (player = createNewObject());
+
+		this.supported = !!player;
+		this.supportedMp3 = canPlay('audio/mpeg;');
+		this.supportedWav = canPlay('audio/wav; codecs="1"');
+		this.supportedOgg = canPlay('audio/ogg; codecs="vorbis"');
+		if (player) {
+			const stopFn = () => this.pause();
+			addEventsListener(player, ['ended','error'], stopFn);
+			addEventListener('audio.api.stop', stopFn);
+		}
+
+		addObservablesTo(this, {
+			notifications: false
+		});
 	}
 
 	paused() {
-		return this.supported ? !!this.player.paused : true;
+		return !player || player.paused;
 	}
 
 	stop() {
-		if (this.supported && this.player.pause) {
-			this.player.pause();
-		}
-
-		Events.pub('audio.stop');
+		this.pause();
 	}
 
 	pause() {
-		this.stop();
-	}
-
-	clearName(name = '', ext = '') {
-		name = trim(name);
-		if (ext && '.' + ext === name.toLowerCase().substr((ext.length + 1) * -1)) {
-			name = trim(name.substr(0, name.length - 4));
-		}
-
-		return '' === name ? 'audio' : name;
+		player?.pause();
+		fireEvent('audio.stop');
 	}
 
 	playMp3(url, name) {
-		if (this.supported && this.supportedMp3) {
-			this.player.src = url;
-			this.player.play();
-
-			Events.pub('audio.start', [this.clearName(name, 'mp3'), 'mp3']);
-		}
+		this.supportedMp3 && play(url, name);
 	}
 
 	playOgg(url, name) {
-		if (this.supported && this.supportedOgg) {
-			this.player.src = url;
-			this.player.play();
-
-			name = this.clearName(name, 'oga');
-			name = this.clearName(name, 'ogg');
-
-			Events.pub('audio.start', [name, 'ogg']);
-		}
+		this.supportedOgg && play(url, name);
 	}
 
 	playWav(url, name) {
-		if (this.supported && this.supportedWav) {
-			this.player.src = url;
-			this.player.play();
-
-			Events.pub('audio.start', [this.clearName(name, 'wav'), 'wav']);
-		}
+		this.supportedWav && play(url, name);
 	}
 
-	playNotification() {
-		if (this.supported && this.supportedMp3) {
-			if (!this.notificator) {
-				this.notificator = this.createNewObject();
-				this.notificator.src = Links.sound('new-mail.mp3');
-			}
-
-			if (this.notificator && this.notificator.play) {
-				this.notificator.play();
+	/**
+	 * Used with SoundNotification setting
+	 */
+	playNotification(force, silent) {
+		if (force || this.notifications()) {
+			if ('running' == audioCtx.state && (this.supportedMp3 || this.supportedOgg)) {
+				notificator = notificator || createNewObject();
+				if (notificator) {
+//					SettingsGet('NotificationSound').startsWith('custom@')
+					notificator.src = Links.staticLink('sounds/'
+						+ SettingsGet('NotificationSound')
+						+ (this.supportedMp3 ? '.mp3' : '.ogg'));
+					notificator.volume = silent ? 0.01 : 1;
+					notificator.play();
+				}
+			} else {
+				console.log('No audio: ' + audioCtx.state);
 			}
 		}
 	}
-}
-
-export default new Audio();
+};

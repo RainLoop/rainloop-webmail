@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Birkargatu",
+	"NO_SCRIPT_TITLE": "JavaScript beharrezkoa da aplikazio honetarako.",
+	"NO_SCRIPT_DESC": "Zure nabigatzaileak ez du JavaScript onartzen.\nMesedez gaitu JavaScript zure nabigatzailearen ezarpenetan eta saiatu berriro.\n",
+	"NO_COOKIE_TITLE": "Cookieak onartzea behar da aplikazio honetarako.",
+	"NO_COOKIE_DESC": "Zure nabigatzaileak ez ditu Cookieak onartzen.\nMesedez gaitu Cookieak zure nabigatzailearen ezarpenetan eta saiatu berriro.\n",
+	"BAD_BROWSER_TITLE": "Zure nabigatzailea ez dago eguneratuta.",
+	"BAD_BROWSER_DESC": "Aplikazio honen ezaugarri gutziak erabiltzeko,\ndeskargatu eta instalatu ondo nabigatzaileetako bat:\n"
+}

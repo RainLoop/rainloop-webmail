@@ -1,0 +1,145 @@
+.attachmentList {
+	margin: 0;
+}
+
+.attachmentItem {
+
+	background-color: rgba(128, 128, 128, 0.1);
+	border: 0;
+	border-radius: var(--input-border-radius, 3px);
+	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 1px 5px rgba(0, 0, 0, 0.1);
+	display: inline-block;
+	list-style: none;
+	line-height: 20px;
+	margin: 5px;
+	min-height: 48px;
+	width: 16em;
+	overflow: hidden;
+	position: relative;
+
+	&.waiting {
+		opacity: 0.6;
+	}
+
+	.checkboxAttachment {
+		bottom: 6px;
+		cursor: pointer;
+		position: absolute;
+		right: 6px;
+	}
+
+	&.error {
+		.iconMain, .iconPreview, .attachmentSize, .attachmentName {
+			color: red;
+		}
+	}
+
+	.attachmentIcon {
+		position: absolute;
+		height: 48px;
+		width: 48px;
+		text-align: center;
+	}
+
+	.iconPreview, .iconBG, .iconMain, .iconProgress {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	.iconProgress {
+		background: #eee;
+		width: 0%;
+	}
+
+	.iconBG {
+		font-size: 128%;
+		font-weight: bold;
+		line-height: 55px;
+		text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+	}
+
+	.iconPreview {
+		display: none;
+	}
+
+	.attachmentNameParent {
+		border-left: 1px solid #ddd;
+		cursor: pointer;
+		margin-left: 48px;
+		min-width: 90px;
+		padding: 4px 4px 3px 6px;
+		position: relative;
+	}
+
+	.attachmentName {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.attachmentSize {
+		font-size: 85%;
+		opacity: 0.7;
+	}
+
+	.iconMain, .iconPreview {
+		padding: 6px 0 0;
+		font-size: 257%;
+		color: var(--main-color);
+		filter: invert(33%);
+		mix-blend-mode: difference;
+
+		&.icon-none {
+			display: none;
+		}
+	}
+
+/*
+	.attachmentIconParent.hasPreview.isImage {
+		.iconMain {
+			display: none;
+		}
+	}
+*/
+
+	.showPreview,
+	.hasPreview:hover .iconMain,
+	.hasPreview .hidePreview {
+		display: none;
+	}
+
+	.hasPreview:hover .iconPreview {
+		display: inline-block;
+	}
+
+	.hasPreplay:hover .iconMain::before {
+		content: "▶";
+	}
+
+	.hasPreview .showPreview {
+		display: inline;
+		cursor: pointer;
+	}
+}
+
+.attachmentListSimple {
+	margin: 0;
+
+	.attachmentItem {
+		min-height: 1em;
+		border: 1px solid var(--border-color);
+		padding: 0 2px;
+	}
+
+	.attachmentName {
+		margin:0;
+	}
+
+	.checkboxAttachment {
+		position: initial;
+		margin-left:.5em;
+	}
+}

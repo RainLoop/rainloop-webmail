@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Lataa uudelleen",
+	"NO_SCRIPT_TITLE": "JavaScript vaaditaan.",
+	"NO_SCRIPT_DESC": "JavaScript tuki ei ole saatavilla selaimessasi.\nAktivoi JavaScript selaimessasi ja yritä uudelleen.\n",
+	"NO_COOKIE_TITLE": "Eväste-tuki vaaditaan.",
+	"NO_COOKIE_DESC": "Eväste (cookie) tuki ei ole saatavilla selaimessasi.\nAktivoi evästeet (cookiet) selaimessasi ja yritä uudelleen.\n",
+	"BAD_BROWSER_TITLE": "Selaimesi on vanhentunut.",
+	"BAD_BROWSER_DESC": "Käyttääksesi kaikkia ominaisuuksia,\nlataa ja asenna jokin näistä selaimista:\n"
+}

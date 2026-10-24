@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Ricarica",
+	"NO_SCRIPT_TITLE": "È richiesto JavaScript per questa applicazione.",
+	"NO_SCRIPT_DESC": "Il supporto a JavaScript è disabilitato.\nAbilitare il supporto a JavaScript e riprovare.\n",
+	"NO_COOKIE_TITLE": "Sono richiesti i Cookie per questa applicazione.",
+	"NO_COOKIE_DESC": "Il supporto ai Cookie è disabilitato.\nAbilitare il supporto ai Cookie e riprovare.\n",
+	"BAD_BROWSER_TITLE": "Il tuo browser è troppo vecchio",
+	"BAD_BROWSER_DESC": "Per usare tutte le funzionalità dell'applicazione,\nscarica ed installa uno dei seguenti browser:\n"
+}

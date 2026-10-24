@@ -1,147 +1,159 @@
+#V-Login, #V-AdminLogin {
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+	min-width: 250px;
+	max-width: 600px;
+	transition: all 0.3s ease-out;
+	z-index: 5;
+}
 
-.b-login-content {
+.LoginView {
 
-	height: 100%;
-	text-align: center;
-
-	.loginFormWrapper {
-
-		display: inline-block;
-		vertical-align: middle;
+	.descWrapper {
+		color: var(--loading-color, #000);
+		font-size: 214%;
+		margin-bottom: 10px;
 		text-align: center;
-		perspective: 500px;
+		text-shadow: var(--loading-text-shadow);
+	}
 
-		.descWrapper {
+	form {
+		background-color: var(--login-bg-color, rgba(0, 0, 0, .5));
+		border: var(--login-border, 1px solid rgba(255, 255, 255, .2));
+		border-radius: var(--login-border-radius, 7px);
+		box-shadow: var(--login-box-shadow);
+		color: var(--login-color, rgba(255, 255, 255, .8));
+		margin: 0;
+		padding: 40px 40px 20px 40px;
+		position: relative;
 
-			margin-bottom: 10px;
-
-			.desc {
-				font-size: 18px;
-				padding: 2px;
-			}
+		* {
+			color: var(--login-color, rgba(255, 255, 255, .8));
 		}
 
-		.alertError {
-			max-width: 450px;
+		.controls.error * {
+			color: #f76260;
+			border-color: #f76260;
 		}
 
-		.wrapper-parent {
+		&.submitting > * {
+			opacity: 0.3;
 		}
 
-		.loginForm {
-			background-color: #efefef;
-			text-align: left;
-			color: #333;
-			margin: 0;
-			float: none;
-			width: 303px;
+		&.submitting::after{
+			content: '';
+			position: absolute;
+			width: 60px;
+			height: 60px;
+			top: 50%;
+			left: 50%;
+			margin-top: -30px;
+			margin-left: -30px;
+
+			border: 8px solid transparent;
+			border-top-color: var(--spinner-color, #fff);
+			animation: loginRotation 1s infinite ease-in-out;
+
+			border-radius: 50%;
+			z-index: 1052;
+		}
+	}
+
+	.controls, .control-group {
+		margin-bottom: 25px;
+		position: relative;
+	}
+
+	input {
+		font-size: 128%;
+		height: 40px;
+		padding-right: 30px;
+
+		&:placeholder {
+			color: #fff;
 		}
 
-		.loginWelcomeForm {
-			display: none;
+		&:focus, &:hover {
+			border-color: #fff;
 		}
+	}
 
-		.welcome-on {
-			display: block;
-		}
+	input, .btn {
+		background: none;
+		border: 1px solid rgba(255, 255, 255, .8);
+	}
 
-		.welcome-off {
-			display: none;
-		}
+	.fontastic + input {
+		padding: 0 30px;
+	}
 
-/*		.control-label {
-			font-size: 16px;
-			line-height: 30px;
-		}*/
+	.controls > .fontastic:first-child {
+		position: absolute;
+		font-size: 121%;
+		line-height: 38px;
+		left: 6px;
+	}
 
-		.controls, .control-group {
-			margin-bottom: 25px;
-		}
+	.btn {
 
-		.wrapper {
-			padding: 40px 40px 20px 40px;
-		}
+		text-transform: uppercase;
+		font-size: 90%;
 
-		#recaptcha_image img {
-			border: 1px solid #ccc;
-			border-radius: 3px;
-		}
-
-		.controls {
-			.inputLoginForm, .inputEmail, .inputLogin, .inputPassword, .inputAdditionalCode {
-				font-size: 18px;
-				height: 40px;
-				line-height: 20px;
-				padding-left: 12px;
-				padding-right: 12px;
-			}
-		}
-
-		.languageLabel {
-			margin-top: 5px;
-		}
-
-		.signMeLabel .e-checkbox {
-			margin-top: 5px;
-		}
-
-		.languageLabel {
-			margin-right: 5px;
-		}
-
-		.input-append .add-on {
-			position: relative;
-			height: 30px;
-			background: none;
-			margin-left: -35px;
-			z-index: 1000;
-			border: 0px;
-		}
-
-		.input-append .add-on i {
-			font-size: 17px;
-			line-height: 29px;
-			color: #999;
-
-			&.login-submit-icon{
-				font-size: 24px;
-				padding-top: 2px;
-				cursor: pointer;
-			}
-		}
-
-		.controls.error .add-on i, .control-group.error .add-on i {
-			color: #b94a48;
+		&:hover, &:active {
+			border-color: #fff;
 		}
 	}
 
 	.buttonLogin {
-		margin: 0;
+		width: 100%;
 	}
 
 	.alert {
-		margin: 0 0 20px 0;
-		text-align: left;
+		position: absolute;
+		left: 0;
+		right: 0;
+		z-index: 1;
+		display: block;
+		opacity: 1;
+		transition: opacity 0.5s linear;
+
+		p {
+			font-family: var(--fontMono);
+			font-size: 90%;
+		}
+	}
+	.alert[hidden] {
+		opacity: 0;
 	}
 
-	.loginAfter {
-		display: inline-block;
-		height: 90%;
-		vertical-align: middle;
-		width: 0px;
+	.language-buttons {
+		flex-grow: 1;
+		text-align: var(--right, right);
 	}
 
-	.flag-selector {
-		margin-bottom: 0;
-	}
-
-	.social-buttons {
-		margin-top: 5px;
-	}
-
-	.social-button, .language-button {
+	.language-button {
 		padding: 5px;
-		outline: none;
+		text-decoration: none;
+	}
+
+	.errorAnimated {
+		animation: login-form-shake 400ms ease-in-out;
+	}
+
+	.errorAnimated .buttonLogin {
+		color: #b94a48;
+		font-weight: bold;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	.LoginView {
+		form {
+			padding: 30px 4vw 10px;
+		}
 	}
 }
 
@@ -149,46 +161,15 @@
 	to   {transform: rotate(1turn);}
 }
 
-.submitting-pane {
-	position: relative;
-	&.submitting:before{
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background: transparent;
-		background: rgba(0,0,0,.3);
-		z-index: 1051;
-		border-radius: 8px;
-	}
-	html.cssanimations &.submitting:after{
-		content: '';
-		position: absolute;
-		width: 60px;
-		height: 60px;
-		top: 50%;
-		left: 50%;
-		margin-top: -30px;
-		margin-left: -30px;
+@keyframes login-form-shake  {
+  0% {transform: translateX(0);}
+  12.5% {transform: translateX(-6px)}
+  37.5% {transform: translateX(5px)}
+  62.5% {transform: translateX(-3px)}
+  87.5% {transform: translateX(2px)}
+  100% {transform: translateX(0)}
+}
 
-		border: 8px solid transparent;
-		border-color: transparent;
-		border-top-color: #fff;
-		animation: loginRotation 1s infinite ease-in-out;
-
-		border-radius: 50%;
-		z-index: 1052;
-	}
- }
-
-.btn-submit-icon-wrp {
-	border: none;
-	background: none;
-	display: inline-block;
-	margin: 0;
-	padding: 0;
-	outline: none;
-	cursor: pointer;
+html.rl-started-trigger .LoginView {
+	opacity: 0.5;
 }

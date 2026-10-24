@@ -1,0 +1,19 @@
+{ "translations": {
+    "Email" : "E-mail",
+    "Error" : "Hiba",
+    "Invalid argument(s)" : "Érvénytelen argumentumok",
+    "Saved successfully" : "Sikeres mentés",
+    "SnappyMail" : "SnappyMail",
+    "SnappyMail Webmail" : "SnappyMail Webmail",
+    "Go to SnappyMail Webmail admin panel" : "Ugorjon a SnappyMail Webmail adminisztrációs paneljéhez",
+    "Users will login manually, or define credentials in their personal settings for automatic logins." : "A felhasználók kézileg fognak belépni, vagy megadják a hitelesítő adataikat a személyes beállításaikban az automatikusan bejelentkezéshez.",
+    "Attempt to automatically login users with their Nextcloud username and password, or user-defined credentials, if set." : "Megpróbálja automatikusan bejelentkezni a felhasználókat a nextcloudos felhasználónevükkel és jelszavukkal, vagy a felhasználó által megadott hitelesítő adatokkal, ha be vannak állítva.",
+    "Attempt to automatically login users with their Nextcloud email and password, or user-defined credentials, if set." : "Megpróbálja automatikusan bejelentkezni a felhasználókat a nextcloudos e-mail-címükkel és jelszavukkal, vagy a felhasználó által megadott hitelesítő adatokkal, ha be vannak állítva.",
+    "Save" : "Mentés",
+    "SnappyMail Webmail is not configured yet." : "A SnappyMail Webmail még nincs beállítva.",
+    "may have some" : "biztonsági megfontolásokat",
+    "security considerations" : "vethet fel",
+    "Enter an email and password to auto-login to SnappyMail." : "Adjon meg egy e-mail-címet és jelszót a SnappyMailba történő automatikus bejelentkezéshez.",
+    "Password" : "Jelszó"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}

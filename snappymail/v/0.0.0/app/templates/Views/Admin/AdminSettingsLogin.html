@@ -1,0 +1,23 @@
+<div class="form-horizontal">
+	<div class="legend" data-i18n="TAB_LOGIN/LEGEND_LOGIN_SCREEN"></div>
+	<div class="control-group">
+		<label data-i18n="TAB_LOGIN/LABEL_DEFAULT_DOMAIN"></label>
+		<input class="span3" type="text" spellcheck="false" autocomplete="off" autocapitalize="none" autocorrect="off" data-bind="textInput: loginDefaultDomain, saveTrigger: loginDefaultDomainTrigger">
+	</div>
+	<div class="control-group">
+		<div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: { value: determineUserDomain, label: 'TAB_LOGIN/LABEL_DETERMINE_USER_DOMAIN' }
+			}"></div>
+			<div data-bind="component: {
+				name: 'Checkbox',
+				params: { value: allowLanguagesOnLogin, label: 'TAB_LOGIN/LABEL_ALLOW_LANGUAGES_ON_LOGIN' }
+			}"></div>
+			<div data-bind="visible: allowLanguagesOnLogin, component: {
+				name: 'Checkbox',
+				params: { enable: allowLanguagesOnLogin, value: determineUserLanguage, label: 'TAB_LOGIN/LABEL_DETERMINE_USER_LANGUAGE' }
+			}"></div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,7 @@
+[submodule "vendors/openpgp-5"]
+	path = vendors/openpgp-5
+	url = git@github.com:the-djmaze/openpgpjs.git
+[submodule "vendors/squire2"]
+	path = vendors/squire2
+	url = git@github.com:the-djmaze/Squire.git
+	branch = snappymail

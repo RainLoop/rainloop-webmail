@@ -1,0 +1,182 @@
+{
+	"GLOBAL": {
+		"ADD": "新增",
+		"CLOSE": "關閉",
+		"SAVE": "儲存",
+		"TEST": "測試",
+		"UPDATE": "更新",
+		"USERNAME": "使用者名稱",
+		"PASSWORD": "密碼",
+		"CANCEL": "取消",
+		"SEARCH": "搜尋",
+		"YES": "是",
+		"NO": "否"
+	},
+	"LOGIN": {
+		"LABEL_LOGIN": "登入",
+		"LABEL_TOTP": "TOTP 密碼",
+		"BUTTON_LOGIN": "登入到控制面板"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "控制面板"
+	},
+	"SETTINGS_LABELS": {
+		"GENERAL": "常規",
+		"LOGIN": "登入",
+		"BRANDING": "Logo",
+		"CONTACTS": "聯絡人",
+		"DOMAINS": "域名",
+		"SECURITY": "安全",
+		"PACKAGES": "外掛包",
+		"CONFIG": "配置",
+		"ABOUT": "關於"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "介面",
+		"LABEL_LANGUAGE": "語言",
+		"LABEL_LANGUAGE_ADMIN": "語言(後臺)",
+		"LABEL_THEME": "主題",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "允許在設定介面中選擇語言",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "允許在設定介面中選擇主題",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "允許在設定介面中選擇背景",
+		"LABEL_SHOW_THUMBNAILS": "顯示縮圖(附件)",
+		"LEGEND_MAIN": "主要設定",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "附件大小限制",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "允許額外的賬戶",
+		"LABEL_ALLOW_IDENTITIES": "允許多重身份",
+		"ALERT_DATA_ACCESS": "資料資料夾可被訪問。請配置您的 Web 伺服器以阻止從外部訪問資料資料夾。獲取更多幫助：",
+		"ALERT_WARNING": "警告！",
+		"HTML_ALERT_WEAK_PASSWORD": "您正在使用預設的管理員密碼\n<br>\n安全起見，請立即將密碼\n<strong><a href=\"#\/security\">更改<\/a><\/strong>\n為其他的字串。\n"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "登入介面",
+		"LABEL_DEFAULT_DOMAIN": "預設域名",
+		"LABEL_DETERMINE_USER_DOMAIN": "嘗試判斷使用者使用的域名",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "允許在登入介面選擇語言",
+		"LABEL_DETERMINE_USER_LANGUAGE": "嘗試判斷使用者使用語言"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Logo",
+		"LABEL_PAGE_TITLE": "頁面標題",
+		"LABEL_LOADING_DESCRIPTION": "載入介面文字",
+		"LABEL_FAVICON_URL": "網站圖示"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "聯絡人",
+		"LEGEND_STORAGE": "儲存(PDO)",
+		"LABEL_ENABLE_CONTACTS": "啟用聯絡人",
+		"LABEL_ALLOW_SYNC": "允許同步聯絡人(依靠外部CardDAV伺服器)",
+		"LABEL_STORAGE_TYPE": "型別",
+		"LABEL_STORAGE_DSN": "Dsn",
+		"LABEL_STORAGE_USER": "使用者",
+		"LABEL_STORAGE_PASSWORD": "密碼",
+		"SQLITE_GLOBAL": "使用全域性資料庫替代各賬號的資料庫",
+		"ALERT_NOTICE": "提示!",
+		"SUGGESTIONS_LIMIT": "建議數量上限",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "如果有大量的活躍使用者，請不要選擇此資料庫型別。",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "您的系統不支援聯絡人\n<br>\n您需要在您的伺服器上安裝或啟用<strong>PDO (SQLite \/ MySQL \/ PostgreSQL)<\/strong> 元件。\n"
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "域名",
+		"BUTTON_ADD_DOMAIN": "新增域名",
+		"BUTTON_ADD_ALIAS": "新增別名",
+		"DELETE_ARE_YOU_SURE": "您確定嗎？",
+		"HTML_DOMAINS_HELPER": "允許訪問的域名列表。\n<br>\n點選域名進行設定。\n"
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "安全",
+		"LABEL_USE_IMAGE_PROXY": "對外部圖片使用本地代理",
+		"LABEL_AUTO_VERIFY": "自動驗證簽名",
+		"LABEL_SHOW_PHP_INFO": "顯示 PHP 資訊",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "管理員面板訪問憑據",
+		"LABEL_CURRENT_PASSWORD": "當前密碼",
+		"LABEL_NEW_PASSWORD": "新密碼",
+		"LABEL_REPEAT_PASSWORD": "重複輸入新密碼",
+		"LABEL_REQUIRE_VERIFICATION": "要求驗證 SSL 證書",
+		"CRYPTO": "加密",
+		"LABEL_ALLOW_SELF_SIGNED": "允許自簽名證書"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "啟用外掛",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "有更新可用",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "可用於安裝",
+		"LEGEND_INSTALLED_PACKAGES": "已安裝的外掛包",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "目前無法訪問外掛倉庫"
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "關於",
+		"LABEL_TAG_HINT": "簡潔、現代化、快速的網頁郵件客戶端",
+		"LABEL_ALL_RIGHTS_RESERVED": "保留所有權利",
+		"HINT_READ_CHANGE_LOG": "請在更新前閱讀更新日誌",
+		"HINT_IS_UP_TO_DATE": "SnappyMail已是最新版本",
+		"HTML_NEW_VERSION": "有新的<b>%VERSION%<\/b> 版本可用.",
+		"LABEL_UPDATING": "更新中",
+		"LABEL_CHECKING": "檢查更新",
+		"BUTTON_RELEASES": "發行版"
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "新增別名",
+		"LABEL_ALIAS": "別名",
+		"LABEL_DOMAIN": "域名"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "新增域名",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "新增域名 \"%NAME%\"",
+		"TITLE_EDIT_DOMAIN": "編輯域名 \"%NAME%\"",
+		"LABEL_NAME": "名字",
+		"NAME_HELPER": "支援萬用字元",
+		"LABEL_SERVER": "伺服器",
+		"LABEL_PORT": "埠",
+		"LABEL_SECURE": "加密",
+		"TIMEOUT": "超時",
+		"DISABLE_CAPABILITIES": "禁用能力",
+		"LIMITS": "限制",
+		"FOLDERS": "資料夾",
+		"MESSAGES": "訊息",
+		"SECURE_OPTION_NONE": "無",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "可使用篩選指令碼",
+		"LABEL_USE_SHORT_LOGIN": "使用短使用者名稱登入",
+		"LABEL_LOWERCASE_LOGIN": "小寫登入 (大小寫敏感)",
+		"LABEL_USE_AUTH": "使用驗證",
+		"LABEL_SET_SENDER": "使用登入名作為發件人",
+		"LABEL_AUTH_PLAIN_LINE": "強制單一 AUTH PLAIN 命令登入",
+		"LABEL_USE_PHP_MAIL": "使用 php mail() 函式",
+		"BUTTON_WHITE_LIST": "白名單",
+		"NEW_DOMAIN_DESC": "此域名配置將允許您和<strong>%NAME%<\/strong>電子郵件地址一起工作.",
+		"WHITE_LIST_ALERT": "允許訪問的域使用者；使用空格分隔。\n",
+		"VALID_SPAM_HEADERS": "Valid SPAM headers",
+		"VALID_VIRUS_HEADERS": "Valid virus headers"
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "外掛",
+		"DESC_NOTHING_TO_CONFIGURE": "無可用配置"
+	},
+	"POPUPS_ASK": {
+		"DESC_WANT_CLOSE_THIS_WINDOW": "您確定要關閉此視窗嗎？"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "選擇您的語言"
+	},
+	"HINTS": {
+		"BETA": "測試版本",
+		"WARNING": "警告"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "域名已經存在",
+		"UNKNOWN_ERROR": "未知錯誤"
+	},
+	"NOTIFICATIONS": {
+		"RequestError": "請求失敗",
+		"RequestAborted": "請求中止",
+		"RequestTimeout": "請求超時",
+		"InvalidToken": "標記無效",
+		"AuthError": "驗證失敗",
+		"DomainAlreadyExists": "域名已經存在",
+		"CantSavePluginSettings": "無法儲存設定",
+		"CantInstallPackage": "安裝外掛包失敗",
+		"CantDeletePackage": "移除外掛包失敗",
+		"InvalidPluginPackage": "無效外掛包",
+		"UnsupportedPluginPackage": "不支援的外掛包",
+		"UnknownError": "未知錯誤"
+	}
+}

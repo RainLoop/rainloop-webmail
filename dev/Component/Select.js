@@ -1,27 +1,56 @@
-import { i18n } from 'Common/Translator';
-import { defautOptionsAfterRender } from 'Common/Utils';
-import { componentExportHelper } from 'Component/Abstract';
-import { AbstractInput } from 'Component/AbstractInput';
+import { SaveSettingStatus } from 'Common/Enums';
+import { dispose, koComputable } from 'External/ko';
+import { defaultOptionsAfterRender } from 'Common/Utils';
 
-class SelectComponent extends AbstractInput {
+export class SelectComponent {
 	/**
 	 * @param {Object} params
 	 */
 	constructor(params) {
-		super(params);
+		this.value = params.value;
+		this.label = params.label;
+		this.trigger = params.trigger?.subscribe ? params.trigger : null;
+		this.placeholder = params.placeholder;
+		this.options = params.options;
+		this.optionsText = params.optionsText;
+		this.optionsValue = params.optionsValue;
 
-		this.options = params.options || '';
+		let size = 0 < params.size ? 'span' + params.size : '';
+		if (this.trigger) {
+			const
+				classForTrigger = ko.observable(''),
+				setTriggerState = value => {
+					switch (value) {
+						case SaveSettingStatus.Success:
+							classForTrigger('success');
+							break;
+						case SaveSettingStatus.Failed:
+							classForTrigger('error');
+							break;
+						default:
+							classForTrigger('');
+							break;
+					}
+				};
 
-		this.optionsText = params.optionsText || null;
-		this.optionsValue = params.optionsValue || null;
-		this.optionsCaption = params.optionsCaption || null;
+			setTriggerState(this.trigger());
 
-		if (this.optionsCaption) {
-			this.optionsCaption = i18n(this.optionsCaption);
+			this.className = koComputable(() =>
+				(size + ' settings-save-trigger-input ' + classForTrigger()).trim()
+			);
+
+			this.disposables = [
+				this.trigger.subscribe(setTriggerState, this),
+				this.className
+			];
+		} else {
+			this.className = size;
 		}
 
-		this.defautOptionsAfterRender = defautOptionsAfterRender;
+		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
+	}
+
+	dispose() {
+		this.disposables?.forEach(dispose);
 	}
 }
-
-export default componentExportHelper(SelectComponent, 'SelectComponent');

@@ -1,0 +1,70 @@
+
+#V-Settings-Folders {
+
+	.folders-list-error {
+		margin: 10px 0;
+	}
+
+	table {
+		margin-top: 1em;
+	}
+
+	td:first-child {
+		cursor: pointer;
+	}
+
+	td + td {
+		white-space: nowrap;
+		width: 1em;
+	}
+
+	.folder-name {
+		word-break: break-all;
+		white-space: pre-wrap;
+	}
+
+	.folder-system-name, .folder-size {
+		margin-left: 0.2em;
+		opacity: 0.6;
+	}
+
+	select {
+		width: auto;
+	}
+
+	tr {
+
+		&:not(.selectable) {
+			font-style: italic;
+		}
+
+		&.system .folder-name {
+			font-weight: bold;
+		}
+
+		input {
+			border-width: 1px;
+			margin-bottom: 0;
+		}
+
+		.unsubscribed-folder, .unchecked-folder {
+			opacity: 0.4;
+		}
+	}
+
+	.deep-1 {
+		text-indent: 15px;
+	}
+	.deep-2 {
+		text-indent: 30px;
+	}
+	.deep-3 {
+		text-indent: 45px;
+	}
+	.deep-4 {
+		text-indent: 60px;
+	}
+	.deep-5 {
+		text-indent: 75px;
+	}
+}

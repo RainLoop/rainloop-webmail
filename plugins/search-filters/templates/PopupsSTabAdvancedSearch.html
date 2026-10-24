@@ -1,0 +1,82 @@
+<header>
+	<a href="#" class="close" data-bind="click: close">×</a>
+	<h3 data-i18n="SEARCH/TITLE_ADV"></h3>
+</header>
+<form id="advsearchform" class="modal-body form-horizontal" action="#/" autocomplete="off" spellcheck="false"
+	data-bind="submit: submitForm">
+	<div>
+		<div class="control-group">
+			<label data-i18n="GLOBAL/FROM"></label>
+			<input type="text" autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off"
+				data-bind="value: from">
+		</div>
+		<div class="control-group">
+			<label data-i18n="GLOBAL/TO"></label>
+			<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" data-bind="value: to">
+		</div>
+		<div class="control-group">
+			<label data-i18n="GLOBAL/SUBJECT"></label>
+			<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" data-bind="value: subject">
+		</div>
+		<div class="control-group">
+			<label data-i18n="SEARCH/TEXT"></label>
+			<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" data-bind="value: text">
+		</div>
+	</div>
+	<div>
+		<div class="control-group">
+			<label data-i18n="SEARCH/DATE"></label>
+			<div data-bind="component: {
+				name: 'Select',
+				params: {
+					options: selectedDates,
+					value: selectedDateValue,
+					optionsText: 'name',
+					optionsValue: 'id'
+				}
+			}"></div>
+		</div>
+		<div class="control-group">
+			<label data-i18n="SEARCH/REPLIED"></label>
+			<div data-bind="component: {
+				name: 'Select',
+				params: {
+					options: repliedOptions,
+					value: repliedValue,
+					optionsText: 'name',
+					optionsValue: 'id'
+				}
+			}"></div>
+		</div>
+		<div class="control-group">
+			<label></label>
+			<div>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'SEARCH/UNSEEN',
+						value: unseen
+					}
+				}"></div>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'SEARCH/FLAGGED',
+						value: starred
+					}
+				}"></div>
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'SEARCH/HAS_ATTACHMENT',
+						value: hasAttachment
+					}
+				}"></div>
+			</div>
+		</div>
+	</div>
+</form>
+<footer style="display: flex; justify-content: space-between;">
+	<button class="btn" data-i18n="SFILTERS/EDIT_FILTERS" data-bind="click: editFilters"></button>
+	<button form="advsearchform" class="btn" data-icon="✔" data-i18n="SFILTERS/SAVE"></button>
+</footer>

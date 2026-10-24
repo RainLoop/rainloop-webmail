@@ -1,14 +1,21 @@
 What is it?
 
-In essense, this plugin allows for multiple users across multiple servers to use one RainLoop installation,
-all without the administrator needing to create each domain separately. This plugin detects the required
-hostname from the inputted email address (for example, it would detect "example.com" as the hostname if
-"info@example.com" is inputted). This hostname is then used for IMAP and SMTP communication.
+In essense, this extension allows multiple users across multiple servers to
+use one Snappymail installation without the administrator having to create
+and configure individual domans.
+
+This extension detects the required hostname from a given email address (for
+example, it would use "example.com" as the hostname if a user would
+log in as "info@example.com"). 
+
+This hostname is then used for IMAP and SMTP communication.
 
 How to Use:
 
-1) Activate plugin
-2) Visit Settings, and add a new wildcard domain "*"
-3) Set your ports/ssl requirements as needed. These will not be changed by the plugin.
-4) In the SMTP and/or IMAP host fields, place the single word "auto". This will be replaced when the plugin is active.
-5) That's it! The plugin should now work!
+1) Activate extension
+2) Go to settings, and add a new wildcard domain "*"
+3) Set your ports/TLS/SSL configuration as needed. These settings will not be
+   altered by the extension.
+4) Set the SMTP and/or IMAP host fields to "auto", this field will then be
+   auto-configured.
+5) That's it!

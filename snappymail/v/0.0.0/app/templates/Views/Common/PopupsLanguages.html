@@ -1,0 +1,10 @@
+<header>
+	<a href="#" class="close" data-bind="click: close">×</a>
+	<h3 data-i18n="POPUPS_LANGUAGES/TITLE_LANGUAGES"></h3>
+</header>
+<div class="modal-body" style="min-height: 150px;" data-bind="foreach: languages">
+	<label data-bind="click: function () { $root.changeLanguage(key); }, css: {'selected': selected, 'user': user},
+		attr: { title: title },
+		text: fullName">
+	</label>
+</div>

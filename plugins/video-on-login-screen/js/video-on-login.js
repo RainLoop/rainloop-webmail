@@ -1,10 +1,13 @@
-(function ($, window) {
+(rl => {
 
-	$(function () {
+	rl && addEventListener('rl-view-model', e => {
+		const id = e.detail.viewModelTemplateID;
+		if (e.detail && ('AdminLogin' === id || 'Login' === id)) {
+			let
+				nId = null,
+				script;
 
-		if (window.rl && window.rl && !window.rl.settingsGet('Auth'))
-		{
-			var
+			let
 				iRate = 1,
 				sRate = window.rl.pluginSettingsGet('video-on-login-screen', 'playback_rate')
 			;
@@ -30,18 +33,75 @@
 					iRate = 2;
 					break;
 			}
+			const
+				mode = 'Login' === id ? 'user' : 'admin',
 
-			$('#rl-bg').vide({
-				'mp4': window.rl.pluginSettingsGet('video-on-login-screen', 'mp4_file') || '',
-				'webm': window.rl.pluginSettingsGet('video-on-login-screen', 'webm_file') || '',
-				'ogv': window.rl.pluginSettingsGet('video-on-login-screen', 'ogv_file') || ''
-			}, {
-				playbackRate: iRate,
-				muted: !!window.rl.pluginSettingsGet('video-on-login-screen', 'muted')
+				doc = document,
+				loginContainer = doc.querySelectorAll('#V-Login #V-AdminLogin'),
+				container = doc.querySelector('#rl-content'),
+
+				ShowVideo = () => {
+					if (loginContainer) {
+						var stEl = doc.createElement('style');
+						stEl.innerHTML =
+							`
+							#video-el {
+								z-index: -1;
+								overflow: hidden;
+								position: absolute;
+								left: 0;
+								right: 0;
+								top: 0;
+								bottom: 0;
+								margin: auto;
+								height: 100vh;
+								width: 100%;
+								object-fit: cover;
+							}
+							`
+						var ref = doc.querySelector('script');
+						ref.parentNode.insertBefore(stEl, ref);
+
+						const oEl = doc.createElement('div');
+						oEl.className = 'video-div';
+						const vEl = doc.createElement('video');
+						vEl.setAttribute('loop', true);
+						vEl.setAttribute('playsinline', '');
+						vEl.setAttribute('muted', '');
+						vEl.setAttribute('autoplay', '');
+						vEl.muted = true;
+						vEl.setAttribute('playbackRate', iRate);
+						vEl.setAttribute('id', 'video-el');
+						oEl.appendChild(vEl);
+						const sEl = doc.createElement('source');
+						sEl.setAttribute('src', rl.pluginSettingsGet('video-on-login-screen', 'mp4_file'));
+						sEl.setAttribute('type', 'video/mp4');
+						vEl.appendChild(sEl);
+
+						container.before(oEl);
+
+					}
+				},
+
+				DestroyVideo = () => {
+					const vEl = doc.querySelector('#video-el');
+					if (vEl) {
+						vEl.parentElement.removeChild(vEl);
+					}
+				};
+
+			window.ShowVideo = ShowVideo;
+
+			window.DestroyVideo = DestroyVideo;
+
+			ShowVideo();
+
+			addEventListener(`sm-${mode}-login-response`, e => {
+				if (!e.detail.error) {
+					DestroyVideo();
+				}
 			});
 		}
-
 	});
 
-}($, window));
-
+})(window.rl);

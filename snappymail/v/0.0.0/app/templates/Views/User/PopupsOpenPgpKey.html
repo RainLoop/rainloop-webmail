@@ -1,0 +1,11 @@
+<header class="g-ui-user-select-none">
+	<a href="#" class="close" data-bind="click: close">×</a>
+	<h3 data-i18n="OPENPGP/POPUP_VIEW_TITLE"></h3>
+</header>
+<div class="modal-body">
+	<pre data-bind="initDom: keyDom, text: key"></pre>
+</div>
+<footer>
+	<a class="btn buttonClose" data-bind="click: close" data-icon="✖" data-i18n="GLOBAL/CLOSE"></a>
+	<a class="btn buttonClose" data-bind="click: selectKey" data-icon="🔑" data-i18n="OPENPGP/POPUP_VIEW_BUTTON"></a>
+</footer>

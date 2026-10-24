@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Muat ulang",
+	"NO_SCRIPT_TITLE": "JavaScript diperlukan oleh aplikasi ini.",
+	"NO_SCRIPT_DESC": "Dukungan Javascript tidak tersedia di browser anda\nSilahkan aktifkan dukungan Javascript di pengaturan browser anda dan coba lagi.\n",
+	"NO_COOKIE_TITLE": "Dukurangan Cookies diperlukan oleh aplikasi ini.",
+	"NO_COOKIE_DESC": "Dukungan cookies tidak tersedia di browser anda.\nSilahkan aktifkan dukungan Cookies di pengaturan browser dan coba lagi.\n",
+	"BAD_BROWSER_TITLE": "Browser anda kadaluarsa.",
+	"BAD_BROWSER_DESC": "Untuk bisa menggunakan semua fitur aplikasi,\nunduh dan pasang salah satu browser berikut:\n"
+}

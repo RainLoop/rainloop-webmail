@@ -1,38 +1,52 @@
-import ko from 'ko';
+//import { AbstractModel } from 'Knoin/AbstractModel';
+import { EmailModel } from 'Model/Email';
+import { addObservablesTo, addComputablesTo } from 'External/ko';
 
-import { AbstractModel } from 'Knoin/AbstractModel';
+export class IdentityModel extends EmailModel /*AbstractModel*/ {
+	constructor() {
+		super();
 
-class IdentityModel extends AbstractModel {
-	/**
-	 * @param {string} id
-	 * @param {string} email
-	 */
-	constructor(id, email) {
-		super('IdentityModel');
+		addObservablesTo(this, {
+			id: '',
+			label: '',
+//			email: '',
+//			name: '',
 
-		this.id = ko.observable(id || '');
-		this.email = ko.observable(email);
-		this.name = ko.observable('');
+			replyTo: '',
+			bcc: '',
+			sentFolder: '',
 
-		this.replyTo = ko.observable('');
-		this.bcc = ko.observable('');
+			signature: '',
+			signatureInsertBefore: false,
 
-		this.signature = ko.observable('');
-		this.signatureInsertBefore = ko.observable(false);
+			pgpSign: false,
+			pgpEncrypt: false,
 
-		this.deleteAccess = ko.observable(false);
-		this.canBeDeleted = ko.computed(() => '' !== this.id());
+			smimeKey: '',
+			smimeCertificate: '',
+			smimeCertificateChain: '',
+
+			askDelete: false,
+
+			exists: false
+		});
+
+		addComputablesTo(this, {
+			smimeKeyEncrypted: () => this.smimeKey().includes('-----BEGIN ENCRYPTED PRIVATE KEY-----'),
+			smimeKeyValid: () => /^-----BEGIN (ENCRYPTED |RSA )?PRIVATE KEY-----/.test(this.smimeKey()),
+			smimeCertificateValid: () => /^-----BEGIN CERTIFICATE-----/.test(this.smimeCertificate()),
+			smimeCertificateChainValid: () => !this.smimeCertificateChain()
+				|| /^-----BEGIN CERTIFICATE-----/.test(this.smimeCertificateChain())
+		});
 	}
 
 	/**
 	 * @returns {string}
 	 */
-	formattedName() {
-		const name = this.name(),
-			email = this.email();
-
-		return '' !== name ? name + ' (' + email + ')' : email;
+	toString() {
+		const name = this.name,
+			email = this.email,
+			label = this.label();
+		return (name ? `${name} ` : '') + `<${email}>` + (label ? ` (${label})` : '');
 	}
 }
-
-export { IdentityModel, IdentityModel as default };

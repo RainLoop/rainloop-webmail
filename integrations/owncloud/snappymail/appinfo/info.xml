@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<info xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+	<id>snappymail</id>
+	<name>SnappyMail</name>
+	<summary>SnappyMail Webmail</summary>
+	<version>2.24.4</version>
+	<licence>agpl</licence>
+	<author>SnappyMail, RainLoop Team, Nextgen-Networks, Tab Fitts, Nathan Kinkade, Pierre-Alain Bandinelli</author>
+	<description><![CDATA[**Simple, modern, lightweight & fast web-based email client.**
+
+- **Dark mode**
+- **Responsive design**
+- **Full Sieve filtering support**
+- **Almost all IMAP features** including advanced searching
+- **Multiple mail accounts and identities**
+- **Send & receive OpenPGP encrypted/signed emails** (With full HTML support, ECC keys, or plain text with Mailvelope)
+- **Many security features** (Sodium encrypted passwords, Sec-Fetch, TOTP 2FA, DKIM, prevent tracking, etc.)
+- **Kolab integrations**
+
+After enabling in ownCloud, go to ownCloud admin panel, "Additional settings" and you will see a "SnappyMail webmail" section.
+There, click on the link to go to the SnappyMail admin panel.
+	]]></description>
+	<namespace>SnappyMail</namespace>
+	<documentation>
+		<user>https://github.com/the-djmaze/snappymail/blob/master/integrations/owncloud/snappymail/README.md</user>
+		<website>https://github.com/the-djmaze/snappymail/wiki</website>
+	</documentation>
+	<category>integration</category>
+	<category>office</category>
+	<category>search</category>
+	<category>social</category>
+	<screenshot>https://raw.githubusercontent.com/the-djmaze/snappymail/master/integrations/owncloud/screenshots/inbox.jpg</screenshot>
+	<website>https://snappymail.eu</website>
+	<discussion>https://github.com/the-djmaze/snappymail/discussions</discussion>
+	<repository>https://github.com/the-djmaze/snappymail/tree/master/integrations/owncloud</repository>
+	<bugs>https://github.com/the-djmaze/snappymail/issues</bugs>
+	<dependencies>
+		<php min-version="7.4" min-int-size="64" />
+		<lib>mbstring</lib>
+		<lib>zlib</lib>
+<!--
+		<lib>gnupg</lib>
+		<lib>curl</lib>
+		<lib>exif</lib>
+		<lib>gd</lib>
+		<lib>gmagick</lib>
+		<lib>imagick</lib>
+		<lib>iconv</lib>
+		<lib>intl</lib>
+		<lib>ldap</lib>
+		<lib>openssl</lib>
+		<lib>sodium</lib>
+		<lib>redis</lib>
+		<lib>pdo_mysql</lib>
+		<lib>pdo_pgsql</lib>
+		<lib>pdo_sqlite</lib>
+		<lib>tidy</lib>
+		<lib>uuid</lib>
+		<lib>xxtea</lib>
+		<lib>zip</lib>
+-->
+		<owncloud min-version="10.11" max-version="11" />
+	</dependencies>
+	<settings>
+		<admin>OCA\SnappyMail\Settings\AdminSettings</admin>
+		<personal>OCA\SnappyMail\Settings\PersonalSettings</personal>
+	</settings>
+	<navigations>
+		<navigation>
+			<name>Email</name>
+			<route>snappymail.page.index</route>
+			<icon>logo-white-64x64.png</icon>
+			<order>4</order>
+		</navigation>
+	</navigations>
+</info>

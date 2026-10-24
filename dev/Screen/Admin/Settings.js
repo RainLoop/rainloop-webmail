@@ -1,74 +1,42 @@
-import { addSettingsViewModel } from 'Knoin/Knoin';
 import { runSettingsViewModelHooks } from 'Common/Plugins';
 
-import { AbstractSettingsScreen } from 'Screen/AbstractSettings';
+import { AbstractSettingsScreen, settingsAddViewModel } from 'Screen/AbstractSettings';
 
-import { GeneralAdminSettings } from 'Settings/Admin/General';
-import { DomainsAdminSettings } from 'Settings/Admin/Domains';
-import { LoginAdminSettings } from 'Settings/Admin/Login';
-import { ContactsAdminSettings } from 'Settings/Admin/Contacts';
-import { SecurityAdminSettings } from 'Settings/Admin/Security';
-import { SocialAdminSettings } from 'Settings/Admin/Social';
-import { PluginsAdminSettings } from 'Settings/Admin/Plugins';
-import { PackagesAdminSettings } from 'Settings/Admin/Packages';
-import { AboutAdminSettings } from 'Settings/Admin/About';
-import { BrandingAdminSettings } from 'Settings/Admin/Branding';
-
-import { getApp } from 'Helper/Apps/Admin';
+import { AdminSettingsGeneral } from 'Settings/Admin/General';
+import { AdminSettingsDomains } from 'Settings/Admin/Domains';
+import { AdminSettingsLogin } from 'Settings/Admin/Login';
+import { AdminSettingsContacts } from 'Settings/Admin/Contacts';
+import { AdminSettingsSecurity } from 'Settings/Admin/Security';
+import { AdminSettingsPackages } from 'Settings/Admin/Packages';
+import { AdminSettingsAbout } from 'Settings/Admin/About';
+import { AdminSettingsBranding } from 'Settings/Admin/Branding';
+import { AdminSettingsConfig } from 'Settings/Admin/Config';
 
 import { MenuSettingsAdminView } from 'View/Admin/Settings/Menu';
 import { PaneSettingsAdminView } from 'View/Admin/Settings/Pane';
 
-class SettingsAdminScreen extends AbstractSettingsScreen {
+export class SettingsAdminScreen extends AbstractSettingsScreen {
 	constructor() {
 		super([MenuSettingsAdminView, PaneSettingsAdminView]);
-	}
 
-	/**
-	 * @param {Function=} fCallback = null
-	 */
-	setupSettings(fCallback = null) {
-		addSettingsViewModel(
-			GeneralAdminSettings,
-			'AdminSettingsGeneral',
-			'TABS_LABELS/LABEL_GENERAL_NAME',
-			'general',
-			true
+		[
+			AdminSettingsGeneral,
+			AdminSettingsDomains,
+			AdminSettingsLogin,
+			AdminSettingsBranding,
+			AdminSettingsContacts,
+			AdminSettingsSecurity,
+			AdminSettingsPackages,
+			AdminSettingsConfig,
+			AdminSettingsAbout
+		].forEach((item, index) =>
+			settingsAddViewModel(item, 0, 0, 0, 0 === index)
 		);
-
-		addSettingsViewModel(DomainsAdminSettings, 'AdminSettingsDomains', 'TABS_LABELS/LABEL_DOMAINS_NAME', 'domains');
-
-		addSettingsViewModel(LoginAdminSettings, 'AdminSettingsLogin', 'TABS_LABELS/LABEL_LOGIN_NAME', 'login');
-
-		addSettingsViewModel(BrandingAdminSettings, 'AdminSettingsBranding', 'TABS_LABELS/LABEL_BRANDING_NAME', 'branding');
-
-		addSettingsViewModel(ContactsAdminSettings, 'AdminSettingsContacts', 'TABS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
-
-		addSettingsViewModel(SecurityAdminSettings, 'AdminSettingsSecurity', 'TABS_LABELS/LABEL_SECURITY_NAME', 'security');
-
-		addSettingsViewModel(
-			SocialAdminSettings,
-			'AdminSettingsSocial',
-			'TABS_LABELS/LABEL_INTEGRATION_NAME',
-			'integrations'
-		);
-
-		addSettingsViewModel(PluginsAdminSettings, 'AdminSettingsPlugins', 'TABS_LABELS/LABEL_PLUGINS_NAME', 'plugins');
-
-		addSettingsViewModel(PackagesAdminSettings, 'AdminSettingsPackages', 'TABS_LABELS/LABEL_PACKAGES_NAME', 'packages');
-
-		addSettingsViewModel(AboutAdminSettings, 'AdminSettingsAbout', 'TABS_LABELS/LABEL_ABOUT_NAME', 'about');
 
 		runSettingsViewModelHooks(true);
-
-		if (fCallback) {
-			fCallback();
-		}
 	}
 
 	onShow() {
-		getApp().setWindowTitle('');
+		rl.setTitle();
 	}
 }
-
-export { SettingsAdminScreen, SettingsAdminScreen as default };

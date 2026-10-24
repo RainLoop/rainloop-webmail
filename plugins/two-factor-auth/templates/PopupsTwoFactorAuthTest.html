@@ -1,0 +1,18 @@
+<header>
+	<a class="close" href="#" data-bind="click: close">×</a>
+	<h3 data-i18n="PLUGIN_2FA/TITLE_TEST_CODE"></h3>
+</header>
+<div class="modal-body form-horizontal">
+	<div class="control-group">
+		<label data-i18n="PLUGIN_2FA/LABEL_CODE"></label>
+		<input type="text" class="uiInput inputName"
+			autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+			data-bind="textInput: code, onEnter: testCodeCommand" />
+	</div>
+</div>
+<footer>
+	<a class="btn" data-bind="command: testCodeCommand, css: { 'btn-success': true === codeStatus(), 'btn-danger': false === codeStatus() }">
+		<i data-bind="css: {'icon-ok': !testing(), 'icon-spinner': testing()}"></i>
+		<span data-i18n="GLOBAL/TEST"></span>
+	</a>
+</footer>

@@ -1,23 +1,8 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under MIT */
-const gulp = require('gulp');
-const rimraf = require('gulp-rimraf');
-const fs = require('node-fs');
+const del = require('del');
 
 const { config } = require('./config');
 
-exports.del = (dir) => gulp.src(dir, { read: false, allowEmpty: true }).pipe(rimraf());
+exports.del = (dir) => del(dir);
 
-exports.copy = (sFile, sNewFile, done) => {
-	fs.writeFileSync(sNewFile, fs.readFileSync(sFile));
-	done();
-};
-
-exports.zip = (srcDir, destDir, fileName) =>
-	gulp
-		.src(srcDir + '**/*')
-		.pipe(require('gulp-zip')(fileName))
-		.pipe(gulp.dest(destDir));
-
-exports.getHead = () => config.head.mit;
-
-exports.cleanStatic = () => exports.del(config.paths.static);
+exports.cleanStatic = () => del(config.paths.staticJS) && del(config.paths.staticCSS);

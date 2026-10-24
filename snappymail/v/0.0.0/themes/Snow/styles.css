@@ -1,0 +1,53 @@
+
+:root {
+	/* MAIN */
+	--main-color: #333;
+	--main-bg-color: #48525C;
+	--main-bg-image: url("images/background.jpg");
+	--main-bg-size: cover;
+
+	/* LOADING */
+	--loading-color: #fff;
+	--loading-text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
+
+	/* LOGIN */
+	--login-color: #eee;
+	--login-bg-color: rgba(0,0,0,0.6);
+	--login-box-shadow: 0px 2px 10px rgba(0,0,0,0.5);
+	--login-border: none;
+	--login-border-radius: 7px;
+
+	/* MENU */
+	--dropdown-menu-color: #333;
+	--dropdown-menu-bg-color: #fff;
+	--dropdown-menu-hover-bg-color: #48525C;
+	--dropdown-menu-hover-color: #eee;
+	--dropdown-menu-disable-color: #999;
+
+	/* FOLDERS */
+	--folders-color: #fff;
+	--folders-disabled-color: #aaa;
+	--folders-selected-color: #fff;
+	--folders-selected-bg-color: rgba(0,0,0,0.5);
+	--folders-focused-color: #fff;
+	--folders-focused-bg-color: rgba(0,0,0,0.7);
+	--folders-hover-color: #fff;
+	--folders-hover-bg-color: rgba(0,0,0,0.5);
+	--folders-drop-color: #fff;
+	--folders-drop-bg-color: rgba(0,0,0,0.5);
+
+	/* SETTINGS */
+	--settings-menu-color: #fff;
+	--settings-menu-selected-color: #fff;
+	--settings-menu-selected-bg-color: rgba(0,0,0,0.5);
+	--settings-menu-hover-color: #fff;
+	--settings-menu-hover-bg-color: rgba(0,0,0,0.5);
+
+	/* MESSAGE LIST */
+	--message-list-toolbar-bg-color: #eee;
+}
+
+.thm-message-list-top-toolbar, .thm-message-list-bottom-toolbar {
+    background-image: linear-gradient(to bottom, #f4f4f4, #dfdfdf) !important;
+    background-repeat: repeat-x !important;
+}

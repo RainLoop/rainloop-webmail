@@ -1,18 +1,55 @@
-version: '2'
+#
+# Note: Before starting, ensure you run gulp once, to generate static assets in ./snappymail/v/0.0.0/static/css and ./snappymail/v/0.0.0/static/js
+#
+version: '3.0'
 services:
-  mail:
-    image: tvial/docker-mailserver:latest
-    hostname: mail
-    container_name: rl.mail
-    domainname: domain.com
-    restart: always
-    ports:
-      - 25:25
-      - 143:143
+
+  # Generate self-signed certs
+  # See: https://docker-mailserver.github.io/docker-mailserver/latest/config/security/ssl/#self-signed-certificates
+  step-ca:
+    image: smallstep/step-ca:latest
+    working_dir: /certs
     volumes:
-      - maildata:/var/mail
-      - mailstate:/var/mail-state
-      - ./.docker/mail/config/:/tmp/docker-mailserver/
+      - certs:/certs
+    entrypoint:
+      - /bin/sh
+    user: 0:0
+    command:
+      - -c
+      - |
+          set -eu
+          if [ ! -d demoCA ]; then
+              mkdir -p demoCA
+
+              step certificate create "Smallstep Root CA" "demoCA/cacert.pem" "demoCA/cakey.pem" \
+                --no-password --insecure \
+                --profile root-ca \
+                --not-before "2021-01-01T00:00:00+00:00" \
+                --not-after "2031-01-01T00:00:00+00:00" \
+                --san "example.com" \
+                --san "mail.example.com" \
+                --kty RSA --size 2048
+
+              step certificate create "Smallstep Leaf" mail.example.com-cert.pem mail.example.com-key.pem \
+                --no-password --insecure \
+                --profile leaf \
+                --ca "demoCA/cacert.pem" \
+                --ca-key "demoCA/cakey.pem" \
+                --not-before "2021-01-01T00:00:00+00:00" \
+                --not-after "2031-01-01T00:00:00+00:00" \
+                --san "example.com" \
+                --san "mail.example.com" \
+                --san "imap.example.com" \
+                --san "smtp.example.com" \
+                --kty RSA --size 2048
+          fi
+
+  # Mail server
+  # See: https://docker-mailserver.github.io/docker-mailserver/latest
+  # Add an account: echo 'test' | docker exec -i $( docker-compose ps -q docker-mailserver ) setup email add test@example.com
+  docker-mailserver:
+    image: docker.io/mailserver/docker-mailserver:12
+    domainname: mail.example.com
     environment:
       - ENABLE_SPAMASSASSIN=0
       - ENABLE_CLAMAV=0
@@ -21,80 +58,94 @@ services:
       - ENABLE_MANAGESIEVE=1
       - ONE_DIR=1
       - DMS_DEBUG=0
-    cap_add:
-      - NET_ADMIN
-      - SYS_PTRACE
+      - POSTFIX_INET_PROTOCOLS=ipv4
+      - DOVECOT_INET_PROTOCOLS=ipv4
+      - SSL_TYPE=manual
+      - SSL_CERT_PATH=/certs/mail.example.com-cert.pem
+      - SSL_KEY_PATH=/certs/mail.example.com-key.pem
+    volumes:
+      - certs:/certs
+      - dms-mail-data:/var/mail
+      - dms-mail-state:/var/mail-state
+      - dms-mail-logs:/var/log/mail
+      - dms-config:/tmp/docker-mailserver
+    networks:
+      default:
+        aliases:
+          - example.com
+          - mail.example.com
+          - imap.example.com
+          - smtp.example.com
+    depends_on:
+      step-ca:
+        condition: service_completed_successfully
+    entrypoint:
+      - /bin/sh
+    command:
+      - -c
+      - |
+          set -eu
+          echo "Trusting demoCA certificate"
+          cp -v /certs/demoCA/cacert.pem /usr/local/share/ca-certificates/cacert.crt  # Debian expects certs to end with .crt
+          update-ca-certificates
+          exec supervisord -c /etc/supervisor/supervisord.conf
+
+  # Snappymail: http://localhost:8888
+  # Admin panel: http://localhost:8888/?admin
+  # Get the Admin Panel password: docker exec -it $( docker-compose ps -q snappymail ) cat /var/lib/snappymail/_data_/_default_/admin_password.txt
+  snappymail:
+    build:
+      dockerfile: ./.docker/release/Dockerfile
+      context: .
+    # environment:
+    #   - DEBUG=true
+    volumes:
+      - certs:/certs:ro
+      - ./snappymail:/snappymail/snappymail:ro
+      - ./index.php:/snappymail/index.php:ro
+      - snappymail:/var/lib/snappymail
+    ports:
+      - 8888:8888
+    networks:
+      - default
+    depends_on:
+      step-ca:
+        condition: service_completed_successfully
+      db:
+        condition: service_started
+    entrypoint:
+      - /bin/sh
+    command:
+      - -c
+      - |
+          set -eu
+          echo "Trusting demoCA certificate"
+          cp -v /certs/demoCA/cacert.pem /usr/local/share/ca-certificates/
+          update-ca-certificates
+          exec /entrypoint.sh
+
+  # MySQL database
   db:
     image: mysql:5.7
-    hostname: db
-    container_name: rl.db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: rainloop
-      MYSQL_PASSWORD: rainloop
-      MYSQL_DATABASE: rainloop
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=snappymail
+      - MYSQL_PASSWORD=snappymail
+      - MYSQL_DATABASE=snappymail
     volumes:
       - mysql:/var/lib/mysql
-      - tmp:/tmp
-  php:
-    build:
-      context: ./.docker/php
-    hostname: php
-    container_name: rl.php
-    expose:
-      - 9000
-    depends_on:
-      - db
-      - mail
-    volumes:
-      - ./:/var/www
-      # - ./build/local/:/var/www
-      - ./.docker/php/rainloop.ini:/usr/local/etc/php/conf.d/rainloop.ini
-      - tmp:/tmp
-  node:
-    build:
-      context: ./.docker/node
-    hostname: node
-    container_name: rl.node
-    working_dir: /var/www
-    command: sh -c 'yarn --version'
-    volumes:
-      - ./:/var/www
-      - tmp:/tmp
-  nginx:
-    image: nginx:latest
-    hostname: nginx
-    container_name: rl.nginx
-    depends_on:
-      - php
-    ports:
-      - 443:443
-      - 80:80
-    volumes:
-      - ./:/var/www
-      # - ./build/local/:/var/www
-      - ./.docker/nginx/ssl:/etc/nginx/ssl
-      - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - tmp:/tmp
-  tx:
-    build:
-      context: ./.docker/tx
-    hostname: tx
-    container_name: rl.tx
-    working_dir: /var/www
-    command: sh -c 'tx --version'
-    volumes:
-      - ./:/var/www
-      - ./.docker/.cache/tx/root:/root
-      - tmp:/tmp
+    networks:
+      - default
 
 volumes:
+  certs:
+  dms-mail-data:
+  dms-mail-state:
+  dms-mail-logs:
+  dms-config:
+  snappymail:
   mysql:
-    driver: local
-  maildata:
-    driver: local
-  mailstate:
-    driver: local
-  tmp:
-    driver: local
+
+networks:
+  default:

@@ -1,0 +1,182 @@
+{
+	"GLOBAL": {
+		"ADD": "Afegeix",
+		"CLOSE": "Tanca",
+		"SAVE": "Desa",
+		"TEST": "Prova",
+		"UPDATE": "Actualitza",
+		"USERNAME": "Nom d’usuari",
+		"PASSWORD": "Contrasenya",
+		"CANCEL": "Cancel·la",
+		"SEARCH": "Cerca",
+		"YES": "Sí",
+		"NO": "No"
+	},
+	"LOGIN": {
+		"LABEL_LOGIN": "Nom d’usuari",
+		"LABEL_TOTP": "Codi TOTP",
+		"BUTTON_LOGIN": "Accedeix al tauler d’administració"
+	},
+	"TOP_PANEL": {
+		"LABEL_ADMIN_PANEL": "Tauler d’administració"
+	},
+	"SETTINGS_LABELS": {
+		"GENERAL": "General",
+		"LOGIN": "Inici de sessió",
+		"BRANDING": "Imatge de marca",
+		"CONTACTS": "Contactes",
+		"DOMAINS": "Dominis",
+		"SECURITY": "Seguretat",
+		"PACKAGES": "Extensions",
+		"CONFIG": "Configuració",
+		"ABOUT": "Quant a"
+	},
+	"TAB_GENERAL": {
+		"LEGEND_INTERFACE": "Interfície",
+		"LABEL_LANGUAGE": "Llengua",
+		"LABEL_LANGUAGE_ADMIN": "Llengua (administració)",
+		"LABEL_THEME": "Tema",
+		"LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Permet la selecció de llengua a la pantalla de configuració",
+		"LABEL_ALLOW_THEMES_ON_SETTINGS": "Permet la selecció del tema a la pantalla de configuració",
+		"LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Permet la selecció del fons a la pantalla de configuració",
+		"LABEL_SHOW_THUMBNAILS": "Mostra les miniatures (adjunts)",
+		"LEGEND_MAIN": "Principal",
+		"LABEL_ATTACHMENT_SIZE_LIMIT": "Límit de mida dels adjunts",
+		"LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Permet comptes addicionals",
+		"LABEL_ALLOW_IDENTITIES": "Permet identitats múltiples",
+		"ALERT_DATA_ACCESS": "La carpeta de dades és accessible des de l’exterior. Configureu el servidor web per impedir-hi l’accés extern. Més informació:",
+		"ALERT_WARNING": "Avís!",
+		"HTML_ALERT_WEAK_PASSWORD": "Esteu utilitzant la contrasenya d’administració predeterminada.\n<br>\nPer motius de seguretat,\n<strong><a href=\"#/security\">canvieu-la</a></strong>\nara per una altra.\n"
+	},
+	"TAB_LOGIN": {
+		"LEGEND_LOGIN_SCREEN": "Pantalla d’inici de sessió",
+		"LABEL_DEFAULT_DOMAIN": "Domini predeterminat",
+		"LABEL_DETERMINE_USER_DOMAIN": "Intenta determinar el domini de l’usuari",
+		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Permet triar la llengua a la pantalla d’inici de sessió",
+		"LABEL_DETERMINE_USER_LANGUAGE": "Intenta determinar la llengua de l’usuari"
+	},
+	"TAB_BRANDING": {
+		"LEGEND_BRANDING": "Imatge de marca",
+		"LABEL_PAGE_TITLE": "Títol de la pàgina",
+		"LABEL_LOADING_DESCRIPTION": "Text durant la càrrega",
+		"LABEL_FAVICON_URL": "URL de la icona de favorits"
+	},
+	"TAB_CONTACTS": {
+		"LEGEND_CONTACTS": "Contactes",
+		"LEGEND_STORAGE": "Emmagatzematge (PDO)",
+		"LABEL_ENABLE_CONTACTS": "Activa els contactes",
+		"LABEL_ALLOW_SYNC": "Permet la sincronització dels contactes (amb el servidor extern CardDAV)",
+		"LABEL_STORAGE_TYPE": "Tipus",
+		"LABEL_STORAGE_DSN": "DSN (nom de la font de dades)",
+		"LABEL_STORAGE_USER": "Usuari",
+		"LABEL_STORAGE_PASSWORD": "Contrasenya",
+		"SQLITE_GLOBAL": "Utilitza una base de dades global en lloc d’una per compte",
+		"ALERT_NOTICE": "Atenció!",
+		"SUGGESTIONS_LIMIT": "Límit de suggeriments",
+		"HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "No useu aquest tipus de base de dades amb un gran nombre d’usuaris actius.",
+		"HTML_ALERT_DOES_NOT_SUPPORTED": "El sistema no admet els contactes.\n<br>\nHeu d’instal·lar o activar l’extensió <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> al servidor.\n"
+	},
+	"TAB_DOMAINS": {
+		"LEGEND_DOMAINS": "Dominis",
+		"BUTTON_ADD_DOMAIN": "Afegeix un domini",
+		"BUTTON_ADD_ALIAS": "Afegeix un àlies",
+		"DELETE_ARE_YOU_SURE": "Voleu continuar?",
+		"HTML_DOMAINS_HELPER": "Llista de dominis als quals el correu web pot accedir.\n<br>\nFeu clic al nom d’un domini per configurar-lo.\n"
+	},
+	"TAB_SECURITY": {
+		"LEGEND_SECURITY": "Seguretat",
+		"LABEL_USE_IMAGE_PROXY": "Utilitza un servidor intermediari local per a les imatges externes",
+		"LABEL_AUTO_VERIFY": "Verifica les signatures automàticament",
+		"LABEL_SHOW_PHP_INFO": "Mostra la informació de PHP",
+		"LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Credencials d’accés al tauler d’administració",
+		"LABEL_CURRENT_PASSWORD": "Contrasenya actual",
+		"LABEL_NEW_PASSWORD": "Contrasenya nova",
+		"LABEL_REPEAT_PASSWORD": "Repetiu la contrasenya",
+		"LABEL_REQUIRE_VERIFICATION": "Exigeix la verificació del certificat SSL utilitzat (IMAP / SMTP)",
+		"CRYPTO": "Criptografia",
+		"LABEL_ALLOW_SELF_SIGNED": "Permet els certificats autosignats"
+	},
+	"TAB_PACKAGES": {
+		"LABEL_ENABLE_PLUGINS": "Activa les extensions",
+		"LEGEND_AVAILABLE_FOR_UPDATE": "Actualitzacions disponibles",
+		"LEGEND_AVAILABLE_FOR_INSTALLATION": "Extensions disponibles per instal·lar",
+		"LEGEND_INSTALLED_PACKAGES": "Paquets instal·lats",
+		"ALERT_CANNOT_ACCESS_REPOSITORY": "Ara no es pot accedir al repositori."
+	},
+	"TAB_ABOUT": {
+		"LEGEND_ABOUT": "Quant a",
+		"LABEL_TAG_HINT": "Client de correu electrònic senzill, modern i ràpid basat en la web",
+		"LABEL_ALL_RIGHTS_RESERVED": "Tots els drets reservats.",
+		"HINT_READ_CHANGE_LOG": "Llegiu el registre de canvis abans d’actualitzar.",
+		"HINT_IS_UP_TO_DATE": "SnappyMail està actualitzat.",
+		"HTML_NEW_VERSION": "Hi ha disponible una versió nova: <b>%VERSION%</b>.",
+		"LABEL_UPDATING": "S’està actualitzant…",
+		"LABEL_CHECKING": "S’està comprovant si hi ha actualitzacions…",
+		"BUTTON_RELEASES": "Versions publicades"
+	},
+	"POPUPS_DOMAIN_ALIAS": {
+		"TITLE_ADD_DOMAIN_ALIAS": "Afegeix un àlies",
+		"LABEL_ALIAS": "Àlies",
+		"LABEL_DOMAIN": "Domini"
+	},
+	"POPUPS_DOMAIN": {
+		"TITLE_ADD_DOMAIN": "Afegeix un domini",
+		"TITLE_ADD_DOMAIN_WITH_NAME": "Afegeix el domini «%NAME%»",
+		"TITLE_EDIT_DOMAIN": "Edita el domini «%NAME%»",
+		"LABEL_NAME": "Nom",
+		"NAME_HELPER": "S’admet el comodí *",
+		"LABEL_SERVER": "Servidor",
+		"LABEL_PORT": "Port",
+		"LABEL_SECURE": "Seguretat",
+		"TIMEOUT": "Temps d’espera",
+		"DISABLE_CAPABILITIES": "Desactiva capacitats",
+		"LIMITS": "Límits",
+		"FOLDERS": "Carpetes",
+		"MESSAGES": "Missatges",
+		"SECURE_OPTION_NONE": "Cap",
+		"LABEL_ALLOW_SIEVE_SCRIPTS": "Permet scripts Sieve",
+		"LABEL_USE_SHORT_LOGIN": "Utilitza el nom d’usuari sense el domini",
+		"LABEL_LOWERCASE_LOGIN": "Nom d’usuari en minúscules, sense distingir majúscules i minúscules",
+		"LABEL_USE_AUTH": "Utilitza l’autenticació",
+		"LABEL_SET_SENDER": "Utilitza el nom d’usuari com a remitent",
+		"LABEL_AUTH_PLAIN_LINE": "Força l’autenticació amb una sola ordre AUTH PLAIN",
+		"LABEL_USE_PHP_MAIL": "Utilitza la funció mail() de PHP",
+		"BUTTON_WHITE_LIST": "Usuaris permesos",
+		"NEW_DOMAIN_DESC": "Aquesta configuració de domini us permetrà treballar amb les adreces de correu de <strong>%NAME%</strong>.\n",
+		"WHITE_LIST_ALERT": "Llista d’usuaris del domini que poden accedir al correu web.\nSepareu-los amb espais.\n",
+		"VALID_SPAM_HEADERS": "Capçaleres vàlides de correu brossa",
+		"VALID_VIRUS_HEADERS": "Capçaleres vàlides de virus"
+	},
+	"POPUPS_PLUGIN": {
+		"TITLE_PLUGIN": "Extensió",
+		"DESC_NOTHING_TO_CONFIGURE": "No hi ha res per configurar."
+	},
+	"POPUPS_ASK": {
+		"DESC_WANT_CLOSE_THIS_WINDOW": "Segur que voleu tancar aquesta finestra?"
+	},
+	"POPUPS_LANGUAGES": {
+		"TITLE_LANGUAGES": "Trieu la llengua"
+	},
+	"HINTS": {
+		"BETA": "beta",
+		"WARNING": "Avís!"
+	},
+	"ERRORS": {
+		"DOMAIN_ALREADY_EXISTS": "El domini ja existeix.",
+		"UNKNOWN_ERROR": "Error desconegut"
+	},
+	"NOTIFICATIONS": {
+		"RequestError": "La sol·licitud ha fallat",
+		"RequestAborted": "S’ha cancel·lat la sol·licitud",
+		"RequestTimeout": "S’ha esgotat el temps d’espera de la sol·licitud",
+		"InvalidToken": "Testimoni no vàlid",
+		"AuthError": "Ha fallat l’autenticació",
+		"DomainAlreadyExists": "El domini ja existeix.",
+		"CantSavePluginSettings": "No es pot desar la configuració.",
+		"CantInstallPackage": "No s’ha pogut instal·lar l’extensió",
+		"CantDeletePackage": "No s’ha pogut eliminar l’extensió",
+		"InvalidPluginPackage": "Paquet d’extensió no vàlid",
+		"UnsupportedPluginPackage": "Paquet d’extensió no compatible",
+		"UnknownError": "Error desconegut"
+	}
+}

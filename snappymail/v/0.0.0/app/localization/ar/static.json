@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "إعادة التحميل",
+	"NO_SCRIPT_TITLE": "الجافا سكريبت مطلوبة لهذا البرنامج",
+	"NO_SCRIPT_DESC": "إن متصفحك لايدعم الجافا سكريبت . يرجى تفعيل  الدعم أو تجريب متصفح أخر",
+	"NO_COOKIE_TITLE": "Cookies support is required for this application.",
+	"NO_COOKIE_DESC": "Cookies support is not available in your browser.\nPlease enable Cookie support in your browser settings and retry.\n",
+	"BAD_BROWSER_TITLE": "متصفحك بحاجة الى تحديث",
+	"BAD_BROWSER_DESC": "لإصتخدام جميع ميزات هذا البرنامج يرجى تنزيل أحد المتصفحات التالية الداعمة:"
+}
