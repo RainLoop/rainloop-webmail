@@ -107,7 +107,7 @@ class LDAPLoginMappingPlugin extends AbstractPlugin
 				$sSmtpUser = $sResult['login'];
 				$sEmail = $sResult['email'];
 			}
-			syslog(LOG_WARNING, "plugins/ldap-login-mapping/index.php:FilterLoginСredentials() auth try: $sIP/$sEmail, resolved as $sImapUser/$sEmail");
+			syslog(LOG_WARNING, "plugins/ldap-login-mapping/index.php:FilterLoginCredentials() auth try: $sIP/$sEmail, resolved as $sImapUser/$sEmail");
 		}
 	}
 
