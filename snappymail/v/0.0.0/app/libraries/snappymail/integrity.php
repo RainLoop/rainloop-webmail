@@ -91,8 +91,8 @@ abstract class Integrity
 
 	public static function phpVersion()
 	{
-		if (PHP_VERSION_ID < 70400) {
-			return 'Your PHP version ('.PHP_VERSION.') is lower than the minimal required 7.4.0!';
+		if (PHP_VERSION_ID < 80200) {
+			return 'Your PHP version ('.PHP_VERSION.') is lower than the minimal required 8.2.0!';
 		}
 	}
 
