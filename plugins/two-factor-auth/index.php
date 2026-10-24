@@ -131,7 +131,7 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 	private static function getQRCode(MainAccount $oAccount, string $secret) : string
 	{
 		$email = \rawurlencode($oAccount->Email());
-//		$issuer = \rawurlencode(\RainLoop\API::Config()->Get('webmail', 'title', 'SnappyMail'));
+//		$issuer = \rawurlencode(\RainLoop\Api::Config()->Get('webmail', 'title', 'SnappyMail'));
 		$QR = \SnappyMail\QRCode::getMinimumQRCode(
 //			"otpauth://totp/{$issuer}:{$email}?secret={$secret}&issuer={$issuer}",
 			"otpauth://totp/{$email}?secret={$secret}",

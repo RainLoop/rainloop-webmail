@@ -542,7 +542,7 @@ class ServiceActions
 	}
 
 	/**
-	 * Login with the \RainLoop\API::CreateUserSsoHash() generated hash
+	 * Login with the \RainLoop\Api::CreateUserSsoHash() generated hash
 	 */
 	public function ServiceSso() : string
 	{
